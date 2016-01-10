@@ -1,0 +1,19 @@
+{
+  "name": "neptune-instant-coffee",
+  "version": "1.0.0",
+  "description": "Generate index.coffee and namespace.coffee files from directory structure",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shane Brinkman-Davis Delamore",
+  "license": "",
+  "preferGlobal": true,
+  "bin": {
+    "neptuneic": "index.js"
+  },
+  "dependencies": {
+    "colors": "^1.1.2",
+    "fs-promise": "^0.3.1",
+    "glob": "^6.0.4"
+  }
+}
