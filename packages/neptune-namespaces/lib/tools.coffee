@@ -6,7 +6,7 @@ module.exports = class Lib
     str.charAt(0).toLowerCase() + str.slice 1
 
   @upperCamelCase: (str) =>
-    words = str.split(/[-_\s]/)
+    words = str.split(/[-_\.]|\s+/)
     capWords = (@capitalize word for word in words)
     capWords.join("")
 
@@ -25,3 +25,6 @@ module.exports = class Lib
     str
 
   @log: (args...) -> console.log args...
+
+  @withoutTrailingSlash: (str) ->
+    str.match(/^(.*[^\/])\/?$/)[1]
