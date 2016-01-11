@@ -9,7 +9,7 @@
   "license": "",
   "preferGlobal": true,
   "bin": {
-    "neptunens": "index.js"
+    "neptune-namespaces": "index.js"
   },
   "dependencies": {
     "colors": "^1.1.2",

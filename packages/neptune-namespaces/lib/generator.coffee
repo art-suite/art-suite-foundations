@@ -107,7 +107,7 @@ module.exports = class Generator
 
     if files.length > 0
       result +=
-        "\n#{nameSpaceName}.finishLoad(#{JSON.stringify (upperCamelCase file.split(/\.coffee$/)[0] for file in files)})"
+        "\n#{nameSpaceName}.finishLoad #{JSON.stringify (upperCamelCase file.split(/\.coffee$/)[0] for file in files)}"
     result
 
   getNamespacePath: (path) ->
@@ -132,12 +132,27 @@ module.exports = class Generator
       """
     result
 
+  generateHelper: ({name, code}) ->
+    log "\ngenerated: #{name.yellow}"
+    log indent code.green
+    @generatedFiles[name] = code
+
+  writeFiles: ->
+    promises = for name, code of @generatedFiles
+      log "writing: #{name.yellow}"
+      fsp.writeFile name, code
+    Promise.all promises
+
   generateFiles: ->
+    @generatedFiles = {}
     for path, pathInfo of @directoriesWithCoffee
-      log "\ngenerate: #{path.yellow}/namespace.coffee"
-      log indent @generateNamespace(path, pathInfo).green
-      log "\ngenerate: #{path.yellow}/index.coffee"
-      log indent @generateIndex(path, pathInfo).green
+      @generateHelper
+        name: "#{path}/namespace.coffee"
+        code: @generateNamespace path, pathInfo
+
+      @generateHelper
+        name: "#{path}/index.coffee"
+        code: @generateIndex path, pathInfo
 
   generateFromFiles: (files) =>
     for file in files when !file.match /(namespace|index)\.coffee$/
@@ -145,6 +160,8 @@ module.exports = class Generator
     log directoriesWithCoffee:@directoriesWithCoffee
     @prettyPrint()
     @generateFiles()
+    @writeFiles()
+    .then -> log "done."
 
   generate: ->
     glob "#{@root}/**/*.coffee", {}, (er, files) =>
