@@ -1,5 +1,5 @@
 {
-  "name": "neptune-instant-coffee",
+  "name": "neptune-namespaces",
   "version": "1.0.0",
   "description": "Generate index.coffee and namespace.coffee files from directory structure",
   "scripts": {
@@ -9,7 +9,7 @@
   "license": "",
   "preferGlobal": true,
   "bin": {
-    "neptuneic": "index.js"
+    "neptunens": "index.js"
   },
   "dependencies": {
     "colors": "^1.1.2",
