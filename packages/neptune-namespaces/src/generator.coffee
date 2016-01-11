@@ -11,10 +11,16 @@ module.exports = class Generator
     self.#{@neptuneGlobalName} ||= class #{@neptuneGlobalName}
       @namespacePath: "#{@neptuneGlobalName}"
       @Base: class Base
-        @finishLoad: (classes)->
-          for childName in classes when child = @[child]
-            child.namespace = @
-            child.namespacePath = @namespacePath + "." + child
+        @namespacePath: "#{@neptuneGlobalName}.Base"
+        @namespace: "#{@neptuneGlobalName}"
+        @classes: []
+        @namespaces: []
+        @finishLoad: (classes, namespaces)->
+          @classes = @classes.concat classes
+          @namespaces = @namespaces.concat namespaces
+          for name in classes when klass = @[name]
+            klass.namespace = @
+            klass.namespacePath = @namespacePath + "." + klass
 
     """
   @neptuneBaseClass: "#{@neptuneGlobalName}.Base"
