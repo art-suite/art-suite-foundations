@@ -40,8 +40,6 @@ module.exports = class Generator
       parentPathArray = pathArray.slice 0, pathArray.length - 1
       @addCoffeePathArrayAndFile parentPathArray, null, peek pathArray
 
-
-
     @directoriesWithCoffee[path] ||= files:[], subdirs:[]
     @directoriesWithCoffee[path].namespacePath = (upperCamelCase namespace for namespace in pathArray.slice (@rootArray.length - 1)).join '.'
     # pushIfUnique @directoriesWithCoffee[path].files, "index.coffee"
@@ -60,14 +58,6 @@ module.exports = class Generator
       @prettyPrint path + "/" + subdir, indent
     for file in pathInfo.files
       log indent + upperCamelCase file.split(/\.coffee$/)[0]
-
-  generateFiles: ->
-    log "generateFiles"
-    for path, pathInfo of @directoriesWithCoffee
-      log "\ngenerate: #{path.yellow}/namespace.coffee"
-      log indent @generateNamespace(path, pathInfo).green
-      log "\ngenerate: #{path.yellow}/index.coffee"
-      log indent @generateIndex(path, pathInfo).green
 
   getNameSpaceNamesFromPath: (path) ->
     [..., parentNameSpaceName, nameSpaceName] = path.split('/')
@@ -141,6 +131,13 @@ module.exports = class Generator
         @namespacePath: "#{Generator.neptuneGlobalName}.#{namespacePath}"
       """
     result
+
+  generateFiles: ->
+    for path, pathInfo of @directoriesWithCoffee
+      log "\ngenerate: #{path.yellow}/namespace.coffee"
+      log indent @generateNamespace(path, pathInfo).green
+      log "\ngenerate: #{path.yellow}/index.coffee"
+      log indent @generateIndex(path, pathInfo).green
 
   generateFromFiles: (files) =>
     for file in files when !file.match /(namespace|index)\.coffee$/
