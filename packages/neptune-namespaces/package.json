@@ -9,7 +9,7 @@
   "license": "",
   "preferGlobal": true,
   "bin": {
-    "neptune-namespaces": "./src/neptune-namespaces"
+    "neptune-namespaces": "./lib/neptune-namespaces"
   },
   "main": "index.coffee",
   "dependencies": {
