@@ -105,9 +105,15 @@ module.exports = class Generator
     #{requires.join "\n"}
     """
 
-    if files.length > 0
+    if files.length > 0 || subdirs.length > 0
       result +=
-        "\n#{nameSpaceName}.finishLoad #{JSON.stringify (upperCamelCase file.split(/\.coffee$/)[0] for file in files)}"
+        """
+
+        #{nameSpaceName}.finishLoad(
+          #{JSON.stringify (upperCamelCase file for file in files)}
+          #{JSON.stringify (upperCamelCase namespace for namespace in subdirs)}
+        )
+        """
     result
 
   getNamespacePath: (path) ->

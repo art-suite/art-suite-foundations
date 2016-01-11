@@ -1,4 +1,4 @@
 #! /usr/bin/env node
 
 require('coffee-script/register');
-require('./lib/main.coffee');
+require('./src/main.coffee');
