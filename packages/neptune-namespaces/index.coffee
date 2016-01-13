@@ -1,1 +1,1 @@
-module.exports = require "./lib/neptune"
+module.exports = require "./src/neptune"

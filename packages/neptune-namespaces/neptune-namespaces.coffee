@@ -1,8 +1,12 @@
 colors = require "colors"
 glob = require "glob"
 fsp = require "fs-promise"
-Generator = require "./generator"
-{upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash} = require "./tools"
+Generator = require "./src/generator"
+
+{
+  upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash
+} = require "./src/tools"
+
 {max} = Math
 
 [nodePath, neptineicPath, targetPaths...] = process.argv
