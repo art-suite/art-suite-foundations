@@ -1,1 +1,1 @@
-module.exports = require "./lib/root_namespace"
+module.exports = require "./lib/neptune"

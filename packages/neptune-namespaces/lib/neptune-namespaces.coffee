@@ -5,14 +5,24 @@ Generator = require "./generator"
 {upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash} = require "./tools"
 {max} = Math
 
-[nodePath, neptineicPath, targetPath] = process.argv
-log
-  nodePath: nodePath
-  neptineicPath: neptineicPath
-  targetPath: targetPath
+[nodePath, neptineicPath, targetPaths...] = process.argv
 
-unless targetPath
-  log "usage: #{neptineicPath} target_path"
+unless targetPaths.length >= 1
+  log "usage: #{neptineicPath} target_paths"
   return
 
-generator = new Generator(withoutTrailingSlash targetPath).generate()
+promiseGeneratingFunctions = for targetPath in targetPaths
+  do (targetPath) ->
+    targetPath = withoutTrailingSlash targetPath
+
+    ->
+      console.log "\nscanning root: #{targetPath.yellow}"
+      new Generator(targetPath, verbose:true).generate()
+
+promiseGeneratingFunctions = promiseGeneratingFunctions.reverse()
+resolveNextPromise = ->
+  if promiseGeneratingFunctions.length > 0
+    promiseGeneratingFunctions.pop()()
+    .then -> resolveNextPromise()
+
+resolveNextPromise()

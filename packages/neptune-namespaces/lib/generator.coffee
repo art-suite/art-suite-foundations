@@ -26,7 +26,8 @@ module.exports = class Generator
     """
   @neptuneBaseClass: "#{@neptuneGlobalName}.Base"
 
-  constructor: (@root) ->
+  constructor: (@root, options = {}) ->
+    {@pretend, @verbose} = options
     # map from directory paths to list of coffee files in that directory
     @rootArray = @root.split "/"
     @directoriesWithCoffee = {}
@@ -89,11 +90,11 @@ module.exports = class Generator
     requireFilesOrder = [nameSpaceName]
     requireFiles[nameSpaceName] = 'namespace'
 
-    for file in files
-      requireFiles[name = nameSpaceName + "." + upperCamelCase file] =  file
-      requireFilesOrder.push name
     for subdir in subdirs
       requireFiles[name = nameSpaceName + "." + upperCamelCase subdir] = subdir
+      requireFilesOrder.push name
+    for file in files
+      requireFiles[name = nameSpaceName + "." + upperCamelCase file] =  file
       requireFilesOrder.push name
 
     maxLength = 0
@@ -146,8 +147,9 @@ module.exports = class Generator
     result
 
   generateHelper: ({name, code}) ->
-    log "\ngenerated: #{name.yellow}"
-    log indent code.green
+    if @pretend
+      log "\ngenerated: #{name.yellow}"
+      log indent code.green
     @generatedFiles[name] = code
 
   writeFiles: ->
@@ -170,12 +172,20 @@ module.exports = class Generator
   generateFromFiles: (files) =>
     for file in files when !file.match /(namespace|index)\.coffee$/
       @addCoffeeFile file
-    log directoriesWithCoffee:@directoriesWithCoffee
-    @prettyPrint()
+    if @verbose
+      console.log "generating namespace structure:"
+      console.log "  Neptune".yellow
+      @prettyPrint @root, "    "
     @generateFiles()
-    @writeFiles()
-    .then -> log "done."
+    if @pretend
+      Promise.resolve()
+    else
+      @writeFiles()
 
   generate: ->
-    glob "#{@root}/**/*.coffee", {}, (er, files) =>
-      @generateFromFiles files
+    new Promise (resolve, reject) =>
+      glob "#{@root}/**/*.coffee", {}, (er, files) =>
+        if er
+          reject()
+        else
+          resolve @generateFromFiles files
