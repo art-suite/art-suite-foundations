@@ -2,7 +2,7 @@ path = require "path"
 module.exports =
   entry:
     index: ["./index.coffee"]
-    test_bundle: ["./test/index.coffee"]
+    # test_bundle: ["./test/index.coffee"]
     # must wrap source in array due to bug in webpack:
     # https://github.com/webpack/webpack/issues/300
 

@@ -1,6 +1,6 @@
 define [
   './namespace'
-  '../foundation'
+  'art.foundation'
 ], (Events, Foundation) ->
   {currentSecond} = Foundation
   class Events.Event extends Foundation.BaseObject

@@ -1,7 +1,7 @@
 define [
   'extlib/chai'
   'lib/art/events'
-  'lib/art/foundation'
+  'art.foundation'
 ], (chai, Events, Foundation) ->
   assert = chai.assert
   {log, inspect, nextTick} = Foundation

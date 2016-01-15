@@ -1,5 +1,5 @@
 define [
-  '../foundation'
+  'art.foundation'
   './event_manager'
   './event_epoch'
   './event'

@@ -1,9 +1,8 @@
 define [
   './namespace'
-  '../foundation'
-  '../engine/animation/animator'
+  'art.foundation'
   './evented_object'
-], (Events, Foundation, Animator, EventedObject) ->
+], (Events, Foundation, EventedObject) ->
   eq = Foundation.Eq.eq
 
   class Events.EventedVariable extends Foundation.BaseObject
@@ -23,8 +22,6 @@ define [
         oldValue = @refresh value
         @queueEvent "change", value:value, oldValue:oldValue if !eq(oldValue, value)
         oldValue
-
-    animate: (options) -> new Animator @, options
 
     get: -> @_value
     set: (value) ->
