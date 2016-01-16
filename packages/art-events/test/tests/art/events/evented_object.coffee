@@ -1,77 +1,73 @@
-define [
-  'extlib/chai'
-  'lib/art/events'
-  'art.foundation'
-], (chai, Events, Foundation) ->
-  assert = chai.assert
-  {log, inspect, nextTick} = Foundation
+{assert} = require 'art.foundation/src/art/dev_tools/test/art_chai'
+{log, inspect, nextTick, BaseObject} = require 'art.foundation'
+Events = require 'art.events'
 
-  class MyEventedObject extends Foundation.BaseObject
-    @include Events.EventedObject
+class MyEventedObject extends BaseObject
+  @include Events.EventedObject
 
-  suite "Art.Events.EventedObject", ->
-    test "event(), when no handler, returns false", ->
-      eo = new MyEventedObject
-      assert.eq false, eo.queueEvent "foo"
+suite "Art.Events.EventedObject", ->
+  test "event(), when no handler, returns false", ->
+    eo = new MyEventedObject
+    assert.eq false, eo.queueEvent "foo"
 
-    test "event(), when there is a handler, returns the queued event object", (done)->
-      eo = new MyEventedObject
-      eo.on foo: -> done()
-      assert.eq true, eo.queueEvent "foo"
+  test "event(), when there is a handler, returns the queued event object", (done)->
+    eo = new MyEventedObject
+    eo.on foo: -> done()
+    assert.eq true, eo.queueEvent "foo"
 
-    test "handled event happens on nextTick", (done)->
-      eo = new MyEventedObject
-      count = 0
-      eo.on foo: ->
-        assert.eq count, 1
-        done()
-      assert.eq true, eo.queueEvent "foo"
+  test "handled event happens on nextTick", (done)->
+    eo = new MyEventedObject
+    count = 0
+    eo.on foo: ->
+      assert.eq count, 1
+      done()
+    assert.eq true, eo.queueEvent "foo"
+    count++
+
+  test "event creator function", (done)->
+    eo = new MyEventedObject
+    eo.on foo: (e)->
+      assert.eq e.bar, 123
+      done()
+    assert.eq true, eo.queueEvent "foo", -> new Events.Event "foo", bar:123
+
+  test "events handled in order they occured", (done)->
+    eo = new MyEventedObject
+    count = 0
+    eo.on bar: ->
+      assert.eq count, 2
+      done()
+    eo.on foo: ->
+      assert.eq count, 1
       count++
+    eo.queueEvent "foo"
+    eo.queueEvent "bar"
+    count++
 
-    test "event creator function", (done)->
-      eo = new MyEventedObject
-      eo.on foo: (e)->
-        assert.eq e.bar, 123
-        done()
-      assert.eq true, eo.queueEvent "foo", -> new Events.Event "foo", bar:123
+  test "show warning when queueing events when handling events", (done)->
+    eo = new MyEventedObject
+    eo.on foo: -> eo.queueEvent "bar"
+    eo.on bar: -> done()
+    eo.queueEvent "foo"
 
-    test "events handled in order they occured", (done)->
-      eo = new MyEventedObject
-      count = 0
-      eo.on bar: ->
-        assert.eq count, 2
-        done()
-      eo.on foo: ->
-        assert.eq count, 1
-        count++
-      eo.queueEvent "foo"
-      eo.queueEvent "bar"
-      count++
+  test "show warning when handling events outside of an epoch", (done)->
+    eo = new MyEventedObject
+    eo.on foo: -> done()
+    eo.handleEvent new Events.Event "foo"
 
-    test "show warning when queueing events when handling events", (done)->
-      eo = new MyEventedObject
-      eo.on foo: -> eo.queueEvent "bar"
-      eo.on bar: -> done()
-      eo.queueEvent "foo"
+  test "events queued at other times are OK", (done)->
+    eo = new MyEventedObject
+    eo.on foo: -> nextTick -> eo.queueEvent "bar"
+    eo.on bar: -> done()
+    eo.queueEvent "foo"
 
-    test "show warning when handling events outside of an epoch", (done)->
-      eo = new MyEventedObject
-      eo.on foo: -> done()
-      eo.handleEvent new Events.Event "foo"
+  test "sequence of oneTime handlers", (done)->
+    eo = new MyEventedObject
 
-    test "events queued at other times are OK", (done)->
-      eo = new MyEventedObject
-      eo.on foo: -> nextTick -> eo.queueEvent "bar"
-      eo.on bar: -> done()
-      eo.queueEvent "foo"
+    eo.onNext
+      birthday: ->
+        eo.onNext birthday: -> done()
+        eo.queueEvent "birthday"
 
-    test "sequence of oneTime handlers", (done)->
-      eo = new MyEventedObject
-
-      eo.onNext
-        birthday: ->
-          eo.onNext birthday: -> done()
-          eo.queueEvent "birthday"
-
-      eo.queueEvent "birthday"
+    eo.queueEvent "birthday"
 
