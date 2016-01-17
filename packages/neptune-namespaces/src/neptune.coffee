@@ -2,18 +2,28 @@ if typeof global == 'object'
   # running in node.js
   global.self = global
 
-module.exports = self.Neptune = class Neptune
+class Base
+  @namespacePath: "Neptune.Base"
+  @namespace: null
+  @allNamespaces: {}
+  @classes: []
+  @namespaces: []
+  @addNamespace: (namespace) ->
+    @allNamespaces[namespace.namespacePath] ||= []
+    @namespaces = @allNamespaces[@namespacePath] ||= []
+    @namespaces.push namespace
+
+  @finishLoad: (classes)->
+    newClasses = for name in classes when typeof (klass = @[name]) == "function"
+      klass.namespace = @
+      klass.namespacePath = @namespacePath + "." + klass.name
+      klass
+
+    @classes = @classes.concat newClasses
+
+module.exports = self.Neptune = class Neptune extends Base
+  @Base: Base
   @namespacePath: "Neptune"
-  @Base: class Base
-    @namespacePath: "Neptune.Base"
-    @namespace: "Neptune"
-    @classes: []
-    @namespaces: []
-    @finishLoad: (classes, namespaces)->
-      @classes = @classes.concat classes
-      @namespaces = @namespaces.concat namespaces
-      for name in classes when klass = @[name]
-        klass.namespace = @
-        klass.namespacePath = @namespacePath + "." + klass.name
+  @namespace: null
 
 console.log "neptune-namespaces global defined: self.Neptune"

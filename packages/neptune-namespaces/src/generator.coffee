@@ -119,7 +119,6 @@ module.exports = class Generator
 
         #{nameSpaceName}.finishLoad(
           #{JSON.stringify (upperCamelCase file for file in files)}
-          #{JSON.stringify (upperCamelCase namespace for namespace in subdirs)}
         )
         """
     result
@@ -143,6 +142,8 @@ module.exports = class Generator
       class #{parentNameSpaceName}.#{nameSpaceName} extends #{Generator.neptuneBaseClass}
         @namespace: #{parentNameSpaceName}
         @namespacePath: "#{Generator.neptuneGlobalName}.#{namespacePath}"
+
+      #{parentNameSpaceName}.addNamespace #{parentNameSpaceName}.#{nameSpaceName}
       """
     result
 
