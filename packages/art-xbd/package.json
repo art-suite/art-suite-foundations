@@ -1,10 +1,10 @@
 {
-  "name": "art.xbd",
+  "name": "art-xbd",
   "version": "0.0.1",
-  "description": "art.xbd",
+  "description": "art-xbd",
   "main": "index.coffee",
   "dependencies": {
-    "art.foundation": "git://github.com/Imikimi-LLC/art.foundation.git"
+    "art-foundation": "git://github.com/Imikimi-LLC/art-foundation.git"
   },
   "devDependencies": {
   },

@@ -1,5 +1,5 @@
-Xbd = require 'art.xbd'
-{Binary, log} = require 'art.foundation'
+Xbd = require 'art-xbd'
+{Binary, log} = require 'art-foundation'
 {RestClient, stream} = Binary
 
 suite "Xbd", ->

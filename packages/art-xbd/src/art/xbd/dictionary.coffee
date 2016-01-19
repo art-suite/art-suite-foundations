@@ -1,4 +1,4 @@
-{Binary} = require 'art.foundation'
+{Binary} = require 'art-foundation'
 binary = Binary.binary
 stream = Binary.stream
 

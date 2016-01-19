@@ -4,7 +4,7 @@
 # ArrayBuffer
 #   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays/ArrayBuffer
 
-{Binary} = require 'art.foundation'
+{Binary} = require 'art-foundation'
 Xbd = require './namespace'
 binary = Binary.binary
 stream = Binary.stream
