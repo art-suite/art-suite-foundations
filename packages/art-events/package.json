@@ -1,10 +1,10 @@
 {
-  "name": "art.events",
+  "name": "art-events",
   "version": "0.0.1",
-  "description": "art.events",
+  "description": "art-events",
   "main": "index.coffee",
   "dependencies": {
-    "art.foundation": "git://github.com/Imikimi-LLC/art.foundation.git"
+    "art-foundation": "git://github.com/Imikimi-LLC/art-foundation.git"
   },
   "devDependencies": {
   },

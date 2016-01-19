@@ -1,6 +1,6 @@
-{assert} = require 'art.foundation/src/art/dev_tools/test/art_chai'
-{inspect} = require 'art.foundation'
-Events = require 'art.events'
+{assert} = require 'art-foundation/src/art/dev_tools/test/art_chai'
+{inspect} = require 'art-foundation'
+Events = require 'art-events'
 
 suite "Art.Events.EventManager", ->
   test "add handler, fire event and handle event", (done)->

@@ -1,6 +1,6 @@
-{assert} = require 'art.foundation/src/art/dev_tools/test/art_chai'
-{log, inspect, nextTick, BaseObject} = require 'art.foundation'
-Events = require 'art.events'
+{assert} = require 'art-foundation/src/art/dev_tools/test/art_chai'
+{log, inspect, nextTick, BaseObject} = require 'art-foundation'
+Events = require 'art-events'
 
 class MyEventedObject extends BaseObject
   @include Events.EventedObject

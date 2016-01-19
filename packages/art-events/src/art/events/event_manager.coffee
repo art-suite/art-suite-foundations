@@ -10,7 +10,7 @@ TODO:
 
 define [
   './namespace'
-  'art.foundation'
+  'art-foundation'
   "./event"
 ], (Events, Foundation) ->
   {nextTick, isFunction, inspect, clone} = Foundation

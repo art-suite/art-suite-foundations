@@ -1,6 +1,6 @@
 define [
   './namespace'
-  'art.foundation'
+  'art-foundation'
 ], (Events, Foundation) ->
   class Events.EventQueue extends Foundation.BaseObject
 

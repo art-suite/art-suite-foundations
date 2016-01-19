@@ -1,6 +1,6 @@
 define [
   './namespace'
-  'art.foundation'
+  'art-foundation'
   './evented_object'
 ], (Events, Foundation, EventedObject) ->
   eq = Foundation.Eq.eq

@@ -1,5 +1,5 @@
 define [
-  'art.foundation'
+  'art-foundation'
   './event_epoch'
   './event'
 ], (Foundation, EventEpoch, Event) ->
