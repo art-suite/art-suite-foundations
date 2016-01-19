@@ -4,9 +4,8 @@
   "description": "art.events",
   "main": "index.coffee",
   "dependencies": {
-    "art.foundation": "^0.0.1",
-    "coffee-loader": "^0.7.2",
-    "neptune-namespaces": "^0.0.1"
+    "neptune-namespaces": "git://github.com/Imikimi-LLC/neptune-namespaces.git",
+    "art.foundation": "git://github.com/Imikimi-LLC/art.foundation.git"
   },
   "devDependencies": {
     "mocha": "^2.3.4",
