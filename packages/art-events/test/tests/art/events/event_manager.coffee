@@ -6,7 +6,7 @@ suite "Art.Events.EventManager", ->
   test "add handler, fire event and handle event", (done)->
     em = new Events.EventManager
     em.on birthday:(e)->
-      assert.equal e.present, "legos"
+      assert.equal e.props.present, "legos"
       done()
 
     em.handleEvent new Events.Event "birthday", present:"legos"

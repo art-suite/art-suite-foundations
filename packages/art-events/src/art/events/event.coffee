@@ -1,8 +1,5 @@
-define [
-  './namespace'
-  'art-foundation'
-], (Events, Foundation) ->
-  {currentSecond} = Foundation
-  class Events.Event extends Foundation.BaseObject
-    constructor: (@type, props, @timeStamp = currentSecond()) ->
-      @[k] = v for k, v of props if props
+Foundation = require 'art-foundation'
+{currentSecond, BaseObject} = Foundation
+
+module.exports = class Event extends BaseObject
+  constructor: (@type, @props, @timeStamp = currentSecond()) ->

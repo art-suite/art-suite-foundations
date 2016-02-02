@@ -27,7 +27,7 @@ suite "Art.Events.EventedObject", ->
   test "event creator function", (done)->
     eo = new MyEventedObject
     eo.on foo: (e)->
-      assert.eq e.bar, 123
+      assert.eq e.props.bar, 123
       done()
     assert.eq true, eo.queueEvent "foo", -> new Events.Event "foo", bar:123
 
