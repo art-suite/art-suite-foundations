@@ -19,13 +19,10 @@ getAbsPath = (absPath, relativePath) ->
 
 module.exports = class Generator
   @generate: (globRoot, options = {}) ->
-    globRoot = getAbsPath options.rootPrefix, globRoot
-
     new Promise (resolve) ->
       glob globRoot, {}, (er, files) ->
         filePromiseGenerators = for file in files when fsp.statSync(file).isDirectory()
           do (file) -> ->
-            file = getRelativePath options.rootPrefix, file
             generator = new Generator file, options
 
             generator.generate()
@@ -36,10 +33,8 @@ module.exports = class Generator
         .then -> resolve()
 
   @watch: (root, options) ->
-    # root = Path.basename root
-    @log root, "watching: ".green + (Path.basename root).yellow
-    watchPath = getAbsPath options.rootPrefix, root
-    fsp.watch watchPath, {persistent: true, recursive: true}, (event, filename) =>
+    @log root, "watching...".green
+    fsp.watch root, {persistent: true, recursive: true}, (event, filename) =>
       if !filename.match /(^|\/)(namespace|index)\.coffee$/
         @log "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
 
@@ -75,18 +70,13 @@ module.exports = class Generator
       console.log if arg == ""
         ""
       else
-        "NN (#{root}): ".grey + arg
+        "Neptune.#{upperCamelCase root}: ".grey + arg
 
   log: (args...) -> Generator.log @getRelativePath(), args.join()
 
   constructor: (@root, options = {}) ->
-    {@pretend, @verbose, @rootPrefix} = options
-    if @rootPrefix
-      unless @rootPrefix.match /\/$/
-        @rootPrefix += "/"
-      @root = "#{@rootPrefix}#{@root}"
-    else
-      @rootPrefix = Path.dirname(@root) + "/"
+    {@pretend, @verbose} = options
+    @rootPrefix = Path.dirname(@root) + "/"
 
     # map from directory paths to list of coffee files in that directory
     @rootArray = @root.split "/"
