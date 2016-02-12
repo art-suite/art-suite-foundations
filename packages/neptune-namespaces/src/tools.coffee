@@ -37,3 +37,9 @@ module.exports = class Lib
 
   @withoutTrailingSlash: (str) ->
     str.match(/^(.*[^\/])\/?$/)[1]
+
+  @merge: (a, b) =>
+    result = {}
+    result[k] = v for k, v of a
+    result[k] = v for k, v of b
+    result

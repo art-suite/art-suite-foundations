@@ -1,7 +1,7 @@
 colors = require "colors"
 glob = require "glob"
 fsp = require "fs-promise"
-{upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash, promiseSequence} = require "./tools"
+{upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash, promiseSequence, merge} = require "./tools"
 {max} = Math
 Path = require "path"
 
@@ -27,17 +27,19 @@ module.exports = class Generator
 
             generator.generate()
             .then ->
-              Generator.watch file, options if options.watch
+              Generator.watch file, merge options, lastGenerator: generator if options.watch
 
         promiseSequence filePromiseGenerators
         .then -> resolve()
 
-  @watch: (root, options) ->
+  @watch: (root, options = {}) ->
     @log root, "watching...".green
+    generator = null
     fsp.watch root, {persistent: true, recursive: true}, (event, filename) =>
-      if !filename.match /(^|\/)(namespace|index)\.coffee$/
-        @log "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
+      if event != "change" && !filename.match /(^|\/)(namespace|index)\.coffee$/
+        @log root, "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
 
+        options.lastGenerator = generator if generator
         generator = new Generator root, options
         generator.generate()
 
@@ -75,7 +77,7 @@ module.exports = class Generator
   log: (args...) -> Generator.log @getRelativePath(), args.join()
 
   constructor: (@root, options = {}) ->
-    {@pretend, @verbose} = options
+    {@pretend, @verbose, @lastGenerator} = options
     @rootPrefix = Path.dirname(@root) + "/"
 
     # map from directory paths to list of coffee files in that directory
@@ -160,7 +162,7 @@ module.exports = class Generator
 
     result = """
     #{Generator.generatedByString}
-    # this file: #{@getRelativePath path}/index.coffee
+    # file: #{@getRelativePath path}/index.coffee
 
     module.exports =
     #{requires.join "\n"}
@@ -188,7 +190,7 @@ module.exports = class Generator
 
     result = """
       #{Generator.generatedByString}
-      # file: #{path}/namespace.coffee
+      # file: #{@getRelativePath path}/namespace.coffee
 
       #{requireParentNameSpace}
       module.exports = #{parentNameSpaceName}.#{nameSpaceName} ||
@@ -207,10 +209,19 @@ module.exports = class Generator
     @generatedFiles[name] = code
 
   writeFiles: ->
+    filesWritten = 0
+    filesTotal = 0
     promises = for name, code of @generatedFiles
-      @log "writing: #{@getRelativePath(name).yellow}"
-      fsp.writeFile name, code
+      filesTotal++
+      if @lastGenerator?.generatedFiles[name] == code
+        @log "no change: #{@getRelativePath(name)}".grey if @verbose
+      else
+        filesWritten++
+        @log "writing: #{@getRelativePath(name).yellow}"
+        fsp.writeFile name, code
     Promise.all promises
+    .then =>
+      @log "#{filesWritten}/#{filesTotal} files #{if @lastGenerator then 'changed' else 'written'}"
 
   generateFiles: ->
     @generatedFiles = {}
@@ -244,6 +255,6 @@ module.exports = class Generator
           reject()
         else
           resolve if files.length == 0
-            @log "  no .coffee files found".yellow.bold
+            @log "no .coffee files found".yellow.bold
           else
             @generateFromFiles files

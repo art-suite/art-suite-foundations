@@ -11,11 +11,15 @@ Generator = require "./src/generator"
 
 NomNom = require "nomnom"
 
-{root, watch} = opts = NomNom
+{root, watch, verbose} = opts = NomNom
 .option 'watch',
   abbr: 'w'
   flag: true
   help: 'stay running, watch for changes, and automatically update'
+.option 'verbose',
+  abbr: 'v'
+  flag: true
+  help: 'enable verbose output'
 .option 'root',
   abbr: 'r'
   list: true
@@ -41,7 +45,7 @@ run = (targetPaths) ->
       targetPath = withoutTrailingSlash targetPath
 
       doWork = ->
-        Generator.generate targetPath, verbose: true, watch: watch
+        Generator.generate targetPath, verbose: verbose, watch: watch
 
       doWork
 
