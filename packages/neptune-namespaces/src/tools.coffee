@@ -1,4 +1,13 @@
 module.exports = class Lib
+  @promiseSequence: (promiseGeneratingFunctions) ->
+    promiseGeneratingFunctions = promiseGeneratingFunctions.reverse()
+    resolveNextPromise = ->
+      if promiseGeneratingFunctions.length > 0
+        promiseGeneratingFunctions.pop()()
+        .then -> resolveNextPromise()
+
+    resolveNextPromise()
+
   @capitalize: (str) ->
     str.charAt(0).toUpperCase() + str.slice 1
 

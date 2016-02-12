@@ -21,7 +21,8 @@
     "coffee-script": "^1.10.0",
     "colors": "^1.1.2",
     "fs-promise": "^0.3.1",
-    "glob": "^6.0.4"
+    "glob": "^6.0.4",
+    "nomnom": "^1.8.1"
   },
   "devDependencies": {
     "chai": "^3.4.1",
