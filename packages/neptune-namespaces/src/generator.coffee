@@ -3,13 +3,29 @@ glob = require "glob"
 fsp = require "fs-promise"
 {upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash, promiseSequence} = require "./tools"
 {max} = Math
+Path = require "path"
+
+getRelativePath = (absFrom, absTo) ->
+  if absFrom
+    Path.relative absFrom, absTo
+  else
+    absTo
+
+getAbsPath = (absPath, relativePath) ->
+  if absPath
+    Path.join absPath, relativePath
+  else
+    relativePath
 
 module.exports = class Generator
   @generate: (globRoot, options = {}) ->
+    globRoot = getAbsPath options.rootPrefix, globRoot
+
     new Promise (resolve) ->
       glob globRoot, {}, (er, files) ->
         filePromiseGenerators = for file in files when fsp.statSync(file).isDirectory()
           do (file) -> ->
+            file = getRelativePath options.rootPrefix, file
             generator = new Generator file, options
 
             generator.generate()
@@ -17,10 +33,13 @@ module.exports = class Generator
               Generator.watch file, options if options.watch
 
         promiseSequence filePromiseGenerators
+        .then -> resolve()
 
   @watch: (root, options) ->
-    @log root, "watching: ".green + root.yellow
-    fsp.watch root, {persistent: true, recursive: true}, (event, filename) =>
+    # root = Path.basename root
+    @log root, "watching: ".green + (Path.basename root).yellow
+    watchPath = getAbsPath options.rootPrefix, root
+    fsp.watch watchPath, {persistent: true, recursive: true}, (event, filename) =>
       if !filename.match /(^|\/)(namespace|index)\.coffee$/
         @log "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
 
@@ -49,6 +68,7 @@ module.exports = class Generator
   @neptuneBaseClass: "#{@neptuneGlobalName}.Base"
 
   @log: (root, args...) ->
+    root = Path.basename root
     args = args.join()
     args = args.split "\n"
     for arg in args
@@ -57,10 +77,17 @@ module.exports = class Generator
       else
         "NN (#{root}): ".grey + arg
 
-  log: (args...) -> Generator.log @root, args.join()
+  log: (args...) -> Generator.log @getRelativePath(), args.join()
 
   constructor: (@root, options = {}) ->
-    {@pretend, @verbose} = options
+    {@pretend, @verbose, @rootPrefix} = options
+    if @rootPrefix
+      unless @rootPrefix.match /\/$/
+        @rootPrefix += "/"
+      @root = "#{@rootPrefix}#{@root}"
+    else
+      @rootPrefix = Path.dirname(@root) + "/"
+
     # map from directory paths to list of coffee files in that directory
     @rootArray = @root.split "/"
     @directoriesWithCoffee = {}
@@ -72,6 +99,9 @@ module.exports = class Generator
       fileWithPathArray.slice 0, fileWithPathArray.length - 1
       peek(fileWithPathArray).split(/\.coffee$/)[0]
     )
+
+  getRelativePath: (path = @root) ->
+    getRelativePath @rootPrefix, path
 
   addCoffeePathArrayAndFile: (pathArray, file, subdir) ->
 
@@ -140,7 +170,7 @@ module.exports = class Generator
 
     result = """
     #{Generator.generatedByString}
-    # this file: #{path}/index.coffee
+    # this file: #{@getRelativePath path}/index.coffee
 
     module.exports =
     #{requires.join "\n"}
@@ -182,13 +212,13 @@ module.exports = class Generator
 
   generateHelper: ({name, code}) ->
     if @pretend
-      @log "\ngenerated: #{name.yellow}"
+      @log "\ngenerated: #{@getRelativePath(name).yellow}"
       @log indent code.green
     @generatedFiles[name] = code
 
   writeFiles: ->
     promises = for name, code of @generatedFiles
-      @log "writing: #{name.yellow}"
+      @log "writing: #{@getRelativePath(name).yellow}"
       fsp.writeFile name, code
     Promise.all promises
 
@@ -218,7 +248,7 @@ module.exports = class Generator
 
   generate: ->
     new Promise (resolve, reject) =>
-      @log "\nscanning root: #{@root.yellow}" if @verbose
+      @log "\nscanning root: #{@getRelativePath().yellow}" if @verbose
       glob "#{@root}/**/*.coffee", {}, (er, files) =>
         if er
           reject()

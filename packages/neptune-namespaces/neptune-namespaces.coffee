@@ -11,7 +11,7 @@ Generator = require "./src/generator"
 
 NomNom = require "nomnom"
 
-{root, watch} = opts = NomNom
+{root, watch, prefix} = opts = NomNom
 .option 'watch',
   abbr: 'w'
   flag: true
@@ -21,6 +21,9 @@ NomNom = require "nomnom"
   list: true
   required: true
   help: 'list one or more --root arguments'
+.option 'prefix',
+  abbr: 'p'
+  help: 'path to prefix to every root'
 .help """
   Generates 'namespace.coffee' and 'index.coffee' files to bind each specified --root
   to the global Neptune namespace at runtime.
@@ -41,7 +44,7 @@ run = (targetPaths) ->
       targetPath = withoutTrailingSlash targetPath
 
       doWork = ->
-        Generator.generate targetPath, verbose: true, watch: watch
+        Generator.generate targetPath, verbose: true, watch: watch, rootPrefix:prefix
 
       doWork
 
