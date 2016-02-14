@@ -6,7 +6,10 @@ module.exports = class Lib
         promiseGeneratingFunctions.pop()()
         .then -> resolveNextPromise()
 
-    resolveNextPromise()
+    if promiseGeneratingFunctions.length == 0
+      Promise.resolve()
+    else
+      resolveNextPromise()
 
   @capitalize: (str) ->
     str.charAt(0).toUpperCase() + str.slice 1
