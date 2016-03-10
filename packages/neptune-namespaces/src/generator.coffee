@@ -35,7 +35,7 @@ module.exports = class Generator
   @watch: (root, options = {}) ->
     @log root, "watching...".green
     generator = null
-    fsp.watch root, {persistent: true, recursive: true}, (event, filename) =>
+    fsp.watch root, {persistent: options.persistent, recursive: true}, (event, filename) =>
       if event != "change" && !filename.match /(^|\/)(namespace|index)\.coffee$/
         @log root, "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
 
@@ -145,11 +145,11 @@ module.exports = class Generator
     requireFilesOrder = [nameSpaceName]
     requireFiles[nameSpaceName] = 'namespace'
 
-    for subdir in subdirs
-      requireFiles[name = nameSpaceName + "." + upperCamelCase subdir] = subdir
-      requireFilesOrder.push name
     for file in files
       requireFiles[name = nameSpaceName + "." + upperCamelCase file] =  file
+      requireFilesOrder.push name
+    for subdir in subdirs
+      requireFiles[name = nameSpaceName + "." + upperCamelCase subdir] = subdir
       requireFilesOrder.push name
 
     maxLength = 0

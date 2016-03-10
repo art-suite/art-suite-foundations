@@ -45,7 +45,7 @@ run = (targetPaths) ->
       targetPath = withoutTrailingSlash targetPath
 
       doWork = ->
-        Generator.generate targetPath, verbose: verbose, watch: watch
+        Generator.generate targetPath, verbose: verbose, watch: watch, persistent: true
 
       doWork
 
