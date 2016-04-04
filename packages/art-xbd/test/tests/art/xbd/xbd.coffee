@@ -1,6 +1,6 @@
 Xbd = require 'art-xbd'
-{Binary, log} = require 'art-foundation'
-{RestClient, stream} = Binary
+{Binary, log, RestClient} = require 'art-foundation'
+{stream} = Binary
 
 suite "Xbd", ->
 
@@ -10,16 +10,17 @@ suite "Xbd", ->
     result = Xbd.indent str, "  "
     assert.equal result, indentedStr
 
-  test "load trival.xbd", (done) ->
-    RestClient.get "#{testAssetRoot}/xbd_test/trivial.xbd", (test_data) ->
+  test "load trival.xbd", ->
+    RestClient.get "#{testAssetRoot}/xbd_test/trivial.xbd"
+    .then (test_data) ->
       log test_data
       tag = Xbd.parse test_data
       assert.equal tag.name, "RootTag"
       assert.equal tag.tags[0].name, "single_tag"
-      done()
 
-  test "load simple.xbd - hierarchy and attributes", (done) ->
-    RestClient.get "#{testAssetRoot}/xbd_test/simple.xbd", (test_data) ->
+  test "load simple.xbd - hierarchy and attributes", ->
+    RestClient.get "#{testAssetRoot}/xbd_test/simple.xbd"
+    .then (test_data) ->
       tag = Xbd.parse test_data
       assert.equal tag.name, "RootTag"
 
@@ -41,13 +42,12 @@ suite "Xbd", ->
       grand_child_tag = child_tag2.tags[0]
       assert.equal grand_child_tag.name, "grand_child_tag"
       assert.deepEqual grand_child_tag.attributes, {"animal":"horse","color":"red"}
-      done()
 
-  test "load 4-1gb.kimi", (done) ->
-    RestClient.get "#{testAssetRoot}/xbd_test/4-1gb.kimi", (test_data) ->
+  test "load 4-1gb.kimi", ->
+    RestClient.get "#{testAssetRoot}/xbd_test/4-1gb.kimi"
+    .then (test_data) ->
       tag = Xbd.parse test_data
       assert.equal tag.name, "RootTag"
-      done()
 
   test "building xbd one nested tag", ->
     t = new Xbd.Tag "foo", {}, (tag)->
