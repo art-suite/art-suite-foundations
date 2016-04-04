@@ -1,52 +1,54 @@
-#new Uint8Array @array_buffer, 0, @array_buffer.byteLength
-
-#dependencies:
-# ArrayBuffer
-#   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays/ArrayBuffer
-
-{Binary} = require 'art-foundation'
+Foundation = require 'art-foundation'
 Xbd = require './namespace'
+
+{Binary, isFunction} = Foundation
 binary = Binary.binary
 stream = Binary.stream
 
-module.exports = class Tag
+module.exports = class XbdTag
 
   @parse: (stream, tagsd, attrsd, valuesd) ->
     tag_data = stream.read_asi_string()
 
     # read tag name
-    name = tagsd.read_string(tag_data).toString()
+    name = tagsd.readString(tag_data).toString()
 
     # read attributes
     attr_data = tag_data.read_asi_string()
     attributes = null
     while !attr_data.done()
       attributes = {} if !attributes
-      n = attrsd.read_string(attr_data).toString()
-      v = valuesd.read_string attr_data
+      n = attrsd.readString(attr_data).toString()
+      v = valuesd.readString attr_data
       attributes[n] = v
 
     # read sub-tags
     tags = []
     while !tag_data.done()
-      subTag = Xbd.Tag.parse tag_data, tagsd, attrsd, valuesd
+      subTag = XbdTag.parse tag_data, tagsd, attrsd, valuesd
       tags.push subTag
       tags[subTag.name] ||= subTag
 
-    new Xbd.Tag name, attributes, tags
+    new XbdTag name, attributes, tags
 
-  # tags can be function for defining subtags
+  ###
+  IN:
+    name: string
+    attributes: map of keys to string/binary-string values
+    tags: array of sub-tags
+      or (@) -> null
+  ###
   constructor: (name, attributes = {}, tags = []) ->
     @name = name
     @attributes = attributes
-    if tags instanceof Function
+    if isFunction tags
       @tags = []
       tags this
     else
       @tags = tags
 
   add: (args...) ->
-    @tags.push new Xbd.Tag(args...)
+    @tags.push new XbdTag(args...)
 
   # return the first tag with the specified name
   tag: (name) ->
@@ -55,11 +57,11 @@ module.exports = class Tag
     null
 
   # func(attr_val, attr_name, tag_name) -> new attr_val
-  decode_attribute_values: (func) ->
+  decodeAttributeValues: (func) ->
     for k,v of @attributes
       @attributes[k] = func(v, k, @name)
     for t in @tags
-      t.decode_attribute_values(func)
+      t.decodeAttributeValues(func)
 
   # XML
   toString: () ->

@@ -1,8 +1,9 @@
 Xbd = require 'art-xbd'
 {Binary, log, RestClient} = require 'art-foundation'
+{XbdTag} = Xbd
 {stream} = Binary
 
-suite "Xbd", ->
+suite "Art.Xbd.from xbd", ->
 
   test "indent", ->
     str = "<foo>\n  <boo>\n    <baz/>\n  </boo>\n</foo>"
@@ -24,7 +25,7 @@ suite "Xbd", ->
       tag = Xbd.parse test_data
       assert.equal tag.name, "RootTag"
 
-      tag.decode_attribute_values (str) ->
+      tag.decodeAttributeValues (str) ->
         str.toString()
 
       top_tag = tag.tags[0]
@@ -50,19 +51,19 @@ suite "Xbd", ->
       assert.equal tag.name, "RootTag"
 
   test "building xbd one nested tag", ->
-    t = new Xbd.Tag "foo", {}, (tag)->
+    t = new XbdTag "foo", {}, (tag)->
       tag.add "boo"
 
     assert.equal t.toString(), '<foo>\n  <boo/>\n</foo>'
 
   test "building xbd with attrs", ->
-    t = new Xbd.Tag "foo",
+    t = new XbdTag "foo",
       bar: 1
       baz: 2
     assert.equal t.toString(), "<foo bar='1' baz='2'/>"
 
   test "building xbd double nested tag", ->
-    t = new Xbd.Tag "foo", {}, (tag)->
+    t = new XbdTag "foo", {}, (tag)->
       tag.add "boo", {}, (tag)->
         tag.add "baz", {}, ->
 
@@ -75,7 +76,7 @@ suite "Xbd", ->
     assert.equal t.toString(), shouldBe
 
   test "get tag", ->
-    t = new Xbd.Tag "foo", {}, (tag)->
+    t = new XbdTag "foo", {}, (tag)->
       tag.add "boo", {a:1}
       tag.add "baz", {a:2}
 
