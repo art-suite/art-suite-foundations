@@ -1,6 +1,6 @@
 Xbd = require 'art-xbd'
 {Binary, log, RestClient} = require 'art-foundation'
-{XbdTag} = Xbd
+{XbdTag, indentString, fromXbd} = Xbd
 {stream} = Binary
 
 suite "Art.Xbd.from xbd", ->
@@ -8,21 +8,21 @@ suite "Art.Xbd.from xbd", ->
   test "indent", ->
     str = "<foo>\n  <boo>\n    <baz/>\n  </boo>\n</foo>"
     indentedStr = "  <foo>\n    <boo>\n      <baz/>\n    </boo>\n  </foo>"
-    result = Xbd.indent str, "  "
+    result = indentString str, "  "
     assert.equal result, indentedStr
 
   test "load trival.xbd", ->
     RestClient.get "#{testAssetRoot}/xbd_test/trivial.xbd"
     .then (test_data) ->
       log test_data
-      tag = Xbd.parse test_data
+      tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
       assert.equal tag.tags[0].name, "single_tag"
 
   test "load simple.xbd - hierarchy and attributes", ->
     RestClient.get "#{testAssetRoot}/xbd_test/simple.xbd"
     .then (test_data) ->
-      tag = Xbd.parse test_data
+      tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
 
       tag.decodeAttributeValues (str) ->
@@ -47,7 +47,7 @@ suite "Art.Xbd.from xbd", ->
   test "load 4-1gb.kimi", ->
     RestClient.get "#{testAssetRoot}/xbd_test/4-1gb.kimi"
     .then (test_data) ->
-      tag = Xbd.parse test_data
+      tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
 
   test "building xbd one nested tag", ->

@@ -1,20 +1,38 @@
 Foundation = require 'art-foundation'
 Xbd = require './namespace'
+XbdDictionary = require './xbd_dictionary'
 
-{Binary, isFunction} = Foundation
+{Binary, isFunction, BaseObject} = Foundation
 binary = Binary.binary
 stream = Binary.stream
 
-module.exports = class XbdTag
+xbdHeader = "SBDXML\x01\x00"
+
+module.exports = class XbdTag extends BaseObject
+  @indentString: indentString = (str, indentStr) ->
+    indentStr + str.split("\n").join("\n"+indentStr)
+
+  @fromXbd: (input)->
+    input = stream input
+
+    header = input.read xbdHeader.length
+
+    # read each of the 3 dictionaries in order
+    tagsd =   XbdDictionary.parse input, "tag names"
+    attrsd  = XbdDictionary.parse input, "attribute names"
+    valuesd = XbdDictionary.parse input, "attribute values"
+
+    # read all tags, return the root-tag
+    XbdTag.parse input, tagsd, attrsd, valuesd
 
   @parse: (stream, tagsd, attrsd, valuesd) ->
-    tag_data = stream.read_asi_string()
+    tag_data = stream.readAsiString()
 
     # read tag name
     name = tagsd.readString(tag_data).toString()
 
     # read attributes
-    attr_data = tag_data.read_asi_string()
+    attr_data = tag_data.readAsiString()
     attributes = null
     while !attr_data.done()
       attributes = {} if !attributes
@@ -64,18 +82,23 @@ module.exports = class XbdTag
       t.decodeAttributeValues(func)
 
   # XML
-  toString: () ->
-    @toXml("  ")
+  toString: ->
+    @toXml "  "
 
   attributesXml: ->
     out = for k, v of @attributes
       "#{k}='#{v}'"
-    out.join(" ")
+    out.join " "
 
   tagsXml: (indent)->
     out = @tags.map (tag)->
       tag.toXml indent
-    Xbd.indent out.join("\n"), indent
+    indentString out.join("\n"), indent
+
+  toPlainObjects: ->
+    name: @name
+    attributes: @attributes
+    tags: (tag.toPlainObjects() for tag in @tags)
 
   toXml: (indent = "") ->
     attr_xml = ""
@@ -86,3 +109,12 @@ module.exports = class XbdTag
       "<#{@name}#{attr_xml}/>"
     else
       "<#{@name}#{attr_xml}>\n#{@tagsXml indent}\n</#{@name}>"
+
+  toXbd: ->
+    outputSteam = new
+    "todo"
+
+  @getter
+    xbd: -> @toXbd()
+    xml: -> @toXml()
+    plainObjects: -> @plainObjects()

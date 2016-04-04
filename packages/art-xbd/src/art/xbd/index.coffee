@@ -3,9 +3,9 @@
 
 module.exports =
 Xbd               = require './namespace'
-Xbd.Xbd           = require './xbd'
+Xbd.All           = require './all'
 Xbd.XbdDictionary = require './xbd_dictionary'
 Xbd.XbdTag        = require './xbd_tag'
 Xbd.finishLoad(
-  ["Xbd","XbdDictionary","XbdTag"]
+  ["All","XbdDictionary","XbdTag"]
 )

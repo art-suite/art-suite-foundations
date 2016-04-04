@@ -4,11 +4,11 @@ stream = Binary.stream
 
 module.exports = class XbdDictionary
   @parse: (stream, name) ->
-    encoded_dictionary = stream.read_asi_string()
-    num_entries = encoded_dictionary.read_asi()
+    encoded_dictionary = stream.readAsiString()
+    num_entries = encoded_dictionary.readAsi()
     lengths = []
     while num_entries--
-      lengths.push encoded_dictionary.read_asi()
+      lengths.push encoded_dictionary.readAsi()
 
     strings = lengths.map (len) ->
       encoded_dictionary.read(len)
@@ -21,8 +21,8 @@ module.exports = class XbdDictionary
 
   # reads an ASI id from string and returns the dictionary string for it
   readString: (stream) ->
-    id = stream.read_asi()
+    id = stream.readAsi()
     string = @strings[id]
-    throw "string id(#{id}) not in #{@name} dictionary. keys = '#{Element.keys(@strings)}'" if !string
+    throw "string id(#{id}) not in #{@name} dictionary. keys = '#{Object.keys(@strings)}'" if !string
     string
 
