@@ -13,9 +13,7 @@ module.exports = class XbdDictionary extends BaseObject
 
     new XbdDictionary strings, name
 
-  constructor: (strings, name) ->
-    @strings = strings
-    @name = name
+  constructor: (@strings, @name) ->
 
   add: (string) ->
     if 0 <= index = @strings.indexOf string

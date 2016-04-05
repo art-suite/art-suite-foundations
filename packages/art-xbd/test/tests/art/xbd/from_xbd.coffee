@@ -1,15 +1,9 @@
 Xbd = require 'art-xbd'
 {Binary, log, RestClient} = require 'art-foundation'
-{XbdTag, indentString, fromXbd} = Xbd
+{XbdTag, indentString, fromXbd, createTagFactories} = Xbd
 {stream} = Binary
 
 suite "Art.Xbd.fromXbd", ->
-
-  test "indent", ->
-    str = "<foo>\n  <boo>\n    <baz/>\n  </boo>\n</foo>"
-    indentedStr = "  <foo>\n    <boo>\n      <baz/>\n    </boo>\n  </foo>"
-    result = indentString str, "  "
-    assert.equal result, indentedStr
 
   test "load trival.xbd", ->
     RestClient.get "#{testAssetRoot}/xbd_test/trivial.xbd"
@@ -18,14 +12,17 @@ suite "Art.Xbd.fromXbd", ->
       assert.equal tag.name, "RootTag"
       assert.equal tag.tags[0].name, "single_tag"
 
+  decodeAttributeValues = (tag, func) ->
+    tag.attributes[k] = func v, k, tag.name for k, v of tag.attributes
+    decodeAttributeValues t, func for t in tag.tags
+
   test "load simple.xbd - hierarchy and attributes", ->
     RestClient.get "#{testAssetRoot}/xbd_test/simple.xbd"
     .then (test_data) ->
       tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
 
-      tag.decodeAttributeValues (str) ->
-        str.toString()
+      decodeAttributeValues tag, (str) -> str.toString()
 
       top_tag = tag.tags[0]
       assert.equal top_tag.name, "top_tag"
@@ -48,36 +45,3 @@ suite "Art.Xbd.fromXbd", ->
     .then (test_data) ->
       tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
-
-  test "building xbd one nested tag", ->
-    t = new XbdTag "foo", {}, (tag)->
-      tag.add "boo"
-
-    assert.equal t.toString(), '<foo>\n  <boo/>\n</foo>'
-
-  test "building xbd with attrs", ->
-    t = new XbdTag "foo",
-      bar: 1
-      baz: 2
-    assert.equal t.toString(), "<foo bar='1' baz='2'/>"
-
-  test "building xbd double nested tag", ->
-    t = new XbdTag "foo", {}, (tag)->
-      tag.add "boo", {}, (tag)->
-        tag.add "baz", {}, ->
-
-    shouldBe = """<foo>
-        <boo>
-          <baz/>
-        </boo>
-      </foo>"""
-
-    assert.equal t.toString(), shouldBe
-
-  test "get tag", ->
-    t = new XbdTag "foo", {}, (tag)->
-      tag.add "boo", {a:1}
-      tag.add "baz", {a:2}
-
-    assert.equal t.tag("boo").attributes["a"], 1
-    assert.equal t.tag("baz").attributes["a"], 2

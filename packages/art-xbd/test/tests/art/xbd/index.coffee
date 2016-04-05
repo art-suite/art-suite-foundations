@@ -3,9 +3,10 @@
 
 module.exports =
 Xbd                       = require './namespace'
+Xbd.BuildXbd              = require './build_xbd'
 Xbd.FromXbd               = require './from_xbd'
 Xbd.ReadFileAsArrayBuffer = require './read_file_as_array_buffer'
 Xbd.ToXbd                 = require './to_xbd'
 Xbd.finishLoad(
-  ["FromXbd","ReadFileAsArrayBuffer","ToXbd"]
+  ["BuildXbd","FromXbd","ReadFileAsArrayBuffer","ToXbd"]
 )
