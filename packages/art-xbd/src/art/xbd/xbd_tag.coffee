@@ -15,39 +15,9 @@ module.exports = class XbdTag extends BaseObject
   @indentString: indentString = (str, indentStr) ->
     indentStr + str.split("\n").join("\n"+indentStr)
 
-  deepArgsProcessing = (array, children) ->
-    for el in array when el
-      if el.constructor == Array
-        deepArgsProcessing el, children
-      else children.push el
-    null
-
-  @factoryFactory: (factory) ->
-    ->
-      oneProps = null
-      props = null
-      children = []
-
-      for el in arguments when el
-        switch el.constructor
-          when Object
-            if oneProps
-              props = {}
-              props[k] = v for k, v of oneProps
-              oneProps = null
-            if props
-              props[k] = v for k, v of el
-            else
-              oneProps = el
-
-          when Array
-            deepArgsProcessing el, children
-          else children.push el
-
-      props ||= oneProps || {}
-      factory props, children
-
   ###
+  createTagFactories:
+
   IN: one or more strings containing one or more tag-names: /[a-z0-9_]+/ig
   OUT:
     map from tag-names to:
@@ -74,7 +44,7 @@ module.exports = class XbdTag extends BaseObject
     for str in arguments
       for tagName in str.match /[a-z0-9_]+/ig
         do (tagName) ->
-          out[tagName] = XbdTag.factoryFactory (attrs, subTags) ->
+          out[tagName] = XbdTag._factoryFactory (attrs, subTags) ->
             new XbdTag tagName, attrs, subTags
     out
 
@@ -142,7 +112,7 @@ module.exports = class XbdTag extends BaseObject
 
   # func(attr_val, attr_name, tag_name) -> new attr_val
   decodeAttributeValues: (func) ->
-    for k,v of @attributes
+    for k, v of @attributes
       @attributes[k] = func(v, k, @name)
     for t in @tags
       t.decodeAttributeValues(func)
@@ -247,3 +217,39 @@ module.exports = class XbdTag extends BaseObject
       dictionary.add v for k, v of @attributes
       tag.getAttrValuesDictionary dictionary for tag in @tags
       dictionary
+
+  ###################
+  # PRIVATE
+  ###################
+  deepArgsProcessing = (array, children) ->
+    for el in array when el
+      if el.constructor == Array
+        deepArgsProcessing el, children
+      else children.push el
+    null
+
+  @_factoryFactory: (factory) ->
+    ->
+      oneProps = null
+      props = null
+      children = []
+
+      for el in arguments when el
+        switch el.constructor
+          when Object
+            if oneProps
+              props = {}
+              props[k] = v for k, v of oneProps
+              oneProps = null
+            if props
+              props[k] = v for k, v of el
+            else
+              oneProps = el
+
+          when Array
+            deepArgsProcessing el, children
+          else children.push el
+
+      props ||= oneProps || {}
+      factory props, children
+
