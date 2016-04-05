@@ -2,11 +2,14 @@ Foundation = require 'art-foundation'
 Xbd = require './namespace'
 XbdDictionary = require './xbd_dictionary'
 
-{Binary, isFunction, BaseObject} = Foundation
-binary = Binary.binary
-stream = Binary.stream
+{Binary, isFunction, BaseObject, log} = Foundation
+{binary, stream, WriteStream} = Binary
 
 xbdHeader = "SBDXML\x01\x00"
+
+writeXbdHeader = (writeStream) ->
+  writeStream.write "SBDXML"
+  writeStream.write [1, 0]
 
 module.exports = class XbdTag extends BaseObject
   @indentString: indentString = (str, indentStr) ->
@@ -26,24 +29,24 @@ module.exports = class XbdTag extends BaseObject
     XbdTag.parse input, tagsd, attrsd, valuesd
 
   @parse: (stream, tagsd, attrsd, valuesd) ->
-    tag_data = stream.readAsiString()
+    tagData = stream.readAsiString()
 
     # read tag name
-    name = tagsd.readString(tag_data).toString()
+    name = tagsd.readString(tagData).toString()
 
     # read attributes
-    attr_data = tag_data.readAsiString()
+    attrData = tagData.readAsiString()
     attributes = null
-    while !attr_data.done()
+    while !attrData.done()
       attributes = {} if !attributes
-      n = attrsd.readString(attr_data).toString()
-      v = valuesd.readString attr_data
+      n = attrsd.readString(attrData).toString()
+      v = valuesd.readString attrData
       attributes[n] = v
 
     # read sub-tags
     tags = []
-    while !tag_data.done()
-      subTag = XbdTag.parse tag_data, tagsd, attrsd, valuesd
+    while !tagData.done()
+      subTag = XbdTag.parse tagData, tagsd, attrsd, valuesd
       tags.push subTag
       tags[subTag.name] ||= subTag
 
@@ -96,8 +99,10 @@ module.exports = class XbdTag extends BaseObject
     indentString out.join("\n"), indent
 
   toPlainObjects: ->
+    attrs = {}
+    attrs[k] = v.toString() for k, v of @attributes
     name: @name
-    attributes: @attributes
+    attributes: attrs
     tags: (tag.toPlainObjects() for tag in @tags)
 
   toXml: (indent = "") ->
@@ -110,11 +115,70 @@ module.exports = class XbdTag extends BaseObject
     else
       "<#{@name}#{attr_xml}>\n#{@tagsXml indent}\n</#{@name}>"
 
-  toXbd: ->
-    outputSteam = new
-    "todo"
+  # returns promise
+  toXbd: (
+    tagNamesDictionary   = @tagNamesDictionary
+    attrNamesDictionary  = @attrNamesDictionary
+    attrValuesDictionary = @attrValuesDictionary
+  ) ->
+
+    writeXbdHeader writeStream = new WriteStream
+    tagNamesDictionary.writeWithPromise writeStream
+    .then -> attrNamesDictionary.writeWithPromise writeStream
+    .then -> attrValuesDictionary.writeWithPromise writeStream
+    .then =>
+      @getBinaryStringPromise tagNamesDictionary, attrNamesDictionary, attrValuesDictionary
+    .then (binaryString) ->
+      writeStream.writeAsiString binaryString
+      writeStream.binaryStringPromise
+
+  getAttributesBinaryStringPromise: (attrNamesDictionary, attrValuesDictionary) ->
+    writeStream = new WriteStream
+    for name, value of @attributes
+      writeStream.writeAsi attrNamesDictionary.get name
+      writeStream.writeAsi attrValuesDictionary.get value
+    writeStream.binaryStringPromise
+
+  writeSubTagsWithPromise: (writeStream, tagNamesDictionary, attrNamesDictionary, attrValuesDictionary) ->
+    index = 0
+    processNext = ->
+      if tag = @tags?[index++]
+        tag.getBinaryStringPromise tagNamesDictionary, attrNamesDictionary, attrValuesDictionary
+        .then (binaryString) ->
+          writeStream.writeAsiString binaryString
+          processNext()
+      else
+        Promise.resolve()
+
+    processNext()
+
+
+  getBinaryStringPromise: (tagNamesDictionary, attrNamesDictionary, attrValuesDictionary)->
+    writeStream = new WriteStream
+
+    writeStream.writeAsi tagNamesDictionary.get @name
+    @getAttributesBinaryStringPromise attrNamesDictionary, attrValuesDictionary
+    .then (attributesBinaryString) =>
+      writeStream.writeAsiString attributesBinaryString
+      @writeSubTagsWithPromise writeStream, tagNamesDictionary, attrNamesDictionary, attrValuesDictionary
+    .then -> writeStream.binaryStringPromise
 
   @getter
-    xbd: -> @toXbd()
+    xbdPromise: -> @toXbd()
     xml: -> @toXml()
-    plainObjects: -> @plainObjects()
+    plainObjects: -> @toPlainObjects()
+
+    tagNamesDictionary: (dictionary = new XbdDictionary [], 'tag names') ->
+      dictionary.add @name
+      tag.getTagNamesDictionary dictionary for tag in @tags
+      dictionary
+
+    attrNamesDictionary: (dictionary = new XbdDictionary [], 'attribute names') ->
+      dictionary.add k for k, v of @attributes
+      tag.getAttrNamesDictionary dictionary for tag in @tags
+      dictionary
+
+    attrValuesDictionary: (dictionary = new XbdDictionary [], 'attribute values') ->
+      dictionary.add v for k, v of @attributes
+      tag.getAttrValuesDictionary dictionary for tag in @tags
+      dictionary
