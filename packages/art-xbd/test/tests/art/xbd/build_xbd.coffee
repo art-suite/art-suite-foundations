@@ -42,5 +42,5 @@ suite "Art.Xbd.buildXbd", ->
       Boo a: 1
       Baz a: 2
 
-    assert.equal t.tag("boo").attributes["a"], 1
-    assert.equal t.tag("baz").attributes["a"], 2
+    assert.equal t.tag("boo").attrs["a"], 1
+    assert.equal t.tag("baz").attrs["a"], 2

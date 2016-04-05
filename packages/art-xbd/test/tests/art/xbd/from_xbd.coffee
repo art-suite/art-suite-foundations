@@ -13,10 +13,10 @@ suite "Art.Xbd.fromXbd", ->
       assert.equal tag.tags[0].name, "single_tag"
 
   decodeAttributeValues = (tag, func) ->
-    tag.attributes[k] = func v, k, tag.name for k, v of tag.attributes
+    tag.attrs[k] = func v, k, tag.name for k, v of tag.attrs
     decodeAttributeValues t, func for t in tag.tags
 
-  test "load simple.xbd - hierarchy and attributes", ->
+  test "load simple.xbd - hierarchy and attrs", ->
     RestClient.get "#{testAssetRoot}/xbd_test/simple.xbd"
     .then (test_data) ->
       tag = fromXbd test_data
@@ -26,19 +26,19 @@ suite "Art.Xbd.fromXbd", ->
 
       top_tag = tag.tags[0]
       assert.equal top_tag.name, "top_tag"
-      assert.deepEqual top_tag.attributes, {"animal":"(ᵔᴥᵔ)","fruit":"orange"}
+      assert.deepEqual top_tag.attrs, {"animal":"(ᵔᴥᵔ)","fruit":"orange"}
 
       child_tag1 = top_tag.tags[0]
       assert.equal child_tag1.name, "child_tag1"
-      assert.deepEqual child_tag1.attributes, {"fruit":"apple"}
+      assert.deepEqual child_tag1.attrs, {"fruit":"apple"}
 
       child_tag2 = top_tag.tags[1]
       assert.equal child_tag2.name, "child_tag2"
-      assert.deepEqual child_tag2.attributes, {"planet":"mars"}
+      assert.deepEqual child_tag2.attrs, {"planet":"mars"}
 
       grand_child_tag = child_tag2.tags[0]
       assert.equal grand_child_tag.name, "grand_child_tag"
-      assert.deepEqual grand_child_tag.attributes, {"animal":"horse","color":"red"}
+      assert.deepEqual grand_child_tag.attrs, {"animal":"horse","color":"red"}
 
   test "load 4-1gb.kimi", ->
     RestClient.get "#{testAssetRoot}/xbd_test/4-1gb.kimi"

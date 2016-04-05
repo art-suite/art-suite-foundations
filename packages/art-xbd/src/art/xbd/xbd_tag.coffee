@@ -17,19 +17,19 @@ module.exports = class XbdTag extends BaseObject
       -> XbdTag
       IN:
         any sequence:
-          plainObjects (which are merged into attributes)
+          plainObjects (which are merged into attrs)
           XbdTags (which become sub-tags)
           or arrays which are flattened
 
       OUT: XbdTag
 
   Example:
-    {myTag, tagA, tagB} = createTagFactories "myTag tagA tagB"
-    rootTag = myTag
+    {MyTag, TagA, TagB} = createTagFactories "myTag tagA tagB"
+    rootTag = MyTag
       foo: "bar"
-      tagA()
-      tagA foo: "far"
-      tagB fab: "bar"
+      TagA()
+      TagA foo: "far"
+      TagB fab: "bar"
 
   ###
   @createTagFactories: ->
@@ -47,15 +47,15 @@ module.exports = class XbdTag extends BaseObject
   @fromXbd: (input)->
     input = stream input
 
+    # read and ignore the header
     header = input.read xbdHeader.length
 
-    # read each of the 3 dictionaries in order
-    tagsd =   XbdDictionary.parse input, "tag names"
-    attrsd  = XbdDictionary.parse input, "attribute names"
-    valuesd = XbdDictionary.parse input, "attribute values"
-
+    # read each of the 3 dictionaries in order then
     # read all tags, return the root-tag
-    XbdTag._parse input, tagsd, attrsd, valuesd
+    XbdTag._parse input,
+      XbdDictionary.parse input, "tag names"
+      XbdDictionary.parse input, "attribute names"
+      XbdDictionary.parse input, "attribute values"
 
   ###########################
   # constructor
@@ -63,10 +63,10 @@ module.exports = class XbdTag extends BaseObject
   ###
   IN:
     name: string
-    attributes: map of keys to string/binary-string values
+    attrs: map of keys to string/binary-string values
     tags: array of sub-tags
   ###
-  constructor: (@name, @attributes = {}, @tags = []) ->
+  constructor: (@name, @attrs = {}, @tags = []) ->
 
   ###########################
   # toXbd Binary String
@@ -114,9 +114,9 @@ module.exports = class XbdTag extends BaseObject
 
   toPlainObjects: ->
     out = [@name]
-    if 0 < countKeys @attributes
+    if 0 < countKeys @attrs
       attrs = {}
-      attrs[k] = v.toString() for k, v of @attributes
+      attrs[k] = v.toString() for k, v of @attrs
       out.push attrs
     if @tags.length > 0
       out.push (tag.toPlainObjects() for tag in @tags)
@@ -124,7 +124,7 @@ module.exports = class XbdTag extends BaseObject
 
   toXml: (indent = "") ->
     attr_xml = ""
-    if @attributes && attr_xml = @_attributesXml()
+    if @attrs && attr_xml = @_attributesXml()
       attr_xml = " " + attr_xml
 
     if @tags.length == 0
@@ -143,12 +143,12 @@ module.exports = class XbdTag extends BaseObject
       dictionary
 
     attrNamesDictionary: (dictionary = new XbdDictionary [], 'attribute names') ->
-      dictionary.add k for k, v of @attributes
+      dictionary.add k for k, v of @attrs
       tag.getAttrNamesDictionary dictionary for tag in @tags
       dictionary
 
     attrValuesDictionary: (dictionary = new XbdDictionary [], 'attribute values') ->
-      dictionary.add v for k, v of @attributes
+      dictionary.add v for k, v of @attrs
       tag.getAttrValuesDictionary dictionary for tag in @tags
       dictionary
 
@@ -173,7 +173,7 @@ module.exports = class XbdTag extends BaseObject
     null
 
   _attributesXml: ->
-    out = for k, v of @attributes
+    out = for k, v of @attrs
       "#{k}='#{v}'"
     out.join " "
 
@@ -210,7 +210,7 @@ module.exports = class XbdTag extends BaseObject
 
   _getAttributesBinaryStringPromise: (attrNamesDictionary, attrValuesDictionary) ->
     writeStream = new WriteStream
-    for name, value of @attributes
+    for name, value of @attrs
       writeStream.writeAsi attrNamesDictionary.get name
       writeStream.writeAsi attrValuesDictionary.get value
     writeStream.binaryStringPromise
@@ -244,14 +244,14 @@ module.exports = class XbdTag extends BaseObject
     # read tag name
     name = tagsd.readString(tagData).toString()
 
-    # read attributes
+    # read attrs
     attrData = tagData.readAsiString()
-    attributes = null
+    attrs = null
     while !attrData.done()
-      attributes = {} if !attributes
+      attrs = {} if !attrs
       n = attrsd.readString(attrData).toString()
       v = valuesd.readString attrData
-      attributes[n] = v
+      attrs[n] = v
 
     # read sub-tags
     tags = []
@@ -260,4 +260,4 @@ module.exports = class XbdTag extends BaseObject
       tags.push subTag
       tags[subTag.name] ||= subTag
 
-    new XbdTag name, attributes, tags
+    new XbdTag name, attrs, tags
