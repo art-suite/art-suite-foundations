@@ -1,16 +1,15 @@
-{Binary, BaseObject} = require 'art-foundation'
+{Binary, BaseObject, log} = require 'art-foundation'
 {binary, WriteStream, stream} = Binary
 
 module.exports = class XbdDictionary extends BaseObject
   @parse: (stream, name) ->
     encodedDictionary = stream.readAsiString()
-    numEntries = encodedDictionary.readAsi()
-    lengths = []
-    while numEntries--
-      lengths.push encodedDictionary.readAsi()
 
-    strings = lengths.map (len) ->
-      encodedDictionary.read(len)
+    lengths = for i in [0...encodedDictionary.readAsi()]
+      encodedDictionary.readAsi()
+
+    strings = for len in lengths
+      encodedDictionary.read len
 
     new XbdDictionary strings, name
 
@@ -42,7 +41,8 @@ module.exports = class XbdDictionary extends BaseObject
     binaryStringPromise: ->
       writeStream = new WriteStream
       writeStream.writeAsi @strings.length
-      writeStream.writeAsiString string for string in @strings
+      writeStream.writeAsi s.length for s in @strings
+      writeStream.write string for string in @strings
       writeStream.binaryStringPromise
 
   writeWithPromise: (writeStream) ->

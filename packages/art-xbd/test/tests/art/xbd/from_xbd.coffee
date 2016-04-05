@@ -3,7 +3,7 @@ Xbd = require 'art-xbd'
 {XbdTag, indentString, fromXbd} = Xbd
 {stream} = Binary
 
-suite "Art.Xbd.from xbd", ->
+suite "Art.Xbd.fromXbd", ->
 
   test "indent", ->
     str = "<foo>\n  <boo>\n    <baz/>\n  </boo>\n</foo>"
@@ -14,7 +14,6 @@ suite "Art.Xbd.from xbd", ->
   test "load trival.xbd", ->
     RestClient.get "#{testAssetRoot}/xbd_test/trivial.xbd"
     .then (test_data) ->
-      log test_data
       tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
       assert.equal tag.tags[0].name, "single_tag"

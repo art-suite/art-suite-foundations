@@ -2,7 +2,7 @@ Foundation = require 'art-foundation'
 Xbd = require './namespace'
 XbdDictionary = require './xbd_dictionary'
 
-{Binary, isFunction, BaseObject, log} = Foundation
+{Binary, isFunction, BaseObject, log, countKeys} = Foundation
 {binary, stream, WriteStream} = Binary
 
 xbdHeader = "SBDXML\x01\x00"
@@ -14,6 +14,69 @@ writeXbdHeader = (writeStream) ->
 module.exports = class XbdTag extends BaseObject
   @indentString: indentString = (str, indentStr) ->
     indentStr + str.split("\n").join("\n"+indentStr)
+
+  deepArgsProcessing = (array, children) ->
+    for el in array when el
+      if el.constructor == Array
+        deepArgsProcessing el, children
+      else children.push el
+    null
+
+  @factoryFactory: (factory) ->
+    ->
+      oneProps = null
+      props = null
+      children = []
+
+      for el in arguments when el
+        switch el.constructor
+          when Object
+            if oneProps
+              props = {}
+              props[k] = v for k, v of oneProps
+              oneProps = null
+            if props
+              props[k] = v for k, v of el
+            else
+              oneProps = el
+
+          when Array
+            deepArgsProcessing el, children
+          else children.push el
+
+      props ||= oneProps || {}
+      factory props, children
+
+  ###
+  IN: one or more strings containing one or more tag-names: /[a-z0-9_]+/ig
+  OUT:
+    map from tag-names to:
+      -> XbdTag
+      IN:
+        any sequence:
+          plainObjects (which are merged into attributes)
+          XbdTags (which become sub-tags)
+          or arrays which are flattened
+
+      OUT: XbdTag
+
+  Example:
+    {myTag, tagA, tagB} = createTagFactories "myTag tagA tagB"
+    rootTag = myTag
+      foo: "bar"
+      tagA()
+      tagA foo: "far"
+      tagB fab: "bar"
+
+  ###
+  @createTagFactories: ->
+    out = {}
+    for str in arguments
+      for tagName in str.match /[a-z0-9_]+/ig
+        do (tagName) ->
+          out[tagName] = XbdTag.factoryFactory (attrs, subTags) ->
+            new XbdTag tagName, attrs, subTags
+    out
 
   @fromXbd: (input)->
     input = stream input
@@ -99,11 +162,14 @@ module.exports = class XbdTag extends BaseObject
     indentString out.join("\n"), indent
 
   toPlainObjects: ->
-    attrs = {}
-    attrs[k] = v.toString() for k, v of @attributes
-    name: @name
-    attributes: attrs
-    tags: (tag.toPlainObjects() for tag in @tags)
+    out = [@name]
+    if 0 < countKeys @attributes
+      attrs = {}
+      attrs[k] = v.toString() for k, v of @attributes
+      out.push attrs
+    if @tags.length > 0
+      out.push (tag.toPlainObjects() for tag in @tags)
+    out
 
   toXml: (indent = "") ->
     attr_xml = ""
@@ -141,7 +207,7 @@ module.exports = class XbdTag extends BaseObject
 
   writeSubTagsWithPromise: (writeStream, tagNamesDictionary, attrNamesDictionary, attrValuesDictionary) ->
     index = 0
-    processNext = ->
+    processNext = =>
       if tag = @tags?[index++]
         tag.getBinaryStringPromise tagNamesDictionary, attrNamesDictionary, attrValuesDictionary
         .then (binaryString) ->
@@ -151,7 +217,6 @@ module.exports = class XbdTag extends BaseObject
         Promise.resolve()
 
     processNext()
-
 
   getBinaryStringPromise: (tagNamesDictionary, attrNamesDictionary, attrValuesDictionary)->
     writeStream = new WriteStream
