@@ -1,4 +1,4 @@
-{Binary, BaseObject, log} = require 'art-foundation'
+{Binary, BaseObject, log, inspect} = require 'art-foundation'
 {binary, WriteStream, stream} = Binary
 
 module.exports = class XbdDictionary extends BaseObject
@@ -15,15 +15,29 @@ module.exports = class XbdDictionary extends BaseObject
 
   constructor: (@strings, @name) ->
 
+  ###
+  IN: string: any legal input to binary()
+  OUT: index/id for string
+  EFFECT:
+    string = binary string
+    strings was added OR, if already present, nothing changed
+  ###
   add: (string) ->
-    if 0 <= index = @strings.indexOf string
+    string = binary string
+    if 0 <= index = @_indexOf string
       index
     else
       @strings.push string
       @strings.length
 
+  ###
+  IN: string: any legal input to binary()
+    NOTE: string is converted to a BinaryString for comparisions
+  OUT: returns index of first match in @strings
+  ###
   get: (string) ->
-    if 0 <= index = @strings.indexOf string
+    string = binary string
+    if 0 <= index = @_indexOf string
       index
     else
       throw new Error "string not found in dictionary: #{inspect string}"
@@ -38,11 +52,23 @@ module.exports = class XbdDictionary extends BaseObject
   @getter
     binaryStringPromise: ->
       writeStream = new WriteStream
-      writeStream.writeAsi @strings.length
-      writeStream.writeAsi s.length for s in @strings
-      writeStream.write string for string in @strings
+      normalizedStrings = @_getNormalizeStrings()
+      writeStream.writeAsi normalizedStrings.length
+      writeStream.writeAsi s.length for s in normalizedStrings
+      writeStream.write string for string in normalizedStrings
       writeStream.binaryStringPromise
 
   writeWithPromise: (writeStream) ->
     @binaryStringPromise.then (binaryString) ->
       writeStream.writeAsiString binaryString
+
+  ####################
+  # PRIVATE
+  ####################
+  _getNormalizeStrings: ->
+    binary s for s in @strings
+
+  _indexOf: (binaryString) ->
+    return i for s, i in @strings when s.eq binaryString
+    return -1
+
