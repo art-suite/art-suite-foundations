@@ -21,6 +21,23 @@ class Base
 
     @classes = @classes.concat newClasses
 
+  @addToNamespace: (k, v) ->
+    console.error "Neptune.Base.include: namespace #{@namespacePath} already has key: #{k}"
+    @[k] = v
+
+  @includeInNamespace: ->
+    for arg in arguments when arg
+      if arg.constructor == Array
+        console.log "includeInNamespace", arg
+        [fromObject] = arg
+        for i in [1..arg.length]
+          key = arg[i]
+          @addToNamespace key, fromObject[key]
+      else
+        @addToNamespace k, v for k, v of arg when k not in excludedKeys
+    @
+  excludedKeys = ["__super__", "namespace", "namespacePath"].concat Object.keys Base
+
 module.exports = self.Neptune = class Neptune extends Base
   @Base: Base
   @namespacePath: "Neptune"
