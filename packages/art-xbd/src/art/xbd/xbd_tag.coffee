@@ -2,7 +2,7 @@ Foundation = require 'art-foundation'
 Xbd = require './namespace'
 XbdDictionary = require './xbd_dictionary'
 
-{Binary, isFunction, BaseObject, log, countKeys, upperCamelCase} = Foundation
+{Binary, isFunction, BaseObject, log, countKeys, upperCamelCase, createObjectTreeFactories} = Foundation
 {binary, stream, WriteStream} = Binary
 
 module.exports = class XbdTag extends BaseObject
@@ -33,13 +33,8 @@ module.exports = class XbdTag extends BaseObject
 
   ###
   @createTagFactories: ->
-    out = {}
-    for str in arguments
-      for tagName in str.match /[a-z0-9_]+/ig
-        do (tagName) ->
-          out[upperCamelCase tagName] = XbdTag._factoryFactory (attrs, subTags) ->
-            new XbdTag tagName, attrs, subTags
-    out
+    createObjectTreeFactories arguments, (tagName, attrs, subTags) ->
+      new XbdTag tagName, attrs, subTags
 
   ###########################
   # fromXbd Binary String
@@ -165,13 +160,6 @@ module.exports = class XbdTag extends BaseObject
   indentString = (str, indentStr) ->
     indentStr + str.split("\n").join("\n"+indentStr)
 
-  deepArgsProcessing = (array, children) ->
-    for el in array when el
-      if el.constructor == Array
-        deepArgsProcessing el, children
-      else children.push el
-    null
-
   _attributesXml: ->
     out = for k, v of @attrs
       "#{k}='#{v}'"
@@ -181,32 +169,6 @@ module.exports = class XbdTag extends BaseObject
     out = @tags.map (tag)->
       tag.toXml indent
     indentString out.join("\n"), indent
-
-  @_factoryFactory: (factory) ->
-    ->
-      oneProps = null
-      props = null
-      children = []
-
-      for el in arguments when el
-        switch el.constructor
-          when Object
-            if oneProps
-              props = {}
-              props[k] = v for k, v of oneProps
-              oneProps = null
-            if props
-              props[k] = v for k, v of el
-            else
-              oneProps = el
-
-          when Array
-            deepArgsProcessing el, children
-          else children.push el
-
-      props ||= oneProps || {}
-      factory props, children
-
 
   _getAttributesBinaryStringPromise: (attrNamesDictionary, attrValuesDictionary) ->
     writeStream = new WriteStream
