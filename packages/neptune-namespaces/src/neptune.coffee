@@ -22,17 +22,17 @@ class Base
     @classes = @classes.concat newClasses
 
   @addToNamespace: (k, v) ->
-    console.error "Neptune.Base.include: namespace #{@namespacePath} already has key: #{k}"
+    console.error "Neptune.Base.include: namespace #{@namespacePath} already has key: #{k}" if @[k]
     @[k] = v
 
   @includeInNamespace: ->
     for arg in arguments when arg
       if arg.constructor == Array
-        console.log "includeInNamespace", arg
         [fromObject] = arg
-        for i in [1..arg.length]
-          key = arg[i]
-          @addToNamespace key, fromObject[key]
+        for i in [1...arg.length]
+          for key in arg[i].match /[0-9a-z_]+/ig
+            console.warn "includeInNamespace #{key}"
+            @addToNamespace key, fromObject[key]
       else
         @addToNamespace k, v for k, v of arg when k not in excludedKeys
     @
