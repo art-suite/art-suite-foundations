@@ -22,7 +22,7 @@ class Base
     @classes = @classes.concat newClasses
 
   @addToNamespace: (k, v) ->
-    console.error "Neptune.Base.include: namespace #{@namespacePath} already has key: #{k}" if @[k]
+    console.error "Neptune.Base.addToNamespace: namespace #{@namespacePath} already has key: #{k}" if @[k]
     @[k] = v
 
   @includeInNamespace: ->
