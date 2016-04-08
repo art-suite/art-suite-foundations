@@ -97,11 +97,8 @@ module.exports = class XbdTag extends BaseObject
       binaryString.utf8Array # do something with it
 
   ###
-  toXbd: (
-    tagNamesDictionary   = @tagNamesDictionary
-    attrNamesDictionary  = @attrNamesDictionary
-    attrValuesDictionary = @attrValuesDictionary
-  ) ->
+  toXbd: ->
+    {tagNamesDictionary, attrNamesDictionary, attrValuesDictionary} = @
 
     writeXbdHeader writeStream = new WriteStream
     tagNamesDictionary.writeWithPromise writeStream
