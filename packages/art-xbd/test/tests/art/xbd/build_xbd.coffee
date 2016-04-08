@@ -12,6 +12,7 @@ Xbd = require 'art-xbd'
   boo
   baz
   """
+, ''
 
 suite "Art.Xbd.buildXbd", ->
 

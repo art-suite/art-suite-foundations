@@ -2,7 +2,11 @@ Foundation = require 'art-foundation'
 Xbd = require './namespace'
 XbdDictionary = require './xbd_dictionary'
 
-{Binary, isFunction, BaseObject, log, countKeys, upperCamelCase, createObjectTreeFactories} = Foundation
+{
+  Binary, isFunction, BaseObject, log, countKeys, upperCamelCase, createObjectTreeFactories
+  plainObjectsDeepEq
+  inspect
+} = Foundation
 {binary, stream, WriteStream} = Binary
 
 module.exports = class XbdTag extends BaseObject
@@ -11,7 +15,12 @@ module.exports = class XbdTag extends BaseObject
   # createTagFactories
   ###########################
   ###
-  IN: one or more strings containing one or more tag-names: /[a-z0-9_]+/ig
+  IN:
+    tagNames: string or array of strings which is compactFlattened
+      every string is split into tag-names with this pattern: /[a-z0-9_]+/ig
+    factoryNameSuffix: DEFAULT: 'Tag'
+      Optional suffix for the names of the factories returned.
+      Factor names are upperCamelCased from the tag-names and then the suffix is appended.
   OUT:
     map from upperCamelCase(tag-names) to:
       -> XbdTag
@@ -32,9 +41,10 @@ module.exports = class XbdTag extends BaseObject
       TagB fab: "bar"
 
   ###
-  @createTagFactories: ->
-    createObjectTreeFactories arguments, (tagName, attrs, subTags) ->
+  @createTagFactories: (tagNames, factoryNameSuffix = 'Tag')->
+    createObjectTreeFactories tagNames, (tagName, attrs, subTags) ->
       new XbdTag tagName, attrs, subTags
+    , factoryNameSuffix
 
   ###########################
   # fromXbd Binary String
@@ -62,6 +72,15 @@ module.exports = class XbdTag extends BaseObject
     tags: array of sub-tags
   ###
   constructor: (@name, @attrs = {}, @tags = []) ->
+
+  ###########################
+  # compare
+  ###########################
+
+  inspect: -> @toXml '  '
+
+  eq: (b) ->
+    b && plainObjectsDeepEq @plainObjects, b.plainObjects
 
   ###########################
   # toXbd Binary String
@@ -112,9 +131,10 @@ module.exports = class XbdTag extends BaseObject
     if 0 < countKeys @attrs
       attrs = {}
       attrs[k] = v.toString() for k, v of @attrs
+
       out.push attrs
     if @tags.length > 0
-      out.push (tag.toPlainObjects() for tag in @tags)
+      out.push tag.toPlainObjects() for tag in @tags
     out
 
   toXml: (indent = "") ->

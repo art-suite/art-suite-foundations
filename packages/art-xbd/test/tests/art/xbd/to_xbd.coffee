@@ -15,18 +15,18 @@ testWriteReadXbd = (testName, tagFactory) ->
       assert.eq inputTag.xml, outputTag.xml, "expected input to equal output"
 
 suite "Art.Xbd.toXbd", ->
-  {TagA, TagB, MyRootTag} = createTagFactories "TagA, TagB, myRootTag"
+  {ATag, BTag, MyRootTag} = createTagFactories "A B myRoot"
 
   testWriteReadXbd "MyRootTag", -> new XbdTag "MyRootTag"
   testWriteReadXbd "MyRootTag foo: 'bar'", -> new XbdTag "MyRootTag", foo: "bar"
   testWriteReadXbd "MyRootTag binary: binary ...", -> MyRootTag binary: binary [0xBE, 0xEF, 0, 1, 2, 3, 0xBE, 0xEF]
-  testWriteReadXbd "MyRootTag TagA", -> MyRootTag TagA()
-  testWriteReadXbd "MyRootTag TagA, TagA", -> MyRootTag TagA(), TagA()
-  testWriteReadXbd "nested Tags", -> MyRootTag TagA TagA()
+  testWriteReadXbd "MyRootTag ATag", -> MyRootTag ATag()
+  testWriteReadXbd "MyRootTag ATag, ATag", -> MyRootTag ATag(), ATag()
+  testWriteReadXbd "nested Tags", -> MyRootTag ATag ATag()
 
   testWriteReadXbd "reused tag, attr and value strings", ->
     MyRootTag
       foo: "bar"
-      TagA()
-      TagA foo: "far"
-      TagB fab: "bar"
+      ATag()
+      ATag foo: "far"
+      BTag fab: "bar"
