@@ -21,8 +21,10 @@ class Base
 
     @classes = @classes.concat newClasses
 
-  @addToNamespace: (k, v) ->
-    console.error "Neptune.Base.addToNamespace: namespace #{@namespacePath} already has key: #{k}" if @[k]
+  @addToNamespace: (k, v, addingFrom) ->
+    if @[k]
+      addingFromString = addingFrom.namespacePath || addingFrom.name || (Object.keys addingFrom).join(', ')
+      console.error "#{@namespacePath} already has key: #{k}. Adding from: #{addingFromString}"
     @[k] = v
 
   @includeInNamespace: ->
@@ -31,10 +33,9 @@ class Base
         [fromObject] = arg
         for i in [1...arg.length]
           for key in arg[i].match /[0-9a-z_]+/ig
-            console.warn "includeInNamespace #{key}"
-            @addToNamespace key, fromObject[key]
+            @addToNamespace key, fromObject[key], fromObject
       else
-        @addToNamespace k, v for k, v of arg when k not in excludedKeys
+        @addToNamespace k, v, arg for k, v of arg when k not in excludedKeys
     @
   excludedKeys = ["__super__", "namespace", "namespacePath"].concat Object.keys Base
 
