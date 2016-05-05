@@ -217,15 +217,24 @@ module.exports = class Generator
         if @lastGenerator?.generatedFiles[name] == code
           @log "no change: #{@getRelativePath(name)}".grey if @verbose
         else
-          fsp.readFile name, 'utf8'
-          .then (currentContents) =>
+          p = if fsp.existsSync name
+            fsp.readFile name, 'utf8'
+          else Promise.resolve null
+
+          p.then (currentContents) =>
             if currentContents != code
               filesWritten++
               @log "writing: #{@getRelativePath(name).yellow}"
               fsp.writeFile name, code
+            else
+              @log "already current: #{@getRelativePath(name)}".grey if @verbose
+          , (error) =>
+            @log "error reading #{@getRelativePath(name)}".red, error
+
     Promise.all promises
     .then =>
-      @log "#{filesWritten}/#{filesTotal} files #{if @lastGenerator then 'changed' else 'written'}"
+      @log "#{filesTotal - filesWritten}/#{filesTotal} files current" if filesWritten < filesTotal
+      @log "#{filesWritten}/#{filesTotal} files #{if @lastGenerator then 'changed' else 'written'}" if filesWritten > 0
 
   generateFiles: ->
     @generatedFiles = {}
