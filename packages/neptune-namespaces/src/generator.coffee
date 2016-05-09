@@ -138,45 +138,36 @@ module.exports = class Generator
 
 
   generateIndex: (path, {files, subdirs}) ->
-    upperCamelCaseNames = []
     {parentNameSpaceName, nameSpaceName, requireNameSpace} = @getNameSpaceNamesFromPath path
 
-    requireFiles = {}
-    requireFilesOrder = [nameSpaceName]
-    requireFiles[nameSpaceName] = 'namespace'
-
-    for file in files
-      requireFiles[name = nameSpaceName + "." + upperCamelCase file] =  file
-      requireFilesOrder.push name
-    for subdir in subdirs
-      requireFiles[name = nameSpaceName + "." + upperCamelCase subdir] = subdir
-      requireFilesOrder.push name
+    upperCamelCaseNames = {}
+    upperCamelCaseNames[name] = upperCamelCase name for name in files
+    upperCamelCaseNames[name] = upperCamelCase name for name in subdirs
 
     maxLength = 0
-    maxLength = max maxLength, ucName.length for ucName in requireFilesOrder
+    maxLength = max maxLength, ucName.length for name, ucName of upperCamelCaseNames
+    maxLength++
 
+    includeFiles = for name in files.sort()
+      "#{pad upperCamelCaseNames[name]+":", maxLength} require './#{name}'"
 
-    requires = for upperCamelCaseName in requireFilesOrder
-      file = requireFiles[upperCamelCaseName]
-      "#{pad upperCamelCaseName, maxLength} = require './#{file}'"
+    includeFiles = if includeFiles.length > 0
+      ".addModules\n  #{includeFiles.join "\n  "}"
+    else ""
 
-    result = """
+    includeNamespaces = for name in subdirs.sort()
+      "require './#{name}'"
+
+    includeNamespaces = includeNamespaces.join "\n"
+
+    """
     #{Generator.generatedByString}
     # file: #{@getRelativePath path}/index.coffee
 
-    module.exports =
-    #{requires.join "\n"}
+    (module.exports = require './namespace')
+    #{includeFiles}
+    #{includeNamespaces}
     """
-
-    if files.length > 0 || subdirs.length > 0
-      result +=
-        """
-
-        #{nameSpaceName}.finishLoad(
-          #{JSON.stringify (upperCamelCase file for file in files)}
-        )
-        """
-    result
 
   getNamespacePath: (path) ->
     path.split(@root)[1]
@@ -194,11 +185,8 @@ module.exports = class Generator
 
       #{requireParentNameSpace}
       module.exports = #{parentNameSpaceName}.#{nameSpaceName} ||
-      class #{parentNameSpaceName}.#{nameSpaceName} extends #{Generator.neptuneBaseClass}
-        @namespace: #{parentNameSpaceName}
-        @namespacePath: "#{Generator.neptuneGlobalName}.#{namespacePath}"
-
-      #{parentNameSpaceName}.addNamespace #{parentNameSpaceName}.#{nameSpaceName}
+      #{parentNameSpaceName}.addNamespace class #{nameSpaceName} extends #{Generator.neptuneBaseClass}
+        ;
       """
     result
 

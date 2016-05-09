@@ -6,27 +6,54 @@ class Base
   @namespacePath: "Neptune.Base"
   @namespace: null
   @allNamespaces: {}
-  @classes: []
   @namespaces: []
+  @modules: []
+  @moduleNames: []
+
+  # OUT: namespace
   @addNamespace: (namespace) ->
+    @_setChildNamespace namespace
+    @[namespace.name] = namespace
     @allNamespaces[namespace.namespacePath] ||= []
     @namespaces = @allNamespaces[@namespacePath] ||= []
     @namespaces.push namespace
+    namespace
 
-  @finishLoad: (classes)->
-    newClasses = for name in classes when typeof (klass = @[name]) == "function"
-      klass.namespace = @
-      klass.namespacePath = @namespacePath + "." + klass.name
-      klass
+  @_setChildNamespace: (child) ->
+    if typeof child == "function" && child.name.match /^[A-Z]/
+      child.namespace = @
+      child.namespacePath = @namespacePath + "." + child.name
 
-    @classes = @classes.concat newClasses
-
+  # OUT: v
   @addToNamespace: (k, v, addingFrom) ->
     if @[k]
-      addingFromString = addingFrom.namespacePath || addingFrom.name || (Object.keys addingFrom).join(', ')
-      console.error "#{@namespacePath} already has key: #{k}. Adding from: #{addingFromString}"
-    @[k] = v
+      if @[k] != v
+        addingFromString = addingFrom.namespacePath || addingFrom.name || (Object.keys addingFrom).join(', ')
+        console.error "#{@namespacePath} already has key: #{k}. Adding from: #{addingFromString}"
+      @[k]
+    else
+      @[k] = v
 
+  @addModules: (map) ->
+    @modules = [] unless @hasOwnProperty "modules"
+    @moduleNames = [] unless @hasOwnProperty "moduleNames"
+
+    for name, module of map
+      @moduleNames.push name
+      @modules.push module
+      @_setChildNamespace module
+      @[name] = module unless name.match /^_/
+    @
+
+  ###
+  IN: any combination of objects an arrays
+    array: [fromObject, list of strings]
+      each string is parsed to find everything that matches /[0-9a-z_]+/ig
+      From there, we have a list of property-names.
+      Every property in fromObject that matches one of those property-names is added to
+      the namespace.
+    object: all properties in the object are added to the namespace
+  ###
   @includeInNamespace: ->
     for arg in arguments when arg
       if arg.constructor == Array
