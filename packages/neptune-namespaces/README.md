@@ -79,7 +79,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
 ### The Conventions
 
-* Basic Loading Order (order of 'require' statements)
+* Basic Loading Order
   * files are required before directories
   * files and directories are required in alphanumeric order
 * Directory and File Prefixes
@@ -98,7 +98,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * *Use case: Allows you to have complete manual control over loading these files.*
 * Special File Names (after removing any underscore prefixes)
   * `fileName == parentDirectoryName`
-    * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(...)`
+    * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: This is a handy way to add other things to the namespace class than modules (files and sub-directories).*
   * `fileName == siblingSubdirectoryName`
     * only the file is required.
