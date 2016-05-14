@@ -94,10 +94,11 @@ Below is a description of the convenions. Scroll down further for detailed examp
   * Double-dash `name.match /^--/`
     * not required
     * 100% ignored by neptune-namespaces
-* Special File Names
-  * File names which match their parent directory names (after removing any underscore prefixes)
-    * are merged into the namespace class via: `namespace.includeInNamespace(...)`
-  * Directory and files with the same name (after stripping all underscore prefixes)
+* Special File Names (after removing any underscore prefixes)
+  * `fileName == parentDirectoryName`
+    * file is required and merged into the namespace class via: `namespace.includeInNamespace(...)`
+    * instead of the normal `namespace.addModules(...)`
+  * `fileName == subdirectoryName`
     * Only the file is required.
 
 ### File Name Conventions Example
