@@ -86,11 +86,11 @@ Below is a description of the convenions. Scroll down further for detailed examp
   * Underscores `name.match /^_+/`
     * All underscores at the beginning of the name are removed after sorting.
     * I.E. The module-name for these files and directories does not included the underscore prefix
-    > Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.
+> Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.
   * Single-dash `name.match /^-[^-]/`
     * required but not added to namespace
     * required before all other files and directories (-files are required first, then -directories)
-    > Use case: Fully control the load-order of your files by making a single-dash-file which, but definition will be loaded first, which in turn requires files in your custom order.
+> Use case: Fully control the load-order of your files by making a single-dash-file which, but definition will be loaded first, which in turn requires files in your custom order.
   * Double-dash `name.match /^--/`
     * not required
     * 100% ignored by neptune-namespaces
