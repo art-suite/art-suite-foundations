@@ -83,15 +83,15 @@ Below is a description of the convenions. Scroll down further for detailed examp
   * files are required before directories
   * files and directories are required in alphanumeric order
 * Special Directory and File Names
-  * Underscore prefixes (names matching: `/^_+/`)
+  * Underscore prefixes `name.match /^_+/`
     * All underscores at the beginning of the name are removed after sorting.
     * I.E. The module-name for these files and directories does not included the underscore prefix
     * NOTE: underscores are sorted before (almost) everything else. Adding one or more underscores to a name allows you to force some files or directories to load before others.
-  * Single-dash prefixed (names matching: `/^-[^-]/`)
+  * Single-dash prefixed `name.match /^-[^-]/`
     * required but not added to namespace
     * required before all other files and directories
       * -files are all required first, then -directories
-  * Double-dash prefixed (names matching: `/^--/`)
+  * Double-dash prefixed `name.match /^--/`
     * not required
     * 100% ignored by neptune-namespaces
 * File names which match their parent directory names (after removing any underscore prefixes)
