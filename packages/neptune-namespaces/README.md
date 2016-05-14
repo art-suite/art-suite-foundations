@@ -50,15 +50,15 @@ Neptune-Namespaces is an
 ## Opinionated?
 Neptune-Namespaces has an opinion about how you should organize your CoffeeScript files. It is:
 
-* directories are modules
-* a directory's name defines the module's name
-  * directory names can be: snake_case, lowerCamelCase, UpperCamelCase, dash-case, dotted.case or "space case"
-  * the directory's runtime name will be UpperCamelCase
+* Directories are modules
+* Directory and file names define their module names
+  * they can be: snake_case, lowerCamelCase, UpperCamelCase, dash-case, dotted.case or "space case"
+  * and their module names will be: UpperCamelCase
 * Subdirectories define subnamespaces
-* Loading a directory-module loads everything inside it
-* Loading a directory-module's namespace binds it, with its full namespace path, to the global, root namespace: `Neptune`
+* requiring a directory requires everything inside it
+* requiring a directory's namespace binds that namespace, with its full namespace path, to the global, root namespace: `global.Neptune`
 
-UNamespace modules consist of two files.
+Neptune-Namespace modules consist of file pairs:
 * `directory/index.coffee`
   * automatically requires `./namespace.coffee`
   * automatically requires all CoffeeScript files in that directory
