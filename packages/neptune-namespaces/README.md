@@ -25,13 +25,19 @@ If you are working with dozens or hundreds of Javascript files, wouldn't you lik
 
 ## Benefits
 
-* Refactoring module structure is as simple as renaming and moving directories and files. Often you won't have to change a line of code.
-*
+* Clear, standard way to organize complex source files structures
+* Require one directory and automatically load every source file in its sub-structure
+* Automatic runtime namespacing based on directory names.
+* Easier Refactoring
+  * Adding files/dirs is easier: they are automatically 'required' and available for use.
+  * Removing files/dirs is easier: no need to manually remove related 'require' statements
+  * Renaming files/dirs is easier: no need to update 'require' statements
+  * Moving files/dirs is easier: after all, a move is just a remove + add
 
 ## What does it do?
 
 * **Inputs:** a directory structure with CoffeeScript source files
-* **Outputs:** a pair of CommonJS modules for each directory and subdirectory
+* **Outputs:** a pair of CommonJS modules for each directory in your source structure
   * `namespace.coffee` - exports the namespace object for that directory
   * `index.coffee` - exports the namespace object *and* loads, via `require`, all nested namespaces and modules.
 
@@ -63,7 +69,7 @@ Namespace modules consist of two files.
 
 ## Convention Over Configuration
 
-NN uses the CoC design pattern. Instead of config files, the way you name and structure your directories and source-files solely determines how NN creates `index.coffee` and `namespace.coffee` files.
+NN uses the CoC design pattern. Instead of config files, the names and structure of your directories and source-files solely determines how NN creates `index.coffee` and `namespace.coffee` files.
 
 Below is a description of the convenions. Scroll down further for detailed examples.
 
