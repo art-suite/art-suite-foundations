@@ -96,10 +96,9 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * 100% ignored by neptune-namespaces
 * Special File Names (after removing any underscore prefixes)
   * `fileName == parentDirectoryName`
-    * file is required and merged into the namespace class via: `namespace.includeInNamespace(...)`
-    * instead of the normal `namespace.addModules(...)`
-  * `fileName == subdirectoryName`
-    * Only the file is required.
+    * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(...)`
+  * `fileName == siblingSubdirectoryName`
+    * only the file is required.
 
 ### File Name Conventions Example
 
