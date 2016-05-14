@@ -1,6 +1,6 @@
 # Neptune-Namespaces
 
-## Purpose
+## Purpose: DRY CommonJS Modules
 
 Are you working with dozens or hundreds of CoffeeScript files? Wouldn't you like some way to easily organize them into modules? Are you already organizing your files into directories? If so, aren't you duplicating all the information encoded in your directory structure in your code's `require` statements?
 
