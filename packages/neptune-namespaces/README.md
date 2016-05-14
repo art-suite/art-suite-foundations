@@ -86,19 +86,23 @@ Below is a description of the convenions. Scroll down further for detailed examp
   * Underscores `name.match /^_+/`
     * All underscores at the beginning of the name are removed after sorting.
     * I.E. The module-name for these files and directories does not included the underscore prefix
-    * NOTE: underscores are sorted before (almost) everything else. Adding one or more underscores to a name allows you to force some files or directories to load before others.
+    * Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.
   * Single-dash `name.match /^-[^-]/`
     * required but not added to namespace
     * required before all other files and directories
-      * -files are all required first, then -directories
+      * -files are required first, then -directories
+    * Use case: Fully control the load-order of your files by making a single-dash-file which, but definition will be loaded first, which in turn requires files in your custom order.
   * Double-dash `name.match /^--/`
     * not required
     * 100% ignored by neptune-namespaces
+    * Use case: Allows you to have complete manual control over loading these files.
 * Special File Names (after removing any underscore prefixes)
   * `fileName == parentDirectoryName`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(...)`
+    * Use case: This is a handy way to add other things to the namespace class than modules (files and sub-directories).
   * `fileName == siblingSubdirectoryName`
     * only the file is required.
+    * Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a "--".
 
 ### File Name Conventions Example
 
