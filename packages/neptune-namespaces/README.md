@@ -1,5 +1,11 @@
 # Neptune-Namespaces
 
+## Purpose
+
+Are you working with dozens or hundreds of CoffeeScript files? Wouldn't you like some way to easily organize them into modules? Are you already organizing your files into directories? If so, aren't you duplicating all the information encoded in your directory structure in your code's `require` statements?
+
+Make your directory structures work for you, and Don't Repeat Yourself!
+
 ## What is it?
 
 Given a directory structure with CoffeeScript files, Neptune-Namespaces generates runtime namespaces for your CoffeeScript source-code. It outputs one pair of ``namespace.coffee`` and ``index.coffee`` files per directory.
@@ -14,12 +20,6 @@ Neptune-Namespaces is an
 * for CoffeeScript
 
 > Javascript is not currently supported, but it could be. Please request it.
-
-## Purpose
-
-Are you working with dozens or hundreds of CoffeeScript files? Wouldn't you like some way to easily organize them into modules? Are you already organizing your files into directories? If so, aren't you duplicating all the information encoded in your directory structure in your code's `require` statements?
-
-Make your directory structures work for you, and Don't Repeat Yourself!
 
 ## Benefits
 
