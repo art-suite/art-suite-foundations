@@ -165,8 +165,6 @@ module.exports = class Generator
 
     includeNamespaces = []
 
-    log fileNamesToUpperCamelCaseNames:fileNamesToUpperCamelCaseNames
-
     for name in subdirs.sort()
       unless upperCamelCaseNames[upperCamelCase name]
         if name.match /^[_a-z0-9]/i
@@ -202,7 +200,6 @@ module.exports = class Generator
 
     dontAdd = fileName.match /^-/
 
-    console.log nameSpaceName
     contents = [
       """
       #{Generator.generatedByString}
