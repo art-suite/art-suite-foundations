@@ -2,7 +2,7 @@
 
 ## What is it?
 
-Given a directory structure with CoffeeScript files, Neptune-Namespaces generates namespaces and outputs ``namespace.coffee`` and ``index.coffee`` files.
+Given a directory structure with CoffeeScript files, Neptune-Namespaces generates runtime namespaces for your CoffeeScript source-code. It outputs one pair of ``namespace.coffee`` and ``index.coffee`` files per directory.
 
 Neptune-Namespaces is an
 
@@ -17,11 +17,9 @@ Neptune-Namespaces is an
 
 ## Purpose
 
-* simple, powerful and automatic module namespacing
-* treat directories as modules
-* reduce source code size
+Are you working with dozens or hundreds of Javascript files? Wouldn't you like some way to easily organize them into modules? Are you already organizing your files into directories? If so, aren't you duplicating all the information encoded in your directory structure in your code's `require` statements?
 
-If you are working with dozens or hundreds of Javascript files, wouldn't you like some way to easily organize them into modules? You are probably already organizing your files into directories. If so, are you duplicating all the information encoded in your directory structure in your code's `require` statements? Make your directory structures work for you, and Don't Repeat Yourself!
+Make your directory structures work for you, and Don't Repeat Yourself!
 
 ## Benefits
 
@@ -34,6 +32,13 @@ If you are working with dozens or hundreds of Javascript files, wouldn't you lik
   * Removing files/dirs is easier: no need to manually remove related 'require' statements
   * Renaming files/dirs is easier: no need to update 'require' statements
   * Moving files/dirs is easier: after all, a move is just a remove + add
+
+## Core Design Goals
+
+* convention-over-configuration (CoC)
+* simple, powerful and automatic module namespacing
+* treat directories as modules (require a directory, get everything inside)
+* reduce source-code size
 
 ## What does it do?
 
