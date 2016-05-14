@@ -49,6 +49,7 @@ class Base
       @[name] = module unless name.match /^-/
     @
 
+  isPlainArray = (o) -> o.constructor == Array
   ###
   IN: any combination of objects an arrays
     array: [fromObject, list of strings]
@@ -59,8 +60,12 @@ class Base
     object: all properties in the object are added to the namespace
   ###
   @includeInNamespace: ->
-    for arg in arguments when arg
-      if arg.constructor == Array
+    args = if arguments.length == 1 && isPlainArray arguments[0]
+      arguments[0]
+    else
+      arguments
+    for arg in args when arg
+      if isPlainArray arg
         [fromObject] = arg
         for i in [1...arg.length]
           for key in arg[i].match /[0-9a-z_]+/ig
