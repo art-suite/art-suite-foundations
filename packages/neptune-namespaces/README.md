@@ -99,7 +99,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
 * Special File Names (after removing any underscore prefixes)
   * `fileName == parentDirectoryName`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
-    * *Use case: This is a handy way to add other things to the namespace class than modules (files and sub-directories).*
+    * *Use case: Handy for adding other things to the namespace class.
   * `fileName == siblingSubdirectoryName`
     * only the file is required.
     * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a "--".*
