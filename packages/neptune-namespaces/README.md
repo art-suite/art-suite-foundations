@@ -4,30 +4,31 @@
 
 Given a directory structure with CoffeeScript files, Neptune-Namespaces generates namespaces and outputs ``namespace.coffee`` and ``index.coffee`` files.
 
-Neptune-Namespaces is
+Neptune-Namespaces is an
 
-* an opinionated,
+* opinionated
+* convention-over-configuration
 * CommonJS
-* namespace generator
+* directory-structure-based
+* namespace-generator
 * for CoffeeScript
-* based on the directory structure
 
 > Javascript is not currently supported, but it could be. Please request it.
 
 ## Purpose
 
-* stupid-simple and powerful namespacing
-* easy code organization
-* easy organization refactoring
-* reduced code-size - DRY!
+* simple, powerful and automatic module namespacing
+* treat directories as modules
+* reduce source code size
 
-If you are working with dozens or hundreds of Javascript files, wouldn't you like some way to easily organize them into modules? You are probably already organizing your files into directories. If so, you are duplicating all the information encoded in your directory structure in your code's `require` statements. Make your directory structures work for you, and Don't Repeat Yourself!
+If you are working with dozens or hundreds of Javascript files, wouldn't you like some way to easily organize them into modules? You are probably already organizing your files into directories. If so, are you duplicating all the information encoded in your directory structure in your code's `require` statements? Make your directory structures work for you, and Don't Repeat Yourself!
 
 ## Benefits
 
 * Clear, standard way to organize complex source files structures
 * Require one directory and automatically load every source file in its sub-structure
 * Automatic runtime namespacing based on directory names.
+* Write less code! Most requiring is handled for you.
 * Easier Refactoring
   * Adding files/dirs is easier: they are automatically 'required' and available for use.
   * Removing files/dirs is easier: no need to manually remove related 'require' statements
