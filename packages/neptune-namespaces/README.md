@@ -23,7 +23,7 @@ Make your directory structures work for you, and Don't Repeat Yourself!
 
 ## Benefits
 
-* Clear, standard way to organize complex source files structures
+* Clear, standard way to organize complex source-file structures
 * Require one directory and automatically load every source file in its sub-structure
 * Automatic runtime namespacing based on directory names.
 * Write less code! Most requiring is handled for you.
@@ -58,20 +58,18 @@ Neptune-Namespaces has an opinion about how you should organize your CoffeeScrip
 * Loading a directory-module loads everything inside it
 * Loading a directory-module's namespace binds it, with its full namespace path, to the global, root namespace: `Neptune`
 
-Namespace modules consist of two files.
-* `require 'directory'`
-  * implicitly requires `directory/namespace`
-  * implicitly requires all CoffeeScript module files in that directory
-    * each module is added to the namespace under the UpperCamelCase version of its filename without extension.
-      * UNLESS the filename starts with an "_" in which case it is 'required', but it is not added to the namespace.
-    * required in alphanumeric order
-  * implicitly requires all sub-directories which are namespace modules
-    * required after CoffeeScript modules
-    * required in alphanumeric order
-* `require 'directory/namespace'`
-  * implicitly requires and binds to the parent namespace: `require '../namespace'`
-  * this is implicitly recursive
-  * if there is no parent namespace, it binds to the global `Neptune` namespace
+UNamespace modules consist of two files.
+* `directory/index.coffee`
+  * automatically requires `./namespace.coffee`
+  * automatically requires all CoffeeScript files in that directory
+    * each is added to the namespace under the UpperCamelCase version of its filename without extension.
+  * automatically requires all sub-directories which are namespace modules
+    * each is added to the namespace under the UpperCamelCase version of its directory without extension.
+  * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special cases.
+* `directory/namespace.coffee`
+  * automatically requires and binds to the parent namespace: `require '../namespace'`
+  * this is implicitly recursive to all ancestor namespaces
+  * if there is no parent namespace, it binds to the global, runtime namespace: `global.Neptune`
 
 ## Convention Over Configuration
 
@@ -81,20 +79,23 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
 ### The Conventions
 
-* Load Order
+* Basic Loading Order (order of 'require' statements)
   * files are required before directories
   * files and directories are required in alphanumeric order
-* Single-dash `/^-/` prefixed files & directories
-  * required but not added to namespace
-  * required before all other files and directories
-    * -files are all required first, then -directories
-* Double-dash `/^--/` prefixed files & directories
-  * not required
-  * 100% ignored by neptune-namespaces
-* One or more prefixed underscores `/^_+/` files & directories
-  * All underscores at the beginning of the name are removed after sorting.
-  * I.E. The module-name for these files and directories does not included the underscore prefix
-  * NOTE: underscores are sorted before (almost) everything else. Adding one or more underscores to a name allows you to force some files or directories to load before others.
+* Special Directory and File Names
+  * Underscore prefixes (names matching: `/^_+/`)
+    * All underscores at the beginning of the name are removed after sorting.
+    * I.E. The module-name for these files and directories does not included the underscore prefix
+    * NOTE: underscores are sorted before (almost) everything else. Adding one or more underscores to a name allows you to force some files or directories to load before others.
+  * Single-dash prefixed (names matching: `/^-[^-]/`)
+    * required but not added to namespace
+    * required before all other files and directories
+      * -files are all required first, then -directories
+  * Double-dash prefixed (names matching: `/^--/`)
+    * not required
+    * 100% ignored by neptune-namespaces
+* File names which match their parent directory names (after removing any underscore prefixes)
+  * are merged into the namespace class via: `namespace.includeInNamespace(...)`
 * Directory and files with the same name after stripping any underscore prefixes
   * Only the file is required.
 
