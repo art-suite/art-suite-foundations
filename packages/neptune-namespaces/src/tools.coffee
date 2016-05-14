@@ -18,9 +18,9 @@ module.exports = class Lib
     str.charAt(0).toLowerCase() + str.slice 1
 
   @upperCamelCase: (str) =>
-    prefix = str.match /^_+/
+    # prefix = str.match /^[_-]+/
     words = str.split /[-_\.]|\s+/
-    capWords = prefix || []
+    capWords = []
     capWords.push @capitalize word for word in words
     capWords.join ""
 

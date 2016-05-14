@@ -1,6 +1,10 @@
+# standardize across javascript environments:
+# global == self == window
 if typeof global == 'object'
   # running in node.js
   global.self = global
+else
+  self.global ||= self
 
 class Base
   @namespacePath: "Neptune.Base"
@@ -42,7 +46,7 @@ class Base
       @moduleNames.push name
       @modules.push module
       @_setChildNamespace module
-      @[name] = module unless name.match /^_/
+      @[name] = module unless name.match /^-/
     @
 
   ###

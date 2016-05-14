@@ -61,74 +61,164 @@ Namespace modules consist of two files.
   * this is implicitly recursive
   * if there is no parent namespace, it binds to the global `Neptune` namespace
 
-## Example
+## Convention Over Configuration
 
-Given this directory structure and files:
+NN uses the CoC design pattern. Instead of config files, the way you name and structure your directories and source-files solely determines how NN creates `index.coffee` and `namespace.coffee` files.
 
-    ~username/my_project/src/geometry/solids/cone.coffee
-    ~username/my_project/src/geometry/_loader.coffee
-    ~username/my_project/src/geometry/box.coffee
-    ~username/my_project/src/geometry/circle.coffee
+Below is a description of the convenions. Scroll down further for detailed examples.
 
-Run Neptune-Namespaces:
+### The Conventions
 
-    > neptune-namespaces ~username/my_project/src/geometry
+* Load Order
+  * files are required before directories
+  * files and directories are required in alphanumeric order
+* Single-dash `/^-/` prefixed files & directories
+  * required but not added to namespace
+  * required before all other files and directories
+    * -files are all required first, then -directories
+* Double-dash `/^--/` prefixed files & directories
+  * not required
+  * 100% ignored by neptune-namespaces
+* One or more prefixed underscores `/^_+/` files & directories
+  * All underscores at the beginning of the name are removed after sorting.
+  * I.E. The module-name for these files and directories does not included the underscore prefix
+  * NOTE: underscores are sorted before (almost) everything else. Adding one or more underscores to a name allows you to force some files or directories to load before others.
+* Directory and files with the same name after stripping any underscore prefixes
+  * Only the file is required.
 
-Neptune-Namespaces generates:
+### File Name Conventions Example
 
-    geometry/index.coffee
-    geometry/namespace.coffee
-    geometry/solids/index.coffee
-    geometry/solids/namespace.coffee
+This structure:
 
-Load Order:
+```bash
+my_module/
+  # -- files are ignored
+  --ignored.coffee
 
-    geometry/index.coffee
-    geometry/namespace.coffee
-    geometry/_loader.coffee
-    geometry/box.coffee
-    geometry/circle.coffee
-    geometry/solids/index.coffee
-    geometry/solids/namespace.coffee
-    geometry/solids/cone.coffee
+  # - files are required by not added
+  -required_but_not_added.coffee
 
-Runtime example 1:
+  # underscore prefixs are stripped for module names
+  _require_first.coffee
 
-    Geometry = require 'geometry'
-    # Loads in this order:
-    #   geometry/index.coffee
-    #   geometry/namespace.coffee
-    #   geometry/_loader.coffee
-    #   geometry/box.coffee
-    #   geometry/circle.coffee
-    #   geometry/solids/index.coffee
-    #   geometry/solids/namespace.coffee
-    #   geometry/solids/cone.coffee
+  # if matches enclosing directory name
+  #  - optionally with one or more "_" prefixes
+  #  - is required and added via: namespace.includeInNamespace
+  my_module.coffee
 
-    Geometry.Solids.Cone   # == require 'geometry/solids/cone'
-    Geometry.Box           # == require 'geometry/box'
-    Geometry.Circle        # == require 'geometry/circle'
+  # normal filenames
+  normal_filename.coffee
+```
 
-    Neptune.Geometry       # == Geometry
+generates:
 
-Runtime example 2:
+```coffeescript
+# file: my_module/index.coffee
 
-    Solids = require 'geometry/solids'
-    # Loads in this order:
-    #   geometry/solids/index.coffee
-    #   geometry/solids/namespace.coffee
-    #   geometry/namespace.coffee
-    #   geometry/solids/cone.coffee
+require './-required_but_not_added'
+(module.exports = require './namespace')
+.includeInNamespace(require './my_module')
+.addModules
+  RequireFirst:        require './_require_first'
+  NormalFilename:      require './normal_filename'
+```
 
-    Solids.Cone                  # == require 'geometry/solids/cone'
-    Neptune.Geometry.Solids.Cone # == Solids.Cone
+### Directory Name Conventions Example
 
-## Filenames starting with '_'
+* Directory name conventions are almost identical to file-name conventions
+* EXCEPT: directories with the same name as the enclosing directory are not handled specially
 
-As mentioned above, file names starting an "_" are treated a little specially:
+This structure:
 
-* They are not added to the namespace.
-* Since files are loaded in alphanumeric order, files starting with "_" are loaded before (most) other files.
+```bash
+my_module/
+  # -- directories are ignored
+  --ignored/
+
+  # - directories are required by not added
+  # see: my_module/-required_but_not_added/namespace.coffee
+  -required_but_not_added/
+
+  # underscore prefixs are stripped for module names
+  # see: my_module/_require_first/namespace.coffee
+  _require_first/
+
+  # matches enclosing directory, but it doesn't matter
+  my_module/
+
+  # normal name
+  normal_name/
+
+```
+
+generates:
+
+```coffeescript
+# file: my_module/index.coffee
+
+require './-required_but_not_added'
+(module.exports = require './namespace')
+require './_require_first'
+require './my_module'
+require './normal_name'
+```
+
+``` coffeescript
+# file: my_module/_require_first/namespace.coffee
+
+MyModuleDirectories = require '../namespace'
+module.exports = MyModuleDirectories.RequireFirst ||
+MyModuleDirectories.addNamespace class RequireFirst extends Neptune.Base
+  ;
+```
+
+``` coffeescript
+# file: my_module/-required_but_not_added/namespace.coffee
+
+module.exports = class RequiredButNotAdded extends Neptune.Base
+  ;
+```
+
+### Mixed Directory and File Conventions Example
+
+* In general, directories are required after files. This example shows the fine details on how directories and files are required.
+* This example also shows the special case when a directory and file with the same name.
+
+This structure:
+
+```bash
+my_module/
+
+  # "-" prefixed files are required first
+  # "-" prefixed directories are required second
+  -loaded_but_not_added_file
+  -loaded_but_not_added_directory
+
+  # When a file and directory have the same name (ignoring any "_" prefixes)
+  #  * then only the file is required
+  file_and_module_with_same_name/
+  file_and_module_with_same_name.coffee
+
+  # normal files are added to the namespace and required second to last
+  normal_file
+
+  # normal directories are required last
+  normal_directory
+```
+
+generates:
+
+```coffeescript
+# file: my_module/index.coffee
+
+require './-loaded_but_not_added_file'
+require './-loaded_but_not_added_directory'
+(module.exports = require './namespace')
+.addModules
+  FileAndModuleWithSameName: require './file_and_module_with_same_name'
+  NormalFile:                require './normal_file'
+require './normal_directory'
+```
 
 ## Installation
 
@@ -136,9 +226,14 @@ As mentioned above, file names starting an "_" are treated a little specially:
 
 ## Usage
 
-    neptune-namespaces [one or more directories]
+    neptune-namespaces [options]
 
-Each directory specified is processed independently and bound to the root `Neptune` namespace.
+    options:
+      -w, --watch     stay running, watch for changes, and automatically update
+      -v, --verbose   enable verbose output
+      -r, --root      list one or more --root arguments
+
+Each root directory specified is processed independently and bound to the runtime root namespace: `global.Namespace`.
 
 ## Contributing
 
