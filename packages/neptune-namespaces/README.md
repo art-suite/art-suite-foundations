@@ -6,6 +6,45 @@ Are you working with dozens or hundreds of CoffeeScript files? Wouldn't you like
 
 Make your directory structures work for you, and Don't Repeat Yourself!
 
+### What does NN do? An Example
+
+Suppose you have this directory structure:
+
+```bash
+geometry/
+  shapes/
+  circle.coffee
+    square.coffee
+  solids/
+    cube.coffee
+    sphere.coffee
+```
+
+The files look something like this:
+
+```coffeescript
+# geometry/shapes/circle.coffee
+module.exports = class Circle
+ ...
+```
+
+Then run:
+
+```bash
+npm install neptune-namespaces
+neptune-namespaces --root geometry
+node
+> require("coffee-script/register")
+> Geometry = require("./geometry")
+```
+
+Tada! All your classes are loaded and accessible as:
+
+* Geometry.Shapes.Square
+* Geometry.Shapes.Circle
+* Geometry.Solids.Cube
+* Geometry.Solids.Sphere
+
 ## What is it?
 
 Given a directory structure with CoffeeScript files, Neptune-Namespaces generates runtime namespaces for your CoffeeScript source-code. It outputs one pair of ``namespace.coffee`` and ``index.coffee`` files per directory.
@@ -19,7 +58,7 @@ Neptune-Namespaces is an
 * namespace-generator
 * for CoffeeScript
 
-> Javascript is not currently supported, but it could be. Please request it.
+> Javascript is not currently supported, but it easily could be. Request it!
 
 ## Benefits
 
@@ -247,9 +286,11 @@ require './normal_directory'
     neptune-namespaces [options]
 
     options:
+      -r, --root      list one or more --root arguments
       -w, --watch     stay running, watch for changes, and automatically update
       -v, --verbose   enable verbose output
-      -r, --root      list one or more --root arguments
+      -s, --silent    supress all output
+      -f, --force     overwrite all index and namespace files      
 
 Each root directory specified is processed independently and bound to the runtime root namespace: `global.Namespace`.
 

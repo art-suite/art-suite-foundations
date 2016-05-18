@@ -1,7 +1,7 @@
 {
   "name": "neptune-namespaces",
   "version": "0.2.0",
-  "description": "Generate index.coffee and namespace.coffee files from directory structure",
+  "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "scripts": {
     "test": "neptune-namespaces -r test/tests/ -r src/*;mocha -u tdd --compilers coffee:coffee-script/register"
   },
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/shanebdavis/neptune-namespaces.git"
+    "url": "https://github.com/Imikimi-LLC/neptune-namespaces"
   },
   "main": "index.coffee",
   "dependencies": {
