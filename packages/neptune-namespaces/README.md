@@ -6,7 +6,7 @@ Are you working with dozens or hundreds of CoffeeScript files? Wouldn't you like
 
 Make your directory structures work for you, and Don't Repeat Yourself!
 
-### What does NN do? An Example
+#### What does NN do? An Example
 
 Suppose you have this directory structure:
 
@@ -60,6 +60,13 @@ Neptune-Namespaces is an
 
 > Javascript is not currently supported, but it easily could be. Request it!
 
+#### What does it do?
+
+* **Inputs:** a directory structure with CoffeeScript source files
+* **Outputs:** a pair of CommonJS modules for each directory in your source structure
+  * `namespace.coffee` - exports the namespace object for that directory
+  * `index.coffee` - exports the namespace object *and* loads, via `require`, all nested namespaces and modules.
+
 ## Benefits
 
 * Clear, standard way to organize complex source-file structures
@@ -78,13 +85,6 @@ Neptune-Namespaces is an
 * simple, powerful and automatic module namespacing
 * treat directories as modules (require a directory, get everything inside)
 * reduce source-code size
-
-## What does it do?
-
-* **Inputs:** a directory structure with CoffeeScript source files
-* **Outputs:** a pair of CommonJS modules for each directory in your source structure
-  * `namespace.coffee` - exports the namespace object for that directory
-  * `index.coffee` - exports the namespace object *and* loads, via `require`, all nested namespaces and modules.
 
 ## Opinionated?
 Neptune-Namespaces has an opinion about how you should organize your CoffeeScript files. It is:
@@ -119,7 +119,7 @@ NN uses the CoC design pattern. Instead of config files, the names and structure
 
 Below is a description of the convenions. Scroll down further for detailed examples.
 
-### The Conventions
+#### The Conventions
 
 * Basic Loading Order
   * files are included before directories
@@ -146,7 +146,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * In this case the file is included, but the directory is not.
     * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a "--".*
 
-### File Name Conventions Example
+#### File Name Conventions Example
 
 This structure:
 
@@ -183,7 +183,7 @@ require './-required_but_not_added'
   NormalFilename:      require './normal_filename'
 ```
 
-### Directory Name Conventions Example
+#### Directory Name Conventions Example
 
 * Directory name conventions are almost identical to file-name conventions
 * EXCEPT: directories with the same name as the enclosing directory are not handled specially
@@ -239,7 +239,7 @@ module.exports = class RequiredButNotAdded extends Neptune.Base
   ;
 ```
 
-### Mixed Directory and File Conventions Example
+#### Mixed Directory and File Conventions Example
 
 * In general, directories are required after files. This example shows the fine details on how directories and files are required.
 * This example also shows the special case when a directory and file with the same name.
