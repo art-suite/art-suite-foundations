@@ -34,10 +34,6 @@ NomNom = require "nomnom"
 
 {max} = Math
 
-# log "opts", opts
-
-# [nodePath, neptuneNamespacesPath, targetPaths...] = process.argv
-
 run = (targetPaths) ->
 
   todoList = for targetPath in targetPaths
