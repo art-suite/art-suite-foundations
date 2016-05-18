@@ -12,6 +12,11 @@ Generator = require "./src/generator"
 NomNom = require "nomnom"
 
 {root, watch, verbose, force, silent} = opts = NomNom
+.option 'root',
+  abbr: 'r'
+  list: true
+  required: true
+  help: 'list one or more --root arguments'
 .option 'watch',
   abbr: 'w'
   flag: true
@@ -23,16 +28,11 @@ NomNom = require "nomnom"
 .option 'silent',
   abbr: 's'
   flag: true
-  help: 'supress all output'
+  help: 'suppress all output'
 .option 'force',
   abbr: 'f'
   flag: true
   help: 'overwrite all index and namespace files'
-.option 'root',
-  abbr: 'r'
-  list: true
-  required: true
-  help: 'list one or more --root arguments'
 .help """
   Generates 'namespace.coffee' and 'index.coffee' files to bind each specified --root
   to the global Neptune namespace at runtime.
