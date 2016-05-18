@@ -1,6 +1,6 @@
 {
   "name": "neptune-namespaces",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Generate index.coffee and namespace.coffee files from directory structure",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
