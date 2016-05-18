@@ -11,7 +11,7 @@ Generator = require "./src/generator"
 
 NomNom = require "nomnom"
 
-{root, watch, verbose} = opts = NomNom
+{root, watch, verbose, force, silent} = opts = NomNom
 .option 'watch',
   abbr: 'w'
   flag: true
@@ -20,6 +20,14 @@ NomNom = require "nomnom"
   abbr: 'v'
   flag: true
   help: 'enable verbose output'
+.option 'silent',
+  abbr: 's'
+  flag: true
+  help: 'supress all output'
+.option 'force',
+  abbr: 'f'
+  flag: true
+  help: 'overwrite all index and namespace files'
 .option 'root',
   abbr: 'r'
   list: true
@@ -41,7 +49,12 @@ run = (targetPaths) ->
       targetPath = withoutTrailingSlash targetPath
 
       doWork = ->
-        Generator.generate targetPath, verbose: verbose, watch: watch, persistent: true
+        Generator.generate targetPath,
+          verbose: verbose
+          force: force
+          silent: silent
+          watch: watch
+          persistent: true
 
       doWork
 

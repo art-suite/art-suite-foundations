@@ -9,7 +9,7 @@ suite "NeptuneNamespaces.Generator", ->
       relative = "./sorting_semantics/#{dir}"
       modName = upperCamelCase dir
       test "generate #{root} -> #{modName}", ->
-        Generator.generate root
+        Generator.generate root, force: true, silent: true
         .then ->
           mod = require relative
           assert.equal Neptune[modName], mod

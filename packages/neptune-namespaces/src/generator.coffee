@@ -74,10 +74,10 @@ module.exports = class Generator
       else
         "Neptune.#{upperCamelCase root}: ".grey + arg
 
-  log: (args...) -> Generator.log @getRelativePath(), args.join()
+  log: (args...) -> Generator.log @getRelativePath(), args.join() unless @silent
 
   constructor: (@root, options = {}) ->
-    {@pretend, @verbose, @lastGenerator} = options
+    {@pretend, @verbose, @lastGenerator, @force, @silent} = options
     @rootPrefix = Path.dirname(@root) + "/"
 
     # map from directory paths to list of coffee files in that directory
@@ -235,7 +235,7 @@ module.exports = class Generator
           else Promise.resolve null
 
           p.then (currentContents) =>
-            if currentContents != code
+            if @force || currentContents != code
               filesWritten++
               @log "writing: #{@getRelativePath(name).yellow}"
               fsp.writeFile name, code
