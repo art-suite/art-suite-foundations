@@ -95,7 +95,9 @@ Neptune-Namespaces has an opinion about how you should organize your CoffeeScrip
   * and their module names will be: UpperCamelCase
 * Subdirectories define subnamespaces
 * requiring a directory requires everything inside it
+  * with user-controlled exceptions
 * requiring a directory's namespace binds that namespace, with its full namespace path, to the global, root namespace: `global.Neptune`
+* all namespaces `extend` the global.Neptune.Base class
 
 Neptune-Namespace modules consist of file pairs:
 * `directory/index.coffee`
@@ -104,11 +106,12 @@ Neptune-Namespace modules consist of file pairs:
     * each is added to the namespace under the UpperCamelCase version of its filename without extension.
   * automatically requires all sub-directories which are namespace modules
     * each is added to the namespace under the UpperCamelCase version of its directory without extension.
-  * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special cases.
+  * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special-cases.
 * `directory/namespace.coffee`
   * automatically requires and binds to the parent namespace: `require '../namespace'`
   * this is implicitly recursive to all ancestor namespaces
   * if there is no parent namespace, it binds to the global, runtime namespace: `global.Neptune`
+    * If a global.Neptune namespace with the same name already exists, this new namespace definition is merged into the existing one.
 
 ## Convention Over Configuration
 
@@ -119,28 +122,28 @@ Below is a description of the convenions. Scroll down further for detailed examp
 ### The Conventions
 
 * Basic Loading Order
-  * files are required before directories
-  * files and directories are required in alphanumeric order
-* Directory and File Prefixes
-  * Underscores `name.match /^_+/`
+  * files are included before directories
+  * files and directories are included in alphanumeric order
+* Directory-name and File-name Prefixes
+  * Underscore names: `name.match /^_+/`
     * All underscores at the beginning of the name are removed after sorting.
     * I.E. The module-name for these files and directories does not included the underscore prefix
     * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
-  * Single-dash `name.match /^-[^-]/`
-    * required but not added to namespace
-    * required before all other files and directories
-      * -files are required first, then -directories
-    * *Use case: Fully control the load-order of your files by making a single-dash-file which, but definition will be loaded first, which in turn requires files in your custom order.*
-  * Double-dash `name.match /^--/`
-    * not required
+  * Single-dash names: `name.match /^-[^-]/`
+    * included but not added to namespace
+    * included before all other files and directories
+      * -files are included first, then -directories
+    * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
+  * Double-dash names:`name.match /^--/`
+    * not included
     * 100% ignored by neptune-namespaces
     * *Use case: Allows you to have complete manual control over loading these files.*
-* Special File Names (after removing any underscore prefixes)
+* Special File-names (after removing any underscore prefixes)
   * `fileName == parentDirectoryName`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: Handy for adding other things to the namespace class.
   * `fileName == siblingSubdirectoryName`
-    * only the file is required.
+    * In this case the file is included, but the directory is not.
     * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a "--".*
 
 ### File Name Conventions Example
@@ -289,8 +292,8 @@ require './normal_directory'
       -r, --root      list one or more --root arguments
       -w, --watch     stay running, watch for changes, and automatically update
       -v, --verbose   enable verbose output
-      -s, --silent    supress all output
-      -f, --force     overwrite all index and namespace files      
+      -s, --silent    suppress all output
+      -f, --force     overwrite all index and namespace files
 
 Each root directory specified is processed independently and bound to the runtime root namespace: `global.Namespace`.
 
