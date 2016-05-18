@@ -1,9 +1,9 @@
 {
   "name": "neptune-namespaces",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generate index.coffee and namespace.coffee files from directory structure",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "neptune-namespaces -r test/tests/ -r src/*;mocha -u tdd --compilers coffee:coffee-script/register"
   },
   "author": "Shane Brinkman-Davis Delamore",
   "license": "MIT",
@@ -16,9 +16,6 @@
     "url": "https://github.com/shanebdavis/neptune-namespaces.git"
   },
   "main": "index.coffee",
-  "scripts": {
-    "test": "neptune-namespaces -r test/tests/ -r src/*;mocha -u tdd --compilers coffee:coffee-script/register"
-  },
   "dependencies": {
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.10.0",
