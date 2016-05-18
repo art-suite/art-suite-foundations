@@ -79,5 +79,6 @@ module.exports = self.Neptune = class Neptune extends Base
   @Base: Base
   @namespacePath: "Neptune"
   @namespace: null
+  @isNamespace: (klass) -> klass?.prototype instanceof Base
 
 console.log "neptune-namespaces global defined: self.Neptune"
