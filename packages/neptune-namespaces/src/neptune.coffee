@@ -24,7 +24,7 @@ class Base
     namespace
 
   @_setChildNamespace: (child) ->
-    if typeof child == "function" && child.name.match /^[A-Z]/
+    if typeof child == "function" && child.name?.match /^[A-Z]/
       child.namespace = @
       child.namespacePath = @namespacePath + "." + child.name
 
