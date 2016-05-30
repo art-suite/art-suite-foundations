@@ -1,10 +1,12 @@
 # standardize across javascript environments:
-# global == self == window
+# global == self == window (if in browser)
 if typeof global == 'object'
   # running in node.js
   global.self = global
 else
   self.global ||= self
+
+require('function.prototype.name').shim()
 
 class Base
   @namespacePath: "Neptune.Base"
@@ -24,7 +26,7 @@ class Base
     namespace
 
   @_setChildNamespace: (child) ->
-    if typeof child == "function" && child.name?.match /^[A-Z]/
+    if typeof child == "function" && child.name.match /^[A-Z]/
       child.namespace = @
       child.namespacePath = @namespacePath + "." + child.name
 
