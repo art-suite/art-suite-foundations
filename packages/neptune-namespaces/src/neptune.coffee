@@ -6,7 +6,16 @@ if typeof global == 'object'
 else
   self.global ||= self
 
-require('function.prototype.name').shim()
+unless (->).name?
+  Object.defineProperty Function.prototype, 'name',
+    get: ->
+      name = if matches = @toString().match /^\s*function\s*([^\s(]+)/
+        matches[1]
+      else
+        ""
+      Object.defineProperty @, 'name', value: name
+
+      name
 
 class Base
   @namespacePath: "Neptune.Base"
