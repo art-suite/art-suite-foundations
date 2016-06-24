@@ -1,13 +1,12 @@
 {
   "name": "art-xbd",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "art-xbd",
   "main": "index.coffee",
   "dependencies": {
     "art-foundation": "git://github.com/Imikimi-LLC/art-foundation.git"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "webpack-dev-server -d"
   },
