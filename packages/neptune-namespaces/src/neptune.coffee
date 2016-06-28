@@ -1,3 +1,12 @@
+###
+TODO: Make NN ugifly-mangler friendly. In order to do that, we need
+to stop using the function.name attribute.
+
+I think we can do that with one change: addNamespace needs to
+change to take a name argument: @addNamespace: (name, namespace) ->
+
+###
+
 # standardize across javascript environments:
 # global == self == window (if in browser)
 if typeof global == 'object'
@@ -26,18 +35,22 @@ class Base
   @moduleNames: []
 
   # OUT: namespace
-  @addNamespace: (namespace) ->
-    @_setChildNamespace namespace
-    @[namespace.name] = namespace
+  @addNamespace: (name, namespace) ->
+    unless namespace
+      # legacy support
+      namespace = name
+      name = namespace.name
+    @_setChildNamespace name, namespace
+    @[name] = namespace
     @allNamespaces[namespace.namespacePath] ||= []
     @namespaces = @allNamespaces[@namespacePath] ||= []
     @namespaces.push namespace
     namespace
 
-  @_setChildNamespace: (child) ->
-    if typeof child == "function" && child.name.match /^[A-Z]/
+  @_setChildNamespace: (name, child) ->
+    if typeof child == "function" && name.match /^[A-Z]/
       child.namespace = @
-      child.namespacePath = @namespacePath + "." + child.name
+      child.namespacePath = @namespacePath + "." + name
 
   # OUT: v
   @addToNamespace: (k, v, addingFrom) ->
@@ -56,7 +69,7 @@ class Base
     for name, module of map
       @moduleNames.push name
       @modules.push module
-      @_setChildNamespace module
+      @_setChildNamespace name, module
       @[name] = module unless name.match /^-/
     @
 

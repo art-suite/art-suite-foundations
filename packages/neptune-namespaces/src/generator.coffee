@@ -209,7 +209,7 @@ module.exports = class Generator
       requireParentNameSpace unless dontAdd
       "module.exports = " + (if dontAdd
         ""
-      else "#{parentNameSpaceName}.#{nameSpaceName} ||\n#{parentNameSpaceName}.addNamespace "
+      else "#{parentNameSpaceName}.#{nameSpaceName} ||\n#{parentNameSpaceName}.addNamespace '#{nameSpaceName}', "
       )+ "class #{nameSpaceName} extends #{Generator.neptuneBaseClass}\n  ;"
     ]
     (entry for entry in contents when entry).join "\n"
