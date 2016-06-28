@@ -3,19 +3,22 @@ glob = require "glob"
 fsp = require "fs-promise"
 fs = require 'fs'
 Generator = require "./src/generator"
+{version} = require './package.json'
+
 
 {
   upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash
   promiseSequence
 } = require "./src/tools"
 
+standardRoots = ["src/*", "test/*", "perf/*"]
+
 NomNom = require "nomnom"
 
-{root, watch, verbose, force, silent} = opts = NomNom
+{root, watch, verbose, force, silent, std} = opts = NomNom
 .option 'root',
   abbr: 'r'
   list: true
-  required: true
   help: 'list one or more --root arguments'
 .option 'watch',
   abbr: 'w'
@@ -33,14 +36,29 @@ NomNom = require "nomnom"
   abbr: 'f'
   flag: true
   help: 'overwrite all index and namespace files'
+.option 'std',
+  flag: true
+  help: "include the standard roots: #{standardRoots.join ', '}"
+.option 'version',
+  flag: true
+  help: "show current version and exit"
 .help """
+  neptune-namespaces version: #{version}
+
   Generates 'namespace.coffee' and 'index.coffee' files to bind each specified --root
   to the global Neptune namespace at runtime.
   """
 .nocolors()
 .parse()
 
+root ||= []
+root = root.concat standardRoots if std
+
 {max} = Math
+
+if opts.version
+  console.log version
+  process.exit()
 
 run = (targetPaths) ->
 
@@ -60,4 +78,5 @@ run = (targetPaths) ->
 
   promiseSequence todoList
 
+console.error "no roots specified (run with -h for help)" if root.length == 0
 run root
