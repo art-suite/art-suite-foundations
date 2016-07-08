@@ -32,19 +32,31 @@ class Base
   @namespacePath: "Neptune.Base"
   @namespace: null
   @allNamespaces: {}
-  @namespaces: []
-  # @modules: []
-  # @moduleNames: []
+  @subNamespaces: []
+  @modules: []
+  @moduleNames: []
+  @_name: "Base"
+
+  @initAsSubNamespace: (name, @namespace) ->
+    @_name = name
+    @modules = []
+    @moduleNames = []
+    @subNamespaces = []
+    @namespace[name] = @
+    @namespace.subNamespaces.push @
+    @
 
   @getName: ->
     @_name || @name
 
-  @getInspectedObjects: ->
+  @getInspectedObjects: (includeModules = true)->
     out = {}
-    for namespace in @namespaces
-      out[namespace.getName()] = namespace.getInspectedObjects()
-    for mod in @moduleNames
-      out[mod] = true
+    out.version = @version if @version
+    for namespace in @subNamespaces
+      out[namespace.getName()] = namespace.getInspectedObjects includeModules
+    # for mod in @moduleNames
+    #   out[mod] = true
+    out.modules = @moduleNames.join ' ' if includeModules && @moduleNames.length > 0
     out
 
   # OUT: namespace
@@ -53,16 +65,12 @@ class Base
       # legacy support
       namespace = name
       name = namespace.name
-    @_setChildNamespace name, namespace
-    @[name] = namespace
-    @allNamespaces[namespace.namespacePath] ||= []
-    @namespaces = @allNamespaces[@namespacePath] ||= []
-    @namespaces.push namespace
+    @_setChildNamespaceProps name, namespace
+    @allNamespaces[@namespacePath] = namespace.initAsSubNamespace name, @
     namespace
 
-  @_setChildNamespace: (name, child) ->
+  @_setChildNamespaceProps: (name, child) ->
     if typeof child == "function" && name.match /^[A-Z]/
-      child._name = name
       child.namespace = @
       child.namespacePath = @namespacePath + "." + name
 
@@ -77,17 +85,11 @@ class Base
       @[k] = v
 
   @addModules: (map) ->
-    @modules = [] unless @hasOwnProperty "modules"
-    if @hasOwnProperty "moduleNames"
-      console.log("NeptuneNamespaces: alread have moduleNames for #{@getName()}")
-    else
-      console.log("NeptuneNamespaces: create moduleNames for #{@getName()}")
-      @moduleNames = []
 
     for name, module of map
       @moduleNames.push name
       @modules.push module
-      @_setChildNamespace name, module
+      @_setChildNamespaceProps name, module
       @[name] = module unless name.match /^-/
     @
 
@@ -115,7 +117,7 @@ class Base
       else
         @addToNamespace k, v, arg for k, v of arg when k not in excludedKeys
     @
-  excludedKeys = ["__super__", "namespace", "namespacePath"].concat Object.keys Base
+  excludedKeys = ["__super__"].concat Object.keys Base
 
 module.exports = self.Neptune = class Neptune extends Base
   @Base: Base
@@ -126,4 +128,4 @@ module.exports = self.Neptune = class Neptune extends Base
   @package: _package = require "../package.json"
   @version: _package.version
 
-console.log "neptune-namespaces global defined: self.Neptune"
+Base.namespace = Neptune
