@@ -11,8 +11,10 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 # global == self == window (if in browser)
 if typeof global == 'object'
   # running in node.js
+  isNode = true
   global.self = global
 else
+  isNode = false
   self.global ||= self
 
 unless (->).name?
@@ -31,8 +33,19 @@ class Base
   @namespace: null
   @allNamespaces: {}
   @namespaces: []
-  @modules: []
-  @moduleNames: []
+  # @modules: []
+  # @moduleNames: []
+
+  @getName: ->
+    @_name || @name
+
+  @getInspectedObjects: ->
+    out = {}
+    for namespace in @namespaces
+      out[namespace.getName()] = namespace.getInspectedObjects()
+    for mod in @moduleNames
+      out[mod] = true
+    out
 
   # OUT: namespace
   @addNamespace: (name, namespace) ->
@@ -49,6 +62,7 @@ class Base
 
   @_setChildNamespace: (name, child) ->
     if typeof child == "function" && name.match /^[A-Z]/
+      child._name = name
       child.namespace = @
       child.namespacePath = @namespacePath + "." + name
 
@@ -64,7 +78,11 @@ class Base
 
   @addModules: (map) ->
     @modules = [] unless @hasOwnProperty "modules"
-    @moduleNames = [] unless @hasOwnProperty "moduleNames"
+    if @hasOwnProperty "moduleNames"
+      console.log("NeptuneNamespaces: alread have moduleNames for #{@getName()}")
+    else
+      console.log("NeptuneNamespaces: create moduleNames for #{@getName()}")
+      @moduleNames = []
 
     for name, module of map
       @moduleNames.push name
@@ -104,5 +122,8 @@ module.exports = self.Neptune = class Neptune extends Base
   @namespacePath: "Neptune"
   @namespace: null
   @isNamespace: (klass) -> klass?.prototype instanceof Base
+  @isNode: isNode
+  @package: _package = require "../package.json"
+  @version: _package.version
 
 console.log "neptune-namespaces global defined: self.Neptune"
