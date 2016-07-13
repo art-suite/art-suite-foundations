@@ -1,5 +1,6 @@
 Generator = require "../generator"
-{assert} = require 'chai'
+{assert} = require './Chai'
+
 {log} = require '../src/Generation/MiniFoundation'
 
 suite "NeptuneNamespaces.Generator", ->
@@ -11,6 +12,16 @@ suite "NeptuneNamespaces.Generator", ->
     .then ({generatedFiles, namespaces}) ->
       assert.match generatedFiles["root/index.coffee"], /File.*require.*\.\/file/
       assert.match generatedFiles["root/namespace.coffee"], /class Root/
+
+  test "file comment should be relative to root's parent", ->
+    generator = new Generator root = "/Users/alice/dev/src/MyApp", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "#{root}/Module.coffee"
+        "#{root}/SubNamespace/SubModule.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      for file, contents of generatedFiles
+        assert.match contents, "# file: MyApp", file
 
   test "special file names", ->
     generator = new Generator "root", pretend: true, quiet: true

@@ -4,7 +4,7 @@
 } = require '../Helper'
 
 module.exports = class NamespaceGenerator
-  @generate: (namespace) ->
+  @generate: (namespace, relativeFilePath) ->
     {parent, path, namespaceName} = namespace
     parentNamespaceName = parent.namespaceName
     parentNamespacePath = if parent.parent
@@ -14,7 +14,7 @@ module.exports = class NamespaceGenerator
 
     """
     #{generatedByString}
-    # file: #{path}/namespace.coffee
+    # file: #{relativeFilePath || path}/namespace.coffee
 
     #{parentNamespaceName} = require '#{parentNamespacePath}'
     module.exports = #{parentNamespaceName}.#{namespaceName} ||

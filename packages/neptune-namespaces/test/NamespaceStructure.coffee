@@ -1,17 +1,9 @@
 NamespaceStructure = require "../src/Generation/NamespaceStructure"
 MiniFoundation = require '../src/Generation/MiniFoundation'
-{assert} = require 'chai'
+{assert} = require './Chai'
 
 {log, formattedInspect} = MiniFoundation
 {shouldIgnore, shouldNotNamespace} = NamespaceStructure
-
-assert.eq = (a, b, optionalInfo) ->
-  aInspected = formattedInspect a
-  bInspected = formattedInspect b
-  unless aInspected == bInspected
-    message = "expected\n  #{aInspected.replace /\n/g, "\n  "}\n\nto equal (when comparing formattedInspect output)\n  #{bInspected.replace /\n/g, "\n  "}\n"
-    message += "info: #{optionalInfo}\n" if optionalInfo
-    assert.fail a, b, message
 
 suite "NeptuneNamespaces.NamespaceStructure.MiniFoundation", ->
   test "shouldIgnore '.foo.coffee'", ->

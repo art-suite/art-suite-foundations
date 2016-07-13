@@ -5,6 +5,7 @@ fsp = require "fs-promise"
   upperCamelCase, peek, pushIfUnique, indent, pad, withoutTrailingSlash, promiseSequence, merge
   getRelativePath
   getAbsPath
+  getParentPath
   log
 } = require "./MiniFoundation"
 Path = require "path"
@@ -61,6 +62,7 @@ module.exports = class Generator
   constructor: (@root, options = {}) ->
     throw new Error "root required" unless typeof @root == "string"
     {@pretend, @verbose, @lastGenerator, @force, @quiet} = options
+    @rootPrefix = getParentPath @root
 
   generateHelper: ({name, code}) ->
     if @pretend
@@ -106,11 +108,11 @@ module.exports = class Generator
 
       @generateHelper
         name: "#{path}/namespace.coffee"
-        code: NamespaceGenerator.generate namespace
+        code: NamespaceGenerator.generate namespace, @getRelativePath path
 
       @generateHelper
         name: "#{path}/index.coffee"
-        code: IndexGenerator.generate namespace
+        code: IndexGenerator.generate namespace, @getRelativePath path
 
   showNamespaceStructure: (namespaces) ->
     @log "generating namespace structure:"

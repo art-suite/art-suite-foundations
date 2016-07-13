@@ -1,4 +1,5 @@
 colors = require "colors"
+Path = require 'path'
 module.exports = class Lib
   @compactFlatten: compactFlatten =(require './ArrayCompactFlatten').compactFlatten
   @promiseSequence: (promiseGeneratingFunctions) ->
@@ -86,13 +87,16 @@ module.exports = class Lib
     else
       "#{a}"
 
-  @log: ->
+  @log: log = ->
     if arguments.length == 1
       console.log formattedInspect arguments[0]
     else
       list = for el in arguments
         el
       console.log formattedInspect list
+
+  @getParentPath: (path) ->
+    Path.parse(path).dir
 
   @getRelativePath: (absFrom, absTo) ->
     if absFrom

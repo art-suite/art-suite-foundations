@@ -1,6 +1,7 @@
 {
   compactFlatten
   log
+  getRelativePath
 } = require '../MiniFoundation'
 {
   generatedByString
@@ -12,12 +13,12 @@ requirePath = (filenameWithExtension) ->
   "./" + Path.parse(filenameWithExtension).name
 
 module.exports = class NamespaceGenerator
-  @generate: (namespace) ->
+  @generate: (namespace, relativeFilePath) ->
     {path, includeInNamespace} = namespace
 
     contents = compactFlatten [
       generatedByString
-      "# file: #{path}/index.coffee"
+      "# file: #{relativeFilePath || path}/index.coffee"
       ""
       "require '#{requirePath name}'" for name in namespace.getAllNonNamespacedRequires().sort()
       "(module.exports = require './namespace')"
