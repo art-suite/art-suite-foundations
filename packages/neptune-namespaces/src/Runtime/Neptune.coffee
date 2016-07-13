@@ -125,7 +125,7 @@ module.exports = self.Neptune = class Neptune extends Base
   @namespace: null
   @isNamespace: (klass) -> klass?.prototype instanceof Base
   @isNode: isNode
-  @package: _package = require "../package.json"
+  @package: _package = require "../../package.json"
   @version: _package.version
 
 Base.namespace = Neptune

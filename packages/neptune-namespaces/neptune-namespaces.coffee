@@ -2,14 +2,14 @@ colors = require "colors"
 glob = require "glob"
 fsp = require "fs-promise"
 fs = require 'fs'
-Generator = require "./src/Generator"
+Generator = require "./src/Generation/Generator"
 {version} = require './package.json'
 
 
 {
   upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash
   promiseSequence
-} = require "./src/tools"
+} = require "./src/Generation/MiniFoundation"
 
 standardRoots = ["src/*", "test/*", "perf/*"]
 
