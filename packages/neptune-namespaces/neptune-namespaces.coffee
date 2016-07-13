@@ -2,7 +2,7 @@ colors = require "colors"
 glob = require "glob"
 fsp = require "fs-promise"
 fs = require 'fs'
-Generator = require "./src/generator"
+Generator = require "./src/Generator"
 {version} = require './package.json'
 
 
@@ -15,7 +15,7 @@ standardRoots = ["src/*", "test/*", "perf/*"]
 
 NomNom = require "nomnom"
 
-{root, watch, verbose, force, silent, std} = opts = NomNom
+{root, watch, verbose, force, quiet, std} = opts = NomNom
 .option 'root',
   abbr: 'r'
   list: true
@@ -28,8 +28,8 @@ NomNom = require "nomnom"
   abbr: 'v'
   flag: true
   help: 'enable verbose output'
-.option 'silent',
-  abbr: 's'
+.option 'quiet',
+  abbr: 'q'
   flag: true
   help: 'suppress all output'
 .option 'force',
@@ -70,7 +70,7 @@ run = (targetPaths) ->
         Generator.generate targetPath,
           verbose: verbose
           force: force
-          silent: silent
+          quiet: quiet
           watch: watch
           persistent: true
 
