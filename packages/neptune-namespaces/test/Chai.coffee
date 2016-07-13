@@ -30,4 +30,10 @@ assert.match = (a, b, context) ->
   else unless a.match b
     failWithExpectedMessage context, a, "match", b
 
+assert.doesNotMatch = (a, b, context) ->
+  if !a
+    failWithExpectedMessage context, a, "be truish and then match", b
+  else if a.match b
+    failWithExpectedMessage context, a, "not match", b
+
 module.exports = chai

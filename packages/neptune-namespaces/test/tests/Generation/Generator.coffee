@@ -69,7 +69,6 @@ suite "NeptuneNamespaces.Generator", ->
     generator = new Generator "root", pretend: true, quiet: true
     generator.generateFromFiles [
         "root/my namespace/file.coffee"
-        "root/file2.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
       assert.eq Object.keys(generatedFiles).sort(), [
@@ -80,3 +79,4 @@ suite "NeptuneNamespaces.Generator", ->
       ]
       assert.match generatedFiles["root/my namespace/namespace.coffee"], /require.*\.\/namespace/
       assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
+      assert.doesNotMatch generatedFiles["root/index.coffee"], "addModules"

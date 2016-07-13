@@ -42,6 +42,8 @@ module.exports = class NamespaceGenerator
       for item in items.sort((a, b) -> a.path.localeCompare b.path)
         [" ", item.namespaceName + ":", "require '#{requirePath item.path}'"]
 
+    modules = generateNamespacedList namespace.fileSet
+
     contents = compactFlatten [
       generatedByString
       "# file: #{relativeFilePath || path}/index.coffee"
@@ -49,8 +51,8 @@ module.exports = class NamespaceGenerator
       "require '#{requirePath name}'" for name in namespace.getAllNonNamespacedRequires().sort()
       "module.exports = require './namespace'"
       includeInNamespace && ".includeInNamespace require '#{requirePath includeInNamespace}'"
-      ".addModules"
-      alignColumns generateNamespacedList namespace.fileSet
+      ".addModules" if modules.length > 0
+      alignColumns modules
       "require './#{path}'" for namespaceName, path of namespace.subdirSet.namespaced
     ]
 
