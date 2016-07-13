@@ -36,6 +36,10 @@ suite "NeptuneNamespaces.Generator", ->
         ///
       # file1 not included
       assert.ok !generatedFiles["root/index.coffee"].match /file1/
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/index.coffee"
+        "root/namespace.coffee"
+      ]
 
   test "subnamespace", ->
     generator = new Generator "root", pretend: true, quiet: true
@@ -44,5 +48,11 @@ suite "NeptuneNamespaces.Generator", ->
         "root/file2.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/index.coffee"
+        "root/my namespace/index.coffee"
+        "root/my namespace/namespace.coffee"
+        "root/namespace.coffee"
+      ]
       assert.match generatedFiles["root/my namespace/namespace.coffee"], /require.*\.\/namespace/
       assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
