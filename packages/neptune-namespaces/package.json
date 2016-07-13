@@ -1,6 +1,6 @@
 {
   "name": "neptune-namespaces",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "scripts": {
     "test": "neptune-namespaces --std;mocha -u tdd --compilers coffee:coffee-script/register -w"
