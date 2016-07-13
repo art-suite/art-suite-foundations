@@ -7,15 +7,7 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 
 ###
 
-# standardize across javascript environments:
-# global == self == window (if in browser)
-if typeof global == 'object'
-  # running in node.js
-  isNode = true
-  global.self = global
-else
-  isNode = false
-  self.global ||= self
+require "./global"
 
 unless (->).name?
   Object.defineProperty Function.prototype, 'name',
@@ -124,7 +116,7 @@ module.exports = self.Neptune = class Neptune extends Base
   @namespacePath: "Neptune"
   @namespace: null
   @isNamespace: (klass) -> klass?.prototype instanceof Base
-  @isNode: isNode
+  @isNode: require 'detect-node'
   @package: _package = require "../../package.json"
   @version: _package.version
 
