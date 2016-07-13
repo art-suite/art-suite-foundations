@@ -50,10 +50,8 @@ module.exports = class NamespaceGenerator
       "module.exports = require './namespace'"
       includeInNamespace && ".includeInNamespace require '#{requirePath includeInNamespace}'"
       ".addModules"
-      alignColumns(
-        generateNamespacedList namespace.fileSet
-        generateNamespacedList namespace.subdirSet
-      )
+      alignColumns generateNamespacedList namespace.fileSet
+      "require './#{path}'" for namespaceName, path of namespace.subdirSet.namespaced
     ]
 
     contents.join "\n"

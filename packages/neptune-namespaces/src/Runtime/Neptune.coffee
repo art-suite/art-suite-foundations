@@ -32,7 +32,7 @@ class Base
   @namespacePath: "Neptune.Base"
   @namespace: null
   @allNamespaces: {}
-  @subNamespaces: []
+  @namespaces: []
   @modules: []
   @moduleNames: []
   @_name: "Base"
@@ -41,9 +41,9 @@ class Base
     @_name = name
     @modules = []
     @moduleNames = []
-    @subNamespaces = []
+    @namespaces = []
     @namespace[name] = @
-    @namespace.subNamespaces.push @
+    @namespace.namespaces.push @
     @
 
   @getName: ->
@@ -52,7 +52,7 @@ class Base
   @getInspectedObjects: (includeModules = true)->
     out = {}
     out.version = @version if @version
-    for namespace in @subNamespaces
+    for namespace in @namespaces
       out[namespace.getName()] = namespace.getInspectedObjects includeModules
     # for mod in @moduleNames
     #   out[mod] = true

@@ -33,6 +33,7 @@ suite "NeptuneNamespaces.Generator", ->
         "root/aSubmodule/foo.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
+      log generatedFiles
       assert.match generatedFiles["root/index.coffee"],
         ///
         file2
@@ -53,7 +54,7 @@ suite "NeptuneNamespaces.Generator", ->
         File4: .* file4
         (.|\n)*
 
-        ASubmodule: .* aSubmodule
+        \nrequire .* aSubmodule
         ///
       # file1 not included
       assert.ok !generatedFiles["root/index.coffee"].match /file1/
