@@ -1,6 +1,4 @@
-NamespaceStructure = require "../src/Generation/NamespaceStructure"
-MiniFoundation = require '../src/Generation/MiniFoundation'
-{assert} = require './Chai'
+{NamespaceStructure, MiniFoundation} = Generation
 
 {log, formattedInspect} = MiniFoundation
 {shouldIgnore, shouldNotNamespace} = NamespaceStructure

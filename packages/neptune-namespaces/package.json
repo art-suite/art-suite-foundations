@@ -3,7 +3,7 @@
   "version": "0.4.4",
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "scripts": {
-    "test": "neptune-namespaces -r test/tests/ -r src/*;mocha -u tdd --compilers coffee:coffee-script/register"
+    "test": "neptune-namespaces --std;mocha -u tdd --compilers coffee:coffee-script/register -w"
   },
   "author": "Shane Brinkman-Davis Delamore",
   "license": "MIT",
