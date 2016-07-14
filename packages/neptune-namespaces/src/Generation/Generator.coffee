@@ -33,6 +33,8 @@ module.exports = class Generator
             generator.generate()
             .then ->
               Generator.watch root, merge options, lastGenerator: generator if options.watch
+            .catch (error) ->
+              log "Error: ".red, foo
 
       promiseSequence filePromiseGenerators
 
@@ -146,6 +148,5 @@ module.exports = class Generator
       if files.length == 0
         error = "no .coffee files found"
         @log error.yellow.bold
-        throw new Error error
       else
         @generateFromFiles files
