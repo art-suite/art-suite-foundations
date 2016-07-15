@@ -38,6 +38,8 @@ class Base
     @namespace.namespaces.push @
     @
 
+  @getNamespacePath: -> @namespacePath
+
   @getName: ->
     @_name || @name
 
