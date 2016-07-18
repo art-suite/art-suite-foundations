@@ -28,6 +28,8 @@ class Base
   @modules: []
   @moduleNames: []
   @_name: "Base"
+  @package: null
+  @version: null
 
   @initAsSubNamespace: (name, @namespace) ->
     @_name = name
