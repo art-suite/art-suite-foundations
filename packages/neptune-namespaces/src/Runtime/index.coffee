@@ -3,4 +3,5 @@
 
 module.exports = require './namespace'
 .addModules
+  Global:  require './global' 
   Neptune: require './Neptune'
