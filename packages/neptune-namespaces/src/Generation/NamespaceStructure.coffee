@@ -58,7 +58,12 @@ class Namespace
     out = []
     @fileSet && (out.push v for v in @fileSet.notNamespaced)
     @subdirSet && (out.push v for v in @subdirSet.notNamespaced)
-    out
+    out.sort()
+
+  getAllNamespacedSubdirRequires: ->
+    out = []
+    @subdirSet && (out.push v for k, v of @subdirSet.namespaced)
+    out.sort()
 
 class NamespaceDir
   constructor: ({pathArray, @path, parent}) ->

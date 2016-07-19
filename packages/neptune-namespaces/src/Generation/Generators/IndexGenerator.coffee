@@ -48,12 +48,12 @@ module.exports = class NamespaceGenerator
       generatedByString
       "# file: #{relativeFilePath || path}/index.coffee"
       ""
-      "require '#{requirePath name}'" for name in namespace.getAllNonNamespacedRequires().sort()
+      "require '#{requirePath name}'" for name in namespace.getAllNonNamespacedRequires()
       "module.exports = require './namespace'"
       includeInNamespace && ".includeInNamespace require '#{requirePath includeInNamespace}'"
       ".addModules" if modules.length > 0
       alignColumns modules
-      "require './#{path}'" for namespaceName, path of namespace.subdirSet.namespaced
+      "require '#{requirePath name}'" for name in namespace.getAllNamespacedSubdirRequires()
     ]
 
     contents.join "\n"
