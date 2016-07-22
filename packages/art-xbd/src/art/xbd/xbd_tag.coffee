@@ -42,9 +42,10 @@ module.exports = class XbdTag extends BaseObject
 
   ###
   @createTagFactories: (tagNames, factoryNameSuffix = 'Tag')->
-    createObjectTreeFactories tagNames, (tagName, attrs, subTags) ->
-      new XbdTag tagName, attrs, subTags
-    , factoryNameSuffix
+    createObjectTreeFactories
+      suffix: factoryNameSuffix
+      tagNames,
+      (tagName, attrs, subTags) -> new XbdTag tagName, attrs, subTags
 
   ###########################
   # fromXbd Binary String

@@ -15,7 +15,7 @@ testWriteReadXbd = (testName, tagFactory) ->
       assert.eq inputTag.xml, outputTag.xml, "expected input to equal output"
 
 suite "Art.Xbd.toXbd", ->
-  {ATag, BTag, MyRootTag} = createTagFactories "A B myRoot"
+  {ATag, BTag, MyRootTag} = tf = createTagFactories "A B myRoot"
 
   testWriteReadXbd "MyRootTag", -> new XbdTag "MyRootTag"
   testWriteReadXbd "MyRootTag foo: 'bar'", -> new XbdTag "MyRootTag", foo: "bar"
