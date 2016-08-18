@@ -2,6 +2,8 @@ colors = require "colors"
 glob = require "glob"
 fsp = require "fs-promise"
 fs = require 'fs'
+NomNom = require "nomnom"
+
 Generator = require "./src/Generation/Generator"
 {version} = require './package.json'
 
@@ -13,7 +15,6 @@ Generator = require "./src/Generation/Generator"
 
 standardRoots = ["src/*", "test/*", "perf/*"]
 
-NomNom = require "nomnom"
 
 {root, watch, verbose, force, quiet, std} = opts = NomNom
 .option 'root',
