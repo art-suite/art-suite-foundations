@@ -63,8 +63,11 @@ class Base
     @allNamespaces[@namespacePath] = namespace.initAsSubNamespace name, @
     namespace
 
+  isFunction = (f) -> typeof f == "function"
+
   @_setChildNamespaceProps: (name, child) ->
-    if typeof child == "function" && name.match /^[A-Z]/
+    if isFunction child
+      @_setChildNamespaceProps name, child.class if isFunction child.class
       child.namespace = @
       child.namespacePath = @namespacePath + "." + name
 
