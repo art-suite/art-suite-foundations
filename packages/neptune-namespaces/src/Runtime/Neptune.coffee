@@ -84,8 +84,12 @@ class Base
   @addModules: (map) ->
 
     for name, module of map
-      @moduleNames.push name
-      @modules.push module
+      if @[name]
+        @modules[@modules.indexOf @[name]] = module
+      else
+        @moduleNames.push name
+        @modules.push module
+
       @_setChildNamespaceProps name, module
       @[name] = module unless name.match /^-/
     @
