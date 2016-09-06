@@ -191,16 +191,11 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * Example:
 
     ```coffeescript
-    ###
-    Given this directory structure:
+    # file: root/MyNamespace/Foo/Bar.coffee
+    module.exports = class Bar
 
-      root/MyNamespace/Foo/SomeFile.coffee
-      root/MyNamespace/.Foo.coffee
-
-    ###
-
-    # file: root/MyNamespace/Foo/SomeFile.coffee
     # file: root/MyNamespace/.Foo.coffee
+    module.exports = class DotFoo
 
     # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
@@ -209,11 +204,12 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
     require './MyNamespace/Foo'
 
-    MyNamespace.Foo? == true
+    MyNamespace.Foo.Bar? == true
 
     Foo = require './MyNamespace/.Foo'
 
     MyNamespace.Foo != Foo
+    Foo.getName() == "DotFoo"
     ```
 
 ## Concrete Examples
