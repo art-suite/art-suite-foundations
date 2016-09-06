@@ -200,8 +200,9 @@ Same-Names Conventions:
 
 Special rules apply when a file-name is the same as a parent or sibling directory-name. File-names and directory-names are the same if they are equal (==)  after normalizing them with `upperCamelCase()`.
 
-  * `fileName == parentDirectoryName`
-    * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
+  * `normalizedFileName == normalizedParentDirectoryName`
+    * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace require './normalizedFileName'`
+    * See the method `Neptune.Base#includeInNamespace` for more details.
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
     ```coffeescript
@@ -216,7 +217,7 @@ Special rules apply when a file-name is the same as a parent or sibling director
     # MyNamespace.MyNamespace? == false
     ```
 
-  * `siblingFileName == siblingSubDirectoryName`
+  * `normalizedSiblingFileName == normalizedSiblingSubDirectoryName`
     * In this case the file is `required`, but the directory is not.
     * i.e. The file *shadows* the directory.
     * *Use case: A dot-file with the same name as a non-dot-directory effectively makes the directory optioanal without having to make the directory a dot-directory. This allows you to refactor a directory to be optional without breaking any existing requires by renaming the directory.*
