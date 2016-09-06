@@ -3,5 +3,6 @@
 
 module.exports = require './namespace'
 .addModules
-  Global:  require './global' 
-  Neptune: require './Neptune'
+  Function: require './function'
+  Global:   require './global'  
+  Neptune:  require './Neptune' 

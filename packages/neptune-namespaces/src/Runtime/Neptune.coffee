@@ -8,110 +8,81 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 ###
 
 require "./global"
+require "./function"
 
-unless (->).name?
-  Object.defineProperty Function.prototype, 'name',
-    get: ->
-      name = if matches = @toString().match /^\s*function\s*([^\s(]+)/
-        matches[1]
-      else
-        ""
-      Object.defineProperty @, 'name', value: name
-
-      name
+isFunction = (f) -> typeof f == "function"
+isPlainArray = (o) -> o.constructor == Array
 
 class Base
-  @namespacePath: "Neptune.Base"
-  @namespace: null
+  # global map of all namespaces:
+  #   namespacePath: namespace
   @allNamespaces: {}
-  @namespaces: []
-  @namespaceNames: []
-  @modules: []
-  @moduleNames: []
+  @getAllNamespacePaths: => Object.keys(@allNamespaces).sort()
+
+  #################################
+  # Standard namespace Properties
+  #################################
+  # name of this namespace.
+  # NOTE: use @getName() to read the name of any function, including namespaces
   @_name: "Base"
 
-  @initAsSubNamespace: (name, @namespace) ->
-    @_name = name
-    @modules = []
-    @moduleNames = []
-    @namespaces = []
-    @namespaceNames = []
-    @
+  # string representing the absolute path of this namespace
+  # Should be able to "eval" this string and get back this namespace.
+  @namespacePath: "Neptune.Base"
 
-  @getNamespacePath: -> @namespacePath
+  # parent namespace (extends Base)
+  @namespace: null
 
-  @getName: ->
-    @_name || @name
+  # map: name: sub-namespace (each extends Base)
+  @namespaces: {}
+
+  # map: name: module
+  @modules: {}
+
+  #############################
+  # Get info about namespace
+  #############################
+  @getNamespacePath:  -> @namespacePath
+  @getNamespaceNames: -> Object.keys(@namespaces).sort()
+  @getModuleNames:    -> Object.keys(@modules).sort()
 
   @getInspectedObjects: (includeModules = true)->
     out = {}
     out.version = @version if @version
-    for namespace in @namespaces
-      out[namespace.getName()] = namespace.getInspectedObjects includeModules
-    # for mod in @moduleNames
-    #   out[mod] = true
-    out.modules = @moduleNames.join ' ' if includeModules && @moduleNames.length > 0
+    for name, namespace in @namespaces
+      out[name] = namespace.getInspectedObjects includeModules
+
+    out.modules = @getModuleNames().join ', ' if includeModules && @getModuleNames().length > 0
     out
+
+  ################################################
+  # BUILD UP NAMESPACES
+  # Used in generated index and namespace files
+  ################################################
 
   # OUT: namespace
   @addNamespace: (name, namespace) ->
-    unless namespace
-      # legacy support
-      namespace = name
-      name = namespace.name
-    @_setChildNamespaceProps name, namespace
-    @allNamespaces[@namespacePath] = namespace.initAsSubNamespace name, @
-
-    if @[name]
-      @namespaces[@namespaces.indexOf @[name]] = namespace
-    else
-      @namespaceNames.push name
-      @namespaces.push namespace
-
-    @[name] = namespace
-
-    namespace
-
-  isFunction = (f) -> typeof f == "function"
-
-  @_setChildNamespaceProps: (name, child) ->
-    if isFunction child
-      @_setChildNamespaceProps name, child.class if isFunction child.class
-      child.namespace = @
-      child.namespacePath = @namespacePath + "." + name
-
-  # OUT: v
-  @addToNamespace: (k, v, addingFrom) ->
-    if @[k]
-      if @[k] != v
-        addingFromString = addingFrom.namespacePath || addingFrom.name || (Object.keys addingFrom).join(', ')
-        console.error "#{@namespacePath} already has key: #{k}. Adding from: #{addingFromString}"
-      @[k]
-    else
-      @[k] = v
+    @allNamespaces[namespace.namespacePath] =
+    @namespaces[name] = @[name] = namespace._init name, @
 
   @addModules: (map) ->
-
     for name, module of map
-      if @[name]
-        @modules[@modules.indexOf @[name]] = module
-      else
-        @moduleNames.push name
-        @modules.push module
-
       @_setChildNamespaceProps name, module
-      @[name] = module unless name.match /^-/
+      @modules[name] = @[name] = module unless name.match /^-/
+
     @
 
-  isPlainArray = (o) -> o.constructor == Array
   ###
-  IN: any combination of objects an arrays
-    array: [fromObject, list of strings]
-      each string is parsed to find everything that matches /[0-9a-z_]+/ig
-      From there, we have a list of property-names.
-      Every property in fromObject that matches one of those property-names is added to
-      the namespace.
+  IN: any combination of objects or arrays
     object: all properties in the object are added to the namespace
+
+    array: [fromObject, property names as one or more strings]
+      for propName in every sub-string in args matching: /[0-9a-z_]+/ig
+        @_addToNamespace propName, fromObject
+
+      Each string is parsed to find everything that matches: /[0-9a-z_]+/ig
+      All resulting property names are concated into a one list.
+      Every property in fromObject that matches one of the property-names is added to the namespace.
   ###
   @includeInNamespace: ->
     args = if arguments.length == 1 && isPlainArray arguments[0]
@@ -122,12 +93,74 @@ class Base
       if isPlainArray arg
         [fromObject] = arg
         for i in [1...arg.length]
-          for key in arg[i].match /[0-9a-z_]+/ig
-            @addToNamespace key, fromObject[key], fromObject
+          for propName in arg[i].match /[0-9a-z_]+/ig
+            @_addToNamespace propName, fromObject
       else
-        @addToNamespace k, v, arg for k, v of arg when k not in excludedKeys
+        @_addToNamespace propName, arg for propName, v of arg
     @
-  excludedKeys = ["__super__"].concat Object.keys Base
+
+  #####################
+  # PRIVATE
+  #####################
+
+  ###
+  Every child of a namespace gets these properties:
+
+    namespace:      pointer to the parent namespace
+    namespacePath:  string path from global to child
+
+  NOTE: only modules which return a class or function
+    get their namespace-props set.
+  ###
+  @_setChildNamespaceProps: (name, child) ->
+    if isFunction child
+      @_setChildNamespaceProps name, child.class if isFunction child.class
+      child.namespace = @
+      child.namespacePath = @namespacePath + "." + name
+
+  ###
+  CoffeeScript classes copy all class props when inheriting,
+  but some props need to be unique to each instance. This
+  function initializes those props.
+  ###
+  @_init: (name, @namespace) ->
+    @_name = name
+    @modules = {}
+    @namespaces = {}
+    @namespace._setChildNamespaceProps name, @
+    @
+
+  # @_addToNames will never add a property with the same name
+  # as __super__ or any of the property names in the Base namespace.
+  excludedPropNames = ["__super__"].concat Object.keys Base
+
+  ###
+  Helper for includeInNamespace.
+  Add anything to the namespace.
+
+  IN:
+    propName:   property name to  value will be assigned to in the namespace (string)
+    addingFrom: object
+      used for reporting errors if attempting to overwrite an
+      existing item.
+
+  EFFECT:
+    Only adds value if @[propName] is not already set.
+    Otherwise, reports error and continues.
+
+  OUT: value
+  ###
+  @_addToNamespace: (propName, addingFrom) ->
+    return if propName in excludedPropNames
+    return unless value = addingFrom[propName]
+
+    if @[propName]
+      if @[propName] != value
+        addingFromString = addingFrom.namespacePath || addingFrom.propName || (Object.keys addingFrom).join(', ')
+        console.error "#{@namespacePath} already has key: #{propName}. Adding from: #{addingFromString}"
+      @[propName]
+    else
+      @[propName] = value
 
 module.exports = self.Neptune = class Neptune extends Base
   @Base: Base
