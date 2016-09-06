@@ -143,6 +143,8 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * Example:
 
     ```coffeescript
+    # if this file exists: MyNamespace/.Foo/SomeFile.coffee
+
     MyNamespace = require '.../MyNamespace'
     # MyNamespace.Foo is not set
 
@@ -153,6 +155,18 @@ Below is a description of the convenions. Scroll down further for detailed examp
   * Dot Files (.): Ignored
     * not `required` by parent namespace
     * *Use case: These files are completely ignored by NN. Useful if you need to completely escape the NN system.*
+    * Example:
+
+    ```coffeescript
+    # if this file exists: MyNamespace/.Foo.coffee
+
+    MyNamespace = require '.../MyNamespace'
+    # MyNamespace.Foo is not set
+
+    Foo = require '.../MyNamespace/.Foo'
+    # MyNamespace.Foo is still not set,
+    # but the local variable Foo is set like any normal, manual require.
+    ```
 
 * Special File-names (after removing any underscore prefixes)
   * `upperCamelCase(fileName) == upperCamelCase(parentDirectoryName)`
