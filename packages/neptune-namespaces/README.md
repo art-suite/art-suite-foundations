@@ -180,8 +180,8 @@ Below is a description of the convenions. Scroll down further for detailed examp
     # file: root/someFile.coffee
     MyNamespace = require './MyNamespace'
 
-    MyNamespace.foo == "bar"
-    MyNamespace.MyNamespace? == false
+    # MyNamespace.foo == "bar"
+    # MyNamespace.MyNamespace? == false
     ```
 
   * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
@@ -200,16 +200,17 @@ Below is a description of the convenions. Scroll down further for detailed examp
     # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
 
-    assert !MyNamespace.Foo
+    # MyNamespace.Foo? == false
 
     require './MyNamespace/Foo'
 
-    assert MyNamespace.Foo.Bar
+    # MyNamespace.Foo? == true
+    # MyNamespace.Foo.Bar? == true
 
     Foo = require './MyNamespace/.Foo'
 
-    assert MyNamespace.Foo != Foo
-    assert Foo.getName() == "DotFoo"
+    # MyNamespace.Foo != Foo
+    # Foo.getName() == "DotFoo"
     ```
 
 ## Concrete Examples
