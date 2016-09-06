@@ -181,8 +181,8 @@ Below is a description of the convenions. Scroll down further for detailed examp
     # file: root/someFile.coffee
     MyNamespace = require './MyNamespace'
 
-    # MyNamespace.foo == "bar"
-    # MyNamespace.MyNamespace is not set
+    MyNamespace.foo == "bar"
+    MyNamespace.MyNamespace? == false
     ```
 
   * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
