@@ -207,9 +207,11 @@ Special rules apply when a file-name is the same as a parent or sibling director
     * *Use case: Manually control load order with custom `requires` in this file.*
     ```coffeescript
     # file: root/MyNamespace/Zoo.coffee
+    global.loadedLast = "Zoo"
     ```
     ```coffeescript
     # file: root/MyNamespace/Animal.coffee
+    global.loadedLast = "Animal"
     ```
     ```coffeescript
     # file: root/MyNamespace/my_namespace.coffee
@@ -224,6 +226,7 @@ Special rules apply when a file-name is the same as a parent or sibling director
     # MyNamespace.Animal? == true
     # MyNamespace.Zoo? == true
     # MyNamespace.MyNamespace? == false
+    # global.loadedLast == "Animal"
     ```
 
   * `normalizedSiblingFileName == normalizedSiblingSubDirectoryName`
