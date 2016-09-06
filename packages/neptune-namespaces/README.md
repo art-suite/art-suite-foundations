@@ -182,21 +182,25 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
     ```coffeescript
     ###
-    Directory structure:
-      MyNamespace/
+    Given this directory structure:
+      root/MyNamespace/
         Foo/SomeFile.coffee
         .Foo.coffee
+
+    In root:
     ###
 
-    MyNamespace = require '.../MyNamespace'
+    MyNamespace = require './MyNamespace'
+
     # MyNamespace.Foo is not set
 
-    require '.../MyNamespace/Foo'
+    require './MyNamespace/Foo'
+
     # MyNamespace.Foo is set
 
-    Foo = require '.../MyNamespace/.Foo'
-    # MyNamespace.Foo is still set to the Foo/ namespace
-    # But the local vairable Foo is set to the .Foo module, like any normal, manual require.
+    Foo = require './MyNamespace/.Foo'
+
+    # MyNamespace.Foo is still set to the Foo/ namespace.
     ```
 
 ## Concrete Examples
