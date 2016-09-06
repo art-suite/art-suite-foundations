@@ -100,17 +100,17 @@ Neptune-Namespaces has an opinion about how you should organize your CoffeeScrip
 * all namespaces `extend` the global.Neptune.Base class
 
 Neptune-Namespace modules consist of file pairs:
-* `directory/index.coffee`
+* `MyDirectory/index.coffee`
   * automatically requires `./namespace.coffee`
   * automatically requires all CoffeeScript files in that directory
     * each is added to the namespace under the UpperCamelCase version of its filename without extension.
   * automatically requires all sub-directories which are namespace modules
     * each is added to the namespace under the UpperCamelCase version of its directory without extension.
   * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special-cases.
-* `directory/namespace.coffee`
+* `MyDirectory/namespace.coffee`
   * Defines the namespace using the directory's name:
   ```coffeescript
-  class MyDirectoryName extends Neptune.Base
+  class MyDirectory extends Neptune.Base
   ```
   * automatically requires and binds to the parent namespace: `require '../namespace'`
   * this is implicitly recursive to all ancestor namespaces
