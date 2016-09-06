@@ -41,11 +41,8 @@ coffee
 ```coffeescript
 # in the CoffeeScript node.js shell
 Geometry = require "./geometry"
-```
 
-Tada! All your classes are loaded and accessible as:
-
-```coffeescript
+# Tada! All your classes are loaded and accessible as:
 Geometry.Shapes.Square
 Geometry.Shapes.Circle
 Geometry.Solids.Cube
