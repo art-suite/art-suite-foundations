@@ -173,6 +173,24 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
+    ```coffeescript
+    ###
+    Given this directory structure:
+
+      root/MyNamespace/
+        my_namespace.coffee
+
+    ###
+
+    # file: root/MyNamespace/my_namespace.coffee
+    module.exports = foo: "bar"
+
+    # file: root/someFile.coffee
+    MyNamespace = require './MyNamespace'
+
+    # MyNamespace.foo == "bar"
+    # MyNamespace.MyNamespace is not set
+    ```
 
   * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
     * In this case the file is `required`, but the directory is not.
@@ -183,11 +201,11 @@ Below is a description of the convenions. Scroll down further for detailed examp
     ```coffeescript
     ###
     Given this directory structure:
+
       root/MyNamespace/
         Foo/SomeFile.coffee
         .Foo.coffee
 
-    In root:
     ###
 
     MyNamespace = require './MyNamespace'
@@ -200,7 +218,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
     Foo = require './MyNamespace/.Foo'
 
-    # MyNamespace.Foo is still set to the Foo/ namespace.
+    # MyNamespace.Foo != Foo
     ```
 
 ## Concrete Examples
