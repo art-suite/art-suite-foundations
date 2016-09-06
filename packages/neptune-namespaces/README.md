@@ -142,7 +142,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
     * Example:
 
-    ```
+    ```coffeescript
     MyNamespace = require '.../MyNamespace'
     # MyNamespace.Foo is not set
 
