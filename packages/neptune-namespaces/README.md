@@ -181,9 +181,12 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * Example:
 
     ```coffeescript
-    # if this directory exists: MyNamespace/Foo/SomeFile.coffee
-    # if this file exists: MyNamespace/.Foo.coffee
-    # Then the Foo directory is effectively optional.
+    ###
+    Directory structure:
+      MyNamespace/
+        Foo/SomeFile.coffee
+        .Foo.coffee
+    ###
 
     MyNamespace = require '.../MyNamespace'
     # MyNamespace.Foo is not set
@@ -197,9 +200,6 @@ Below is a description of the convenions. Scroll down further for detailed examp
     ```
 
 ## Concrete Examples
-
-#### Bsic
-
 
 #### Normalized File-name == normalized parent-Directory-name
 
