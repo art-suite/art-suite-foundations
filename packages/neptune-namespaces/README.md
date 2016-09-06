@@ -31,6 +31,7 @@ module.exports = class Circle
 Then run:
 
 * shell:
+
   ```bash
   npm install neptune-namespaces
   neptune-namespaces --root geometry
@@ -38,6 +39,7 @@ Then run:
   node
   ```
 * node:
+
   ```javascript
   require("coffee-script/register")
   Geometry = require("./geometry")
