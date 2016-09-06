@@ -194,23 +194,26 @@ Below is a description of the convenions. Scroll down further for detailed examp
     ###
     Given this directory structure:
 
-      root/MyNamespace/
-        Foo/SomeFile.coffee
-        .Foo.coffee
+      root/MyNamespace/Foo/SomeFile.coffee
+      root/MyNamespace/.Foo.coffee
 
     ###
 
+    # file: root/MyNamespace/Foo/SomeFile.coffee
+    # file: root/MyNamespace/.Foo.coffee
+
+    # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
 
-    # MyNamespace.Foo is not set
+    MyNamespace.Foo? == false
 
     require './MyNamespace/Foo'
 
-    # MyNamespace.Foo is set
+    MyNamespace.Foo? == true
 
     Foo = require './MyNamespace/.Foo'
 
-    # MyNamespace.Foo != Foo
+    MyNamespace.Foo != Foo
     ```
 
 ## Concrete Examples
