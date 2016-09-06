@@ -140,7 +140,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * not `required` by parent namespace
     * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
     * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
-    * Example: `MyNamespace/.Foo/` will NOT be included in `MyNamespace` at runtime when you `require '.../MyNamespace'`, but it WILL be included accessable and accessable as `MyNamespace.Foo` if you also `require '.../MyNamespace/.Foo'`.
+    * Example: `MyNamespace/.Foo/` won't be included in `MyNamespace` at runtime when you `require '.../MyNamespace'`, but it will be included and accessable as `MyNamespace.Foo` if you also `require '.../MyNamespace/.Foo'`.
 
   * Dot Files (.): Ignored
     * not `required` by parent namespace
