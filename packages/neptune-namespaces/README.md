@@ -209,11 +209,11 @@ Special rules apply when a file-name is the same as a parent or sibling director
     # file: root/MyNamespace/Zoo.coffee
     ```
     ```coffeescript
-    # file: root/MyNamespace/Alphabet.coffee
+    # file: root/MyNamespace/Animal.coffee
     ```
     ```coffeescript
     # file: root/MyNamespace/my_namespace.coffee
-    require './Zoo' # load Zoo before Alphabet
+    require './Zoo' # load Zoo before Animal
     module.exports = foo: "bar"
     ```
     ```coffeescript
@@ -221,6 +221,8 @@ Special rules apply when a file-name is the same as a parent or sibling director
     MyNamespace = require './MyNamespace'
 
     # MyNamespace.foo == "bar"
+    # MyNamespace.Animal? == true
+    # MyNamespace.Zoo? == true
     # MyNamespace.MyNamespace? == false
     ```
 
