@@ -176,6 +176,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
   * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
     * In this case the file is `required`, but the directory is not.
+    * i.e. The file *shadows* the directory.
     * *Use case: A dot-file with the same name as a non-dot-directory effectively makes the directory optioanal without having to make the directory a dot-directory. This allows you to refactor a directory to be optional without breaking any existing requires by renaming the directory.*
     * Example:
 
