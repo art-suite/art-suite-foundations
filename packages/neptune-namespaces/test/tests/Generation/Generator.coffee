@@ -102,3 +102,40 @@ suite "NeptuneNamespaces.Generator", ->
       assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
       assert.doesNotMatch generatedFiles["root/index.coffee"], "addModules"
       assert.doesNotMatch generatedFiles["root/index.coffee"], "MyNamespace"
+
+
+  test "non-dot-namespaces with same-name-dot-file are effectively optional", ->
+    generator = new Generator "root", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "root/MyNamespace/file.coffee"
+        "root/.my_namespace.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/MyNamespace/index.coffee"
+        "root/MyNamespace/namespace.coffee"
+        "root/index.coffee"
+        "root/namespace.coffee"
+      ]
+      assert.match generatedFiles["root/MyNamespace/namespace.coffee"], /require.*\.\/namespace/
+      assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
+      assert.doesNotMatch generatedFiles["root/index.coffee"], "addModules"
+      assert.doesNotMatch generatedFiles["root/index.coffee"], "MyNamespace"
+
+  test "only file is required if directory and file have same name", ->
+    generator = new Generator "root", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "root/MyNamespace/file.coffee"
+        "root/my_namespace.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/MyNamespace/index.coffee"
+        "root/MyNamespace/namespace.coffee"
+        "root/index.coffee"
+        "root/namespace.coffee"
+      ]
+      assert.match generatedFiles["root/MyNamespace/namespace.coffee"], /require.*\.\/namespace/
+      assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
+      assert.match generatedFiles["root/index.coffee"], "addModules"
+      assert.doesNotMatch generatedFiles["root/index.coffee"], /(^|\n)require.*MyNamespace/

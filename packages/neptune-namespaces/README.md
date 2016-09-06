@@ -173,10 +173,20 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
+    ```coffeescript
+    # if this file exists: MyNamespace/.Foo.coffee
 
-  * `fileName == siblingSubdirectoryName`
+    MyNamespace = require '.../MyNamespace'
+    # MyNamespace.Foo is not set
+
+    Foo = require '.../MyNamespace/.Foo'
+    # MyNamespace.Foo is still not set,
+    # but the local variable Foo is set like any normal, manual require.
+    ```
+
+  * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
     * In this case the file is `required`, but the directory is not.
-    * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a "--".*
+    * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a ".".*
 
 #### File Name Conventions Example
 
