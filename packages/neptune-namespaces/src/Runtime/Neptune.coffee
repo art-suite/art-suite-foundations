@@ -25,6 +25,7 @@ class Base
   @namespace: null
   @allNamespaces: {}
   @namespaces: []
+  @namespaceNames: []
   @modules: []
   @moduleNames: []
   @_name: "Base"
@@ -34,8 +35,7 @@ class Base
     @modules = []
     @moduleNames = []
     @namespaces = []
-    @namespace[name] = @
-    @namespace.namespaces.push @
+    @namespaceNames = []
     @
 
   @getNamespacePath: -> @namespacePath
@@ -61,6 +61,15 @@ class Base
       name = namespace.name
     @_setChildNamespaceProps name, namespace
     @allNamespaces[@namespacePath] = namespace.initAsSubNamespace name, @
+
+    if @[name]
+      @namespaces[@namespaces.indexOf @[name]] = namespace
+    else
+      @namespaceNames.push name
+      @namespaces.push namespace
+
+    @[name] = namespace
+
     namespace
 
   isFunction = (f) -> typeof f == "function"
