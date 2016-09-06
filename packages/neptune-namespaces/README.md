@@ -143,7 +143,11 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * Example:
 
     ```
-    MyNamespace/.Foo/` won't be included in `MyNamespace` at runtime when you `require '.../MyNamespace'`, but it will be included and accessable as `MyNamespace.Foo` if you also `require '.../MyNamespace/.Foo'`.
+    MyNamespace = require '.../MyNamespace'
+    # MyNamespace.Foo is not set
+
+    require '.../MyNamespace/.Foo'
+    # MyNamespace.Foo is set
     ```
 
   * Dot Files (.): Ignored
