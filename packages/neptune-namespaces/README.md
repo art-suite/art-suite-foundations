@@ -112,10 +112,12 @@ Neptune-Namespace modules consist of file pairs:
   ```coffeescript
   class MyDirectory extends Neptune.Base
   ```
-  * automatically requires and binds to the parent namespace: `require '../namespace'`
-  * this is implicitly recursive to all ancestor namespaces
-  * if there is no parent namespace, it binds to the global, runtime namespace: `global.Neptune`
-    * If a global.Neptune namespace with the same name already exists, this new namespace definition is merged into the existing one.
+  * if the namespace already exists, reuses the existing one.
+  * automatically requires and binds to the parent namespace:
+    * `require '../namespace'`
+    * if there is no parent namespace, it binds to the global, runtime namespace:
+      * `global.Neptune`
+    * Note: implicitly requies all ancestor namespaces
 
 ## Convention Over Configuration
 
