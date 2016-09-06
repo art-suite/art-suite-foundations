@@ -129,75 +129,77 @@ Loading order Convention:
 * files and directories are `required` in alphanumeric order
 * certain naming-conventions can override the basic load-order. See below.
 
-Naming Conventions:
+Prefix Naming Conventions:
 
-* prefixes:
-  * Dash (-): First-loaded Files
-    * `required` but not added to namespace
-    * `required` before all other files
-    * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
+* Dash (-): First-loaded Files
+  * `required` but not added to namespace
+  * `required` before all other files
+  * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
 
-    ```coffeescript
-    # file: root/MyNamespace/-Foo.coffee
-    global.Foo = class DashFoo
-    ```
-    ```coffeescript
-    # file: root/someOtherFile.coffee
-    MyNamespace = require './MyNamespace'
+  ```coffeescript
+  # file: root/MyNamespace/-Foo.coffee
+  global.Foo = class DashFoo
+  ```
+  ```coffeescript
+  # file: root/someOtherFile.coffee
+  MyNamespace = require './MyNamespace'
 
-    # MyNamespace.Foo? == false
-    # global.Foo.name == "DashFoo"
-    ```
-  * Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
-    * The namespace name for these files and directories does not include the underscore prefix(s).
-    * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
-    * Example: `MyNamespace/_Foo.coffee` will be accessable at runtime as `MyNamespace.Foo`
+  # MyNamespace.Foo? == false
+  # global.Foo.name == "DashFoo"
+  ```
+* Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
+  * The namespace name for these files and directories does not include the underscore prefix(s).
+  * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
+  * Example: `MyNamespace/_Foo.coffee` will be accessable at runtime as `MyNamespace.Foo`
 
-  * Dot Directories (.): Optional Namespaces
-    * not `required` by parent namespace
-    * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
-    * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
-    * Example:
+* Dot Directories (.): Optional Namespaces
+  * not `required` by parent namespace
+  * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
+  * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
+  * Example:
 
-    ```coffeescript
-    # file: root/MyNamespace/.Foo/Bar.coffee
-    module.exports = class Bar
-    ```
-    ```coffeescript
-    # file: root/someOtherFile.coffee
-    MyNamespace = require './MyNamespace'
+  ```coffeescript
+  # file: root/MyNamespace/.Foo/Bar.coffee
+  module.exports = class Bar
+  ```
+  ```coffeescript
+  # file: root/someOtherFile.coffee
+  MyNamespace = require './MyNamespace'
 
-    # MyNamespace.Foo? == false
+  # MyNamespace.Foo? == false
 
-    require './MyNamespace/.Foo'
+  require './MyNamespace/.Foo'
 
-    # MyNamespace.Foo.Bar? == true
-    ```
+  # MyNamespace.Foo.Bar? == true
+  ```
 
-  * Dot Files (.): Ignored
-    * not `required` by parent namespace
-    * *Use case: These files are completely ignored by NN. Useful if you need to completely escape the NN system.*
-    * Example:
+* Dot Files (.): Ignored
+  * not `required` by parent namespace
+  * *Use case: These files are completely ignored by NN. Useful if you need to completely escape the NN system.*
+  * Example:
 
-    ```coffeescript
-    # file: root/MyNamespace/.Foo.coffee
-    module.exports = class DotFoo
-    ```
+  ```coffeescript
+  # file: root/MyNamespace/.Foo.coffee
+  module.exports = class DotFoo
+  ```
 
-    ```coffeescript
-    # file: root/someOtherFile.coffee
+  ```coffeescript
+  # file: root/someOtherFile.coffee
 
-    MyNamespace = require './MyNamespace'
+  MyNamespace = require './MyNamespace'
 
-    # MyNamespace.Foo? == false
+  # MyNamespace.Foo? == false
 
-    Foo = require './MyNamespace/.Foo'
+  Foo = require './MyNamespace/.Foo'
 
-    # MyNamespace.Foo? == false
-    # Foo.name == "DotFoo"
-    ```
+  # MyNamespace.Foo? == false
+  # Foo.name == "DotFoo"
+  ```
 
-* special case of files and directories with the same names (after normalizing them via upperCamelCase())
+Same-Names Conventions:
+
+Special rules apply when a file-name is the same as a parent or sibling directory-name. File-names and directory-names are compared by first normalizing them with `upperCamelCase()`.
+
   * `fileName == parentDirectoryName`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: Handy for adding other things to the namespace class.*
