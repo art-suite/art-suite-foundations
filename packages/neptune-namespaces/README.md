@@ -129,8 +129,18 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * `required` but not added to namespace
     * `required` before all other files
     * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
-    * Example: `MyNamespace/-Foo.coffee` will NOT be included in `MyNamespace` at runtime
 
+    ```coffeescript
+    # file: root/MyNamespace/-Foo.coffee
+    global.Foo = class DashFoo
+    ```
+    ```coffeescript
+    # file: root/someOtherFile.coffee
+    MyNamespace = require './MyNamespace'
+
+    # MyNamespace.Foo? == false
+    # global.Foo.name == "DashFoo"
+    ```
   * Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
     * The namespace name for these files and directories does not include the underscore prefix(s).
     * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
@@ -177,7 +187,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     Foo = require './MyNamespace/.Foo'
 
     # MyNamespace.Foo? == false
-    # Foo.getName() == "DotFoo"
+    # Foo.name == "DotFoo"
     ```
 
 * Special File-names (after removing any underscore prefixes)
@@ -225,7 +235,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     Foo = require './MyNamespace/.Foo'
 
     # MyNamespace.Foo != Foo
-    # Foo.getName() == "DotFoo"
+    # Foo.name == "DotFoo"
     ```
 
 ## Installation
