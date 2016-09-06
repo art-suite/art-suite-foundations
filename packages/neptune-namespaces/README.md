@@ -121,14 +121,17 @@ Neptune-Namespace modules consist of file pairs:
 
 ## Convention Over Configuration
 
-NN uses the CoC design pattern. Instead of config files, the names and structure of your directories and source-files solely determines how NN creates `index.coffee` and `namespace.coffee` files.
+NN uses the CoC design pattern. Instead of config files, your directory structure determines how NN creates `index.coffee` and `namespace.coffee` files.
 
-Conventions:
+Loading order Convention:
 
-* Basic Loading Order
-  * files are `required` before directories
-  * files and directories are `required` in alphanumeric order
-* Directory-name and File-name Prefixes
+* files are `required` before directories
+* files and directories are `required` in alphanumeric order
+* certain naming-conventions can override the basic load-order. See below.
+
+Naming Conventions:
+
+* prefixes:
   * Dash (-): First-loaded Files
     * `required` but not added to namespace
     * `required` before all other files
@@ -194,8 +197,8 @@ Conventions:
     # Foo.name == "DotFoo"
     ```
 
-* Special File-names (after removing any underscore prefixes)
-  * `upperCamelCase(fileName) == upperCamelCase(parentDirectoryName)`
+* special case of files and directories with the same names (after normalizing them via upperCamelCase())
+  * `fileName == parentDirectoryName`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
@@ -211,7 +214,7 @@ Conventions:
     # MyNamespace.MyNamespace? == false
     ```
 
-  * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
+  * `siblingFileName == siblingSubDirectoryName`
     * In this case the file is `required`, but the directory is not.
     * i.e. The file *shadows* the directory.
     * *Use case: A dot-file with the same name as a non-dot-directory effectively makes the directory optioanal without having to make the directory a dot-directory. This allows you to refactor a directory to be optional without breaking any existing requires by renaming the directory.*
