@@ -129,6 +129,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * `required` but not added to namespace
     * `required` before all other files
     * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
+    * Example: `MyNamespace/-Foo.coffee` will NOT be included in `MyNamespace` at runtime
 
   * Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
     * The namespace name for these files and directories does not include the underscore prefix(s).
@@ -139,6 +140,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * not `required` by parent namespace
     * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
     * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
+    * Example: `MyNamespace/.Foo/` will NOT be included in `MyNamespace` at runtime when you `require '.../MyNamespace'`, but it WILL be included accessable and accessable as `MyNamespace.Foo` if you also `require '.../MyNamespace/.Foo'`.
 
   * Dot Files (.): Ignored
     * not `required` by parent namespace
