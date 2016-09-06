@@ -147,14 +147,14 @@ Below is a description of the convenions. Scroll down further for detailed examp
     module.exports = class Bar
     ```
     ```coffeescript
-    # file: root/MyNamespace/someOtherFile.coffee
+    # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
 
     # MyNamespace.Foo? == false
 
     require './MyNamespace/.Foo'
 
-    # MyNamespace.Foo? == true
+    # MyNamespace.Foo.Bar? == true
     ```
 
   * Dot Files (.): Ignored
