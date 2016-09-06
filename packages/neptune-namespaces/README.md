@@ -174,7 +174,6 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
     ```coffeescript
-    ###
     # file: root/MyNamespace/my_namespace.coffee
     module.exports = foo: "bar"
 
