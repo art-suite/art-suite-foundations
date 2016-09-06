@@ -198,7 +198,7 @@ Prefix Naming Conventions:
 
 Same-Names Conventions:
 
-Special rules apply when a file-name is the same as a parent or sibling directory-name. File-names and directory-names are compared by first normalizing them with `upperCamelCase()`.
+Special rules apply when a file-name is the same as a parent or sibling directory-name. File-names and directory-names are the same if they are equal (==)  after normalizing them with `upperCamelCase()`.
 
   * `fileName == parentDirectoryName`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
