@@ -204,6 +204,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
     require './MyNamespace/Foo'
 
+    MyNamespace.Foo? == true
     MyNamespace.Foo.Bar? == true
 
     Foo = require './MyNamespace/.Foo'
