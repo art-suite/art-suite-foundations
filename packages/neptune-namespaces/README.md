@@ -30,13 +30,19 @@ module.exports = class Circle
 
 Then run:
 
+shell:
 ```bash
 npm install neptune-namespaces
 neptune-namespaces --root geometry
+
 node
-> require("coffee-script/register")
-> Geometry = require("./geometry")
 ```
+node:
+```javascript
+require("coffee-script/register")
+Geometry = require("./geometry")
+```
+
 
 Tada! All your classes are loaded and accessible as:
 
