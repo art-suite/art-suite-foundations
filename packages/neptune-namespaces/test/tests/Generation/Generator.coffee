@@ -22,6 +22,15 @@ suite "NeptuneNamespaces.Generator", ->
       for file, contents of generatedFiles
         assert.match contents, "# file: MyApp", file
 
+  test "file name same as parent namespace", ->
+    generator = new Generator root = "root", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "root/MyNamespace/my_namespace.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      log ((v for k, v of generatedFiles).join "\n\n")
+      assert.match generatedFiles["root/MyNamespace/index.coffee"], /includeInNamespace.*my_namespace/
+
   test "special file names", ->
     generator = new Generator "root", pretend: true, quiet: true
     generator.generateFromFiles [
