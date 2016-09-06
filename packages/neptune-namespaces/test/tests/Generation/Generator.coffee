@@ -30,6 +30,7 @@ suite "NeptuneNamespaces.Generator", ->
         "root/file4.coffee"
         "root/0file3.coffee"
         "root/-file2.coffee"
+        "root/_file5.coffee"
         "root/aSubmodule/foo.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
@@ -48,7 +49,10 @@ suite "NeptuneNamespaces.Generator", ->
         addModules
         (.|\n)*
 
-        File3: .* file3
+        File5: .* _file5
+        (.|\n)*
+
+        File3: .* 0file3
         (.|\n)*
 
         File4: .* file4
@@ -57,7 +61,7 @@ suite "NeptuneNamespaces.Generator", ->
         \nrequire .* aSubmodule
         ///
       # file1 not included
-      assert.ok !generatedFiles["root/index.coffee"].match /file1/
+      assert.doesNotMatch generatedFiles["root/index.coffee"], /file1/
       assert.eq Object.keys(generatedFiles).sort(), [
         "root/aSubmodule/index.coffee"
         "root/aSubmodule/namespace.coffee"
@@ -68,15 +72,33 @@ suite "NeptuneNamespaces.Generator", ->
   test "subnamespace", ->
     generator = new Generator "root", pretend: true, quiet: true
     generator.generateFromFiles [
-        "root/my namespace/file.coffee"
+        "root/MyNamespace/file.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
       assert.eq Object.keys(generatedFiles).sort(), [
+        "root/MyNamespace/index.coffee"
+        "root/MyNamespace/namespace.coffee"
         "root/index.coffee"
-        "root/my namespace/index.coffee"
-        "root/my namespace/namespace.coffee"
         "root/namespace.coffee"
       ]
-      assert.match generatedFiles["root/my namespace/namespace.coffee"], /require.*\.\/namespace/
+      assert.match generatedFiles["root/MyNamespace/namespace.coffee"], /require.*\.\/namespace/
       assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
       assert.doesNotMatch generatedFiles["root/index.coffee"], "addModules"
+      assert.match generatedFiles["root/index.coffee"], "MyNamespace"
+
+  test ".namespaces are optional", ->
+    generator = new Generator "root", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "root/.MyNamespace/file.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/.MyNamespace/index.coffee"
+        "root/.MyNamespace/namespace.coffee"
+        "root/index.coffee"
+        "root/namespace.coffee"
+      ]
+      assert.match generatedFiles["root/.MyNamespace/namespace.coffee"], /require.*\.\/namespace/
+      assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
+      assert.doesNotMatch generatedFiles["root/index.coffee"], "addModules"
+      assert.doesNotMatch generatedFiles["root/index.coffee"], "MyNamespace"
