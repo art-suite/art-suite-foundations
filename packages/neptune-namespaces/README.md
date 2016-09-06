@@ -122,28 +122,34 @@ Below is a description of the convenions. Scroll down further for detailed examp
 #### The Conventions
 
 * Basic Loading Order
-  * files are included before directories
-  * files and directories are included in alphanumeric order
-* Directory-name and File-name Prefixes
+  * files are `required` before directories
+  * files and directories are `required` in alphanumeric order
+* Directory-name AND File-name Prefixes
   * Underscore names: `name.match /^_+/`
     * All underscores at the beginning of the name are removed after sorting.
-    * I.E. The module-name for these files and directories does not included the underscore prefix
+    * I.E. The module-name for these files and directories does not `required` the underscore prefix
     * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
-  * Single-dash names: `name.match /^-[^-]/`
-    * included but not added to namespace
-    * included before all other files and directories
-      * -files are included first, then -directories
+
+* File-name Prefixes
+  * Single-dash names for files: `fileName.match /^-/`
+    * `required` but not added to namespace
+    * `required` before all other files
     * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
-  * Double-dash names:`name.match /^--/`
-    * not included
-    * 100% ignored by neptune-namespaces
-    * *Use case: Allows you to have complete manual control over loading these files.*
+
+* Directory-name Prefixes
+  * Optional Namespaces start with a dot (.): `directoryName.match /^\./`
+    * not `required` by parent namespace
+    * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace
+    * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
+
 * Special File-names (after removing any underscore prefixes)
-  * `fileName == parentDirectoryName`
+  * `upperCamelCase(fileName) == upperCamelCase(parentDirectoryName)`
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
-    * *Use case: Handy for adding other things to the namespace class.
+    * *Use case: Handy for adding other things to the namespace class.*
+    * *Use case: Manually control load order with custom `requires` in this file.*
+
   * `fileName == siblingSubdirectoryName`
-    * In this case the file is included, but the directory is not.
+    * In this case the file is `required`, but the directory is not.
     * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a "--".*
 
 #### File Name Conventions Example
