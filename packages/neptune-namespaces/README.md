@@ -123,13 +123,13 @@ Neptune-Namespace modules consist of file pairs:
 
 NN uses the CoC design pattern. Instead of config files, your directory structure determines how NN creates `index.coffee` and `namespace.coffee` files.
 
-Loading order Convention:
+#### Loading order Convention:
 
 * files are `required` before directories
 * files and directories are `required` in alphanumeric order
 * certain naming-conventions can override the basic load-order. See below.
 
-Prefix Naming Conventions:
+#### Prefix Naming Conventions:
 
 * Dash (-): First-loaded Files
   * `required` but not added to namespace
@@ -196,7 +196,7 @@ Prefix Naming Conventions:
   # Foo.name == "DotFoo"
   ```
 
-Same-Names Conventions:
+#### Same-Names Conventions:
 
 Special rules apply when a file-name is the same as a parent or sibling directory-name. File-names and directory-names are the same if they are equal (==)  after normalizing them with `upperCamelCase()`.
 
