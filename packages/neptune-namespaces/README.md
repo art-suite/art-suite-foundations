@@ -144,6 +144,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
 
     ```coffeescript
     # file: root/MyNamespace/.Foo/Bar.coffee
+    module.exports = class Bar
     ```
     ```coffeescript
     # file: root/MyNamespace/someOtherFile.coffee
@@ -162,14 +163,21 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * Example:
 
     ```coffeescript
-    # if this file exists: MyNamespace/.Foo.coffee
+    # file: root/MyNamespace/.Foo.coffee
+    module.exports = class DotFoo
+    ```
 
-    MyNamespace = require '.../MyNamespace'
-    # MyNamespace.Foo is not set
+    ```coffeescript
+    # file: root/someOtherFile.coffee
 
-    Foo = require '.../MyNamespace/.Foo'
-    # MyNamespace.Foo is still not set,
-    # but the local variable Foo is set like any normal, manual require.
+    MyNamespace = require './MyNamespace'
+
+    # MyNamespace.Foo? == false
+
+    Foo = require './MyNamespace/.Foo'
+
+    # MyNamespace.Foo? == false
+    # Foo.getName() == "DotFoo"
     ```
 
 * Special File-names (after removing any underscore prefixes)
