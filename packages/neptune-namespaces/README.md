@@ -175,13 +175,6 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * *Use case: Manually control load order with custom `requires` in this file.*
     ```coffeescript
     ###
-    Given this directory structure:
-
-      root/MyNamespace/
-        my_namespace.coffee
-
-    ###
-
     # file: root/MyNamespace/my_namespace.coffee
     module.exports = foo: "bar"
 
