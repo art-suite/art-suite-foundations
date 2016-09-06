@@ -124,23 +124,24 @@ Below is a description of the convenions. Scroll down further for detailed examp
 * Basic Loading Order
   * files are `required` before directories
   * files and directories are `required` in alphanumeric order
-* Directory-name AND File-name Prefixes
-  * Underscore names: `name.match /^_+/`
-    * All underscores at the beginning of the name are removed after sorting.
-    * I.E. The module-name for these files and directories does not `required` the underscore prefix
-    * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
-
-* File-name Prefixes
-  * Single-dash names for files: `fileName.match /^-/`
+* Directory-name and File-name Prefixes
+  * Dash (-): First-loaded Files
     * `required` but not added to namespace
     * `required` before all other files
     * *Use case: Fully control the load-order of your files by making a single-dash-file which, by definition will be loaded first, which in turn includes files in your custom order.*
 
-* Directory-name Prefixes
-  * Optional Namespaces start with a dot (.): `directoryName.match /^\./`
+  * Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
+    * The namespace name for these files and directories does not include the underscore prefix(s).
+    * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
+
+  * Dot Directories (.): Optional Namespaces
     * not `required` by parent namespace
-    * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace
+    * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
     * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
+
+  * Dot Files (.): Ignored
+    * not `required` by parent namespace
+    * *Use case: These files are completely ignored by NN. Useful if you need to completely escape the NN system.*
 
 * Special File-names (after removing any underscore prefixes)
   * `upperCamelCase(fileName) == upperCamelCase(parentDirectoryName)`
