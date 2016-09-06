@@ -108,6 +108,7 @@ Neptune-Namespace modules consist of file pairs:
     * each is added to the namespace under the UpperCamelCase version of its directory without extension.
   * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special-cases.
 * `directory/namespace.coffee`
+  * Defines the namespace using the directory's name: `class MyDirectoryName extends Neptune.Base`coffeescript
   * automatically requires and binds to the parent namespace: `require '../namespace'`
   * this is implicitly recursive to all ancestor namespaces
   * if there is no parent namespace, it binds to the global, runtime namespace: `global.Neptune`
