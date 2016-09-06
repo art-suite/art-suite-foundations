@@ -109,15 +109,15 @@ Neptune-Namespace modules consist of file pairs:
   * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special-cases.
 * `MyDirectory/namespace.coffee`
   * Defines the namespace using the directory's name:
-  ```coffeescript
-  class MyDirectory extends Neptune.Base
-  ```
+    ```coffeescript
+    class MyDirectory extends Neptune.Base
+    ```
   * if the namespace already exists, reuses the existing one.
   * automatically requires and binds to the parent namespace:
     * `require '../namespace'`
     * if there is no parent namespace, it binds to the global, runtime namespace:
       * `global.Neptune`
-    * Note: implicitly requies all ancestor namespaces
+    * Note: implicitly requires all ancestor namespaces
 
 ## Convention Over Configuration
 
