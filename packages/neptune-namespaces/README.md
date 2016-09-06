@@ -173,20 +173,27 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace(require(fileName))`
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
+
+  * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
+    * In this case the file is `required`, but the directory is not.
+    * *Use case: A dot-file with the same name as a non-dot-directory effectively makes the directory optioanal without having to make the directory a dot-directory. This allows you to refactor a directory to be optional without breaking any existing requires by renaming the directory.*
+    * Example:
+
     ```coffeescript
+    # if this directory exists: MyNamespace/Foo/SomeFile.coffee
     # if this file exists: MyNamespace/.Foo.coffee
+    # Then the Foo directory is effectively optional.
 
     MyNamespace = require '.../MyNamespace'
     # MyNamespace.Foo is not set
 
-    Foo = require '.../MyNamespace/.Foo'
-    # MyNamespace.Foo is still not set,
-    # but the local variable Foo is set like any normal, manual require.
-    ```
+    require '.../MyNamespace/Foo'
+    # MyNamespace.Foo is set
 
-  * `upperCamelCase(fileName) == upperCamelCase(siblingSubdirectoryName)`
-    * In this case the file is `required`, but the directory is not.
-    * *Use case: This is primarilly a disambiguation, but it also gives you manual control over loading a sub-directory which may be more clear than prepending the directory with a ".".*
+    Foo = require '.../MyNamespace/.Foo'
+    # MyNamespace.Foo is still set to the Foo/ namespace
+    # But the local vairable Foo is set to the .Foo module, like any normal, manual require.
+    ```
 
 #### File Name Conventions Example
 
