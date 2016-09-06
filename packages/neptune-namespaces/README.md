@@ -38,7 +38,7 @@ neptune-namespaces --root geometry
 coffee
 ```
 
-```javascript
+```coffeescript
 # in the CoffeeScript node.js shell
 Geometry = require "./geometry"
 ```
