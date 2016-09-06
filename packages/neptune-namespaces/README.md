@@ -133,6 +133,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
   * Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
     * The namespace name for these files and directories does not include the underscore prefix(s).
     * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
+    * Example: `MyNamespace/_Foo.coffee` will be accessable at runtime as `MyNamespace.Foo`
 
   * Dot Directories (.): Optional Namespaces
     * not `required` by parent namespace
