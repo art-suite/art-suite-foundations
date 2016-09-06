@@ -35,22 +35,22 @@ Then run:
 npm install neptune-namespaces
 neptune-namespaces --root geometry
 
-node
+coffee
 ```
 
 ```javascript
-// in node.js
-require("coffee-script/register")
-Geometry = require("./geometry")
+# in the CoffeeScript node.js shell
+Geometry = require "./geometry"
 ```
-
 
 Tada! All your classes are loaded and accessible as:
 
-* Geometry.Shapes.Square
-* Geometry.Shapes.Circle
-* Geometry.Solids.Cube
-* Geometry.Solids.Sphere
+```coffeescript
+Geometry.Shapes.Square
+Geometry.Shapes.Circle
+Geometry.Solids.Cube
+Geometry.Solids.Sphere
+```
 
 ## What is it?
 
