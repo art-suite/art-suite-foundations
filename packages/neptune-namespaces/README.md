@@ -13,7 +13,7 @@ Suppose you have this directory structure:
 ```bash
 geometry/
   shapes/
-  circle.coffee
+    circle.coffee
     square.coffee
   solids/
     cube.coffee
