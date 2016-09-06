@@ -206,7 +206,14 @@ Special rules apply when a file-name is the same as a parent or sibling director
     * *Use case: Handy for adding other things to the namespace class.*
     * *Use case: Manually control load order with custom `requires` in this file.*
     ```coffeescript
+    # file: root/MyNamespace/Zoo.coffee
+    ```
+    ```coffeescript
+    # file: root/MyNamespace/Alphabet.coffee
+    ```
+    ```coffeescript
     # file: root/MyNamespace/my_namespace.coffee
+    require './Zoo' # load Zoo before Alphabet
     module.exports = foo: "bar"
     ```
     ```coffeescript
