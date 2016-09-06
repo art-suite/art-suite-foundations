@@ -109,9 +109,9 @@ Neptune-Namespace modules consist of file pairs:
   * See [Convention Over Configuration](#convention-over-configuration) for details on how loading-order is resolved and other useful special-cases.
 * `MyDirectory/namespace.coffee`
   * Defines the namespace using the directory's name:
-    ```coffeescript
-    class MyDirectory extends Neptune.Base
-    ```
+  ```coffeescript
+  class MyDirectory extends Neptune.Base
+  ```
   * if the namespace already exists, reuses the existing one.
   * automatically requires and binds to the parent namespace:
     * `require '../namespace'`
@@ -123,9 +123,7 @@ Neptune-Namespace modules consist of file pairs:
 
 NN uses the CoC design pattern. Instead of config files, the names and structure of your directories and source-files solely determines how NN creates `index.coffee` and `namespace.coffee` files.
 
-Below is a description of the convenions. Scroll down further for detailed examples.
-
-#### The Conventions
+Conventions:
 
 * Basic Loading Order
   * files are `required` before directories
