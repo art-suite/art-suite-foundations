@@ -143,13 +143,17 @@ Below is a description of the convenions. Scroll down further for detailed examp
     * Example:
 
     ```coffeescript
-    # if this file exists: MyNamespace/.Foo/SomeFile.coffee
+    # file: root/MyNamespace/.Foo/Bar.coffee
+    ```
+    ```coffeescript
+    # file: root/MyNamespace/someOtherFile.coffee
+    MyNamespace = require './MyNamespace'
 
-    MyNamespace = require '.../MyNamespace'
-    # MyNamespace.Foo is not set
+    # MyNamespace.Foo? == false
 
-    require '.../MyNamespace/.Foo'
-    # MyNamespace.Foo is set
+    require './MyNamespace/.Foo'
+
+    # MyNamespace.Foo? == true
     ```
 
   * Dot Files (.): Ignored
@@ -178,7 +182,7 @@ Below is a description of the convenions. Scroll down further for detailed examp
     module.exports = foo: "bar"
     ```
     ```coffeescript
-    # file: root/someFile.coffee
+    # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
 
     # MyNamespace.foo == "bar"
