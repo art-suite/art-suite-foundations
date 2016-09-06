@@ -200,17 +200,16 @@ Below is a description of the convenions. Scroll down further for detailed examp
     # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
 
-    MyNamespace.Foo? == false
+    assert !MyNamespace.Foo
 
     require './MyNamespace/Foo'
 
-    MyNamespace.Foo? == true
-    MyNamespace.Foo.Bar? == true
+    assert MyNamespace.Foo.Bar
 
     Foo = require './MyNamespace/.Foo'
 
-    MyNamespace.Foo != Foo
-    Foo.getName() == "DotFoo"
+    assert MyNamespace.Foo != Foo
+    assert Foo.getName() == "DotFoo"
     ```
 
 ## Concrete Examples
