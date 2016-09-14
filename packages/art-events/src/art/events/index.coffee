@@ -4,7 +4,7 @@
 module.exports = require './namespace'
 .includeInNamespace require './Events'
 .addModules
-  Event:             require './event'            
+  Event:             require './_Event'           
   EventedObject:     require './EventedObject'    
   EventedObjectBase: require './EventedObjectBase'
   EventEpoch:        require './EventEpoch'       
