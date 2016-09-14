@@ -2,10 +2,10 @@
 {log, inspect, nextTick, BaseObject} = require 'art-foundation'
 Events = require 'art-events'
 
-class MyEventedObject extends BaseObject
-  @include Events.EventedObject
 
-suite "Art.Events.EventedObject", ->
+module.exports = suite: ->
+  class MyEventedObject extends Events.EventedMixin BaseObject
+
   test "event(), when no handler, returns false", ->
     eo = new MyEventedObject
     assert.eq false, eo.queueEvent "foo"

@@ -3,5 +3,5 @@
 
 module.exports = require './namespace'
 .addModules
-  EventedObject: require './EventedObject'
-  EventManager:  require './EventManager' 
+  EventedMixin: require './EventedMixin'
+  EventManager: require './EventManager'

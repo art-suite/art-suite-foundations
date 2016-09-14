@@ -2,7 +2,7 @@
 {inspect} = require 'art-foundation'
 Events = require 'art-events'
 
-suite "Art.Events.EventManager", ->
+module.exports = suite: ->
   test "add handler, fire event and handle event", (done)->
     em = new Events.EventManager
     em.on birthday:(e)->
