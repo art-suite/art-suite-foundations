@@ -1,6 +1,6 @@
 Foundation = require 'art-foundation'
 EventEpoch = require './EventEpoch'
-Event = require './event'
+Event = require './Event'
 
 {defineModule, isFunction, log, isPlainObject, inspect} = Foundation
 {eventEpoch} = EventEpoch

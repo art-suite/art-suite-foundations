@@ -9,7 +9,7 @@ TODO:
 ###
 
 Foundation = require 'art-foundation'
-Event = require "./event"
+Event = require "./Event"
 {defineModule, nextTick, isFunction, inspect, clone, arrayWith} = Foundation
 rawErrorLog = Foundation.Log.rawErrorLog
 
