@@ -2,12 +2,11 @@
 # file: art/events/index.coffee
 
 module.exports = require './namespace'
-.includeInNamespace require './_events'
+.includeInNamespace require './Events'
 .addModules
-  EventEpoch:        require './event_epoch'        
-  EventManager:      require './event_manager'      
-  EventQueue:        require './event_queue'        
-  Event:             require './event'              
-  EventedObjectBase: require './evented_object_base'
-  EventedObject:     require './evented_object'     
-  EventedVariable:   require './evented_variable'   
+  Event:             require './event'            
+  EventedObject:     require './EventedObject'    
+  EventedObjectBase: require './EventedObjectBase'
+  EventEpoch:        require './EventEpoch'       
+  EventManager:      require './EventManager'     
+  EventQueue:        require './EventQueue'       
