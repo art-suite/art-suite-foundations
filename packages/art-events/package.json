@@ -1,6 +1,6 @@
 {
   "name": "art-events",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "art-events",
   "main": "index.coffee",
   "dependencies": {
