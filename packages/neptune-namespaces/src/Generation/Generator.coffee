@@ -143,7 +143,7 @@ module.exports = class Generator
 
   generate: ->
     @log "\nscanning root: #{@root.yellow}" if @verbose
-    globPromise "#{@root}/**/*.coffee", dot: true
+    globPromise "#{@root}/**/*.{js,coffee,caffeine,caf}", dot: true
     .then (files) =>
       if files.length == 0
         error = "no .coffee files found"
