@@ -162,7 +162,7 @@ class Base
     else
       @[propName] = value
 
-module.exports = self.Neptune = class Neptune extends Base
+module.exports = global.Neptune = class Neptune extends Base
   @Base: Base
   @namespacePath: "Neptune"
   @namespace: null

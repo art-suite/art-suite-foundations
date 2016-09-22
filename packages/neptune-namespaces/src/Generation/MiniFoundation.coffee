@@ -1,7 +1,10 @@
 colors = require "colors"
 Path = require 'path'
 module.exports = class Lib
-  @compactFlatten: compactFlatten =(require './ArrayCompactFlatten').compactFlatten
+  @[k] = v for k, v of require '../NeptuneLib/ArrayCompactFlatten'
+  @[k] = v for k, v of require '../NeptuneLib/StringCase'
+  {compactFlatten} = @
+
   @promiseSequence: (promiseGeneratingFunctions) ->
     promiseGeneratingFunctions = promiseGeneratingFunctions.reverse()
     resolveNextPromise = ->
@@ -14,8 +17,8 @@ module.exports = class Lib
     else
       resolveNextPromise()
 
-  @isFunction: isFunction = (obj) => typeof obj == "function"
-  @isString: isString = (obj) => typeof obj == "string"
+  @isFunction:    isFunction = (obj) => typeof obj == "function"
+  @isString:      isString = (obj) => typeof obj == "string"
   @isPlainArray:  isPlainArray  = (v) -> if v then v.constructor == Array  else false
   @isPlainObject: isPlainObject = (v) -> if v then v.constructor == Object else false
   @escapeJavascriptString: escapeJavascriptString = (str) =>
@@ -26,19 +29,6 @@ module.exports = class Lib
 
   @fileWithoutExtension = (file) ->
     file.split(/\.[a-zA-Z]+$/)[0]
-
-  @capitalize: (str) ->
-    str.charAt(0).toUpperCase() + str.slice 1
-
-  @decapitalize: (str) ->
-    str.charAt(0).toLowerCase() + str.slice 1
-
-  @upperCamelCase: (str) =>
-    # prefix = str.match /^[_-]+/
-    words = str.match /[a-zA-Z][a-zA-Z0-9]*/g
-    capWords = []
-    capWords.push @capitalize word for word in words
-    capWords.join ""
 
   @peek: (array, offset = -1) -> array?.length > 0 && array[array.length + offset]
   @pushIfUnique: (array, value) ->
