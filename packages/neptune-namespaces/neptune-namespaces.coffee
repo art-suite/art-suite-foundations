@@ -1,67 +1,44 @@
-colors = require "colors"
-glob = require "glob"
-fsp = require "fs-promise"
-fs = require 'fs'
-NomNom = require "nomnom"
+Commander = require "commander"
+
+{
+  log, withoutTrailingSlash, promiseSequence, compactFlatten
+
+} = require "./src/Generation/MiniFoundation"
 
 Generator = require "./src/Generation/Generator"
 {version} = require './package.json'
 
-
-{
-  upperCamelCase, peek, pushIfUnique, indent, pad, log, withoutTrailingSlash
-  promiseSequence
-} = require "./src/Generation/MiniFoundation"
-
 standardRoots = ["src/*", "test/*", "perf/*"]
 
+Commander
+.version version
+.usage  '[options] <root ...>'
+.option '-r, --root',     'list one or more --root arguments'
+.option '-w, --watch',    'stay running, watch for changes, and automatically update'
+.option '-v, --verbose',  'enable verbose output'
+.option '-q, --quiet',    'suppress all output'
+.option '-f, --force',    'overwrite all index and namespace files'
+.option '-s, --std',      "include the standard roots: #{standardRoots.join ', '}"
+.on "--help", ->
+  console.log """
+    neptune-namespaces version: #{version}
 
-{root, watch, verbose, force, quiet, std} = opts = NomNom
-.option 'root',
-  abbr: 'r'
-  list: true
-  help: 'list one or more --root arguments'
-.option 'watch',
-  abbr: 'w'
-  flag: true
-  help: 'stay running, watch for changes, and automatically update'
-.option 'verbose',
-  abbr: 'v'
-  flag: true
-  help: 'enable verbose output'
-.option 'quiet',
-  abbr: 'q'
-  flag: true
-  help: 'suppress all output'
-.option 'force',
-  abbr: 'f'
-  flag: true
-  help: 'overwrite all index and namespace files'
-.option 'std',
-  flag: true
-  help: "include the standard roots: #{standardRoots.join ', '}"
-.option 'version',
-  flag: true
-  help: "show current version and exit"
-.help """
-  neptune-namespaces version: #{version}
+    Generates 'namespace.coffee' and 'index.coffee' files to bind each specified --root
+    to the global Neptune namespace at runtime.
+    """
+.parse process.argv
 
-  Generates 'namespace.coffee' and 'index.coffee' files to bind each specified --root
-  to the global Neptune namespace at runtime.
-  """
-.nocolors()
-.parse()
+run = (targetPaths, {watch, verbose, quiet, force}) ->
+  if verbose
+    console.log """
+      neptune-namespaces (#{version})
 
-root ||= []
-root = root.concat standardRoots if std
-
-{max} = Math
-
-if opts.version
-  console.log version
-  process.exit()
-
-run = (targetPaths) ->
+      roots: #{targetPaths.join ', '}
+      """
+    verbose && log verbose: true
+    force   && log force:   true
+    quiet   && log quiet:   true
+    watch   && log watch:   true
 
   todoList = for targetPath in targetPaths
     do (targetPath) ->
@@ -79,5 +56,10 @@ run = (targetPaths) ->
 
   promiseSequence todoList
 
-console.error "no roots specified (run with -h for help)" if root.length == 0
-run root
+
+root = Commander.args || []
+root = root.concat standardRoots if Commander.std
+if root.length == 0
+  console.error "no roots specified (run with -h for help)"
+else
+  run root, Commander
