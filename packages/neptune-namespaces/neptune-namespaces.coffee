@@ -1,8 +1,6 @@
-Commander = require "commander"
 
 {
   log, withoutTrailingSlash, promiseSequence, compactFlatten
-
 } = require "./src/Generation/MiniFoundation"
 
 Generator = require "./src/Generation/Generator"
@@ -10,7 +8,7 @@ Generator = require "./src/Generation/Generator"
 
 standardRoots = ["src/*", "test/*", "perf/*"]
 
-Commander
+Commander = require "commander"
 .version version
 .usage  '[options] <root ...>'
 .option '-r, --root',     'list one or more --root arguments'
@@ -20,12 +18,11 @@ Commander
 .option '-f, --force',    'overwrite all index and namespace files'
 .option '-s, --std',      "include the standard roots: #{standardRoots.join ', '}"
 .on "--help", ->
-  console.log """
-    neptune-namespaces version: #{version}
-
-    Generates 'namespace.coffee' and 'index.coffee' files to bind each specified --root
+  console.log "
+    Generates 'namespace.coffee' and 'index.coffee' files to bind each specified root
     to the global Neptune namespace at runtime.
-    """
+    \n\nRun with -v to see everything NN is doing.
+    "
 .parse process.argv
 
 run = (targetPaths, {watch, verbose, quiet, force}) ->
