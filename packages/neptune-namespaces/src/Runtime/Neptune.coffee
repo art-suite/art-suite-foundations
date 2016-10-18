@@ -22,7 +22,7 @@ class Base
   @getAllNamespacePaths: => Object.keys(@allNamespaces).sort()
 
   @toString: -> @namespacePath
-  @inspect: -> "<namespace #{@namespacePath}>"
+  @inspect: -> @namespacePath
 
   #################################
   # Standard namespace Properties

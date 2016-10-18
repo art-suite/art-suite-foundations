@@ -1,6 +1,6 @@
 # standardize across javascript environments:
 # global == self == window (if in browser)
-if typeof global == 'object'
+if global?
   global.self = global
-else if typeof self == 'object'
+else if self?
   self.global = self
