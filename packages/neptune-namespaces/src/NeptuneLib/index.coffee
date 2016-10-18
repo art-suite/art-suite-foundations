@@ -5,4 +5,6 @@ module.exports = require './namespace'
 .includeInNamespace require './NeptuneLib'
 .addModules
   ArrayCompactFlatten: require './ArrayCompactFlatten'
+  Merge:               require './Merge'              
   StringCase:          require './StringCase'         
+  Types:               require './Types'              

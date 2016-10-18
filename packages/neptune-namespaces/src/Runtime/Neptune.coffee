@@ -13,11 +13,16 @@ require "./function"
 isFunction = (f) -> typeof f == "function"
 isPlainArray = (o) -> o.constructor == Array
 
+NeptuneLib = null
+
 class Base
   # global map of all namespaces:
   #   namespacePath: namespace
   @allNamespaces: {}
   @getAllNamespacePaths: => Object.keys(@allNamespaces).sort()
+
+  @toString: -> @namespacePath
+  @inspect: -> "<namespace #{@namespacePath}>"
 
   #################################
   # Standard namespace Properties
@@ -46,14 +51,16 @@ class Base
   @getNamespaceNames: -> Object.keys(@namespaces).sort()
   @getModuleNames:    -> Object.keys(@modules).sort()
 
-  @getInspectedObjects: (includeModules = true)->
-    out = {}
-    out.version = @version if @version
-    for name, namespace in @namespaces
-      out[name] = namespace.getInspectedObjects includeModules
+  @getNeptuneLib: -> NeptuneLib ||= require 'neptune-namespaces/NeptuneLib'
 
-    out.modules = @getModuleNames().join ', ' if includeModules && @getModuleNames().length > 0
-    out
+  @getInspectedObjects: (includeModules = true)->
+    "#{@namespacePath}": @getNeptuneLib().merge
+      version: @version if @version
+
+      for name, namespace of @namespaces
+        namespace.getInspectedObjects includeModules
+
+      modules: @getModuleNames().join ', ' if includeModules && @getModuleNames().length > 0
 
   ################################################
   # BUILD UP NAMESPACES
@@ -151,6 +158,10 @@ class Base
   OUT: value
   ###
   @_addToNamespace: (propName, addingFrom) ->
+    # Art.Foundation defines a more general-purpose inspect; it should replace Neptune.Base.inspect
+    if propName == "inspect" && (value = addingFrom[propName]).length > 0
+      return @[propName] = value
+
     return if propName in excludedPropNames
     return unless value = addingFrom[propName]
 
