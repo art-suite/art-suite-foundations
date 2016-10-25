@@ -5,7 +5,7 @@ module.exports = class StringCase
     _words = str.match /[a-zA-Z][a-zA-Z0-9]*/g
     return [] unless _words
     words = for word in _words
-      word.match /[A-Z]+[a-z0-9]*|[a-z0-9]+/g
+      word.match /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g #/[A-Z]+[a-z0-9]*|[a-z0-9]+/g
 
     compactFlatten words
 
