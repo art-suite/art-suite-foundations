@@ -9,6 +9,7 @@
   "license": "MIT",
   "preferGlobal": true,
   "bin": {
+    "nn":                 "./neptune-namespaces",
     "neptune-namespaces": "./neptune-namespaces"
   },
   "repository": {
