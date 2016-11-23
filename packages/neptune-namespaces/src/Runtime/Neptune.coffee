@@ -62,6 +62,13 @@ class Base
 
       modules: @getModuleNames().join ', ' if includeModules && @getModuleNames().length > 0
 
+  @getVersions: ->
+    out = {}
+    for key, subNamespace of @namespaces
+      out[key] = recurse if 0 < Object.keys(recurse = subNamespace.getVersions()).length
+      (out[key] ||= {}).version = subNamespace.version if subNamespace.version?
+    out
+
   ################################################
   # BUILD UP NAMESPACES
   # Used in generated index and namespace files
