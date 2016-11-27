@@ -6,7 +6,13 @@
 Generator = require "./src/Generation/Generator"
 {version} = require './package.json'
 
-standardRoots = ["src/*", "test/*", "perf/*"]
+standardRoots = [
+  "source/*"
+  "test/*"
+  "performance/*"
+  "src/*"   # DEPRICATED
+  "perf/*"  # DEPRICATED
+]
 
 Commander = require "commander"
 .version version
