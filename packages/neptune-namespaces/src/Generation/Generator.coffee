@@ -1,5 +1,5 @@
 colors = require "colors"
-glob = require "glob"
+glob = require "glob-promise"
 fsp = require "fs-promise"
 {
   upperCamelCase, peek, pushIfUnique, indent, pad, withoutTrailingSlash, promiseSequence, merge
@@ -13,17 +13,9 @@ NamespaceStructure = require './NamespaceStructure'
 
 {IndexGenerator, NamespaceGenerator} = require './Generators'
 
-globPromise = (globRoot, globOptions = {}) ->
-  new Promise (resolve, reject) ->
-    glob globRoot, globOptions, (er, result) ->
-      if er
-        reject er
-      else
-        resolve result
-
 module.exports = class Generator
   @generate: (globRoot, options = {}) ->
-    globPromise globRoot
+    glob globRoot
     .then (roots) ->
       filePromiseGenerators = for root in roots when fsp.statSync(root).isDirectory()
         do (root) ->
@@ -143,7 +135,7 @@ module.exports = class Generator
 
   generate: ->
     @log "\nscanning root: #{@root.yellow}" if @verbose
-    globPromise "#{@root}/**/*.{js,coffee,caffeine,caf}", dot: true
+    glob "#{@root}/**/*.{js,coffee,caffeine,caf}", dot: true
     .then (files) =>
       if files.length == 0
         error = "no .coffee files found"
