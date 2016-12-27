@@ -1,4 +1,4 @@
 Chai = require './Chai'
 global.assert = Chai.assert
-global.Generation = require '../src/Generation'
+global.Generation = require '../source/Generation'
 require './tests'

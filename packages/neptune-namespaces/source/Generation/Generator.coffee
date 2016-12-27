@@ -14,6 +14,15 @@ NamespaceStructure = require './NamespaceStructure'
 {IndexGenerator, NamespaceGenerator} = require './Generators'
 
 module.exports = class Generator
+
+  @standardRoots: [
+    "source"
+    "test"
+    "performance"
+    "src"
+    "perf"
+  ]
+
   @generate: (globRoot, options = {}) ->
     glob globRoot
     .then (roots) ->

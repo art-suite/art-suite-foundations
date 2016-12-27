@@ -1,1 +1,1 @@
-module.exports = require "./src/Generation/Generator"
+module.exports = require "./source/Generation/Generator"

@@ -2,18 +2,13 @@
 
 {
   log, withoutTrailingSlash, promiseSequence, compactFlatten
-} = require "./src/Generation/MiniFoundation"
+} = require "./source/Generation/MiniFoundation"
 
-Generator = require "./src/Generation/Generator"
+Generator = require "./source/Generation/Generator"
 {version} = require './package.json'
 
-standardRoots = [
-  "source/*"
-  "test/*"
-  "performance/*"
-  "src/*"   # DEPRICATED
-  "perf/*"  # DEPRICATED
-]
+standardRoots = for root in Generator.standardRoots
+  "#{root}/*"
 
 Commander = require "commander"
 .version version
