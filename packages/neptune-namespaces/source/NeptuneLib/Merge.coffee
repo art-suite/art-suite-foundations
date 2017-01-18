@@ -33,7 +33,7 @@ module.exports = class Merge
     result
 
   ###
-  Just like mergeInfo except only merge into the result object UNLESs result.hasOwnProperty
+  Just like mergeInfo except only merge into the result object UNLESS result.hasOwnProperty
 
   if
     mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
