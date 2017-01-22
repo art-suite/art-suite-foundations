@@ -11,6 +11,7 @@ module.exports = class Types
       && isFunction obj.indexOf
       && isNumber obj.length
   ###
+  # TODO: depricate; possibly rename to isArrayLike - but probably change it's tests to Duck-typing tests
   @isArray: isArray =
     if self.Uint8ClampedArray
       (obj) -> !!obj && (
@@ -63,8 +64,21 @@ module.exports = class Types
   @isObject: isObject = (obj) =>
     !!obj && typeof obj == "object" && !isPlainArray obj
 
-  @isPlainArray:  isPlainArray  = (v) -> if v then v.constructor == Array  else false
-  @isPlainObject: isPlainObject = (v) -> if v then v.constructor == Object else false
+  # cross-iFrame friendly
+  # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+  # IE9+ supported, so we'll just use it directly.
+  @isPlainArray:  isPlainArray  = Array.isArray
+
+  # cross-iFrame friendly
+  # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf
+  #   valid in IE9+, so I think we can safely use it.
+  # another common name for this is: isObjectLiteral or isPojo
+  # I like isObjectLiteral, except it should return true for "new Object" - which isn't strictly an object-literal
+  # I don't like isPojo (plain-old-javascript-object)
+  # - which is just redundent (we're in Javascript, all objects are javascript objects)
+  # - and obscure
+  # I think I'll stick with isPlainObject - even though I plan to set isArray == isPlainArray and add isArrayLike
+  @isPlainObject: isPlainObject = (v) -> !!v && null == Object.getPrototypeOf Object.getPrototypeOf v
 
   ############################
   # helpers
