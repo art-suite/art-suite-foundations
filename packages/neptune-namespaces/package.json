@@ -22,9 +22,9 @@
     "coffee-script": "^1.10.0",
     "colors": "^1.1.2",
     "detect-node": "^2.0.3",
-    "fs-promise": "^0.5.0",
+    "fs-promise": "^1.0.0",
     "commander": "^2.9.0",
-    "glob-promise": "^2.0.0"
+    "glob-promise": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
