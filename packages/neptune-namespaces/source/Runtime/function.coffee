@@ -9,3 +9,4 @@ unless (->).name?
 
       name
 global.Function.prototype.getName = -> @_name || @name || "anonymousFunction"
+global.Function.prototype.hasName = -> !!(@_name || @name)
