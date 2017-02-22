@@ -3,71 +3,130 @@ module.exports = class Types
   @isRegExp: (obj) => obj instanceof RegExp
   @isNumber: isNumber = (obj) => typeof obj == "number"
 
-  # tests for all built-in array-like types
-  ###
-  Maybe we should just the API for array compatibility rather than specific types.
-    typeof obj == "object" &&
-      && isFunction obj.forEach
-      && isFunction obj.indexOf
-      && isNumber obj.length
-  ###
-  # TODO: depricate; possibly rename to isArrayLike - but probably change it's tests to Duck-typing tests
-  @isArray: isArray =
-    if self.Uint8ClampedArray
-      (obj) -> !!obj && (
-        obj.constructor == Array ||
-        obj instanceof Uint8ClampedArray ||
-        obj instanceof Int8Array     ||
-        obj instanceof Uint8Array    ||
-        obj instanceof Int16Array    ||
-        obj instanceof Uint16Array   ||
-        obj instanceof Int32Array    ||
-        obj instanceof Uint32Array   ||
-        obj instanceof Float32Array  ||
-        obj instanceof Float64Array
-      )
-    else
-      # IE 11 compatible
-      (obj) -> !!obj && (
-        obj.constructor == Array ||
-        # obj instanceof Uint8ClampedArray ||
-        obj instanceof Int8Array     ||
-        obj instanceof Uint8Array    ||
-        obj instanceof Int16Array    ||
-        obj instanceof Uint16Array   ||
-        obj instanceof Int32Array    ||
-        obj instanceof Uint32Array   ||
-        obj instanceof Float32Array  ||
-        obj instanceof Float64Array
-      )
-
   @isDate: (obj) => obj && obj.constructor == Date
   @isString: isString = (obj) => typeof obj == "string"
   @isFunction: isFunction = (obj) => typeof obj == "function"
   @isEmptyObject: (obj) => Object.keys(obj).length == 0
   @isBoolean: (obj) => obj == true || obj == false
-  @isClass: isClass = (obj) =>
+
+  # NOTE: cannot detect a class which doesn't extend another
+  _functionsPrototype = Object.getPrototypeOf ->
+  @isClass: isClass =
+    (obj) =>
+      !!(
+        typeof obj is "function" && (
+          # CoffeeScript extending class
+          (typeof obj.__super__ is "object") ||
+
+          # ES6 extending class
+          (
+            (typeof (prototype = Object.getPrototypeOf obj) is "function") &&
+            prototype != _functionsPrototype
+          ) ||
+
+          # We can't easily detect CoffeeScript or ES6 classes which don't extend another since they are just functions
+          # HACK: if its a function with own-properties, its not a plain function, probably a class
+          (hasOwnProperties obj) ||
+
+          # HACK: if its a function and its prototype as own-properties, its not a plain function, probably a class
+          (obj.prototype && hasProperties obj.prototype)
+        )
+      )
+
+  @isExtendedClass: isExtendedClass = (obj) =>
     !! (
       typeof obj is "function" && (
-        # any CoffeeScript class which inherits from another has __super__
+        # CoffeeScript extending class
         (typeof obj.__super__ is "object") ||
-        # We can't easily detect CoffeeScript classes which don't inherit since they are just Functions
-        # so we do this surrogate test:
-        (hasOwnProperties obj) ||
-        (obj.prototype && hasProperties obj.prototype)
+
+        # ES6 extending class
+        ((typeof (prototype = Object.getPrototypeOf obj) is "function") && prototype != _functionsPrototype)
       )
     )
 
-  @isJsonAtomicType: isJsonAtomicType = (a) -> isString(a) || isNumber(a) || a == true || a == false || a == null
-  @isJsonType: (a) -> isJsonAtomicType(a) || isPlainObject(a) || isPlainArray(a)
-
-  @isObject: isObject = (obj) =>
-    !!obj && typeof obj == "object" && !isPlainArray obj
+  @isArray:       isArray  = Array.isArray
 
   # cross-iFrame friendly
   # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
   # IE9+ supported, so we'll just use it directly.
-  @isPlainArray:  isPlainArray  = Array.isArray
+  @isPlainArray:  isArray
+
+  @isNonNegativeInt: isNonNegativeInt = (x) -> (x | 0 == x) && x >= 0
+  @isArrayIterable: (source) -> !!(source && isNonNegativeInt source.length)
+
+  @isJsonAtomicType: isJsonAtomicType = (a) -> isString(a) || isNumber(a) || a == true || a == false || a == null
+  @isJsonType: (a) -> isJsonAtomicType(a) || isPlainObject(a) || isArray(a)
+
+  @isObject: isObject = (obj) =>
+    !!obj && typeof obj == "object" && !isArray obj
+
+  @isDirectPrototypeOf:  isDirectPrototypeOf = (o, prototype) -> !isFunction(o) and prototype.constructor == o.constructor
+
+
+  ###
+  NOTE:
+    getSuper doesn't work in CoffeeScript classes objects, but it does on ES6 classes.
+    getSuper does work on CoffeeScript class instance objects.
+
+  All about getSuper in ES6 land:
+
+    class A {}
+    class B extends A {}
+    class C extends B {}
+
+    a = new A
+    b = new B
+    c = new C
+
+    getSuper(B) == A
+    getSuper(C) == B
+
+    getSuper(A.prototype) == Object.prototype
+    getSuper(B.prototype) == A.prototype
+    getSuper(C.prototype) == B.prototype
+
+    getSuper(b) == A.prototype
+    getSuper(c) == B.prototype
+
+  prototype map:
+
+  KEY:
+    <->
+       <-- .constructor
+       --> .prototype
+    ^  Object.prototypeOf
+
+  MAP:
+    A <-> aPrototype
+
+    ^     ^     ^
+    |     |     a
+    |     |
+
+    B <-> bPrototype
+
+    ^     ^     ^
+    |     |     b
+    |     |
+
+    C <-> cPrototype
+
+                ^
+                c
+
+  Definition of super:
+
+    if instance then prototype's prototype
+    else prototype
+
+  ###
+  @getSuper: (o) ->
+    throw new Error "getSuper expecting an object" unless (typeof o is "object") || (typeof o is "function")
+    _super = Object.getPrototypeOf o
+    _super = Object.getPrototypeOf _super if isDirectPrototypeOf o, _super
+    _super
+
+
 
   # cross-iFrame friendly
   # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf
