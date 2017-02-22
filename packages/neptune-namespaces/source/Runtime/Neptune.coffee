@@ -10,8 +10,7 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 require "./global"
 require "./function"
 
-isFunction = (f) -> typeof f == "function"
-isPlainArray = (o) -> o.constructor == Array
+{isFunction, isPlainArray, isExtendedClass} = require '../NeptuneLib/Types'
 
 NeptuneLib = null
 
@@ -51,7 +50,7 @@ class Base
   @getNamespaceNames: -> Object.keys(@namespaces).sort()
   @getModuleNames:    -> Object.keys(@modules).sort()
 
-  @getNeptuneLib: -> NeptuneLib ||= require 'neptune-namespaces/NeptuneLib'
+  @getNeptuneLib: -> Neptune.NeptuneLib
 
   @getInspectedObjects: (includeModules = true)->
     "#{@namespacePath}": @getNeptuneLib().merge
@@ -82,6 +81,8 @@ class Base
   @addModules: (map) ->
     for name, module of map
       @_setChildNamespaceProps name, module
+      if isExtendedClass(module) && name != modName = module.getName()
+        console.warn "NN: module name (#{name}) does not match module.exports.getName(): #{modName}"
       @modules[name] = @[name] = module unless name.match /^-/
 
     @
