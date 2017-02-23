@@ -82,7 +82,7 @@ class Base
     for name, module of map
       @_setChildNamespaceProps name, module
       if isExtendedClass(module) && name != modName = module.getName()
-        console.warn "NN: module name (#{name}) does not match module.exports.getName(): #{modName}"
+        console.warn "NN: module name (#{@namespacePath}.#{name}) does not match module.exports.getName(): #{modName}"
       @modules[name] = @[name] = module unless name.match /^-/
 
     @
