@@ -52,7 +52,7 @@ getStandardNpmPackageProps = ->
   author: "Shane Brinkman-Davis Delamore, Imikimi LLC"
   dependencies:
     'neptune-namespaces':                   '^1.9.1'
-    'art-suite-test':                       '^1.0.0'
+    'art-testbench':                        '^1.0.0'
     'art-standard-lib':                     '^1.0.0'
     'coffee-loader':                        '^0.7.2'
     'coffee-script':                        '^1.12.3'
