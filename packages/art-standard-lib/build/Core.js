@@ -1115,10 +1115,10 @@ try {
 
 module.exports = {
 	"name": "neptune-namespaces",
-	"version": "1.8.2",
+	"version": "1.9.1",
 	"description": "Generate index.coffee and namespace.coffee files from directory structures",
 	"scripts": {
-		"test": "neptune-namespaces --std;mocha -u tdd --compilers coffee:coffee-script/register -w"
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register -w"
 	},
 	"author": "Shane Brinkman-Davis Delamore",
 	"license": "MIT",
@@ -1133,6 +1133,7 @@ module.exports = {
 	},
 	"main": "index.coffee",
 	"dependencies": {
+		"art-standard-lib": "^1.0.0",
 		"coffee-loader": "^0.7.2",
 		"coffee-script": "^1.10.0",
 		"colors": "^1.1.2",
