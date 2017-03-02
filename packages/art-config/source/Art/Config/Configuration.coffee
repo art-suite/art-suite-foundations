@@ -7,7 +7,7 @@
 
 ConfigRegistry = require './ConfigRegistry'
 
-defineModule module, class Config extends BaseObject
+defineModule module, class Configuration extends BaseObject
   @abstractClass()
 
   @register: -> ConfigRegistry.registerConfig @getName(), @getProps()
