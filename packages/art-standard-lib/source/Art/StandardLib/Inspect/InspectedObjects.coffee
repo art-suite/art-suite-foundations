@@ -1,0 +1,44 @@
+{deepMap, isPlainArray, isPlainObject, isString, isFunction, isPromise} = require '../TypesExtended'
+{escapeJavascriptString} = require '../StringExtensions'
+{inspectedObjectLiteral} = require './InspectedObjectLiteral'
+
+module.exports = class InspectedObjects
+  @toInspectedObjects: toInspectedObjects = (m) ->
+    return m unless m?
+    oldm = m
+    if m == global
+      inspectedObjectLiteral "global"
+    else if out = m.getInspectedObjects?()
+      out
+    else if isPromise m
+      inspectedObjectLiteral "Promise"
+    else if isPlainObject(m) || isPlainArray(m)
+      deepMap m, (v) -> toInspectedObjects v
+    else if m instanceof Error
+      literal = inspectedObjectLiteral m.stack || m.toString(), true
+      if m.info
+        toInspectedObjects Error: info: m.info, stack: literal
+      else
+        Error: stack: literal
+
+    # else if isString m
+    #   inspectedObjectLiteral if m.match /\n/
+    #     [
+    #       '"""'
+    #       m.replace /"""/, '""\\"'
+    #       '"""'
+    #     ].join '\n'
+    #   else
+    #     escapeJavascriptString m
+    else if isFunction m
+      functionString = "#{m}"
+      reducedFunctionString = functionString
+      .replace /\s+/g, ' '
+      .replace /^function (\([^)]*\))/, "$1 ->"
+      .replace /^\(\)\s*/, ''
+      inspectedObjectLiteral if reducedFunctionString.length < 80
+        reducedFunctionString
+      else
+        functionString.slice 0, 5 * 80
+    else
+      m
