@@ -59,7 +59,6 @@ getStandardNpmPackageProps = ->
     'css-loader':                           '^0.26.1'
     'json-loader':                          '^0.5.4'
     'script-loader':                        '^0.7.0'
-    'sourcemapped-stacktrace':              '^1.1.5'
     'style-loader':                         '^0.13.1'
     'webpack':                              '^2.2.1'
     'webpack-dev-server':                   '^2.3.0'
