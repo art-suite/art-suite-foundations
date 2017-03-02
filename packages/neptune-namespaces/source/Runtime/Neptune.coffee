@@ -10,7 +10,7 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 require "./global"
 require "./function"
 
-{isFunction, isPlainArray, isExtendedClass} = require '../NeptuneLib/Types'
+{isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Core/Types'
 
 NeptuneLib = null
 
@@ -50,7 +50,8 @@ class Base
   @getNamespaceNames: -> Object.keys(@namespaces).sort()
   @getModuleNames:    -> Object.keys(@modules).sort()
 
-  @getNeptuneLib: -> Neptune.NeptuneLib
+  @getNeptuneLib: ->
+    throw new Error "DEPRICATED: Neptune.getNeptuneLib - use require 'art-standard-lib/Core'"
 
   @getInspectedObjects: (includeModules = true)->
     "#{@namespacePath}": @getNeptuneLib().merge

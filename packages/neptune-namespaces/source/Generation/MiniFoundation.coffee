@@ -1,9 +1,8 @@
 colors = require "colors"
 Path = require 'path'
 module.exports = class Lib
-  @[k] = v for k, v of require '../NeptuneLib/ArrayCompactFlatten'
-  @[k] = v for k, v of require '../NeptuneLib/StringCase'
-  {compactFlatten} = @
+  @[k] = v for k, v of require 'art-standard-lib/Core'
+  {compactFlatten, isFunction, isPlainArray, isPlainObject, isString} = @
 
   @promiseSequence: (promiseGeneratingFunctions) ->
     promiseGeneratingFunctions = promiseGeneratingFunctions.reverse()
@@ -17,10 +16,6 @@ module.exports = class Lib
     else
       resolveNextPromise()
 
-  @isFunction:    isFunction = (obj) => typeof obj == "function"
-  @isString:      isString = (obj) => typeof obj == "string"
-  @isPlainArray:  isPlainArray  = (v) -> if v then v.constructor == Array  else false
-  @isPlainObject: isPlainObject = (v) -> if v then v.constructor == Object else false
   @escapeJavascriptString: escapeJavascriptString = (str) =>
     JSON.stringify str
 
@@ -46,12 +41,6 @@ module.exports = class Lib
 
   @withoutTrailingSlash: (str) ->
     str.match(/^(.*[^\/])\/?$/)[1]
-
-  @merge: (a, b) =>
-    result = {}
-    result[k] = v for k, v of a
-    result[k] = v for k, v of b
-    result
 
   @formattedInspect: formattedInspect = (a, indent = '') ->
     a = a.getInspectedObjects() if isFunction a?.getInspectedObjects
