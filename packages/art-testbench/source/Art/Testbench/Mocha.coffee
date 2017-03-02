@@ -1,4 +1,5 @@
-{log, isFunction, isPlainObject, merge, ConfigRegistry} = require 'art-foundation'
+{log, isFunction, isPlainObject, merge} = require 'art-standard-lib'
+{ConfigRegistry} = require 'art-config'
 chai = require './ArtChai'
 global.assert = chai.assert
 

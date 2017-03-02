@@ -1,5 +1,4 @@
 {assert} = Chai = require 'chai'
-Foundation = require 'art-foundation'
 {
   log, eq, inspect, formattedInspect, floatEq, compactFlatten, escapeRegExp, isString
   Types
@@ -14,7 +13,7 @@ Foundation = require 'art-foundation'
   present
   objectHasKeys
   isPlainObject
-} = Foundation
+} = StandardLib = require 'art-standard-lib'
 
 {assert} = Chai
 
@@ -101,7 +100,7 @@ assert.rejectsWith = (promise, rejectValue, context) ->
     assert.eq value, rejectValue, "rejects with: #{context}"
 
 addTester name, tester for name, tester of Types when name.match /^is/
-addTester name, Foundation[name] for name in wordsArray "gt gte lte lt eq neq floatEq"
+addTester name, StandardLib[name] for name in wordsArray "gt gte lte lt eq neq floatEq"
 addTester "instanceof", (klass, obj) -> obj instanceof klass
 addTester "match",    (a, b) -> a.match  if isString b then escapeRegExp b else b
 addTester "notMatch", (a, b) -> !a.match if isString b then escapeRegExp b else b

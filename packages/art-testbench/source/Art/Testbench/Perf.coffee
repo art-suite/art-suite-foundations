@@ -13,7 +13,6 @@ suite 'my suite', ->
   benchmark 'My Benchmark', -> 1 + 2 + 3
 ###
 
-Foundation = require 'art-foundation'
 {
   inspect, log
   time, nextTick, currentSecond, requestAnimationFrame
@@ -23,7 +22,8 @@ Foundation = require 'art-foundation'
   rightAlign
   isPromise
   defineModule
-} = Foundation
+  isFunction
+} = require 'art-standard-lib'
 
 targetCycleDuration = .02
 defaultTestDuration = 1
@@ -33,13 +33,23 @@ defineModule module, ->
   class Perf
 
     @benchmark: global.benchmark ||= (name, benchmarkF, options) =>
-      test name, (done) =>
+      test name, (mochaDone) =>
+        doneCalled = false
+        done = ->
+          mochaDone() unless doneCalled
+          doneCalled = true
+
         f = if @_isAsyncBenchmark benchmarkF
           @_getAsyncBenchmarkFunction name, benchmarkF, options
         else
           @_getSyncBenchmarkFunction name, benchmarkF, options
 
-        f done
+        ret = f done
+
+        # mocha no longer does this for me
+        if isFunction ret.then
+          ret.then done
+        null
 
     ########################
     # PRIVATE
