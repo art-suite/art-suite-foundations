@@ -5,6 +5,7 @@ module.exports = require './namespace'
 .addModules
   Array:            require './array'           
   CallStack:        require './CallStack'       
+  Clone:            require './clone'           
   Eq:               require './eq'              
   Iteration:        require './Iteration'       
   Map:              require './Map'             

@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "dependencies": {
     "art-standard-lib": "^1.0.0",
-    "art-suite-test": "^1.0.0",
+    "art-testbench": "^1.0.0",
     "bluebird": "^3.4.6",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
     "coffee-loader": "^0.7.2",
@@ -11,7 +11,6 @@
     "json-loader": "^0.5.4",
     "neptune-namespaces": "^1.9.1",
     "script-loader": "^0.7.0",
-    "sourcemapped-stacktrace": "^1.1.5",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0"
