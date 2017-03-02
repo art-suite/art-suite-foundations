@@ -1,9 +1,9 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "dependencies": {
-    "art-standard-lib": "^1.0.0",
+    "art-class-system": "^1.0.1",
+    "art-standard-lib": "^1.1.0",
     "art-testbench": "^1.0.0",
-    "bluebird": "^3.4.6",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.12.3",
@@ -15,13 +15,13 @@
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0"
   },
-  "description": "The Standard Library for JavaScript that aught to be.",
+  "description": "A powerful yet simple tool for configuring all your libraries consistently.",
   "license": "ISC",
-  "name": "art-standard-lib",
+  "name": "art-config",
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress",
     "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
   },
-  "version": "1.1.0"
+  "version": "0.0.1"
 }
