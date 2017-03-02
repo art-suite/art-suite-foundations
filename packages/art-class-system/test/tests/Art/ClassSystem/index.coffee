@@ -2,4 +2,4 @@
 # file: tests/Art/ClassSystem/index.coffee
 
 module.exports = require './namespace'
-require './BaseObject'
+require './BaseClass'
