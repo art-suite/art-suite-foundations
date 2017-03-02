@@ -63,6 +63,7 @@ class Base
 
   @getVersions: ->
     out = {}
+    out.version = @version if @ == Neptune
     for key, subNamespace of @namespaces
       out[key] = recurse if 0 < Object.keys(recurse = subNamespace.getVersions()).length
       (out[key] ||= {}).version = subNamespace.version if subNamespace.version?
@@ -181,7 +182,7 @@ class Base
     else
       @[propName] = value
 
-module.exports = global.Neptune = class Neptune extends Base
+module.exports = global.Neptune ||= class Neptune extends Base
   @Base: Base
   @namespacePath: "Neptune"
   @namespace: null
