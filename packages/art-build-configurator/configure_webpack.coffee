@@ -53,7 +53,8 @@ getStandardNpmPackageProps = ->
   dependencies:
     'neptune-namespaces':                   '^1.9.1'
     'art-testbench':                        '^1.0.0'
-    'art-standard-lib':                     '^1.0.0'
+    'art-standard-lib':                     '^1.1.0'
+    'art-class-system':                     '^1.0.1'
     'coffee-loader':                        '^0.7.2'
     'coffee-script':                        '^1.12.3'
     'css-loader':                           '^0.26.1'
