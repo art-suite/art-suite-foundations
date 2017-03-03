@@ -19,6 +19,8 @@ webpackNodeExternals = require 'webpack-node-externals'
 fs = require 'fs'
 path = require 'path'
 
+BuildConfigurator = require './namespace'
+
 {StandardWebpackConfig} = require './Data'
 
 defineModule module, class ConfigureWebpack extends BaseClass
@@ -60,8 +62,8 @@ defineModule module, class ConfigureWebpack extends BaseClass
   @standardWebpackConfigJs: """
     require('coffee-script/register');
     module.exports = require("art-build-configurator").getWebpackConfig(__dirname);
+
     """
 
   @write: (npmRoot) =>
-    fs.writeFileSync path.join(npmRoot, @outFileName), @standardWebpackConfigJs + "\n"
-
+    BuildConfigurator.updateFile path.join(npmRoot, @outFileName), @standardWebpackConfigJs

@@ -12,6 +12,8 @@ path = require 'path'
 
 {StandardPackageJson} = require './Data'
 
+BuildConfigurator = require './namespace'
+
 defineModule module, class ConfigurePackageJson extends BaseClass
   @outFileName: "package.json"
 
@@ -26,4 +28,4 @@ defineModule module, class ConfigurePackageJson extends BaseClass
   ###
   @write: (npmRoot, packageConfig) =>
     contents = consistentJsonStringify packageConfig, "  "
-    fs.writeFileSync path.join(npmRoot, "package.json"), contents + "\n"
+    BuildConfigurator.updateFile path.join(npmRoot, "package.json"), contents + "\n"

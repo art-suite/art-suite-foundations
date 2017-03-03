@@ -5,30 +5,75 @@ realRequire = eval 'require'
 
 ConfigureWebpack = require './ConfigureWebpack'
 ConfigurePackageJson = require './ConfigurePackageJson'
-{log} = require 'art-standard-lib'
+{log, Promise, merge} = require 'art-standard-lib'
 
 module.exports = class BuildConfigurator
 
+  ###
+  Ex:
+    module.exports =
+      npm: # or package:
+        description: "my description"
+
+      webpack:
+        common: # common config for all targets
+        targets: # default: index: {}
+          index: # target 'index' specific config
+  ###
   @configFileName: "art.build.config.coffee"
 
-  @loadConfig: (npmRoot)=>
+  @standardConfigFileContents:
+    """
+    module.exports =
+      webpack:
+        common: {}
+        targets:
+          index: {}
+
+    """
+
+  @loadConfig: (npmRoot, vivifyConfigFile = false)=>
     file = path.join npmRoot, @configFileName
     fsp.exists file
     .then (exists) =>
       if exists
         realRequire file
       else
+        if vivifyConfigFile
+          @updateFile @configFileName, @standardConfigFileContents
         {}
+    .then (config) =>
+      config.npm ||= config.package
+      p = if config.npm
+        Promise.resolve config.npm
+      else
+        fsp.exists packageFile = path.join npmRoot, ConfigurePackageJson.outFileName
+        .then (exists) =>
+          if exists
+            realRequire packageFile
+          else
+            {}
+      p.then (finalNpm) =>
+        merge config, npm: finalNpm
 
-  @go: (npmRoot, {pretend, all}) =>
-    @loadConfig(npmRoot)
-    .then ({npm, webpack}) ->
+  @updateFile: (fileName, contents) ->
+    if fsp.existsSync fileName
+      oldContents = fsp.readFileSync(fileName).toString()
+
+    if oldContents != contents
+      log "generating and writing: ".gray + fileName.green
+      fsp.writeFileSync fileName, contents
+    else
+      log "no change: #{fileName}".gray
+
+  @go: (npmRoot, {pretend, configure}) =>
+    @loadConfig(npmRoot, configure)
+    .then ({npm, webpack}) =>
 
       packageConfig = ConfigurePackageJson.get npm
       if pretend
         log "package.json": packageConfig
-      else if all
-        log "generating and writing: ".gray + ConfigurePackageJson.outFileName.green
+      else if configure
         ConfigurePackageJson.write npmRoot, packageConfig
 
       webpackConfig = ConfigureWebpack.get npmRoot, webpack
@@ -37,10 +82,9 @@ module.exports = class BuildConfigurator
           configGeneratedOnDemand: webpackConfig
           "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
       else
-        log "generating and writing: ".gray + ConfigureWebpack.outFileName.green
         ConfigureWebpack.write npmRoot
 
   @getWebpackConfig: (npmRoot) =>
     @loadConfig(npmRoot)
-    .then ({webpack}) ->
+    .then ({webpack}) =>
       ConfigureWebpack.get npmRoot, webpack
