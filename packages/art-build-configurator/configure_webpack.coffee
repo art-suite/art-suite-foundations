@@ -44,7 +44,7 @@ isWebpackDevServer = !!(executable.match(/\/node$/) &&
 fs = require 'fs'
 path = require "path"
 runNeptuneNamespaces = require './standard_neptune_namespace_generators'
-CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin']
+CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 
 
 class ArtWebpackConfigurator
