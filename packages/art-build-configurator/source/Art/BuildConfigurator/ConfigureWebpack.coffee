@@ -1,13 +1,19 @@
 # https://webpack.js.org/concepts/configuration/
 
-webpackMerge = require 'webpack-merge'
+
+nodeExternals = null
 
 {
   defineModule
   isPlainObject
   array
   object
+  deepMerge
 } = require 'art-standard-lib'
+
+# webpack-merge tries to be "smart" - I prefer deepMerge
+webpackMerge = deepMerge #require 'webpack-merge'
+webpackNodeExternals = require 'webpack-node-externals'
 
 {BaseClass} = require 'art-class-system'
 fs = require 'fs'
@@ -27,8 +33,20 @@ defineModule module, class ConfigureWebpack extends BaseClass
     {common, targets} = config
     standard = StandardWebpackConfig.get npmRoot, config
     baseConfig = webpackMerge standard, common
-    array @normalizeTargets(targets), (targetConfig) ->
-      webpackMerge baseConfig, targetConfig
+    targets ||= index: {}
+    array @normalizeTargets(targets), (targetConfig) =>
+      @normalizeTargetConfig webpackMerge baseConfig, targetConfig
+
+  @normalizeTargetConfig: (targetConfig) ->
+    if targetConfig.target == "node"
+      targetConfig = webpackMerge
+        output: libraryTarget: "commonjs2"
+
+        # this CAN work, but webpackNodeExternals is actually pretty stupid about what files it searches for
+        externals: [nodeExternals ||= webpackNodeExternals(modulesFromFile: true)]
+        targetConfig
+
+    targetConfig
 
   @normalizeTargets: (targets = {}) ->
     throw new Error "targets must be an object" unless isPlainObject targets
