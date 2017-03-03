@@ -2,7 +2,10 @@
   defineModule
   isPlainObject
   deepMerge
+  consistentJsonStringify
 } = require 'art-standard-lib'
+
+fs = require 'fs'
 
 {BaseClass} = require 'art-class-system'
 
@@ -20,7 +23,5 @@ defineModule module, class ConfigurePackageJson extends BaseClass
   consistentJsonStringify is there to guarantee a consistently formatted output for git.
   ###
   @write: (packageConfig) =>
-    log "generating and writing: ".gray + "package.json".green
-
     contents = consistentJsonStringify packageConfig, "  "
     fs.writeFileSync "package.json", contents + "\n"

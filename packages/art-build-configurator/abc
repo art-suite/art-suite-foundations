@@ -12,6 +12,7 @@ fileName = "art.build.config.coffee"
 commander = require "commander"
 .version version
 .option '-p, --pretend', "show the configs that will be generated without writing them"
+.option '-a, --all', "configure and update all"
 .on "--help", ->
   console.log """
     looks for #{fileName} and configs as instructed
@@ -20,21 +21,27 @@ commander = require "commander"
 
 Configurator = require './index'
 
-if fsp.existsSync fileName
-  Promise.resolve require path.join process.cwd(), fileName
-  .then ({webpack, packageJson}) ->
+{pretend, all} = commander
 
-    if packageJson
-      packageConfig = Configurator.ConfigurePackageJson.get packageJson
-      if commander.pretend
-        log packageJson: packageConfig
-      else
-        Configurator.ConfigurePackageJson.write packageConfig
+if pretend || all
+  if fsp.existsSync fileName
+    Promise.resolve require path.join process.cwd(), fileName
+    .then ({webpack, packageJson}) ->
 
-    if webpack
-      webpackConfig = Configurator.ConfigureWebpack.get webpack
-      if commander.pretend
-        log webpack: webpackConfig
+      if packageJson
+        packageConfig = Configurator.ConfigurePackageJson.get packageJson
+        if pretend
+          log "package.json": packageConfig
+        else if all
+          log "generating and writing: ".gray + "package.json".green
+          Configurator.ConfigurePackageJson.write packageConfig
 
+      if webpack
+        webpackConfig = Configurator.ConfigureWebpack.get webpack
+        if pretend
+          log webpack: webpackConfig
+
+  else
+    log.error "Expecting: './#{fileName}' to exist."
 else
-  log.error "Expecting: './#{fileName}' to exist."
+  commander.outputHelp()

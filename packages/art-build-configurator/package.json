@@ -1,7 +1,11 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bin": {
+    "abc": "./abc"
+  },
   "dependencies": {
-    "art-standard-lib": "^1.0.0",
+    "art-class-system": "^1.0.1",
+    "art-standard-lib": "^1.1.0",
     "art-testbench": "^1.0.0",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
     "coffee-loader": "^0.7.2",
@@ -12,10 +16,8 @@
     "script-loader": "^0.7.0",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
-  },
-  "bin": {
-    "abc": "./abc"
+    "webpack-dev-server": "^2.3.0",
+    "webpack-merge": "^3.0.0"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "license": "ISC",
