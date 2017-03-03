@@ -1,0 +1,40 @@
+#!/usr/bin/env coffee
+
+colors = require "colors"
+fsp = require 'fs-promise'
+path = require 'path'
+
+fileName = "art.build.config.coffee"
+
+{log} = require 'art-standard-lib'
+
+{version} = require './package'
+commander = require "commander"
+.version version
+.option '-p, --pretend', "show the configs that will be generated without writing them"
+.on "--help", ->
+  console.log """
+    looks for #{fileName} and configs as instructed
+    """
+.parse process.argv
+
+Configurator = require './index'
+
+if fsp.existsSync fileName
+  Promise.resolve require path.join process.cwd(), fileName
+  .then ({webpack, packageJson}) ->
+
+    if packageJson
+      packageConfig = Configurator.ConfigurePackageJson.get packageJson
+      if commander.pretend
+        log packageJson: packageConfig
+      else
+        Configurator.ConfigurePackageJson.write packageConfig
+
+    if webpack
+      webpackConfig = Configurator.ConfigureWebpack.get webpack
+      if commander.pretend
+        log webpack: webpackConfig
+
+else
+  log.error "Expecting: './#{fileName}' to exist."

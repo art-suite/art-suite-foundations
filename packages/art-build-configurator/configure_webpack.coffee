@@ -32,7 +32,7 @@ TODO
 ###
 
 
-
+BuildConfigurator = require './index'
 
 {defineModule, inspect, peek, deepMerge, consistentJsonStringify, log, merge} = require 'art-standard-lib'
 
@@ -45,37 +45,7 @@ path = require "path"
 runNeptuneNamespaces = require './standard_neptune_namespace_generators'
 CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 
-getStandardNpmPackageProps = ->
-  license: 'ISC'
-  name: peek process.cwd().split("/")
-  version: JSON.parse(fs.readFileSync("package.json").toString()).version
-  author: "Shane Brinkman-Davis Delamore, Imikimi LLC"
-  dependencies:
-    'neptune-namespaces':                   '^1.9.1'
-    'art-testbench':                        '^1.0.0'
-    'art-standard-lib':                     '^1.1.0'
-    'art-class-system':                     '^1.0.1'
-    'coffee-loader':                        '^0.7.2'
-    'coffee-script':                        '^1.12.3'
-    'css-loader':                           '^0.26.1'
-    'json-loader':                          '^0.5.4'
-    'script-loader':                        '^0.7.0'
-    'style-loader':                         '^0.13.1'
-    'webpack':                              '^2.2.1'
-    'webpack-dev-server':                   '^2.3.0'
-    'case-sensitive-paths-webpack-plugin':  '^1.1.4'
-  scripts:
-    # https://docs.npmjs.com/misc/scripts#description
-    # standard life-cycle scripts
-    test:     'webpack-dev-server --progress'
-    start:    'webpack-dev-server --hot --inline --progress'
-
-    # ArtSuite scripts
-    # nodeTest: 'nn -s; mocha -u tdd --compilers coffee:coffee-script/register'
-    build:    'webpack --progress'
-    # dev:      'nn -s; webpack-dev-server -d --progress'
-    # hot:      'nn -s; webpack-dev-server --hot --inline --progress'
-    # nn:       'nn -s'
+getStandardNpmPackageProps = BuildConfigurator.Data.StandardPackageJson.get()
 
 class ArtWebpackConfigurator
 
