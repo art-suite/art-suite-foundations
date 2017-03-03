@@ -2,14 +2,14 @@ CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 path = require 'path'
 
 module.exports = class StandardWebpackConfig
-  @get: (options) ->
+  @get: (npmRoot, options) ->
     {outputPath = "build"} = options
 
     resolve:
       extensions: [".webpack.js", ".web.js", ".js", ".coffee"]
 
     output:
-      path:       path.join dirname, outputPath
+      path:       path.join npmRoot, outputPath
       filename:   "[name].js"
 
     plugins: [

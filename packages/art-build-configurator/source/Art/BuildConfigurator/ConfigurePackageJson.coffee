@@ -6,6 +6,7 @@
 } = require 'art-standard-lib'
 
 fs = require 'fs'
+path = require 'path'
 
 {BaseClass} = require 'art-class-system'
 
@@ -22,6 +23,6 @@ defineModule module, class ConfigurePackageJson extends BaseClass
   ###
   consistentJsonStringify is there to guarantee a consistently formatted output for git.
   ###
-  @write: (packageConfig) =>
+  @write: (npmRoot, packageConfig) =>
     contents = consistentJsonStringify packageConfig, "  "
-    fs.writeFileSync "package.json", contents + "\n"
+    fs.writeFileSync path.join(npmRoot, "package.json"), contents + "\n"

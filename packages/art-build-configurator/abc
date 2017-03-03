@@ -4,9 +4,7 @@ colors = require "colors"
 fsp = require 'fs-promise'
 path = require 'path'
 
-fileName = "art.build.config.coffee"
-
-{log} = require 'art-standard-lib'
+Configurator = require './index'
 
 {version} = require './package'
 commander = require "commander"
@@ -15,33 +13,14 @@ commander = require "commander"
 .option '-a, --all', "configure and update all"
 .on "--help", ->
   console.log """
-    looks for #{fileName} and configs as instructed
+    looks for #{Configurator.configFileName} and configs as instructed
     """
 .parse process.argv
 
-Configurator = require './index'
-
 {pretend, all} = commander
-
 if pretend || all
-  if fsp.existsSync fileName
-    Promise.resolve require path.join process.cwd(), fileName
-    .then ({webpack, packageJson}) ->
-
-      if packageJson
-        packageConfig = Configurator.ConfigurePackageJson.get packageJson
-        if pretend
-          log "package.json": packageConfig
-        else if all
-          log "generating and writing: ".gray + "package.json".green
-          Configurator.ConfigurePackageJson.write packageConfig
-
-      if webpack
-        webpackConfig = Configurator.ConfigureWebpack.get webpack
-        if pretend
-          log webpack: webpackConfig
-
-  else
-    log.error "Expecting: './#{fileName}' to exist."
+  Configurator.go process.cwd(), commander
+  .catch (e) ->
+    console.error e.stack
 else
   commander.outputHelp()

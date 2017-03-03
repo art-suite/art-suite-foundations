@@ -5,6 +5,8 @@ webpackMerge = require 'webpack-merge'
 {
   defineModule
   isPlainObject
+  array
+  object
 } = require 'art-standard-lib'
 
 {BaseClass} = require 'art-class-system'
@@ -19,8 +21,9 @@ defineModule module, class ConfigureWebpack extends BaseClass
     targets:
       myEntry: my target's overrides
   ###
-  @get: ({common, targets}) =>
-    standard = StandardWebpackConfig.get options
+  @get: (npmRoot, config = {}) =>
+    {common, targets} = config
+    standard = StandardWebpackConfig.get npmRoot, config
     baseConfig = webpackMerge standard, common
     array @normalizeTargets(targets), (targetConfig) ->
       webpackMerge baseConfig, targetConfig
@@ -31,3 +34,12 @@ defineModule module, class ConfigureWebpack extends BaseClass
       webpackMerge
         entry: "#{targetName}": ["./#{targetName}"]
         targetConfig
+
+  @standardWebpackConfigJs: """
+    require('coffee-script/register');
+    module.exports = require("art-build-configurator").getWebpackConfig(__dirname);
+    """
+
+  @write: (npmRoot) =>
+    fs.writeFileSync path.join(npmRoot, "webpack.config.js"), @standardWebpackConfigJs
+

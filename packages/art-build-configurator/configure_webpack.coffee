@@ -33,6 +33,7 @@ TODO
 
 
 BuildConfigurator = require './index'
+{StandardPackageJson} = BuildConfigurator.Data
 
 {defineModule, inspect, peek, deepMerge, consistentJsonStringify, log, merge} = require 'art-standard-lib'
 
@@ -43,9 +44,8 @@ isWebpackDevServer = !!(executable.match(/\/node$/) &&
 fs = require 'fs'
 path = require "path"
 runNeptuneNamespaces = require './standard_neptune_namespace_generators'
-CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
+CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin']
 
-getStandardNpmPackageProps = BuildConfigurator.Data.StandardPackageJson.get()
 
 class ArtWebpackConfigurator
 
@@ -87,7 +87,7 @@ class ArtWebpackConfigurator
     @_selectEntries entryConfig
 
 createPackageJson = (npmPackage) ->
-  npmPackage = deepMerge getStandardNpmPackageProps(), npmPackage
+  npmPackage = deepMerge StandardPackageJson.get(), npmPackage
   if npmPackage.exclusiveDependencies
     npmPackage.dependencies = npmPackage.exclusiveDependencies
     delete npmPackage.exclusiveDependencies
