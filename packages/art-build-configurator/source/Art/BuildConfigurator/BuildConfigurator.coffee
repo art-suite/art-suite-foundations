@@ -28,7 +28,7 @@ module.exports = class BuildConfigurator
       if pretend
         log "package.json": packageConfig
       else if all
-        log "generating and writing: ".gray + "package.json".green
+        log "generating and writing: ".gray + ConfigurePackageJson.outFileName.green
         ConfigurePackageJson.write npmRoot, packageConfig
 
       webpackConfig = ConfigureWebpack.get npmRoot, webpack
@@ -37,7 +37,8 @@ module.exports = class BuildConfigurator
           configGeneratedOnDemand: webpackConfig
           "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
       else
-        fsp.write npmRoot
+        log "generating and writing: ".gray + ConfigureWebpack.outFileName.green
+        ConfigureWebpack.write npmRoot
 
   @getWebpackConfig: (npmRoot) =>
     @loadConfig(npmRoot)

@@ -13,6 +13,7 @@ path = require 'path'
 {StandardPackageJson} = require './Data'
 
 defineModule module, class ConfigurePackageJson extends BaseClass
+  @outFileName: "package.json"
 
   ###
   IN:

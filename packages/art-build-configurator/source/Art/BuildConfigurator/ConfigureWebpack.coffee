@@ -10,6 +10,8 @@ webpackMerge = require 'webpack-merge'
 } = require 'art-standard-lib'
 
 {BaseClass} = require 'art-class-system'
+fs = require 'fs'
+path = require 'path'
 
 {StandardWebpackConfig} = require './Data'
 
@@ -35,11 +37,13 @@ defineModule module, class ConfigureWebpack extends BaseClass
         entry: "#{targetName}": ["./#{targetName}"]
         targetConfig
 
+  @outFileName: "webpack.config.js"
+
   @standardWebpackConfigJs: """
     require('coffee-script/register');
     module.exports = require("art-build-configurator").getWebpackConfig(__dirname);
     """
 
   @write: (npmRoot) =>
-    fs.writeFileSync path.join(npmRoot, "webpack.config.js"), @standardWebpackConfigJs
+    fs.writeFileSync path.join(npmRoot, @outFileName), @standardWebpackConfigJs + "\n"
 
