@@ -12,7 +12,7 @@ nodeExternals = null
 } = require 'art-standard-lib'
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
-webpackMerge = deepMerge #require 'webpack-merge'
+webpackMerge = require 'webpack-merge'
 webpackNodeExternals = require 'webpack-node-externals'
 
 {BaseClass} = require 'art-class-system'

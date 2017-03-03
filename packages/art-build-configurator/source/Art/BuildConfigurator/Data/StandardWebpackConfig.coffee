@@ -6,7 +6,7 @@ module.exports = class StandardWebpackConfig
     {outputPath = "build"} = options
 
     resolve:
-      extensions: [".webpack.js", ".web.js", ".js", ".coffee"]
+      extensions: [".webpack.js", ".web.js", ".js", ".coffee", ".json"]
 
     output:
       path:       path.join npmRoot, outputPath
