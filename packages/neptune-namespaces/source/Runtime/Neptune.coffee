@@ -189,7 +189,6 @@ module.exports = global.Neptune ||= class Neptune extends Base
   @namespace: null
   @isNamespace: (klass) -> klass?.prototype instanceof Base
   @isNode: require 'detect-node'
-  @package: _package = require "../../package.json"
-  @version: _package.version
+  @version: (require "../../package.json").version
 
 Base.namespace = Neptune
