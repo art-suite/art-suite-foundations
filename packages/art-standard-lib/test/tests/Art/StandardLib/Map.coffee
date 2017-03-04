@@ -1,6 +1,6 @@
-{Map, inspect, log} = Neptune.Art.Foundation
+{Map, inspect, log} = Neptune.Art.StandardLib
 
-suite "Art.Foundation.Map.inspect", ->
+suite "Art.StandardLib.Map.inspect", ->
   test "inspect just string keys", ->
     om = new Map
     log
@@ -46,7 +46,7 @@ suite "Art.Foundation.Map.inspect", ->
     om.set "bar", 102
     assert.eq "{Map foo: <parent>, bar: 102}", inspect om
 
-suite "Art.Foundation.Map", ->
+suite "Art.StandardLib.Map", ->
   test "new", ->
     om = new Map
     assert.eq om.length, 0

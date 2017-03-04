@@ -1,5 +1,5 @@
 
-{Foundation} = Neptune.Art
+{StandardLib} = Neptune.Art
 {
   eq, clone, inspect, capitalize, upperCamelCase, lowerCamelCase
   snakeCase, pluralize, allIndexes, randomString
@@ -9,9 +9,9 @@
   formattedInspect
   getLowerCaseCodeWords
   w
-} = Foundation
+} = StandardLib
 
-suite "Art.Foundation.StandardLib.String.Case", ->
+suite "Art.StandardLib.StandardLib.String.Case", ->
 
   test "capitalize", ->
     assert.eq "Foo", capitalize "foo"
@@ -20,19 +20,19 @@ suite "Art.Foundation.StandardLib.String.Case", ->
 
 
 testCodeCase = (testIn) ->
-  suite "Art.Foundation.StandardLib.String.Case.getLowerCaseCodeWords", ->
+  suite "Art.StandardLib.StandardLib.String.Case.getLowerCaseCodeWords", ->
     test "getLowerCaseCodeWords #{formattedInspect testIn} >> ['foo', 'bar', 'baz']", ->
       assert.eq getLowerCaseCodeWords(testIn), w 'foo bar baz'
 
-  suite "Art.Foundation.StandardLib.String.Case.upperCamelCase", ->
+  suite "Art.StandardLib.StandardLib.String.Case.upperCamelCase", ->
     test "upperCamelCase #{formattedInspect testIn} >> 'FooBarBaz'", ->
       assert.eq upperCamelCase(testIn), 'FooBarBaz'
 
-  suite "Art.Foundation.StandardLib.String.Case.lowerCamelCase", ->
+  suite "Art.StandardLib.StandardLib.String.Case.lowerCamelCase", ->
     test "lowerCamelCase #{formattedInspect testIn} >> 'fooBarBaz'", ->
       assert.eq lowerCamelCase(testIn), 'fooBarBaz'
 
-  suite "Art.Foundation.StandardLib.String.Case.snakeCase", ->
+  suite "Art.StandardLib.StandardLib.String.Case.snakeCase", ->
     test "snaleCase #{formattedInspect testIn} >> 'foo_bar_baz'", ->
       assert.eq snakeCase(testIn), 'foo_bar_baz'
 
@@ -46,7 +46,7 @@ testCodeCase "FOO_BAR_BAZ"
 testCodeCase "  ??foo !bar_ baz- "
 
 testReflexivity = (string, codeWords) ->
-  suite "Art.Foundation.StandardLib.String.Case.reflexivity", ->
+  suite "Art.StandardLib.StandardLib.String.Case.reflexivity", ->
     test string, ->
       ucc = upperCamelCase string
       lcc = lowerCamelCase string

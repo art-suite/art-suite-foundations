@@ -1,13 +1,13 @@
 
-{Foundation} = Neptune.Art
+{StandardLib} = Neptune.Art
 {
   objectDiff
   inspect
   plainObjectsDeepEq
   objectKeyCount
-} = Foundation
+} = StandardLib
 
-suite "Art.Foundation.StandardLib.objectDiff", ->
+suite "Art.StandardLib.StandardLib.objectDiff", ->
   added = removed = changed = unchanged = 0
   add = -> added++
   remove = -> removed++

@@ -1,12 +1,12 @@
 
-{Foundation} = Neptune.Art
-clone = Foundation.Clone.clone
-inspect = Foundation.Inspect.inspect
-Inspector2 = Foundation.Inspect.Inspector2
+{StandardLib} = Neptune.Art
+clone = StandardLib.Clone.clone
+inspect = StandardLib.Inspect.inspect
+Inspector2 = StandardLib.Inspect.Inspector2
 
 inspector = () -> new Inspector2
 
-suite "Art.Foundation.Inspect.Inspector2", ->
+suite "Art.StandardLib.Inspect.Inspector2", ->
   test "inspect 123", -> assert.equal inspector().inspect(123).toString(), "123"
   test "inspect []]", -> assert.equal inspector().inspect([]).toString(), "[]"
   test "inspect [1, 2, 3]]", -> assert.equal inspector().inspect([1, 2, 3]).toString(), "[1, 2, 3]"

@@ -38,5 +38,5 @@ module.exports = class AsyncExtensions
     try
       f()
     catch e
-      Neptune.Art.Foundation.log.error "evalAndThrowErrorsOutOfStack", e
+      Neptune.Art.StandardLib.log.error "evalAndThrowErrorsOutOfStack", e
       @throwErrorOutOfStack e

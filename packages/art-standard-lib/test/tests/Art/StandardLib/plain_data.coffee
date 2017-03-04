@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
-{deepEach, deepMap, log, inspect, toJsonStructure} = Foundation
+{StandardLib} = Neptune.Art
+{deepEach, deepMap, log, inspect, toJsonStructure} = StandardLib
 
-suite "Art.Foundation.StandardLib.PlainData", ->
+suite "Art.StandardLib.StandardLib.PlainData", ->
 
   suite "deepEach", ->
     tester = (v, expectedCount, expectedSum) ->

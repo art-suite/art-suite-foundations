@@ -89,7 +89,7 @@ module.exports = class Log
       else
         Inspect.formattedInspect m, process.stdout.columns
     else
-      logger m, "\n# Foundation.log called " + @contextString stack, className
+      logger m, "\n# StandardLib.log called " + @contextString stack, className
 
   # always returned the last argument passed in. That way you can:
   #     bar = foo # log foo's value in the middle of an expression, along with other values, without altering the rest of the expression

@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
-{rubyTrue, rubyFalse, rubyOr, rubyAnd, inspect} = Foundation
+{StandardLib} = Neptune.Art
+{rubyTrue, rubyFalse, rubyOr, rubyAnd, inspect} = StandardLib
 
-suite "Art.Foundation.StandardLib.Ruby.rubyTrue and rubyFalse", ->
+suite "Art.StandardLib.StandardLib.Ruby.rubyTrue and rubyFalse", ->
   pairs = [
     [0, true]
     ["", true]
@@ -22,7 +22,7 @@ suite "Art.Foundation.StandardLib.Ruby.rubyTrue and rubyFalse", ->
       assert.equal output, rubyTrue input
       assert.equal output, !rubyFalse input
 
-suite "Art.Foundation.StandardLib.Ruby.rubyOr", ->
+suite "Art.StandardLib.StandardLib.Ruby.rubyOr", ->
 
   test "rubyOr 123", -> assert.eq 123, rubyOr 123
   test "rubyOr 0", -> assert.eq 0, rubyOr 0
@@ -46,7 +46,7 @@ suite "Art.Foundation.StandardLib.Ruby.rubyOr", ->
   test "rubyOr false, null, 4, 5", -> assert.eq 4, rubyOr false, null, 4, 5
   test "rubyOr false, false, 4, 5", -> assert.eq 4, rubyOr false, false, 4, 5
 
-suite "Art.Foundation.StandardLib.Ruby.rubyAnd", ->
+suite "Art.StandardLib.StandardLib.Ruby.rubyAnd", ->
 
   test "rubyAnd 123", -> assert.eq 123, rubyAnd 123
   test "rubyAnd 0", -> assert.eq 0, rubyAnd 0

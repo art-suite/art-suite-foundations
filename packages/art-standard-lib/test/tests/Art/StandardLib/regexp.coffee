@@ -1,9 +1,9 @@
 
-{Foundation} = Neptune.Art
+{StandardLib} = Neptune.Art
 
-{emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, urlRegexp} = Foundation
+{emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, urlRegexp} = StandardLib
 
-suite "Art.Foundation.StandardLib.Regexp", ->
+suite "Art.StandardLib.StandardLib.Regexp", ->
   test "emailRegexp", ->
     assert.eq "shanebdavis@gmail.com".match(emailRegexp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
     assert.eq "shanebdavis@www.gmail.com".match(emailRegexp), ["shanebdavis@www.gmail.com", "shanebdavis", "www.gmail.com"]

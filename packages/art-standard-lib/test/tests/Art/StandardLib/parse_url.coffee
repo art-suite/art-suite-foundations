@@ -1,10 +1,10 @@
 
-{Foundation} = Neptune.Art
+{StandardLib} = Neptune.Art
 
-{parseUrl} = Foundation
+{parseUrl} = StandardLib
 
 if self.document
-  suite "Art.Foundation.StandardLib.parseUrl", ->
+  suite "Art.StandardLib.StandardLib.parseUrl", ->
     test "just domain", ->
       a = parseUrl "myDomain.com"
       assert.eq a,

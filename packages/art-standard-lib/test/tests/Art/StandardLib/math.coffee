@@ -1,5 +1,5 @@
 
-{Math} = Neptune.Art.Foundation
+{Math} = Neptune.Art.StandardLib
 
 {
   float64Precision, floatTrue0
@@ -11,7 +11,7 @@
 # rect = Art.Atomic.Rectangle.rect
 # Rectangle = Art.Atomic.Rectangle
 
-suite "Art.Foundation.StandardLib.Math", ->
+suite "Art.StandardLib.StandardLib.Math", ->
   test "floatEq", ->
     smallestDifferent = 1 + Math.float64Precision
     largestSame = 1 + Math.float64Precision/2

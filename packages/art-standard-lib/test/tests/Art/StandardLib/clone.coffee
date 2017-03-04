@@ -1,12 +1,12 @@
 
-{Foundation} = Neptune.Art
-clone = Foundation.Clone.clone
-cloneByProperties = Foundation.Clone.cloneByProperties
-cloneByStructure = Foundation.Clone.cloneByStructure
-inspect = Foundation.Inspect.inspect
-Unique = Foundation.Unique
+{StandardLib} = Neptune.Art
+clone = StandardLib.Clone.clone
+cloneByProperties = StandardLib.Clone.cloneByProperties
+cloneByStructure = StandardLib.Clone.cloneByStructure
+inspect = StandardLib.Inspect.inspect
+Unique = StandardLib.Unique
 
-suite "Art.Foundation.Clone", ->
+suite "Art.StandardLib.Clone", ->
 
   test "clone null", ->
     assert.equal null, clone(null)

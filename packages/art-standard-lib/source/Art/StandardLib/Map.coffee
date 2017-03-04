@@ -13,7 +13,7 @@ Unlike Javascript objects, you can use any object or value as keys. This include
   Arrays
   Objects
 
-Arrays and Objects are assigned a unique id using the Foundation.Unique library.
+Arrays and Objects are assigned a unique id using the StandardLib.Unique library.
 "0", "", null, undefined and 0 are all different unique keys and can each have unique values.
 
 ###
@@ -128,8 +128,8 @@ module.exports = class Map extends MinimalBaseObject
   map: (f) -> f node.key, node.value for node in @nodes
 
   inspect: (inspector) ->
-    Neptune.Art.Foundation.log "inspect map"
-    return Neptune.Art.Foundation.inspect @ unless inspector
+    Neptune.Art.StandardLib.log "inspect map"
+    return Neptune.Art.StandardLib.inspect @ unless inspector
     _inspect = (o) ->
       if typeof o is "string" && o.match /^[a-zA-Z_][a-zA-Z_0-9]*$/
         inspector.put o
@@ -147,7 +147,7 @@ module.exports = class Map extends MinimalBaseObject
 
   # verify nodes are correct
   verifyNodes: ->
-    {inspect} = Neptune.Art.Foundation
+    {inspect} = Neptune.Art.StandardLib
     return if !@_first? && !@_last? && @_length == 0 # empty - is OK
     throw new Error "length == #{@length} but @_first is not null" if @_length == 0 && @_first
     throw new Error "length == #{@length} but @_last is not null" if @_length == 0 && @_last

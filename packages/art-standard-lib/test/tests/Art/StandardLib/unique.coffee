@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
-Unique = Foundation.Unique
+{StandardLib} = Neptune.Art
+Unique = StandardLib.Unique
 
-suite "Art.Foundation.StandardLib.Unique", ->
+suite "Art.StandardLib.StandardLib.Unique", ->
   test "objectId", ->
     o = {}
     id = Unique.objectId o

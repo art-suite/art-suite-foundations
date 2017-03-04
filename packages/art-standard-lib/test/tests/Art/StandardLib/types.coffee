@@ -20,7 +20,7 @@
   getSuper
   Map
   BaseObject
-} = Neptune.Art.Foundation
+} = Neptune.Art.StandardLib
 
 module.exports = suite:
   hasProperties: ->
@@ -240,7 +240,7 @@ module.exports = suite:
 
     test "myExtendedInstance -> BaseObject.prototype", ->
       assert.eq Object.getPrototypeOf(myExtendedInstance), MyExtendedClass.prototype
-      assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), Neptune.Art.Foundation.BaseObject.prototype
+      assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), Neptune.Art.StandardLib.BaseObject.prototype
       assert.eq getSuper(myExtendedInstance), BaseObject.prototype
       # assert.instanceof BaseObject, getSuper myExtendedInstance
       # assert.eq MyExtendedClass.prototype, getSuper myExtendedInstance

@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
-{toInspectedObjects, inspectedObjectLiteral, log} = Foundation
+{StandardLib} = Neptune.Art
+{toInspectedObjects, inspectedObjectLiteral, log} = StandardLib
 
-suite "Art.Foundation.Inspect.toInspectedObjects", ->
+suite "Art.StandardLib.Inspect.toInspectedObjects", ->
   test "toInspectedObjects 'hi'", ->
     assert.eq toInspectedObjects('hi'), "hi" # inspectedObjectLiteral '"hi"'
 

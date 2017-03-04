@@ -2,7 +2,7 @@
 {isPlainObject, isObject, isFunction, isPlainArray} = require './TypesExtended'
 
 log = ->
-  Neptune.Art.Foundation.log arguments...
+  Neptune.Art.StandardLib.log arguments...
 
 module.exports = class Iteration
   returnFirst = (a) -> a

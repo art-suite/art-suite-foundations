@@ -1,5 +1,5 @@
 
-{Foundation} = Neptune.Art
+{StandardLib} = Neptune.Art
 {
   newObjectFromEach
   clone
@@ -19,7 +19,7 @@
   setPathedProperty
   expandPathedProperties
   log
-} = Foundation
+} = StandardLib
 
 module.exports = suite:
   merge: ->

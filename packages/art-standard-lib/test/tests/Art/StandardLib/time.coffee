@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
-{stackTime, log, currentSecond} = Foundation
+{StandardLib} = Neptune.Art
+{stackTime, log, currentSecond} = StandardLib
 
-suite "Art.Foundation.StandardLib.Time", ->
+suite "Art.StandardLib.StandardLib.Time", ->
   test "stackTime", ->
     insideTime = 0
     startTime = currentSecond()

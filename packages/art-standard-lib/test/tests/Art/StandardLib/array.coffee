@@ -1,5 +1,3 @@
-
-Foundation = Neptune.Art.Foundation
 {
   clone
   eq
@@ -20,7 +18,7 @@ Foundation = Neptune.Art.Foundation
   moveArrayElement
   w
   a
-} = Foundation
+} = Neptune.Art.StandardLib
 
 module.exports = suite:
   move: ->
@@ -260,7 +258,7 @@ module.exports = suite:
       assert.eq stableSortedList, stableSort list, sortFunciton
 
   "slice helpers": ->
-    {leftOf, rightOf, leftOfIndex, rightOfIndex, splitArray} = Foundation
+    {leftOf, rightOf, leftOfIndex, rightOfIndex, splitArray} = StandardLib
     test "leftOfIndex null array",       -> assert.eq null,   leftOfIndex  null, 0
     test "rightOfIndex null array",      -> assert.eq null,   rightOfIndex null, 0
     test "leftOfIndex 0",       -> assert.eq [],            leftOfIndex  [1,2,3,4,5,6], 0

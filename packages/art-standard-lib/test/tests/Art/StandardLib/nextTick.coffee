@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
-{nextTick, eq, inspect, clone} = Foundation
+{StandardLib} = Neptune.Art
+{nextTick, eq, inspect, clone} = StandardLib
 
-suite "Art.Foundation.StandardLib.nextTick", ->
+suite "Art.StandardLib.StandardLib.nextTick", ->
   test "one nextTick", (done)->
     nextTick done
     null

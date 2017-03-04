@@ -1,9 +1,9 @@
 
-{Foundation} = Neptune.Art
-clone = Foundation.Clone.clone
-Inspected = Foundation.Inspect.Inspected
+{StandardLib} = Neptune.Art
+clone = StandardLib.Clone.clone
+Inspected = StandardLib.Inspect.Inspected
 
-suite "Art.Foundation.Inspect.Inspected.Core", ->
+suite "Art.StandardLib.Inspect.Inspected.Core", ->
   test "number", ->
     inspected = new Inspected.Core 123
     assert.equal inspected.toString(), "123"
@@ -16,7 +16,7 @@ suite "Art.Foundation.Inspect.Inspected.Core", ->
     inspected = new Inspected.Core undefined
     assert.equal inspected.toString(), "undefined"
 
-suite "Art.Foundation.Inspect.Inspected.String", ->
+suite "Art.StandardLib.Inspect.Inspected.String", ->
   test "basic", ->
     inspected = new Inspected.String "hi"
     assert.equal inspected.toString(), '"hi"'
@@ -25,7 +25,7 @@ suite "Art.Foundation.Inspect.Inspected.String", ->
     inspected = new Inspected.String "\"hi\"\n\"bye\""
     assert.equal inspected.toString(), '\'"hi"\\n"bye"\''
 
-suite "Art.Foundation.Inspect.Inspected.array", ->
+suite "Art.StandardLib.Inspect.Inspected.array", ->
   test "basic", ->
     inspected = new Inspected.Array [
       new Inspected.String "foo"
@@ -33,7 +33,7 @@ suite "Art.Foundation.Inspect.Inspected.array", ->
     ]
     assert.equal inspected.toString(), "[\"foo\", \"bar\"]"
 
-suite "Art.Foundation.Inspect.Inspected.Object", ->
+suite "Art.StandardLib.Inspect.Inspected.Object", ->
   test "basic", ->
     inspected = new Inspected.Object
       foo: new Inspected.Core 13

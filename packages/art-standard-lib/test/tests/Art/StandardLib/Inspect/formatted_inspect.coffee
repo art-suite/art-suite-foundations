@@ -1,7 +1,7 @@
 
-{Foundation} = Neptune.Art
-{log} = Foundation
-{formattedInspect, isString, inspect, toInspectedObjects, inspectedObjectLiteral, BaseObject, stripTrailingWhitespace} = Foundation
+{StandardLib} = Neptune.Art
+{log} = StandardLib
+{formattedInspect, isString, inspect, toInspectedObjects, inspectedObjectLiteral, BaseObject, stripTrailingWhitespace} = StandardLib
 testFIMultiLine = (input, out, maxLineLength = 0) ->
   test str = "formattedInspect #{inspect input}, #{maxLineLength}", ->
     o = stripTrailingWhitespace formattedInspect input, maxLineLength

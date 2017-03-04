@@ -1,6 +1,6 @@
 
-{Foundation} = Neptune.Art
-{log, inspectLean, rawLog, inspect, errorToString} = Foundation
+{StandardLib} = Neptune.Art
+{log, inspectLean, rawLog, inspect, errorToString} = StandardLib
 
 rawLog = ->
 
@@ -13,23 +13,23 @@ module.exports = suite: ->
 
   test "log with function", ->
     myFunc = ->
-      a = Foundation.callStack()
-      rawLog Foundation.Inspect.inspectLean myFuncReturning:a, 1
+      a = StandardLib.callStack()
+      rawLog StandardLib.Inspect.inspectLean myFuncReturning:a, 1
       a
     s = myFunc()
-    rawLog Foundation.Inspect.inspect s, 1
+    rawLog StandardLib.Inspect.inspect s, 1
 
   test "log without function", ->
     callIt = (f) -> f()
     s = callIt ->
-      a = Foundation.callStack()
-      rawLog Foundation.Inspect.inspectLean myFuncReturning:a, 1
+      a = StandardLib.callStack()
+      rawLog StandardLib.Inspect.inspectLean myFuncReturning:a, 1
       a
 
-    rawLog Foundation.Inspect.inspect s[0], 1
+    rawLog StandardLib.Inspect.inspect s[0], 1
 
   test "parse anonumous", ->
-    csl = new Foundation.CallStackLine line = "at Context.<anonymous> (http://0.0.0.0:9000/kimi_editor/test/spec/text_effects.js:8:9)"
+    csl = new StandardLib.CallStackLine line = "at Context.<anonymous> (http://0.0.0.0:9000/kimi_editor/test/spec/text_effects.js:8:9)"
     assert.equal csl.original, line
     assert.equal csl.sourceLine, 8
     assert.equal csl.function, undefined
@@ -40,7 +40,7 @@ module.exports = suite: ->
     assert.equal csl.sourceHostWithPort, "0.0.0.0:9000"
 
   test "parse 1", ->
-    csl = new Foundation.CallStackLine line = "at myFunc (http://0.0.0.0:9000/scripts/spec/art/foundation/call_stack.js:10:30)"
+    csl = new StandardLib.CallStackLine line = "at myFunc (http://0.0.0.0:9000/scripts/spec/art/foundation/call_stack.js:10:30)"
     assert.equal csl.original, line
     assert.equal csl.sourceLine, 10
     assert.equal csl.function, "myFunc"
@@ -51,7 +51,7 @@ module.exports = suite: ->
     assert.equal csl.sourceHostWithPort, "0.0.0.0:9000"
 
   test "parse without function", ->
-    csl = new Foundation.CallStackLine line = "at http://0.0.0.0:9000/scripts/spec/art/foundation/call_stack.js:26:30"
+    csl = new StandardLib.CallStackLine line = "at http://0.0.0.0:9000/scripts/spec/art/foundation/call_stack.js:26:30"
     assert.equal csl.original, line
     assert.equal csl.sourceLine, 26
     assert.equal csl.function, undefined

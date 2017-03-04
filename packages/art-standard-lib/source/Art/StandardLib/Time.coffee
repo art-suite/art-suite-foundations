@@ -81,7 +81,7 @@ module.exports = class Time
     fResult = f()
     timeResult = currentSecond() - start
     if b
-      Neptune.Art.Foundation.log "time: #{a} took #{@durationString timeResult}"
+      Neptune.Art.StandardLib.log "time: #{a} took #{@durationString timeResult}"
       fResult
     else
       timeResult

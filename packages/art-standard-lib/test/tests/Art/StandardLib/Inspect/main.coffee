@@ -1,30 +1,30 @@
 
-{Foundation} = Neptune.Art
-clone = Foundation.Clone.clone
-{inspect, inspectLean} = Foundation.Inspect
+{StandardLib} = Neptune.Art
+clone = StandardLib.Clone.clone
+{inspect, inspectLean} = StandardLib.Inspect
 
-suite "Art.Foundation.Inspect.inspectLean.basics work like inspect", ->
+suite "Art.StandardLib.Inspect.inspectLean.basics work like inspect", ->
   test "inspectLean 1", -> assert.equal "1", inspectLean 1
   test "inspectLean ->", -> assert.equal "function()", inspectLean ->
   test "inspectLean 'hi'", -> assert.equal '"hi"', inspectLean "hi"
   test "inspectLean null", -> assert.equal "null", inspectLean null
   test "inspectLean undefined", -> assert.equal "undefined", inspectLean undefined
 
-suite "Art.Foundation.Inspect.inspectLean.plain arrays - brackets are stripped for length >= 2", ->
+suite "Art.StandardLib.Inspect.inspectLean.plain arrays - brackets are stripped for length >= 2", ->
   test "inspectLean []", -> assert.equal "[]", inspectLean []
   test "inspectLean [123]", -> assert.equal "[123]", inspectLean [123]
   test "inspectLean [123, 456]", -> assert.equal "123, 456", inspectLean [123, 456]
 
-suite "Art.Foundation.Inspect.inspectLean.plain objects - curlies are stripped for length >= 1", ->
+suite "Art.StandardLib.Inspect.inspectLean.plain objects - curlies are stripped for length >= 1", ->
   test "inspectLean {}", -> assert.equal "{}", inspectLean {}
   test "inspectLean {a:123}", -> assert.equal "a: 123", inspectLean {a:123}
   test "inspectLean {inspect:->'hi'}", -> assert.equal "hi", inspectLean inspect: -> "hi"
   test "inspectLean {inspect:->'{}'}", -> assert.equal "{}", inspectLean inspect: -> "{}"
 
-suite "Art.Foundation.Inspect.inspectLean.custom inspector overrides inspectLean", ->
+suite "Art.StandardLib.Inspect.inspectLean.custom inspector overrides inspectLean", ->
   test "inspectLean {inspect:->'{a:b}'}", -> assert.equal "{a:b}", inspectLean inspect: -> "{a:b}"
 
-suite "Art.Foundation.Inspect.basic", ->
+suite "Art.StandardLib.Inspect.basic", ->
   test "inspect []", -> assert.equal "[]", inspect []
   test "inspect 1", -> assert.equal "1", inspect 1
   test "inspect 'hi'", -> assert.equal '"hi"', inspect 'hi'
@@ -131,18 +131,7 @@ suite "Art.Foundation.Inspect.basic", ->
     bar.foo = [foo]
     assert.equal '{a: 1, b: 2, bar: {c: 3, d: 4, foo: [<great grandparent>]}}', inspect foo
 
-  test "inspect namespaced class", ->
-    class FooBar extends Foundation.BaseObject
-      @namespacePath: "Foo.Bar"
-      constructor: ->
-        @a = 1
-        @b = 2
-        @c = 3
-
-    o = new FooBar
-    assert.equal "<Foo.Bar>", inspect o
-
-suite "Art.Foundation.Inspect.custom inspect", ->
+suite "Art.StandardLib.Inspect.custom inspect", ->
   test "custom signature: inspect: (inspector) -> ", ->
     class Point
       constructor: (x,y) ->

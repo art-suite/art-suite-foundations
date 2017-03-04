@@ -1,8 +1,8 @@
 
-{Foundation} = Neptune.Art
+{StandardLib} = Neptune.Art
 {clone, eq, shallowEq, inspect, plainObjectsDeepEq, plainObjectsDeepDiff, compare,
   float64Precision,  floatTrue0
-} = Foundation
+} = StandardLib
 # 'lib/art/atomic'
 # {point} = Atomic
 
@@ -42,7 +42,7 @@ sameComplexStructure =
   i: {}
   j: foo:1, bar:2
 
-suite "Art.Foundation.StandardLib.Eq", ->
+suite "Art.StandardLib.StandardLib.Eq", ->
   suite "eq", ->
     test "numbers", ->
       assert.equal true,  eq 1, 1

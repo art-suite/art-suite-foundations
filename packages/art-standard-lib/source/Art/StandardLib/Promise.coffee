@@ -7,7 +7,7 @@ BlueBirdPromise = require 'bluebird/js/browser/bluebird.core.min'
 {getEnv} = require './ParseUrl'
 
 if promiseDebug = getEnv().artPromiseDebug
-  console.log "Art.Foundation.Promise: BlueBirdPromise debug ENABLED"
+  console.log "Art.StandardLib.Promise: BlueBirdPromise debug ENABLED"
 
 BlueBirdPromise.config
   warnings:         promiseDebug

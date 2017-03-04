@@ -1,6 +1,6 @@
 
-{Foundation} = Neptune.Art
-{WorkerRpc, BaseObject, timeout, Promise, intRand, log, deepAll} = Foundation
+{StandardLib} = Neptune.Art
+{WorkerRpc, BaseObject, timeout, Promise, intRand, log, deepAll} = StandardLib
 
 module.exports = suite:
   blueBirdBasics: ->

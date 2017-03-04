@@ -21,7 +21,7 @@
   eachWhile
   find
   array
-} = Neptune.Art.Foundation
+} = Neptune.Art.StandardLib
 
 module.exports = suite:
   each:
