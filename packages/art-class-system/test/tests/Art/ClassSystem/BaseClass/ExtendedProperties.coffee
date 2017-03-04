@@ -1,6 +1,7 @@
 
-{Foundation} = Neptune.Art
-{log, BaseClass, clone, eq, inspect, nextTick} = Foundation
+{ClassSystem, StandardLib} = Neptune.Art
+{log, clone, eq, inspect, nextTick} = StandardLib
+{BaseClass} = ClassSystem
 
 module.exports = suite:
   "getters don't extend": ->

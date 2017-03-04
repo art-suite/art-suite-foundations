@@ -74,19 +74,18 @@ module.exports =
 var BaseClass, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, clone, concatInto, decapitalize, extendClone, functionName, getModuleBeingDefined, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
-  slice = [].slice,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  slice = [].slice;
 
 StandardLib = __webpack_require__(8);
 
 WebpackHotLoader = __webpack_require__(1);
 
-capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, extendClone = StandardLib.extendClone, clone = StandardLib.clone, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, isString = StandardLib.isString, object = StandardLib.object;
+capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, extendClone = StandardLib.extendClone, clone = StandardLib.clone, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, log = StandardLib.log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, isString = StandardLib.isString, object = StandardLib.object;
 
 nextUniqueObjectId = Unique.nextUniqueObjectId;
 
 module.exports = BaseClass = (function(superClass) {
-  var arrayPropertyExtender, createWithPostCreate, excludedKeys, getOwnProperty, imprintObject, mixInto, objectPropertyExtender, warnedAboutIncludeOnce;
+  var arrayPropertyExtender, createWithPostCreate, excludedKeys, getOwnProperty, imprintObject, objectPropertyExtender, warnedAboutIncludeOnce;
 
   extend(BaseClass, superClass);
 
@@ -239,8 +238,8 @@ module.exports = BaseClass = (function(superClass) {
         liveClass.namespace._setChildNamespaceProps(liveClass.getName(), klass);
         klass._name = liveClass._name;
         liveClass.imprintFromClass(klass);
-        Log.log({
-          "Foundation.BaseClass: class hot-reload": {
+        log({
+          "Art.ClassSystem.BaseClass: class hot-reload": {
             "class": liveClass.getNamespacePath(),
             version: classModuleState.hotReloadVersion
           }
@@ -316,50 +315,6 @@ module.exports = BaseClass = (function(superClass) {
   };
 
   excludedKeys = ["__super__", "namespace", "namespacePath"].concat(Object.keys(Neptune.Base));
-
-  BaseClass.mixInto = mixInto = function() {
-    var i, intoClass, k, keys, klass, len, v;
-    intoClass = arguments[0], klass = arguments[1], keys = 3 <= arguments.length ? slice.call(arguments, 2) : [];
-    log.error("DEPRICATED: mixInto");
-    if (keys.length === 0) {
-      keys = Object.keys(klass);
-    }
-    for (i = 0, len = keys.length; i < len; i++) {
-      k = keys[i];
-      if (!(indexOf.call(excludedKeys, k) < 0)) {
-        continue;
-      }
-      v = klass[k];
-      if (intoClass[k]) {
-        log.error("Foundation.mixInto - mix " + (getClassName(klass)) + " into " + (getClassName(intoClass)) + ": " + k + " already exists.");
-      }
-      intoClass[k] = v;
-    }
-    return intoClass;
-  };
-
-  BaseClass.createAllClass = function() {
-    var All, arg, args, i, len, namespace;
-    namespace = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    log.error("DEPRICATED: createAllClass. Use Neptune-Namespace feature: create file in directory that is the same name as the directory.");
-    for (i = 0, len = args.length; i < len; i++) {
-      arg = args[i];
-      if (arg.prototype instanceof BaseClass) {
-        log.error("createAllClass arguments cannot be subclasses of BaseClass: " + (getClassName(namespace)) + ":" + (getClassName(arg)));
-      }
-      mixInto(namespace, arg);
-    }
-    return All = (function(superClass1) {
-      extend(All, superClass1);
-
-      function All() {
-        return All.__super__.constructor.apply(this, arguments);
-      }
-
-      return All;
-
-    })(namespace);
-  };
 
   function BaseClass() {
     this.__uniqueId = null;
@@ -696,7 +651,7 @@ module.exports = BaseClass = (function(superClass) {
     To handle the case where the inspector is not set, we
     recommneded declaring your 'inspect' as follows:
       inspect: (inspector) ->
-        return Foundation.inspect @ unless inspector
+        return StandardLib.inspect @ unless inspector
          * ...
          * custom code which writes all output to inspector.put
          * and uses inspector.inspect for inspecting sub-objects
@@ -709,7 +664,7 @@ module.exports = BaseClass = (function(superClass) {
   
    * Example 1:
   inspect: (inspector) ->
-    return Foundation.inspect @ unless inspector
+    return StandardLib.inspect @ unless inspector
     inspector.put @getNamespacePath()
   
    * Example 2:

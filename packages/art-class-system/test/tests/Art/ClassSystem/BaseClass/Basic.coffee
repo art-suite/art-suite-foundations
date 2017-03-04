@@ -1,6 +1,6 @@
 
-{Foundation} = Neptune.Art
-{log, BaseClass, clone, eq, inspect, nextTick} = Foundation
+{log, clone, eq, inspect, nextTick} = Neptune.Art.StandardLib
+{BaseClass} = Neptune.Art.ClassSystem
 
 module.exports = suite:
   tap: ->

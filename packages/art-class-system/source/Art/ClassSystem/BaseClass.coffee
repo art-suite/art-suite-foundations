@@ -9,6 +9,7 @@ WebpackHotLoader = require './WebpackHotLoader'
   Unique
   callStack
   Log
+  log
   inspectedObjectLiteral
   MinimalBaseObject
   getModuleBeingDefined
@@ -169,7 +170,7 @@ module.exports = class BaseClass extends MinimalBaseObject
         klass._name = liveClass._name
         liveClass.imprintFromClass klass
 
-        Log.log "Foundation.BaseClass: class hot-reload":
+        log "Art.ClassSystem.BaseClass: class hot-reload":
           class: liveClass.getNamespacePath()
           version: classModuleState.hotReloadVersion
       else
@@ -233,23 +234,6 @@ module.exports = class BaseClass extends MinimalBaseObject
   @postCreateConcreteClass: (options) -> @
 
   excludedKeys = ["__super__", "namespace", "namespacePath"].concat Object.keys Neptune.Base
-  @mixInto = mixInto = (intoClass, klass, keys...)->
-    log.error "DEPRICATED: mixInto"
-    if keys.length == 0
-      keys = Object.keys klass
-    for k in keys when k not in excludedKeys
-      v = klass[k]
-      log.error "Foundation.mixInto - mix #{getClassName(klass)} into #{getClassName(intoClass)}: #{k} already exists." if intoClass[k]
-      intoClass[k] = v
-    intoClass
-
-  @createAllClass = (namespace, args...)->
-    log.error "DEPRICATED: createAllClass. Use Neptune-Namespace feature: create file in directory that is the same name as the directory."
-    for arg in args
-      if arg.prototype instanceof BaseClass
-        log.error "createAllClass arguments cannot be subclasses of BaseClass: #{getClassName(namespace)}:#{getClassName(arg)}"
-      mixInto namespace, arg
-    class All extends namespace
 
   constructor: ->
     @__uniqueId = null
@@ -558,7 +542,7 @@ module.exports = class BaseClass extends MinimalBaseObject
     To handle the case where the inspector is not set, we
     recommneded declaring your 'inspect' as follows:
       inspect: (inspector) ->
-        return Foundation.inspect @ unless inspector
+        return StandardLib.inspect @ unless inspector
         # ...
         # custom code which writes all output to inspector.put
         # and uses inspector.inspect for inspecting sub-objects
@@ -571,7 +555,7 @@ module.exports = class BaseClass extends MinimalBaseObject
 
   # Example 1:
   inspect: (inspector) ->
-    return Foundation.inspect @ unless inspector
+    return StandardLib.inspect @ unless inspector
     inspector.put @getNamespacePath()
 
   # Example 2:
