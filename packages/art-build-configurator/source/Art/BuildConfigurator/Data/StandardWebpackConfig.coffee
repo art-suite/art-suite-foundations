@@ -6,7 +6,11 @@ module.exports = class StandardWebpackConfig
     {outputPath = "build"} = options
 
     resolve:
-      extensions: [".webpack.js", ".web.js", ".js", ".coffee", ".json"]
+      # prefer .coffee OVER .js
+      # in this way we can have index.js files which NODE priorizes over index.coffee
+      # These index.js files can point to webpack-compiled builds
+      # But the .coffee files point to the individual files, for webpack to make sense out of.
+      extensions: [".webpack.js", ".web.js", ".coffee", ".js", ".json"]
 
     output:
       path:       path.join npmRoot, outputPath
