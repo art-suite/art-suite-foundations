@@ -440,7 +440,7 @@ module.exports = {
 		"start": "webpack-dev-server --hot --inline --progress",
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
 	},
-	"version": "1.9.1"
+	"version": "1.10.0"
 };
 
 /***/ }),
