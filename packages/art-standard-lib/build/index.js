@@ -4961,7 +4961,7 @@ module.exports = StringCase = (function() {
 
   StringCase.getCodeWords = function(str) {
     var _words, word, words;
-    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*/g);
+    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g);
     if (!_words) {
       return [];
     }

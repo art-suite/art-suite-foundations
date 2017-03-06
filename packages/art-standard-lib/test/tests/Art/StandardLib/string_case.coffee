@@ -45,6 +45,20 @@ testCodeCase "fooBarBaz"
 testCodeCase "FOO_BAR_BAZ"
 testCodeCase "  ??foo !bar_ baz- "
 
+testCodeWords = (testIn, codeWords) ->
+  suite "Art.StandardLib.StandardLib.String.Case.getLowerCaseCodeWords", ->
+    test "getLowerCaseCodeWords #{formattedInspect testIn} >> #{inspect codeWords}", ->
+      assert.eq getLowerCaseCodeWords(testIn), codeWords
+
+testCodeWords "foo 123 bar", ["foo", "123", "bar"]
+testCodeWords "foo-123-bar", ["foo", "123", "bar"]
+testCodeWords "foo_123_bar", ["foo", "123", "bar"]
+testCodeWords "foo 123bar", ["foo", "123", "bar"]
+testCodeWords "foo123 bar", ["foo123", "bar"]
+testCodeWords "foo123bar", ["foo123bar"]
+testCodeWords "foo123Bar", ["foo123", "bar"]
+testCodeWords "hiFoo123byBar", ["hi", "foo123by", "bar"]
+
 testReflexivity = (string, codeWords) ->
   suite "Art.StandardLib.StandardLib.String.Case.reflexivity", ->
     test string, ->

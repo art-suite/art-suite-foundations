@@ -2,7 +2,7 @@
 module.exports = class StringCase
 
   @getCodeWords: (str) ->
-    _words = str.match /[a-zA-Z][a-zA-Z0-9]*/g
+    _words = str.match /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g
     return [] unless _words
     words = for word in _words
       word.match /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g #/[A-Z]+[a-z0-9]*|[a-z0-9]+/g
