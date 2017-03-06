@@ -129,18 +129,19 @@ module.exports = class Inspector
       @put "}"
 
   inspectInternal: (obj) =>
-    if !obj?                                                then @put "#{obj}"
-    else if isString obj                                    then @put escapeJavascriptString obj
-    else if isArray obj                                     then @inspectArray obj
-    else if isClass(obj)                                    then @put objectName(obj)
+    if !obj?                                  then @put "#{obj}"
+    else if isString obj                      then @put escapeJavascriptString obj
+    else if isArray obj                       then @inspectArray obj
+    else if isClass(obj)                      then @put objectName(obj)
     else if @allowCustomInspectors && Inspector.customInspectable obj
       if obj.inspect.length > 0
         obj.inspect @
       else
         @put obj.inspect()
-    else if obj instanceof RegExp                           then @put "#{obj}"
-    else if isObject(obj) || isFunction(obj)                then @inspectObject obj
-    else                                                         @put "#{obj}"
+    else if obj instanceof RegExp             then @put "#{obj}"
+    else if isObject(obj) || isFunction(obj)  then @inspectObject obj
+    else if isFunction(obj?.toString)         then @put obj.toString()
+    else                                      @put "#{obj}"
 
   inspect: (obj) =>
     return if @done

@@ -3820,6 +3820,8 @@ module.exports = Inspector = (function() {
       return this.put("" + obj);
     } else if (isObject(obj) || isFunction(obj)) {
       return this.inspectObject(obj);
+    } else if (isFunction(obj != null ? obj.toString : void 0)) {
+      return this.put(obj.toString());
     } else {
       return this.put("" + obj);
     }
@@ -4561,6 +4563,8 @@ module.exports = Unique = (function() {
       }
     } else if (typeof key === "number") {
       return "" + key;
+    } else if (typeof key === "symbol") {
+      return key.toString();
     } else if (typeof key === "string") {
       return "string_" + key;
     } else if (typeof key === "boolean") {

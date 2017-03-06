@@ -21,7 +21,8 @@ module.exports = class Unique
       else
         "null"
     else if typeof key == "number" then "" + key
+    else if typeof key == "symbol" then key.toString()
     else if typeof key == "string" then "string_" + key
     else if typeof key == "boolean" then (if key then "true" else "false")
     else if key == undefined then "undefined"
-    else (typeof key) + "_" + key
+    else "#{typeof key}_#{key}"
