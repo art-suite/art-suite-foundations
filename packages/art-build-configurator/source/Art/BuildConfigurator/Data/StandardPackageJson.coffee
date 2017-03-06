@@ -5,7 +5,11 @@ module.exports = class StandardPackageJson
   @get: ->
     license:      'ISC'
     name:         peek process.cwd().split("/")
-    version:      JSON.parse(fs.readFileSync("package.json").toString()).version
+    version:
+      if fs.existsSync "package.json"
+        JSON.parse(fs.readFileSync("package.json").toString()).version
+      else
+        "0.0.1"
     author:       "Shane Brinkman-Davis Delamore, Imikimi LLC"
     dependencies: require './StandardDependencies'
     scripts:
