@@ -447,7 +447,7 @@ module.exports = {
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib/Core/Types");
+module.exports = require("art-standard-lib/Types");
 
 /***/ }),
 /* 6 */

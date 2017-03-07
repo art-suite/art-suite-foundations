@@ -10,7 +10,7 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 require "./global"
 require "./function"
 
-{isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Core/Types'
+{isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Types'
 
 NeptuneLib = null
 
