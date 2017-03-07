@@ -11,3 +11,4 @@ module.exports =
     common: target: "node"
     targets:
       index: {}
+      Types: {}

@@ -64,12 +64,11 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 62);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports) {
 
 var ArrayCompactFlatten;
@@ -226,7 +225,7 @@ module.exports = ArrayCompactFlatten = (function() {
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports) {
 
 var Types;
@@ -406,29 +405,14 @@ module.exports = Types = (function() {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(21).includeInNamespace(__webpack_require__(20)).addModules({
-  ArrayCompactFlatten: __webpack_require__(1),
-  Merge: __webpack_require__(7),
-  StringCase: __webpack_require__(8),
-  Types: __webpack_require__(2)
-});
-
-
-/***/ }),
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
 
-compactFlatten = __webpack_require__(1).compactFlatten;
+compactFlatten = __webpack_require__(0).compactFlatten;
 
-isPlainObject = __webpack_require__(2).isPlainObject;
+isPlainObject = __webpack_require__(1).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, pureMerge;
@@ -589,19 +573,19 @@ module.exports = Merge = (function() {
 
 
 /***/ }),
-/* 8 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
 
-compactFlatten = __webpack_require__(1).compactFlatten;
+compactFlatten = __webpack_require__(0).compactFlatten;
 
 module.exports = StringCase = (function() {
   function StringCase() {}
 
   StringCase.getCodeWords = function(str) {
     var _words, word, words;
-    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*/g);
+    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g);
     if (!_words) {
       return [];
     }
@@ -668,59 +652,40 @@ module.exports = StringCase = (function() {
 
 
 /***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Art = __webpack_require__(29);
-
-module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
-  extend(StandardLib, superClass);
-
-  function StandardLib() {
-    return StandardLib.__super__.constructor.apply(this, arguments);
-  }
-
-  return StandardLib;
-
-})(Neptune.Base));
+module.exports = __webpack_require__(6);
 
 
 /***/ }),
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(2);
+module.exports = [__webpack_require__(0), __webpack_require__(3), __webpack_require__(2), __webpack_require__(1)];
 
 
 /***/ }),
-/* 19 */,
-/* 20 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), __webpack_require__(8), __webpack_require__(7), __webpack_require__(2)];
+module.exports = __webpack_require__(7).includeInNamespace(__webpack_require__(5)).addModules({
+  ArrayCompactFlatten: __webpack_require__(0),
+  Merge: __webpack_require__(2),
+  StringCase: __webpack_require__(3),
+  Types: __webpack_require__(1)
+});
 
 
 /***/ }),
-/* 21 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-StandardLib = __webpack_require__(11);
+StandardLib = __webpack_require__(8);
 
 module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (function(superClass) {
   extend(Core, superClass);
@@ -735,21 +700,36 @@ module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (fu
 
 
 /***/ }),
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Art, StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Art = __webpack_require__(9);
+
+module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
+  extend(StandardLib, superClass);
+
+  function StandardLib() {
+    return StandardLib.__super__.constructor.apply(this, arguments);
+  }
+
+  return StandardLib;
+
+})(Neptune.Base));
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(30);
+Neptune = __webpack_require__(10);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -764,427 +744,16 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(31);
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/*
-TODO: Make NN ugifly-mangler friendly. In order to do that, we need
-to stop using the function.name attribute.
-
-I think we can do that with one change: addNamespace needs to
-change to take a name argument: @addNamespace: (name, namespace) ->
- */
-var Base, Neptune, NeptuneLib, isExtendedClass, isFunction, isPlainArray, ref,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-__webpack_require__(33);
-
-__webpack_require__(32);
-
-ref = __webpack_require__(18), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
-
-NeptuneLib = null;
-
-Base = (function() {
-  var excludedPropNames;
-
-  function Base() {}
-
-  Base.allNamespaces = {};
-
-  Base.getAllNamespacePaths = function() {
-    return Object.keys(Base.allNamespaces).sort();
-  };
-
-  Base.toString = function() {
-    return this.namespacePath;
-  };
-
-  Base.inspect = function() {
-    return this.namespacePath;
-  };
-
-  Base._name = "Base";
-
-  Base.namespacePath = "Neptune.Base";
-
-  Base.namespace = null;
-
-  Base.namespaces = {};
-
-  Base.modules = {};
-
-  Base.getNamespacePath = function() {
-    return this.namespacePath;
-  };
-
-  Base.getNamespaceNames = function() {
-    return Object.keys(this.namespaces).sort();
-  };
-
-  Base.getModuleNames = function() {
-    return Object.keys(this.modules).sort();
-  };
-
-  Base.getNeptuneLib = function() {
-    throw new Error("DEPRICATED: Neptune.getNeptuneLib - use require 'art-standard-lib/Core'");
-  };
-
-  Base.getInspectedObjects = function(includeModules) {
-    var name, namespace, obj;
-    if (includeModules == null) {
-      includeModules = true;
-    }
-    return (
-      obj = {},
-      obj["" + this.namespacePath] = this.getNeptuneLib().merge(this.version ? {
-        version: this.version
-      } : void 0, (function() {
-        var ref1, results;
-        ref1 = this.namespaces;
-        results = [];
-        for (name in ref1) {
-          namespace = ref1[name];
-          results.push(namespace.getInspectedObjects(includeModules));
-        }
-        return results;
-      }).call(this), includeModules && this.getModuleNames().length > 0 ? {
-        modules: this.getModuleNames().join(', ')
-      } : void 0),
-      obj
-    );
-  };
-
-  Base.getVersions = function() {
-    var key, out, recurse, ref1, subNamespace;
-    out = {};
-    if (this === Neptune) {
-      out.version = this.version;
-    }
-    ref1 = this.namespaces;
-    for (key in ref1) {
-      subNamespace = ref1[key];
-      if (0 < Object.keys(recurse = subNamespace.getVersions()).length) {
-        out[key] = recurse;
-      }
-      if (subNamespace.version != null) {
-        (out[key] || (out[key] = {})).version = subNamespace.version;
-      }
-    }
-    return out;
-  };
-
-  Base.addNamespace = function(name, namespace) {
-    return this.allNamespaces[namespace.namespacePath] = this.namespaces[name] = this[name] = namespace._init(name, this);
-  };
-
-  Base.addModules = function(map) {
-    var modName, module, name;
-    for (name in map) {
-      module = map[name];
-      this._setChildNamespaceProps(name, module);
-      if (isExtendedClass(module) && name !== (modName = module.getName())) {
-        console.warn("NN: module name (" + this.namespacePath + "." + name + ") does not match module.exports.getName(): " + modName);
-      }
-      if (!name.match(/^-/)) {
-        this.modules[name] = this[name] = module;
-      }
-    }
-    return this;
-  };
-
-
-  /*
-  IN: any combination of objects or arrays
-    object: all properties in the object are added to the namespace
-  
-    array: [fromObject, property names as one or more strings]
-      for propName in every sub-string in args matching: /[0-9a-z_]+/ig
-        @_addToNamespace propName, fromObject
-  
-      Each string is parsed to find everything that matches: /[0-9a-z_]+/ig
-      All resulting property names are concated into a one list.
-      Every property in fromObject that matches one of the property-names is added to the namespace.
-   */
-
-  Base.includeInNamespace = function() {
-    var arg, args, fromObject, i, j, k, l, len, len1, propName, ref1, ref2, v;
-    args = arguments.length === 1 && isPlainArray(arguments[0]) ? arguments[0] : arguments;
-    for (j = 0, len = args.length; j < len; j++) {
-      arg = args[j];
-      if (arg) {
-        if (isPlainArray(arg)) {
-          fromObject = arg[0];
-          for (i = k = 1, ref1 = arg.length; 1 <= ref1 ? k < ref1 : k > ref1; i = 1 <= ref1 ? ++k : --k) {
-            ref2 = arg[i].match(/[0-9a-z_]+/ig);
-            for (l = 0, len1 = ref2.length; l < len1; l++) {
-              propName = ref2[l];
-              this._addToNamespace(propName, fromObject);
-            }
-          }
-        } else {
-          for (propName in arg) {
-            v = arg[propName];
-            this._addToNamespace(propName, arg);
-          }
-        }
-      }
-    }
-    return this;
-  };
-
-
-  /*
-  Every child of a namespace gets these properties:
-  
-    namespace:      pointer to the parent namespace
-    namespacePath:  string path from global to child
-  
-  NOTE: only modules which return a class or function
-    get their namespace-props set.
-   */
-
-  Base._setChildNamespaceProps = function(name, child) {
-    if (isFunction(child)) {
-      if (isFunction(child["class"])) {
-        this._setChildNamespaceProps(name, child["class"]);
-      }
-      child.namespace = this;
-      return child.namespacePath = this.namespacePath + "." + name;
-    }
-  };
-
-
-  /*
-  CoffeeScript classes copy all class props when inheriting,
-  but some props need to be unique to each instance. This
-  function initializes those props.
-   */
-
-  Base._init = function(name, namespace1) {
-    this.namespace = namespace1;
-    this._name = name;
-    this.modules = {};
-    this.namespaces = {};
-    this.namespace._setChildNamespaceProps(name, this);
-    return this;
-  };
-
-  excludedPropNames = ["__super__"].concat(Object.keys(Base));
-
-
-  /*
-  Helper for includeInNamespace.
-  Add anything to the namespace.
-  
-  IN:
-    propName:   property name to  value will be assigned to in the namespace (string)
-    addingFrom: object
-      used for reporting errors if attempting to overwrite an
-      existing item.
-  
-  EFFECT:
-    Only adds value if @[propName] is not already set.
-    Otherwise, reports error and continues.
-  
-  OUT: value
-   */
-
-  Base._addToNamespace = function(propName, addingFrom) {
-    var addingFromString, value;
-    if (propName === "inspect" && (value = addingFrom[propName]).length > 0) {
-      return this[propName] = value;
-    }
-    if (indexOf.call(excludedPropNames, propName) >= 0) {
-      return;
-    }
-    if (!(value = addingFrom[propName])) {
-      return;
-    }
-    if (this[propName]) {
-      if (this[propName] !== value) {
-        addingFromString = addingFrom.namespacePath || addingFrom.propName || (Object.keys(addingFrom)).join(', ');
-        console.error(this.namespacePath + " already has key: " + propName + ". Adding from: " + addingFromString);
-      }
-      return this[propName];
-    } else {
-      return this[propName] = value;
-    }
-  };
-
-  return Base;
-
-})();
-
-module.exports = global.Neptune || (global.Neptune = Neptune = (function(superClass) {
-  var _package;
-
-  extend(Neptune, superClass);
-
-  function Neptune() {
-    return Neptune.__super__.constructor.apply(this, arguments);
-  }
-
-  Neptune.Base = Base;
-
-  Neptune.namespacePath = "Neptune";
-
-  Neptune.namespace = null;
-
-  Neptune.isNamespace = function(klass) {
-    return (klass != null ? klass.prototype : void 0) instanceof Base;
-  };
-
-  Neptune.isNode = __webpack_require__(34);
-
-  Neptune["package"] = _package = __webpack_require__(35);
-
-  Neptune.version = _package.version;
-
-  return Neptune;
-
-})(Base));
-
-Base.namespace = Neptune;
-
-
-/***/ }),
-/* 32 */
+/* 10 */
 /***/ (function(module, exports) {
 
-if ((function() {}).name == null) {
-  Object.defineProperty(global.Function.prototype, 'name', {
-    get: function() {
-      var matches, name;
-      name = (matches = this.toString().match(/^\s*function\s*([^\s(]+)/)) ? matches[1] : "";
-      Object.defineProperty(this, 'name', {
-        value: name
-      });
-      return name;
-    }
-  });
-}
-
-global.Function.prototype.getName = function() {
-  return this._name || this.name || "anonymousFunction";
-};
-
-global.Function.prototype.hasName = function() {
-  return !!(this._name || this.name);
-};
-
+module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-var g;
-
-g = typeof window !== "undefined" && window !== null ? window : typeof self !== "undefined" && self !== null ? self : global;
-
-g.self || (g.self = g);
-
-g.global || (g.global = g);
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-module.exports = false;
-
-// Only Node.JS has a process variable that is of [[Class]] process
-try {
- module.exports = Object.prototype.toString.call(global.process) === '[object process]' 
-} catch(e) {}
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports) {
-
-module.exports = {
-	"name": "neptune-namespaces",
-	"version": "1.9.1",
-	"description": "Generate index.coffee and namespace.coffee files from directory structures",
-	"scripts": {
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register -w"
-	},
-	"author": "Shane Brinkman-Davis Delamore",
-	"license": "MIT",
-	"preferGlobal": true,
-	"bin": {
-		"nn": "./nn",
-		"neptune-namespaces": "./nn"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/imikimi/neptune-namespaces"
-	},
-	"main": "index.coffee",
-	"dependencies": {
-		"art-standard-lib": "^1.0.0",
-		"coffee-loader": "^0.7.2",
-		"coffee-script": "^1.10.0",
-		"colors": "^1.1.2",
-		"detect-node": "^2.0.3",
-		"fs-promise": "^1.0.0",
-		"commander": "^2.9.0",
-		"glob-promise": "^3.1.0"
-	},
-	"devDependencies": {
-		"chai": "^3.5.0",
-		"mocha": "^2.5.3"
-	}
-};
-
-/***/ }),
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(3);
-
-
-/***/ }),
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(50);
+module.exports = __webpack_require__(4);
 
 
 /***/ })
