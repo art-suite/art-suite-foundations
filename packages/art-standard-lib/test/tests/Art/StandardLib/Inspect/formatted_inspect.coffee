@@ -1,7 +1,8 @@
 
 {StandardLib} = Neptune.Art
 {log} = StandardLib
-{formattedInspect, isString, inspect, toInspectedObjects, inspectedObjectLiteral, BaseObject, stripTrailingWhitespace} = StandardLib
+{formattedInspect, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
+{BaseClass} = require 'art-class-system'
 testFIMultiLine = (input, out, maxLineLength = 0) ->
   test str = "formattedInspect #{inspect input}, #{maxLineLength}", ->
     o = stripTrailingWhitespace formattedInspect input, maxLineLength
@@ -12,7 +13,7 @@ testFIMultiLine = (input, out, maxLineLength = 0) ->
 
 module.exports = suite:
   singleLine: ->
-    class Foo extends BaseObject
+    class Foo extends BaseClass
       @namespacePath: "MyNamespace.Foo"
 
     testFI = (input, out) ->

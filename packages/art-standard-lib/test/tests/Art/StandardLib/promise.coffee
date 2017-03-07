@@ -1,6 +1,6 @@
 
 {StandardLib} = Neptune.Art
-{WorkerRpc, BaseObject, timeout, Promise, intRand, log, deepAll} = StandardLib
+{WorkerRpc, timeout, Promise, intRand, log, deepAll} = StandardLib
 
 module.exports = suite:
   blueBirdBasics: ->

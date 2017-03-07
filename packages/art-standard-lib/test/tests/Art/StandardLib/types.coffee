@@ -19,8 +19,8 @@
   isArrayIterable
   getSuper
   Map
-  BaseObject
 } = Neptune.Art.StandardLib
+{BaseClass} = require 'art-class-system'
 
 module.exports = suite:
   hasProperties: ->
@@ -221,12 +221,12 @@ module.exports = suite:
       assert.eq "hi", present "", "hi"
 
   getSuper: ->
-    class MyExtendedClass extends BaseObject
+    class MyExtendedClass extends BaseClass
       mySpecialProtoProp: 123
 
     myExtendedInstance = new MyExtendedClass
 
-    MyEs6ExtendedClass = `class MyEs6ExtendedClass extends BaseObject {}`
+    MyEs6ExtendedClass = `class MyEs6ExtendedClass extends BaseClass {}`
 
     global.MyExtendedClass = MyExtendedClass
     global.myExtendedInstance = myExtendedInstance
@@ -234,13 +234,13 @@ module.exports = suite:
     test "{}", -> assert.eq null, getSuper {}
     test "[]", -> assert.eq {}, getSuper []
     test "->", -> assert.eq Function.__proto__, getSuper ->
-    test "MyEs6ExtendedClass -> BaseObject", ->
+    test "MyEs6ExtendedClass -> BaseClass", ->
       # only works with ES6 classes - which will be available in CoffeeScript 2 and CaffeineScript
-      assert.eq BaseObject, getSuper MyEs6ExtendedClass
+      assert.eq BaseClass, getSuper MyEs6ExtendedClass
 
-    test "myExtendedInstance -> BaseObject.prototype", ->
+    test "myExtendedInstance -> BaseClass.prototype", ->
       assert.eq Object.getPrototypeOf(myExtendedInstance), MyExtendedClass.prototype
-      assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), Neptune.Art.StandardLib.BaseObject.prototype
-      assert.eq getSuper(myExtendedInstance), BaseObject.prototype
-      # assert.instanceof BaseObject, getSuper myExtendedInstance
+      assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), Neptune.Art.ClassSystem.BaseClass.prototype
+      assert.eq getSuper(myExtendedInstance), BaseClass.prototype
+      # assert.instanceof BaseClass, getSuper myExtendedInstance
       # assert.eq MyExtendedClass.prototype, getSuper myExtendedInstance
