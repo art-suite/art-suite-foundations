@@ -1,4 +1,4 @@
-{deepMap, isPlainArray, isPlainObject, isFunction} = require '../TypesExtended'
+{deepMap, hasKeys, isPlainArray, isPlainObject, isFunction, isClass} = require '../TypesExtended'
 {inspectedObjectLiteral} = require './InspectedObjectLiteral'
 
 module.exports = class PlainObjects
@@ -9,6 +9,8 @@ module.exports = class PlainObjects
       out
     else if isPlainObject(m) || isPlainArray(m)
       deepMap m, (v) -> toPlainObjects v
+    else if isClass m
+      inspectedObjectLiteral "<#{m.getName()}>"
     else if isFunction m
       functionString = "#{m}"
       reducedFunctionString = functionString
