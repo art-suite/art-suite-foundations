@@ -53,7 +53,7 @@ module.exports = class ArrayExtensions
 
   ###
   @push: (array, element) ->
-    if array?
+    if array
       array.push element
       array
     else
