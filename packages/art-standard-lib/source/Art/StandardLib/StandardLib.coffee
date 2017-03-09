@@ -8,7 +8,7 @@ module.exports = [
   require "./Eq"
   require "./Function"
   require "./ObjectDiff"
-  require "./Math"
+  require "./MathExtensions"
   require "./ParseUrl"
   require "./PromisedFileReader"
   require "./Regexp"

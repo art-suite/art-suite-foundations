@@ -3,6 +3,10 @@ module.exports = class Types
   @isRegExp: (obj) => obj instanceof RegExp
   @isNumber: isNumber = (obj) => typeof obj == "number"
 
+  isNonNegativeInt: (x) ->
+    ((x | 0) == x) &&
+     x >= 0
+
   @isDate: (obj) => obj && obj.constructor == Date
   @isString: isString = (obj) => typeof obj == "string"
   @isFunction: isFunction = (obj) => typeof obj == "function"

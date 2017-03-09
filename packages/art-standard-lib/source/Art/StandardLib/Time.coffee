@@ -1,4 +1,4 @@
-{commaize} = require "./Math"
+{commaize} = require "./MathExtensions"
 
 # NOTE: performance.now may be slow on iOS 8.0. It's not supported on 8.1+, supposadly due to poor performacne:
 # https://developer.apple.com/library/ios/releasenotes/Miscellaneous/RN-iOSSDK-8.1/index.html

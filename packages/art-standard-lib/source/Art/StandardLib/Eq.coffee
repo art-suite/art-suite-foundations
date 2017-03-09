@@ -1,6 +1,6 @@
 {remove}              = require './ArrayExtensions'
 {objectKeyCount}      = require './ObjectExtensions'
-{floatTrue0}          = require './Math'
+{floatTrue0}          = require './MathExtensions'
 {isString, isNumber}  = require './TypesExtended'
 {min} = Math
 

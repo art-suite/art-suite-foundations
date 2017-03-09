@@ -1,4 +1,4 @@
-{bound, max, intRand, modulo} = require "./Math"
+{bound, max, intRand, modulo} = require "./MathExtensions"
 {isNumber, isString} = require './TypesExtended'
 {wordsRegex, exactlyOneWordRegex} = require './Regexp'
 

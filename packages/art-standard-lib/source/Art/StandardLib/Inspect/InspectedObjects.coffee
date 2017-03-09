@@ -1,4 +1,4 @@
-{deepMap, isClass, isPlainArray, isPlainObject, isString, isFunction, isPromise} = require '../TypesExtended'
+{deepMap, isNonNegativeInt, isClass, isPlainArray, isPlainObject, isString, isFunction, isPromise} = require '../TypesExtended'
 {escapeJavascriptString} = require '../StringExtensions'
 {inspectedObjectLiteral} = require './InspectedObjectLiteral'
 
@@ -36,5 +36,11 @@ module.exports = class InspectedObjects
         reducedFunctionString
       else
         functionString.slice 0, 5 * 80
+    else if m && !isString m
+      if isNonNegativeInt m.length
+        inspectedObjectLiteral "{#{m.constructor.name} length: #{m.length}}"
+      else if isNonNegativeInt m.byteLength
+        inspectedObjectLiteral "{#{m.constructor.name} byteLength: #{m.byteLength}}"
+      else m
     else
       m

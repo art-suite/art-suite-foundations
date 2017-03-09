@@ -1,4 +1,4 @@
-FoundationMath = require './Math'
+FoundationMath = require './MathExtensions'
 Types          = require './TypesExtended'
 {wordsRegex} = require './Regexp'
 {intRand} = FoundationMath
