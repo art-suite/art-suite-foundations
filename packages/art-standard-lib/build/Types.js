@@ -97,6 +97,10 @@ module.exports = Types = (function() {
     return typeof obj === "number";
   };
 
+  Types.prototype.isNonNegativeInt = function(x) {
+    return ((x | 0) === x) && x >= 0;
+  };
+
   Types.isDate = function(obj) {
     return obj && obj.constructor === Date;
   };

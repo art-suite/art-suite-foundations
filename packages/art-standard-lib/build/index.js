@@ -1000,7 +1000,7 @@ module.exports = StringExtensions = (function() {
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Math, Regexp, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
+var MathExtensions, Regexp, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
 Regexp = __webpack_require__(6);
 
@@ -1016,20 +1016,20 @@ inverstFlaot32Precision = 1 / float32Precision;
 
 ref = self.Math, abs = ref.abs, min = ref.min, max = ref.max, ceil = ref.ceil, floor = ref.floor, round = ref.round, random = ref.random, pow = ref.pow;
 
-module.exports = Math = (function() {
+module.exports = MathExtensions = (function() {
   var bound;
 
-  function Math() {}
+  function MathExtensions() {}
 
-  Math.nearInfinity = pow(10, 100);
+  MathExtensions.nearInfinity = pow(10, 100);
 
-  Math.nearInfinityResult = pow(10, 50);
+  MathExtensions.nearInfinityResult = pow(10, 50);
 
-  Math.float32Precision = float32Precision;
+  MathExtensions.float32Precision = float32Precision;
 
-  Math.float64Precision = float64Precision;
+  MathExtensions.float64Precision = float64Precision;
 
-  Math.modulo = function(a, b) {
+  MathExtensions.modulo = function(a, b) {
     var r;
     r = a % b;
     if (r < 0) {
@@ -1039,7 +1039,7 @@ module.exports = Math = (function() {
     }
   };
 
-  Math.stringToNumberArray = function(string) {
+  MathExtensions.stringToNumberArray = function(string) {
     var a, i, j, len, match, v;
     a = string.split(",");
     for (i = j = 0, len = a.length; j < len; i = ++j) {
@@ -1050,7 +1050,7 @@ module.exports = Math = (function() {
     return a;
   };
 
-  Math.minMagnitude = function(a, magnitude) {
+  MathExtensions.minMagnitude = function(a, magnitude) {
     if (a < 0) {
       return min(a, -magnitude);
     } else {
@@ -1058,15 +1058,15 @@ module.exports = Math = (function() {
     }
   };
 
-  Math.maxMagnitude = function(a, magnitude) {
+  MathExtensions.maxMagnitude = function(a, magnitude) {
     return bound(-magnitude, a, magnitude);
   };
 
-  Math.maxChange = function(newValue, oldValue, maxChangeV) {
+  MathExtensions.maxChange = function(newValue, oldValue, maxChangeV) {
     return bound(oldValue - maxChangeV, newValue, oldValue + maxChangeV);
   };
 
-  Math.bound = bound = function(a, b, c) {
+  MathExtensions.bound = bound = function(a, b, c) {
     if (isNaN(b)) {
       return a;
     }
@@ -1079,72 +1079,72 @@ module.exports = Math = (function() {
     }
   };
 
-  Math.absGt = function(a, b) {
+  MathExtensions.absGt = function(a, b) {
     return abs(a) > abs(b);
   };
 
-  Math.absLt = function(a, b) {
+  MathExtensions.absLt = function(a, b) {
     return abs(a) < abs(b);
   };
 
-  Math.absGte = function(a, b) {
+  MathExtensions.absGte = function(a, b) {
     return abs(a) >= abs(b);
   };
 
-  Math.absLte = function(a, b) {
+  MathExtensions.absLte = function(a, b) {
     return abs(a) <= abs(b);
   };
 
-  Math.abs = abs;
+  MathExtensions.abs = abs;
 
-  Math.min = min;
+  MathExtensions.min = min;
 
-  Math.max = max;
+  MathExtensions.max = max;
 
-  Math.round = round;
+  MathExtensions.round = round;
 
-  Math.ceil = function(v, m) {
+  MathExtensions.ceil = function(v, m) {
     if (m == null) {
       m = 1;
     }
     return ceil(v / m) * m;
   };
 
-  Math.floor = function(v, m) {
+  MathExtensions.floor = function(v, m) {
     if (m == null) {
       m = 1;
     }
     return floor(v / m) * m;
   };
 
-  Math.round = function(v, m) {
+  MathExtensions.round = function(v, m) {
     if (m == null) {
       m = 1;
     }
     return round(v / m) * m;
   };
 
-  Math.simplifyNum = function(num) {
+  MathExtensions.simplifyNum = function(num) {
     return round(num * inverseFloat64Precision) * float64Precision;
   };
 
-  Math.floatEq = function(n1, n2) {
+  MathExtensions.floatEq = function(n1, n2) {
     return n1 === n2 || float64Precision > abs(n1 - n2);
   };
 
-  Math.float32Eq = function(n1, n2) {
+  MathExtensions.float32Eq = function(n1, n2) {
     return n1 === n2 || float32Precision > abs(n1 - n2);
   };
 
-  Math.floatEq0 = function(n) {
+  MathExtensions.floatEq0 = function(n) {
     return n === 0 || float64Precision > abs(n);
   };
 
-  Math.float32Eq0 = function(n) {
+  MathExtensions.float32Eq0 = function(n) {
     return n === 0 || float32Precision > abs(n);
   };
 
-  Math.floatTrue0 = function(n) {
+  MathExtensions.floatTrue0 = function(n) {
     if (n === 0 || float64Precision > abs(n)) {
       return 0;
     } else {
@@ -1152,7 +1152,7 @@ module.exports = Math = (function() {
     }
   };
 
-  Math.float32True0 = function(n) {
+  MathExtensions.float32True0 = function(n) {
     if (n === 0 || float32Precision > abs(n)) {
       return 0;
     } else {
@@ -1160,25 +1160,25 @@ module.exports = Math = (function() {
     }
   };
 
-  Math.random = random;
+  MathExtensions.random = random;
 
-  Math.intRand = function(max) {
+  MathExtensions.intRand = function(max) {
     return random() * max | 0;
   };
 
-  Math.iPart = function(v) {
+  MathExtensions.iPart = function(v) {
     return v - (v % 1);
   };
 
-  Math.fPart = function(v) {
+  MathExtensions.fPart = function(v) {
     return v % 1;
   };
 
-  Math.commaize = function(x) {
+  MathExtensions.commaize = function(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  Math.cyclingSequenceFunction = function(sequence) {
+  MathExtensions.cyclingSequenceFunction = function(sequence) {
     var sequencePos;
     sequencePos = sequence.length;
     return function() {
@@ -1190,7 +1190,7 @@ module.exports = Math = (function() {
     };
   };
 
-  return Math;
+  return MathExtensions;
 
 })();
 
@@ -1392,7 +1392,7 @@ module.exports = ArrayExtensions = (function() {
    */
 
   ArrayExtensions.push = function(array, element) {
-    if (array != null) {
+    if (array) {
       array.push(element);
       return array;
     } else {
@@ -3092,6 +3092,10 @@ module.exports = Types = (function() {
     return typeof obj === "number";
   };
 
+  Types.prototype.isNonNegativeInt = function(x) {
+    return ((x | 0) === x) && x >= 0;
+  };
+
   Types.isDate = function(obj) {
     return obj && obj.constructor === Date;
   };
@@ -3559,9 +3563,9 @@ module.exports = Eq = (function() {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var InspectedObjects, deepMap, escapeJavascriptString, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isPromise, isString, ref;
+var InspectedObjects, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isString, ref;
 
-ref = __webpack_require__(0), deepMap = ref.deepMap, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise;
+ref = __webpack_require__(0), deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise;
 
 escapeJavascriptString = __webpack_require__(3).escapeJavascriptString;
 
@@ -3600,14 +3604,25 @@ module.exports = InspectedObjects = (function() {
       } else {
         return {
           Error: {
+            "class": toInspectedObjects(m.constructor),
             stack: literal
           }
         };
       }
+    } else if (isClass(m)) {
+      return inspectedObjectLiteral("<" + (m.getName()) + ">");
     } else if (isFunction(m)) {
       functionString = "" + m;
       reducedFunctionString = functionString.replace(/\s+/g, ' ').replace(/^function (\([^)]*\))/, "$1 ->").replace(/^\(\)\s*/, '');
       return inspectedObjectLiteral(reducedFunctionString.length < 80 ? reducedFunctionString : functionString.slice(0, 5 * 80));
+    } else if (m && !isString(m)) {
+      if (isNonNegativeInt(m.length)) {
+        return inspectedObjectLiteral("{" + m.constructor.name + " length: " + m.length + "}");
+      } else if (isNonNegativeInt(m.byteLength)) {
+        return inspectedObjectLiteral("{" + m.constructor.name + " byteLength: " + m.byteLength + "}");
+      } else {
+        return m;
+      }
     } else {
       return m;
     }
@@ -5031,28 +5046,38 @@ module.exports = StringCase = (function() {
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var defineModule, formattedInspect;
+/* WEBPACK VAR INJECTION */(function(module) {var ErrorWithInfo, defineModule, formattedInspect, isFunction, mergeInto, ref,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 defineModule = __webpack_require__(8).defineModule;
 
 formattedInspect = __webpack_require__(5).formattedInspect;
 
-defineModule(module, function() {
-  var ErrorWithInfo;
-  ErrorWithInfo = function(message, info) {
-    this.message = message != null ? message : "see info";
+ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction;
+
+defineModule(module, ErrorWithInfo = (function(superClass) {
+  extend(ErrorWithInfo, superClass);
+
+  function ErrorWithInfo(message, info, name) {
     this.info = info;
-    this.name = 'ErrorWithInfo';
-    this.stack = (new Error()).stack;
-    this.toString = function() {
-      return "ErrorWithInfo:\n  message: " + (formattedInspect(this.message)) + "\n  info:\n    " + (formattedInspect(this.info).replace(/\n/g, "\n    ")) + "\n" + this.stack;
-    };
-    return this;
-  };
-  ErrorWithInfo.prototype = Object.create(Error.prototype);
-  ErrorWithInfo.prototype.constructor = ErrorWithInfo;
+    this.name = name;
+    ErrorWithInfo.__super__.constructor.apply(this, arguments);
+    this.name || (this.name = "ErrorWithInfo");
+    mergeInto(this, this.info);
+    this.message = this.info ? message + "\n\n  " + ((formattedInspect({
+      info: this.info
+    }, 40)).replace(/\n/g, "\n  ")) + "\n" : message;
+    if (isFunction(Error.captureStackTrace)) {
+      Error.captureStackTrace(this, this.constructor);
+    } else {
+      this.stack = (new Error).stack;
+    }
+  }
+
   return ErrorWithInfo;
-});
+
+})(Error));
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39)(module)))
 
@@ -5412,9 +5437,9 @@ module.exports = __webpack_require__(48).addModules({
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var PlainObjects, deepMap, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, ref;
+var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction, isPlainArray, isPlainObject, ref;
 
-ref = __webpack_require__(0), deepMap = ref.deepMap, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction;
+ref = __webpack_require__(0), deepMap = ref.deepMap, hasKeys = ref.hasKeys, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction, isClass = ref.isClass;
 
 inspectedObjectLiteral = __webpack_require__(10).inspectedObjectLiteral;
 
@@ -5435,6 +5460,8 @@ module.exports = PlainObjects = (function() {
       return deepMap(m, function(v) {
         return toPlainObjects(v);
       });
+    } else if (isClass(m)) {
+      return inspectedObjectLiteral("<" + (m.getName()) + ">");
     } else if (isFunction(m)) {
       functionString = "" + m;
       reducedFunctionString = functionString.replace(/\s+/g, ' ').replace(/^function (\([^)]*\))/, "$1 ->").replace(/^\(\)\s*/, '');
@@ -6619,7 +6646,7 @@ module.exports = __webpack_require__(23).includeInNamespace(__webpack_require__(
   Iteration: __webpack_require__(20),
   Log: __webpack_require__(33),
   Map: __webpack_require__(11),
-  Math: __webpack_require__(4),
+  MathExtensions: __webpack_require__(4),
   MinimalBaseObject: __webpack_require__(2),
   ObjectDiff: __webpack_require__(34),
   ObjectExtensions: __webpack_require__(21),
