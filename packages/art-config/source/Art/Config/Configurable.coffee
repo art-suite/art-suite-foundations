@@ -4,6 +4,8 @@
   merge
   isPlainObject
   mergeInto
+  deepMerge
+  isPlainObject
 } = require 'art-standard-lib'
 {BaseObject} = require 'art-class-system'
 
@@ -50,7 +52,10 @@ defineModule module, class Configurable extends BaseObject
   @configure: (config) ->
     @reset()
     for k, v of @getPathedConfiguration config when k.match /^[^A-Z]/
-      @config[k] = v
+      @config[k] = if isPlainObject v
+        deepMerge @config[k], v
+      else
+        v
 
   #####################################
   # OVERRIDES
