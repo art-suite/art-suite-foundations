@@ -19,29 +19,55 @@
 
 indent = (str) -> '  ' + str.replace /\n/g, "\n  "
 
-getTesterFor = (name, tester) ->
+###
+IN:
+  options:
+    customFailure:
+      (name, value, context) ->
+      (name, value1, value2, context) ->
+
+  tester:
+    (a) -> true/false
+    (a, b) -> true/false
+###
+getTesterFor = (name, a, b) ->
+  tester = if isFunction a
+    a
+  else if isPlainObject a
+    options = a
+    b
+  else
+    throw new Error "expected object or function"
+  throw new Error "expected tester function" unless isFunction tester
+
   switch tester.length
     when 1
       (testValue, context) ->
         unless tester testValue
-          failWithExpectedMessage context,
-            inspectedObjectLiteral name
-            "to be true for"
-            testValue
+          if options?.customFailure
+            options?.customFailure name, value, context
+          else
+            failWithExpectedMessage context,
+              inspectedObjectLiteral name
+              "to be true for"
+              testValue
     when 2
       (value1, value2, context) ->
         unless tester value1, value2
-          failWithExpectedMessage context,
-            value1
-            name
-            value2
+          if options?.customFailure
+            options?.customFailure name, value1, value2, context
+          else
+            failWithExpectedMessage context,
+              value1
+              name
+              value2
     else throw new Error "unsupported tester - expecting 1 or 2 args. name: #{name}, tester #{tester}"
 
 assert.test = {}
 
-addTester = (name, tester) ->
-  assert[name] = testerFor = getTesterFor name, tester
-  assert.test[name] = if tester.length == 1
+addTester = (name, a, b) ->
+  assert[name] = testerFor = getTesterFor name, a, b
+  assert.test[name] = if testerFor.length == 2
     (func, args, context) ->
       args = [] unless args?
       invoke = if args.length == 0 then "#{func.getName()}()" else "#{func.getName()} #{inspectLean(args, forArgs:true)}"
@@ -61,13 +87,18 @@ format = (val) ->
   formattedInspect val, maxLength
 
 failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
-  assert.fail a, b, compactFlattenJoin("\n\n", [
-    "Context: #{context}" if context
-    "expected"
+  failWithExpectedMessageBase context, a, b, [
     indent format a
     verb
     indent format b
     [verb2, indent format c] if verb2
+  ]
+
+failWithExpectedMessageBase = (context, a, b, lines) ->
+  assert.fail a, b, compactFlattenJoin("\n\n", [
+    "Context: #{context}" if context
+    "expected"
+    lines
   ]) + "\n"
 
 # generalize this if we have more assert functions with TWO binary tests
@@ -90,7 +121,7 @@ assert.rejects = (promise, context) ->
     failWithExpectedMessage context,
       promise
       "to be rejected. Instead, it succeeded with:"
-      v.value
+      v
   , (v) -> v
 
 assert.rejectsWith = (promise, rejectValue, context) ->
@@ -101,7 +132,14 @@ assert.rejectsWith = (promise, rejectValue, context) ->
 
 addTester name, tester for name, tester of Types when name.match /^is/
 addTester name, StandardLib[name] for name in wordsArray "gt gte lte lt eq neq floatEq"
-addTester "instanceof", (klass, obj) -> obj instanceof klass
+addTester "instanceof",
+  customFailure: (name, v1, v2, context) ->
+    failWithExpectedMessage context,
+      v2
+      name
+      v1
+
+  (klass, obj) -> obj instanceof klass
 addTester "match",    (a, b) -> a.match  if isString b then escapeRegExp b else b
 addTester "notMatch", (a, b) -> !a.match if isString b then escapeRegExp b else b
 addTester "same",     (a, b) -> a == b
@@ -114,21 +152,31 @@ addTester "hasKeys",    (a) -> isPlainObject(a) && objectHasKeys(a)
 addTester "hasNoKeys",  (a) -> isPlainObject(a) && !objectHasKeys(a)
 
 # TODO: selectedPropsEq needs a better error message - I ALSO want to see what the actual selected values look like
-addTester "selectedPropsEq", (expectedProps, testObject) ->
-  failures = null
-  for k, v of expectedProps
-    if !eq v, v2 = testObject[k]
-      (failures||={})[k] = expected: v, actual: v2
+addTester "selectedPropsEq",
+  customFailure: (name, expectedProps, testObject, context) ->
+    failWithExpectedMessageBase context, expectedProps, testObject, [
+      indent format expectedProps
+      "to equal selected props:"
+      indent format object expectedProps, (v, k) -> testObject[k]
+      "test object:"
+      indent format testObject
+    ]
 
-  if failures
-    log.warn "assert.selectedPropsEq failureInfo": {
-        failures
-        expectedProps
-        actualProps: (object expectedProps, (v, k) -> testObject[k])
-        # testObject
-      }
-    return false
-  true
+  (expectedProps, testObject) ->
+    failures = null
+    for k, v of expectedProps
+      if !eq v, v2 = testObject[k]
+        (failures||={})[k] = expected: v, actual: v2
+
+    if failures
+      log.warn "assert.selectedPropsEq failureInfo": {
+          failures
+          expectedProps
+          actualProps: (object expectedProps, (v, k) -> testObject[k])
+          # testObject
+        }
+      return false
+    true
 
 # create a version of all tests functions that resolves all inputs first
 assert.resolved = {}
