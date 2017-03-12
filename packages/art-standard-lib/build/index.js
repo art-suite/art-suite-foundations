@@ -3128,7 +3128,9 @@ module.exports = Types = (function() {
     return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype)));
   };
 
-  Types.isArray = isArray = Array.isArray;
+  Types.isArray = isArray = function(o) {
+    return (o != null) && o.constructor === Array;
+  };
 
   Types.isPlainArray = isArray;
 
@@ -3227,7 +3229,7 @@ module.exports = Types = (function() {
   };
 
   Types.isPlainObject = isPlainObject = function(v) {
-    return !!v && null === Object.getPrototypeOf(Object.getPrototypeOf(v));
+    return (v != null) && v.constructor === Object;
   };
 
   Types.hasProperties = hasProperties = function(o) {
