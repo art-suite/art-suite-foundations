@@ -23,4 +23,5 @@ module.exports = [
   require "./Clone"
   require "./Log"
   require "./CallStack"
+  dateFormat: require "dateformat"
 ]
