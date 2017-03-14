@@ -23,5 +23,7 @@ module.exports = [
   require "./Clone"
   require "./Log"
   require "./CallStack"
+
+  # SEE: https://www.npmjs.com/package/dateformat
   dateFormat: require "dateformat"
 ]
