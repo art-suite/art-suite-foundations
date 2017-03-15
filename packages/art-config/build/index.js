@@ -442,9 +442,11 @@ module.exports = __webpack_require__(8);
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = {
-  Config: __webpack_require__(4)
-};
+module.exports = [
+  {
+    Config: __webpack_require__(4)
+  }, __webpack_require__(0)
+];
 
 
 /***/ }),
