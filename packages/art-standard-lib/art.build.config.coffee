@@ -13,3 +13,4 @@ module.exports =
     targets:
       index: {}
       Types: {}
+      Core: {}
