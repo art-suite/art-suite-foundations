@@ -30,9 +30,7 @@ suite "NeptuneNamespaces.NamespaceStructure", ->
   testEquivelentFileNames "MyFileName"
   testEquivelentFileNames "my_file_name"
   testEquivelentFileNames "my file name"
-  testEquivelentFileNames "0my file name"
   testEquivelentFileNames "_my file name"
-  testEquivelentFileNames "   0_my    0FileName     "
 
   test "zero files", ->
     ns = new NamespaceStructure root: "art", files: []
