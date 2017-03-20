@@ -146,6 +146,7 @@ module.exports = class CommunicationStatus
     return {status: @success, httpStatus} if httpStatusCategory == 2
     {
       status: ft = switch httpStatusCategory
+        when 3 then @missing
         when 4 then @clientFailure
         when 5 then @serverFailure
         else        @failure

@@ -238,6 +238,7 @@ module.exports = CommunicationStatus = (function() {
     return {
       status: ft = (function() {
         switch (httpStatusCategory) {
+          case 3:
           case 4:
             return this.clientFailure;
           case 5:
