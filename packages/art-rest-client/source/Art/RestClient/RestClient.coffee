@@ -3,7 +3,7 @@
 #  http://www.html5rocks.com/en/tutorials/file/xhr2/
 StandardLib = require 'art-standard-lib'
 {present, Promise, merge, isNumber, timeout, log, objectKeyCount, appendQuery, object, ErrorWithInfo} = StandardLib
-{success, serverFailure, failure, failureTypes, decodeHttpStatus} = require './CommunicationStatus'
+{success, serverFailure, failure, failureTypes, decodeHttpStatus} = require 'art-communication-status'
 
 # So this works in NODE:
 # TODO: we could maybe solve this better:
