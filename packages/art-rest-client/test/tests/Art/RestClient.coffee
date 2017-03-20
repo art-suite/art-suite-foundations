@@ -1,6 +1,11 @@
 {merge, w, defineModule} = Neptune.Art.StandardLib
 {RestClient} = Neptune.Art
 
+testAssetRoot = "https://raw.githubusercontent.com/imikimi/art-rest-client/master/test/assets"
+
+arrayBufferToString = (buf) ->
+  String.fromCharCode.apply null, new Uint8Array buf
+
 defineModule module, suite: ->
   test "get", ->
     RestClient.get "#{testAssetRoot}/array_buffer_rest_client_test/hello.txt"
@@ -18,7 +23,7 @@ defineModule module, suite: ->
   test "getArrayBuffer", ->
     RestClient.getArrayBuffer "#{testAssetRoot}/array_buffer_rest_client_test/hello.txt"
     .then (arrayBuffer) ->
-      assert.equal "hello in a file.", binary(arrayBuffer).toString()
+      assert.equal "hello in a file.", arrayBufferToString(arrayBuffer).toString()
 
   test "onProgress", ->
     lastProgress =
