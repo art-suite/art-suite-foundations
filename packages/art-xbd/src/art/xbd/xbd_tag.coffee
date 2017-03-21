@@ -3,13 +3,18 @@ Xbd = require './namespace'
 XbdDictionary = require './xbd_dictionary'
 
 {
-  Binary, isFunction, BaseObject, log, countKeys, upperCamelCase, createObjectTreeFactories
+  isFunction, log, countKeys, upperCamelCase
   plainObjectsDeepEq
   inspect
-} = Foundation
+} = require 'art-standard-lib'
+{Binary} = require 'art-foundation'
+
+{BaseClass} = require 'art-class-system'
+
+{createObjectTreeFactories} = require 'art-object-tree-factory'
 {binary, stream, WriteStream} = Binary
 
-module.exports = class XbdTag extends BaseObject
+module.exports = class XbdTag extends BaseClass
 
   ###########################
   # createTagFactories

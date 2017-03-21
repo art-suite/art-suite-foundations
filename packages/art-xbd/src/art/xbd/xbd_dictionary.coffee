@@ -1,7 +1,10 @@
-{Binary, BaseObject, log, inspect} = require 'art-foundation'
+{log, inspect} = require 'art-standard-lib'
+{Binary} = require 'art-foundation'
 {binary, WriteStream, stream} = Binary
 
-module.exports = class XbdDictionary extends BaseObject
+{BaseClass} = require 'art-class-system'
+
+module.exports = class XbdDictionary extends BaseClass
   @parse: (stream, name) ->
     encodedDictionary = stream.readAsiString()
 

@@ -1,3 +1,5 @@
 require '../'
-require "art-foundation/testing"
-.init defineTests: -> require './tests'
+require "art-testbench/testing"
+.init
+  synchronous: true
+  defineTests: -> require './tests'
