@@ -9,6 +9,7 @@ nodeExternals = null
   array
   object
   deepMerge
+  log
 } = require 'art-standard-lib'
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
@@ -31,13 +32,16 @@ defineModule module, class ConfigureWebpack extends BaseClass
     targets:
       myEntry: my target's overrides
   ###
-  @get: (npmRoot, config = {}) =>
+  @get: (npmRoot, abcConfig = {}) =>
+    config = abcConfig.webpack ||= {}
     {common, targets} = config
-    standard = StandardWebpackConfig.get npmRoot, config
+    standard = StandardWebpackConfig.get npmRoot, abcConfig
     baseConfig = webpackMerge standard, common
     targets ||= index: {}
     array @normalizeTargets(targets), (targetConfig) =>
-      @normalizeTargetConfig webpackMerge baseConfig, targetConfig
+      webpackEntry = webpackMerge baseConfig, targetConfig
+      webpackEntry.target ||= "node" if abcConfig.target?.node
+      @normalizeTargetConfig webpackEntry
 
   @normalizeTargetConfig: (targetConfig) ->
     if targetConfig.target == "node"

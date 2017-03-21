@@ -20,8 +20,9 @@ defineModule module, class ConfigurePackageJson extends BaseClass
   ###
   IN:
   ###
-  @get: (options) =>
-    deepMerge StandardPackageJson.get(), options
+  @get: (abcConfig) =>
+    deepMerge StandardPackageJson.get(abcConfig),
+      abcConfig.npm
 
   ###
   consistentJsonStringify is there to guarantee a consistently formatted output for git.

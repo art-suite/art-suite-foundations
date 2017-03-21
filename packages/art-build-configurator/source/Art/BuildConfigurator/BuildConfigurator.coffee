@@ -68,15 +68,15 @@ module.exports = class BuildConfigurator
 
   @go: (npmRoot, {pretend, configure}) =>
     @loadConfig(npmRoot, configure)
-    .then ({npm, webpack}) =>
+    .then (abcConfig) =>
 
-      packageConfig = ConfigurePackageJson.get npm
+      packageConfig = ConfigurePackageJson.get abcConfig
       if pretend
         log "package.json": packageConfig
       else if configure
         ConfigurePackageJson.write npmRoot, packageConfig
 
-      webpackConfig = ConfigureWebpack.get npmRoot, webpack
+      webpackConfig = ConfigureWebpack.get npmRoot, abcConfig
       if pretend
         log webpack:
           configGeneratedOnDemand: webpackConfig
@@ -84,7 +84,8 @@ module.exports = class BuildConfigurator
       else
         ConfigureWebpack.write npmRoot
 
+  # TODO: this should call: nn -s
   @getWebpackConfig: (npmRoot) =>
     @loadConfig(npmRoot)
-    .then ({webpack}) =>
-      ConfigureWebpack.get npmRoot, webpack
+    .then (abcConfig) =>
+      ConfigureWebpack.get npmRoot, abcConfig

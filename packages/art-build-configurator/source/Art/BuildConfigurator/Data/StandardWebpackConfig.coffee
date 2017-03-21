@@ -2,7 +2,8 @@ CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 path = require 'path'
 
 module.exports = class StandardWebpackConfig
-  @get: (npmRoot, options) ->
+  @get: (npmRoot, abcConfig) ->
+    options = abcConfig.webpack
     {outputPath = "build"} = options
 
     resolve:

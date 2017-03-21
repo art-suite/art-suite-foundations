@@ -2,7 +2,7 @@ fs = require 'fs'
 {peek, deepMerge} = require 'art-standard-lib'
 
 module.exports = class StandardPackageJson
-  @get: ->
+  @get: (abcConfig)->
     license:      'ISC'
     name:         peek process.cwd().split("/")
     version:
@@ -15,7 +15,11 @@ module.exports = class StandardPackageJson
     scripts:
       # https://docs.npmjs.com/misc/scripts#description
       # standard life-cycle scripts
-      test:     'webpack-dev-server --progress'
+      test:
+        if abcConfig?.target?.node
+          "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
+        else
+          'webpack-dev-server --progress'
       start:    'webpack-dev-server --hot --inline --progress'
 
       # ArtSuite scripts
