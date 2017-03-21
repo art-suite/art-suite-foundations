@@ -445,7 +445,7 @@ module.exports = __webpack_require__(8);
 module.exports = [
   {
     Config: __webpack_require__(4)
-  }, __webpack_require__(0)
+  }, [__webpack_require__(0), "configure"]
 ];
 
 
