@@ -1,17 +1,39 @@
 
 {StandardLib} = Neptune.Art
 {log} = StandardLib
-{formattedInspect, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
+{formattedInspect, stripAnsi, ansiSafeStringLength, alignTabs, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
 {BaseClass} = require 'art-class-system'
 testFIMultiLine = (input, out, maxLineLength = 0) ->
   test str = "formattedInspect #{inspect input}, #{maxLineLength}", ->
     o = stripTrailingWhitespace formattedInspect input, maxLineLength
-    log inspect: -> str
-    log input
-    log o
     assert.eq o, out
 
+require 'colors'
+
+
+testAlignTabs = (str, testStr, maxLineLength = 10000) ->
+  test "#{inspect(str)}, maxLineLength: #{maxLineLength}", ->
+    assert.eq alignTabs(str, maxLineLength), testStr
+
 module.exports = suite:
+  color: ->
+    test 'colored string', ->
+      assert.eq '\u001b[32m"hi"\u001b[39m', formattedInspect "hi", color: true
+
+    test 'colored []', ->
+      assert.eq "\u001b[90m[]\u001b[39m", formattedInspect [], color: true
+
+    test 'colored a:1', ->
+      assert.eq "\u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m", formattedInspect {a:1}, color: true
+
+    test 'colored all', ->
+      assert.eq """
+        \u001b[90m[]\u001b[39m
+          \u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m
+          \u001b[32m"hi"\u001b[39m
+        """,
+        formattedInspect [{a:1}, "hi"], color: true
+
   singleLine: ->
     class Foo extends BaseClass
       @namespacePath: "MyNamespace.Foo"
@@ -19,9 +41,9 @@ module.exports = suite:
     testFI = (input, out) ->
       test str = "formattedInspect #{inspect input}", ->
         o = formattedInspect input
-        log "input: #{input}"
-        log "actual output: #{o}"
-        log "expected output: #{out}"
+        # log "input: #{input}"
+        # log "actual output: #{o}"
+        # log "expected output: #{out}"
         if isString out
           assert.eq o, out
         else
@@ -37,69 +59,182 @@ module.exports = suite:
       myInspectOutput
       ///
     testFI [], "[]"
-    testFI ['string', foo: 'bar'], '"string", foo: "bar"'
-    testFI [1], "- 1"
-    testFI [1,2], "1, 2"
-    testFI [a:1, 2], "a: 1, 2"
+    testFI ['string', foo: 'bar'], '[] "string", foo: "bar"'
+    testFI [1], "[] 1"
+    testFI [1,2], "[] 1, 2"
+    testFI [a:1, 2],
+      """
+      []
+        a: 1
+        2
+      """
+
     testFI a:1, b:2, "a: 1, b: 2"
-    testFI a:[1, 2], b:3, "a: 1, 2\nb: 3"
-    testFI [[1, 2], [3,4]], "- 1, 2\n- 3, 4"
-    testFI a:{a1:1, a2:2}, b:{b1:1, b2:2}, "a: a1: 1, a2: 2\nb: b1: 1, b2: 2"
-    testFI [{a:1}, {b:2}], "- a: 1\n- b: 2"
+    testFI a:[1, 2], b:3,
+      """
+      a: [] 1, 2
+      b: 3
+      """
+
+    testFI [[1, 2], [3,4]],
+      """
+      []
+        [] 1, 2
+        [] 3, 4
+      """
+
+    testFI a:{a1:1, a2:2}, b:{b1:1, b2:2},
+      """
+      a: a1: 1, a2: 2
+      b: b1: 1, b2: 2
+      """
+
+    testFI [{a:1}, {b:2}],
+      """
+      []
+        {} a: 1
+        {} b: 2
+      """
+
     testFI 'has:':1, '"has:": 1'
 
     testFI Foo, Foo.namespacePath
     testFI (new Foo), "<#{Foo.namespacePath}>"
 
+  ansiSafeStringLength: ->
+    test 'basic', ->
+      assert.eq 5, ansiSafeStringLength "basic"
+
+    test 'colored', ->
+      assert.lt 5, "basic".red.length
+      assert.eq 5, ansiSafeStringLength "basic".red
+
+    test 'stripAnsi', ->
+      assert.eq "basic", stripAnsi "basic".red
+      assert.neq "basic", "basic".red
+
+  alignTabs: ->
+
+    testAlignTabs """
+      alice\t1
+      bill\t2
+      """,
+      """
+      alice 1
+      bill  2
+      """
+
+    testAlignTabs """
+      Neptune:
+        version:"1.10.2"
+        Neptune.CaffeineMc:
+          Neptune.CaffeineMc.Compilers:modules:\t"JavaScript"
+          modules:\t"CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+      """, """
+      Neptune:
+        version:"1.10.2"
+        Neptune.CaffeineMc:
+          Neptune.CaffeineMc.Compilers:modules: "JavaScript"
+          modules:                              "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+      """
+
+    testAlignTabs """
+      Neptune:
+        version:"1.10.2"
+        Neptune.CaffeineMc:
+          Neptune.CaffeineMc.Compilers:modules:\t"JavaScript"
+          modules:\t"CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+
+        Neptune.Art:
+          Neptune.Art.ClassSystem:modules:\t"BaseClass, BaseObject, WebpackHotLoader"
+          Neptune.Art.StandardLib:
+            Neptune.Art.StandardLib.Core:modules:\t"ArrayCompactFlatten, Merge, StringCase, Types"
+            Neptune.Art.StandardLib.Inspect:
+              Neptune.Art.StandardLib.Inspect.Inspected:modules:\t"Array, Core, Object, String"
+              modules:\t"FormattedInspect, InspectedObjectLiteral, InspectedObjects, Inspector, Inspector2, PlainObjects"
+
+            modules:\t"ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
+
+          Neptune.Art.ObjectTreeFactory:{}
+
+        Neptune.BabelBridge:
+      """, """
+      Neptune:
+        version:"1.10.2"
+        Neptune.CaffeineMc:
+          Neptune.CaffeineMc.Compilers:modules:                  "JavaScript"
+          modules:                                               "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+
+        Neptune.Art:
+          Neptune.Art.ClassSystem:modules:                       "BaseClass, BaseObject, WebpackHotLoader"
+          Neptune.Art.StandardLib:
+            Neptune.Art.StandardLib.Core:modules:                "ArrayCompactFlatten, Merge, StringCase, Types"
+            Neptune.Art.StandardLib.Inspect:
+              Neptune.Art.StandardLib.Inspect.Inspected:modules: "Array, Core, Object, String"
+              modules: "FormattedInspect, InspectedObjectLiteral, InspectedObjects, Inspector, Inspector2, PlainObjects"
+
+            modules: "ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
+
+          Neptune.Art.ObjectTreeFactory:{}
+
+        Neptune.BabelBridge:
+      """, 150
+
+  alignTabsColor: ->
+
+    testAlignTabs 'a:\t1,\tb:\t2', "a: 1, b: 2"
+    testAlignTabs '\u001b[34ma:\u001b[39m\t\u001b[33m1\u001b[39m,\t\u001b[34mb:\u001b[39m\t\u001b[33m2\u001b[39m',
+      '\u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m, \u001b[34mb:\u001b[39m \u001b[33m2\u001b[39m'
+
   maxLineLength:
     simpleArray: ->
       testFIMultiLine [1, 2], """
-        - 1
-        - 2
-        """, 3
+        []
+          1
+          2
+        """, "[] 1, 2".length - 1
 
-      testFIMultiLine [1, 2], "1, 2", 4
+      testFIMultiLine [1, 2], "[] 1, 2", "[] 1, 2".length
 
     objectArray: ->
       testFIMultiLine
         a: [1, 2]
-        "a: 1, 2"
-        7
+        "a: [] 1, 2"
+        "a: [] 1, 2".length
 
       testFIMultiLine
         a: [1, 2]
         """
         a:
-          1, 2
+          [] 1, 2
         """
-        6
+        "a: [] 1, 2".length-1
 
       testFIMultiLine
         a: [1, 2]
         """
-        a:
-        - 1
-        - 2
+        a: []
+          1
+          2
         """
         5
 
     arrayObject: ->
-      testFIMultiLine [a: 1],
-        """
-        - a: 1
-        """
-        6
+      testFIMultiLine [ab: 1],
+        "[] ab: 1"
+        "[] ab: 1".length
 
-      testFIMultiLine [a: 1],
+      testFIMultiLine [ab: 1],
         """
-        - a:
-            1
+        []
+          ab: 1
         """
-        5
+        "[] ab: 1".length-1
 
-      testFIMultiLine [a: 1],
+      testFIMultiLine [ab: 1],
         """
-        - a:
+        []
+          ab:
             1
         """
         4
@@ -131,22 +266,31 @@ module.exports = suite:
         """
         64
 
+      testFIMultiLine a:1, wxyz:4, "a:    1\nwxyz: 4", 10
+      testFIMultiLine a: {b:1}, wxyz: {abc: 4},
+        """
+        a: b:      1
+        wxyz: abc: 4
+        """
+        100
+
 
   multiLine:
     array: ->
 
       testFIMultiLine [1, 2], """
-        - 1
-        - 2
+        []
+          1
+          2
         """
 
-      testFIMultiLine [[1, 2], [3,4]], """
-        - - 1
-          - 2
-
-        - - 3
-          - 4
+      testFIMultiLine [[1, 2], [3,4]],
         """
+        []
+          [] 1, 2
+          [] 3, 4
+        """
+        1000
 
     object: ->
       testFIMultiLine a:1, b:2, """
@@ -157,104 +301,108 @@ module.exports = suite:
           2
         """
 
-      testFIMultiLine a:{a1:1, a2:2}, b:{b1:1, b2:2}, """
+      testFIMultiLine a:{a1:1, a2:2}, b:{b1:1, b2:2},
+        """
         a:
-          a1:
-            1
-
-          a2:
-            2
+          a1: 1
+          a2: 2
 
         b:
-          b1:
-            1
-
-          b2:
-            2
+          b1: 1
+          b2: 2
         """
+        10
 
     objectArrays: ->
       testFIMultiLine a:[1, 2], b:[3, 4], """
-        a:
-        - 1
-        - 2
+        a: []
+          1
+          2
 
-        b:
-        - 3
-        - 4
+        b: []
+          3
+          4
         """
 
     objectArraysObjects: ->
       testFIMultiLine a:[{a1:1}, a2:2], b:[{b3:3}, b4:4], """
-        a:
-        - a1:
-            1
+        a: []
+          {} a1: 1
+          {} a2: 2
 
-        - a2:
-            2
-
-        b:
-        - b3:
-            3
-
-        - b4:
-            4
-        """
+        b: []
+          {} b3: 3
+          {} b4: 4
+        """, 10
 
     arrayObjects: ->
-      testFIMultiLine [{a1:1, a2:2}, {b1:1, b2:2}], """
-        - a1:
-            1
-
-          a2:
-            2
-
-        - b1:
-            1
-
-          b2:
-            2
+      testFIMultiLine [{a1:1, a2:2}, {b1:1, b2:2}],
         """
+        []
+          {}
+            a1: 1
+            a2: 2
+
+          {}
+            b1: 1
+            b2: 2
+        """
+        10
 
     arrayObjectsArrays: ->
       testFIMultiLine [{a1:[1,1], a2:[1,2]}, {b1:[2,1], b2:[2,2]}], """
-        - a1:
-          - 1
-          - 1
+        []
+          {}
+            a1: []
+              1
+              1
 
-          a2:
-          - 1
-          - 2
+            a2: []
+              1
+              2
 
-        - b1:
-          - 2
-          - 1
+          {}
+            b1: []
+              2
+              1
 
-          b2:
-          - 2
-          - 2
+            b2: []
+              2
+              2
         """
 
-    tabs: ->
-      testFIMultiLine a:1, wxyz:4, "a:    1\nwxyz: 4", 10
+      testFIMultiLine [{a1:[1,1], a2:[1,2]}, {b1:[2,1], b2:[2,2]}],
+        """
+        []
+          {}
+            a1: [] 1, 1
+            a2: [] 1, 2
+
+          {}
+            b1: [] 2, 1
+            b2: [] 2, 2
+        """
+        1000
 
     mixed: ->
       testFIMultiLine ['string', foo: 'bar'], """
-        - "string"
-        - foo: "bar"
+        []
+          "string"
+          foo: "bar"
         """,
         12
 
-      testFIMultiLine [inspectedObjectLiteral('string'), foo: 'bar'], """
-        - string
-        - foo: "bar"
+      testFIMultiLine [inspectedObjectLiteral('myInspectedObjectLiteral'), foo: 'bar'], """
+        []
+          myInspectedObjectLiteral
+          foo: "bar"
         """,
         12
 
       testFIMultiLine a:[1,2], b:2, """
-        a:
-        - 1
-        - 2
+        a: []
+          1
+          2
 
         b: 2
         """,
@@ -265,8 +413,9 @@ module.exports = suite:
           foo: "B"
           bar: "C"
         ]), """
-        - "A"
-        - foo: "B"
+        []
+          "A"
+          foo: "B"
           bar: "C"
         """, 11
 
@@ -277,10 +426,54 @@ module.exports = suite:
           fad: "D"
           baz: "E"
         ], """
-        - foo: "A"
+        []
+          foo: "A"
           bar: "B"
 
-        - "C"
-        - fad: "D"
+          "C"
+          fad: "D"
           baz: "E"
         """, 11
+
+  regressions: ->
+    testFIMultiLine
+      Neptune:
+        version: "1.10.2"
+        "Neptune.CaffeineMc":
+          "Neptune.CaffeineMc.Compilers": modules: "JavaScript"
+          modules: "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+
+        "Neptune.Art":
+          "Neptune.Art.ClassSystem":
+            modules: "BaseClass, BaseObject, WebpackHotLoader"
+          "Neptune.Art.StandardLib":
+            "Neptune.Art.StandardLib.Core":
+              modules: "ArrayCompactFlatten, Merge, StringCase, Types"
+            "Neptune.Art.StandardLib.Inspect":
+              "Neptune.Art.StandardLib.Inspect.Inspected":
+                modules: "Array, Core, Object, String",
+              modules: "FormattedInspect, InspectedObjectLiteral, InspectedObjects, Inspector, Inspector2, PlainObjects"
+            modules: "ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
+          "Neptune.Art.ObjectTreeFactory":  {}
+
+      # This is actually correct, even though it seems like nothing aligns nice. We need a better algorithm :).
+      """
+      Neptune:
+        version: "1.10.2"
+        Neptune.CaffeineMc:
+          Neptune.CaffeineMc.Compilers: modules: "JavaScript"
+          modules:                               "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+
+        Neptune.Art:
+          Neptune.Art.ClassSystem: modules: "BaseClass, BaseObject, WebpackHotLoader"
+          Neptune.Art.StandardLib:
+            Neptune.Art.StandardLib.Core: modules: "ArrayCompactFlatten, Merge, StringCase, Types"
+            Neptune.Art.StandardLib.Inspect:
+              Neptune.Art.StandardLib.Inspect.Inspected: modules: "Array, Core, Object, String"
+              modules: "FormattedInspect, InspectedObjectLiteral, InspectedObjects, Inspector, Inspector2, PlainObjects"
+
+            modules:
+              "ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
+
+          Neptune.Art.ObjectTreeFactory: {}
+      """, 150

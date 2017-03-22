@@ -396,7 +396,7 @@ module.exports = __webpack_require__(43).includeInNamespace(__webpack_require__(
   ArrayCompactFlatten: __webpack_require__(9),
   Merge: __webpack_require__(26),
   StringCase: __webpack_require__(27),
-  Types: __webpack_require__(15)
+  Types: __webpack_require__(16)
 });
 
 
@@ -1199,11 +1199,11 @@ module.exports = MathExtensions = (function() {
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(19).includeInNamespace(__webpack_require__(44)).addModules({
+module.exports = __webpack_require__(20).includeInNamespace(__webpack_require__(44)).addModules({
   FormattedInspect: __webpack_require__(30),
   InspectedObjectLiteral: __webpack_require__(10),
-  InspectedObjects: __webpack_require__(17),
-  Inspector: __webpack_require__(18),
+  InspectedObjects: __webpack_require__(18),
+  Inspector: __webpack_require__(19),
   Inspector2: __webpack_require__(50),
   PlainObjects: __webpack_require__(32)
 });
@@ -2093,7 +2093,7 @@ module.exports = ArrayCompactFlatten = (function() {
 
 var InspectedObjectLiteral, compare;
 
-compare = __webpack_require__(16).compare;
+compare = __webpack_require__(17).compare;
 
 module.exports = InspectedObjectLiteral = (function() {
   InspectedObjectLiteral.inspectedObjectLiteral = function(literal, isError) {
@@ -2418,6 +2418,295 @@ module.exports = Map = (function(superClass) {
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
+  slice = [].slice,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
+
+ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
+
+object = __webpack_require__(21).object;
+
+module.exports = ObjectExtensions = (function() {
+  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
+
+  function ObjectExtensions() {}
+
+  ObjectExtensions.countKeys = function(o) {
+    return Object.keys(o).length;
+  };
+
+  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
+    var count, k, v;
+    count = 0;
+    for (k in o) {
+      v = o[k];
+      count++;
+    }
+    return count;
+  };
+
+  ObjectExtensions.objectHasKeys = function(o) {
+    var b, k;
+    for (k in o) {
+      b = o[k];
+      return true;
+    }
+    return false;
+  };
+
+  ObjectExtensions.objectLength = objectKeyCount;
+
+
+  /*
+  NOTE:
+    null and undefined keys are NOT SUPPORTED
+  
+    They should be converted to strings, first,
+    which is what they would become anyway.
+  
+  IN: 0 or more arguments
+    out = {}
+    list = arguments
+  
+    for element in list
+      objects: merge into out
+      arrays or argument lists: recurse using element as the list
+      null or undefined: skip
+      else out[element] = next element (or undefined if none)
+  
+  OUT: plain object
+   */
+
+  toObjectInternal = function(list, out) {
+    var element, j, key, len;
+    key = null;
+    for (j = 0, len = list.length; j < len; j++) {
+      element = list[j];
+      if (key) {
+        out[key] = element;
+        key = null;
+      } else if (isPlainObject(element)) {
+        mergeInto(out, element);
+      } else if (isArrayOrArguments(element)) {
+        toObjectInternal(element, out);
+      } else if (element != null) {
+        key = element;
+      }
+    }
+    if (key) {
+      return out[key] = void 0;
+    }
+  };
+
+  ObjectExtensions.toObject = function() {
+    var out;
+    out = {};
+    toObjectInternal(arguments, out);
+    return out;
+  };
+
+
+  /*
+  IN:
+    inputArray: any array
+    transformFunction: (element) -> [key, value]
+      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
+   */
+
+  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
+    var element, j, key, len, outputMap, ref2, value;
+    if (transformFunction == null) {
+      transformFunction = function(element) {
+        return element;
+      };
+    }
+    outputMap = {};
+    for (j = 0, len = inputArray.length; j < len; j++) {
+      element = inputArray[j];
+      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
+      outputMap[key] = value;
+    }
+    return outputMap;
+  };
+
+
+  /*
+  IN:
+    obj: the object to select fields from
+  
+    2nd argument can be:
+      selectFunction: (value, key) -> true / false
+  
+    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
+   */
+
+  ObjectExtensions.select = function(obj, a) {
+    var j, k, len, prop, properties, result, v;
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    if (isFunction(a)) {
+      if (a.length === 1) {
+        for (k in obj) {
+          v = obj[k];
+          if (a(v)) {
+            result[k] = v;
+          }
+        }
+      } else {
+        for (k in obj) {
+          v = obj[k];
+          if (a(k, v)) {
+            result[k] = v;
+          }
+        }
+      }
+    } else {
+      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
+      for (j = 0, len = properties.length; j < len; j++) {
+        prop = properties[j];
+        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
+          result[prop] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  ObjectExtensions.selectAll = function() {
+    var j, len, obj, prop, properties, ref2, result;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    ref2 = compactFlatten(properties);
+    for (j = 0, len = ref2.length; j < len; j++) {
+      prop = ref2[j];
+      result[prop] = obj[prop];
+    }
+    return result;
+  };
+
+  ObjectExtensions.objectWithDefinedValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v !== void 0;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithExistingValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v != null;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithPresentValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return present(v);
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithout = function() {
+    var anythingToDo, j, len, obj, prop, properties, result, v;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    if (properties.length === 1 && !(typeof properties[0] === "string")) {
+      properties = properties[0];
+    }
+    anythingToDo = false;
+    for (j = 0, len = properties.length; j < len; j++) {
+      prop = properties[j];
+      if (obj.hasOwnProperty(prop)) {
+        anythingToDo = true;
+        break;
+      }
+    }
+    if (anythingToDo) {
+      result = {};
+      for (prop in obj) {
+        v = obj[prop];
+        if (indexOf.call(properties, prop) < 0) {
+          result[prop] = v;
+        }
+      }
+      return result;
+    } else {
+      return obj;
+    }
+  };
+
+  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
+    return !!key.match(/[\s\.\/]/);
+  };
+
+  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
+    var i, j, key, len;
+    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
+    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
+      key = propertyPath[i];
+      if (i === propertyPath.length - 1) {
+        action(obj, key);
+      } else {
+        obj = obj[key] || (obj[key] = {});
+      }
+    }
+    return obj;
+  };
+
+  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
+    withPropertyPath(obj, propertyPath, function(o, k) {
+      return o[k] = value;
+    });
+    return obj;
+  };
+
+  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
+    var k, v;
+    if (into == null) {
+      into = {};
+    }
+    if (pathExpansionEnabled == null) {
+      pathExpansionEnabled = true;
+    }
+    for (k in obj) {
+      v = obj[k];
+      if (pathExpansionEnabled && propertyIsPathed(k)) {
+        withPropertyPath(into, k, function(o, finalKey) {
+          if (isPlainObject(v)) {
+            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
+          } else {
+            return o[finalKey] = v;
+          }
+        });
+      } else if (isPlainObject(v)) {
+        expandPathedProperties(v, into[k] || (into[k] = {}), false);
+      } else {
+        into[k] = v;
+      }
+    }
+    return into;
+  };
+
+  return ObjectExtensions;
+
+})();
+
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 var ParseUrl;
@@ -2510,7 +2799,7 @@ module.exports = ParseUrl = (function() {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
@@ -2521,7 +2810,7 @@ ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, is
 
 defineModule = __webpack_require__(8).defineModule;
 
-getEnv = __webpack_require__(12).getEnv;
+getEnv = __webpack_require__(13).getEnv;
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -2909,14 +3198,14 @@ defineModule(module, function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39)(module)))
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var CallStack, inspect, isString, parseUrl;
 
 isString = __webpack_require__(0).isString;
 
-parseUrl = __webpack_require__(12).parseUrl;
+parseUrl = __webpack_require__(13).parseUrl;
 
 inspect = __webpack_require__(5).inspect;
 
@@ -3070,10 +3359,27 @@ module.exports = CallStack = (function() {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
-var Types;
+
+/*
+Set: global.ArtStandardLibMultipleContextTypeSupport = true
+Before the first time you require this file if you need to be able to test objects
+from multiple contexts.
+
+When do you need this?
+  - when working with iFrames
+  - when working with Node's 'repl' or 'vm'
+
+What is the differences?
+  With: slower, but other-wise the same
+  Without: plain-arrays and plain-objects from other contexts
+    are not detected with isArray, isPlainArray, isPlainObject
+ */
+var ArtStandardLibMultipleContextTypeSupport, Types;
+
+ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
   var _functionsPrototype, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString;
@@ -3128,7 +3434,9 @@ module.exports = Types = (function() {
     return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype)));
   };
 
-  Types.isArray = isArray = function(o) {
+  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? function(o) {
+    return Array.isArray(o);
+  } : function(o) {
     return (o != null) && o.constructor === Array;
   };
 
@@ -3228,7 +3536,9 @@ module.exports = Types = (function() {
     return _super;
   };
 
-  Types.isPlainObject = isPlainObject = function(v) {
+  Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? function(v) {
+    return (v != null) && null === Object.getPrototypeOf(Object.getPrototypeOf(v));
+  } : function(v) {
     return (v != null) && v.constructor === Object;
   };
 
@@ -3256,7 +3566,7 @@ module.exports = Types = (function() {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
@@ -3264,7 +3574,7 @@ var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
 
 remove = __webpack_require__(7).remove;
 
-objectKeyCount = __webpack_require__(21).objectKeyCount;
+objectKeyCount = __webpack_require__(12).objectKeyCount;
 
 floatTrue0 = __webpack_require__(4).floatTrue0;
 
@@ -3562,7 +3872,7 @@ module.exports = Eq = (function() {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isString, ref;
@@ -3640,7 +3950,7 @@ module.exports = InspectedObjects = (function() {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
@@ -3875,7 +4185,7 @@ module.exports = Inspector = (function() {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, StandardLib,
@@ -3897,7 +4207,7 @@ module.exports = StandardLib.Inspect || StandardLib.addNamespace('Inspect', Insp
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1;
@@ -4254,295 +4564,6 @@ module.exports = Iteration = (function() {
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
-  slice = [].slice,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
-
-ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
-
-object = __webpack_require__(20).object;
-
-module.exports = ObjectExtensions = (function() {
-  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
-
-  function ObjectExtensions() {}
-
-  ObjectExtensions.countKeys = function(o) {
-    return Object.keys(o).length;
-  };
-
-  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
-    var count, k, v;
-    count = 0;
-    for (k in o) {
-      v = o[k];
-      count++;
-    }
-    return count;
-  };
-
-  ObjectExtensions.objectHasKeys = function(o) {
-    var b, k;
-    for (k in o) {
-      b = o[k];
-      return true;
-    }
-    return false;
-  };
-
-  ObjectExtensions.objectLength = objectKeyCount;
-
-
-  /*
-  NOTE:
-    null and undefined keys are NOT SUPPORTED
-  
-    They should be converted to strings, first,
-    which is what they would become anyway.
-  
-  IN: 0 or more arguments
-    out = {}
-    list = arguments
-  
-    for element in list
-      objects: merge into out
-      arrays or argument lists: recurse using element as the list
-      null or undefined: skip
-      else out[element] = next element (or undefined if none)
-  
-  OUT: plain object
-   */
-
-  toObjectInternal = function(list, out) {
-    var element, j, key, len;
-    key = null;
-    for (j = 0, len = list.length; j < len; j++) {
-      element = list[j];
-      if (key) {
-        out[key] = element;
-        key = null;
-      } else if (isPlainObject(element)) {
-        mergeInto(out, element);
-      } else if (isArrayOrArguments(element)) {
-        toObjectInternal(element, out);
-      } else if (element != null) {
-        key = element;
-      }
-    }
-    if (key) {
-      return out[key] = void 0;
-    }
-  };
-
-  ObjectExtensions.toObject = function() {
-    var out;
-    out = {};
-    toObjectInternal(arguments, out);
-    return out;
-  };
-
-
-  /*
-  IN:
-    inputArray: any array
-    transformFunction: (element) -> [key, value]
-      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
-   */
-
-  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
-    var element, j, key, len, outputMap, ref2, value;
-    if (transformFunction == null) {
-      transformFunction = function(element) {
-        return element;
-      };
-    }
-    outputMap = {};
-    for (j = 0, len = inputArray.length; j < len; j++) {
-      element = inputArray[j];
-      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
-      outputMap[key] = value;
-    }
-    return outputMap;
-  };
-
-
-  /*
-  IN:
-    obj: the object to select fields from
-  
-    2nd argument can be:
-      selectFunction: (value, key) -> true / false
-  
-    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
-   */
-
-  ObjectExtensions.select = function(obj, a) {
-    var j, k, len, prop, properties, result, v;
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    if (isFunction(a)) {
-      if (a.length === 1) {
-        for (k in obj) {
-          v = obj[k];
-          if (a(v)) {
-            result[k] = v;
-          }
-        }
-      } else {
-        for (k in obj) {
-          v = obj[k];
-          if (a(k, v)) {
-            result[k] = v;
-          }
-        }
-      }
-    } else {
-      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
-      for (j = 0, len = properties.length; j < len; j++) {
-        prop = properties[j];
-        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
-          result[prop] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  ObjectExtensions.selectAll = function() {
-    var j, len, obj, prop, properties, ref2, result;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    ref2 = compactFlatten(properties);
-    for (j = 0, len = ref2.length; j < len; j++) {
-      prop = ref2[j];
-      result[prop] = obj[prop];
-    }
-    return result;
-  };
-
-  ObjectExtensions.objectWithDefinedValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v !== void 0;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithExistingValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v != null;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithPresentValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return present(v);
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithout = function() {
-    var anythingToDo, j, len, obj, prop, properties, result, v;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    if (properties.length === 1 && !(typeof properties[0] === "string")) {
-      properties = properties[0];
-    }
-    anythingToDo = false;
-    for (j = 0, len = properties.length; j < len; j++) {
-      prop = properties[j];
-      if (obj.hasOwnProperty(prop)) {
-        anythingToDo = true;
-        break;
-      }
-    }
-    if (anythingToDo) {
-      result = {};
-      for (prop in obj) {
-        v = obj[prop];
-        if (indexOf.call(properties, prop) < 0) {
-          result[prop] = v;
-        }
-      }
-      return result;
-    } else {
-      return obj;
-    }
-  };
-
-  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
-    return !!key.match(/[\s\.\/]/);
-  };
-
-  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
-    var i, j, key, len;
-    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
-    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
-      key = propertyPath[i];
-      if (i === propertyPath.length - 1) {
-        action(obj, key);
-      } else {
-        obj = obj[key] || (obj[key] = {});
-      }
-    }
-    return obj;
-  };
-
-  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
-    withPropertyPath(obj, propertyPath, function(o, k) {
-      return o[k] = value;
-    });
-    return obj;
-  };
-
-  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
-    var k, v;
-    if (into == null) {
-      into = {};
-    }
-    if (pathExpansionEnabled == null) {
-      pathExpansionEnabled = true;
-    }
-    for (k in obj) {
-      v = obj[k];
-      if (pathExpansionEnabled && propertyIsPathed(k)) {
-        withPropertyPath(into, k, function(o, finalKey) {
-          if (isPlainObject(v)) {
-            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
-          } else {
-            return o[finalKey] = v;
-          }
-        });
-      } else if (isPlainObject(v)) {
-        expandPathedProperties(v, into[k] || (into[k] = {}), false);
-      } else {
-        into[k] = v;
-      }
-    }
-    return into;
-  };
-
-  return ObjectExtensions;
-
-})();
-
-
-/***/ }),
 /* 22 */
 /***/ (function(module, exports) {
 
@@ -4634,7 +4655,7 @@ module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib 
 
 var AsyncExtensions, Promise;
 
-Promise = __webpack_require__(13);
+Promise = __webpack_require__(14);
 
 module.exports = AsyncExtensions = (function() {
   var timeout;
@@ -4809,7 +4830,7 @@ var Merge, compactFlatten, isPlainObject;
 
 compactFlatten = __webpack_require__(9).compactFlatten;
 
-isPlainObject = __webpack_require__(15).isPlainObject;
+isPlainObject = __webpack_require__(16).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, pureMerge;
@@ -5071,9 +5092,7 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
     ErrorWithInfo.__super__.constructor.apply(this, arguments);
     this.name || (this.name = "ErrorWithInfo");
     mergeInto(this, this.info);
-    this.message = this.info ? message + "\n\n  " + ((formattedInspect({
-      info: this.info
-    }, 40)).replace(/\n/g, "\n  ")) + "\n" : message;
+    this.message = message;
     if (isFunction(Error.captureStackTrace)) {
       Error.captureStackTrace(this, this.constructor);
     } else {
@@ -5171,7 +5190,7 @@ in debug mode and the faster(?), non hot-reload options in production mode.
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var FormattedInspect, alignTabs, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, pad, postWhitespaceFormatting, ref, ref1, stripTrailingWhitespace, toInspectedObjects;
+var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, objectKeyCount, pad, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects;
 
 ref = __webpack_require__(0), isString = ref.isString, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
 
@@ -5179,9 +5198,11 @@ max = Math.max;
 
 ref1 = __webpack_require__(3), pad = ref1.pad, stripTrailingWhitespace = ref1.stripTrailingWhitespace, escapeJavascriptString = ref1.escapeJavascriptString;
 
-inspect = __webpack_require__(18).inspect;
+inspect = __webpack_require__(19).inspect;
 
-toInspectedObjects = __webpack_require__(17).toInspectedObjects;
+objectKeyCount = __webpack_require__(12).objectKeyCount;
+
+toInspectedObjects = __webpack_require__(18).toInspectedObjects;
 
 indentString = '  ';
 
@@ -5189,7 +5210,7 @@ indentLength = indentString.length;
 
 newLineWithIndentString = "\n" + indentString;
 
-formattedInspectObject = function(m, maxLineLength) {
+formattedInspectObject = function(m, maxLineLength, options) {
   var finalInspectedValues, forceMultilineOutput, index, inspected, inspectedLength, inspectedValues, k, key, keyCount, shouldBeOnOwnLine, v, value;
   inspectedLength = 0;
   forceMultilineOutput = false;
@@ -5201,20 +5222,20 @@ formattedInspectObject = function(m, maxLineLength) {
     for (key in m) {
       value = m[key];
       keyCount++;
-      inspected = formattedInspectRecursive(value, maxLineLength - indentLength);
+      inspected = formattedInspectRecursive(value, maxLineLength - indentLength, options);
       if (inspected.match(/\n/)) {
-        inspected = inspected.match(/^- /) ? "\n" + inspected : newLineWithIndentString + inspected.replace(/\n/g, newLineWithIndentString);
+        inspected = inspected.match(/^\[\]/) ? "" + inspected : newLineWithIndentString + inspected.replace(/\n/g, newLineWithIndentString);
         inspected += "\n";
-      } else if (inspected.length > maxLineLength - (key.length + 2)) {
+      } else if (ansiSafeStringLength(inspected) > maxLineLength - (key.length + 2)) {
         inspected = "" + newLineWithIndentString + inspected + "\n";
       }
       if (!key.match(/^[-._a-zA-Z[_a-zA-Z0-9]*$/)) {
         key = inspect(key);
       }
-      inspectedLength += inspected.length + key.length + 2;
+      inspectedLength += ansiSafeStringLength(inspected) + key.length + 2;
       forceMultilineOutput || (forceMultilineOutput = shouldBeOnOwnLine);
       shouldBeOnOwnLine = !inspected.match(/^([^,:]|\(.*\)|\{.*\}|\".*\"|\'.*\'|\[.*\])*$/);
-      results.push([key, inspected]);
+      results.push([key, inspected, value]);
     }
     return results;
   })();
@@ -5226,91 +5247,142 @@ formattedInspectObject = function(m, maxLineLength) {
     var j, len, ref2, results;
     results = [];
     for (j = 0, len = inspectedValues.length; j < len; j++) {
-      ref2 = inspectedValues[j], k = ref2[0], v = ref2[1];
-      results.push(k + ":\t" + v);
+      ref2 = inspectedValues[j], k = ref2[0], v = ref2[1], value = ref2[2];
+      key = k + ":";
+      if (options.color) {
+        key = key.blue;
+      }
+      if (isPlainObject(value) && objectKeyCount(value) === 1) {
+        results.push(key + " " + v);
+      } else {
+        results.push(key + "\t" + v);
+      }
     }
     return results;
   })();
   return finalInspectedValues.join(!forceMultilineOutput && maxLineLength >= inspectedLength + (inspectedValues.length - 1) * 2 ? ",\t" : "\n");
 };
 
-formattedInspectArray = function(m, maxLineLength, implicitRepresentationOk) {
-  var _isPlainObject, containsConsecutiveArrays, containsConsecutiveObjects, i, indentedInspectedArray, inspected, inspectedEl, inspectedLength, inspectedValues, lastWasArray, lastWasObject, value;
-  inspectedLength = 0;
+formattedInspectArray = function(m, maxLineLength, options) {
+  var i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, objectsMustBeExplicit, oneLinerOk, out, value;
+  lengthOfInspectedValues = 0;
   lastWasObject = false;
   lastWasArray = false;
-  containsConsecutiveObjects = false;
-  containsConsecutiveArrays = false;
+  objectsMustBeExplicit = false;
+  oneLinerOk = true;
+  inspectedValuesContainNewlines = false;
+  for (i = j = 0, len = m.length; j < len; i = ++j) {
+    value = m[i];
+    if (isPlainObject(value)) {
+      if (i < m.length - 1) {
+        oneLinerOk = false;
+      }
+      if (lastWasObject) {
+        objectsMustBeExplicit = true;
+      }
+      lastWasObject = true;
+    } else {
+      lastWasObject = false;
+    }
+  }
   inspectedValues = (function() {
-    var j, len, results;
+    var l, len1, results;
     results = [];
-    for (j = 0, len = m.length; j < len; j++) {
-      value = m[j];
-      implicitRepresentationOk = true;
-      if (_isPlainObject = isPlainObject(value)) {
-        containsConsecutiveObjects || (containsConsecutiveObjects = lastWasObject);
-        lastWasObject = true;
-      } else {
-        lastWasObject = false;
+    for (l = 0, len1 = m.length; l < len1; l++) {
+      value = m[l];
+      if (lastWasArray) {
+        oneLinerOk = false;
       }
       if (isPlainArray(value)) {
-        implicitRepresentationOk = false;
-        containsConsecutiveArrays || (containsConsecutiveArrays = lastWasArray);
         lastWasArray = true;
       }
-      inspected = formattedInspectRecursive(value, maxLineLength - indentLength, implicitRepresentationOk);
-      if (inspected.match(/\n/)) {
+      inspected = formattedInspectRecursive(value, maxLineLength - indentLength, options);
+      inspectedHasNewlines = /\n/.test(inspected);
+      if (objectsMustBeExplicit && isPlainObject(value)) {
+        inspected = inspectedHasNewlines ? "{}" + newLineWithIndentString + (inspected.replace(/\n/g, newLineWithIndentString)) : "{} " + inspected;
+      }
+      if (inspectedHasNewlines) {
+        oneLinerOk = false;
         inspected = inspected.replace(/\n/g, newLineWithIndentString) + "\n";
       }
-      inspectedLength += inspected.length;
+      lengthOfInspectedValues += ansiSafeStringLength(inspected);
       results.push(inspected);
     }
     return results;
   })();
-  if (!containsConsecutiveArrays && !containsConsecutiveObjects && maxLineLength >= inspectedLength + (inspectedValues.length - 1) * 2) {
-    if (inspectedValues.length === 0) {
-      return "[]";
-    } else if (inspectedValues.length <= 1) {
-      return "- " + (inspectedValues.join(",\t"));
-    } else {
-      return inspectedValues.join(",\t");
-    }
+  lengthOfCommas = (inspectedValues.length - 1) * 2;
+  lengthOfStartBrackets = 3;
+  out = oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues ? inspectedValues.length === 0 ? "[]" : "[] " + (inspectedValues.join(",\t")) : "[]\n  " + (inspectedValues.join("\n  "));
+  if (options.color) {
+    return out.replace(/^\[\]/, "[]".gray);
   } else {
-    indentedInspectedArray = (function() {
-      var j, len, results;
-      results = [];
-      for (i = j = 0, len = inspectedValues.length; j < len; i = ++j) {
-        inspectedEl = inspectedValues[i];
-        results.push("- " + inspectedEl);
+    return out;
+  }
+};
+
+escapeForBlockString = (function(_this) {
+  return function(str) {
+    console.log("escapeForBlockString", escapeJavascriptString(str));
+    return String(str).replace(/[\\\0\b\f\r\t\v\u001b\u2028\u2029]/g, function(x) {
+      switch (x) {
+        case '\\':
+          return '\\\\';
+        case '\0':
+          return "\\0";
+        case '\b':
+          return "\\b";
+        case '\f':
+          return "\\f";
+        case '\r':
+          return "\\r";
+        case '\t':
+          return "\\t";
+        case '\v':
+          return "\\v";
+        case '\u2028':
+          return "\\u2028";
+        case '\u2029':
+          return "\\u2029";
+        case '\u001b':
+          return '\\u001b';
       }
-      return results;
-    })();
-    return "" + (indentedInspectedArray.join("\n"));
-  }
-};
+    });
+  };
+})(this);
 
-formattedInspectString = function(m) {
-  if (m.length > 10 && m.match(/\n/) && !m.match(/\ (\n|$)/)) {
-    return ['"""', m.replace(/"""/g, '""\\"').replace(/\\/g, '\\\\'), '"""'].join('\n');
+formattedInspectString = function(m, options) {
+  var out;
+  out = m.match(/\n/) && !m.match(/\ (\n|$)/) ? ['"""', escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)].join('\n  ') : escapeJavascriptString(m);
+  if (options.color) {
+    return out.green;
   } else {
-    return escapeJavascriptString(m);
+    return out;
   }
 };
 
-formattedInspectRecursive = function(m, maxLineLength, implicitRepresentationOk) {
+formattedInspectRecursive = function(m, maxLineLength, options) {
+  var out;
   if (isPlainObject(m)) {
-    return formattedInspectObject(m, maxLineLength);
+    return formattedInspectObject(m, maxLineLength, options);
   } else if (isPlainArray(m)) {
-    return formattedInspectArray(m, maxLineLength, implicitRepresentationOk);
+    return formattedInspectArray(m, maxLineLength, options);
   } else if (isString(m)) {
-    return formattedInspectString(m);
+    return formattedInspectString(m, options);
   } else {
-    return inspect(m);
+    out = inspect(m);
+    if (options.color) {
+      return out.yellow;
+    } else {
+      return out;
+    }
   }
 };
 
-alignTabs = function(maxLineLength, linesString) {
-  var alignedLines, el, elements, expandAmount, i, j, l, len, len1, line, lines, maxColumnSizes, maxColumnWidth, numColumnsToPad, r, spaceAvailable, tabStops;
+alignTabs = function(linesString, maxLineLength) {
+  var alignedLines, el, elLength, elements, expandAmount, i, j, l, len, len1, line, lines, maxColumnSizes, maxColumnWidth, numColumnsToPad, r, spaceAvailable, tabStops;
+  if (maxLineLength == null) {
+    maxLineLength = 10000;
+  }
   tabStops = 1;
   lines = linesString.split("\n");
   numColumnsToPad = null;
@@ -5328,13 +5400,13 @@ alignTabs = function(maxLineLength, linesString) {
     }
     for (i = l = 0, len1 = elements.length; l < len1; i = ++l) {
       el = elements[i];
-      if (!(i < elements.length - 1 && (i === 0 || el.length < maxColumnWidth))) {
+      if (!(i < elements.length - 1 && (i === 0 || ansiSafeStringLength(el) < maxColumnWidth))) {
         continue;
       }
       if (maxColumnSizes.length === i) {
         maxColumnSizes.push(0);
       }
-      maxColumnSizes[i] = max(maxColumnSizes[i], el.length + 1);
+      maxColumnSizes[i] = max(maxColumnSizes[i], ansiSafeStringLength(el) + 1);
     }
   }
   alignedLines = (function() {
@@ -5342,7 +5414,7 @@ alignTabs = function(maxLineLength, linesString) {
     results = [];
     for (n = 0, len2 = lines.length; n < len2; n++) {
       line = lines[n];
-      spaceAvailable = maxLineLength - line.length;
+      spaceAvailable = maxLineLength - ansiSafeStringLength(line);
       elements = line.split("\t");
       r = (function() {
         var len3, o, results1;
@@ -5350,11 +5422,12 @@ alignTabs = function(maxLineLength, linesString) {
           results1 = [];
           for (i = o = 0, len3 = elements.length; o < len3; i = ++o) {
             el = elements[i];
+            elLength = ansiSafeStringLength(el);
             if (i === elements.length - 1) {
               results1.push(el);
-            } else if ((maxColumnSizes[i] != null) && (expandAmount = maxColumnSizes[i] - el.length - 1) <= spaceAvailable) {
+            } else if ((maxColumnSizes[i] != null) && (expandAmount = maxColumnSizes[i] - elLength - 1) <= spaceAvailable) {
               spaceAvailable -= expandAmount;
-              results1.push(pad(el, maxColumnSizes[i]));
+              results1.push(el + pad('', maxColumnSizes[i] - elLength));
             } else {
               spaceAvailable = 0;
               results1.push(el + " ");
@@ -5372,6 +5445,26 @@ alignTabs = function(maxLineLength, linesString) {
   return alignedLines.join("\n");
 };
 
+ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g;
+
+stripAnsi = function(str) {
+  if (ansiRegex.test(str)) {
+    return str.replace(ansiRegex, '');
+  } else {
+    return str;
+  }
+};
+
+ansiSafeStringLength = function(str) {
+  if (!isString(str)) {
+    throw new Error("not string");
+  }
+  if (ansiRegex.test(str)) {
+    str = str.replace(ansiRegex, '');
+  }
+  return str.length;
+};
+
 postWhitespaceFormatting = function(maxLineLength, string) {
   var alignTabsInSameIndentGroup, indent, j, lastIndent, len, line, outLines, ref2, sameIndentGroup;
   lastIndent = 0;
@@ -5379,18 +5472,18 @@ postWhitespaceFormatting = function(maxLineLength, string) {
   outLines = [];
   alignTabsInSameIndentGroup = function() {
     var str;
-    if (!(sameIndentGroup.length > 0)) {
+    if (!(0 < sameIndentGroup.length)) {
       return;
     }
     str = sameIndentGroup.join("\n");
     sameIndentGroup = [];
-    return outLines.push(alignTabs(maxLineLength, str));
+    return outLines.push(alignTabs(str, maxLineLength));
   };
   ref2 = string.split("\n");
   for (j = 0, len = ref2.length; j < len; j++) {
     line = ref2[j];
     line = line.replace(/\s+$/g, '');
-    if (lastIndent !== (indent = line.match(/^ *-?/)[0].length)) {
+    if (lastIndent !== (indent = ansiSafeStringLength(line.match(/^ *-?/)[0]))) {
       alignTabsInSameIndentGroup();
     }
     sameIndentGroup.push(line);
@@ -5403,14 +5496,30 @@ postWhitespaceFormatting = function(maxLineLength, string) {
 module.exports = FormattedInspect = (function() {
   function FormattedInspect() {}
 
+  FormattedInspect.ansiRegex = ansiRegex;
+
+  FormattedInspect.stripAnsi = stripAnsi;
+
+  FormattedInspect.ansiSafeStringLength = ansiSafeStringLength;
+
+  FormattedInspect.alignTabs = alignTabs;
+
   FormattedInspect.formattedInspect = function(toInspect, options) {
-    var error, maxLineLength, out;
+    var error, maxLineLength, out, ref2, ref3;
     if (options == null) {
       options = {};
     }
     try {
-      maxLineLength = isNumber(options) ? options : options.maxLineLength || 80;
-      return out = postWhitespaceFormatting(maxLineLength, formattedInspectRecursive(toInspectedObjects(toInspect), maxLineLength)).replace(/\n\n\n+/g, "\n\n").replace(/\n\n$/, "\n");
+      if (isNumber(options)) {
+        options = {
+          maxLineLength: options
+        };
+      }
+      if (options.maxLineLength == null) {
+        options.maxLineLength = ((ref2 = global.process) != null ? (ref3 = ref2.stdout) != null ? ref3.columns : void 0 : void 0) || 80;
+      }
+      maxLineLength = options.maxLineLength;
+      return out = postWhitespaceFormatting(maxLineLength, formattedInspectRecursive(toInspectedObjects(toInspect), maxLineLength, options)).replace(/\n\n\n+/g, "\n\n").replace(/\n\n$/, "\n");
     } catch (error1) {
       error = error1;
       console.error(out = "Error in formattedInspect", {
@@ -5489,9 +5598,9 @@ module.exports = PlainObjects = (function() {
 var Inspect, Log, callStack, isString, peek,
   slice = [].slice;
 
-Inspect = __webpack_require__(19);
+Inspect = __webpack_require__(20);
 
-callStack = __webpack_require__(14).callStack;
+callStack = __webpack_require__(15).callStack;
 
 isString = __webpack_require__(0).isString;
 
@@ -5815,7 +5924,7 @@ module.exports = ObjectDiff = (function() {
 
 var Promise, PromisedFileReader;
 
-Promise = __webpack_require__(13);
+Promise = __webpack_require__(14);
 
 module.exports = PromisedFileReader = (function() {
   function PromisedFileReader() {}
@@ -6172,7 +6281,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(15)];
+module.exports = [__webpack_require__(9), __webpack_require__(27), __webpack_require__(26), __webpack_require__(16)];
 
 
 /***/ }),
@@ -6206,7 +6315,7 @@ module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (fu
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(18), "shallowInspect inspectLean inspect"], __webpack_require__(30), __webpack_require__(17), __webpack_require__(32), __webpack_require__(10)];
+module.exports = [[__webpack_require__(19), "shallowInspect inspectLean inspect"], __webpack_require__(30), __webpack_require__(18), __webpack_require__(32), __webpack_require__(10)];
 
 
 /***/ }),
@@ -6398,7 +6507,7 @@ var Inspect, Inspected,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Inspect = __webpack_require__(19);
+Inspect = __webpack_require__(20);
 
 module.exports = Inspect.Inspected || Inspect.addNamespace('Inspected', Inspected = (function(superClass) {
   extend(Inspected, superClass);
@@ -6640,7 +6749,7 @@ module.exports = Inspector2 = (function(superClass) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(1), [__webpack_require__(13), "testPromise", "containsPromises", "deepAll"], __webpack_require__(7), __webpack_require__(24), __webpack_require__(21), __webpack_require__(3), __webpack_require__(16), __webpack_require__(29), __webpack_require__(34), __webpack_require__(4), __webpack_require__(12), __webpack_require__(35), __webpack_require__(6), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(0), __webpack_require__(8), __webpack_require__(20), __webpack_require__(5), __webpack_require__(25), __webpack_require__(33), __webpack_require__(14), {
+  __webpack_require__(1), [__webpack_require__(14), "testPromise", "containsPromises", "deepAll"], __webpack_require__(7), __webpack_require__(24), __webpack_require__(12), __webpack_require__(3), __webpack_require__(17), __webpack_require__(29), __webpack_require__(34), __webpack_require__(4), __webpack_require__(13), __webpack_require__(35), __webpack_require__(6), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(0), __webpack_require__(8), __webpack_require__(21), __webpack_require__(5), __webpack_require__(25), __webpack_require__(33), __webpack_require__(15), {
     dateFormat: __webpack_require__(40)
   }
 ];
@@ -6653,21 +6762,21 @@ module.exports = [
 module.exports = __webpack_require__(23).includeInNamespace(__webpack_require__(51)).addModules({
   ArrayExtensions: __webpack_require__(7),
   AsyncExtensions: __webpack_require__(24),
-  CallStack: __webpack_require__(14),
+  CallStack: __webpack_require__(15),
   Clone: __webpack_require__(25),
   CommonJs: __webpack_require__(8),
-  Eq: __webpack_require__(16),
+  Eq: __webpack_require__(17),
   ErrorWithInfo: __webpack_require__(28),
   Function: __webpack_require__(29),
-  Iteration: __webpack_require__(20),
+  Iteration: __webpack_require__(21),
   Log: __webpack_require__(33),
   Map: __webpack_require__(11),
   MathExtensions: __webpack_require__(4),
   MinimalBaseObject: __webpack_require__(2),
   ObjectDiff: __webpack_require__(34),
-  ObjectExtensions: __webpack_require__(21),
-  ParseUrl: __webpack_require__(12),
-  Promise: __webpack_require__(13),
+  ObjectExtensions: __webpack_require__(12),
+  ParseUrl: __webpack_require__(13),
+  Promise: __webpack_require__(14),
   PromisedFileReader: __webpack_require__(35),
   Regexp: __webpack_require__(6),
   Ruby: __webpack_require__(36),

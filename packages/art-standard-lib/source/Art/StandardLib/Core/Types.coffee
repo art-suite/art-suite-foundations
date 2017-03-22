@@ -1,3 +1,20 @@
+
+###
+Set: global.ArtStandardLibMultipleContextTypeSupport = true
+Before the first time you require this file if you need to be able to test objects
+from multiple contexts.
+
+When do you need this?
+  - when working with iFrames
+  - when working with Node's 'repl' or 'vm'
+
+What is the differences?
+  With: slower, but other-wise the same
+  Without: plain-arrays and plain-objects from other contexts
+    are not detected with isArray, isPlainArray, isPlainObject
+###
+{ArtStandardLibMultipleContextTypeSupport} = global
+
 module.exports = class Types
   @isPromise: (obj) => isFunction obj?.then
   @isRegExp: (obj) => obj instanceof RegExp
@@ -51,7 +68,10 @@ module.exports = class Types
   # https://jsperf.com/is-array-sbd
   # correct: Array.isArray
   # 3x-8x faster: (o) => o.constructor == Array
-  @isArray: isArray = (o) => o? && o.constructor == Array
+  @isArray: isArray = if ArtStandardLibMultipleContextTypeSupport
+    (o) => Array.isArray o
+  else
+    (o) => o? && o.constructor == Array
 
   # cross-iFrame friendly
   # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
@@ -133,8 +153,6 @@ module.exports = class Types
     _super = Object.getPrototypeOf _super if isDirectPrototypeOf o, _super
     _super
 
-
-
   # cross-iFrame friendly
   # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf
   #   valid in IE9+, so I think we can safely use it.
@@ -147,7 +165,10 @@ module.exports = class Types
   # PERF: https://jsperf.com/is-plain-object
   #   iFrame-friendly test: null == Object.getPrototypeOf Object.getPrototypeOf v
   #   10-70x faster: v.constructor == Object
-  @isPlainObject: isPlainObject = (v) -> v? && v.constructor == Object
+  @isPlainObject: isPlainObject = if ArtStandardLibMultipleContextTypeSupport
+    (v) -> v? && null == Object.getPrototypeOf Object.getPrototypeOf v
+  else
+    (v) -> v? && v.constructor == Object
 
   ############################
   # helpers

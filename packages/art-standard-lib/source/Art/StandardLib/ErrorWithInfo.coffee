@@ -26,15 +26,7 @@ defineModule module, class ErrorWithInfo extends Error
     @name ||= "ErrorWithInfo"
     mergeInto @, @info
 
-    @message = if @info
-      """
-      #{message}
-
-        #{(formattedInspect info: @info, 40).replace /\n/g, "\n  "}
-
-      """
-    else
-      message
+    @message = message
 
     if isFunction Error.captureStackTrace
       # Node only

@@ -78,7 +78,24 @@ module.exports = __webpack_require__(1);
 /* 1 */
 /***/ (function(module, exports) {
 
-var Types;
+
+/*
+Set: global.ArtStandardLibMultipleContextTypeSupport = true
+Before the first time you require this file if you need to be able to test objects
+from multiple contexts.
+
+When do you need this?
+  - when working with iFrames
+  - when working with Node's 'repl' or 'vm'
+
+What is the differences?
+  With: slower, but other-wise the same
+  Without: plain-arrays and plain-objects from other contexts
+    are not detected with isArray, isPlainArray, isPlainObject
+ */
+var ArtStandardLibMultipleContextTypeSupport, Types;
+
+ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
   var _functionsPrototype, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString;
@@ -133,7 +150,9 @@ module.exports = Types = (function() {
     return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype)));
   };
 
-  Types.isArray = isArray = function(o) {
+  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? function(o) {
+    return Array.isArray(o);
+  } : function(o) {
     return (o != null) && o.constructor === Array;
   };
 
@@ -233,7 +252,9 @@ module.exports = Types = (function() {
     return _super;
   };
 
-  Types.isPlainObject = isPlainObject = function(v) {
+  Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? function(v) {
+    return (v != null) && null === Object.getPrototypeOf(Object.getPrototypeOf(v));
+  } : function(v) {
     return (v != null) && v.constructor === Object;
   };
 
