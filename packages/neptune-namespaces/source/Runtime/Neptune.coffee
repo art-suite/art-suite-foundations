@@ -12,7 +12,7 @@ require "./function"
 
 {isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Types'
 
-NeptuneLib = null
+ArtStandardLibCore = null
 
 class Base
   # global map of all namespaces:
@@ -51,7 +51,7 @@ class Base
   @getModuleNames:    -> Object.keys(@modules).sort()
 
   @getNeptuneLib: ->
-    throw new Error "DEPRICATED: Neptune.getNeptuneLib - use require 'art-standard-lib/Core'"
+    ArtStandardLibCore ||= require 'art-standard-lib/Core'
 
   @getInspectedObjects: (includeModules = true)->
     "#{@namespacePath}": @getNeptuneLib().merge

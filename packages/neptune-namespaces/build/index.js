@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -86,7 +86,7 @@ to stop using the function.name attribute.
 I think we can do that with one change: addNamespace needs to
 change to take a name argument: @addNamespace: (name, namespace) ->
  */
-var Base, Neptune, NeptuneLib, isExtendedClass, isFunction, isPlainArray, ref,
+var ArtStandardLibCore, Base, Neptune, isExtendedClass, isFunction, isPlainArray, ref,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -95,9 +95,9 @@ __webpack_require__(3);
 
 __webpack_require__(2);
 
-ref = __webpack_require__(5), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(6), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
-NeptuneLib = null;
+ArtStandardLibCore = null;
 
 Base = (function() {
   var excludedPropNames;
@@ -141,7 +141,7 @@ Base = (function() {
   };
 
   Base.getNeptuneLib = function() {
-    throw new Error("DEPRICATED: Neptune.getNeptuneLib - use require 'art-standard-lib/Core'");
+    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(5));
   };
 
   Base.getInspectedObjects = function(includeModules) {
@@ -347,7 +347,7 @@ module.exports = global.Neptune || (global.Neptune = Neptune = (function(superCl
     return (klass != null ? klass.prototype : void 0) instanceof Base;
   };
 
-  Neptune.isNode = __webpack_require__(6);
+  Neptune.isNode = __webpack_require__(7);
 
   Neptune.version = (__webpack_require__(4)).version;
 
@@ -440,23 +440,29 @@ module.exports = {
 		"start": "webpack-dev-server --hot --inline --progress",
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
 	},
-	"version": "1.10.0"
+	"version": "1.10.2"
 };
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib/Types");
+module.exports = require("art-standard-lib/Core");
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("detect-node");
+module.exports = require("art-standard-lib/Types");
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("detect-node");
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(0);
