@@ -69,5 +69,5 @@ defineModule module, class ConfigureWebpack extends BaseClass
 
     """
 
-  @write: (npmRoot) =>
+  @writeConfig: (npmRoot) =>
     BuildConfigurator.updateFile path.join(npmRoot, @outFileName), @standardWebpackConfigJs

@@ -3,9 +3,11 @@ path = require 'path'
 
 realRequire = eval 'require'
 
+recursiveCopy = require 'recursive-copy'
+
 ConfigureWebpack = require './ConfigureWebpack'
 ConfigurePackageJson = require './ConfigurePackageJson'
-{log, Promise, merge} = require 'art-standard-lib'
+{formattedInspect, log, Promise, merge} = require 'art-standard-lib'
 
 module.exports = class BuildConfigurator
 
@@ -66,23 +68,37 @@ module.exports = class BuildConfigurator
     else
       log "no change: #{fileName}".gray
 
-  @go: (npmRoot, {pretend, configure}) =>
-    @loadConfig(npmRoot, configure)
+  @go: (npmRoot, {pretend, configure, init}) =>
+    log "PRETEND".red if pretend
+    Promise.then =>
+      @init npmRoot, {pretend} if init
+    .then => @loadConfig(npmRoot, configure)
     .then (abcConfig) =>
 
-      packageConfig = ConfigurePackageJson.get abcConfig
       if pretend
-        log "package.json": packageConfig
-      else if configure
-        ConfigurePackageJson.write npmRoot, packageConfig
-
-      webpackConfig = ConfigureWebpack.get npmRoot, abcConfig
-      if pretend
-        log webpack:
-          configGeneratedOnDemand: webpackConfig
-          "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
+        @pretend npmRoot, abcConfig
       else
-        ConfigureWebpack.write npmRoot
+        @writeConfig npmRoot, abcConfig
+
+  @init: (npmRoot, {pretend}) ->
+    src = path.join __dirname, "../../../init-files"
+    dst = npmRoot
+    log "cp standard files from: ".gray + src.green
+    recursiveCopy src, dst, dot: true unless pretend
+
+  @pretend: (npmRoot, abcConfig) ->
+    log formattedInspect
+      npm:
+        out: "package.json": ConfigurePackageJson.get npmRoot, abcConfig
+
+      webpack:
+        configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
+        out: "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
+    , color: true
+
+  @writeConfig: (npmRoot, abcConfig) ->
+    ConfigurePackageJson.writeConfig npmRoot, abcConfig
+    ConfigureWebpack.writeConfig npmRoot, abcConfig
 
   # TODO: this should call: nn -s
   @getWebpackConfig: (npmRoot) =>

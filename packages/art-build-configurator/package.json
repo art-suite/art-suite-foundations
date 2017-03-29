@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "art-class-system": "^1.0.1",
+    "art-config": "^1.0.0",
     "art-standard-lib": "^1.1.0",
     "art-testbench": "^1.0.0",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
@@ -16,6 +17,7 @@
     "fs-promise": "^1.0.0",
     "json-loader": "^0.5.4",
     "neptune-namespaces": "^1.9.1",
+    "recursive-copy": "^2.0.6",
     "script-loader": "^0.7.0",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.1",

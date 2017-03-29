@@ -20,13 +20,14 @@ defineModule module, class ConfigurePackageJson extends BaseClass
   ###
   IN:
   ###
-  @get: (abcConfig) =>
+  @get: (npmRoot, abcConfig) =>
     deepMerge StandardPackageJson.get(abcConfig),
       abcConfig.npm
 
   ###
   consistentJsonStringify is there to guarantee a consistently formatted output for git.
   ###
-  @write: (npmRoot, packageConfig) =>
+  @writeConfig: (npmRoot, abcConfig) =>
+    packageConfig = @get npmRoot, abcConfig
     contents = consistentJsonStringify packageConfig, "  "
     BuildConfigurator.updateFile path.join(npmRoot, "package.json"), contents + "\n"
