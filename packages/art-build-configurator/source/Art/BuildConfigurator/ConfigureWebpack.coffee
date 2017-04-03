@@ -10,6 +10,9 @@ nodeExternals = null
   object
   deepMerge
   log
+  compactFlatten
+  objectKeyCount
+  merge
 } = require 'art-standard-lib'
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
@@ -38,10 +41,23 @@ defineModule module, class ConfigureWebpack extends BaseClass
     standard = StandardWebpackConfig.get npmRoot, abcConfig
     baseConfig = webpackMerge standard, common
     targets ||= index: {}
-    array @normalizeTargets(targets), (targetConfig) =>
-      webpackEntry = webpackMerge baseConfig, targetConfig
-      webpackEntry.target ||= "node" if abcConfig.target?.node
-      @normalizeTargetConfig webpackEntry
+
+    # entries with the same config should be clustered together, otherwise weppack
+    # will duplicate work - benchmark: 5 highly related entries took 12+ seconds clustered and 56+ seconds unclusered
+    # FIRST PASS: cluster the ones that only use the common config.
+    entriesWithNoOverrides = null
+
+    compactFlatten array @normalizeTargets(targets), (targetConfig) =>
+      if !entriesWithNoOverrides || keys = 1 < objectKeyCount targetConfig
+        webpackEntry = webpackMerge baseConfig, targetConfig
+        webpackEntry.target ||= "node" if abcConfig.target?.node
+        config = @normalizeTargetConfig webpackEntry
+        entriesWithNoOverrides = config unless keys
+        config
+      else
+        entriesWithNoOverrides.entry = merge entriesWithNoOverrides.entry, targetConfig.entry
+        null
+
 
   @normalizeTargetConfig: (targetConfig) ->
     if targetConfig.target == "node"
@@ -58,7 +74,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
     throw new Error "targets must be an object" unless isPlainObject targets
     object targets, (targetConfig, targetName) ->
       webpackMerge
-        entry: "#{targetName}": ["./#{targetName}"]
+        entry: "#{targetName}": "./#{targetName}"
         targetConfig
 
   @outFileName: "webpack.config.js"
