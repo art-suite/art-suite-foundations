@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,7 +76,7 @@ var BaseClass, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, ca
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-StandardLib = __webpack_require__(8);
+StandardLib = __webpack_require__(7);
 
 WebpackHotLoader = __webpack_require__(1);
 
@@ -216,7 +216,7 @@ module.exports = BaseClass = (function(superClass) {
   BaseClass.createWithPostCreate = createWithPostCreate = function(a, b) {
     var _module, klass;
     klass = b ? (_module = a, b) : a;
-    _module || (_module = getModuleBeingDefined());
+    _module || (_module = getModuleBeingDefined() || global.__definingModule);
     if (!(klass != null ? klass.postCreate : void 0)) {
       return klass;
     }
@@ -809,29 +809,35 @@ module.exports = BaseClass = (function(superClass) {
    */
 
   BaseClass.singletonClass = function() {
-    var args, map;
+    var args, obj1;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if (args.length > 0) {
+      log.error({
+        args: args
+      });
+      if (args.length > 0) {
+        throw new Error("singletonClass args are DEPRICATED");
+      }
+    }
     if (this.getIsAbstractClass()) {
       throw new Error("singleton classes cannot be abstract");
     }
-    map = {
-      singleton: function() {
+    this.classGetter((
+      obj1 = {
+        singleton: function() {
         var ref;
         if (((ref = this._singleton) != null ? ref["class"] : void 0) === this) {
           return this._singleton;
         } else {
-          return this._singleton = (function(func, args, ctor) {
-            ctor.prototype = func.prototype;
-            var child = new ctor, result = func.apply(child, args);
-            return Object(result) === result ? result : child;
-          })(this, args, function(){});
+          return this._singleton = new this;
         }
       }
-    };
-    map[decapitalize(functionName(this))] = function() {
-      return this.getSingleton();
-    };
-    this.classGetter(map);
+      },
+      obj1["" + (decapitalize(functionName(this)))] = function() {
+        return this.getSingleton();
+      },
+      obj1
+    ));
     return null;
   };
 
@@ -959,7 +965,11 @@ module.exports = WebpackHotLoader = (function() {
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(5);
+module.exports = __webpack_require__(5).includeInNamespace(__webpack_require__(4)).addModules({
+  BaseClass: __webpack_require__(0),
+  BaseObject: __webpack_require__(3),
+  WebpackHotLoader: __webpack_require__(1)
+});
 
 
 /***/ }),
@@ -997,22 +1007,11 @@ module.exports = [
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(6).includeInNamespace(__webpack_require__(4)).addModules({
-  BaseClass: __webpack_require__(0),
-  BaseObject: __webpack_require__(3),
-  WebpackHotLoader: __webpack_require__(1)
-});
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var Art, ClassSystem,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(7);
+Art = __webpack_require__(6);
 
 module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem = (function(superClass) {
   extend(ClassSystem, superClass);
@@ -1027,14 +1026,14 @@ module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem 
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(9);
+Neptune = __webpack_require__(8);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -1049,19 +1048,19 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-standard-lib");
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(2);

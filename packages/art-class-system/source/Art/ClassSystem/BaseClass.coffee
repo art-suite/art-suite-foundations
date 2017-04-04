@@ -141,7 +141,9 @@ module.exports = class BaseClass extends MinimalBaseObject
       _module = a
       b
     else a
-    _module ||= getModuleBeingDefined()
+
+    # TODO - maybe we should make an NPM just for defineModule, so this is cleaner?
+    _module ||= getModuleBeingDefined() || global.__definingModule
 
     # if hot reloading is not supported:
     return klass unless klass?.postCreate
@@ -675,16 +677,22 @@ module.exports = class BaseClass extends MinimalBaseObject
   The singleton instance is created on demand the first time it is accessed.
   ###
   @singletonClass: (args...) ->
+    if args.length > 0
+      log.error args: args
+      throw new Error "singletonClass args are DEPRICATED" if args.length > 0
     throw new Error "singleton classes cannot be abstract" if @getIsAbstractClass()
 
-    # return if @hasOwnProperty("getSingleton") && isFunction @getSingleton
-    map = singleton: ->
-      if @_singleton?.class == @
-        @_singleton
-      else
-        @_singleton = new @ args...
-    map[decapitalize functionName @] = -> @getSingleton()
-    @classGetter map
+    @classGetter
+      singleton: ->
+        if @_singleton?.class == @
+          @_singleton
+        else
+          # NOTE: "new @ args..." doesn't work if @ is an ES6 class!
+          # The reason is ES6 constructor functions cannot be invoked w/o "new"
+          # which means you can only do args... with the new ES6 ...args method.
+          @_singleton = new @ #args...
+      "#{decapitalize functionName @}": -> @getSingleton()
+
     null
 
   ######################################################
