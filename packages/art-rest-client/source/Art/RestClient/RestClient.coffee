@@ -25,6 +25,8 @@ module.exports = class RestClient
     POST: "POST"
     delete: "DELETE"
     DELETE: "DELETE"
+    head: "HEAD"
+    HEAD: "HEAD"
 
   ###
   get/put/post/delete
@@ -202,7 +204,13 @@ module.exports = class RestClient
         decodedHttpStatus = decodeHttpStatus httpStatus = request.status
 
         unless (decodedHttpStatus.status == success) && (try resolve getResponse(); true)
-          reject new ErrorWithInfo "error processing response", merge restRequestStatus, decodedHttpStatus, {event}, getErrorResponse()
+          reject new ErrorWithInfo(
+            if decodedHttpStatus.status == success
+              "error processing successful response"
+            else
+              "request status: #{decodedHttpStatus.status} (#{request.status})"
+            merge restRequestStatus, decodedHttpStatus, {event}, getErrorResponse()
+          )
 
       if onProgress
         initialProgressCalled = showProgressAfter <= 0
@@ -229,7 +237,6 @@ module.exports = class RestClient
     {verb, method, data, headers} = options
     verb = RestClient.legalVerbs[verb || method]
     data = null if data && objectKeyCount(data) == 0
-
 
     if verb == "GET" && options.data
       options = merge options,
