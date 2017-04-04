@@ -113,7 +113,6 @@ formattedInspectArray = (m, maxLineLength, options) ->
     out
 
 escapeForBlockString = (str) =>
-  console.log "escapeForBlockString", escapeJavascriptString str
   String(str).replace /[\\\0\b\f\r\t\v\u001b\u2028\u2029]/g, (x) ->
     switch x
       when '\\'     then '\\\\'
