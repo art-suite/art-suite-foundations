@@ -178,6 +178,8 @@ addTester "selectedPropsEq",
       return false
     true
 
+assert.selectedEq = assert.selectedPropsEq
+
 # create a version of all tests functions that resolves all inputs first
 assert.resolved = {}
 for k, v of assert when isFunction v
