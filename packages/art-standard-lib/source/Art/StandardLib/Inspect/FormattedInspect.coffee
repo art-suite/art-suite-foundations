@@ -35,21 +35,26 @@ formattedInspectObject = (m, maxLineLength, options) ->
     shouldBeOnOwnLine = !inspected.match /^([^,:]|\(.*\)|\{.*\}|\".*\"|\'.*\'|\[.*\])*$/
     [key, inspected, value]
 
-  return "{}" if keyCount == 0
+  objectStart = "{}"
+  objectStart = objectStart.grey if options.color
 
-  index = 0
-  finalInspectedValues = for [k, v, value] in inspectedValues
-    key = "#{k}:"
-    key = key.blue if options.color
-    if isPlainObject(value) && objectKeyCount(value) == 1
-      "#{key} #{v}"
-    else
-      "#{key}\t#{v}"
-
-  finalInspectedValues.join if !forceMultilineOutput && maxLineLength >= inspectedLength + (inspectedValues.length - 1) * 2
-    ",\t"
+  if keyCount == 0
+    objectStart
   else
-    "\n"
+
+    index = 0
+    finalInspectedValues = for [k, v, value] in inspectedValues
+      key = "#{k}:"
+      key = key.blue if options.color
+      if isPlainObject(value) && objectKeyCount(value) == 1
+        "#{key} #{v}"
+      else
+        "#{key}\t#{v}"
+
+    finalInspectedValues.join if !forceMultilineOutput && maxLineLength >= inspectedLength + (inspectedValues.length - 1) * 2
+      ",\t"
+    else
+      "\n"
 
 formattedInspectArray = (m, maxLineLength, options) ->
   lengthOfInspectedValues = 0
@@ -79,10 +84,12 @@ formattedInspectArray = (m, maxLineLength, options) ->
     inspectedHasNewlines = /\n/.test inspected
 
     if objectsMustBeExplicit && isPlainObject value
+      objectStart = "{}"
+      objectStart = objectStart.grey if options.color
       inspected = if inspectedHasNewlines
-        "{}#{newLineWithIndentString}#{inspected.replace(/\n/g, newLineWithIndentString)}"
+        "#{objectStart}#{newLineWithIndentString}#{inspected.replace(/\n/g, newLineWithIndentString)}"
       else
-        "{} #{inspected}"
+        "#{objectStart} #{inspected}"
 
     if inspectedHasNewlines
       oneLinerOk = false
@@ -94,23 +101,19 @@ formattedInspectArray = (m, maxLineLength, options) ->
   lengthOfCommas = (inspectedValues.length - 1) * 2
   lengthOfStartBrackets = 3
 
-  out = if oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues
+  arrayStart = "[]"
+  arrayStart = arrayStart.grey if options.color
+
+  if oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues
     if inspectedValues.length == 0
-      "[]"
-    else # if inspectedValues.length <= 1
-      "[] #{inspectedValues.join ",\t"}"
-    # else
-    #   inspectedValues.join ",\t"
+      arrayStart
+    else
+      "#{arrayStart} #{inspectedValues.join ",\t"}"
   else
     """
-    []
+    #{arrayStart}
       #{inspectedValues.join "\n  "}
     """
-
-  if options.color
-    out.replace /^\[\]/, "[]".gray
-  else
-    out
 
 escapeForBlockString = (str) =>
   String(str).replace /[\\\0\b\f\r\t\v\u001b\u2028\u2029]/g, (x) ->
