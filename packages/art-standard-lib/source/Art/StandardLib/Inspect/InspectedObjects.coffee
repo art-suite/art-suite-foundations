@@ -28,7 +28,7 @@ module.exports = class InspectedObjects
       inspectedObjectLiteral dateFormat m, "UTC:yyyy-mm-dd HH:MM:ss Z"
 
     else if isClass m
-      inspectedObjectLiteral "<#{m.getName()}>"
+      inspectedObjectLiteral "<#{m.getName?() || m.name}>"
 
     else if isFunction m
       functionString = "#{m}"
