@@ -64,168 +64,48 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 55);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports) {
+/******/ ({
 
-var ArrayCompactFlatten;
+/***/ 1:
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
-
-  function ArrayCompactFlatten() {}
-
-  ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return o.constructor === Object && (typeof o.callee === "function") && (typeof o.length === "number");
-  };
-
-  ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
-    return o && (o.constructor === Array || isArguments(o));
-  };
-
-  ArrayCompactFlatten.needsFlatteningOrCompacting = needsFlatteningOrCompacting = function(array, keepTester) {
-    var a, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      a = array[i];
-      if (isArrayOrArguments(a) || !keepTester(a)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  ArrayCompactFlatten.keepUnlessNullOrUndefined = keepUnlessNullOrUndefined = function(a) {
-    return a !== null && a !== void 0;
-  };
-
-
-  /*
-  IN:
-    array: array or arguments-object
-    keepTester: (value) -> true/false
-      OUT: return true if that element should be in the output
-  
-  OUT: array where all elements test true to keepTester
-  NOTE: NOT recursive - just does a shallow pass
-   */
-
-  ArrayCompactFlatten.compact = compact = function(array, keepTester) {
-    var a, i, len;
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
-    }
-    for (i = 0, len = array.length; i < len; i++) {
-      a = array[i];
-      if (!keepTester(a)) {
-        return (function() {
-          var j, len1, results;
-          results = [];
-          for (j = 0, len1 = array.length; j < len1; j++) {
-            a = array[j];
-            if (keepTester(a)) {
-              results.push(a);
-            }
-          }
-          return results;
-        })();
-      }
-    }
-    return array;
-  };
-
-
-  /*
-  IN: accepts any number of arguments
-  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
-    to the top level (flatten)
-   */
-
-  ArrayCompactFlatten.flatten = flatten = function(firstArg) {
-    return compactFlattenIfNeeded(arguments.length === 1 ? isArrayOrArguments(firstArg) ? firstArg : [firstArg] : arguments);
-  };
-
-
-  /*
-  IN: array: any object that has a length
-  
-  EFFECT:
-    itterates over array and recurse over any element which isArrayOrArguments
-    invokes f on every element that is not isArrayOrArguments
-  OUT: array (same as passed in)
-   */
-
-  ArrayCompactFlatten.deepArrayEach = deepArrayEach = function(array, f) {
-    var el, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      el = array[i];
-      if (isArrayOrArguments(el)) {
-        deepArrayEach(el, f);
-      } else {
-        f(el);
-      }
-    }
-    return array;
-  };
-
-
-  /*
-  IN:
-    array: array or arguments-object
-    keepTester: (value) -> true/false
-      OUT: return true if that element should be in the output
-  
-  OUT: array where all elements test true to keepTester
-  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
-    to the top level (flatten)
-   */
-
-  ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
-    }
-    return compactFlattenIfNeeded(array, keepTester);
-  };
-
-  arraySlice = Array.prototype.slice;
-
-  doFlattenInternal = function(array, keepTester) {
-    var output;
-    output = [];
-    deepArrayEach(array, function(el) {
-      if (keepTester(el)) {
-        return output.push(el);
-      }
-    });
-    return output;
-  };
-
-  keepAll = function() {
-    return true;
-  };
-
-  compactFlattenIfNeeded = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepAll;
-    }
-    if (needsFlatteningOrCompacting(array, keepTester)) {
-      return doFlattenInternal(array, keepTester);
-    } else if (array.constructor !== Array) {
-      return arraySlice.call(array);
-    } else {
-      return array;
-    }
-  };
-
-  return ArrayCompactFlatten;
-
-})();
+module.exports = __webpack_require__(21).includeInNamespace(__webpack_require__(20)).addModules({
+  ArrayCompactFlatten: __webpack_require__(3),
+  Merge: __webpack_require__(7),
+  StringCase: __webpack_require__(8),
+  Types: __webpack_require__(2)
+});
 
 
 /***/ }),
-/* 1 */
+
+/***/ 11:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Art, StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Art = __webpack_require__(28);
+
+module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
+  extend(StandardLib, superClass);
+
+  function StandardLib() {
+    return StandardLib.__super__.constructor.apply(this, arguments);
+  }
+
+  return StandardLib;
+
+})(Neptune.Base));
+
+
+/***/ }),
+
+/***/ 2:
 /***/ (function(module, exports) {
 
 
@@ -432,14 +312,244 @@ module.exports = Types = (function() {
 
 
 /***/ }),
-/* 2 */
+
+/***/ 20:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = [__webpack_require__(3), __webpack_require__(8), __webpack_require__(7), __webpack_require__(2)];
+
+
+/***/ }),
+
+/***/ 21:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Core, StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+StandardLib = __webpack_require__(11);
+
+module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (function(superClass) {
+  extend(Core, superClass);
+
+  function Core() {
+    return Core.__super__.constructor.apply(this, arguments);
+  }
+
+  return Core;
+
+})(Neptune.Base));
+
+
+/***/ }),
+
+/***/ 28:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Art, Neptune,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Neptune = __webpack_require__(29);
+
+module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
+  extend(Art, superClass);
+
+  function Art() {
+    return Art.__super__.constructor.apply(this, arguments);
+  }
+
+  return Art;
+
+})(Neptune.Base));
+
+
+/***/ }),
+
+/***/ 29:
+/***/ (function(module, exports) {
+
+module.exports = require("neptune-namespaces");
+
+/***/ }),
+
+/***/ 3:
+/***/ (function(module, exports) {
+
+var ArrayCompactFlatten;
+
+module.exports = ArrayCompactFlatten = (function() {
+  var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
+
+  function ArrayCompactFlatten() {}
+
+  ArrayCompactFlatten.isArguments = isArguments = function(o) {
+    return o.constructor === Object && (typeof o.callee === "function") && (typeof o.length === "number");
+  };
+
+  ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
+    return o && (o.constructor === Array || isArguments(o));
+  };
+
+  ArrayCompactFlatten.needsFlatteningOrCompacting = needsFlatteningOrCompacting = function(array, keepTester) {
+    var a, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (isArrayOrArguments(a) || !keepTester(a)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  ArrayCompactFlatten.keepUnlessNullOrUndefined = keepUnlessNullOrUndefined = function(a) {
+    return a !== null && a !== void 0;
+  };
+
+
+  /*
+  IN:
+    array: array or arguments-object
+    keepTester: (value) -> true/false
+      OUT: return true if that element should be in the output
+  
+  OUT: array where all elements test true to keepTester
+  NOTE: NOT recursive - just does a shallow pass
+   */
+
+  ArrayCompactFlatten.compact = compact = function(array, keepTester) {
+    var a, i, len;
+    if (keepTester == null) {
+      keepTester = keepUnlessNullOrUndefined;
+    }
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (!keepTester(a)) {
+        return (function() {
+          var j, len1, results;
+          results = [];
+          for (j = 0, len1 = array.length; j < len1; j++) {
+            a = array[j];
+            if (keepTester(a)) {
+              results.push(a);
+            }
+          }
+          return results;
+        })();
+      }
+    }
+    return array;
+  };
+
+
+  /*
+  IN: accepts any number of arguments
+  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
+    to the top level (flatten)
+   */
+
+  ArrayCompactFlatten.flatten = flatten = function(firstArg) {
+    return compactFlattenIfNeeded(arguments.length === 1 ? isArrayOrArguments(firstArg) ? firstArg : [firstArg] : arguments);
+  };
+
+
+  /*
+  IN: array: any object that has a length
+  
+  EFFECT:
+    itterates over array and recurse over any element which isArrayOrArguments
+    invokes f on every element that is not isArrayOrArguments
+  OUT: array (same as passed in)
+   */
+
+  ArrayCompactFlatten.deepArrayEach = deepArrayEach = function(array, f) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArrayOrArguments(el)) {
+        deepArrayEach(el, f);
+      } else {
+        f(el);
+      }
+    }
+    return array;
+  };
+
+
+  /*
+  IN:
+    array: array or arguments-object
+    keepTester: (value) -> true/false
+      OUT: return true if that element should be in the output
+  
+  OUT: array where all elements test true to keepTester
+  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
+    to the top level (flatten)
+   */
+
+  ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
+    if (keepTester == null) {
+      keepTester = keepUnlessNullOrUndefined;
+    }
+    return compactFlattenIfNeeded(array, keepTester);
+  };
+
+  arraySlice = Array.prototype.slice;
+
+  doFlattenInternal = function(array, keepTester) {
+    var output;
+    output = [];
+    deepArrayEach(array, function(el) {
+      if (keepTester(el)) {
+        return output.push(el);
+      }
+    });
+    return output;
+  };
+
+  keepAll = function() {
+    return true;
+  };
+
+  compactFlattenIfNeeded = function(array, keepTester) {
+    if (keepTester == null) {
+      keepTester = keepAll;
+    }
+    if (needsFlatteningOrCompacting(array, keepTester)) {
+      return doFlattenInternal(array, keepTester);
+    } else if (array.constructor !== Array) {
+      return arraySlice.call(array);
+    } else {
+      return array;
+    }
+  };
+
+  return ArrayCompactFlatten;
+
+})();
+
+
+/***/ }),
+
+/***/ 55:
+/***/ (function(module, exports, __webpack_require__) {
+
+var ref, ref1, ref2;
+
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(1);
+
+
+/***/ }),
+
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
 
-compactFlatten = __webpack_require__(0).compactFlatten;
+compactFlatten = __webpack_require__(3).compactFlatten;
 
-isPlainObject = __webpack_require__(1).isPlainObject;
+isPlainObject = __webpack_require__(2).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, pureMerge;
@@ -600,12 +710,13 @@ module.exports = Merge = (function() {
 
 
 /***/ }),
-/* 3 */
+
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
 
-compactFlatten = __webpack_require__(0).compactFlatten;
+compactFlatten = __webpack_require__(3).compactFlatten;
 
 module.exports = StringCase = (function() {
   function StringCase() {}
@@ -678,112 +789,6 @@ module.exports = StringCase = (function() {
 })();
 
 
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ref, ref1, ref2;
-
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(6);
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = [__webpack_require__(0), __webpack_require__(3), __webpack_require__(2), __webpack_require__(1)];
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(7).includeInNamespace(__webpack_require__(5)).addModules({
-  ArrayCompactFlatten: __webpack_require__(0),
-  Merge: __webpack_require__(2),
-  StringCase: __webpack_require__(3),
-  Types: __webpack_require__(1)
-});
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Core, StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-StandardLib = __webpack_require__(8);
-
-module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (function(superClass) {
-  extend(Core, superClass);
-
-  function Core() {
-    return Core.__super__.constructor.apply(this, arguments);
-  }
-
-  return Core;
-
-})(Neptune.Base));
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Art = __webpack_require__(9);
-
-module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
-  extend(StandardLib, superClass);
-
-  function StandardLib() {
-    return StandardLib.__super__.constructor.apply(this, arguments);
-  }
-
-  return StandardLib;
-
-})(Neptune.Base));
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, Neptune,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Neptune = __webpack_require__(10);
-
-module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
-  extend(Art, superClass);
-
-  function Art() {
-    return Art.__super__.constructor.apply(this, arguments);
-  }
-
-  return Art;
-
-})(Neptune.Base));
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-module.exports = require("neptune-namespaces");
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(4);
-
-
 /***/ })
-/******/ ]);
+
+/******/ });
