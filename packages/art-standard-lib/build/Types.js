@@ -100,8 +100,10 @@ module.exports = Types = (function() {
     return isFunction(obj != null ? obj.then : void 0);
   };
 
-  Types.isRegExp = function(obj) {
-    return obj instanceof RegExp;
+  Types.isRegExp = ArtStandardLibMultipleContextTypeSupport ? function(obj) {
+    return obj.constructor.name === "RegExp";
+  } : function(obj) {
+    return obj.constructor === RegExp;
   };
 
   Types.isNumber = isNumber = function(obj) {

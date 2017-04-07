@@ -432,8 +432,10 @@ module.exports = Types = (function() {
     return isFunction(obj != null ? obj.then : void 0);
   };
 
-  Types.isRegExp = function(obj) {
-    return obj instanceof RegExp;
+  Types.isRegExp = ArtStandardLibMultipleContextTypeSupport ? function(obj) {
+    return obj.constructor.name === "RegExp";
+  } : function(obj) {
+    return obj.constructor === RegExp;
   };
 
   Types.isNumber = isNumber = function(obj) {
@@ -4173,9 +4175,9 @@ module.exports = Eq = (function() {
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isString, ref;
+var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
 
-ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise;
+ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
 
 escapeJavascriptString = __webpack_require__(5).escapeJavascriptString;
 
@@ -4221,6 +4223,8 @@ module.exports = InspectedObjects = (function() {
           }
         };
       }
+    } else if (isRegExp(m)) {
+      return inspectedObjectLiteral("" + m);
     } else if (isDate(m)) {
       return inspectedObjectLiteral(dateFormat(m, "UTC:yyyy-mm-dd HH:MM:ss Z"));
     } else if (isClass(m)) {
@@ -5286,7 +5290,7 @@ formattedInspectObject = function(m, maxLineLength, options) {
       } else if (ansiSafeStringLength(inspected) > maxLineLength - (key.length + 2)) {
         inspected = "" + newLineWithIndentString + inspected + "\n";
       }
-      if (!key.match(/^[-._a-zA-Z[_a-zA-Z0-9]*$/)) {
+      if (!/^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/.test(key)) {
         key = inspect(key);
       }
       inspectedLength += ansiSafeStringLength(inspected) + key.length + 2;

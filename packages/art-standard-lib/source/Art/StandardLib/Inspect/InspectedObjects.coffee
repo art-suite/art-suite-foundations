@@ -1,4 +1,4 @@
-{isDate, deepMap, isNonNegativeInt, isClass, isPlainArray, isPlainObject, isString, isFunction, isPromise} = require '../TypesExtended'
+{isDate, deepMap, isNonNegativeInt, isClass, isPlainArray, isPlainObject, isString, isFunction, isPromise, isRegExp} = require '../TypesExtended'
 {escapeJavascriptString} = require '../StringExtensions'
 {inspectedObjectLiteral} = require './InspectedObjectLiteral'
 dateFormat = require 'dateformat'
@@ -23,6 +23,9 @@ module.exports = class InspectedObjects
         Error:
           class: toInspectedObjects m.constructor
           stack: literal
+
+    else if isRegExp m
+      inspectedObjectLiteral "#{m}"
 
     else if isDate m
       inspectedObjectLiteral dateFormat m, "UTC:yyyy-mm-dd HH:MM:ss Z"

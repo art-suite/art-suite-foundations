@@ -29,7 +29,7 @@ formattedInspectObject = (m, maxLineLength, options) ->
     else if ansiSafeStringLength(inspected) > maxLineLength - (key.length + 2)
       inspected = "#{newLineWithIndentString}#{inspected}\n"
 
-    key = inspect key unless key.match /^[-._a-zA-Z[_a-zA-Z0-9]*$/
+    key = inspect key unless /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/.test key
     inspectedLength += ansiSafeStringLength(inspected) + key.length + 2
     forceMultilineOutput ||= shouldBeOnOwnLine # if previous entry should be on own line, force all on own line
     shouldBeOnOwnLine = !inspected.match /^([^,:]|\(.*\)|\{.*\}|\".*\"|\'.*\'|\[.*\])*$/

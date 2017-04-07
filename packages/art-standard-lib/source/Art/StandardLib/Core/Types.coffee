@@ -17,7 +17,10 @@ What is the differences?
 
 module.exports = class Types
   @isPromise: (obj) => isFunction obj?.then
-  @isRegExp: (obj) => obj instanceof RegExp
+  @isRegExp:  if ArtStandardLibMultipleContextTypeSupport
+      (obj) => obj.constructor.name == "RegExp"
+    else
+      (obj) => obj.constructor == RegExp
   @isNumber: isNumber = (obj) => typeof obj == "number"
 
   isNonNegativeInt: (x) ->
