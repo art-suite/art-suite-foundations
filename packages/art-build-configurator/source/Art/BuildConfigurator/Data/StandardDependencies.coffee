@@ -5,6 +5,7 @@ module.exports =
     'art-standard-lib':                     '^1.1.0'
     'art-class-system':                     '^1.0.1'
     'art-config':                           '^1.0.0'
+    'art-build-configurator':               '^1.8.1'
 
     # compilers
     'coffee-script':                        '^1.12.3'
