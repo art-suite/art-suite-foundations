@@ -134,7 +134,7 @@ module.exports = class MyMocha
     global.skipKnownFailingTest = (name, f) ->
       message = "SKIPPING KNOWN-FAILING TEST: #{name}"
       test message, ->
-        log.error log message
+        assert.rejects f, "This test is passing now, yay! Switch to a normal test."
 
   @_run: (defineAllTests)=>
     (new NestedSuites).groupTestSuites defineAllTests
