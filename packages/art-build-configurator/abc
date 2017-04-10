@@ -1,27 +1,8 @@
-#!/usr/bin/env coffee
+#!/usr/bin/env node
 
-colors = require "colors"
-fsp = require 'fs-promise'
-path = require 'path'
-
-Configurator = require './index'
-
-{version} = require './package'
-commander = require "commander"
-.version version
-.option '-p, --pretend', "show the configs that will be generated without writing them"
-.option '-c, --configure', "configure and update all"
-.option '--init', 'initialize a new Art-style project'
-.on "--help", ->
-  console.log """
-    looks for #{Configurator.configFileName} and configs as instructed
-    """
-.parse process.argv
-
-{pretend, configure, init} = commander
-if pretend || configure || init
-  Configurator.go process.cwd(), commander
-  .catch (e) ->
-    console.error e.stack
-else
-  commander.outputHelp()
+if (false) { // use build
+  require('./build/abcCommand');
+} else {
+  require('caffeine-mc/register');
+  require('./abcCommand');
+}

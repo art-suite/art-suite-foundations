@@ -1,0 +1,9 @@
+import &ArtStandardLib, &ArtClassSystem
+
+class Versioning extends BaseClass
+  @classGetter
+    current: ->
+      JSON.parse
+        &fs.readFileSync "package.json"
+        .toString()
+      .version

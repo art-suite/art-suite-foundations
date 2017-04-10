@@ -1,0 +1,26 @@
+&colors
+
+{pv, pretend, configure, init} = commander =
+
+  &commander
+  .version &Package.version
+  .option '-p, --pretend',    "show the configs that will be generated without writing them"
+  .option '-c, --configure',  "configure and update all"
+  .option '--pv',             "show your package's current version"
+  .option '--init',           'initialize a new Art-style project'
+  .on "--help", ->
+    console.log
+      """
+        looks for #{&ArtBuildConfigurator.configFileName} and configs as instructed
+  .parse process.argv
+
+if pv
+  console.log &ArtBuildConfigurator.Versioning.current
+
+else if pretend || configure || init
+  &ArtBuildConfigurator.go process.cwd(), commander
+  .catch (e) ->
+    console.error e.stack
+
+else
+  commander.outputHelp()

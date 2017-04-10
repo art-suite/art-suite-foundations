@@ -11,7 +11,7 @@ module.exports = class StandardWebpackConfig
       # in this way we can have index.js files which NODE priorizes over index.coffee
       # These index.js files can point to webpack-compiled builds
       # But the .coffee files point to the individual files, for webpack to make sense out of.
-      extensions: [".webpack.js", ".web.js", ".coffee", ".js", ".json"]
+      extensions: [".webpack.js", ".web.js", ".coffee", ".caf", ".caffeine", ".js", ".json"]
 
     output:
       path:       path.join npmRoot, outputPath
@@ -23,6 +23,7 @@ module.exports = class StandardWebpackConfig
 
     module:
       rules: [
+        { test: /\.caf(feine)?$/,             loader: "caffeine-mc/webpack-loader"}
         { test: /\.coffee$/,                  loader: "coffee-loader" }
         { test: /\.(coffee\.md|litcoffee)$/,  loader: "coffee-loader?literate" }
         { test: /\.css$/,                     loader: "style-loader!css-loader" }
@@ -30,3 +31,9 @@ module.exports = class StandardWebpackConfig
         { test: /\.jpg$/,                     loader: "file-loader" }
         { test: /\.json$/,                    loader: "json-loader" }
       ]
+
+  @js:
+    """
+    module.exports = require("art-build-configurator").getWebpackConfig(__dirname);
+
+    """

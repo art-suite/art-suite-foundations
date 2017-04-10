@@ -79,11 +79,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
 
   @outFileName: "webpack.config.js"
 
-  @standardWebpackConfigJs: """
-    require('coffee-script/register');
-    module.exports = require("art-build-configurator").getWebpackConfig(__dirname);
-
-    """
+  @standardWebpackConfigJs: StandardWebpackConfig.js
 
   @writeConfig: (npmRoot) =>
     BuildConfigurator.updateFile path.join(npmRoot, @outFileName), @standardWebpackConfigJs

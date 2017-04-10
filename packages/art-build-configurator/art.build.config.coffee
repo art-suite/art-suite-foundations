@@ -17,3 +17,4 @@ module.exports =
 
   webpack:
     common: {}
+    targets: abcCommand: {}

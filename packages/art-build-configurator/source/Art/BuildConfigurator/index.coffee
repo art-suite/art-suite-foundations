@@ -6,4 +6,6 @@ module.exports = require './namespace'
 .addModules
   ConfigurePackageJson: require './ConfigurePackageJson'
   ConfigureWebpack:     require './ConfigureWebpack'    
+  Publish:              require './Publish'             
+  Versioning:           require './Versioning'          
 require './Data'
