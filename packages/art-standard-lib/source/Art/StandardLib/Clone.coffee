@@ -31,12 +31,12 @@ topObject = null
 module.exports = class Clone
 
   cloneArray = (array) ->
-    clonedArray = clonedMap.set array, array.slice()
+    clonedMap.set array, clonedArray = array.slice()
     clonedArray[index] = clone value for value, index in clonedArray
     clonedArray
 
   cloneObject = (obj) ->
-    clonedObject = clonedMap.set obj, emptyClone obj
+    clonedMap.set obj, clonedObject = emptyClone obj
 
     if (obj!=topObject || !byProperties) && obj.populateClone
       obj.populateClone clonedObject
