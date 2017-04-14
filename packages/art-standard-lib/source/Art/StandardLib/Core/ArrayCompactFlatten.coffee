@@ -4,9 +4,7 @@ module.exports = class ArrayCompactFlatten
   # PUBLIC
   ######################
   @isArguments: isArguments = (o) ->
-    o.constructor == Object &&
-    (typeof o.callee is "function") &&
-    (typeof o.length is "number")
+    o.constructor == Object && o.toString() == '[object Arguments]'
 
   @isArrayOrArguments: isArrayOrArguments = (o) ->
     o && (o.constructor == Array || isArguments o)
