@@ -39,129 +39,108 @@ class Node
       n.prev = p
       @next = null
 
+class KeysIterator
+  constructor: (@node) ->
+    @started = false
+
+  next: ->
+    @node = if @started
+      @node?.next
+    else
+      @started = true
+      @node
+
+    done:   !@node
+    value:  @node?.key
+
+class ValuesIterator
+  constructor: (@node) ->
+    @started = false
+
+  next: ->
+    @node = if @started
+      @node?.next
+    else
+      @started = true
+      @node
+
+    done:   !@node
+    value:  @node?.value
+
+
+# ES6-compatible Map
+# DEPRICATED - really, we should just use a standard polyfill
 # this class exists because javascript hash keys must be strings
 # this simple and inefficient class allows us to use objects as keys
-module.exports = class Map extends MinimalBaseObject
-  @inverseMap: (array) ->
-    result = new Map
-    result.set v, k for v, k in array
-    result
+module.exports = # global.Map ||
+  class Map extends MinimalBaseObject
 
-  constructor: ->
-    @_length = 0
-    @_map = {}
-    @_first = @_last = null
+    constructor: ->
+      @_length  = 0
+      @_map     = {}
+      @_first   = @_last = null
 
-  @getter
-    length: -> @_length
-    nodes: ->
+    @getter
+      size: -> @_length
+
+    _getNodes: ->
+
       result = []
       n = @_first
       while n
         result.push n
         n = n.next
       result
-    keys: -> node.key for node in @nodes
-    values: -> node.value for node in @nodes
 
-  get: (key) ->
-    node = @_map[Unique.id key]
-    node && node.value
+    keys:   -> new KeysIterator   @_first
+    values: -> new ValuesIterator @_first
 
-  set: (key, value) ->
-    id = Unique.id key
-    if @_map[id]
-      @_map[id].value = value
-    else
-      @_length++
-      @_last = @_map[id] = new Node key, value, @_last
-      @_first = @_last unless @_first
-    value
+    get: (key) ->
+      node = @_map[Unique.id key]
+      node && node.value
 
-  # returns the removed element node or undefined
-  _remove: (key) ->
-    id = Unique.id key
-    if n = @_map[id]
-      @_length--
-      delete @_map[id]
-      @_first = n.next if @_first == n
-      @_last = n.prev if @_last == n
-      n.remove()
-      n
-    else
-      undefined
-
-  # returns the removed element's value or undefined
-  # NOTE: "undefined" is a legal element value
-  remove: (key) ->
-    if n = @_remove key
-      n.value
-    else
-      undefined
-
-  # returns true if an element was removed
-  delete: (key) ->
-    !!@_remove key
-
-  exists: (key) -> @_map[Unique.id key]
-
-  # yields just values like Array.forEach
-  # returns @
-  forEach: (f) ->
-    f node.value for node in @nodes
-    @
-
-  # return the value of the first element that passes the test
-  # or undefined
-  findFirst: (testF) ->
-    return node.value for node in @nodes when testF node.value
-    undefined
-
-  # yields key, value for each element like jQuery .each and Ruby's Hash.each
-  # returns @
-  each: (f) ->
-    f node.key, node.value for node in @nodes
-    @
-
-  # yields key, value for each element like jQuery .each and Ruby's Hash.each
-  # returns array of the result of applying f to each key, value pair
-  map: (f) -> f node.key, node.value for node in @nodes
-
-  inspect: (inspector) ->
-    Neptune.Art.StandardLib.log "inspect map"
-    return Neptune.Art.StandardLib.inspect @ unless inspector
-    _inspect = (o) ->
-      if typeof o is "string" && o.match /^[a-zA-Z_][a-zA-Z_0-9]*$/
-        inspector.put o
+    set: (key, value) ->
+      id = Unique.id key
+      if @_map[id]
+        @_map[id].value = value
       else
-        inspector.inspect o
-    inspector.put "{Map "
-    first = true
-    @map (k, v) ->
-      inspector.put ", " unless first
-      _inspect k
-      inspector.put ": "
-      inspector.inspect v
-      first = false
-    inspector.put "}"
+        @_length++
+        @_last = @_map[id] = new Node key, value, @_last
+        @_first = @_last unless @_first
+      @
 
-  # verify nodes are correct
-  verifyNodes: ->
-    {inspect} = Neptune.Art.StandardLib
-    return if !@_first? && !@_last? && @_length == 0 # empty - is OK
-    throw new Error "length == #{@length} but @_first is not null" if @_length == 0 && @_first
-    throw new Error "length == #{@length} but @_last is not null" if @_length == 0 && @_last
-    throw new Error "length == #{@length} and @_first is null" unless @_first
-    throw new Error "length == #{@length} and @_last is null" unless @_last
+    # returns the removed element node or undefined
+    _remove: (key) ->
+      id = Unique.id key
+      if n = @_map[id]
+        @_length--
+        delete @_map[id]
+        @_first = n.next if @_first == n
+        @_last = n.prev if @_last == n
+        n.remove()
+        n
+      else
+        undefined
 
-    throw new Error "@_first has prev" if @_first.prev
-    throw new Error "@_last has next" if @_last.next
-    length = 0
-    prev = null
-    node = @_first
-    while node
-      length++
-      throw new Error "node.prev != prev. #{inspect {lenght: length, nodePrev:node.prev, prev:prev},1}" unless node.prev == prev
-      prev = node
-      node = node.next
-    throw new Error "@length is #{@length}, but it should be #{length}" unless @length == length
+    # returns true if an element was removed
+    delete: (key) ->
+      !!@_remove key
+
+    forEach: (f) ->
+      f node.value, node.key, @ for node in @_getNodes()
+      undefined
+
+    has:    (key) -> !!@_map[Unique.id key]
+
+    # DEPRICATED
+    remove:       -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+    exists:       -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+    findFirst:    -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+    map:          -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+    verifyNodes:  -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+    @inverseMap:  -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+
+    @getter
+      length:     -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+      nodes:      -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
+
