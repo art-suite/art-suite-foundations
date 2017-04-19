@@ -2,7 +2,7 @@
 #  http://www.w3.org/TR/XMLHttpRequest2/
 #  http://www.html5rocks.com/en/tutorials/file/xhr2/
 StandardLib = require 'art-standard-lib'
-{present, Promise, merge, isNumber, timeout, log, objectKeyCount, appendQuery, object, ErrorWithInfo} = StandardLib
+{objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log, objectKeyCount, appendQuery, object, ErrorWithInfo} = StandardLib
 {success, serverFailure, failure, failureTypes, decodeHttpStatus} = require 'art-communication-status'
 
 # So this works in NODE:
@@ -172,7 +172,7 @@ module.exports = class RestClient
         catch error
           status:       serverFailure
           rawResponse:  request.response
-          message:      "Error parsing server's response: #{error}"
+          message:      "ArtRestClient: Error parsing server's response: #{error}\nrawResponse: #{request.response}"
 
       getResponse = ->
         {response} = request
@@ -204,13 +204,14 @@ module.exports = class RestClient
         decodedHttpStatus = decodeHttpStatus httpStatus = request.status
 
         unless (decodedHttpStatus.status == success) && (try resolve getResponse(); true)
-          reject new ErrorWithInfo(
-            if decodedHttpStatus.status == success
-              "error processing successful response"
-            else
-              "request status: #{decodedHttpStatus.status} (#{request.status})"
-            merge restRequestStatus, decodedHttpStatus, {event}, getErrorResponse()
-          )
+          info = merge restRequestStatus, decodedHttpStatus, {event}, getErrorResponse()
+          stringInfo = formattedInspect info: objectWithout info, "event", "request"
+          message = if decodedHttpStatus.status == success
+            "error processing successful response"
+          else
+            "request status: #{decodedHttpStatus.status} (#{request.status})"
+          message += "\n\n#{stringInfo}"
+          reject new ErrorWithInfo message, info
 
       if onProgress
         initialProgressCalled = showProgressAfter <= 0

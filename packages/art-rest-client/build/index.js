@@ -64,16 +64,14 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ref, ref1;
-
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.RestClient : void 0 : void 0) != null ? ref : __webpack_require__(3);
+module.exports = __webpack_require__(3).includeInNamespace(__webpack_require__(2));
 
 
 /***/ }),
@@ -87,13 +85,13 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, failure, failureTypes, isNumber, log, merge, object, objectKeyCount, present, ref, serverFailure, success, timeout;
+var ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, failure, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, serverFailure, success, timeout;
 
-StandardLib = __webpack_require__(7);
+StandardLib = __webpack_require__(6);
 
-present = StandardLib.present, Promise = StandardLib.Promise, merge = StandardLib.merge, isNumber = StandardLib.isNumber, timeout = StandardLib.timeout, log = StandardLib.log, objectKeyCount = StandardLib.objectKeyCount, appendQuery = StandardLib.appendQuery, object = StandardLib.object, ErrorWithInfo = StandardLib.ErrorWithInfo;
+objectWithout = StandardLib.objectWithout, formattedInspect = StandardLib.formattedInspect, present = StandardLib.present, Promise = StandardLib.Promise, merge = StandardLib.merge, isNumber = StandardLib.isNumber, timeout = StandardLib.timeout, log = StandardLib.log, objectKeyCount = StandardLib.objectKeyCount, appendQuery = StandardLib.appendQuery, object = StandardLib.object, ErrorWithInfo = StandardLib.ErrorWithInfo;
 
-ref = __webpack_require__(6), success = ref.success, serverFailure = ref.serverFailure, failure = ref.failure, failureTypes = ref.failureTypes, decodeHttpStatus = ref.decodeHttpStatus;
+ref = __webpack_require__(5), success = ref.success, serverFailure = ref.serverFailure, failure = ref.failure, failureTypes = ref.failureTypes, decodeHttpStatus = ref.decodeHttpStatus;
 
 __webpack_require__(1);
 
@@ -108,7 +106,9 @@ module.exports = RestClient = (function() {
     post: "POST",
     POST: "POST",
     "delete": "DELETE",
-    DELETE: "DELETE"
+    DELETE: "DELETE",
+    head: "HEAD",
+    HEAD: "HEAD"
   };
 
 
@@ -328,7 +328,7 @@ module.exports = RestClient = (function() {
           return {
             status: serverFailure,
             rawResponse: request.response,
-            message: "Error parsing server's response: " + error
+            message: "ArtRestClient: Error parsing server's response: " + error + "\nrawResponse: " + request.response
           };
         }
       };
@@ -359,7 +359,7 @@ module.exports = RestClient = (function() {
         }, decodeHttpStatus())));
       });
       request.addEventListener("load", function(event) {
-        var decodedHttpStatus, httpStatus;
+        var decodedHttpStatus, httpStatus, info, message, stringInfo;
         requestResolved = true;
         decodedHttpStatus = decodeHttpStatus(httpStatus = request.status);
         if (!((decodedHttpStatus.status === success) && ((function() {
@@ -368,9 +368,13 @@ module.exports = RestClient = (function() {
             return true;
           } catch (error1) {}
         })()))) {
-          return reject(new ErrorWithInfo("error processing response", merge(restRequestStatus, decodedHttpStatus, {
+          info = merge(restRequestStatus, decodedHttpStatus, {
             event: event
-          }, getErrorResponse())));
+          }, getErrorResponse());
+          stringInfo = formattedInspect(objectWithout(info, "event", "request"));
+          message = decodedHttpStatus.status === success ? "error processing successful response" : "request status: " + decodedHttpStatus.status + " (" + request.status + ")";
+          message += "\nInfo:\n" + stringInfo;
+          return reject(new ErrorWithInfo(message, info));
         }
       });
       if (onProgress) {
@@ -435,18 +439,11 @@ module.exports = RestClient = (function() {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4).includeInNamespace(__webpack_require__(2));
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var Art, RestClient,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(5);
+Art = __webpack_require__(4);
 
 module.exports = Art.RestClient || Art.addNamespace('RestClient', RestClient = (function(superClass) {
   extend(RestClient, superClass);
@@ -461,14 +458,14 @@ module.exports = Art.RestClient || Art.addNamespace('RestClient', RestClient = (
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(8);
+Neptune = __webpack_require__(7);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -483,28 +480,30 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-communication-status");
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-standard-lib");
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+var ref, ref1;
+
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.RestClient : void 0 : void 0) != null ? ref : __webpack_require__(0);
 
 
 /***/ })
