@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 56);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -387,7 +387,7 @@ module.exports = ArrayCompactFlatten = (function() {
   function ArrayCompactFlatten() {}
 
   ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return o.constructor === Object && (typeof o.callee === "function") && (typeof o.length === "number");
+    return o.constructor === Object && o.toString() === '[object Arguments]';
   };
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
@@ -534,7 +534,7 @@ module.exports = ArrayCompactFlatten = (function() {
 
 /***/ }),
 
-/***/ 55:
+/***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;

@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 57);
+/******/ 	return __webpack_require__(__webpack_require__.s = 58);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -621,7 +621,7 @@ module.exports = ArrayCompactFlatten = (function() {
   function ArrayCompactFlatten() {}
 
   ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return o.constructor === Object && (typeof o.callee === "function") && (typeof o.length === "number");
+    return o.constructor === Object && o.toString() === '[object Arguments]';
   };
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
@@ -1812,12 +1812,12 @@ module.exports = StringCase = (function() {
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(25).includeInNamespace(__webpack_require__(46)).addModules({
+module.exports = __webpack_require__(25).includeInNamespace(__webpack_require__(47)).addModules({
   FormattedInspect: __webpack_require__(34),
   InspectedObjectLiteral: __webpack_require__(14),
   InspectedObjects: __webpack_require__(23),
   Inspector: __webpack_require__(24),
-  Inspector2: __webpack_require__(52),
+  Inspector2: __webpack_require__(53),
   PlainObjects: __webpack_require__(36)
 });
 
@@ -2623,7 +2623,7 @@ Unlike Javascript objects, you can use any object or value as keys. This include
 Arrays and Objects are assigned a unique id using the StandardLib.Unique library.
 "0", "", null, undefined and 0 are all different unique keys and can each have unique values.
  */
-var Map, MinimalBaseObject, Node, Unique,
+var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -2663,18 +2663,46 @@ Node = (function() {
 
 })();
 
-module.exports = Map = (function(superClass) {
-  extend(Map, superClass);
+KeysIterator = (function() {
+  function KeysIterator(node1) {
+    this.node = node1;
+    this.started = false;
+  }
 
-  Map.inverseMap = function(array) {
-    var i, k, len, result, v;
-    result = new Map;
-    for (k = i = 0, len = array.length; i < len; k = ++i) {
-      v = array[k];
-      result.set(v, k);
-    }
-    return result;
+  KeysIterator.prototype.next = function() {
+    var ref, ref1;
+    this.node = this.started ? (ref = this.node) != null ? ref.next : void 0 : (this.started = true, this.node);
+    return {
+      done: !this.node,
+      value: (ref1 = this.node) != null ? ref1.key : void 0
+    };
   };
+
+  return KeysIterator;
+
+})();
+
+ValuesIterator = (function() {
+  function ValuesIterator(node1) {
+    this.node = node1;
+    this.started = false;
+  }
+
+  ValuesIterator.prototype.next = function() {
+    var ref, ref1;
+    this.node = this.started ? (ref = this.node) != null ? ref.next : void 0 : (this.started = true, this.node);
+    return {
+      done: !this.node,
+      value: (ref1 = this.node) != null ? ref1.value : void 0
+    };
+  };
+
+  return ValuesIterator;
+
+})();
+
+module.exports = global.Map || (Map = (function(superClass) {
+  extend(Map, superClass);
 
   function Map() {
     this._length = 0;
@@ -2683,40 +2711,29 @@ module.exports = Map = (function(superClass) {
   }
 
   Map.getter({
-    length: function() {
+    size: function() {
       return this._length;
-    },
-    nodes: function() {
-      var n, result;
-      result = [];
-      n = this._first;
-      while (n) {
-        result.push(n);
-        n = n.next;
-      }
-      return result;
-    },
-    keys: function() {
-      var i, len, node, ref, results;
-      ref = this.nodes;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        node = ref[i];
-        results.push(node.key);
-      }
-      return results;
-    },
-    values: function() {
-      var i, len, node, ref, results;
-      ref = this.nodes;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        node = ref[i];
-        results.push(node.value);
-      }
-      return results;
     }
   });
+
+  Map.prototype._getNodes = function() {
+    var n, result;
+    result = [];
+    n = this._first;
+    while (n) {
+      result.push(n);
+      n = n.next;
+    }
+    return result;
+  };
+
+  Map.prototype.keys = function() {
+    return new KeysIterator(this._first);
+  };
+
+  Map.prototype.values = function() {
+    return new ValuesIterator(this._first);
+  };
 
   Map.prototype.get = function(key) {
     var node;
@@ -2736,7 +2753,7 @@ module.exports = Map = (function(superClass) {
         this._first = this._last;
       }
     }
-    return value;
+    return this;
   };
 
   Map.prototype._remove = function(key) {
@@ -2758,140 +2775,60 @@ module.exports = Map = (function(superClass) {
     }
   };
 
-  Map.prototype.remove = function(key) {
-    var n;
-    if (n = this._remove(key)) {
-      return n.value;
-    } else {
-      return void 0;
-    }
-  };
-
   Map.prototype["delete"] = function(key) {
     return !!this._remove(key);
   };
 
-  Map.prototype.exists = function(key) {
-    return this._map[Unique.id(key)];
-  };
-
   Map.prototype.forEach = function(f) {
     var i, len, node, ref;
-    ref = this.nodes;
+    ref = this._getNodes();
     for (i = 0, len = ref.length; i < len; i++) {
       node = ref[i];
-      f(node.value);
-    }
-    return this;
-  };
-
-  Map.prototype.findFirst = function(testF) {
-    var i, len, node, ref;
-    ref = this.nodes;
-    for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[i];
-      if (testF(node.value)) {
-        return node.value;
-      }
+      f(node.value, node.key, this);
     }
     return void 0;
   };
 
-  Map.prototype.each = function(f) {
-    var i, len, node, ref;
-    ref = this.nodes;
-    for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[i];
-      f(node.key, node.value);
-    }
-    return this;
+  Map.prototype.has = function(key) {
+    return !!this._map[Unique.id(key)];
   };
 
-  Map.prototype.map = function(f) {
-    var i, len, node, ref, results;
-    ref = this.nodes;
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[i];
-      results.push(f(node.key, node.value));
-    }
-    return results;
+  Map.prototype.remove = function() {
+    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
   };
 
-  Map.prototype.inspect = function(inspector) {
-    var _inspect, first;
-    Neptune.Art.StandardLib.log("inspect map");
-    if (!inspector) {
-      return Neptune.Art.StandardLib.inspect(this);
-    }
-    _inspect = function(o) {
-      if (typeof o === "string" && o.match(/^[a-zA-Z_][a-zA-Z_0-9]*$/)) {
-        return inspector.put(o);
-      } else {
-        return inspector.inspect(o);
-      }
-    };
-    inspector.put("{Map ");
-    first = true;
-    this.map(function(k, v) {
-      if (!first) {
-        inspector.put(", ");
-      }
-      _inspect(k);
-      inspector.put(": ");
-      inspector.inspect(v);
-      return first = false;
-    });
-    return inspector.put("}");
+  Map.prototype.exists = function() {
+    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
+  };
+
+  Map.prototype.findFirst = function() {
+    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
+  };
+
+  Map.prototype.map = function() {
+    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
   };
 
   Map.prototype.verifyNodes = function() {
-    var inspect, length, node, prev;
-    inspect = Neptune.Art.StandardLib.inspect;
-    if ((this._first == null) && (this._last == null) && this._length === 0) {
-      return;
-    }
-    if (this._length === 0 && this._first) {
-      throw new Error("length == " + this.length + " but @_first is not null");
-    }
-    if (this._length === 0 && this._last) {
-      throw new Error("length == " + this.length + " but @_last is not null");
-    }
-    if (!this._first) {
-      throw new Error("length == " + this.length + " and @_first is null");
-    }
-    if (!this._last) {
-      throw new Error("length == " + this.length + " and @_last is null");
-    }
-    if (this._first.prev) {
-      throw new Error("@_first has prev");
-    }
-    if (this._last.next) {
-      throw new Error("@_last has next");
-    }
-    length = 0;
-    prev = null;
-    node = this._first;
-    while (node) {
-      length++;
-      if (node.prev !== prev) {
-        throw new Error("node.prev != prev. " + (inspect({
-          lenght: length,
-          nodePrev: node.prev,
-          prev: prev
-        }, 1)));
-      }
-      prev = node;
-      node = node.next;
-    }
-    if (this.length !== length) {
-      throw new Error("@length is " + this.length + ", but it should be " + length);
-    }
+    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
   };
+
+  Map.inverseMap = function() {
+    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
+  };
+
+  Map.getter({
+    length: function() {
+      throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
+    },
+    nodes: function() {
+      throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
+    }
+  });
 
   return Map;
 
-})(MinimalBaseObject);
+})(MinimalBaseObject));
 
 
 /***/ }),
@@ -3282,7 +3219,7 @@ module.exports = ParseUrl = (function() {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
 
-BlueBirdPromise = __webpack_require__(54);
+BlueBirdPromise = __webpack_require__(55);
 
 ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
@@ -3673,7 +3610,7 @@ defineModule(module, function() {
   return BlueBirdPromise;
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)(module)))
 
 /***/ }),
 /* 19 */
@@ -4183,7 +4120,7 @@ escapeJavascriptString = __webpack_require__(5).escapeJavascriptString;
 
 inspectedObjectLiteral = __webpack_require__(14).inspectedObjectLiteral;
 
-dateFormat = __webpack_require__(44);
+dateFormat = __webpack_require__(45);
 
 module.exports = InspectedObjects = (function() {
   var toInspectedObjects;
@@ -5054,7 +4991,7 @@ module.exports = Clone = (function() {
 
   cloneArray = function(array) {
     var clonedArray, i, index, len, value;
-    clonedArray = clonedMap.set(array, array.slice());
+    clonedMap.set(array, clonedArray = array.slice());
     for (index = i = 0, len = clonedArray.length; i < len; index = ++i) {
       value = clonedArray[index];
       clonedArray[index] = clone(value);
@@ -5064,7 +5001,7 @@ module.exports = Clone = (function() {
 
   cloneObject = function(obj) {
     var clonedObject, k, v;
-    clonedObject = clonedMap.set(obj, emptyClone(obj));
+    clonedMap.set(obj, clonedObject = emptyClone(obj));
     if ((obj !== topObject || !byProperties) && obj.populateClone) {
       obj.populateClone(clonedObject);
     } else {
@@ -5165,7 +5102,7 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
 
 })(Error));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)(module)))
 
 /***/ }),
 /* 33 */
@@ -5616,11 +5553,11 @@ module.exports = FormattedInspect = (function() {
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(51).addModules({
-  Array: __webpack_require__(47),
-  Core: __webpack_require__(48),
-  Object: __webpack_require__(49),
-  String: __webpack_require__(50)
+module.exports = __webpack_require__(52).addModules({
+  Array: __webpack_require__(48),
+  Core: __webpack_require__(49),
+  Object: __webpack_require__(50),
+  String: __webpack_require__(51)
 });
 
 
@@ -5905,6 +5842,37 @@ module.exports = Log = (function() {
 /* 38 */
 /***/ (function(module, exports) {
 
+var MapExtensions;
+
+module.exports = MapExtensions = (function() {
+  function MapExtensions() {}
+
+  MapExtensions.iteratorToArray = function(iterator) {
+    var obj, out;
+    out = [];
+    while (!(obj = iterator.next()).done) {
+      out.push(obj.value);
+    }
+    return out;
+  };
+
+  MapExtensions.mapToKeysArray = function(map) {
+    return MapExtensions.iteratorToArray(map.keys());
+  };
+
+  MapExtensions.mapToValuesArray = function(map) {
+    return MapExtensions.iteratorToArray(map.values());
+  };
+
+  return MapExtensions;
+
+})();
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
+
 var ObjectDiff;
 
 module.exports = ObjectDiff = (function() {
@@ -5995,7 +5963,7 @@ module.exports = ObjectDiff = (function() {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Promise, PromisedFileReader;
@@ -6047,7 +6015,7 @@ module.exports = PromisedFileReader = (function() {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 var Ruby,
@@ -6132,7 +6100,7 @@ module.exports = Ruby = (function() {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports) {
 
 
@@ -6183,7 +6151,7 @@ module.exports = ShallowClone = (function() {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Time, base, commaize, dateSecondMinusPerformanceSecond, initDateSecond, initPerformanceSecond;
@@ -6311,7 +6279,7 @@ module.exports = Time = (function() {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -6339,16 +6307,16 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = require("dateformat");
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(11).includeInNamespace(__webpack_require__(53)).addModules({
+module.exports = __webpack_require__(11).includeInNamespace(__webpack_require__(54)).addModules({
   ArrayExtensions: __webpack_require__(12),
   AsyncExtensions: __webpack_require__(30),
   CallStack: __webpack_require__(19),
@@ -6360,18 +6328,19 @@ module.exports = __webpack_require__(11).includeInNamespace(__webpack_require__(
   Iteration: __webpack_require__(26),
   Log: __webpack_require__(37),
   Map: __webpack_require__(15),
+  MapExtensions: __webpack_require__(38),
   MathExtensions: __webpack_require__(6),
   MinimalBaseObject: __webpack_require__(4),
-  ObjectDiff: __webpack_require__(38),
+  ObjectDiff: __webpack_require__(39),
   ObjectExtensions: __webpack_require__(16),
   ParseUrl: __webpack_require__(17),
   Promise: __webpack_require__(18),
-  PromisedFileReader: __webpack_require__(39),
+  PromisedFileReader: __webpack_require__(40),
   Regexp: __webpack_require__(10),
-  Ruby: __webpack_require__(40),
-  ShallowClone: __webpack_require__(41),
+  Ruby: __webpack_require__(41),
+  ShallowClone: __webpack_require__(42),
   StringExtensions: __webpack_require__(5),
-  Time: __webpack_require__(42),
+  Time: __webpack_require__(43),
   TypesExtended: __webpack_require__(0),
   Unique: __webpack_require__(27)
 });
@@ -6382,7 +6351,7 @@ __webpack_require__(9);
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -6394,7 +6363,7 @@ module.exports = [[__webpack_require__(24), "shallowInspect inspectLean inspect"
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Array, MinimalBaseObject,
@@ -6444,7 +6413,7 @@ module.exports = Array = (function(superClass) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, MinimalBaseObject,
@@ -6480,7 +6449,7 @@ module.exports = Core = (function(superClass) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, Object,
@@ -6546,7 +6515,7 @@ module.exports = Object = (function(superClass) {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, String, escapeJavascriptString,
@@ -6575,7 +6544,7 @@ module.exports = String = (function(superClass) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Inspected,
@@ -6597,7 +6566,7 @@ module.exports = Inspect.Inspected || Inspect.addNamespace('Inspected', Inspecte
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArray, isBrowserObject, isClass, isDate, isFunction, isHTMLImageElement, isObject, isPlainObject, isRegExp, isString, objectName, parentString, ref,
@@ -6820,31 +6789,31 @@ module.exports = Inspector2 = (function(superClass) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(1), [__webpack_require__(18), "testPromise", "containsPromises", "deepAll"], __webpack_require__(12), __webpack_require__(30), __webpack_require__(16), __webpack_require__(5), __webpack_require__(22), __webpack_require__(33), __webpack_require__(38), __webpack_require__(6), __webpack_require__(17), __webpack_require__(39), __webpack_require__(10), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(0), __webpack_require__(13), __webpack_require__(26), __webpack_require__(9), __webpack_require__(31), __webpack_require__(37), __webpack_require__(19), {
-    dateFormat: __webpack_require__(44)
+  __webpack_require__(1), [__webpack_require__(18), "testPromise", "containsPromises", "deepAll"], __webpack_require__(12), __webpack_require__(30), __webpack_require__(16), __webpack_require__(5), __webpack_require__(22), __webpack_require__(33), __webpack_require__(39), __webpack_require__(38), __webpack_require__(6), __webpack_require__(17), __webpack_require__(40), __webpack_require__(10), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(0), __webpack_require__(13), __webpack_require__(26), __webpack_require__(9), __webpack_require__(31), __webpack_require__(37), __webpack_require__(19), {
+    dateFormat: __webpack_require__(45)
   }
 ];
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 module.exports = require("bluebird/js/browser/bluebird.core.min");
 
 /***/ }),
-/* 55 */,
 /* 56 */,
-/* 57 */
+/* 57 */,
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1;
 
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.StandardLib : void 0 : void 0) != null ? ref : __webpack_require__(45);
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.StandardLib : void 0 : void 0) != null ? ref : __webpack_require__(46);
 
 
 /***/ })

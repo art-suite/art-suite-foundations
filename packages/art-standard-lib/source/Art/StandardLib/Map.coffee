@@ -72,7 +72,7 @@ class ValuesIterator
 # DEPRICATED - really, we should just use a standard polyfill
 # this class exists because javascript hash keys must be strings
 # this simple and inefficient class allows us to use objects as keys
-module.exports = # global.Map ||
+module.exports = global.Map ||
   class Map extends MinimalBaseObject
 
     constructor: ->
