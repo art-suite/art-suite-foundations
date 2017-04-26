@@ -433,7 +433,7 @@ module.exports = {
 		"start": "webpack-dev-server --hot --inline --progress",
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
 	},
-	"version": "1.10.3"
+	"version": "2.0.0"
 };
 
 /***/ }),
