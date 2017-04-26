@@ -72,12 +72,94 @@ module.exports =
 /***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(21).includeInNamespace(__webpack_require__(20)).addModules({
+module.exports = __webpack_require__(11);
+
+module.exports.includeInNamespace(__webpack_require__(23)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(7),
-  StringCase: __webpack_require__(8),
+  Merge: __webpack_require__(9),
+  StringCase: __webpack_require__(10),
   Types: __webpack_require__(2)
 });
+
+
+/***/ }),
+
+/***/ 10:
+/***/ (function(module, exports, __webpack_require__) {
+
+var StringCase, compactFlatten;
+
+compactFlatten = __webpack_require__(3).compactFlatten;
+
+module.exports = StringCase = (function() {
+  function StringCase() {}
+
+  StringCase.getCodeWords = function(str) {
+    var _words, word, words;
+    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g);
+    if (!_words) {
+      return [];
+    }
+    words = (function() {
+      var i, len, results;
+      results = [];
+      for (i = 0, len = _words.length; i < len; i++) {
+        word = _words[i];
+        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
+      }
+      return results;
+    })();
+    return compactFlatten(words);
+  };
+
+  StringCase.capitalize = function(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  StringCase.decapitalize = function(str) {
+    return str.charAt(0).toLowerCase() + str.slice(1);
+  };
+
+  StringCase.getLowerCaseCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(word.toLowerCase());
+    }
+    return results;
+  };
+
+  StringCase.upperCamelCase = function(str) {
+    var word;
+    return ((function() {
+      var i, len, ref, results;
+      ref = this.getLowerCaseCodeWords(str);
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        word = ref[i];
+        results.push(this.capitalize(word));
+      }
+      return results;
+    }).call(StringCase)).join("");
+  };
+
+  StringCase.lowerCamelCase = function(str) {
+    return StringCase.decapitalize(StringCase.upperCamelCase(str));
+  };
+
+  StringCase.snakeCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("_");
+  };
+
+  StringCase.dashCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("-");
+  };
+
+  return StringCase;
+
+})();
 
 
 /***/ }),
@@ -85,20 +167,43 @@ module.exports = __webpack_require__(21).includeInNamespace(__webpack_require__(
 /***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, StandardLib,
+var Core, StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(28);
+StandardLib = __webpack_require__(4);
 
-module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
-  extend(StandardLib, superClass);
+module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (function(superClass) {
+  extend(Core, superClass);
 
-  function StandardLib() {
-    return StandardLib.__super__.constructor.apply(this, arguments);
+  function Core() {
+    return Core.__super__.constructor.apply(this, arguments);
   }
 
-  return StandardLib;
+  return Core;
+
+})(Neptune.Base));
+
+
+/***/ }),
+
+/***/ 16:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Inspect, Inspected,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Inspect = __webpack_require__(5);
+
+module.exports = Inspect.Inspected || Inspect.addNamespace('Inspected', Inspected = (function(superClass) {
+  extend(Inspected, superClass);
+
+  function Inspected() {
+    return Inspected.__super__.constructor.apply(this, arguments);
+  }
+
+  return Inspected;
 
 })(Neptune.Base));
 
@@ -315,45 +420,22 @@ module.exports = Types = (function() {
 
 /***/ }),
 
-/***/ 20:
+/***/ 23:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(8), __webpack_require__(7), __webpack_require__(2)];
+module.exports = [__webpack_require__(3), __webpack_require__(10), __webpack_require__(9), __webpack_require__(2)];
 
 
 /***/ }),
 
-/***/ 21:
-/***/ (function(module, exports, __webpack_require__) {
-
-var Core, StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-StandardLib = __webpack_require__(11);
-
-module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (function(superClass) {
-  extend(Core, superClass);
-
-  function Core() {
-    return Core.__super__.constructor.apply(this, arguments);
-  }
-
-  return Core;
-
-})(Neptune.Base));
-
-
-/***/ }),
-
-/***/ 28:
+/***/ 29:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(29);
+Neptune = __webpack_require__(30);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -366,13 +448,8 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 })(Neptune.Base));
 
+__webpack_require__(4);
 
-/***/ }),
-
-/***/ 29:
-/***/ (function(module, exports) {
-
-module.exports = require("neptune-namespaces");
 
 /***/ }),
 
@@ -534,6 +611,65 @@ module.exports = ArrayCompactFlatten = (function() {
 
 /***/ }),
 
+/***/ 30:
+/***/ (function(module, exports) {
+
+module.exports = require("neptune-namespaces");
+
+/***/ }),
+
+/***/ 4:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Art, StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Art = __webpack_require__(29);
+
+module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
+  extend(StandardLib, superClass);
+
+  function StandardLib() {
+    return StandardLib.__super__.constructor.apply(this, arguments);
+  }
+
+  return StandardLib;
+
+})(Neptune.Base));
+
+__webpack_require__(11);
+
+__webpack_require__(5);
+
+
+/***/ }),
+
+/***/ 5:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Inspect, StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+StandardLib = __webpack_require__(4);
+
+module.exports = StandardLib.Inspect || StandardLib.addNamespace('Inspect', Inspect = (function(superClass) {
+  extend(Inspect, superClass);
+
+  function Inspect() {
+    return Inspect.__super__.constructor.apply(this, arguments);
+  }
+
+  return Inspect;
+
+})(Neptune.Base));
+
+__webpack_require__(16);
+
+
+/***/ }),
+
 /***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -544,7 +680,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 
 /***/ }),
 
-/***/ 7:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
@@ -707,86 +843,6 @@ module.exports = Merge = (function() {
   Merge.m = pureMerge;
 
   return Merge;
-
-})();
-
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, exports, __webpack_require__) {
-
-var StringCase, compactFlatten;
-
-compactFlatten = __webpack_require__(3).compactFlatten;
-
-module.exports = StringCase = (function() {
-  function StringCase() {}
-
-  StringCase.getCodeWords = function(str) {
-    var _words, word, words;
-    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g);
-    if (!_words) {
-      return [];
-    }
-    words = (function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = _words.length; i < len; i++) {
-        word = _words[i];
-        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
-      }
-      return results;
-    })();
-    return compactFlatten(words);
-  };
-
-  StringCase.capitalize = function(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  StringCase.decapitalize = function(str) {
-    return str.charAt(0).toLowerCase() + str.slice(1);
-  };
-
-  StringCase.getLowerCaseCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(word.toLowerCase());
-    }
-    return results;
-  };
-
-  StringCase.upperCamelCase = function(str) {
-    var word;
-    return ((function() {
-      var i, len, ref, results;
-      ref = this.getLowerCaseCodeWords(str);
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        word = ref[i];
-        results.push(this.capitalize(word));
-      }
-      return results;
-    }).call(StringCase)).join("");
-  };
-
-  StringCase.lowerCamelCase = function(str) {
-    return StringCase.decapitalize(StringCase.upperCamelCase(str));
-  };
-
-  StringCase.snakeCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("_");
-  };
-
-  StringCase.dashCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("-");
-  };
-
-  return StringCase;
 
 })();
 
