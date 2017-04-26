@@ -1,6 +1,7 @@
 {
   generatedByString
   neptuneBaseClass
+  requirePath
 } = require '../Helper'
 
 module.exports = class NamespaceGenerator
@@ -20,4 +21,9 @@ module.exports = class NamespaceGenerator
     module.exports = #{parentNamespaceName}.#{namespaceName} ||
     #{parentNamespaceName}.addNamespace '#{namespaceName}', class #{namespaceName} extends #{neptuneBaseClass}
       ;
+    #{
+      a = for name in namespace.getAllNamespacedSubdirRequires()
+        "require '#{requirePath name}/namespace'"
+      a.join ";\n"
+    }
     """

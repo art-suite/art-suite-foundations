@@ -2,6 +2,7 @@
 # file: Runtime/index.coffee
 
 module.exports = require './namespace'
+module.exports
 .addModules
   Function: require './function'
   Global:   require './global'  

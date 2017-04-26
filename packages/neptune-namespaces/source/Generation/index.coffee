@@ -2,6 +2,7 @@
 # file: Generation/index.coffee
 
 module.exports = require './namespace'
+module.exports
 .addModules
   ArrayCompactFlatten: require './ArrayCompactFlatten'
   Generator:           require './Generator'          

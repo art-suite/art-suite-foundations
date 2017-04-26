@@ -22,6 +22,8 @@ class NamespaceSet
 
     @addItem item for item in items || []
 
+  containsNormalizedItemName: (itemName) -> !!@namespaced[toModuleName itemName]
+
   addItem: (item) ->
     itemName =  peek item.split '/'
     return @ignored.push "#{basename item}" if shouldIgnore itemName
@@ -62,7 +64,9 @@ class Namespace
 
   getAllNamespacedSubdirRequires: ->
     out = []
-    @subdirSet && (out.push v for k, v of @subdirSet.namespaced)
+    if @subdirSet
+      for k, v of @subdirSet.namespaced when !@fileSet.containsNormalizedItemName k
+        out.push v
     out.sort()
 
 class NamespaceDir

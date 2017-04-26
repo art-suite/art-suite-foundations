@@ -113,7 +113,7 @@ suite "NeptuneNamespaces.Generator", ->
       assert.doesNotMatch generatedFiles["root/index.coffee"], "MyNamespace"
 
 
-  test "non-dot-namespaces with same-name-dot-file are effectively optional", ->
+  test "non-dot-namespaces with same-name-dot-file are not optional", ->
     generator = new Generator "root", pretend: true, quiet: true
     generator.generateFromFiles [
         "root/MyNamespace/file.coffee"
@@ -129,7 +129,7 @@ suite "NeptuneNamespaces.Generator", ->
       assert.match generatedFiles["root/MyNamespace/namespace.coffee"], /require.*\.\/namespace/
       assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
       assert.doesNotMatch generatedFiles["root/index.coffee"], "addModules"
-      assert.doesNotMatch generatedFiles["root/index.coffee"], "MyNamespace"
+      assert.match generatedFiles["root/index.coffee"], "MyNamespace"
 
   test "only file is required if directory and file have same name", ->
     generator = new Generator "root", pretend: true, quiet: true

@@ -2,4 +2,5 @@
 # file: tests/index.coffee
 
 module.exports = require './namespace'
+module.exports
 require './Generation'

@@ -2,6 +2,7 @@
 # file: Generation/Generators/index.coffee
 
 module.exports = require './namespace'
+module.exports
 .addModules
   IndexGenerator:     require './IndexGenerator'    
   NamespaceGenerator: require './NamespaceGenerator'

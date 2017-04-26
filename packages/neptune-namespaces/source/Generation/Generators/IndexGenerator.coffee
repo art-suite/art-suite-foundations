@@ -7,12 +7,9 @@
 {
   generatedByString
   neptuneBaseClass
+  requirePath
 } = require '../Helper'
 {max} = Math
-
-Path = require "path"
-requirePath = (filenameWithExtension) ->
-  "./" + Path.parse(filenameWithExtension).name
 
 alignColumns = ->
   listOfLists = []
@@ -50,6 +47,7 @@ module.exports = class NamespaceGenerator
       ""
       "require '#{requirePath name}'" for name in namespace.getAllNonNamespacedRequires()
       "module.exports = require './namespace'"
+      "module.exports"
       includeInNamespace && ".includeInNamespace require '#{requirePath includeInNamespace}'"
       ".addModules" if modules.length > 0
       alignColumns modules

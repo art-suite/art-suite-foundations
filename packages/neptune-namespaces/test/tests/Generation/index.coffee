@@ -2,6 +2,7 @@
 # file: tests/Generation/index.coffee
 
 module.exports = require './namespace'
+module.exports
 .addModules
   Generator:          require './Generator'         
   NamespaceStructure: require './NamespaceStructure'
