@@ -5232,7 +5232,6 @@ formattedInspectObject = function(m, maxLineLength, options) {
       }
       inspectedLength += ansiSafeStringLength(inspected) + key.length + 2;
       forceMultilineOutput || (forceMultilineOutput = shouldBeOnOwnLine);
-      shouldBeOnOwnLine = !inspected.match(/^([^,:]|\(.*\)|\{.*\}|\".*\"|\'.*\'|\[.*\])*$/);
       results.push([key, inspected, value]);
     }
     return results;
