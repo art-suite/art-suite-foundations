@@ -1,6 +1,6 @@
 module.exports =
     # NN & Art.Suite core files
-    'neptune-namespaces':                   '^1.9.1'
+    'neptune-namespaces':                   '^2.0.0'
     'art-testbench':                        '^1.0.0'
     'art-standard-lib':                     '^1.1.0'
     'art-class-system':                     '^1.0.1'
