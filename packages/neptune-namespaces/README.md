@@ -1,4 +1,4 @@
-# Neptune-Namespaces
+# Neptune-Namespaces [![Build Status](https://travis-ci.org/imikimi/neptune-namespaces.svg?branch=master)](https://travis-ci.org/imikimi/neptune-namespaces)
 
 ## Purpose: DRY CommonJS Modules
 
