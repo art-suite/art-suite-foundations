@@ -2,7 +2,7 @@
 
 ## Purpose: DRY CommonJS Modules
 
-Are you working with dozens or hundreds of CoffeeScript files? Wouldn't you like some way to easily organize them into modules? Are you already organizing your files into directories? If so, aren't you duplicating all the information encoded in your directory structure in your code's `require` statements?
+Are you working with dozens or hundreds of JavaScript, CoffeeScript or CaffeineScript files? Wouldn't you like some way to easily organize them into modules? Are you already organizing your files into directories? If so, aren't you duplicating all the information encoded in your directory structure in your code's `require` statements?
 
 Make your directory structures work for you, and Don't Repeat Yourself!
 
@@ -51,7 +51,7 @@ Geometry.Solids.Sphere
 
 ## What is it?
 
-Given a directory structure with CoffeeScript files, Neptune-Namespaces generates runtime namespaces for your CoffeeScript source-code. It outputs one pair of ``namespace.coffee`` and ``index.coffee`` files per directory.
+Given a directory structure of source files, Neptune-Namespaces generates runtime namespaces for your source-code. It outputs one pair of ``namespace.coffee`` and ``index.coffee`` files per directory.
 
 Neptune-Namespaces is an
 
@@ -60,13 +60,12 @@ Neptune-Namespaces is an
 * CommonJS
 * directory-structure-based
 * namespace-generator
-* for CoffeeScript
-
-> Javascript is not currently supported, but it easily could be. Request it!
+* for JavaScript, CoffeeScript and CaffeineScript
+  * more could easily be supported - ask!
 
 #### What does it do?
 
-* **Inputs:** a directory structure with CoffeeScript source files
+* **Inputs:** a directory structure with source files
 * **Outputs:** a pair of CommonJS modules for each directory in your source structure
   * `namespace.coffee` - exports the namespace object for that directory
   * `index.coffee` - exports the namespace object *and* loads, via `require`, all nested namespaces and modules.
@@ -88,10 +87,10 @@ Neptune-Namespaces is an
 * convention-over-configuration (CoC)
 * simple, powerful and automatic module namespacing
 * treat directories as modules (require a directory, get everything inside)
-* reduce source-code size
+* reduce human-written-source-code size
 
 ## Opinionated?
-Neptune-Namespaces has an opinion about how you should organize your CoffeeScript files. It is:
+Neptune-Namespaces has an opinion about how you should organize your source files. It is:
 
 * Directories are modules
 * Directory and file names define their module names
@@ -106,7 +105,7 @@ Neptune-Namespaces has an opinion about how you should organize your CoffeeScrip
 Neptune-Namespace modules consist of file pairs:
 * `MyDirectory/index.coffee`
   * automatically requires `./namespace.coffee`
-  * automatically requires all CoffeeScript files in that directory
+  * automatically requires all source files in that directory
     * each is added to the namespace under the UpperCamelCase version of its filename without extension.
   * automatically requires all sub-directories which are namespace modules
     * each is added to the namespace under the UpperCamelCase version of its directory without extension.
