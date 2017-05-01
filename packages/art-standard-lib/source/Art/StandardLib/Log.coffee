@@ -2,6 +2,7 @@ Inspect = require './Inspect/namespace'
 {callStack} = require './CallStack'
 {isString} = require './TypesExtended'
 {peek} = require './ArrayExtensions'
+{merge} = require './Core'
 
 module.exports = class Log
   # autodetect context from
@@ -87,7 +88,7 @@ module.exports = class Log
       logger if isString m
         m
       else
-        Inspect.formattedInspect m, process.stdout.columns
+        Inspect.formattedInspect m, merge maxLineLength: process.stdout.columns, options
     else
       logger m, "\n# StandardLib.log called " + @contextString stack, className
 
@@ -95,12 +96,14 @@ module.exports = class Log
   #     bar = foo # log foo's value in the middle of an expression, along with other values, without altering the rest of the expression
   #     bar = @log 1, 2, 3, foo
   @log: (args...) =>
+    @log.withOptions null, args...
+
+  @log.withOptions = (options, args...) ->
     m = if args.length == 1
       args[0]
     else
       args
-    stack = callStack()
-    @logCore m, stack
+    Log.logCore m, callStack(), options
     peek args
 
   ###
@@ -132,25 +135,8 @@ module.exports = class Log
 
   @log.labeled = @log.withLabel
 
-  @log.error = (args...) =>
-    m = if args.length == 1
-      args[0]
-    else
-      args
-    stack = callStack()
-    @logCore m, stack, isError: true
-    peek args
-
-
-  @log.warn = (args...) =>
-    m = if args.length == 1
-      args[0]
-    else
-      args
-    stack = callStack()
-    @logCore m, stack, isWarning: true
-    peek args
-
+  @log.error = (args...) => @log.withOptions isError: true, args...
+  @log.warn  = (args...) => @log.withOptions isWarning: true, args...
 
   # same output as log, but returns the last value of the objects key-value pair
   # logL: labeled Log
