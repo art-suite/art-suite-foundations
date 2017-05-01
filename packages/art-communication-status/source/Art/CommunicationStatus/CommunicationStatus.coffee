@@ -115,6 +115,7 @@ module.exports = class CommunicationStatus
   # - There is nothing the code running on the Client NOR Server can do to fix this.
   # - There is something wrong with the network between the client computer and the server.
   # - The client can attempt to retry at a later time and it might magically work.
+  # - The client-side-humans or server-side-humans can attempt to fix the network.
   # - The failure may be one of the following:
   #   a) the local computer has no internet connection OR
   #   b) the internet is in a shitstorm ;) OR
@@ -153,3 +154,16 @@ module.exports = class CommunicationStatus
       httpStatus
       message: "#{ft} (#{httpStatus})"
     }
+
+  @statusToHttpStatus:
+    "#{@success}":        200
+    "#{@missing}":        404
+    "#{@clientFailure}":  400
+    "#{@serverFailure}":  500
+    "#{@failure}":        500
+    # "#{@networkFailure}": # there is no invalid code for network failure
+
+  @encodeHttpStatus: (status) =>
+    if status == @networkFailure
+      throw new Error "There is no valide HttpStatus for networkFailure."
+    @statusToHttpStatus[status]

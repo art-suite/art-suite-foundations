@@ -1,5 +1,5 @@
-{merge, w, defineModule} = Neptune.Art.StandardLib
-{decodeHttpStatus, failure, success, missing, serverFailure, clientFailure} = Neptune.Art.CommunicationStatus
+{merge, w, defineModule, each} = Neptune.Art.StandardLib
+{encodeHttpStatus, decodeHttpStatus, failure, success, missing, serverFailure, clientFailure} = Neptune.Art.CommunicationStatus
 
 defineModule module, suite:
   decodeHttpStatus: ->
@@ -14,3 +14,8 @@ defineModule module, suite:
     test "405", -> assert.selectedPropsEq status: clientFailure, httpStatus: 405, decodeHttpStatus 405
     test "500", -> assert.selectedPropsEq status: serverFailure, httpStatus: 500, decodeHttpStatus 500
     test "600", -> assert.selectedPropsEq status: failure,       httpStatus: 600, decodeHttpStatus 600
+
+  encodeHttpStatus: ->
+    each [success, missing, serverFailure, clientFailure], (status) ->
+      test "#{status}", ->
+        assert.eq status, decodeHttpStatus(encodeHttpStatus status).status
