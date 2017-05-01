@@ -64,20 +64,42 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ref, ref1;
+var Art, CommunicationStatus,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.CommunicationStatus : void 0 : void 0) != null ? ref : __webpack_require__(2);
+Art = __webpack_require__(3);
+
+module.exports = Art.CommunicationStatus || Art.addNamespace('CommunicationStatus', CommunicationStatus = (function(superClass) {
+  extend(CommunicationStatus, superClass);
+
+  function CommunicationStatus() {
+    return CommunicationStatus.__super__.constructor.apply(this, arguments);
+  }
+
+  return CommunicationStatus;
+
+})(Neptune.Base));
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(0);
+
+module.exports.includeInNamespace(__webpack_require__(2));
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 
@@ -155,6 +177,8 @@ Note, these status-codes are used at the core of other Art Libs:
 var CommunicationStatus;
 
 module.exports = CommunicationStatus = (function() {
+  var obj;
+
   function CommunicationStatus() {}
 
 
@@ -239,6 +263,7 @@ module.exports = CommunicationStatus = (function() {
       status: ft = (function() {
         switch (httpStatusCategory) {
           case 3:
+            return this.missing;
           case 4:
             return this.clientFailure;
           case 5:
@@ -252,49 +277,37 @@ module.exports = CommunicationStatus = (function() {
     };
   };
 
+  CommunicationStatus.statusToHttpStatus = (
+    obj = {},
+    obj["" + CommunicationStatus.success] = 200,
+    obj["" + CommunicationStatus.missing] = 404,
+    obj["" + CommunicationStatus.clientFailure] = 400,
+    obj["" + CommunicationStatus.serverFailure] = 500,
+    obj["" + CommunicationStatus.failure] = 500,
+    obj
+  );
+
+  CommunicationStatus.encodeHttpStatus = function(status) {
+    if (status === CommunicationStatus.networkFailure) {
+      throw new Error("There is no valide HttpStatus for networkFailure.");
+    }
+    return CommunicationStatus.statusToHttpStatus[status];
+  };
+
   return CommunicationStatus;
 
 })();
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(3).includeInNamespace(__webpack_require__(1));
-
-
-/***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, CommunicationStatus,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Art = __webpack_require__(4);
-
-module.exports = Art.CommunicationStatus || Art.addNamespace('CommunicationStatus', CommunicationStatus = (function(superClass) {
-  extend(CommunicationStatus, superClass);
-
-  function CommunicationStatus() {
-    return CommunicationStatus.__super__.constructor.apply(this, arguments);
-  }
-
-  return CommunicationStatus;
-
-})(Neptune.Base));
-
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(5);
+Neptune = __webpack_require__(4);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -307,18 +320,22 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 })(Neptune.Base));
 
+__webpack_require__(0);
+
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+var ref, ref1;
+
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.CommunicationStatus : void 0 : void 0) != null ? ref : __webpack_require__(1);
 
 
 /***/ })
