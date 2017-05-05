@@ -1,0 +1,20 @@
+import &ArtStandardLib, Neptune.Art.HtmlFactory
+
+test = (a...) -> global.test a...
+
+suite: ->
+
+  test "basic" ->
+    node = Div
+      class: :fooClass
+      "" string child
+    assert.eq node.toString(), '<div class: "fooClass">string child</div>'
+
+  test "merge props" ->
+    node = Div {class: :fooClass}, {id: :barId}
+    assert.eq node.toString(), '<div class: "fooClass" id: "barId"/>'
+
+
+  test "merge styles" ->
+    node = Div {style: fontSize: 10pt}, {style: color: #f00}
+    assert.eq node.toString(), '<div style: "fontSize: 10pt; color: #f00"/>'

@@ -1,0 +1,45 @@
+import &ArtStandardLib
+
+class HtmlTextNode extends &ArtClassSystem.BaseClass
+  constructor: (@name, @props, @children) ->
+    super
+    @name = @name.toLocaleLowerCase()
+    if hasProperties @props
+      if @props.style
+        @style = @props.style
+        @props.style =
+          array value, name from @style
+            "#{name}: #{value}"
+          .join '; '
+    else
+      @props = null
+
+  @escapeHtmlString: escapeHtmlString = (string) ->
+    string.replace /["<>&]/, (match) ->
+      switch match
+      when :" then "" &quot;
+      when :& then "" &amp;
+      when :< then "" &lt;
+      when :> then "" &gt;
+
+  @getter
+    propsString: ->
+      if @props
+        ' ' +
+          array propValue, propName from @props
+            "" #{propName}: "#{escapeHtmlString propValue}"
+          .join ' '
+
+    childrenString: ->
+      array child from @children
+        if isString child
+          escapeHtmlString child
+        else
+          child
+      .join ' '
+
+  toString: ->
+    if @children?.length > 0
+      "<#{@name}#{@propsString}>#{@childrenString}</#{@name}>"
+    else
+      "<#{@name}#{@propsString}/>"
