@@ -9,6 +9,8 @@ module.exports =
 
   npm:
     description: 'Generate HTML with an easy, declarative syntax.'
+    dependencies:
+      "art-object-tree-factory": "^1.0.0"
 
   webpack:
     # common properties are merged into each target's properties
