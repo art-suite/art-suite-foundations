@@ -27,7 +27,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       if @props
         ' ' +
           array propValue, propName from @props
-            "" #{propName} = "#{escapeHtmlString propValue}"
+            "" #{propName}="#{escapeHtmlString propValue}"
           .join ' '
 
     childrenString: ->
@@ -38,8 +38,32 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
           child
       .join ' '
 
+  compile: (indent) ->
+    compactFlatten @_compile indent
+
   toString: ->
-    if @children?.length > 0
-      "<#{@name}#{@propsString}>#{@childrenString}</#{@name}>"
+    @compile ''
+    .join "\n"
+
+  ##################
+  # PRIVATE
+  ##################
+  _compile: (indent) ->
+
+    if compiledChildren = @_getCompiledChildren indent
+      []
+        "" #{indent}<#{@name}#{@propsString}>
+        compiledChildren
+        "" #{indent}</#{@name}>
     else
-      "<#{@name}#{@propsString}/>"
+      [] "" #{indent}<#{@name}#{@propsString}></#{@name}>
+
+
+  _getCompiledChildren: (indent) ->
+    if @children?.length > 0
+      indent = indent + '  ' if indent?
+      array child from @children
+        if isString child
+          "#{indent}#{child.replace /\n/, "\n#{indent}"}"
+        else
+          child._compile indent

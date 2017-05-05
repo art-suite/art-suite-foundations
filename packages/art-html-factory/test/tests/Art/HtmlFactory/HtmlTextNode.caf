@@ -2,11 +2,40 @@ import &ArtStandardLib, Neptune.Art.HtmlFactory
 
 test = (a...) -> global.test a...
 
-suite: ->
-  test "new" ->
-    node = new HtmlTextNode :div, {class: :fooClass}, [] "string child"
-    assert.eq node.toString(), '<div class = "fooClass">string child</div>'
+suite:
+  basics: ->
+    test "new" ->
+      node = new HtmlTextNode :div, {class: :fooClass}, [] "string child"
+      assert.eq node.toString(), """
+        <div class="fooClass">
+          string child
+        </div>
 
-  test "style" ->
-    node = new HtmlTextNode :div, {style: fontSize: 10pt color: #f00}
-    assert.eq node.toString(), '<div style = "fontSize: 10pt; color: #f00"/>'
+    test "style" ->
+      node = new HtmlTextNode :div, {style: fontSize: 10pt color: #f00}
+      assert.eq node.toString(), """
+        <div style="fontSize: 10pt; color: #f00"></div>
+
+  compile: ->
+    test "compile()" ->
+      node = new HtmlTextNode :div, {class: :fooClass}, [] "string child"
+      assert.eq node.compile(), []
+        '<div class="fooClass">'
+        "string child"
+        "</div>"
+
+    test "compile '' with string child" ->
+      node = new HtmlTextNode :div, {class: :fooClass}, [] "string child"
+      assert.eq node.compile(''), []
+        '<div class="fooClass">'
+        "  string child"
+        "</div>"
+
+    test "compile '' with HtmlTextNode child" ->
+      node = new HtmlTextNode :div, {class: :fooClass}, []
+        new HtmlTextNode :a, href: :http://somewhere.com
+      assert.eq node.compile(''), []
+        '<div class="fooClass">'
+        '  <a href="http://somewhere.com"></a>'
+        "</div>"
+
