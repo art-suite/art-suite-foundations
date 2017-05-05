@@ -1,6 +1,6 @@
 # ArtHtmlFactory
 
-Generate HTML with ease. HtmlFactory allows for Art.React-style creation HTML.
+Generate HTML with an easy, declarative syntax.
 
 ### Examples
 
@@ -33,14 +33,14 @@ Span
 
 # Example: internalHtml adds a string
 # without interpretation.
-Span 
+Span
   internalHtml: ""
-    Or you can do <b>this</b> 
+    Or you can do <b>this</b>
     and <em>this</em>.
 
 # With CaffeineScript literals,
 # setting CSS styles is easy.
-Div 
+Div
   style:
     bottom:          0
     height:          50px
@@ -58,15 +58,15 @@ myTextStyle =
     fontSize:   16pt
     color:      #444
     fontFamily: :Times
-    
+
 myLayoutStyle
-  style: 
+  style:
     padding:    10pt
 
-Div 
+Div
   myTextStyle
   myLayoutStyle
   ""
-    All plain object children are merged into 
+    All plain object children are merged into
     the element's props.
 ```

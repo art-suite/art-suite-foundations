@@ -19,7 +19,7 @@
     "webpack-dev-server": "^2.3.0",
     "webpack-merge": "^3.0.0"
   },
-  "description": "TODO",
+  "description": "Generate HTML with an easy, declarative syntax.",
   "license": "ISC",
   "name": "art-html-factory",
   "scripts": {

@@ -8,7 +8,7 @@ module.exports =
     node: true
 
   npm:
-    description: 'Generate HTML with ease. HtmlFactory allows for Art.React-style creation HTML.'
+    description: 'Generate HTML with an easy, declarative syntax.'
 
   webpack:
     # common properties are merged into each target's properties
