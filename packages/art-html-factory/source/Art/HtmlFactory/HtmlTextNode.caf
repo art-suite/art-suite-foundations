@@ -30,14 +30,6 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
             "" #{propName}="#{escapeHtmlString propValue}"
           .join ' '
 
-    childrenString: ->
-      array child from @children
-        if isString child
-          escapeHtmlString child
-        else
-          child
-      .join ' '
-
   compile: (indent) ->
     compactFlatten @_compile indent
 
