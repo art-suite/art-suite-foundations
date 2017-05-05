@@ -27,7 +27,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       if @props
         ' ' +
           array propValue, propName from @props
-            "" #{propName}: "#{escapeHtmlString propValue}"
+            "" #{propName} = "#{escapeHtmlString propValue}"
           .join ' '
 
     childrenString: ->

@@ -5,8 +5,8 @@ test = (a...) -> global.test a...
 suite: ->
   test "new" ->
     node = new HtmlTextNode :div, {class: :fooClass}, [] "string child"
-    assert.eq node.toString(), '<div class: "fooClass">string child</div>'
+    assert.eq node.toString(), '<div class = "fooClass">string child</div>'
 
   test "style" ->
     node = new HtmlTextNode :div, {style: fontSize: 10pt color: #f00}
-    assert.eq node.toString(), '<div style: "fontSize: 10pt; color: #f00"/>'
+    assert.eq node.toString(), '<div style = "fontSize: 10pt; color: #f00"/>'
