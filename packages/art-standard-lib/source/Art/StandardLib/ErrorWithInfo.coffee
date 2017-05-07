@@ -33,3 +33,6 @@ defineModule module, class ErrorWithInfo extends Error
       Error.captureStackTrace @, @constructor
     else
       @stack = (new Error).stack;
+
+  toString: ->
+    ["ErrorWithInfo: #{@message}", formattedInspect info: @info, ""].join "\n\n"
