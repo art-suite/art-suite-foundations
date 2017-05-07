@@ -27,13 +27,13 @@ module.exports = class Merge
     sources = compactFlatten arguments
     return null if sources.length == 0
     result = sources[0] || {}
-    for i in [1...sources.length] by 1
-      source = sources[i]
-      result[k] = v for k, v of source
+    for source in sources when source != result
+      result[k] = v for k, v of source when v != undefined
     result
 
   ###
-  Just like mergeInfo except only merge into the result object UNLESS result.hasOwnProperty
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
 
   if
     mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
@@ -48,8 +48,8 @@ module.exports = class Merge
     result = sources[0] || {}
     for i in [1...sources.length] by 1
       source = sources[i]
-      for k, v of source
-        result[k] = v unless result.hasOwnProperty k
+      for k, v of source when result[k] == undefined
+        result[k] = v
     result
 
 
