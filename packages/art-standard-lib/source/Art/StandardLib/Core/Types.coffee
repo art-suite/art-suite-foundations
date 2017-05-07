@@ -178,10 +178,12 @@ module.exports = class Types
   ############################
   # hasKeys
   @hasProperties: hasProperties = (o) ->
+    return false unless o?
     return true for k of o
     false
 
   @hasOwnProperties: hasOwnProperties = (o) ->
+    return false unless o?
     return true for k of o when o.hasOwnProperty k
     false
 
