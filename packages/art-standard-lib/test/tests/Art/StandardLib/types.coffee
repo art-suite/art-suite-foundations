@@ -29,11 +29,13 @@ module.exports = suite:
     bar = new Foo
     bar.bud = 444
 
+    test "hasProperties null", -> assert.eq false, hasProperties null
     test "hasProperties {}", -> assert.eq false, hasProperties {}
     test "hasProperties []", -> assert.eq false, hasProperties []
     test "hasProperties class instance with no properties", -> assert.eq true, hasProperties foo
     test "hasProperties class instance with properties", -> assert.eq true, hasProperties bar
 
+    test "hasOwnProperties null", -> assert.eq false, hasOwnProperties null
     test "hasOwnProperties {}", -> assert.eq false, hasOwnProperties {}
     test "hasOwnProperties []", -> assert.eq false, hasOwnProperties []
     test "hasOwnProperties class instance with no properties", -> assert.eq false, hasOwnProperties foo

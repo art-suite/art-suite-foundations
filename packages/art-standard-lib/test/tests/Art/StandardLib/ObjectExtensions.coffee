@@ -19,6 +19,7 @@
   setPathedProperty
   expandPathedProperties
   log
+  mergeIntoUnless
 } = StandardLib
 
 module.exports = suite:
@@ -65,6 +66,9 @@ module.exports = suite:
       res = merge [a, b]
       assert.eq res, foo: 1, bar: 2
 
+    test "merge a:123, {a: undefined}", ->
+      assert.eq a: 123, merge a:123, {a: undefined}
+
   mergeInto: ->
     test "mergeInto()", ->
       assert.eq null, mergeInto()
@@ -79,6 +83,22 @@ module.exports = suite:
       assert.eq res, foo: 1, bar: 2
       assert.eq a, res
       assert.eq b, bar:2
+
+  mergeIntoUnless: ->
+    test "{a: undefined}, a: 123", ->
+      out = mergeIntoUnless v = {a: undefined}, a: 123
+      assert.equal v, out
+      assert.eq v, a: 123
+
+    test "{a: 456}, a: 123", ->
+      out = mergeIntoUnless v = {a: 456}, a: 123
+      assert.equal v, out
+      assert.eq v, a: 456
+
+    test "{a: 456}, b: 123", ->
+      out = mergeIntoUnless v = {a: 456}, b: 123
+      assert.equal v, out
+      assert.eq v, a: 456, b: 123
 
   pureMerge: ->
 
