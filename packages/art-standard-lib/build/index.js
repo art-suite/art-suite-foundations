@@ -590,6 +590,9 @@ module.exports = Types = (function() {
 
   Types.hasProperties = hasProperties = function(o) {
     var k;
+    if (o == null) {
+      return false;
+    }
     for (k in o) {
       return true;
     }
@@ -598,6 +601,9 @@ module.exports = Types = (function() {
 
   Types.hasOwnProperties = hasOwnProperties = function(o) {
     var k;
+    if (o == null) {
+      return false;
+    }
     for (k in o) {
       if (o.hasOwnProperty(k)) {
         return true;
@@ -1655,17 +1661,21 @@ module.exports = Merge = (function() {
    */
 
   Merge.mergeInto = mergeInto = function() {
-    var i, j, k, ref, result, source, sources, v;
+    var j, k, len, result, source, sources, v;
     sources = compactFlatten(arguments);
     if (sources.length === 0) {
       return null;
     }
     result = sources[0] || {};
-    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
-      source = sources[i];
-      for (k in source) {
-        v = source[k];
-        result[k] = v;
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          if (v !== void 0) {
+            result[k] = v;
+          }
+        }
       }
     }
     return result;
@@ -1673,7 +1683,8 @@ module.exports = Merge = (function() {
 
 
   /*
-  Just like mergeInfo except only merge into the result object UNLESS result.hasOwnProperty
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
   
   if
     mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
@@ -1694,7 +1705,7 @@ module.exports = Merge = (function() {
       source = sources[i];
       for (k in source) {
         v = source[k];
-        if (!result.hasOwnProperty(k)) {
+        if (result[k] === void 0) {
           result[k] = v;
         }
       }
@@ -5132,6 +5143,14 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
     }
   }
 
+  ErrorWithInfo.prototype.toString = function() {
+    return [
+      "ErrorWithInfo: " + this.message, formattedInspect({
+        info: this.info
+      }, "")
+    ].join("\n\n");
+  };
+
   return ErrorWithInfo;
 
 })(Error));
@@ -5644,7 +5663,7 @@ module.exports = PlainObjects = (function() {
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Inspect, Log, callStack, isString, peek,
+var Inspect, Log, callStack, isString, merge, peek,
   slice = [].slice;
 
 Inspect = __webpack_require__(5);
@@ -5654,6 +5673,8 @@ callStack = __webpack_require__(22).callStack;
 isString = __webpack_require__(0).isString;
 
 peek = __webpack_require__(14).peek;
+
+merge = __webpack_require__(1).merge;
 
 module.exports = Log = (function() {
   var getLogger, noOptions;
@@ -5784,18 +5805,25 @@ module.exports = Log = (function() {
     }
     logger = getLogger(options);
     if (Neptune.isNode) {
-      return logger(isString(m) ? m : Inspect.formattedInspect(m, process.stdout.columns));
+      return logger(isString(m) ? m : Inspect.formattedInspect(m, merge({
+        maxLineLength: process.stdout.columns
+      }, options)));
     } else {
       return logger(m, "\n# StandardLib.log called " + Log.contextString(stack, className));
     }
   };
 
   Log.log = function() {
-    var args, m, stack;
+    var args, ref;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return (ref = Log.log).withOptions.apply(ref, [null].concat(slice.call(args)));
+  };
+
+  Log.log.withOptions = function() {
+    var args, m, options;
+    options = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     m = args.length === 1 ? args[0] : args;
-    stack = callStack();
-    Log.logCore(m, stack);
+    Log.logCore(m, callStack(), options);
     return peek(args);
   };
 
@@ -5836,25 +5864,19 @@ module.exports = Log = (function() {
   Log.log.labeled = Log.log.withLabel;
 
   Log.log.error = function() {
-    var args, m, stack;
+    var args, ref;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    m = args.length === 1 ? args[0] : args;
-    stack = callStack();
-    Log.logCore(m, stack, {
+    return (ref = Log.log).withOptions.apply(ref, [{
       isError: true
-    });
-    return peek(args);
+    }].concat(slice.call(args)));
   };
 
   Log.log.warn = function() {
-    var args, m, stack;
+    var args, ref;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    m = args.length === 1 ? args[0] : args;
-    stack = callStack();
-    Log.logCore(m, stack, {
+    return (ref = Log.log).withOptions.apply(ref, [{
       isWarning: true
-    });
-    return peek(args);
+    }].concat(slice.call(args)));
   };
 
   Log.logL = function(obj) {

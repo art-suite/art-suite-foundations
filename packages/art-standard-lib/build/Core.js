@@ -397,6 +397,9 @@ module.exports = Types = (function() {
 
   Types.hasProperties = hasProperties = function(o) {
     var k;
+    if (o == null) {
+      return false;
+    }
     for (k in o) {
       return true;
     }
@@ -405,6 +408,9 @@ module.exports = Types = (function() {
 
   Types.hasOwnProperties = hasOwnProperties = function(o) {
     var k;
+    if (o == null) {
+      return false;
+    }
     for (k in o) {
       if (o.hasOwnProperty(k)) {
         return true;
@@ -721,17 +727,21 @@ module.exports = Merge = (function() {
    */
 
   Merge.mergeInto = mergeInto = function() {
-    var i, j, k, ref, result, source, sources, v;
+    var j, k, len, result, source, sources, v;
     sources = compactFlatten(arguments);
     if (sources.length === 0) {
       return null;
     }
     result = sources[0] || {};
-    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
-      source = sources[i];
-      for (k in source) {
-        v = source[k];
-        result[k] = v;
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          if (v !== void 0) {
+            result[k] = v;
+          }
+        }
       }
     }
     return result;
@@ -739,7 +749,8 @@ module.exports = Merge = (function() {
 
 
   /*
-  Just like mergeInfo except only merge into the result object UNLESS result.hasOwnProperty
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
   
   if
     mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
@@ -760,7 +771,7 @@ module.exports = Merge = (function() {
       source = sources[i];
       for (k in source) {
         v = source[k];
-        if (!result.hasOwnProperty(k)) {
+        if (result[k] === void 0) {
           result[k] = v;
         }
       }

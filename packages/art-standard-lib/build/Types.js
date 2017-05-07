@@ -256,6 +256,9 @@ module.exports = Types = (function() {
 
   Types.hasProperties = hasProperties = function(o) {
     var k;
+    if (o == null) {
+      return false;
+    }
     for (k in o) {
       return true;
     }
@@ -264,6 +267,9 @@ module.exports = Types = (function() {
 
   Types.hasOwnProperties = hasOwnProperties = function(o) {
     var k;
+    if (o == null) {
+      return false;
+    }
     for (k in o) {
       if (o.hasOwnProperty(k)) {
         return true;
