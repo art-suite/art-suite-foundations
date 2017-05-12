@@ -145,14 +145,27 @@ module.exports = class CommunicationStatus
     httpStatusCategory = httpStatus / 100 | 0
     return {status: @missing, httpStatus} if httpStatus == 404
     return {status: @success, httpStatus} if httpStatusCategory == 2
+    status = switch httpStatusCategory
+      when 1 then @failure
+      when 3 then @missing
+      when 4 then @clientFailure
+      when 5
+        switch httpStatus
+          when 502, 503, 504 # gateway failures
+            @networkFailure
+          when 501, 505 # Not implemented / HTTP Version not Supported
+            @clientFailure
+          when 500
+            @serverFailure
+      else # invalid HTTP status code
+        @serverFailure
+
+    throw new Error "unhandled httpStatus: #{httpStatus}" unless status?
+
     {
-      status: ft = switch httpStatusCategory
-        when 3 then @missing
-        when 4 then @clientFailure
-        when 5 then @serverFailure
-        else        @failure
+      status
       httpStatus
-      message: "#{ft} (#{httpStatus})"
+      message: "#{status} (#{httpStatus})"
     }
 
   @statusToHttpStatus:
