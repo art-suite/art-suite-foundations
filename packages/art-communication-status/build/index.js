@@ -239,7 +239,7 @@ module.exports = CommunicationStatus = (function() {
   CommunicationStatus.serverFailure = "serverFailure";
 
   CommunicationStatus.decodeHttpStatus = function(httpStatus) {
-    var ft, httpStatusCategory;
+    var httpStatusCategory, status;
     if (httpStatus == null) {
       return {
         status: CommunicationStatus.networkFailure,
@@ -259,21 +259,38 @@ module.exports = CommunicationStatus = (function() {
         httpStatus: httpStatus
       };
     }
+    status = (function() {
+      switch (httpStatusCategory) {
+        case 1:
+          return this.failure;
+        case 3:
+          return this.missing;
+        case 4:
+          return this.clientFailure;
+        case 5:
+          switch (httpStatus) {
+            case 502:
+            case 503:
+            case 504:
+              return this.networkFailure;
+            case 501:
+            case 505:
+              return this.clientFailure;
+            case 500:
+              return this.serverFailure;
+          }
+          break;
+        default:
+          return this.serverFailure;
+      }
+    }).call(CommunicationStatus);
+    if (status == null) {
+      throw new Error("unhandled httpStatus: " + httpStatus);
+    }
     return {
-      status: ft = (function() {
-        switch (httpStatusCategory) {
-          case 3:
-            return this.missing;
-          case 4:
-            return this.clientFailure;
-          case 5:
-            return this.serverFailure;
-          default:
-            return this.failure;
-        }
-      }).call(CommunicationStatus),
+      status: status,
       httpStatus: httpStatus,
-      message: ft + " (" + httpStatus + ")"
+      message: status + " (" + httpStatus + ")"
     };
   };
 
