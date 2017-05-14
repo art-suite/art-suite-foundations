@@ -4,5 +4,6 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  DeclarableMixin: require './DeclarableMixin'
+  DeclarableMixin:           require './DeclarableMixin'          
+  ExtendedablePropertyMixin: require './ExtendedablePropertyMixin'
 require './BaseClass'

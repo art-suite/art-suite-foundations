@@ -7,6 +7,7 @@
   isString
   mergeInto
   concatInto
+  formattedInspect
 } = require 'art-standard-lib'
 
 defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends superClass
@@ -55,7 +56,8 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
     else if isPlainObject mapOrKey
       mergeInto @, mapOrKey
     else
-      throw new Error "first value argument must be a plain object or string"
+      log mapOrKey: mapOrKey, type: mapOrKey?.constructor
+      throw new Error "first value argument must be a plain object or string: #{formattedInspect {key:mapOrKey, value}}"
     @
 
   ###
@@ -146,7 +148,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       E.G. Interitance is done at the Class level, not the Instance level.
 
   ###
-  @extendableProperty: (map, propertyExtender) ->
+  @extendableProperty: (map, customPropertyExtender) ->
     each map, (defaultValue, name) =>
       name          = lowerCamelCase name
       ucProp        = upperCamelCase name
@@ -154,11 +156,10 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       getterName    = "get#{ucProp}"
       extenderName  = "extend#{ucProp}"
 
-      propertyExtender ||= if isPlainObject defaultValue
-        objectPropertyExtender
-      else if isPlainArray defaultValue
-        arrayPropertyExtender
-      else throw new Error "Unsupported property type for extendableProperty: #{inspect defaultValue}. Please specify a custom propertyExtender function."
+      propertyExtender = customPropertyExtender ||
+        if      isPlainObject defaultValue then objectPropertyExtender
+        else if isPlainArray  defaultValue then arrayPropertyExtender
+        else throw new Error "Unsupported property type for extendableProperty: #{inspect defaultValue}. Please specify a custom propertyExtender function."
 
       @[getterName] = -> @prototype[internalName] || defaultValue
       @addGetter name, -> @[internalName] || defaultValue

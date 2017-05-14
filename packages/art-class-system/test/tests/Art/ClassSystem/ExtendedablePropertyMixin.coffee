@@ -51,6 +51,21 @@ module.exports = suite:
       Foo.extendMap "baz", 3
       assert.eq Foo.getMap(), foo: 1, bar: 2, baz: 3
 
+  "extend methods on classes": ->
+    test "[]", ->
+      class Foo extends BaseClass
+        @extendableProperty list: ["foo"]
+
+      Foo.list "bar"
+      assert.eq Foo.list(), ["foo", "bar"]
+
+    test "{}", ->
+      class Foo extends BaseClass
+        @extendableProperty map: foo: 1
+
+      Foo.map bar: 2
+      assert.eq Foo.map(), foo: 1, bar: 2
+
   "extend methods on instances": ->
     test "[]", ->
       class Foo extends BaseClass
@@ -164,3 +179,15 @@ module.exports = suite:
   #       Foo.getMap().baz = 3
   #       assert.eq Foo.getMap(), foo: 1, baz: 3
   #       assert.eq Bar.getMap(), foo: 1, bar: 2, baz: 3
+
+  regressions: ->
+    test "declare two at one time of different types", ->
+      class Foo extends BaseClass
+        @extendableProperty
+          list: ["foo"]
+          map: foo: 1
+
+      Foo.list "bar"
+      Foo.map bar: 2
+      assert.eq Foo.list(), ["foo", "bar"]
+      assert.eq Foo.map(), foo: 1, bar: 2

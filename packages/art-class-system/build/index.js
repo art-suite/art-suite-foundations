@@ -64,28 +64,30 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BaseClass, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, clone, concatInto, decapitalize, extendClone, functionName, getModuleBeingDefined, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
+var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, clone, concatInto, decapitalize, extendClone, functionName, getModuleBeingDefined, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-StandardLib = __webpack_require__(3);
+StandardLib = __webpack_require__(1);
 
-WebpackHotLoader = __webpack_require__(1);
+WebpackHotLoader = __webpack_require__(3);
 
 capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, extendClone = StandardLib.extendClone, clone = StandardLib.clone, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, log = StandardLib.log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, isString = StandardLib.isString, object = StandardLib.object;
 
 nextUniqueObjectId = Unique.nextUniqueObjectId;
 
+ExtendablePropertyMixin = __webpack_require__(2);
+
 module.exports = BaseClass = (function(superClass) {
-  var arrayPropertyExtender, createWithPostCreate, excludedKeys, getOwnProperty, imprintObject, objectPropertyExtender, warnedAboutIncludeOnce;
+  var createWithPostCreate, excludedKeys, imprintObject, warnedAboutIncludeOnce;
 
   extend(BaseClass, superClass);
 
@@ -399,227 +401,6 @@ module.exports = BaseClass = (function(superClass) {
     return this;
   };
 
-
-  /*
-  Allows you to define properties on the prototype that inherit their data from
-  their super-classes prototype.
-  
-  By default, uses extendClone to init. extendClone has these semantics:
-    Object properties actually create a parallel inheritance structure such that
-      later-changes on the super-object are reflected in the inheriting object.
-      They ARE updated with later parent-changes
-    Array properties inherit the values in the super-class array at declaration time,
-      They ARE NOT updated with any later parent-changes!
-      If we ever need that functionality, we'll need to make a special Object-type
-      that extendClone recognizes that handles the logic of "ExtendableArray".
-   */
-
-  BaseClass.getPrototypePropertyExtendedByInheritance = function(propertyName, defaultStructure, _clone) {
-    if (_clone == null) {
-      _clone = extendClone;
-    }
-    log.error("DEPRICATED: getPrototypePropertyExtendedByInheritance. use extendableProperty");
-    return getOwnProperty(this.prototype, propertyName, function(object) {
-      return _clone(object[propertyName] || defaultStructure);
-    });
-  };
-
-
-  /*
-  IN
-    object: any object
-    property: string, property name
-    init:
-      (object) -> returning initial value for object
-      OR
-        initial value is computed by:
-        clone object[property] || init
-  
-  EFFECT:
-    if object.hasOwnProperty property, return its current value
-    otherwise, initialize and return it with init()
-   */
-
-  BaseClass.getOwnProperty = getOwnProperty = function(object, property, init) {
-    if (object.hasOwnProperty(property)) {
-      return object[property];
-    } else {
-      return object[property] = isFunction(init) ? init(object) : clone(object[property] || init);
-    }
-  };
-
-
-  /*
-  objectPropertyExtender
-  
-  IN: @ is set to the property-value to extend
-  
-  API 1:
-    IN: map
-    EFFECT: mergeInto propValue, map
-  
-  API 2:
-    IN: key, value
-    EFFECT: propValue[key] = valuee
-  
-  OUT: ignore
-   */
-
-  BaseClass.objectPropertyExtender = objectPropertyExtender = function(mapOrKey, value) {
-    if (isString(mapOrKey)) {
-      this[mapOrKey] = value;
-    } else if (isPlainObject(mapOrKey)) {
-      mergeInto(this, mapOrKey);
-    } else {
-      throw new Error("first value argument must be a plain object or string");
-    }
-    return this;
-  };
-
-
-  /*
-  arrayPropertyExtender
-  
-  IN: @ is set to the property-value to extend
-  
-  API 1:
-    IN: array
-    EFFECT: concatInto propValue, array
-  
-  API 2:
-    IN: value
-    EFFECT: propValue.push value
-  
-  NOTE: if you want to concat an array-as-a-value to the end of propValue, do this:
-    arrayPropertyExtender.call propValue, [arrayAsValue]
-  
-  OUT: ignore
-   */
-
-  BaseClass.arrayPropertyExtender = arrayPropertyExtender = function(arrayOrValue) {
-    if (isPlainArray(arrayOrValue)) {
-      concatInto(this, arrayOrValue);
-    } else {
-      this.push(arrayOrValue);
-    }
-    return this;
-  };
-
-
-  /*
-  Extendable Properties
-  
-  EXAMPLE:
-    class Foo extends BaseClass
-      @extendableProperty foo: {}
-  
-  Extendable properties work like inheritance:
-  
-    When any subclass or instance extends an extendable property, they
-    inherit a clone of the property from up the inheritance tree, and then
-    add their own extensions without effecting the parent copy.
-  
-    With Object property types, this can just be a parallel prototype chain.
-    (It isn't currently: if you modify a parent after extending it to a child,
-    the child won't get updates.)
-  
-    BUT, you can also have array or other types of extend-properties, which
-    JavaScript doesn't have any built-in mechanisms for inheriting.
-  
-  BASIC API:
-  @extendableProperty: (map, propertyExtender = defaultPropertyExtender) -> ...
-  
-  IN: map
-  IN: propertyExtender = (args...) ->
-    IN: @ is propValue
-    IN: 1 or more args
-    OUT: new property value
-    EFFECT:
-      Can optionaly modify @ directly. If you do, just return @.
-      @ is always the a unique clone for the current Class or Instance.
-  
-  EFFECT: for each {foo: defaultValue} in map, extendableProperty:
-    defines standard getters:
-      @class.getFoo()
-      @prototype.getFoo()
-      @prototype.foo # getter
-      WARNING:
-        !!! Don't modify the object returned by a getter !!!
-  
-        Getters only return the current, most-extended property value. It may not be extended to the
-        current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
-        the extended property.
-  
-    defines extender functions:
-      @class.extendFoo value      # extends the property on the PROTOTYPE object
-      @prototype.extendFoo value  # extends the property on the INSTANCE object (which inherits from the prototype)
-  
-      EFFECT: extends the property if not already extended
-      OUT: extendedPropValue
-  
-      API 1: IN: 0 args
-        NO ADDITIONAL EFFECT - just returns the extended property
-      API 2: IN: 1 or more args
-        In addition to extending and returning the extended property:
-        calls: propExtender extendedPropValue, args...
-  
-    NOTE: gthe prototype getters call the class getter for extension purposes.
-      The result is each instance won't get its own version of the property.
-      E.G. Interitance is done at the Class level, not the Instance level.
-   */
-
-  BaseClass.extendableProperty = function(map, propertyExtender) {
-    var defaultValue, prop, results;
-    results = [];
-    for (prop in map) {
-      defaultValue = map[prop];
-      if (!(isPlainArray(defaultValue) || isPlainObject(defaultValue))) {
-        throw new Error("only plain objects or plain arrays supported for defaultValue");
-      }
-      results.push((function(_this) {
-        return function(prop, defaultValue) {
-          var extenderName, getterName, internalName, propExtender, ucProp;
-          propExtender = propertyExtender || (function() {
-            if (isPlainObject(defaultValue)) {
-              return objectPropertyExtender;
-            } else if (isPlainArray(defaultValue)) {
-              return arrayPropertyExtender;
-            } else {
-              throw new Error("Unsupported property type for extendableProperty: " + (inspect(defaultValue)) + ". Please specify a custom propertyExtender function.");
-            }
-          })();
-          internalName = _this.propInternalName(prop);
-          ucProp = capitalize(prop);
-          getterName = "get" + ucProp;
-          extenderName = "extend" + ucProp;
-          _this[getterName] = function() {
-            return this.prototype[internalName] || defaultValue;
-          };
-          _this.addGetter(prop, function() {
-            return this[internalName] || defaultValue;
-          });
-          _this[extenderName] = function(value) {
-            var propValue;
-            propValue = getOwnProperty(this.prototype, internalName, defaultValue);
-            if (arguments.length > 0) {
-              this.prototype[internalName] = propExtender.apply(propValue, arguments);
-            }
-            return propValue;
-          };
-          return _this.prototype[extenderName] = function(value) {
-            var propValue;
-            propValue = getOwnProperty(this, internalName, defaultValue);
-            if (arguments.length > 0) {
-              this[internalName] = propExtender.apply(propValue, arguments);
-            }
-            return propValue;
-          };
-        };
-      })(this)(prop, defaultValue));
-    }
-    return results;
-  };
-
   BaseClass.getNamespacePath = function() {
     var ref, ref1;
     if (!this.namespacePath) {
@@ -906,11 +687,243 @@ module.exports = BaseClass = (function(superClass) {
 
   return BaseClass;
 
-})(MinimalBaseObject);
+})(ExtendablePropertyMixin(MinimalBaseObject));
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib");
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var clone, concatInto, defineModule, each, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, log, lowerCamelCase, mergeInto, object, ref, upperCamelCase,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, clone = ref.clone, isString = ref.isString, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect;
+
+defineModule(module, function() {
+  return function(superClass) {
+    var ExtendablePropertyMixin;
+    return ExtendablePropertyMixin = (function(superClass1) {
+      var arrayPropertyExtender, getOwnProperty, objectPropertyExtender;
+
+      extend(ExtendablePropertyMixin, superClass1);
+
+      function ExtendablePropertyMixin() {
+        return ExtendablePropertyMixin.__super__.constructor.apply(this, arguments);
+      }
+
+
+      /*
+      IN
+        object: any object
+        property: string, property name
+        init:
+          (object) -> returning initial value for object
+          OR
+            initial value is computed by:
+            clone object[property] || init
+      
+      EFFECT:
+        if object.hasOwnProperty property, return its current value
+        otherwise, initialize and return it with init()
+       */
+
+      ExtendablePropertyMixin.getOwnProperty = getOwnProperty = function(object, property, init) {
+        if (object.hasOwnProperty(property)) {
+          return object[property];
+        } else {
+          return object[property] = isFunction(init) ? init(object) : clone(object[property] || init);
+        }
+      };
+
+
+      /*
+      objectPropertyExtender
+      
+      IN: @ is set to the property-value to extend
+      
+      API 1:
+        IN: map
+        EFFECT: mergeInto propValue, map
+      
+      API 2:
+        IN: key, value
+        EFFECT: propValue[key] = valuee
+      
+      OUT: ignore
+       */
+
+      ExtendablePropertyMixin.objectPropertyExtender = objectPropertyExtender = function(mapOrKey, value) {
+        if (isString(mapOrKey)) {
+          this[mapOrKey] = value;
+        } else if (isPlainObject(mapOrKey)) {
+          mergeInto(this, mapOrKey);
+        } else {
+          log({
+            mapOrKey: mapOrKey,
+            type: mapOrKey != null ? mapOrKey.constructor : void 0
+          });
+          throw new Error("first value argument must be a plain object or string: " + (formattedInspect({
+            key: mapOrKey,
+            value: value
+          })));
+        }
+        return this;
+      };
+
+
+      /*
+      arrayPropertyExtender
+      
+      IN: @ is set to the property-value to extend
+      
+      API 1:
+        IN: array
+        EFFECT: concatInto propValue, array
+      
+      API 2:
+        IN: value
+        EFFECT: propValue.push value
+      
+      NOTE: if you want to concat an array-as-a-value to the end of propValue, do this:
+        arrayPropertyExtender.call propValue, [arrayAsValue]
+      
+      OUT: ignore
+       */
+
+      ExtendablePropertyMixin.arrayPropertyExtender = arrayPropertyExtender = function(arrayOrValue) {
+        if (isPlainArray(arrayOrValue)) {
+          concatInto(this, arrayOrValue);
+        } else {
+          this.push(arrayOrValue);
+        }
+        return this;
+      };
+
+
+      /*
+      Extendable Properties
+      
+      EXAMPLE:
+        class Foo extends BaseClass
+          @extendableProperty foo: {}
+      
+      Extendable properties work like inheritance:
+      
+        When any subclass or instance extends an extendable property, they
+        inherit a clone of the property from up the inheritance tree, and then
+        add their own extensions without effecting the parent copy.
+      
+        With Object property types, this can just be a parallel prototype chain.
+        (It isn't currently: if you modify a parent after extending it to a child,
+        the child won't get updates.)
+      
+        BUT, you can also have array or other types of extend-properties, which
+        JavaScript doesn't have any built-in mechanisms for inheriting.
+      
+      BASIC API:
+      @extendableProperty: (map, propertyExtender = defaultPropertyExtender) -> ...
+      
+      IN: map
+      IN: propertyExtender = (args...) ->
+        IN: @ is propValue
+        IN: 1 or more args
+        OUT: new property value
+        EFFECT:
+          Can optionaly modify @ directly. If you do, just return @.
+          @ is always the a unique clone for the current Class or Instance.
+      
+      EFFECT: for each {foo: defaultValue} in map, extendableProperty:
+        defines standard getters:
+          @class.getFoo()
+          @prototype.getFoo()
+          @prototype.foo # getter
+          WARNING:
+            !!! Don't modify the object returned by a getter !!!
+      
+            Getters only return the current, most-extended property value. It may not be extended to the
+            current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
+            the extended property.
+      
+        defines extender functions:
+          @class.foo value            # extends the property on the PROTOTYPE object
+          @class.extendFoo value      # extends the property on the PROTOTYPE object
+          @prototype.extendFoo value  # extends the property on the INSTANCE object (which inherits from the prototype)
+      
+          EFFECT: extends the property if not already extended
+          OUT: extendedPropValue
+      
+          API 1: IN: 0 args
+            NO ADDITIONAL EFFECT - just returns the extended property
+          API 2: IN: 1 or more args
+            In addition to extending and returning the extended property:
+            calls: propExtender extendedPropValue, args...
+      
+        NOTE: gthe prototype getters call the class getter for extension purposes.
+          The result is each instance won't get its own version of the property.
+          E.G. Interitance is done at the Class level, not the Instance level.
+       */
+
+      ExtendablePropertyMixin.extendableProperty = function(map, customPropertyExtender) {
+        return each(map, (function(_this) {
+          return function(defaultValue, name) {
+            var extenderName, getterName, internalName, propertyExtender, ucProp;
+            name = lowerCamelCase(name);
+            ucProp = upperCamelCase(name);
+            internalName = _this.propInternalName(name);
+            getterName = "get" + ucProp;
+            extenderName = "extend" + ucProp;
+            propertyExtender = customPropertyExtender || (function() {
+              if (isPlainObject(defaultValue)) {
+                return objectPropertyExtender;
+              } else if (isPlainArray(defaultValue)) {
+                return arrayPropertyExtender;
+              } else {
+                throw new Error("Unsupported property type for extendableProperty: " + (inspect(defaultValue)) + ". Please specify a custom propertyExtender function.");
+              }
+            })();
+            _this[getterName] = function() {
+              return this.prototype[internalName] || defaultValue;
+            };
+            _this.addGetter(name, function() {
+              return this[internalName] || defaultValue;
+            });
+            _this[name] = _this[extenderName] = function(value) {
+              var extendablePropValue;
+              extendablePropValue = getOwnProperty(this.prototype, internalName, defaultValue);
+              if (arguments.length > 0) {
+                this.prototype[internalName] = propertyExtender.apply(extendablePropValue, arguments);
+              }
+              return extendablePropValue;
+            };
+            return _this.prototype[extenderName] = function(value) {
+              var extendablePropValue;
+              extendablePropValue = getOwnProperty(this, internalName, defaultValue);
+              if (arguments.length > 0) {
+                this[internalName] = propertyExtender.apply(extendablePropValue, arguments);
+              }
+              return extendablePropValue;
+            };
+          };
+        })(this));
+      };
+
+      return ExtendablePropertyMixin;
+
+    })(superClass);
+  };
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 var WebpackHotLoader;
@@ -962,14 +975,14 @@ module.exports = WebpackHotLoader = (function() {
 
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, ClassSystem,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(8);
+Art = __webpack_require__(10);
 
 module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem = (function(superClass) {
   extend(ClassSystem, superClass);
@@ -984,27 +997,50 @@ module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem 
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib");
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(4);
 
-module.exports.includeInNamespace(__webpack_require__(6)).addModules({
+module.exports.includeInNamespace(__webpack_require__(8)).addModules({
   BaseClass: __webpack_require__(0),
-  BaseObject: __webpack_require__(5),
-  DeclarableMixin: __webpack_require__(7),
-  WebpackHotLoader: __webpack_require__(1)
+  BaseObject: __webpack_require__(7),
+  DeclarableMixin: __webpack_require__(9),
+  ExtendablePropertyMixin: __webpack_require__(2),
+  WebpackHotLoader: __webpack_require__(3)
 });
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject,
@@ -1024,7 +1060,7 @@ module.exports = BaseObject = (function(superClass) {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
@@ -1035,14 +1071,14 @@ module.exports = [
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var defineModule, each, isPlainObject, log, lowerCamelCase, object, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-ref = __webpack_require__(3), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject;
+ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject;
 
 defineModule(module, function() {
   return function(superClass) {
@@ -1086,10 +1122,10 @@ defineModule(module, function() {
 
       DeclarableMixin.declarable = function(map) {
         return each(map, (function(_this) {
-          return function(v, k) {
-            var extendable, getterName, name, obj, preprocess, rawClassSetter, ucName, validate, valuePropertyName;
-            if (isPlainObject(v)) {
-              preprocess = v.preprocess, validate = v.validate, extendable = v.extendable;
+          return function(options, name) {
+            var extendable, getterName, internalName, obj, preprocess, ucProp, validate;
+            if (isPlainObject(options)) {
+              preprocess = options.preprocess, validate = options.validate, extendable = options.extendable;
             }
             preprocess || (preprocess = function(v) {
               return v;
@@ -1097,32 +1133,33 @@ defineModule(module, function() {
             validate || (validate = function() {
               return true;
             });
-            name = lowerCamelCase(k);
-            ucName = upperCamelCase(k);
-            valuePropertyName = "_" + name;
-            getterName = "get" + ucName;
-            rawClassSetter = extendable ? (_this.extendableProperty((
-              obj = {},
-              obj["" + k] = extendable,
-              obj
-            )), _this["extend" + ucName]) : function(value) {
-              return this[valuePropertyName] = value;
-            };
-            _this[name] = function(value) {
-              if (!validate(value)) {
-                throw new Error("invalid value: " + (formattedInspect({
-                  value: value,
-                  name: name
-                })));
-              }
-              return rawClassSetter.call(this, preprocess(value));
-            };
-            _this[getterName] = function() {
-              return this[valuePropertyName];
-            };
-            return _this.addGetter(name, function() {
-              return this["class"][valuePropertyName];
-            });
+            name = lowerCamelCase(name);
+            ucProp = upperCamelCase(name);
+            internalName = _this.propInternalName(name);
+            getterName = "get" + ucProp;
+            if (extendable) {
+              return _this.extendableProperty((
+                obj = {},
+                obj["" + name] = extendable,
+                obj
+              ));
+            } else {
+              _this[name] = function(value) {
+                if (!validate(value)) {
+                  throw new Error("invalid value: " + (formattedInspect({
+                    value: value,
+                    name: name
+                  })));
+                }
+                return this[internalName] = preprocess(value);
+              };
+              _this[getterName] = function() {
+                return this[internalName];
+              };
+              return _this.addGetter(name, function() {
+                return this["class"][internalName];
+              });
+            }
           };
         })(this));
       };
@@ -1133,17 +1170,17 @@ defineModule(module, function() {
   };
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(10);
+Neptune = __webpack_require__(11);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -1156,48 +1193,20 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 })(Neptune.Base));
 
-__webpack_require__(2);
+__webpack_require__(4);
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4);
+module.exports = __webpack_require__(6);
 
 
 /***/ })

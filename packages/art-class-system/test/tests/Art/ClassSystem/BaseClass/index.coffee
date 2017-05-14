@@ -4,5 +4,4 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Basic:              require './Basic'             
-  ExtendedProperties: require './ExtendedProperties'
+  Basic: require './Basic'
