@@ -5,7 +5,8 @@ module.exports = require './namespace'
 module.exports
 .includeInNamespace require './ClassSystem'
 .addModules
-  BaseClass:        require './BaseClass'       
-  BaseObject:       require './BaseObject'      
-  DeclarableMixin:  require './DeclarableMixin' 
-  WebpackHotLoader: require './WebpackHotLoader'
+  BaseClass:               require './BaseClass'              
+  BaseObject:              require './BaseObject'             
+  DeclarableMixin:         require './DeclarableMixin'        
+  ExtendablePropertyMixin: require './ExtendablePropertyMixin'
+  WebpackHotLoader:        require './WebpackHotLoader'       

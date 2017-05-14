@@ -1065,6 +1065,10 @@ defineModule(module, function() {
               options:
                 preprocess: (v) -> newV
                 validate:   (v) -> truthish
+                extendable:
+                  If present, this is an extendable property.
+                  See: @extendableProperty
+                  passed to: @extendableProperty "#{key}": options.extendable
               NOTE: validate is evaluated BEFORE preprocess
       
         EFFECT:
@@ -1083,9 +1087,9 @@ defineModule(module, function() {
       DeclarableMixin.declarable = function(map) {
         return each(map, (function(_this) {
           return function(v, k) {
-            var getterName, name, preprocess, ucName, validate, valuePropertyName;
+            var extendable, getterName, name, obj, preprocess, rawClassSetter, ucName, validate, valuePropertyName;
             if (isPlainObject(v)) {
-              preprocess = v.preprocess, validate = v.validate;
+              preprocess = v.preprocess, validate = v.validate, extendable = v.extendable;
             }
             preprocess || (preprocess = function(v) {
               return v;
@@ -1097,6 +1101,13 @@ defineModule(module, function() {
             ucName = upperCamelCase(k);
             valuePropertyName = "_" + name;
             getterName = "get" + ucName;
+            rawClassSetter = extendable ? (_this.extendableProperty((
+              obj = {},
+              obj["" + k] = extendable,
+              obj
+            )), _this["extend" + ucName]) : function(value) {
+              return this[valuePropertyName] = value;
+            };
             _this[name] = function(value) {
               if (!validate(value)) {
                 throw new Error("invalid value: " + (formattedInspect({
@@ -1104,8 +1115,7 @@ defineModule(module, function() {
                   name: name
                 })));
               }
-              value = preprocess(value);
-              return this[valuePropertyName] = value;
+              return rawClassSetter.call(this, preprocess(value));
             };
             _this[getterName] = function() {
               return this[valuePropertyName];

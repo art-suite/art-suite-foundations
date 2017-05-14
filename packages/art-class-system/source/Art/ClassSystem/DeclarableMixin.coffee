@@ -11,6 +11,7 @@
 # That's all pretty easy, but I need to stay focused today.
 
 # superClass must extend MinimalBaseObject at some point
+# to use 'extendable', superClass must also extend ExtendablePropertyMixin
 defineModule module, -> (superClass) -> class DeclarableMixin extends superClass
 
   ###
@@ -23,6 +24,10 @@ defineModule module, -> (superClass) -> class DeclarableMixin extends superClass
           options:
             preprocess: (v) -> newV
             validate:   (v) -> truthish
+            extendable:
+              If present, this is an extendable property.
+              See: @extendableProperty
+              passed to: @extendableProperty "#{key}": options.extendable
           NOTE: validate is evaluated BEFORE preprocess
 
     EFFECT:
@@ -39,35 +44,37 @@ defineModule module, -> (superClass) -> class DeclarableMixin extends superClass
   ###
 
   @declarable: (map) ->
-    each map, (v, k) =>
-      if isPlainObject v
-        {preprocess, validate} = v
+    each map, (options, name) =>
+      if isPlainObject options
+        {preprocess, validate, extendable} = options
 
       preprocess ||= (v) -> v
       validate ||= -> true
 
-      name = lowerCamelCase k
-      ucName = upperCamelCase k
-      valuePropertyName = "_#{name}"
-      getterName = "get#{ucName}"
+      name          = lowerCamelCase name
+      ucProp        = upperCamelCase name
+      internalName  = @propInternalName name
+      getterName    = "get#{ucProp}"
 
-      ##############################
-      # class-api API
-      ##############################
+      if extendable
+        @extendableProperty "#{name}": extendable
 
-      # declare
-      @[name] = (value) ->
-        unless validate value
-          throw new Error "invalid value: #{formattedInspect {value, name}}"
+      else
+        ##############################
+        # class-api API
+        ##############################
 
-        value = preprocess value
+        # declare (or extend, if extendable)
+        @[name] = (value) ->
+          unless validate value
+            throw new Error "invalid value: #{formattedInspect {value, name}}"
 
-        @[valuePropertyName] = value
+          @[internalName] = preprocess value
 
-      # get
-      @[getterName] = -> @[valuePropertyName]
+        # get
+        @[getterName] = -> @[internalName]
 
-      ##############################
-      # instance-api
-      ##############################
-      @addGetter name, -> @class[valuePropertyName]
+        ##############################
+        # instance-api
+        ##############################
+        @addGetter name, -> @class[internalName]
