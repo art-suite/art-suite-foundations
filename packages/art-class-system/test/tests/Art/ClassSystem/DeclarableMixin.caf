@@ -1,0 +1,24 @@
+import &ArtStandardLib, Neptune.Art.ClassSystem
+test = (a...) -> global.test a...
+
+suite: ->
+  MyClass = null
+  setup ->
+    class MyClass extends DeclarableMixin BaseClass
+      @declarable
+        myDeclarable:
+          validate:   isString
+          preprocess: upperCamelCase
+
+  test "@declarable", ->
+
+  test "using a declarable" ->
+    class MyClassChild extends MyClass
+      @myDeclarable "foo"
+
+    assert.isFunction MyClassChild.myDeclarable
+    assert.eq "Foo", MyClassChild.getMyDeclarable(), "Foo"
+    assert.eq "Foo", (new MyClassChild).myDeclarable
+    assert.eq "Foo", (new MyClassChild).getMyDeclarable()
+    assert.eq undefined, MyClassChild.setMyDeclarable
+    assert.eq undefined, (new MyClassChild).setMyDeclarable

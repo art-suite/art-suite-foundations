@@ -7,4 +7,5 @@ module.exports
 .addModules
   BaseClass:        require './BaseClass'       
   BaseObject:       require './BaseObject'      
+  DeclarableMixin:  require './DeclarableMixin' 
   WebpackHotLoader: require './WebpackHotLoader'

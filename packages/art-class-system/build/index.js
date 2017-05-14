@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,7 +76,7 @@ var BaseClass, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, ca
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-StandardLib = __webpack_require__(7);
+StandardLib = __webpack_require__(3);
 
 WebpackHotLoader = __webpack_require__(1);
 
@@ -965,15 +965,46 @@ module.exports = WebpackHotLoader = (function() {
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(5).includeInNamespace(__webpack_require__(4)).addModules({
+var Art, ClassSystem,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Art = __webpack_require__(8);
+
+module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem = (function(superClass) {
+  extend(ClassSystem, superClass);
+
+  function ClassSystem() {
+    return ClassSystem.__super__.constructor.apply(this, arguments);
+  }
+
+  return ClassSystem;
+
+})(Neptune.Base));
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib");
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(2);
+
+module.exports.includeInNamespace(__webpack_require__(6)).addModules({
   BaseClass: __webpack_require__(0),
-  BaseObject: __webpack_require__(3),
+  BaseObject: __webpack_require__(5),
+  DeclarableMixin: __webpack_require__(7),
   WebpackHotLoader: __webpack_require__(1)
 });
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject,
@@ -993,7 +1024,7 @@ module.exports = BaseObject = (function(superClass) {
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
@@ -1004,36 +1035,105 @@ module.exports = [
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, ClassSystem,
+/* WEBPACK VAR INJECTION */(function(module) {var defineModule, each, isPlainObject, log, lowerCamelCase, object, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(6);
+ref = __webpack_require__(3), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject;
 
-module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem = (function(superClass) {
-  extend(ClassSystem, superClass);
+defineModule(module, function() {
+  return function(superClass) {
+    var DeclarableMixin;
+    return DeclarableMixin = (function(superClass1) {
+      extend(DeclarableMixin, superClass1);
 
-  function ClassSystem() {
-    return ClassSystem.__super__.constructor.apply(this, arguments);
-  }
+      function DeclarableMixin() {
+        return DeclarableMixin.__super__.constructor.apply(this, arguments);
+      }
 
-  return ClassSystem;
 
-})(Neptune.Base));
+      /*
+        define a declarable field
+      
+        IN:
+          map:
+            key: name: string
+            value: true-ish OR
+              options:
+                preprocess: (v) -> newV
+                validate:   (v) -> truthish
+              NOTE: validate is evaluated BEFORE preprocess
+      
+        EFFECT:
+          creates:
+      
+             * class declarator function, with preprocessing
+            @name: (...)->
+      
+             * class getter-function
+            @getName: ->
+      
+             * instance-getter
+            @getter name: ->
+       */
 
+      DeclarableMixin.declarable = function(map) {
+        return each(map, (function(_this) {
+          return function(v, k) {
+            var getterName, name, preprocess, ucName, validate, valuePropertyName;
+            if (isPlainObject(v)) {
+              preprocess = v.preprocess, validate = v.validate;
+            }
+            preprocess || (preprocess = function(v) {
+              return v;
+            });
+            validate || (validate = function() {
+              return true;
+            });
+            name = lowerCamelCase(k);
+            ucName = upperCamelCase(k);
+            valuePropertyName = "_" + name;
+            getterName = "get" + ucName;
+            _this[name] = function(value) {
+              if (!validate(value)) {
+                throw new Error("invalid value: " + (formattedInspect({
+                  value: value,
+                  name: name
+                })));
+              }
+              value = preprocess(value);
+              return this[valuePropertyName] = value;
+            };
+            _this[getterName] = function() {
+              return this[valuePropertyName];
+            };
+            return _this.addGetter(name, function() {
+              return this["class"][valuePropertyName];
+            });
+          };
+        })(this));
+      };
+
+      return DeclarableMixin;
+
+    })(superClass);
+  };
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)(module)))
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(8);
+Neptune = __webpack_require__(10);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -1046,24 +1146,48 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 })(Neptune.Base));
 
+__webpack_require__(2);
+
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib");
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(4);
 
 
 /***/ })
