@@ -95,13 +95,13 @@ module.exports.addModules({
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout,
+var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 StandardLib = __webpack_require__(0);
 
-ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo;
+ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo, w = ref.w, each = ref.each;
 
 ref1 = __webpack_require__(6), success = ref1.success, serverFailure = ref1.serverFailure, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
 
@@ -110,6 +110,8 @@ BaseClass = __webpack_require__(5).BaseClass;
 __webpack_require__(2);
 
 module.exports = RestClient = (function(superClass) {
+  var legalVerbs;
+
   extend(RestClient, superClass);
 
   function RestClient() {
@@ -118,18 +120,13 @@ module.exports = RestClient = (function(superClass) {
 
   RestClient.singletonClass();
 
-  RestClient.legalVerbs = {
-    get: "GET",
-    GET: "GET",
-    put: "PUT",
-    PUT: "PUT",
-    post: "POST",
-    POST: "POST",
-    "delete": "DELETE",
-    DELETE: "DELETE",
-    head: "HEAD",
-    HEAD: "HEAD"
-  };
+  RestClient.legalVerbs = legalVerbs = {};
+
+  each(w("get put post delete head"), function(v) {
+    var upper;
+    upper = v.toUpperCase();
+    return legalVerbs[v.toLowerCase()] = legalVerbs[upper] = upper;
+  });
 
   RestClient.get = function(url, options) {
     return this.singleton.get(url, options);
@@ -317,6 +314,7 @@ module.exports = RestClient = (function(superClass) {
       method: alias for verb
   
       data: data to restRequest - passed to xmlHttpRequest.restRequest
+      body: alias for data
   
       plus all the options for get/put/post listed above
       showProgressAfter: milliseconds (default: 100)
@@ -346,38 +344,79 @@ module.exports = RestClient = (function(superClass) {
    */
 
   RestClient.prototype.restRequest = function(options) {
-    var data, formData, headers, k, method, onProgress, responseType, showProgressAfter, specifiedVerb, url, v, verb;
-    verb = options.verb, method = options.method, url = options.url, data = options.data, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
+    var body, data, formData, headers, k, method, onProgress, responseType, showProgressAfter, specifiedVerb, url, v, verb;
+    verb = options.verb, method = options.method, url = options.url, data = options.data, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
     if (!isNumber(showProgressAfter)) {
       showProgressAfter = 100;
     }
-    verb || (verb = method);
-    if (!(verb = RestClient.legalVerbs[specifiedVerb = verb])) {
-      throw new Error("invalid verb: " + specifiedVerb);
+    method || (method = verb);
+    body || (body = data);
+    if (!(method = RestClient.legalVerbs[specifiedVerb = method])) {
+      throw new Error("invalid method: " + specifiedVerb);
     }
     if (formData) {
-      if (data) {
-        throw new Error("can't specify both 'data' and 'formData'");
+      if (body) {
+        throw new Error("can't specify both 'body' and 'formData'");
       }
-      data = new FormData;
+      body = new FormData;
       for (k in formData) {
         v = formData[k];
-        data.append(k, v);
+        body.append(k, v);
       }
     } else {
-      data = (data != null ? typeof data.toArrayBuffer === "function" ? data.toArrayBuffer() : void 0 : void 0) || data;
+      body = (body != null ? typeof body.toArrayBuffer === "function" ? body.toArrayBuffer() : void 0 : void 0) || body;
     }
+    if (method === "GET" && body) {
+      log.error({
+        RestClient_restRequest: {
+          info: "can't GET with body",
+          options: options
+        }
+      });
+      throw new Error("With their ultimate wisdom, the gods decree: NO DATA WITH GET");
+    }
+    return this._normalizedRestRequest({
+      method: method,
+      url: url,
+      body: body,
+      headers: headers,
+      onProgress: onProgress,
+      responseType: responseType,
+      showProgressAfter: showProgressAfter
+    });
+  };
+
+  RestClient.prototype.restJsonRequest = function(options) {
+    var data, headers, method, verb;
+    verb = options.verb, method = options.method, data = options.data, headers = options.headers;
+    verb = RestClient.legalVerbs[verb || method];
+    if (data && objectKeyCount(data) === 0) {
+      data = null;
+    }
+    if (verb === "GET" && options.data) {
+      options = merge(options, {
+        url: appendQuery(options.url, object(data, function(v) {
+          return JSON.stringify(v);
+        }))
+      });
+      data = null;
+    } else {
+      data && (data = JSON.stringify(data));
+    }
+    return this.restRequest(merge(options, {
+      responseType: "json",
+      headers: merge({
+        Accept: 'application/json'
+      }, headers),
+      data: data
+    }));
+  };
+
+  RestClient.prototype._normalizedRestRequest = function(options) {
+    var body, headers, method, onProgress, responseType, showProgressAfter, url;
+    method = options.method, url = options.url, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, showProgressAfter = options.showProgressAfter;
     return new Promise(function(resolve, reject) {
-      var getErrorResponse, getResponse, initialProgressCalled, lastProgressEvent, progressCallbackInternal, request, requestResolved, restRequestStatus;
-      if (verb === "GET" && data) {
-        log.error({
-          RestClient_restRequest: {
-            info: "can't GET with data",
-            options: options
-          }
-        });
-        throw new Error("With their ultimate wisdom, the HTTP gods decree: NO DATA WITH GET");
-      }
+      var getErrorResponse, getResponse, initialProgressCalled, k, lastProgressEvent, progressCallbackInternal, request, requestResolved, restRequestStatus, v;
       restRequestStatus = {
         request: request = new XMLHttpRequest,
         progress: 0,
@@ -407,7 +446,7 @@ module.exports = RestClient = (function(superClass) {
           return response;
         }
       };
-      request.open(verb, url, true);
+      request.open(method, url, true);
       if (present(responseType) && responseType !== "json") {
         request.responseType = responseType;
       }
@@ -462,40 +501,14 @@ module.exports = RestClient = (function(superClass) {
             })) : void 0;
           }
         };
-        if (verb === "GET") {
+        if (method === "GET") {
           request.addEventListener("progress", progressCallbackInternal);
         } else {
           request.upload.addEventListener("progress", progressCallbackInternal);
         }
       }
-      return request.send(data);
+      return request.send(body);
     });
-  };
-
-  RestClient.prototype.restJsonRequest = function(options) {
-    var data, headers, method, verb;
-    verb = options.verb, method = options.method, data = options.data, headers = options.headers;
-    verb = RestClient.legalVerbs[verb || method];
-    if (data && objectKeyCount(data) === 0) {
-      data = null;
-    }
-    if (verb === "GET" && options.data) {
-      options = merge(options, {
-        url: appendQuery(options.url, object(data, function(v) {
-          return JSON.stringify(v);
-        }))
-      });
-      data = null;
-    } else {
-      data && (data = JSON.stringify(data));
-    }
-    return this.restRequest(merge(options, {
-      responseType: "json",
-      headers: merge({
-        Accept: 'application/json'
-      }, headers),
-      data: data
-    }));
   };
 
   return RestClient;
