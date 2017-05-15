@@ -5,6 +5,8 @@ StandardLib = require 'art-standard-lib'
 {
   objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log,
   objectKeyCount, appendQuery, object, ErrorWithInfo
+  w
+  each
 } = require 'art-standard-lib'
 
 {success, serverFailure, failureTypes, decodeHttpStatus} = require 'art-communication-status'
@@ -22,17 +24,10 @@ require './.xhr2'
 module.exports = class RestClient extends BaseClass
   @singletonClass()
 
-  @legalVerbs:
-    get:    "GET"
-    GET:    "GET"
-    put:    "PUT"
-    PUT:    "PUT"
-    post:   "POST"
-    POST:   "POST"
-    delete: "DELETE"
-    DELETE: "DELETE"
-    head:   "HEAD"
-    HEAD:   "HEAD"
+  @legalVerbs: legalVerbs = {}
+  each (w "get put post delete head"), (v) ->
+    upper = v.toUpperCase()
+    legalVerbs[v.toLowerCase()] = legalVerbs[upper] = upper
 
   ########################
   # CLASS API
@@ -138,6 +133,7 @@ module.exports = class RestClient extends BaseClass
       method: alias for verb
 
       data: data to restRequest - passed to xmlHttpRequest.restRequest
+      body: alias for data
 
       plus all the options for get/put/post listed above
       showProgressAfter: milliseconds (default: 100)
@@ -167,26 +163,55 @@ module.exports = class RestClient extends BaseClass
 
   ###
   restRequest: (options) ->
-    {verb, method, url, data, headers, onProgress, responseType, formData, showProgressAfter} = options
+    {verb, method, url, data, body, headers, onProgress, responseType, formData, showProgressAfter} = options
     showProgressAfter = 100 unless isNumber showProgressAfter
 
-    verb ||= method
+    method ||= verb
+    body ||= data
 
-    throw new Error "invalid verb: #{specifiedVerb}" unless verb = RestClient.legalVerbs[specifiedVerb = verb]
+    throw new Error "invalid method: #{specifiedVerb}" unless method = RestClient.legalVerbs[specifiedVerb = method]
 
     if formData
-      throw new Error "can't specify both 'data' and 'formData'" if data
-      data = new FormData
-      data.append k, v for k, v of formData
+      throw new Error "can't specify both 'body' and 'formData'" if body
+      body = new FormData
+      body.append k, v for k, v of formData
     else
-      data = data?.toArrayBuffer?() || data
+      body = body?.toArrayBuffer?() || body
+
+    if method == "GET" && body
+      log.error RestClient_restRequest:
+        info: "can't GET with body"
+        options: options
+      throw new Error "With their ultimate wisdom, the gods decree: NO DATA WITH GET"
+
+    @_normalizedRestRequest {method, url, body, headers, onProgress, responseType, showProgressAfter}
+
+
+  restJsonRequest: (options) ->
+    {verb, method, data, headers} = options
+    verb = RestClient.legalVerbs[verb || method]
+    data = null if data && objectKeyCount(data) == 0
+
+    if verb == "GET" && options.data
+      options = merge options,
+        url: appendQuery options.url, object data, (v) -> JSON.stringify v
+
+      data = null
+    else
+      data &&= JSON.stringify data
+
+    @restRequest merge options,
+      responseType: "json"
+      headers: merge
+        Accept:         'application/json'
+        headers
+      data:             data
+
+  # no error checking, only normalized options expected
+  _normalizedRestRequest: (options) ->
+    {method, url, body, headers, onProgress, responseType, showProgressAfter} = options
 
     new Promise (resolve, reject) ->
-      if verb == "GET" && data
-        log.error RestClient_restRequest:
-          info: "can't GET with data"
-          options: options
-        throw new Error "With their ultimate wisdom, the HTTP gods decree: NO DATA WITH GET"
 
       restRequestStatus =
         request: request = new XMLHttpRequest
@@ -208,7 +233,7 @@ module.exports = class RestClient extends BaseClass
         else
           response
 
-      request.open verb, url, true
+      request.open method, url, true
 
       # NOTE: IE11 and IOS7 don't support responseType "json"
       # https://developer.mozilla.org/en-US/docs/Web/API/FormData
@@ -254,29 +279,9 @@ module.exports = class RestClient extends BaseClass
               event: event
               progress: if total > 0 then loaded / total else 0
 
-        if verb == "GET"
+        if method == "GET"
           request.addEventListener "progress", progressCallbackInternal
         else
           request.upload.addEventListener "progress", progressCallbackInternal
 
-      request.send data
-
-  restJsonRequest: (options) ->
-    {verb, method, data, headers} = options
-    verb = RestClient.legalVerbs[verb || method]
-    data = null if data && objectKeyCount(data) == 0
-
-    if verb == "GET" && options.data
-      options = merge options,
-        url: appendQuery options.url, object data, (v) -> JSON.stringify v
-
-      data = null
-    else
-      data &&= JSON.stringify data
-
-    @restRequest merge options,
-      responseType: "json"
-      headers: merge
-        Accept:         'application/json'
-        headers
-      data:             data
+      request.send body
