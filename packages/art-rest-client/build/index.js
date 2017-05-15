@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -77,6 +77,24 @@ module.exports = require("art-standard-lib");
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(4);
+
+module.exports.addModules({
+  RestClient: __webpack_require__(3)
+});
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -85,9 +103,9 @@ StandardLib = __webpack_require__(0);
 
 ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo;
 
-ref1 = __webpack_require__(4), success = ref1.success, serverFailure = ref1.serverFailure, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
+ref1 = __webpack_require__(6), success = ref1.success, serverFailure = ref1.serverFailure, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
 
-BaseClass = __webpack_require__(3).BaseClass;
+BaseClass = __webpack_require__(5).BaseClass;
 
 __webpack_require__(2);
 
@@ -486,29 +504,50 @@ module.exports = RestClient = (function(superClass) {
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
 
+var Art, Neptune,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
+Neptune = __webpack_require__(7);
+
+module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
+  extend(Art, superClass);
+
+  function Art() {
+    return Art.__super__.constructor.apply(this, arguments);
+  }
+
+  return Art;
+
+})(Neptune.Base));
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-class-system");
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-communication-status");
 
 /***/ }),
-/* 5 */
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("neptune-namespaces");
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(1);
+module.exports = (__webpack_require__(1)).RestClient;
 
 
 /***/ })
