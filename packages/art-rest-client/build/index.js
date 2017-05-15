@@ -64,39 +64,41 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__(3).includeInNamespace(__webpack_require__(2));
-
+module.exports = require("art-standard-lib");
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, failure, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, serverFailure, success, timeout;
+var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-StandardLib = __webpack_require__(6);
+StandardLib = __webpack_require__(0);
 
-objectWithout = StandardLib.objectWithout, formattedInspect = StandardLib.formattedInspect, present = StandardLib.present, Promise = StandardLib.Promise, merge = StandardLib.merge, isNumber = StandardLib.isNumber, timeout = StandardLib.timeout, log = StandardLib.log, objectKeyCount = StandardLib.objectKeyCount, appendQuery = StandardLib.appendQuery, object = StandardLib.object, ErrorWithInfo = StandardLib.ErrorWithInfo;
+ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo;
 
-ref = __webpack_require__(5), success = ref.success, serverFailure = ref.serverFailure, failure = ref.failure, failureTypes = ref.failureTypes, decodeHttpStatus = ref.decodeHttpStatus;
+ref1 = __webpack_require__(4), success = ref1.success, serverFailure = ref1.serverFailure, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
 
-__webpack_require__(1);
+BaseClass = __webpack_require__(3).BaseClass;
 
-module.exports = RestClient = (function() {
-  function RestClient() {}
+__webpack_require__(2);
+
+module.exports = RestClient = (function(superClass) {
+  extend(RestClient, superClass);
+
+  function RestClient() {
+    return RestClient.__super__.constructor.apply(this, arguments);
+  }
+
+  RestClient.singletonClass();
 
   RestClient.legalVerbs = {
     get: "GET",
@@ -109,6 +111,50 @@ module.exports = RestClient = (function() {
     DELETE: "DELETE",
     head: "HEAD",
     HEAD: "HEAD"
+  };
+
+  RestClient.get = function(url, options) {
+    return this.singleton.get(url, options);
+  };
+
+  RestClient.put = function(url, data, options) {
+    return this.singleton.put(url, data, options);
+  };
+
+  RestClient.post = function(url, data, options) {
+    return this.singleton.post(url, data, options);
+  };
+
+  RestClient["delete"] = function(url, options) {
+    return this.singleton["delete"](url, options);
+  };
+
+  RestClient.getArrayBuffer = function(url, options) {
+    return this.singleton.getArrayBuffer(url, options);
+  };
+
+  RestClient.getJson = function(url, options) {
+    return this.singleton.getJson(url, options);
+  };
+
+  RestClient.deleteJson = function(url, options) {
+    return this.singleton.deleteJson(url, options);
+  };
+
+  RestClient.putJson = function(url, data, options) {
+    return this.singleton.putJson(url, data, options);
+  };
+
+  RestClient.postJson = function(url, data, options) {
+    return this.singleton.postJson(url, data, options);
+  };
+
+  RestClient.restRequest = function(options) {
+    return this.singleton.restRequest(options);
+  };
+
+  RestClient.restJsonRequest = function(options) {
+    return this.singleton.restJsonRequest(options);
   };
 
 
@@ -162,38 +208,40 @@ module.exports = RestClient = (function() {
       that was made up to the point of the event.
    */
 
-  RestClient.get = function(url, options) {
-    return RestClient.restRequest(merge(options, {
+  RestClient.prototype.get = function(url, options) {
+    return this.restRequest(merge(options, {
       verb: "GET",
       url: url
     }));
   };
 
-  RestClient.put = function(url, data, options) {
-    return RestClient.restRequest(merge(options, {
+  RestClient.prototype.put = function(url, data, options) {
+    return this.restRequest(merge(options, {
       verb: "PUT",
       url: url,
       data: data
     }));
   };
 
-  RestClient.post = function(url, data, options) {
-    return RestClient.restRequest(merge(options, {
+  RestClient.prototype.post = function(url, data, options) {
+    return this.restRequest(merge(options, {
       verb: "POST",
       url: url,
       data: data
     }));
   };
 
-  RestClient["delete"] = function(url, options) {
-    return RestClient.restRequest(merge(options, {
+  RestClient.prototype["delete"] = function(url, options) {
+    return this.restRequest(merge(options, {
       verb: "DELETE",
       url: url
     }));
   };
 
   RestClient.getArrayBuffer = function(url, options) {
-    return this.get(url, merge(options, {
+    return this.restRequest(merge(options, {
+      verb: "GET",
+      url: url,
       responseType: "arraybuffer"
     }));
   };
@@ -213,30 +261,30 @@ module.exports = RestClient = (function() {
       headers:      Accept: 'application/json'
    */
 
-  RestClient.getJson = function(url, options) {
-    return RestClient.restJsonRequest(merge(options, {
+  RestClient.prototype.getJson = function(url, options) {
+    return this.restJsonRequest(merge(options, {
       verb: "get",
       url: url
     }));
   };
 
-  RestClient.deleteJson = function(url, options) {
-    return RestClient.restJsonRequest(merge(options, {
+  RestClient.prototype.deleteJson = function(url, options) {
+    return this.restJsonRequest(merge(options, {
       verb: "delete",
       url: url
     }));
   };
 
-  RestClient.putJson = function(url, data, options) {
-    return RestClient.restJsonRequest(merge(options, {
+  RestClient.prototype.putJson = function(url, data, options) {
+    return this.restJsonRequest(merge(options, {
       verb: "put",
       url: url,
       data: data
     }));
   };
 
-  RestClient.postJson = function(url, data, options) {
-    return RestClient.restJsonRequest(merge(options, {
+  RestClient.prototype.postJson = function(url, data, options) {
+    return this.restJsonRequest(merge(options, {
       verb: "post",
       url: url,
       data: data
@@ -279,7 +327,7 @@ module.exports = RestClient = (function() {
   EFFECT:
    */
 
-  RestClient.restRequest = function(options) {
+  RestClient.prototype.restRequest = function(options) {
     var data, formData, headers, k, method, onProgress, responseType, showProgressAfter, specifiedVerb, url, v, verb;
     verb = options.verb, method = options.method, url = options.url, data = options.data, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
     if (!isNumber(showProgressAfter)) {
@@ -371,9 +419,11 @@ module.exports = RestClient = (function() {
           info = merge(restRequestStatus, decodedHttpStatus, {
             event: event
           }, getErrorResponse());
-          stringInfo = formattedInspect(objectWithout(info, "event", "request"));
+          stringInfo = formattedInspect({
+            info: objectWithout(info, "event", "request")
+          });
           message = decodedHttpStatus.status === success ? "error processing successful response" : "request status: " + decodedHttpStatus.status + " (" + request.status + ")";
-          message += "\nInfo:\n" + stringInfo;
+          message += "\n\n" + stringInfo;
           return reject(new ErrorWithInfo(message, info));
         }
       });
@@ -385,8 +435,8 @@ module.exports = RestClient = (function() {
           return progressCallbackInternal(lastProgressEvent || {});
         });
         progressCallbackInternal = function(event) {
-          var loaded, ref1, total;
-          ref1 = lastProgressEvent = event, total = ref1.total, loaded = ref1.loaded;
+          var loaded, ref2, total;
+          ref2 = lastProgressEvent = event, total = ref2.total, loaded = ref2.loaded;
           if (initialProgressCalled && !requestResolved) {
             return typeof onProgress === "function" ? onProgress(restRequestStatus = merge(restRequestStatus, {
               event: event,
@@ -404,7 +454,7 @@ module.exports = RestClient = (function() {
     });
   };
 
-  RestClient.restJsonRequest = function(options) {
+  RestClient.prototype.restJsonRequest = function(options) {
     var data, headers, method, verb;
     verb = options.verb, method = options.method, data = options.data, headers = options.headers;
     verb = RestClient.legalVerbs[verb || method];
@@ -432,78 +482,33 @@ module.exports = RestClient = (function() {
 
   return RestClient;
 
-})();
+})(BaseClass);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var Art, RestClient,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Art = __webpack_require__(4);
-
-module.exports = Art.RestClient || Art.addNamespace('RestClient', RestClient = (function(superClass) {
-  extend(RestClient, superClass);
-
-  function RestClient() {
-    return RestClient.__super__.constructor.apply(this, arguments);
-  }
-
-  return RestClient;
-
-})(Neptune.Base));
-
+module.exports = require("art-class-system");
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, Neptune,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Neptune = __webpack_require__(7);
-
-module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
-  extend(Art, superClass);
-
-  function Art() {
-    return Art.__super__.constructor.apply(this, arguments);
-  }
-
-  return Art;
-
-})(Neptune.Base));
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-communication-status");
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib");
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = require("neptune-namespaces");
-
-/***/ }),
-/* 8 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ref, ref1;
-
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.RestClient : void 0 : void 0) != null ? ref : __webpack_require__(0);
+module.exports = __webpack_require__(1);
 
 
 /***/ })

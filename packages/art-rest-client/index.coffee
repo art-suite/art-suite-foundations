@@ -1,1 +1,1 @@
-module.exports = Neptune?.Art?.RestClient ? require './source/Art/RestClient'
+module.exports = (require './source/Art').RestClient

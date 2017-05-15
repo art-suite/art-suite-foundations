@@ -2,9 +2,13 @@
 #  http://www.w3.org/TR/XMLHttpRequest2/
 #  http://www.html5rocks.com/en/tutorials/file/xhr2/
 StandardLib = require 'art-standard-lib'
-{objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log, objectKeyCount, appendQuery, object, ErrorWithInfo} = StandardLib
-{success, serverFailure, failure, failureTypes, decodeHttpStatus} = require 'art-communication-status'
+{
+  objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log,
+  objectKeyCount, appendQuery, object, ErrorWithInfo
+} = require 'art-standard-lib'
 
+{success, serverFailure, failureTypes, decodeHttpStatus} = require 'art-communication-status'
+{BaseClass} = require 'art-class-system'
 # So this works in NODE:
 # TODO: we could maybe solve this better:
 #   require './xhr'
@@ -15,18 +19,41 @@ StandardLib = require 'art-standard-lib'
 # global.XMLHttpRequest ||= realRequire 'xhr2'
 require './.xhr2'
 
-module.exports = class RestClient
+module.exports = class RestClient extends BaseClass
+  @singletonClass()
+
   @legalVerbs:
-    get: "GET"
-    GET: "GET"
-    put: "PUT"
-    PUT: "PUT"
-    post: "POST"
-    POST: "POST"
+    get:    "GET"
+    GET:    "GET"
+    put:    "PUT"
+    PUT:    "PUT"
+    post:   "POST"
+    POST:   "POST"
     delete: "DELETE"
     DELETE: "DELETE"
-    head: "HEAD"
-    HEAD: "HEAD"
+    head:   "HEAD"
+    HEAD:   "HEAD"
+
+  ########################
+  # CLASS API
+  ########################
+  # Can use most of the singleton API direclty on the class.
+  # See the instance/singleton API below for API detials.
+  @get:             (url, options)          -> @singleton.get             url, options
+  @put:             (url, data, options)    -> @singleton.put             url, data, options
+  @post:            (url, data, options)    -> @singleton.post            url, data, options
+  @delete:          (url, options)          -> @singleton.delete          url, options
+  @getArrayBuffer:  (url, options)          -> @singleton.getArrayBuffer  url, options
+  @getJson:         (url, options)          -> @singleton.getJson         url, options
+  @deleteJson:      (url, options)          -> @singleton.deleteJson      url, options
+  @putJson:         (url, data, options)    -> @singleton.putJson         url, data, options
+  @postJson:        (url, data, options)    -> @singleton.postJson        url, data, options
+  @restRequest:     (options)               -> @singleton.restRequest     options
+  @restJsonRequest: (options)               -> @singleton.restJsonRequest options
+
+  ########################
+  # INSTANCE API (singleton)
+  ########################
 
   ###
   get/put/post/delete
@@ -78,13 +105,13 @@ module.exports = class RestClient
       that was made up to the point of the event.
   ###
 
-  @get:     (url, options)           -> RestClient.restRequest merge options, verb: "GET",    url: url
-  @put:     (url, data, options)     -> RestClient.restRequest merge options, verb: "PUT",    url: url, data: data
-  @post:    (url, data, options)     -> RestClient.restRequest merge options, verb: "POST",   url: url, data: data
-  @delete:  (url, options)           -> RestClient.restRequest merge options, verb: "DELETE", url: url
+  get:     (url, options)           -> @restRequest merge options, verb: "GET",    url: url
+  put:     (url, data, options)     -> @restRequest merge options, verb: "PUT",    url: url, data: data
+  post:    (url, data, options)     -> @restRequest merge options, verb: "POST",   url: url, data: data
+  delete:  (url, options)           -> @restRequest merge options, verb: "DELETE", url: url
 
   # OUT: Promise -> responseData is ArrayBuffer
-  @getArrayBuffer: (url, options) -> @get url, merge options, responseType: "arraybuffer"
+  @getArrayBuffer: (url, options)   -> @restRequest merge options, verb: "GET",    url: url, responseType: "arraybuffer"
 
   ###
   get/put/post/deleteJson
@@ -99,10 +126,10 @@ module.exports = class RestClient
       responseType: "json"
       headers:      Accept: 'application/json'
   ###
-  @getJson:     (url, options)       -> RestClient.restJsonRequest merge options, verb: "get",     url: url
-  @deleteJson:  (url, options)       -> RestClient.restJsonRequest merge options, verb: "delete",  url: url
-  @putJson:     (url, data, options) -> RestClient.restJsonRequest merge options, verb: "put",     url: url, data: data
-  @postJson:    (url, data, options) -> RestClient.restJsonRequest merge options, verb: "post",    url: url, data: data
+  getJson:     (url, options)       -> @restJsonRequest merge options, verb: "get",     url: url
+  deleteJson:  (url, options)       -> @restJsonRequest merge options, verb: "delete",  url: url
+  putJson:     (url, data, options) -> @restJsonRequest merge options, verb: "put",     url: url, data: data
+  postJson:    (url, data, options) -> @restJsonRequest merge options, verb: "post",    url: url, data: data
 
   ###
   IN:
@@ -139,7 +166,7 @@ module.exports = class RestClient
   EFFECT:
 
   ###
-  @restRequest: (options) ->
+  restRequest: (options) ->
     {verb, method, url, data, headers, onProgress, responseType, formData, showProgressAfter} = options
     showProgressAfter = 100 unless isNumber showProgressAfter
 
@@ -234,7 +261,7 @@ module.exports = class RestClient
 
       request.send data
 
-  @restJsonRequest: (options) ->
+  restJsonRequest: (options) ->
     {verb, method, data, headers} = options
     verb = RestClient.legalVerbs[verb || method]
     data = null if data && objectKeyCount(data) == 0
@@ -253,4 +280,3 @@ module.exports = class RestClient
         Accept:         'application/json'
         headers
       data:             data
-
