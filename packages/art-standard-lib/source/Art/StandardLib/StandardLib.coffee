@@ -10,6 +10,7 @@ module.exports = [
   require "./ObjectDiff"
   require "./MapExtensions"
   require "./MathExtensions"
+  require "./Environment"
   require "./ParseUrl"
   require "./PromisedFileReader"
   require "./Regexp"

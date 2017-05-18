@@ -4,7 +4,7 @@ BlueBirdPromise = require 'bluebird/js/browser/bluebird.core.min'
 # global.Promise ||= require 'promise-polyfill'
 {deepMap, deepEach, isFunction, isPlainObject} = require './TypesExtended'
 {defineModule} = require './CommonJs'
-{getEnv} = require './ParseUrl'
+{getEnv} = require './Environment'
 
 if promiseDebug = getEnv().artPromiseDebug
   console.log "Art.StandardLib.Promise: BlueBirdPromise debug ENABLED"

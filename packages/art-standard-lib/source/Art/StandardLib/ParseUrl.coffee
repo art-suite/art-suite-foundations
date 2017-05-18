@@ -1,12 +1,5 @@
-# TODO: merge with StandardLib/Regexp
+# TODO: DRY w.r.t. StandardLib/Regexp
 module.exports = class ParseUrl
-  @getEnv: ->
-    ret = if global.location?.search
-      ParseUrl.parseQuery()
-    else
-      global.process?.env
-
-    ret || {}
 
   @parseQuery: (qs = global.location?.search || "") ->
     obj = {}

@@ -1,0 +1,8 @@
+import global.Neptune.Art.StandardLib
+
+suite: ->
+  each expected, testName in list = # CaffeineScript bug - 'list =' shouldn't be required
+      isWebWorker:  false
+      isBrowser:    !!global.window
+      isNode:       !global.window
+    global.test testName, -> assert.eq expected, Neptune.Art.StandardLib[testName]
