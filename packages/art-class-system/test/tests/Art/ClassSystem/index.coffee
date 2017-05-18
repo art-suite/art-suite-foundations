@@ -6,4 +6,5 @@ module.exports
 .addModules
   DeclarableMixin:           require './DeclarableMixin'          
   ExtendedablePropertyMixin: require './ExtendedablePropertyMixin'
+  SingletonClass:            require './SingletonClass'           
 require './BaseClass'
