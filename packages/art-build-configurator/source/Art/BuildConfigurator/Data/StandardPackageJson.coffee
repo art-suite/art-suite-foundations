@@ -22,6 +22,8 @@ module.exports = class StandardPackageJson
           'webpack-dev-server --progress'
       start:    'webpack-dev-server --hot --inline --progress'
 
+      testInBrowser:  'webpack-dev-server --progress'
+
       # ArtSuite scripts
       # nodeTest: 'nn -s; mocha -u tdd --compilers coffee:coffee-script/register'
       build:    'webpack --progress'

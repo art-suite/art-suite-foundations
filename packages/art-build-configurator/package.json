@@ -18,7 +18,7 @@
     "css-loader": "^0.26.1",
     "fs-promise": "^1.0.0",
     "json-loader": "^0.5.4",
-    "neptune-namespaces": "^1.9.1",
+    "neptune-namespaces": "^2.0.0",
     "recursive-copy": "^2.0.6",
     "script-loader": "^0.7.0",
     "style-loader": "^0.13.1",
@@ -33,7 +33,8 @@
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress",
-    "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
+    "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+    "testInBrowser": "webpack-dev-server --progress"
   },
   "version": "1.11.1"
 }
