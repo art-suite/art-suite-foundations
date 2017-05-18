@@ -64,11 +64,17 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-build-configurator");
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 var ArrayCompactFlatten, arraySlice, doFlattenInternal, flattenIfNeeded, isArguments, isArrayOrArguments, isPlainArray, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
@@ -185,14 +191,14 @@ module.exports = ArrayCompactFlatten = (function() {
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(9);
+module.exports = __webpack_require__(10);
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -215,7 +221,7 @@ module.exports = {
 		"css-loader": "^0.26.1",
 		"fs-promise": "^1.0.0",
 		"json-loader": "^0.5.4",
-		"neptune-namespaces": "^1.9.1",
+		"neptune-namespaces": "^2.0.0",
 		"recursive-copy": "^2.0.6",
 		"script-loader": "^0.7.0",
 		"style-loader": "^0.13.1",
@@ -230,13 +236,14 @@ module.exports = {
 	"scripts": {
 		"build": "webpack --progress",
 		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.9.0"
+	"version": "1.11.2"
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -264,12 +271,6 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-build-configurator");
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
@@ -283,6 +284,17 @@ module.exports = require("commander");
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+var g;
+
+g = typeof window !== "undefined" && window !== null ? window : typeof self !== "undefined" && self !== null ? self : global;
+
+g.global = g;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports) {
 
 var arrayIterableTest, each, extendedEach, isNonNegativeInt;
@@ -448,14 +460,16 @@ module.exports = {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var _import, compactFlatten, getSuper, isDirectPrototypeOf, isFalse, isFunction, isPlainArray, isPlainObject, isTrue, ref,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
-ref = __webpack_require__(0), compactFlatten = ref.compactFlatten, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject;
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject;
+
+__webpack_require__(7);
 
 global.__definingModule = null;
 
@@ -692,26 +706,26 @@ module.exports = {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var k, out, ref, ref1, ref2, v;
 
 module.exports = out = {};
 
-ref = __webpack_require__(0);
+ref = __webpack_require__(1);
 for (k in ref) {
   v = ref[k];
   out[k] = v;
 }
 
-ref1 = __webpack_require__(7);
+ref1 = __webpack_require__(8);
 for (k in ref1) {
   v = ref1[k];
   out[k] = v;
 }
 
-ref2 = __webpack_require__(8);
+ref2 = __webpack_require__(9);
 for (k in ref2) {
   v = ref2[k];
   out[k] = v;
@@ -719,12 +733,50 @@ for (k in ref2) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {let Caf = __webpack_require__(1);
-Caf.defMod(module, () => {let process = global.process, console = global.console, colors = __webpack_require__(5), pv, pretend, configure, init, commander = __webpack_require__(6), Package = __webpack_require__(2), ArtBuildConfigurator = __webpack_require__(4); colors; ({pv, pretend, configure, init} = commander = commander.version(Package.version).option("-p, --pretend", "show the configs that will be generated without writing them").option("-c, --configure", "configure and update all").option("--pv", "show your package's current version").option("--init", "initialize a new Art-style project").on("--help", function() {return console.log(`looks for ${Caf.toString(ArtBuildConfigurator.configFileName)} and configs as instructed`);}).parse(process.argv)); return pv ? console.log(ArtBuildConfigurator.Versioning.current) : ((pretend || configure || init) ? ArtBuildConfigurator.go(process.cwd(), commander).catch(function(e) {return console.error(e.stack);}) : commander.outputHelp());});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(2);
+Caf.defMod(module, () => {
+  let process = global.process,
+    console = global.console,
+    pv,
+    pretend,
+    configure,
+    init,
+    commander;
+  __webpack_require__(5);
+  ({ pv, pretend, configure, init } = commander = __webpack_require__(6)
+    .version(__webpack_require__(3).version)
+    .option(
+      "-p, --pretend",
+      "show the configs that will be generated without writing them"
+    )
+    .option("-c, --configure", "configure and update all")
+    .option("--pv", "show your package's current version")
+    .option("--init", "initialize a new Art-style project")
+    .on("--help", function() {
+      return console.log(
+        `looks for ${Caf.toString(
+          __webpack_require__(0).configFileName
+        )} and configs as instructed`
+      );
+    })
+    .parse(process.argv));
+  return pv
+    ? console.log(__webpack_require__(0).Versioning.current)
+    : pretend || configure || init
+        ? __webpack_require__(0)
+            .go(process.cwd(), commander)
+            .catch(function(e) {
+              return console.error(e.stack);
+            })
+        : commander.outputHelp();
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
 
 /***/ })
 /******/ ]);
