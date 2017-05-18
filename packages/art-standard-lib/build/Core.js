@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 58);
+/******/ 	return __webpack_require__(__webpack_require__.s = 59);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -72,19 +72,19 @@ module.exports =
 /***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(12);
+module.exports = __webpack_require__(13);
 
-module.exports.includeInNamespace(__webpack_require__(23)).addModules({
+module.exports.includeInNamespace(__webpack_require__(26)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(10),
-  StringCase: __webpack_require__(11),
+  Merge: __webpack_require__(11),
+  StringCase: __webpack_require__(12),
   Types: __webpack_require__(2)
 });
 
 
 /***/ }),
 
-/***/ 10:
+/***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
@@ -258,7 +258,7 @@ module.exports = Merge = (function() {
 
 /***/ }),
 
-/***/ 11:
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
@@ -338,7 +338,7 @@ module.exports = StringCase = (function() {
 
 /***/ }),
 
-/***/ 12:
+/***/ 13:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, StandardLib,
@@ -361,7 +361,7 @@ module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (fu
 
 /***/ }),
 
-/***/ 16:
+/***/ 18:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Inspected,
@@ -600,10 +600,10 @@ module.exports = Types = (function() {
 
 /***/ }),
 
-/***/ 23:
+/***/ 26:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(11), __webpack_require__(10), __webpack_require__(2)];
+module.exports = [__webpack_require__(3), __webpack_require__(12), __webpack_require__(11), __webpack_require__(2)];
 
 
 /***/ }),
@@ -766,14 +766,14 @@ module.exports = ArrayCompactFlatten = (function() {
 
 /***/ }),
 
-/***/ 30:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(32);
+Neptune = __webpack_require__(9);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -791,13 +791,6 @@ __webpack_require__(4);
 
 /***/ }),
 
-/***/ 32:
-/***/ (function(module, exports) {
-
-module.exports = require("neptune-namespaces");
-
-/***/ }),
-
 /***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -805,7 +798,7 @@ var Art, StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(30);
+Art = __webpack_require__(33);
 
 module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
@@ -818,7 +811,7 @@ module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib 
 
 })(Neptune.Base));
 
-__webpack_require__(12);
+__webpack_require__(13);
 
 __webpack_require__(5);
 
@@ -845,18 +838,25 @@ module.exports = StandardLib.Inspect || StandardLib.addNamespace('Inspect', Insp
 
 })(Neptune.Base));
 
-__webpack_require__(16);
+__webpack_require__(18);
 
 
 /***/ }),
 
-/***/ 58:
+/***/ 59:
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;
 
 module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(1);
 
+
+/***/ }),
+
+/***/ 9:
+/***/ (function(module, exports) {
+
+module.exports = require("neptune-namespaces");
 
 /***/ })
 
