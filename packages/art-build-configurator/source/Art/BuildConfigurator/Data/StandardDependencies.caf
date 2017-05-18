@@ -1,14 +1,16 @@
+# Art.Suite
+neptune-namespaces:                   :^2.2.2
+art-testbench:                        :^1.10.3
+art-standard-lib:                     :^1.11.1
+art-class-system:                     :^1.5.2
+art-config:                           :^1.3.3
+art-build-configurator:               :^1.11.5
+
+# Caffeine.Suite
+caffeine-script:                      :^0.44.5
+
 # Non Art.Suite, Non Caffeine.Suite support npms
 detect-node:                          :^2.0.3
-
-# NN & Art.Suite core files
-neptune-namespaces:                   :^2.0.0
-art-testbench:                        :^1.0.0
-art-standard-lib:                     :^1.11.1
-art-class-system:                     :^1.5.1
-art-config:                           :^1.0.0
-art-build-configurator:               :^1.8.1
-caffeine-script:                      :^0.38.1
 
 # compilers
 coffee-script:                        :^1.12.3
