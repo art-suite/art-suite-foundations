@@ -1,4 +1,5 @@
 module.exports =
+  target: node: true
   package:
     description: 'Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai'
     dependencies:
