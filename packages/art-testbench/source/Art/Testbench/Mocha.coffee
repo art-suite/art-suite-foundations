@@ -1,4 +1,4 @@
-{log, isFunction, isPlainObject, merge} = require 'art-standard-lib'
+{isNode, log, isFunction, isPlainObject, merge} = require 'art-standard-lib'
 {ConfigRegistry} = require 'art-config'
 chai = require './ArtChai'
 global.assert = chai.assert
@@ -117,7 +117,7 @@ module.exports = class MyMocha
     @defineGlobals()
     DomConsole?.enable()
 
-    if synchronous
+    if synchronous || isNode
       try
         ConfigRegistry.configure options
         @_runSync defineTests
