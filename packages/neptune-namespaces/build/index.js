@@ -411,9 +411,12 @@ module.exports = {
 		"nn": "./nn"
 	},
 	"dependencies": {
-		"art-class-system": "^1.0.1",
-		"art-standard-lib": "^1.1.0",
+		"art-build-configurator": "^1.8.1",
+		"art-class-system": "^1.5.1",
+		"art-config": "^1.0.0",
+		"art-standard-lib": "^1.11.1",
 		"art-testbench": "^1.0.0",
+		"caffeine-script": "^0.38.1",
 		"case-sensitive-paths-webpack-plugin": "^1.1.4",
 		"coffee-loader": "^0.7.2",
 		"coffee-script": "^1.12.3",
@@ -424,7 +427,7 @@ module.exports = {
 		"fs-promise": "^1.0.0",
 		"glob-promise": "^3.1.0",
 		"json-loader": "^0.5.4",
-		"neptune-namespaces": "^1.9.1",
+		"neptune-namespaces": "^2.0.0",
 		"script-loader": "^0.7.0",
 		"style-loader": "^0.13.1",
 		"webpack": "^2.2.1",
@@ -441,9 +444,10 @@ module.exports = {
 	"scripts": {
 		"build": "webpack --progress",
 		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "2.2.0"
+	"version": "2.2.1"
 };
 
 /***/ }),
