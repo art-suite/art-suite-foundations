@@ -77,7 +77,7 @@ var NamespaceBaseClass, Neptune,
 
 NamespaceBaseClass = __webpack_require__(1);
 
-global.Neptune || (global.Neptune = module.exports = Neptune = (function(superClass) {
+module.exports = global.Neptune || (global.Neptune = Neptune = (function(superClass) {
   extend(Neptune, superClass);
 
   function Neptune() {
@@ -447,7 +447,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "2.2.1"
+	"version": "2.2.2"
 };
 
 /***/ }),
