@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 56);
+/******/ 	return __webpack_require__(__webpack_require__.s = 58);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -72,12 +72,12 @@ module.exports =
 /***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(11);
+module.exports = __webpack_require__(12);
 
 module.exports.includeInNamespace(__webpack_require__(23)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(9),
-  StringCase: __webpack_require__(10),
+  Merge: __webpack_require__(10),
+  StringCase: __webpack_require__(11),
   Types: __webpack_require__(2)
 });
 
@@ -85,6 +85,180 @@ module.exports.includeInNamespace(__webpack_require__(23)).addModules({
 /***/ }),
 
 /***/ 10:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Merge, compactFlatten, isPlainObject;
+
+compactFlatten = __webpack_require__(3).compactFlatten;
+
+isPlainObject = __webpack_require__(2).isPlainObject;
+
+module.exports = Merge = (function() {
+  var deepMerge, merge, mergeInto, pureMerge;
+
+  function Merge() {}
+
+
+  /*
+  
+  merge "flattens" its arguments and then adds all keys from all objects in
+  the list into a new object which is returned.
+  
+  return: new object
+  
+  The first object's keys are added first. If two or more objects have the same
+  keys, the value set in the result is the last object's in the list with that key.
+   */
+
+  Merge.merge = merge = function() {
+    return mergeInto({}, arguments);
+  };
+
+
+  /*
+  The same as 'merge' with one difference:
+  
+  Instead of a new object, all objects are merged into the first object in the list.
+  
+  return: first object in the flattened list
+  return: null if no source objects
+   */
+
+  Merge.mergeInto = mergeInto = function() {
+    var j, k, len, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          if (v !== void 0) {
+            result[k] = v;
+          }
+        }
+      }
+    }
+    return result;
+  };
+
+
+  /*
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
+  
+  if
+    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
+  then
+    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
+  
+  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
+   */
+
+  Merge.mergeIntoUnless = function() {
+    var i, j, k, ref, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
+      source = sources[i];
+      for (k in source) {
+        v = source[k];
+        if (result[k] === void 0) {
+          result[k] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  Merge.deepMerge = deepMerge = function() {
+    var k, list, out, v, val;
+    list = compactFlatten(arguments);
+    out = merge(list);
+    for (k in out) {
+      v = out[k];
+      if (isPlainObject(v)) {
+        out[k] = deepMerge((function() {
+          var j, len, results;
+          results = [];
+          for (j = 0, len = list.length; j < len; j++) {
+            val = list[j];
+            results.push(val[k]);
+          }
+          return results;
+        })());
+      }
+    }
+    return out;
+  };
+
+  Merge.hasAllProps = function(o1, o2) {
+    var k, v;
+    for (k in o1) {
+      v = o1[k];
+      if (!o2.hasOwnProperty(k)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  Merge.pureMerge = pureMerge = function() {
+    var j, last, len, source, sources;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    if (sources.length === 1) {
+      return sources[0];
+    }
+    last = sources[sources.length - 1];
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== last) {
+        if (!Merge.hasAllProps(source, last)) {
+          return Merge.merge(sources);
+        }
+      }
+    }
+    return last;
+  };
+
+
+  /*
+  I might consider adding "o" - which works like Object-Tree constructors:
+    First, it compact-flattens args
+    Second, it gathers up and merges all plain-objects in its arguments list
+    Last, all remaining items get added to the "children" list
+  The question is, what does it return? Options:
+  
+    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
+  
+  Options if both objects and non-object values are present:
+    a. return compactFlatten [plainObject, nonObjectValues]
+    b. return merge plainObject, children: nonObjectValues
+    c. return new MClass plainObject, nonObjectValues
+      class MClass extends BaseObject
+        @properties "props children"
+        constructor: (@props, @children) ->
+   */
+
+  Merge.m = pureMerge;
+
+  return Merge;
+
+})();
+
+
+/***/ }),
+
+/***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
@@ -164,7 +338,7 @@ module.exports = StringCase = (function() {
 
 /***/ }),
 
-/***/ 11:
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, StandardLib,
@@ -429,32 +603,7 @@ module.exports = Types = (function() {
 /***/ 23:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(10), __webpack_require__(9), __webpack_require__(2)];
-
-
-/***/ }),
-
-/***/ 29:
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, Neptune,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Neptune = __webpack_require__(30);
-
-module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
-  extend(Art, superClass);
-
-  function Art() {
-    return Art.__super__.constructor.apply(this, arguments);
-  }
-
-  return Art;
-
-})(Neptune.Base));
-
-__webpack_require__(4);
+module.exports = [__webpack_require__(3), __webpack_require__(11), __webpack_require__(10), __webpack_require__(2)];
 
 
 /***/ }),
@@ -618,6 +767,31 @@ module.exports = ArrayCompactFlatten = (function() {
 /***/ }),
 
 /***/ 30:
+/***/ (function(module, exports, __webpack_require__) {
+
+var Art, Neptune,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Neptune = __webpack_require__(32);
+
+module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
+  extend(Art, superClass);
+
+  function Art() {
+    return Art.__super__.constructor.apply(this, arguments);
+  }
+
+  return Art;
+
+})(Neptune.Base));
+
+__webpack_require__(4);
+
+
+/***/ }),
+
+/***/ 32:
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
@@ -631,7 +805,7 @@ var Art, StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(29);
+Art = __webpack_require__(30);
 
 module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
@@ -644,7 +818,7 @@ module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib 
 
 })(Neptune.Base));
 
-__webpack_require__(11);
+__webpack_require__(12);
 
 __webpack_require__(5);
 
@@ -676,186 +850,12 @@ __webpack_require__(16);
 
 /***/ }),
 
-/***/ 56:
+/***/ 58:
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;
 
 module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(1);
-
-
-/***/ }),
-
-/***/ 9:
-/***/ (function(module, exports, __webpack_require__) {
-
-var Merge, compactFlatten, isPlainObject;
-
-compactFlatten = __webpack_require__(3).compactFlatten;
-
-isPlainObject = __webpack_require__(2).isPlainObject;
-
-module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, pureMerge;
-
-  function Merge() {}
-
-
-  /*
-  
-  merge "flattens" its arguments and then adds all keys from all objects in
-  the list into a new object which is returned.
-  
-  return: new object
-  
-  The first object's keys are added first. If two or more objects have the same
-  keys, the value set in the result is the last object's in the list with that key.
-   */
-
-  Merge.merge = merge = function() {
-    return mergeInto({}, arguments);
-  };
-
-
-  /*
-  The same as 'merge' with one difference:
-  
-  Instead of a new object, all objects are merged into the first object in the list.
-  
-  return: first object in the flattened list
-  return: null if no source objects
-   */
-
-  Merge.mergeInto = mergeInto = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== result) {
-        for (k in source) {
-          v = source[k];
-          if (v !== void 0) {
-            result[k] = v;
-          }
-        }
-      }
-    }
-    return result;
-  };
-
-
-  /*
-  Just like mergeInfo except only merge into the result object
-  UNLESS 'result' already has that property with a non-undefined value.
-  
-  if
-    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
-  then
-    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
-  
-  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
-   */
-
-  Merge.mergeIntoUnless = function() {
-    var i, j, k, ref, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
-      source = sources[i];
-      for (k in source) {
-        v = source[k];
-        if (result[k] === void 0) {
-          result[k] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  Merge.deepMerge = deepMerge = function() {
-    var k, list, out, v, val;
-    list = compactFlatten(arguments);
-    out = merge(list);
-    for (k in out) {
-      v = out[k];
-      if (isPlainObject(v)) {
-        out[k] = deepMerge((function() {
-          var j, len, results;
-          results = [];
-          for (j = 0, len = list.length; j < len; j++) {
-            val = list[j];
-            results.push(val[k]);
-          }
-          return results;
-        })());
-      }
-    }
-    return out;
-  };
-
-  Merge.hasAllProps = function(o1, o2) {
-    var k, v;
-    for (k in o1) {
-      v = o1[k];
-      if (!o2.hasOwnProperty(k)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  Merge.pureMerge = pureMerge = function() {
-    var j, last, len, source, sources;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    if (sources.length === 1) {
-      return sources[0];
-    }
-    last = sources[sources.length - 1];
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== last) {
-        if (!Merge.hasAllProps(source, last)) {
-          return Merge.merge(sources);
-        }
-      }
-    }
-    return last;
-  };
-
-
-  /*
-  I might consider adding "o" - which works like Object-Tree constructors:
-    First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
-    Last, all remaining items get added to the "children" list
-  The question is, what does it return? Options:
-  
-    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-  
-  Options if both objects and non-object values are present:
-    a. return compactFlatten [plainObject, nonObjectValues]
-    b. return merge plainObject, children: nonObjectValues
-    c. return new MClass plainObject, nonObjectValues
-      class MClass extends BaseObject
-        @properties "props children"
-        constructor: (@props, @children) ->
-   */
-
-  Merge.m = pureMerge;
-
-  return Merge;
-
-})();
 
 
 /***/ })
