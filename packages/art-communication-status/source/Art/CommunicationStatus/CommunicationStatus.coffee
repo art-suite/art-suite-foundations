@@ -105,10 +105,6 @@ module.exports = class CommunicationStatus
   ###
   @failure:  "failure"
 
-  ###
-  OUT: true if status is a valid status-string
-  ###
-  @validStatus: (status) -> CommunicationStatus[status] == status
 
   # status: networkFailure
   # - The remote-server could not be reached.
@@ -136,6 +132,12 @@ module.exports = class CommunicationStatus
   # - There is nothing the client can do to solve this problem
   # - all 5xx errors
   @serverFailure:   "serverFailure"
+
+  ###
+  OUT: true if status is a valid status-string
+  ###
+  @validStatus: (status) -> CommunicationStatus[status] == status
+
 
   # NOTE: no httpStatus == network failure
   @decodeHttpStatus: (httpStatus) =>
