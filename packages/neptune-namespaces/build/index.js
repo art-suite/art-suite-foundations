@@ -64,36 +64,18 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib/Core");
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib/Types");
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = require("detect-node");
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var NamespaceBaseClass, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-NamespaceBaseClass = __webpack_require__(4);
+NamespaceBaseClass = __webpack_require__(1);
 
 global.Neptune || (global.Neptune = module.exports = Neptune = (function(superClass) {
   extend(Neptune, superClass);
@@ -112,9 +94,9 @@ global.Neptune || (global.Neptune = module.exports = Neptune = (function(superCl
     return (klass != null ? klass.prototype : void 0) instanceof NamespaceBaseClass;
   };
 
-  Neptune.isNode = __webpack_require__(2);
+  Neptune.isNode = __webpack_require__(7);
 
-  Neptune.version = (__webpack_require__(7)).version;
+  Neptune.version = (__webpack_require__(4)).version;
 
   return Neptune;
 
@@ -124,7 +106,7 @@ NamespaceBaseClass.namespace = Neptune;
 
 
 /***/ }),
-/* 4 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -138,11 +120,11 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 var ArtStandardLibCore, NamespaceBaseClass, isExtendedClass, isFunction, isPlainArray, ref,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-__webpack_require__(6);
+__webpack_require__(3);
 
-__webpack_require__(5);
+__webpack_require__(2);
 
-ref = __webpack_require__(1), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(6), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
@@ -188,7 +170,7 @@ module.exports = NamespaceBaseClass = (function() {
   };
 
   NamespaceBaseClass.getNeptuneLib = function() {
-    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(0));
+    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(5));
   };
 
   NamespaceBaseClass.getInspectedObjects = function(includeModules) {
@@ -380,7 +362,7 @@ module.exports = NamespaceBaseClass = (function() {
 
 
 /***/ }),
-/* 5 */
+/* 2 */
 /***/ (function(module, exports) {
 
 if ((function() {}).name == null) {
@@ -406,7 +388,7 @@ global.Function.prototype.hasName = function() {
 
 
 /***/ }),
-/* 6 */
+/* 3 */
 /***/ (function(module, exports) {
 
 var g;
@@ -419,7 +401,7 @@ g.global || (g.global = g);
 
 
 /***/ }),
-/* 7 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -465,11 +447,28 @@ module.exports = {
 };
 
 /***/ }),
-/* 8 */,
-/* 9 */
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib/Core");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib/Types");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("detect-node");
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(3);
+module.exports = __webpack_require__(0);
 
 
 /***/ })
