@@ -17,7 +17,7 @@ module.exports = class ObjectTreeFactory
   ###
   IN:
     options:
-      mergePropsInto: (props, ...) ->
+      mergePropsInto: (intoProps, fromProps) ->
         function to merge arguments 1 on into props
         default: mergeIntoBasic
 
