@@ -28,7 +28,7 @@ suite "NeptuneNamespaces.Generator", ->
         "root/MyNamespace/my_namespace.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
-      log ((v for k, v of generatedFiles).join "\n\n")
+      # log ((v for k, v of generatedFiles).join "\n\n")
       assert.match generatedFiles["root/MyNamespace/index.coffee"], /includeInNamespace.*my_namespace/
 
   test "special file names", ->
@@ -43,7 +43,7 @@ suite "NeptuneNamespaces.Generator", ->
         "root/aSubmodule/foo.coffee"
       ]
     .then ({generatedFiles, namespaces}) ->
-      log generatedFiles
+      # log generatedFiles
       assert.match generatedFiles["root/index.coffee"],
         ///
         file2

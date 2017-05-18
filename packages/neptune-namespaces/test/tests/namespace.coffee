@@ -5,4 +5,5 @@ Neptune = require 'neptune-namespaces'
 module.exports = Neptune.Tests ||
 Neptune.addNamespace 'Tests', class Tests extends Neptune.Base
   ;
-require './Generation/namespace'
+require './Generation/namespace';
+require './Runtime/namespace'
