@@ -64,11 +64,67 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib/Core");
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib/Types");
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("detect-node");
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var NamespaceBaseClass, Neptune,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+NamespaceBaseClass = __webpack_require__(4);
+
+global.Neptune || (global.Neptune = module.exports = Neptune = (function(superClass) {
+  extend(Neptune, superClass);
+
+  function Neptune() {
+    return Neptune.__super__.constructor.apply(this, arguments);
+  }
+
+  Neptune.Base = NamespaceBaseClass;
+
+  Neptune.namespacePath = "Neptune";
+
+  Neptune.namespace = null;
+
+  Neptune.isNamespace = function(klass) {
+    return (klass != null ? klass.prototype : void 0) instanceof NamespaceBaseClass;
+  };
+
+  Neptune.isNode = __webpack_require__(2);
+
+  Neptune.version = (__webpack_require__(7)).version;
+
+  return Neptune;
+
+})(NamespaceBaseClass));
+
+NamespaceBaseClass.namespace = Neptune;
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -79,65 +135,63 @@ to stop using the function.name attribute.
 I think we can do that with one change: addNamespace needs to
 change to take a name argument: @addNamespace: (name, namespace) ->
  */
-var ArtStandardLibCore, Base, Neptune, isExtendedClass, isFunction, isPlainArray, ref,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+var ArtStandardLibCore, NamespaceBaseClass, isExtendedClass, isFunction, isPlainArray, ref,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-__webpack_require__(2);
+__webpack_require__(6);
 
-__webpack_require__(1);
+__webpack_require__(5);
 
-ref = __webpack_require__(5), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(1), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
-Base = (function() {
+module.exports = NamespaceBaseClass = (function() {
   var excludedPropNames;
 
-  function Base() {}
+  function NamespaceBaseClass() {}
 
-  Base.allNamespaces = {};
+  NamespaceBaseClass.allNamespaces = {};
 
-  Base.getAllNamespacePaths = function() {
-    return Object.keys(Base.allNamespaces).sort();
+  NamespaceBaseClass.getAllNamespacePaths = function() {
+    return Object.keys(NamespaceBaseClass.allNamespaces).sort();
   };
 
-  Base.toString = function() {
+  NamespaceBaseClass.toString = function() {
     return this.namespacePath;
   };
 
-  Base.inspect = function() {
+  NamespaceBaseClass.inspect = function() {
     return this.namespacePath;
   };
 
-  Base._name = "Base";
+  NamespaceBaseClass._name = "NamespaceBaseClass";
 
-  Base.namespacePath = "Neptune.Base";
+  NamespaceBaseClass.namespacePath = "Neptune.NamespaceBaseClass";
 
-  Base.namespace = null;
+  NamespaceBaseClass.namespace = null;
 
-  Base.namespaces = {};
+  NamespaceBaseClass.namespaces = {};
 
-  Base.modules = {};
+  NamespaceBaseClass.modules = {};
 
-  Base.getNamespacePath = function() {
+  NamespaceBaseClass.getNamespacePath = function() {
     return this.namespacePath;
   };
 
-  Base.getNamespaceNames = function() {
+  NamespaceBaseClass.getNamespaceNames = function() {
     return Object.keys(this.namespaces).sort();
   };
 
-  Base.getModuleNames = function() {
+  NamespaceBaseClass.getModuleNames = function() {
     return Object.keys(this.modules).sort();
   };
 
-  Base.getNeptuneLib = function() {
-    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(4));
+  NamespaceBaseClass.getNeptuneLib = function() {
+    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(0));
   };
 
-  Base.getInspectedObjects = function(includeModules) {
+  NamespaceBaseClass.getInspectedObjects = function(includeModules) {
     var name, namespace, obj;
     if (includeModules == null) {
       includeModules = true;
@@ -162,7 +216,7 @@ Base = (function() {
     );
   };
 
-  Base.getVersions = function() {
+  NamespaceBaseClass.getVersions = function() {
     var key, out, recurse, ref1, subNamespace;
     out = {};
     if (this === Neptune) {
@@ -181,11 +235,11 @@ Base = (function() {
     return out;
   };
 
-  Base.addNamespace = function(name, namespace) {
+  NamespaceBaseClass.addNamespace = function(name, namespace) {
     return this.allNamespaces[namespace.namespacePath] = this.namespaces[name] = this[name] = namespace._init(name, this);
   };
 
-  Base.addModules = function(map) {
+  NamespaceBaseClass.addModules = function(map) {
     var modName, module, name;
     for (name in map) {
       module = map[name];
@@ -214,12 +268,12 @@ Base = (function() {
       Every property in fromObject that matches one of the property-names is added to the namespace.
    */
 
-  Base.includeInNamespace = function() {
+  NamespaceBaseClass.includeInNamespace = function() {
     var arg, args, fromObject, i, j, k, l, len, len1, propName, ref1, ref2, v;
     args = arguments.length === 1 && isPlainArray(arguments[0]) ? arguments[0] : arguments;
     for (j = 0, len = args.length; j < len; j++) {
       arg = args[j];
-      if (arg) {
+      if (arg != null) {
         if (isPlainArray(arg)) {
           fromObject = arg[0];
           for (i = k = 1, ref1 = arg.length; 1 <= ref1 ? k < ref1 : k > ref1; i = 1 <= ref1 ? ++k : --k) {
@@ -251,7 +305,7 @@ Base = (function() {
     get their namespace-props set.
    */
 
-  Base._setChildNamespaceProps = function(name, child) {
+  NamespaceBaseClass._setChildNamespaceProps = function(name, child) {
     if (isFunction(child)) {
       if (isFunction(child["class"])) {
         this._setChildNamespaceProps(name, child["class"]);
@@ -268,7 +322,7 @@ Base = (function() {
   function initializes those props.
    */
 
-  Base._init = function(name, namespace1) {
+  NamespaceBaseClass._init = function(name, namespace1) {
     this.namespace = namespace1;
     this._name = name;
     this.modules = {};
@@ -277,7 +331,7 @@ Base = (function() {
     return this;
   };
 
-  excludedPropNames = ["__super__"].concat(Object.keys(Base));
+  excludedPropNames = ["__super__"].concat(Object.keys(NamespaceBaseClass));
 
 
   /*
@@ -297,15 +351,16 @@ Base = (function() {
   OUT: value
    */
 
-  Base._addToNamespace = function(propName, addingFrom) {
+  NamespaceBaseClass._addToNamespace = function(propName, addingFrom) {
     var addingFromString, value;
-    if (propName === "inspect" && (value = addingFrom[propName]).length > 0) {
+    value = addingFrom[propName];
+    if (propName === "inspect" && (value != null ? value.length : void 0) > 0) {
       return this[propName] = value;
     }
     if (indexOf.call(excludedPropNames, propName) >= 0) {
       return;
     }
-    if (!(value = addingFrom[propName])) {
+    if (value == null) {
       return;
     }
     if (this[propName]) {
@@ -319,40 +374,13 @@ Base = (function() {
     }
   };
 
-  return Base;
+  return NamespaceBaseClass;
 
 })();
 
-module.exports = global.Neptune || (global.Neptune = Neptune = (function(superClass) {
-  extend(Neptune, superClass);
-
-  function Neptune() {
-    return Neptune.__super__.constructor.apply(this, arguments);
-  }
-
-  Neptune.Base = Base;
-
-  Neptune.namespacePath = "Neptune";
-
-  Neptune.namespace = null;
-
-  Neptune.isNamespace = function(klass) {
-    return (klass != null ? klass.prototype : void 0) instanceof Base;
-  };
-
-  Neptune.isNode = __webpack_require__(6);
-
-  Neptune.version = (__webpack_require__(3)).version;
-
-  return Neptune;
-
-})(Base));
-
-Base.namespace = Neptune;
-
 
 /***/ }),
-/* 1 */
+/* 5 */
 /***/ (function(module, exports) {
 
 if ((function() {}).name == null) {
@@ -378,7 +406,7 @@ global.Function.prototype.hasName = function() {
 
 
 /***/ }),
-/* 2 */
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -391,7 +419,7 @@ g.global || (g.global = g);
 
 
 /***/ }),
-/* 3 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -433,32 +461,15 @@ module.exports = {
 		"start": "webpack-dev-server --hot --inline --progress",
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
 	},
-	"version": "2.0.0"
+	"version": "2.1.0"
 };
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib/Core");
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib/Types");
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = require("detect-node");
-
-/***/ }),
-/* 7 */
+/* 8 */,
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+module.exports = __webpack_require__(3);
 
 
 /***/ })
