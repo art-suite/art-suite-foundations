@@ -1,6 +1,6 @@
 NamespaceBaseClass = require './NamespaceBaseClass'
 
-global.Neptune ||= module.exports = class Neptune extends NamespaceBaseClass
+module.exports = global.Neptune ||= class Neptune extends NamespaceBaseClass
   @Base: NamespaceBaseClass
   @namespacePath: "Neptune"
   @namespace: null
