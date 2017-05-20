@@ -6,6 +6,7 @@ StandardLib = require 'art-standard-lib'
   objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log,
   objectKeyCount, appendQuery, object, ErrorWithInfo
   w
+  capitalizedDashCase
   each
 } = require 'art-standard-lib'
 
@@ -184,8 +185,11 @@ module.exports = class RestClient extends BaseClass
         options: options
       throw new Error "With their ultimate wisdom, the gods decree: NO DATA WITH GET"
 
-    @_normalizedRestRequest {method, url, body, headers, onProgress, responseType, showProgressAfter}
+    normalizedHeaders = headers
+    for k,v of headers
+      normalizedHeaders[capitalizedDashCase k] = v
 
+    @_normalizedRestRequest {method, url, body, headers: normalizedHeaders, onProgress, responseType, showProgressAfter}
 
   restJsonRequest: (options) ->
     {verb, method, data, headers} = options
@@ -204,6 +208,7 @@ module.exports = class RestClient extends BaseClass
       responseType: "json"
       headers: merge
         Accept:         'application/json'
+        "Content-Type": 'application/json'
         headers
       data:             data
 
