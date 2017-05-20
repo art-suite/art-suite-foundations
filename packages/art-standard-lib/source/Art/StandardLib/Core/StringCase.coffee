@@ -12,11 +12,13 @@ module.exports = class StringCase
   @capitalize:   (str) -> str.charAt(0).toUpperCase() + str.slice 1
   @decapitalize: (str) -> str.charAt(0).toLowerCase() + str.slice 1
 
-  @getLowerCaseCodeWords: (str) => word.toLowerCase() for word in @getCodeWords str
+  @getLowerCaseCodeWords:   (str) => word.toLowerCase() for word in @getCodeWords str
+  @getCapitalizedCodeWords: (str) => @capitalize word.toLowerCase() for word in @getCodeWords str
   @upperCamelCase:        (str) => (@capitalize word for word in @getLowerCaseCodeWords str).join ""
   @lowerCamelCase:        (str) => @decapitalize @upperCamelCase str
   @snakeCase:             (str) => (@getLowerCaseCodeWords str).join "_"
   @dashCase:              (str) => (@getLowerCaseCodeWords str).join "-"
+  @capitalizedDashCase:   (str) => (@getCapitalizedCodeWords str).join "-"
 
   # Should all work - add when we have a use-case
   # @getUpperCaseCodeWords: (str) => word.toUpperCase() for word in @getCodeWords str

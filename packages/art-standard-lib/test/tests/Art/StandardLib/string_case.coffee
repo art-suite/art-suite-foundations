@@ -9,6 +9,7 @@
   formattedInspect
   getLowerCaseCodeWords
   w
+  capitalizedDashCase
 } = StandardLib
 
 suite "Art.StandardLib.StandardLib.String.Case", ->
@@ -33,8 +34,12 @@ testCodeCase = (testIn) ->
       assert.eq lowerCamelCase(testIn), 'fooBarBaz'
 
   suite "Art.StandardLib.StandardLib.String.Case.snakeCase", ->
-    test "snaleCase #{formattedInspect testIn} >> 'foo_bar_baz'", ->
+    test "snakeCase #{formattedInspect testIn} >> 'foo_bar_baz'", ->
       assert.eq snakeCase(testIn), 'foo_bar_baz'
+
+  suite "Art.StandardLib.StandardLib.String.Case.capitalizedDashCase", ->
+    test "capitalizedDashCase #{formattedInspect testIn} >> 'foo_bar_baz'", ->
+      assert.eq capitalizedDashCase(testIn), 'Foo-Bar-Baz'
 
 testCodeCase "foo_bar_baz"
 testCodeCase "foo-bar-baz"
