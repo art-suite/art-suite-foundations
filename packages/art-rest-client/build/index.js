@@ -95,13 +95,13 @@ module.exports.addModules({
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
+var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, capitalizedDashCase, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 StandardLib = __webpack_require__(0);
 
-ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo, w = ref.w, each = ref.each;
+ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo, w = ref.w, capitalizedDashCase = ref.capitalizedDashCase, each = ref.each;
 
 ref1 = __webpack_require__(6), success = ref1.success, serverFailure = ref1.serverFailure, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
 
@@ -344,7 +344,7 @@ module.exports = RestClient = (function(superClass) {
    */
 
   RestClient.prototype.restRequest = function(options) {
-    var body, data, formData, headers, k, method, onProgress, responseType, showProgressAfter, specifiedVerb, url, v, verb;
+    var body, data, formData, headers, k, method, normalizedHeaders, onProgress, responseType, showProgressAfter, specifiedVerb, url, v, verb;
     verb = options.verb, method = options.method, url = options.url, data = options.data, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
     if (!isNumber(showProgressAfter)) {
       showProgressAfter = 100;
@@ -375,11 +375,16 @@ module.exports = RestClient = (function(superClass) {
       });
       throw new Error("With their ultimate wisdom, the gods decree: NO DATA WITH GET");
     }
+    normalizedHeaders = headers;
+    for (k in headers) {
+      v = headers[k];
+      normalizedHeaders[capitalizedDashCase(k)] = v;
+    }
     return this._normalizedRestRequest({
       method: method,
       url: url,
       body: body,
-      headers: headers,
+      headers: normalizedHeaders,
       onProgress: onProgress,
       responseType: responseType,
       showProgressAfter: showProgressAfter
@@ -406,7 +411,8 @@ module.exports = RestClient = (function(superClass) {
     return this.restRequest(merge(options, {
       responseType: "json",
       headers: merge({
-        Accept: 'application/json'
+        Accept: 'application/json',
+        "Content-Type": 'application/json'
       }, headers),
       data: data
     }));
