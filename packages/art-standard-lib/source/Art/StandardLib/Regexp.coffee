@@ -5,7 +5,10 @@ module.exports = class Regexp
   @findUrlProtocolRegexp: /([\w-]+)(:\/\/)/
   @findDomainRegexp:      /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/
   @urlQueryParamsRegexp:  /(?:[-+=&*._\w]|%[a-f\d]{2})+/i
-  @findUrlPathRegexp:     /(?:\/~?(?:[-+*._\w]|%[a-f\d]{2})*)*/
+
+  # https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
+  # https://tools.ietf.org/html/rfc3986#section-3.3
+  @findUrlPathRegexp:     /(?:\/(?:[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2})*)*/
   @findUrlPortRegexp:     /(\:)(\d+)/
 
   @findEmailRegexp: ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegexp.source})///i

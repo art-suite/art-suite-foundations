@@ -48,6 +48,10 @@ suite "Art.StandardLib.StandardLib.Regexp", ->
   test "urlPathRegexp failures", ->
     assert.eq !!"/foo Bar".match(urlPathRegexp), false
     assert.eq !!"/foo%2zBar".match(urlPathRegexp), false
+    assert.eq (a = "/-._~!$&'()*+,;=:@").match(urlPathRegexp), [a]
+    assert.eq (a = "/abcdefghijklmnopqrstuvwxyz").match(urlPathRegexp), [a]
+    assert.eq (a = "/ABCDEFGHIJKLMNOPQRSTUVWXYZ").match(urlPathRegexp), [a]
+    assert.eq (a = "/0123456789").match(urlPathRegexp), [a]
 
   test "urlQueryRegexp successes", ->
     assert.eq "foo".match(urlQueryRegexp),     ["foo"]
@@ -66,3 +70,17 @@ suite "Art.StandardLib.StandardLib.Regexp", ->
     assert.eq "http://foo.com/?this=that".match(urlRegexp),           ["http://foo.com/?this=that",           "http", "://", "foo.com", undefined, undefined, "/",       "?", "this=that"]
     assert.eq "http://foo.com/here?this=that".match(urlRegexp),       ["http://foo.com/here?this=that",       "http", "://", "foo.com", undefined, undefined, "/here",   "?", "this=that"]
     assert.eq "http://foo.com:9000/here?this=that".match(urlRegexp),  ["http://foo.com:9000/here?this=that",  "http", "://", "foo.com", ":",       "9000",    "/here",   "?", "this=that"]
+
+  test "regressions", ->
+    assert.eq "http://localhost:1337/localhost:9200/imikimi_oz_dev".match(urlRegexp), [
+      "http://localhost:1337/localhost:9200/imikimi_oz_dev"
+      "http"
+      "://"
+      "localhost"
+      ":"
+      "1337"
+      "/localhost:9200/imikimi_oz_dev"
+      undefined
+      undefined
+    ]
+
