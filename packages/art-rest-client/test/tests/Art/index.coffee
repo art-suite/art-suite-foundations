@@ -3,5 +3,4 @@
 
 module.exports = require './namespace'
 module.exports
-.addModules
-  RestClient: require './RestClient'
+require './RestClient'

@@ -1,5 +1,6 @@
 {merge, w, defineModule} = Neptune.Art.StandardLib
 {RestClient} = Neptune.Art
+{normalizeHeaders} = RestClient
 
 testAssetRoot = "https://raw.githubusercontent.com/imikimi/art-rest-client/master/test/assets"
 

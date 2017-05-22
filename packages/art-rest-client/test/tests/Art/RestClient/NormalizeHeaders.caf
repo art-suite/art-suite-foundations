@@ -1,0 +1,16 @@
+import &ArtStandardLib, Neptune.Art.RestClient
+
+suite: ->
+  test "cache-control", ->
+    assert.eq
+      normalizeHeaders cache-control: 123
+      Cache-Control: 123
+
+    assert.eq
+      normalizeHeaders CacheControl: 123
+      Cache-Control: 123
+
+  test "regression", ->
+    assert.eq
+      normalizeHeaders x-amz-grant-full-control: "uri=http://acs.amazonaws.com/groups/global/AllUsers"
+      X-Amz-Grant-Full-Control: "uri=http://acs.amazonaws.com/groups/global/AllUsers"
