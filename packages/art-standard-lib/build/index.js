@@ -5871,7 +5871,7 @@ module.exports = Log = (function() {
   promiseLogId = 1;
 
   Log.logCore = function(m, stack, options) {
-    var className, hasPromises, logId, obj1, toResolve;
+    var className;
     if (options == null) {
       options = noOptions;
     }
@@ -5879,35 +5879,13 @@ module.exports = Log = (function() {
     if (Log.alternativeLogger) {
       Log.alternativeLogger.logCore(m, stack, options);
     }
-    if (options.resolvePromises && (hasPromises = containsPromises(m))) {
-      toResolve = m;
-      logId = promiseLogId++;
-      m = (
-        obj1 = {},
-        obj1["RESOLVING_" + logId] = m,
-        obj1
-      );
-      deepResolve(toResolve, function(promiseResult) {
-        return {
-          'promise.then': promiseResult
-        };
-      }).then(function(resolvedM) {
-        var obj2;
-        return Log._logNow((
-          obj2 = {},
-          obj2["RESOLVED_" + logId] = resolvedM,
-          obj2
-        ), stack, options);
-      })["catch"](function(rejected) {
-        var obj2;
-        return Log._logNow((
-          obj2 = {},
-          obj2["REJECTED_" + logId] = resolvedM,
-          obj2
-        ), stack, options);
+    if (options.resolvePromises) {
+      return Log.log.resolvePromiseWrapper(m, function(toLog) {
+        return Log._logNow(toLog, stack, options);
       });
+    } else {
+      return Log._logNow(m, stack, options);
     }
-    return Log._logNow(m, stack, options);
   };
 
   Log._logNow = function(m, stack, options) {
@@ -5926,6 +5904,44 @@ module.exports = Log = (function() {
     var args, ref1;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     return (ref1 = Log.log).withOptions.apply(ref1, [null].concat(slice.call(args)));
+  };
+
+  Log.log.resolvePromiseWrapper = function(m, logger) {
+    var logId, obj1, toResolve;
+    if (containsPromises(m)) {
+      toResolve = m;
+      logId = promiseLogId++;
+      logger((
+        obj1 = {},
+        obj1["RESOLVING_" + logId] = m,
+        obj1
+      ), false);
+      return deepResolve(toResolve, function(promiseResult) {
+        return {
+          'promise.then': promiseResult
+        };
+      }).then((function(_this) {
+        return function(resolvedM) {
+          var obj2;
+          return logger((
+            obj2 = {},
+            obj2["RESOLVED_" + logId] = resolvedM,
+            obj2
+          ), true);
+        };
+      })(this))["catch"]((function(_this) {
+        return function(rejected) {
+          var obj2;
+          return logger((
+            obj2 = {},
+            obj2["REJECTED_" + logId] = rejected,
+            obj2
+          ), true);
+        };
+      })(this));
+    } else {
+      return logger(m, false);
+    }
   };
 
   Log.log.withOptions = function() {
