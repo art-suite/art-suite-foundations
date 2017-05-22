@@ -3,6 +3,7 @@ Inspect = require './Inspect/namespace'
 {isString} = require './TypesExtended'
 {peek} = require './ArrayExtensions'
 {merge} = require './Core'
+{deepResolve, containsPromises} = require './Promise'
 
 module.exports = class Log
   # autodetect context from
@@ -77,12 +78,34 @@ module.exports = class Log
     else if isWarning then Log.rawWarningLog
     else Log.rawLog
 
+  promiseLogId = 1
+
   @logCore: (m, stack, options = noOptions) =>
     {className} = options
 
     if @alternativeLogger
       @alternativeLogger.logCore m, stack, options
 
+    if options.resolvePromises && hasPromises = containsPromises m
+      toResolve = m
+      logId = promiseLogId++
+      m = "RESOLVING_#{logId}": m
+
+      deepResolve toResolve, (promiseResult) -> 'promise.then': promiseResult
+      .then (resolvedM) =>
+        @_logNow
+          "RESOLVED_#{logId}": resolvedM
+          stack
+          options
+      .catch (rejected) =>
+        @_logNow
+          "REJECTED_#{logId}": resolvedM
+          stack
+          options
+
+    @_logNow m, stack, options
+
+  @_logNow: (m, stack, options) =>
     logger = getLogger options
     if Neptune.isNode
       logger if isString m
