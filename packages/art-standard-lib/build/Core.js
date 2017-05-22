@@ -376,7 +376,7 @@ module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (fu
 
 /***/ }),
 
-/***/ 16:
+/***/ 17:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Inspected,
@@ -860,7 +860,7 @@ module.exports = StandardLib.Inspect || StandardLib.addNamespace('Inspect', Insp
 
 })(Neptune.Base));
 
-__webpack_require__(16);
+__webpack_require__(17);
 
 
 /***/ }),

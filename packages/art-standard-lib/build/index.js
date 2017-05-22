@@ -821,7 +821,7 @@ module.exports = StandardLib.Inspect || StandardLib.addNamespace('Inspect', Insp
 
 })(Neptune.Base));
 
-__webpack_require__(16);
+__webpack_require__(17);
 
 
 /***/ }),
@@ -1032,7 +1032,7 @@ FoundationMath = __webpack_require__(8);
 
 Types = __webpack_require__(0);
 
-wordsRegex = __webpack_require__(14).wordsRegex;
+wordsRegex = __webpack_require__(15).wordsRegex;
 
 intRand = FoundationMath.intRand;
 
@@ -1426,7 +1426,7 @@ module.exports = StringExtensions = (function() {
 
 var MathExtensions, Regexp, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
-Regexp = __webpack_require__(14);
+Regexp = __webpack_require__(15);
 
 numberRegexp = Regexp.numberRegexp;
 
@@ -1956,7 +1956,7 @@ module.exports = __webpack_require__(5);
 
 module.exports.includeInNamespace(__webpack_require__(49)).addModules({
   FormattedInspect: __webpack_require__(37),
-  InspectedObjectLiteral: __webpack_require__(17),
+  InspectedObjectLiteral: __webpack_require__(18),
   InspectedObjects: __webpack_require__(26),
   Inspector: __webpack_require__(27),
   Inspector2: __webpack_require__(54),
@@ -1968,6 +1968,405 @@ __webpack_require__(38);
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
+
+BlueBirdPromise = __webpack_require__(56);
+
+ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
+
+defineModule = __webpack_require__(9).defineModule;
+
+getEnv = __webpack_require__(24).getEnv;
+
+if (promiseDebug = getEnv().artPromiseDebug) {
+  console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
+}
+
+BlueBirdPromise.config({
+  warnings: promiseDebug,
+  longStackTraces: promiseDebug,
+  cancellation: promiseDebug,
+  monitoring: promiseDebug
+});
+
+ErrorWithInfo = __webpack_require__(35);
+
+
+/*
+ArtPromise extends ES6 Promises in the following ways:
+
+- constructing a promise with no parameters is allowed
+- promise.resolve and promise.reject are supported as
+  alternative ways to resolve or reject a promise
+
+If native promises are supported, they are used,
+otherwise a polyfill is used.
+
+TODO:
+  ES6 says Promises are designed to be extensible:
+  http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects
+
+  If I properly extend Promise, will my new methods be available on all promise objects... ???
+    At least all promises chained off of one created using my Promise class... ???
+
+  But I had problems doing that. Maybe it's how CoffeeScript extends things?
+
+TODO:
+  I want a way to do 'then' and 'catch' without effecting any following 'thens' or 'caches'
+
+  It's easy to implement, but what to call it? Leaning towards tapThen. If I had Ruby's 'tap', then
+  I could do this effectively with:
+
+    .tap (a) -> a.then ->
+    but
+    .tapThen ->
+    is even nicer
+
+  Will it be available on returned promises?
+    (see ES6 Promise extension above)
+
+  tapThen: (successF, failF) ->
+    @then successF, failF
+    @ # return the current promise, not the one returned from the then-call above
+ */
+
+defineModule(module, function() {
+  var ArtPromise, k, v;
+  ArtPromise = (function() {
+    var deepAll, isPromise, noop;
+
+    function ArtPromise() {}
+
+    ArtPromise.isPromise = isPromise = function(f) {
+      return isFunction(f != null ? f.then : void 0);
+    };
+
+    ArtPromise.testPromise = function(promise) {
+      promise.then(function(v) {
+        return console.log("promise.resolve", v);
+      });
+      return promise["catch"](function(v) {
+        return console.log("promise.reject", v);
+      });
+    };
+
+    ArtPromise.mapAll = function(map) {
+      var key, keys;
+      keys = Object.keys(map);
+      return Promise.all((function() {
+        var j, len, results;
+        results = [];
+        for (j = 0, len = keys.length; j < len; j++) {
+          key = keys[j];
+          results.push(map[key]);
+        }
+        return results;
+      })()).then(function(values) {
+        var i, j, key, len, out;
+        out = {};
+        for (i = j = 0, len = keys.length; j < len; i = ++j) {
+          key = keys[i];
+          out[key] = values[i];
+        }
+        return out;
+      });
+    };
+
+    ArtPromise.containsPromises = function(plainStructure) {
+      var containsPromises;
+      containsPromises = false;
+      deepEach(plainStructure, function(v) {
+        return containsPromises || (containsPromises = isPromise(v));
+      });
+      return containsPromises;
+    };
+
+
+    /*
+    For use with Node-style callbacks:
+      IN: (error, data) ->
+        error: null or set if there was an error
+        data: set if error is null
+    
+    Example:
+      Promise.withCallback (callback) ->
+        doAsyncStuff -> callback()
+     */
+
+    ArtPromise.withCallback = function(startPromiseBodyFunction) {
+      return new BlueBirdPromise(function(resolve, reject) {
+        var callback;
+        callback = function(err, data) {
+          if (err) {
+            return reject(new Error(err));
+          }
+          return resolve(data);
+        };
+        return startPromiseBodyFunction(callback);
+      });
+    };
+
+    ArtPromise.newExternallyResolvable = function() {
+      var out, p;
+      out = {};
+      p = new BlueBirdPromise(function(resolve, reject) {
+        out.resolve = resolve;
+        return out.reject = reject;
+      });
+      p.resolve = out.resolve;
+      p.reject = out.reject;
+      return p;
+    };
+
+    noop = function(a) {
+      return a;
+    };
+
+    ArtPromise.deepAll = deepAll = function(plainStructure, resolvedResultPreprocessor) {
+      var promises;
+      if (resolvedResultPreprocessor == null) {
+        resolvedResultPreprocessor = noop;
+      }
+      promises = [];
+      deepEach(plainStructure, function(v) {
+        if (isPromise(v)) {
+          return promises.push(v);
+        }
+      });
+      return Promise.all(promises).then(function(resolved) {
+        var i;
+        i = 0;
+        return deepMap(plainStructure, function(v) {
+          if (isPromise(v)) {
+            return resolvedResultPreprocessor(resolved[i++]);
+          } else {
+            return v;
+          }
+        });
+      });
+    };
+
+    ArtPromise.deepResolve = deepAll;
+
+
+    /*
+    Serializer makes it easy to ensure promise-returning functions are invoked in order, after each
+    promise is resolved.
+    
+    USAGE:
+    
+       * EXAMPLE 1: Basic - not too different from normal Promise sequences
+      serializer = new ArtPromise.Serializer
+      serializer.then -> doA()
+    
+       * then execute sometime later, possbly asynchronously:
+      serializer.then -> doB()
+    
+       * then execute sometime later, possbly asynchronously:
+      serializer.then (doBResult) ->
+         * doA and doB have completed and any returning promises resolved
+         * the result of the last 'then' is passed in
+    
+       * EXAMPLE 2: apply the same async function serially to each element in list
+       * - list's order is preserved
+       * - each invocation waits for the previous one to complete
+      serializer = new ArtPromise.Serializer
+      list.forEach serializer.serialize f = (element) -> # do something with element, possibly returning a promise
+      serializer.then (lastFResult) ->
+         * do something after the last invocation of f completes
+         * the result of the last invocation of 'f' is passed in
+    
+       * EXAMPLE 3: mix multiple serialized functions and manual @then invocations
+       * - invocation order is perserved
+      serializer = new ArtPromise.Serializer
+      serializedA = serializer.serialize aFunction
+      serializedB = serializer.serialize bFunction
+    
+      serializedB()
+      serializer.then -> @cFunction()
+      serializedB()
+      serializedA()
+      serializedB()
+    
+      serializer.then (lastBFunctionResult) ->
+         * this is invoked AFTER:
+         * evaluating, in order, waiting for any promises:
+         *   bFunction, cFunction, bFunction, aFunction, bFunction
+     */
+
+    ArtPromise.Serializer = (function() {
+      function Serializer() {
+        this._lastPromise = BlueBirdPromise.resolve();
+      }
+
+
+      /*
+      Returns a new function, serializedF, that acts just like 'f'
+        - f is forced to be async:
+          - if f doesn't return a promise, a promise wrapping f's result is returned
+        - invoking serializedF queues f in this serializer instance's sequence via @then
+      IN: any function with any signature
+      OUT: (f's signature) -> promise.then (fResult) ->
+      
+      Example with Comparison:
+      
+         * all asyncActionReturningPromise(element)s get called immediately
+         * and may complete randomly at some later event
+        myArray.forEach (element) ->
+          asyncActionReturningPromise element
+      
+         * VS
+      
+         * asyncActionReturningPromise(element) only gets called
+         * after the previous call completes.
+         * If a previous call failes, the remaining calls never happen.
+        serializer = new Promise.Serializer
+        myArray.forEach serializer.serialize (element) ->
+          asyncActionReturningPromise element
+      
+         * bonus, you can do things when all the promises complete:
+        serializer.then =>
+      
+         * or if anything fails
+        serializer.catch =>
+      
+         * VS - shortcut
+      
+         * Just insert "Promise.serialize" before your forEach function to ensure serial invocations.
+         * However, you don't get the full functionality of the previous example.
+        myArray.forEach Promise.serialize (element) ->
+          asyncActionReturningPromise element
+       */
+
+      Serializer.prototype.serialize = function(f) {
+        return (function(_this) {
+          return function() {
+            var args;
+            args = arguments;
+            return _this.then(function() {
+              return f.apply(null, args);
+            });
+          };
+        })(this);
+      };
+
+      Serializer.prototype.then = function(resolved, rejected) {
+        return this._lastPromise = this._lastPromise.then(resolved, rejected);
+      };
+
+      Serializer.prototype["catch"] = function(rejected) {
+        return this._lastPromise = this._lastPromise["catch"](rejected);
+      };
+
+      Serializer.prototype.always = function(f) {
+        return this._lastPromise = this._lastPromise["catch"]((function(_this) {
+          return function() {
+            return null;
+          };
+        })(this)).then(f);
+      };
+
+
+      /*
+      OUT: promise that resolves / rejects only when there are no more
+        pending tasks queued with the serializer.
+      
+        .then (lastResult) ->
+        .catch (lastError) ->
+      
+      NOTE: allDonePromise could complete, then more tasks could be queued with the serializer.
+        Promises can't be resolved/rejected twice, so when the more-tasks complete, the first
+        allDonePromise won't do anything.
+        However, you can call allDonePromise again once the tasks are queued and get notified
+        when THEY are done.
+       */
+
+      Serializer.prototype.allDonePromise = function() {
+        var currentLastPromise;
+        currentLastPromise = this._lastPromise;
+        return currentLastPromise.then((function(_this) {
+          return function(lastResult) {
+            if (currentLastPromise === _this._lastPromise) {
+              return lastResult;
+            } else {
+              return _this.allDonePromise();
+            }
+          };
+        })(this))["catch"]((function(_this) {
+          return function(lastError) {
+            if (currentLastPromise === _this._lastPromise) {
+              throw lastError;
+            } else {
+              return _this.allDonePromise();
+            }
+          };
+        })(this));
+      };
+
+      return Serializer;
+
+    })();
+
+
+    /*
+    OUT: serializedF = -> Promise.resolve f arguments...
+      IN: any arguments
+      EFFECT: f is invoked with arguments passed in AFTER the last invocation of serializedF completes.
+      OUT: promise.then -> results from f
+    
+    NOTE: 'f' can return a promise, but it doesn't have to. If it does return a promise, the next
+      'f' invocation will not start until and if the previous one's promise completes.
+    
+    USAGE:
+      serializedF = Promise.serialize f = -> # do something, possibly returning a promise
+      serializedF()
+      serializedF()
+      serializedF()
+      .then (resultOfLastF)->
+         * executed after f was executed and any returned promises resolved, 3 times, sequentially
+    
+    OR
+      serializedF = Promise.serialize f = (element) -> # do something with element, possibly returning a promise
+      Promise.all (serializedF item for item in list)
+      .then (results) ->
+         * f was excuted list.length times sequentially
+         * results contains the result values from each execution, in order
+     */
+
+    ArtPromise.serialize = function(f) {
+      return new ArtPromise.Serializer().serialize(f);
+    };
+
+    ArtPromise.invert = function(promise) {
+      return promise.then(function(e) {
+        throw new ErrorWithInfo("" + e, e);
+      }, function(v) {
+        return v;
+      });
+    };
+
+    ArtPromise["finally"] = function(promise, action) {
+      return BlueBirdPromise.resolve(promise)["finally"](action);
+    };
+
+    ArtPromise.then = BlueBirdPromise["try"];
+
+    return ArtPromise;
+
+  })();
+  for (k in ArtPromise) {
+    v = ArtPromise[k];
+    BlueBirdPromise[k] || (BlueBirdPromise[k] = v);
+  }
+  return BlueBirdPromise;
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)(module)))
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports) {
 
 var Regexp;
@@ -2045,7 +2444,7 @@ module.exports = Regexp = (function() {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
@@ -2055,7 +2454,7 @@ ref = __webpack_require__(8), bound = ref.bound, max = ref.max, intRand = ref.in
 
 ref1 = __webpack_require__(0), isNumber = ref1.isNumber, isString = ref1.isString;
 
-ref2 = __webpack_require__(14), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
+ref2 = __webpack_require__(15), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
 module.exports = ArrayExtensions = (function() {
   var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSort, rightOfIndex, w;
@@ -2646,7 +3045,7 @@ module.exports = ArrayExtensions = (function() {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Inspected,
@@ -2668,7 +3067,7 @@ module.exports = Inspect.Inspected || Inspect.addNamespace('Inspected', Inspecte
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjectLiteral, compare;
@@ -2703,7 +3102,7 @@ module.exports = InspectedObjectLiteral = (function() {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -2934,7 +3333,7 @@ module.exports = global.Map || (Map = (function(superClass) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
@@ -3223,7 +3622,7 @@ module.exports = ObjectExtensions = (function() {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 var ParseUrl;
@@ -3310,405 +3709,6 @@ module.exports = ParseUrl = (function() {
 
 
 /***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
-
-BlueBirdPromise = __webpack_require__(56);
-
-ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
-
-defineModule = __webpack_require__(9).defineModule;
-
-getEnv = __webpack_require__(24).getEnv;
-
-if (promiseDebug = getEnv().artPromiseDebug) {
-  console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
-}
-
-BlueBirdPromise.config({
-  warnings: promiseDebug,
-  longStackTraces: promiseDebug,
-  cancellation: promiseDebug,
-  monitoring: promiseDebug
-});
-
-ErrorWithInfo = __webpack_require__(35);
-
-
-/*
-ArtPromise extends ES6 Promises in the following ways:
-
-- constructing a promise with no parameters is allowed
-- promise.resolve and promise.reject are supported as
-  alternative ways to resolve or reject a promise
-
-If native promises are supported, they are used,
-otherwise a polyfill is used.
-
-TODO:
-  ES6 says Promises are designed to be extensible:
-  http://www.ecma-international.org/ecma-262/6.0/#sec-promise-objects
-
-  If I properly extend Promise, will my new methods be available on all promise objects... ???
-    At least all promises chained off of one created using my Promise class... ???
-
-  But I had problems doing that. Maybe it's how CoffeeScript extends things?
-
-TODO:
-  I want a way to do 'then' and 'catch' without effecting any following 'thens' or 'caches'
-
-  It's easy to implement, but what to call it? Leaning towards tapThen. If I had Ruby's 'tap', then
-  I could do this effectively with:
-
-    .tap (a) -> a.then ->
-    but
-    .tapThen ->
-    is even nicer
-
-  Will it be available on returned promises?
-    (see ES6 Promise extension above)
-
-  tapThen: (successF, failF) ->
-    @then successF, failF
-    @ # return the current promise, not the one returned from the then-call above
- */
-
-defineModule(module, function() {
-  var ArtPromise, k, v;
-  ArtPromise = (function() {
-    var deepAll, isPromise, noop;
-
-    function ArtPromise() {}
-
-    ArtPromise.isPromise = isPromise = function(f) {
-      return isFunction(f != null ? f.then : void 0);
-    };
-
-    ArtPromise.testPromise = function(promise) {
-      promise.then(function(v) {
-        return console.log("promise.resolve", v);
-      });
-      return promise["catch"](function(v) {
-        return console.log("promise.reject", v);
-      });
-    };
-
-    ArtPromise.mapAll = function(map) {
-      var key, keys;
-      keys = Object.keys(map);
-      return Promise.all((function() {
-        var j, len, results;
-        results = [];
-        for (j = 0, len = keys.length; j < len; j++) {
-          key = keys[j];
-          results.push(map[key]);
-        }
-        return results;
-      })()).then(function(values) {
-        var i, j, key, len, out;
-        out = {};
-        for (i = j = 0, len = keys.length; j < len; i = ++j) {
-          key = keys[i];
-          out[key] = values[i];
-        }
-        return out;
-      });
-    };
-
-    ArtPromise.containsPromises = function(plainStructure) {
-      var containsPromises;
-      containsPromises = false;
-      deepEach(plainStructure, function(v) {
-        return containsPromises || (containsPromises = isPromise(v));
-      });
-      return containsPromises;
-    };
-
-
-    /*
-    For use with Node-style callbacks:
-      IN: (error, data) ->
-        error: null or set if there was an error
-        data: set if error is null
-    
-    Example:
-      Promise.withCallback (callback) ->
-        doAsyncStuff -> callback()
-     */
-
-    ArtPromise.withCallback = function(startPromiseBodyFunction) {
-      return new BlueBirdPromise(function(resolve, reject) {
-        var callback;
-        callback = function(err, data) {
-          if (err) {
-            return reject(new Error(err));
-          }
-          return resolve(data);
-        };
-        return startPromiseBodyFunction(callback);
-      });
-    };
-
-    ArtPromise.newExternallyResolvable = function() {
-      var out, p;
-      out = {};
-      p = new BlueBirdPromise(function(resolve, reject) {
-        out.resolve = resolve;
-        return out.reject = reject;
-      });
-      p.resolve = out.resolve;
-      p.reject = out.reject;
-      return p;
-    };
-
-    noop = function(a) {
-      return a;
-    };
-
-    ArtPromise.deepAll = deepAll = function(plainStructure, resolvedResultPreprocessor) {
-      var promises;
-      if (resolvedResultPreprocessor == null) {
-        resolvedResultPreprocessor = noop;
-      }
-      promises = [];
-      deepEach(plainStructure, function(v) {
-        if (isPromise(v)) {
-          return promises.push(v);
-        }
-      });
-      return Promise.all(promises).then(function(resolved) {
-        var i;
-        i = 0;
-        return deepMap(plainStructure, function(v) {
-          if (isPromise(v)) {
-            return resolvedResultPreprocessor(resolved[i++]);
-          } else {
-            return v;
-          }
-        });
-      });
-    };
-
-    ArtPromise.deepResolve = deepAll;
-
-
-    /*
-    Serializer makes it easy to ensure promise-returning functions are invoked in order, after each
-    promise is resolved.
-    
-    USAGE:
-    
-       * EXAMPLE 1: Basic - not too different from normal Promise sequences
-      serializer = new ArtPromise.Serializer
-      serializer.then -> doA()
-    
-       * then execute sometime later, possbly asynchronously:
-      serializer.then -> doB()
-    
-       * then execute sometime later, possbly asynchronously:
-      serializer.then (doBResult) ->
-         * doA and doB have completed and any returning promises resolved
-         * the result of the last 'then' is passed in
-    
-       * EXAMPLE 2: apply the same async function serially to each element in list
-       * - list's order is preserved
-       * - each invocation waits for the previous one to complete
-      serializer = new ArtPromise.Serializer
-      list.forEach serializer.serialize f = (element) -> # do something with element, possibly returning a promise
-      serializer.then (lastFResult) ->
-         * do something after the last invocation of f completes
-         * the result of the last invocation of 'f' is passed in
-    
-       * EXAMPLE 3: mix multiple serialized functions and manual @then invocations
-       * - invocation order is perserved
-      serializer = new ArtPromise.Serializer
-      serializedA = serializer.serialize aFunction
-      serializedB = serializer.serialize bFunction
-    
-      serializedB()
-      serializer.then -> @cFunction()
-      serializedB()
-      serializedA()
-      serializedB()
-    
-      serializer.then (lastBFunctionResult) ->
-         * this is invoked AFTER:
-         * evaluating, in order, waiting for any promises:
-         *   bFunction, cFunction, bFunction, aFunction, bFunction
-     */
-
-    ArtPromise.Serializer = (function() {
-      function Serializer() {
-        this._lastPromise = BlueBirdPromise.resolve();
-      }
-
-
-      /*
-      Returns a new function, serializedF, that acts just like 'f'
-        - f is forced to be async:
-          - if f doesn't return a promise, a promise wrapping f's result is returned
-        - invoking serializedF queues f in this serializer instance's sequence via @then
-      IN: any function with any signature
-      OUT: (f's signature) -> promise.then (fResult) ->
-      
-      Example with Comparison:
-      
-         * all asyncActionReturningPromise(element)s get called immediately
-         * and may complete randomly at some later event
-        myArray.forEach (element) ->
-          asyncActionReturningPromise element
-      
-         * VS
-      
-         * asyncActionReturningPromise(element) only gets called
-         * after the previous call completes.
-         * If a previous call failes, the remaining calls never happen.
-        serializer = new Promise.Serializer
-        myArray.forEach serializer.serialize (element) ->
-          asyncActionReturningPromise element
-      
-         * bonus, you can do things when all the promises complete:
-        serializer.then =>
-      
-         * or if anything fails
-        serializer.catch =>
-      
-         * VS - shortcut
-      
-         * Just insert "Promise.serialize" before your forEach function to ensure serial invocations.
-         * However, you don't get the full functionality of the previous example.
-        myArray.forEach Promise.serialize (element) ->
-          asyncActionReturningPromise element
-       */
-
-      Serializer.prototype.serialize = function(f) {
-        return (function(_this) {
-          return function() {
-            var args;
-            args = arguments;
-            return _this.then(function() {
-              return f.apply(null, args);
-            });
-          };
-        })(this);
-      };
-
-      Serializer.prototype.then = function(resolved, rejected) {
-        return this._lastPromise = this._lastPromise.then(resolved, rejected);
-      };
-
-      Serializer.prototype["catch"] = function(rejected) {
-        return this._lastPromise = this._lastPromise["catch"](rejected);
-      };
-
-      Serializer.prototype.always = function(f) {
-        return this._lastPromise = this._lastPromise["catch"]((function(_this) {
-          return function() {
-            return null;
-          };
-        })(this)).then(f);
-      };
-
-
-      /*
-      OUT: promise that resolves / rejects only when there are no more
-        pending tasks queued with the serializer.
-      
-        .then (lastResult) ->
-        .catch (lastError) ->
-      
-      NOTE: allDonePromise could complete, then more tasks could be queued with the serializer.
-        Promises can't be resolved/rejected twice, so when the more-tasks complete, the first
-        allDonePromise won't do anything.
-        However, you can call allDonePromise again once the tasks are queued and get notified
-        when THEY are done.
-       */
-
-      Serializer.prototype.allDonePromise = function() {
-        var currentLastPromise;
-        currentLastPromise = this._lastPromise;
-        return currentLastPromise.then((function(_this) {
-          return function(lastResult) {
-            if (currentLastPromise === _this._lastPromise) {
-              return lastResult;
-            } else {
-              return _this.allDonePromise();
-            }
-          };
-        })(this))["catch"]((function(_this) {
-          return function(lastError) {
-            if (currentLastPromise === _this._lastPromise) {
-              throw lastError;
-            } else {
-              return _this.allDonePromise();
-            }
-          };
-        })(this));
-      };
-
-      return Serializer;
-
-    })();
-
-
-    /*
-    OUT: serializedF = -> Promise.resolve f arguments...
-      IN: any arguments
-      EFFECT: f is invoked with arguments passed in AFTER the last invocation of serializedF completes.
-      OUT: promise.then -> results from f
-    
-    NOTE: 'f' can return a promise, but it doesn't have to. If it does return a promise, the next
-      'f' invocation will not start until and if the previous one's promise completes.
-    
-    USAGE:
-      serializedF = Promise.serialize f = -> # do something, possibly returning a promise
-      serializedF()
-      serializedF()
-      serializedF()
-      .then (resultOfLastF)->
-         * executed after f was executed and any returned promises resolved, 3 times, sequentially
-    
-    OR
-      serializedF = Promise.serialize f = (element) -> # do something with element, possibly returning a promise
-      Promise.all (serializedF item for item in list)
-      .then (results) ->
-         * f was excuted list.length times sequentially
-         * results contains the result values from each execution, in order
-     */
-
-    ArtPromise.serialize = function(f) {
-      return new ArtPromise.Serializer().serialize(f);
-    };
-
-    ArtPromise.invert = function(promise) {
-      return promise.then(function(e) {
-        throw new ErrorWithInfo("" + e, e);
-      }, function(v) {
-        return v;
-      });
-    };
-
-    ArtPromise["finally"] = function(promise, action) {
-      return BlueBirdPromise.resolve(promise)["finally"](action);
-    };
-
-    ArtPromise.then = BlueBirdPromise["try"];
-
-    return ArtPromise;
-
-  })();
-  for (k in ArtPromise) {
-    v = ArtPromise[k];
-    BlueBirdPromise[k] || (BlueBirdPromise[k] = v);
-  }
-  return BlueBirdPromise;
-});
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)(module)))
-
-/***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3716,7 +3716,7 @@ var CallStack, inspect, isString, parseUrl;
 
 isString = __webpack_require__(0).isString;
 
-parseUrl = __webpack_require__(20).parseUrl;
+parseUrl = __webpack_require__(21).parseUrl;
 
 inspect = __webpack_require__(13).inspect;
 
@@ -3884,7 +3884,7 @@ module.exports = [__webpack_require__(3), __webpack_require__(11), __webpack_req
 
 defineModule = __webpack_require__(9).defineModule;
 
-ParseUrl = __webpack_require__(20);
+ParseUrl = __webpack_require__(21);
 
 isNode = __webpack_require__(57);
 
@@ -3916,9 +3916,9 @@ defineModule(module, Environment = (function() {
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-remove = __webpack_require__(15).remove;
+remove = __webpack_require__(16).remove;
 
-objectKeyCount = __webpack_require__(19).objectKeyCount;
+objectKeyCount = __webpack_require__(20).objectKeyCount;
 
 floatTrue0 = __webpack_require__(8).floatTrue0;
 
@@ -4225,7 +4225,7 @@ ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonN
 
 escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
 
-inspectedObjectLiteral = __webpack_require__(17).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(18).inspectedObjectLiteral;
 
 dateFormat = __webpack_require__(47);
 
@@ -4302,7 +4302,7 @@ module.exports = InspectedObjects = (function() {
 var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-Map = __webpack_require__(18);
+Map = __webpack_require__(19);
 
 escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
 
@@ -5015,7 +5015,7 @@ module.exports = require("neptune-namespaces");
 
 var AsyncExtensions, Promise;
 
-Promise = __webpack_require__(21);
+Promise = __webpack_require__(14);
 
 module.exports = AsyncExtensions = (function() {
   var timeout;
@@ -5083,7 +5083,7 @@ populateClone would need to take an additional argument - the clone function to 
  */
 var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject, uniquePropertyName;
 
-Map = __webpack_require__(18);
+Map = __webpack_require__(19);
 
 Unique = __webpack_require__(29);
 
@@ -5321,7 +5321,7 @@ ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.st
 
 inspect = __webpack_require__(27).inspect;
 
-objectKeyCount = __webpack_require__(19).objectKeyCount;
+objectKeyCount = __webpack_require__(20).objectKeyCount;
 
 toInspectedObjects = __webpack_require__(26).toInspectedObjects;
 
@@ -5678,7 +5678,7 @@ module.exports = FormattedInspect = (function() {
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16);
+module.exports = __webpack_require__(17);
 
 module.exports.addModules({
   Array: __webpack_require__(50),
@@ -5696,7 +5696,7 @@ var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction,
 
 ref = __webpack_require__(0), deepMap = ref.deepMap, hasKeys = ref.hasKeys, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction, isClass = ref.isClass;
 
-inspectedObjectLiteral = __webpack_require__(17).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(18).inspectedObjectLiteral;
 
 module.exports = PlainObjects = (function() {
   var toPlainObjects;
@@ -5735,7 +5735,7 @@ module.exports = PlainObjects = (function() {
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Inspect, Log, callStack, isString, merge, peek,
+var Inspect, Log, callStack, containsPromises, deepResolve, isString, merge, peek, ref,
   slice = [].slice;
 
 Inspect = __webpack_require__(5);
@@ -5744,12 +5744,14 @@ callStack = __webpack_require__(22).callStack;
 
 isString = __webpack_require__(0).isString;
 
-peek = __webpack_require__(15).peek;
+peek = __webpack_require__(16).peek;
 
 merge = __webpack_require__(1).merge;
 
+ref = __webpack_require__(14), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
+
 module.exports = Log = (function() {
-  var getLogger, noOptions;
+  var getLogger, noOptions, promiseLogId;
 
   function Log() {}
 
@@ -5866,8 +5868,10 @@ module.exports = Log = (function() {
     }
   };
 
+  promiseLogId = 1;
+
   Log.logCore = function(m, stack, options) {
-    var className, logger;
+    var className, hasPromises, logId, obj1, toResolve;
     if (options == null) {
       options = noOptions;
     }
@@ -5875,6 +5879,39 @@ module.exports = Log = (function() {
     if (Log.alternativeLogger) {
       Log.alternativeLogger.logCore(m, stack, options);
     }
+    if (options.resolvePromises && (hasPromises = containsPromises(m))) {
+      toResolve = m;
+      logId = promiseLogId++;
+      m = (
+        obj1 = {},
+        obj1["RESOLVING_" + logId] = m,
+        obj1
+      );
+      deepResolve(toResolve, function(promiseResult) {
+        return {
+          'promise.then': promiseResult
+        };
+      }).then(function(resolvedM) {
+        var obj2;
+        return Log._logNow((
+          obj2 = {},
+          obj2["RESOLVED_" + logId] = resolvedM,
+          obj2
+        ), stack, options);
+      })["catch"](function(rejected) {
+        var obj2;
+        return Log._logNow((
+          obj2 = {},
+          obj2["REJECTED_" + logId] = resolvedM,
+          obj2
+        ), stack, options);
+      });
+    }
+    return Log._logNow(m, stack, options);
+  };
+
+  Log._logNow = function(m, stack, options) {
+    var logger;
     logger = getLogger(options);
     if (Neptune.isNode) {
       return logger(isString(m) ? m : Inspect.formattedInspect(m, merge({
@@ -5886,9 +5923,9 @@ module.exports = Log = (function() {
   };
 
   Log.log = function() {
-    var args, ref;
+    var args, ref1;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return (ref = Log.log).withOptions.apply(ref, [null].concat(slice.call(args)));
+    return (ref1 = Log.log).withOptions.apply(ref1, [null].concat(slice.call(args)));
   };
 
   Log.log.withOptions = function() {
@@ -5936,17 +5973,17 @@ module.exports = Log = (function() {
   Log.log.labeled = Log.log.withLabel;
 
   Log.log.error = function() {
-    var args, ref;
+    var args, ref1;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return (ref = Log.log).withOptions.apply(ref, [{
+    return (ref1 = Log.log).withOptions.apply(ref1, [{
       isError: true
     }].concat(slice.call(args)));
   };
 
   Log.log.warn = function() {
-    var args, ref;
+    var args, ref1;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return (ref = Log.log).withOptions.apply(ref, [{
+    return (ref1 = Log.log).withOptions.apply(ref1, [{
       isWarning: true
     }].concat(slice.call(args)));
   };
@@ -6098,7 +6135,7 @@ module.exports = ObjectDiff = (function() {
 
 var Promise, PromisedFileReader;
 
-Promise = __webpack_require__(21);
+Promise = __webpack_require__(14);
 
 module.exports = PromisedFileReader = (function() {
   function PromisedFileReader() {}
@@ -6421,7 +6458,7 @@ module.exports = require("dateformat");
 module.exports = __webpack_require__(4);
 
 module.exports.includeInNamespace(__webpack_require__(55)).addModules({
-  ArrayExtensions: __webpack_require__(15),
+  ArrayExtensions: __webpack_require__(16),
   AsyncExtensions: __webpack_require__(33),
   CallStack: __webpack_require__(22),
   Clone: __webpack_require__(34),
@@ -6432,16 +6469,16 @@ module.exports.includeInNamespace(__webpack_require__(55)).addModules({
   Function: __webpack_require__(36),
   Iteration: __webpack_require__(28),
   Log: __webpack_require__(40),
-  Map: __webpack_require__(18),
+  Map: __webpack_require__(19),
   MapExtensions: __webpack_require__(41),
   MathExtensions: __webpack_require__(8),
   MinimalBaseObject: __webpack_require__(6),
   ObjectDiff: __webpack_require__(42),
-  ObjectExtensions: __webpack_require__(19),
-  ParseUrl: __webpack_require__(20),
-  Promise: __webpack_require__(21),
+  ObjectExtensions: __webpack_require__(20),
+  ParseUrl: __webpack_require__(21),
+  Promise: __webpack_require__(14),
   PromisedFileReader: __webpack_require__(43),
-  Regexp: __webpack_require__(14),
+  Regexp: __webpack_require__(15),
   Ruby: __webpack_require__(44),
   ShallowClone: __webpack_require__(45),
   StringExtensions: __webpack_require__(7),
@@ -6464,7 +6501,7 @@ __webpack_require__(13);
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(27), "shallowInspect inspectLean inspect"], __webpack_require__(37), __webpack_require__(26), __webpack_require__(39), __webpack_require__(17)];
+module.exports = [[__webpack_require__(27), "shallowInspect inspectLean inspect"], __webpack_require__(37), __webpack_require__(26), __webpack_require__(39), __webpack_require__(18)];
 
 
 /***/ }),
@@ -6659,7 +6696,7 @@ var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArr
 
 MinimalBaseObject = __webpack_require__(6);
 
-Map = __webpack_require__(18);
+Map = __webpack_require__(19);
 
 Inspected = __webpack_require__(38);
 
@@ -6876,7 +6913,7 @@ module.exports = Inspector2 = (function(superClass) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(1), [__webpack_require__(21), "testPromise", "containsPromises", "deepAll"], __webpack_require__(15), __webpack_require__(33), __webpack_require__(19), __webpack_require__(7), __webpack_require__(25), __webpack_require__(36), __webpack_require__(42), __webpack_require__(41), __webpack_require__(8), __webpack_require__(24), __webpack_require__(20), __webpack_require__(43), __webpack_require__(14), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46), __webpack_require__(0), __webpack_require__(9), __webpack_require__(28), __webpack_require__(13), __webpack_require__(34), __webpack_require__(40), __webpack_require__(22), {
+  __webpack_require__(1), [__webpack_require__(14), "testPromise", "containsPromises", "deepAll"], __webpack_require__(16), __webpack_require__(33), __webpack_require__(20), __webpack_require__(7), __webpack_require__(25), __webpack_require__(36), __webpack_require__(42), __webpack_require__(41), __webpack_require__(8), __webpack_require__(24), __webpack_require__(21), __webpack_require__(43), __webpack_require__(15), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46), __webpack_require__(0), __webpack_require__(9), __webpack_require__(28), __webpack_require__(13), __webpack_require__(34), __webpack_require__(40), __webpack_require__(22), {
     dateFormat: __webpack_require__(47)
   }
 ];
