@@ -1985,7 +1985,7 @@ module.exports = Regexp = (function() {
 
   Regexp.urlQueryParamsRegexp = /(?:[-+=&*._\w]|%[a-f\d]{2})+/i;
 
-  Regexp.findUrlPathRegexp = /(?:\/~?(?:[-+*._\w]|%[a-f\d]{2})*)*/;
+  Regexp.findUrlPathRegexp = /(?:\/(?:[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2})*)*/;
 
   Regexp.findUrlPortRegexp = /(\:)(\d+)/;
 
@@ -5488,8 +5488,8 @@ escapeForBlockString = (function(_this) {
 
 formattedInspectString = function(m, options) {
   var out;
-  out = m.match(/\n/) && !m.match(/\ (\n|$)/) ? ['"""', escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)].join('\n  ') : escapeJavascriptString(m);
-  if (options.color) {
+  out = m.match(/\n/) && !m.match(/\ (\n|$)/) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
+  if (options != null ? options.color : void 0) {
     return out.green;
   } else {
     return out;
@@ -5640,6 +5640,8 @@ module.exports = FormattedInspect = (function() {
 
   FormattedInspect.alignTabs = alignTabs;
 
+  FormattedInspect.formattedInspectString = formattedInspectString;
+
   FormattedInspect.formattedInspect = function(toInspect, options) {
     var error, maxLineLength, out, ref2, ref3;
     if (options == null) {
@@ -5655,7 +5657,7 @@ module.exports = FormattedInspect = (function() {
         options.maxLineLength = ((ref2 = global.process) != null ? (ref3 = ref2.stdout) != null ? ref3.columns : void 0 : void 0) || 80;
       }
       maxLineLength = options.maxLineLength;
-      return out = postWhitespaceFormatting(maxLineLength, formattedInspectRecursive(toInspectedObjects(toInspect), maxLineLength, options)).replace(/\n\n\n+/g, "\n\n").replace(/\n\n$/, "\n");
+      return out = postWhitespaceFormatting(maxLineLength, formattedInspectRecursive(toInspectedObjects(toInspect), maxLineLength, options)).replace(/\n\n$/, "\n");
     } catch (error1) {
       error = error1;
       console.error(out = "Error in formattedInspect", {
