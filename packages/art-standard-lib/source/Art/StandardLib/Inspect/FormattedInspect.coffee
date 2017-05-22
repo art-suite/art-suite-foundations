@@ -137,11 +137,9 @@ escapeForBlockString = (str) =>
 
 formattedInspectString = (m, options) ->
   out = if m.match(/\n/) && !m.match /\ (\n|$)/
-    [
-      '"""'
-      escapeForBlockString(m)
-      .replace /\n/g, newLineWithIndentString
-    ].join '\n  '
+    ('"""' + newLineWithIndentString +
+    escapeForBlockString(m).replace /\n/g, newLineWithIndentString
+    ).replace /\ +\n/g, '\n'
 
   # else if m.length > 10 && m.match / /
   #   TODO: support ""-block output using a word-wrap strategy if we can do-so isomorphically.
@@ -149,7 +147,7 @@ formattedInspectString = (m, options) ->
   else
     escapeJavascriptString m
 
-  if options.color
+  if options?.color
     out.green
   else
     out
@@ -259,6 +257,7 @@ module.exports = class FormattedInspect
   @stripAnsi: stripAnsi
   @ansiSafeStringLength: ansiSafeStringLength
   @alignTabs: alignTabs
+  @formattedInspectString: formattedInspectString
   @formattedInspect: (toInspect, options = {}) ->
     try
       options = maxLineLength: options if isNumber options
@@ -267,7 +266,6 @@ module.exports = class FormattedInspect
 
       out = postWhitespaceFormatting maxLineLength,
         formattedInspectRecursive toInspectedObjects(toInspect), maxLineLength, options
-      .replace /\n\n\n+/g, "\n\n"
       .replace /\n\n$/, "\n"
     catch error
       console.error out = "Error in formattedInspect", {error, toInspect, options}

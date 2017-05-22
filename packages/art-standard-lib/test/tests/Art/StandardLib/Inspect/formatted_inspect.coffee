@@ -1,7 +1,7 @@
 
 {StandardLib} = Neptune.Art
 {log} = StandardLib
-{formattedInspect, stripAnsi, ansiSafeStringLength, alignTabs, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
+{formattedInspectString, escapeJavascriptString, formattedInspect, stripAnsi, ansiSafeStringLength, alignTabs, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
 {BaseClass} = require 'art-class-system'
 testFIMultiLine = (input, out, maxLineLength = 0) ->
   test str = "formattedInspect #{inspect input}, #{maxLineLength}", ->
@@ -33,6 +33,13 @@ module.exports = suite:
           \u001b[32m"hi"\u001b[39m
         """,
         formattedInspect [{a:1}, "hi"], color: true
+
+  strings: ->
+    test 'with newlines', ->
+      assert.eq escapeJavascriptString('"""\n  a\n  b'  ), escapeJavascriptString formattedInspect "a\nb"
+      assert.eq escapeJavascriptString('"""\n\n  a'     ), escapeJavascriptString formattedInspect "\na"
+      assert.eq escapeJavascriptString('"""\n\n\n  a'   ), escapeJavascriptString formattedInspect "\n\na"
+      assert.eq escapeJavascriptString('"""\n\n\n\n  a' ), escapeJavascriptString formattedInspect "\n\n\na"
 
   singleLine: ->
     class Foo extends BaseClass
@@ -361,6 +368,7 @@ module.exports = suite:
               1
               2
 
+
           {}
             b1: []
               2
@@ -474,6 +482,7 @@ module.exports = suite:
 
             modules:
               "ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
+
 
           Neptune.Art.ObjectTreeFactory: {}
       """, 150
