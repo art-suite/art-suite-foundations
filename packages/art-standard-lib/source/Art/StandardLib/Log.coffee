@@ -86,24 +86,11 @@ module.exports = class Log
     if @alternativeLogger
       @alternativeLogger.logCore m, stack, options
 
-    if options.resolvePromises && hasPromises = containsPromises m
-      toResolve = m
-      logId = promiseLogId++
-      m = "RESOLVING_#{logId}": m
-
-      deepResolve toResolve, (promiseResult) -> 'promise.then': promiseResult
-      .then (resolvedM) =>
-        @_logNow
-          "RESOLVED_#{logId}": resolvedM
-          stack
-          options
-      .catch (rejected) =>
-        @_logNow
-          "REJECTED_#{logId}": resolvedM
-          stack
-          options
-
-    @_logNow m, stack, options
+    if options.resolvePromises
+      @log.resolvePromiseWrapper m, (toLog) =>
+        @_logNow toLog, stack, options
+    else
+      @_logNow m, stack, options
 
   @_logNow: (m, stack, options) =>
     logger = getLogger options
@@ -120,6 +107,22 @@ module.exports = class Log
   #     bar = @log 1, 2, 3, foo
   @log: (args...) =>
     @log.withOptions null, args...
+
+  # IN: logger: (toLog, wasResolvedOrRejected: true/false)
+  @log.resolvePromiseWrapper = (m, logger) ->
+    if containsPromises m
+      toResolve = m
+      logId = promiseLogId++
+      logger "RESOLVING_#{logId}": m, false
+
+      deepResolve toResolve, (promiseResult) -> 'promise.then': promiseResult
+      .then (resolvedM) =>
+        logger "RESOLVED_#{logId}": resolvedM, true
+      .catch (rejected) =>
+        logger "REJECTED_#{logId}": rejected, true
+
+    else
+      logger m, false
 
   @log.withOptions = (options, args...) ->
     m = if args.length == 1
