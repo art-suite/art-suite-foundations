@@ -22,3 +22,10 @@ suite: ->
     node = Div {style: fontSize: 10pt}, {style: color: #f00}
     assert.eq node.toString(), """
       <div style="fontSize: 10pt; color: #f00"></div>
+
+  test "null and undefined children" ->
+    node = Div [] null, Div(), undefined
+    assert.eq node.toString(),   """
+      <div>
+        <div></div>
+      </div>
