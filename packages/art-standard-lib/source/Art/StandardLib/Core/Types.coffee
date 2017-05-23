@@ -71,10 +71,12 @@ module.exports = class Types
   # https://jsperf.com/is-array-sbd
   # correct: Array.isArray
   # 3x-8x faster: (o) => o.constructor == Array
+  @isArrayUniversal: Array.isArray
   @isArray: isArray = if ArtStandardLibMultipleContextTypeSupport
-    (o) => Array.isArray o
+    @isArrayUniversal
   else
     (o) => o? && o.constructor == Array
+
 
   # cross-iFrame friendly
   # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
@@ -168,10 +170,13 @@ module.exports = class Types
   # PERF: https://jsperf.com/is-plain-object
   #   iFrame-friendly test: null == Object.getPrototypeOf Object.getPrototypeOf v
   #   10-70x faster: v.constructor == Object
+  @isPlainObjectUniversal: (v) -> v? && null == Object.getPrototypeOf Object.getPrototypeOf v
+
   @isPlainObject: isPlainObject = if ArtStandardLibMultipleContextTypeSupport
-    (v) -> v? && null == Object.getPrototypeOf Object.getPrototypeOf v
+    @isPlainObjectUniversal
   else
     (v) -> v? && v.constructor == Object
+
 
   ############################
   # helpers
