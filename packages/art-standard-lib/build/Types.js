@@ -146,9 +146,9 @@ module.exports = Types = (function() {
     return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype)));
   };
 
-  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? function(o) {
-    return Array.isArray(o);
-  } : function(o) {
+  Types.isArrayUniversal = Array.isArray;
+
+  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? Types.isArrayUniversal : function(o) {
     return (o != null) && o.constructor === Array;
   };
 
@@ -248,9 +248,11 @@ module.exports = Types = (function() {
     return _super;
   };
 
-  Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? function(v) {
+  Types.isPlainObjectUniversal = function(v) {
     return (v != null) && null === Object.getPrototypeOf(Object.getPrototypeOf(v));
-  } : function(v) {
+  };
+
+  Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? Types.isPlainObjectUniversal : function(v) {
     return (v != null) && v.constructor === Object;
   };
 

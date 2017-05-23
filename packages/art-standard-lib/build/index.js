@@ -480,9 +480,9 @@ module.exports = Types = (function() {
     return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype)));
   };
 
-  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? function(o) {
-    return Array.isArray(o);
-  } : function(o) {
+  Types.isArrayUniversal = Array.isArray;
+
+  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? Types.isArrayUniversal : function(o) {
     return (o != null) && o.constructor === Array;
   };
 
@@ -582,9 +582,11 @@ module.exports = Types = (function() {
     return _super;
   };
 
-  Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? function(v) {
+  Types.isPlainObjectUniversal = function(v) {
     return (v != null) && null === Object.getPrototypeOf(Object.getPrototypeOf(v));
-  } : function(v) {
+  };
+
+  Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? Types.isPlainObjectUniversal : function(v) {
     return (v != null) && v.constructor === Object;
   };
 
@@ -5871,17 +5873,20 @@ module.exports = Log = (function() {
   promiseLogId = 1;
 
   Log.logCore = function(m, stack, options) {
-    var className;
     if (options == null) {
       options = noOptions;
     }
-    className = options.className;
     if (Log.alternativeLogger) {
       Log.alternativeLogger.logCore(m, stack, options);
     }
     if (options.resolvePromises) {
-      return Log.log.resolvePromiseWrapper(m, function(toLog) {
-        return Log._logNow(toLog, stack, options);
+      return Log.log.resolvePromiseWrapper(m, function(toLog, label) {
+        var obj1;
+        return Log._logNow((
+          obj1 = {},
+          obj1["" + label] = toLog,
+          obj1
+        ), stack, options);
       });
     } else {
       return Log._logNow(m, stack, options);
@@ -5889,7 +5894,8 @@ module.exports = Log = (function() {
   };
 
   Log._logNow = function(m, stack, options) {
-    var logger;
+    var className, logger;
+    className = options.className;
     logger = getLogger(options);
     if (Neptune.isNode) {
       return logger(isString(m) ? m : Inspect.formattedInspect(m, merge({
@@ -5907,36 +5913,18 @@ module.exports = Log = (function() {
   };
 
   Log.log.resolvePromiseWrapper = function(m, logger) {
-    var logId, obj1, toResolve;
+    var logId, toResolve;
     if (containsPromises(m)) {
       toResolve = m;
       logId = promiseLogId++;
-      logger((
-        obj1 = {},
-        obj1["RESOLVING_" + logId] = m,
-        obj1
-      ), false);
-      return deepResolve(toResolve, function(promiseResult) {
-        return {
-          'promise.then': promiseResult
-        };
-      }).then((function(_this) {
+      logger(m, "RESOLVING_" + logId, false);
+      return deepResolve(toResolve).then((function(_this) {
         return function(resolvedM) {
-          var obj2;
-          return logger((
-            obj2 = {},
-            obj2["RESOLVED_" + logId] = resolvedM,
-            obj2
-          ), true);
+          return logger(resolvedM, "RESOLVED_" + logId, true);
         };
       })(this))["catch"]((function(_this) {
         return function(rejected) {
-          var obj2;
-          return logger((
-            obj2 = {},
-            obj2["REJECTED_" + logId] = rejected,
-            obj2
-          ), true);
+          return logger(rejected, "REJECTED_" + logId, true);
         };
       })(this));
     } else {
