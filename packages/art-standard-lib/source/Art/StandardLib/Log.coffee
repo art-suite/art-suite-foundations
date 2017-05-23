@@ -81,18 +81,18 @@ module.exports = class Log
   promiseLogId = 1
 
   @logCore: (m, stack, options = noOptions) =>
-    {className} = options
 
     if @alternativeLogger
       @alternativeLogger.logCore m, stack, options
 
     if options.resolvePromises
-      @log.resolvePromiseWrapper m, (toLog) =>
-        @_logNow toLog, stack, options
+      @log.resolvePromiseWrapper m, (toLog, label) =>
+        @_logNow "#{label}": toLog, stack, options
     else
       @_logNow m, stack, options
 
   @_logNow: (m, stack, options) =>
+    {className} = options
     logger = getLogger options
     if Neptune.isNode
       logger if isString m
@@ -108,18 +108,18 @@ module.exports = class Log
   @log: (args...) =>
     @log.withOptions null, args...
 
-  # IN: logger: (toLog, wasResolvedOrRejected: true/false)
+  # IN: logger: (toLog, label, wasResolvedOrRejected: true/false)
   @log.resolvePromiseWrapper = (m, logger) ->
     if containsPromises m
       toResolve = m
       logId = promiseLogId++
-      logger "RESOLVING_#{logId}": m, false
+      logger m, "RESOLVING_#{logId}", false
 
-      deepResolve toResolve, (promiseResult) -> 'promise.then': promiseResult
+      deepResolve toResolve #, (promiseResult) -> 'promise.then': promiseResult
       .then (resolvedM) =>
-        logger "RESOLVED_#{logId}": resolvedM, true
+        logger resolvedM, "RESOLVED_#{logId}", true
       .catch (rejected) =>
-        logger "REJECTED_#{logId}": rejected, true
+        logger rejected, "REJECTED_#{logId}", true
 
     else
       logger m, false
