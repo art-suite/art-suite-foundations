@@ -4,4 +4,5 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Basic: require './Basic'
+  Basic:      require './Basic'     
+  PostCreate: require './PostCreate'
