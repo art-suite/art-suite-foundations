@@ -1,0 +1,26 @@
+import &StandardImport, &ArtObjectTreeFactory
+Path = &Path
+
+createObjectTreeFactory
+  class FileClass extends BaseClass
+    constructor: (@props, @children) ->
+      super
+      @props.filename = @children[0]
+      @props.contents = @children[1]
+
+    @getter
+      plainObjects: ->
+        [@props.filename]: @props.contents
+
+    write: (options = {}) ->
+      {path, pretend, force, fs = &fs-extra} = options
+      path = Path.join path || '.', @props.filename
+
+      if !force && fs.existsSync path
+        log.warn "cowardly refusing to overwrite (use: force): ".yellow + path
+      else if pretend
+        log "pretend-writing: ".gray + path
+      else
+        log "writing: ".gray + path
+        fs.ensureDirSync Path.dirname path
+        fs.writeFileSync path, @props.contents

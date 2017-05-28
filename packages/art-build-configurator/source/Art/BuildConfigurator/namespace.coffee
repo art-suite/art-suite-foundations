@@ -5,4 +5,5 @@ Art = require '../namespace'
 module.exports = Art.BuildConfigurator ||
 Art.addNamespace 'BuildConfigurator', class BuildConfigurator extends Neptune.Base
   ;
-require './Data/namespace'
+require './Data/namespace';
+require './FileBuilder/namespace'

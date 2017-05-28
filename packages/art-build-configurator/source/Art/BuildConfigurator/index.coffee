@@ -7,6 +7,9 @@ module.exports
 .addModules
   ConfigurePackageJson: require './ConfigurePackageJson'
   ConfigureWebpack:     require './ConfigureWebpack'    
+  DefaultFiles:         require './DefaultFiles'        
   Publish:              require './Publish'             
+  StandardImport:       require './StandardImport'      
   Versioning:           require './Versioning'          
 require './Data'
+require './FileBuilder'

@@ -207,21 +207,22 @@ module.exports = {
 		"abc": "./abc"
 	},
 	"dependencies": {
-		"art-build-configurator": "^1.8.1",
-		"art-class-system": "^1.0.1",
-		"art-config": "^1.0.0",
-		"art-standard-lib": "^1.1.0",
-		"art-testbench": "^1.0.0",
-		"caffeine-script": "^0.38.1",
+		"art-build-configurator": "^1.11.5",
+		"art-class-system": "^1.5.2",
+		"art-config": "^1.3.3",
+		"art-standard-lib": "^1.11.1",
+		"art-testbench": "^1.10.3",
+		"caffeine-script": "^0.44.5",
 		"case-sensitive-paths-webpack-plugin": "^1.1.4",
 		"coffee-loader": "^0.7.2",
 		"coffee-script": "^1.12.3",
 		"colors": "^1.1.2",
 		"commander": "^2.9.0",
 		"css-loader": "^0.26.1",
+		"detect-node": "^2.0.3",
 		"fs-promise": "^1.0.0",
 		"json-loader": "^0.5.4",
-		"neptune-namespaces": "^2.0.0",
+		"neptune-namespaces": "^2.2.2",
 		"recursive-copy": "^2.0.6",
 		"script-loader": "^0.7.0",
 		"style-loader": "^0.13.1",
@@ -239,7 +240,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.11.2"
+	"version": "1.11.6"
 };
 
 /***/ }),

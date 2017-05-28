@@ -34,6 +34,20 @@ module.exports = class BuildConfigurator
 
     """
 
+  @registerLoaders: (npmRoot, vivify = false) =>
+    file = path.join npmRoot, @registerLoadersFileName
+    fsp.exists file
+    .then (exists) =>
+      if exists
+        realRequire file
+      else
+        if vivify
+          @updateFile @registerLoadersFileName, """
+            require('coffee-script/register');
+            require('caffeine-script/register');
+          """
+        {}
+
   @loadConfig: (npmRoot, vivifyConfigFile = false)=>
     file = path.join npmRoot, @configFileName
     fsp.exists file
@@ -68,23 +82,23 @@ module.exports = class BuildConfigurator
     else
       log "no change: #{fileName}".gray
 
-  @go: (npmRoot, {pretend, configure, init}) =>
+  @go: (npmRoot, {pretend, configure, init, force}) =>
     log "PRETEND".red if pretend
     Promise.then =>
-      @init npmRoot, {pretend} if init
-    .then => @loadConfig(npmRoot, configure)
-    .then (abcConfig) =>
-
-      if pretend
-        @pretend npmRoot, abcConfig
+      if init
+        @init {npmRoot, pretend, force} if init
       else
-        @writeConfig npmRoot, abcConfig
+        @loadConfig npmRoot, configure
+        .then (abcConfig) =>
 
-  @init: (npmRoot, {pretend}) ->
-    src = path.join __dirname, "../../../init-files"
-    dst = npmRoot
-    log "cp standard files from: ".gray + src.green
-    recursiveCopy src, dst, dot: true unless pretend
+          if pretend
+            @pretend npmRoot, abcConfig
+          else
+            @writeConfig npmRoot, abcConfig
+
+  @init: (options) ->
+    log init: {options}
+    require('./DefaultFiles').getInitStructure(options).write options
 
   @pretend: (npmRoot, abcConfig) ->
     log formattedInspect
