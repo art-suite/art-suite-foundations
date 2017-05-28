@@ -3,6 +3,4 @@
 
 module.exports = require './namespace'
 module.exports
-.addModules
-  Stub: require './Stub'
 require './FileBuilder'

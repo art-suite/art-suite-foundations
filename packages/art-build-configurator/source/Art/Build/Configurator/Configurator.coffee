@@ -7,7 +7,7 @@ recursiveCopy = require 'recursive-copy'
 
 ConfigureWebpack = require './ConfigureWebpack'
 ConfigurePackageJson = require './ConfigurePackageJson'
-{formattedInspect, log, Promise, merge} = require 'art-standard-lib'
+{formattedInspect, log, Promise, merge, compactFlatten} = require 'art-standard-lib'
 
 module.exports = class BuildConfigurator
 
@@ -82,11 +82,12 @@ module.exports = class BuildConfigurator
     else
       log "no change: #{fileName}".gray
 
-  @go: (npmRoot, {pretend, configure, init, force}) =>
+  @go: (npmRoot, options) =>
+    {pretend, configure, init, force} = options
     log "PRETEND".red if pretend
     Promise.then =>
       if init
-        @init {npmRoot, pretend, force} if init
+        @init merge options, {npmRoot}
       else
         @loadConfig npmRoot, configure
         .then (abcConfig) =>
@@ -97,8 +98,8 @@ module.exports = class BuildConfigurator
             @writeConfig npmRoot, abcConfig
 
   @init: (options) ->
-    log init: {options}
-    require('./DefaultFiles').getInitStructure(options).write options
+    wrote = compactFlatten require('./DefaultFiles').getInitStructure(options).write options
+    log "wrote #{wrote.length} files"
 
   @pretend: (npmRoot, abcConfig) ->
     log formattedInspect

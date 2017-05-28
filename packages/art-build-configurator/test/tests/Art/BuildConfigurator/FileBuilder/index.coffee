@@ -5,3 +5,4 @@ module.exports = require './namespace'
 module.exports
 .addModules
   Structure: require './Structure'
+  Write:     require './Write'    

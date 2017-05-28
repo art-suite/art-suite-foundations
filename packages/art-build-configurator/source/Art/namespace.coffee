@@ -5,4 +5,4 @@ Neptune = require 'neptune-namespaces'
 module.exports = Neptune.Art ||
 Neptune.addNamespace 'Art', class Art extends Neptune.Base
   ;
-require './BuildConfigurator/namespace'
+require './Build/namespace'

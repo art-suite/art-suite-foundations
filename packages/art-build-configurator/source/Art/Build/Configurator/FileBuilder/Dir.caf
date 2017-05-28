@@ -16,4 +16,4 @@ createObjectTreeFactory
 
     write: (options = {}) ->
       path = Path.join options.path || '.', @props.dirname
-      each child in @children do child.write merge options, {path}
+      array child in @children do child.write merge options, {path}

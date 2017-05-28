@@ -8,6 +8,8 @@
   .option '-c, --configure',  "configure and update all"
   .option '--pv',             "show your package's current version"
   .option '--init',           'initialize a new Art-style project'
+  .option '-f, --force',      'when initialize, force overwrite all'
+  .option '-v, --verbose',    'verbose'
   .on "--help", ->
     console.log
       """

@@ -1,31 +1,17 @@
 import &StandardImport, &ArtObjectTreeFactory, &FileBuilder
-
 path = &path
 
 class DefaultFiles extends BaseClass
-  @init: (npmRoot, {pretend}) ->
-    # src = path.join __dirname, "../../../init-files"
-
   @getInitStructure: (options = {})->
     {npmRoot = process.cwd()} = options
 
     npmName = path.basename npmRoot
-
     namespacePath = getCapitalizedCodeWords npmName
-    log {} npmName, npmRoot, namespacePath
-
-    sourcePath = path.join (compactFlatten [] :source, namespacePath)...
-    testsPath = path.join (compactFlatten [] :tests, namespacePath)...
-    log {} sourcePath, testsPath
-
     namespaceDirPath = namespacePath.join '/'
-
     mostSpecificName = peek namespacePath
 
-    rootPath = '.'
-
     Dir
-      rootPath
+      '.'
       File :.travis.yml """
         language: node_js
         node_js:
