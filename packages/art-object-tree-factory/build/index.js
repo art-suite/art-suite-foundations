@@ -64,29 +64,53 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Art, ObjectTreeFactory,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Art = __webpack_require__(4);
+
+module.exports = Art.ObjectTreeFactory || Art.addNamespace('ObjectTreeFactory', ObjectTreeFactory = (function(superClass) {
+  extend(ObjectTreeFactory, superClass);
+
+  function ObjectTreeFactory() {
+    return ObjectTreeFactory.__super__.constructor.apply(this, arguments);
+  }
+
+  return ObjectTreeFactory;
+
+})(Neptune.Base));
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-standard-lib");
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(3);
-
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ObjectTreeFactory, compactFlatten, fastBind, isFunction, mergeIntoBasic, ref, ref1, upperCamelCase;
+module.exports = __webpack_require__(0);
 
-ref = __webpack_require__(0), compactFlatten = ref.compactFlatten, upperCamelCase = ref.upperCamelCase;
+module.exports.includeInNamespace(__webpack_require__(3));
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ObjectTreeFactory, compactFlatten, fastBind, isFunction, isPlainObject, mergeIntoBasic, ref, ref1, upperCamelCase;
+
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, upperCamelCase = ref.upperCamelCase, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
 mergeIntoBasic = function(into, source) {
   var k, v;
@@ -97,7 +121,7 @@ mergeIntoBasic = function(into, source) {
   return into;
 };
 
-ref1 = __webpack_require__(0), isFunction = ref1.isFunction, fastBind = ref1.fastBind;
+ref1 = __webpack_require__(1), isFunction = ref1.isFunction, fastBind = ref1.fastBind;
 
 module.exports = ObjectTreeFactory = (function() {
   var compactFlattenObjectTreeNodeNames, deepArgsProcessing, nodeNameRegexp, preprocessElementBasic;
@@ -122,8 +146,8 @@ module.exports = ObjectTreeFactory = (function() {
 
   /*
   IN:
-    options:
-      mergePropsInto: (props, ...) ->
+    options: (optional)
+      mergePropsInto: (intoProps, fromProps) ->
         function to merge arguments 1 on into props
         default: mergeIntoBasic
   
@@ -148,7 +172,7 @@ module.exports = ObjectTreeFactory = (function() {
   
   
         defualt: preprocessElementBasic (no-op)
-    nodeFactory: ->
+    nodeFactory: (optional) ->
       IN:
         props:    plain object mapping props to prop-values
         children: flat, compacted array of children nodes
@@ -170,11 +194,17 @@ module.exports = ObjectTreeFactory = (function() {
     return a;
   };
 
-  ObjectTreeFactory.createObjectTreeFactory = function(options, nodeFactory) {
-    var Factory, abstractClass, bindList, i, inspectedName, k, klass, len, mergePropsInto, preprocessElement, v;
+  ObjectTreeFactory.createObjectTreeFactory = function(a, b) {
+    var Factory, abstractClass, bindList, i, inspectedName, k, klass, len, mergePropsInto, nodeFactory, options, preprocessElement, v;
+    nodeFactory = isFunction(a) ? a : isFunction(b) ? b : void 0;
+    options = isPlainObject(a) ? a : isPlainObject(b) ? b : {};
     if (!nodeFactory) {
-      nodeFactory = options;
-      options = {};
+      if (!options["class"]) {
+        throw new Error("nodeFactory or options.class required");
+      }
+      nodeFactory = function(props, children) {
+        return new options["class"](props, children);
+      };
     }
     mergePropsInto = options.mergePropsInto, inspectedName = options.inspectedName, preprocessElement = options.preprocessElement;
     mergePropsInto || (mergePropsInto = mergeIntoBasic);
@@ -335,43 +365,14 @@ module.exports = ObjectTreeFactory = (function() {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(4).includeInNamespace(__webpack_require__(2));
-
-
-/***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, ObjectTreeFactory,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Art = __webpack_require__(5);
-
-module.exports = Art.ObjectTreeFactory || Art.addNamespace('ObjectTreeFactory', ObjectTreeFactory = (function(superClass) {
-  extend(ObjectTreeFactory, superClass);
-
-  function ObjectTreeFactory() {
-    return ObjectTreeFactory.__super__.constructor.apply(this, arguments);
-  }
-
-  return ObjectTreeFactory;
-
-})(Neptune.Base));
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(6);
+Neptune = __webpack_require__(5);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -384,18 +385,20 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 })(Neptune.Base));
 
+__webpack_require__(0);
+
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(1);
+module.exports = __webpack_require__(2);
 
 
 /***/ })
