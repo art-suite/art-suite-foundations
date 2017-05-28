@@ -19,7 +19,16 @@ module.exports = suite: ->
       children: []
     )
 
-  test "class", ->
+  test "class basic", ->
+    f = createObjectTreeFactory class MyClass extends BaseClass
+      constructor: (@props, @children) ->
+
+    out = f foo: 123, "hi"
+    assert.instanceof MyClass, out
+    assert.eq out.props, foo: 123
+    assert.eq out.children, ["hi"]
+
+  test "class full", ->
     class MyClass extends BaseClass
       constructor: (@props, @children) ->
 
