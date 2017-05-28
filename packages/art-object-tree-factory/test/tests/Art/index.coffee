@@ -3,5 +3,4 @@
 
 module.exports = require './namespace'
 module.exports
-.addModules
-  ObjectTreeFactory: require './ObjectTreeFactory'
+require './ObjectTreeFactory'

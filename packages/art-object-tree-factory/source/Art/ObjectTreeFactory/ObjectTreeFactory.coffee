@@ -1,4 +1,4 @@
-{compactFlatten, upperCamelCase} = require 'art-standard-lib'
+{compactFlatten, upperCamelCase, isFunction, isPlainObject} = require 'art-standard-lib'
 
 mergeIntoBasic = (into, source) ->
   into[k] = v for k, v of source
@@ -16,7 +16,7 @@ module.exports = class ObjectTreeFactory
 
   ###
   IN:
-    options:
+    options: (optional)
       mergePropsInto: (intoProps, fromProps) ->
         function to merge arguments 1 on into props
         default: mergeIntoBasic
@@ -42,7 +42,7 @@ module.exports = class ObjectTreeFactory
 
 
         defualt: preprocessElementBasic (no-op)
-    nodeFactory: ->
+    nodeFactory: (optional) ->
       IN:
         props:    plain object mapping props to prop-values
         children: flat, compacted array of children nodes
@@ -61,12 +61,14 @@ module.exports = class ObjectTreeFactory
   ###
   preprocessElementBasic = (a) -> a
   @createObjectTreeFactory = (
-    options
-    nodeFactory
+    a
+    b
   ) =>
+    nodeFactory = if isFunction a then a else if isFunction b then b
+    options = if isPlainObject a then a else if isPlainObject b then b else {}
     unless nodeFactory
-      nodeFactory = options
-      options = {}
+      throw new Error "nodeFactory or options.class required" unless options.class
+      nodeFactory = (props, children) -> new (options.class) props, children
 
     {mergePropsInto, inspectedName, preprocessElement} = options
     mergePropsInto ||= mergeIntoBasic
