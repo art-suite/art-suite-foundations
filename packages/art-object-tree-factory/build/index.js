@@ -108,9 +108,11 @@ module.exports.includeInNamespace(__webpack_require__(3));
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ObjectTreeFactory, compactFlatten, fastBind, isFunction, isPlainObject, mergeIntoBasic, ref, ref1, upperCamelCase;
+var ObjectTreeFactory, compactFlatten, fastBind, isClass, isFunction, isPlainObject, log, mergeIntoBasic, ref, ref1, upperCamelCase,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, upperCamelCase = ref.upperCamelCase, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, log = ref.log, upperCamelCase = ref.upperCamelCase, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject, isClass = ref.isClass;
 
 mergeIntoBasic = function(into, source) {
   var k, v;
@@ -145,8 +147,8 @@ module.exports = ObjectTreeFactory = (function() {
 
 
   /*
-  IN:
-    options: (optional)
+  IN: any order of args which are:
+    plainObject-options: (optional)
       mergePropsInto: (intoProps, fromProps) ->
         function to merge arguments 1 on into props
         default: mergeIntoBasic
@@ -172,12 +174,15 @@ module.exports = ObjectTreeFactory = (function() {
   
   
         defualt: preprocessElementBasic (no-op)
-    nodeFactory: (optional) ->
+  
+    function-nodeFactory: (optional) ->
       IN:
         props:    plain object mapping props to prop-values
         children: flat, compacted array of children nodes
       OUT:
         node
+  
+    class-nodeClass: class Foo extends BaseObject
   
   OUT: objectTreeFactory = ->
     IN:
@@ -194,28 +199,48 @@ module.exports = ObjectTreeFactory = (function() {
     return a;
   };
 
-  ObjectTreeFactory.createObjectTreeFactory = function(a, b) {
-    var Factory, abstractClass, bindList, i, inspectedName, k, klass, len, mergePropsInto, nodeFactory, options, preprocessElement, v;
-    nodeFactory = isFunction(a) ? a : isFunction(b) ? b : void 0;
-    options = isPlainObject(a) ? a : isPlainObject(b) ? b : {};
-    if (!nodeFactory) {
-      if (!options["class"]) {
-        throw new Error("nodeFactory or options.class required");
+  ObjectTreeFactory.createObjectTreeFactory = function() {
+    var Factory, TreeFactoryNode, a, abstractClass, bindList, i, inspectedName, j, k, klass, len, len1, mergePropsInto, nodeFactory, options, preprocessElement, v;
+    for (i = 0, len = arguments.length; i < len; i++) {
+      a = arguments[i];
+      if (a != null) {
+        switch (false) {
+          case !isClass(a):
+            klass = a;
+            break;
+          case !isFunction(a):
+            nodeFactory = a;
+            break;
+          case !isPlainObject(a):
+            options = a;
+        }
       }
-      nodeFactory = function(props, children) {
-        return new options["class"](props, children);
-      };
     }
+    options || (options = {});
+    klass || (klass = options["class"]);
+    nodeFactory || (nodeFactory = true ? (klass || (klass = TreeFactoryNode = (function(superClass) {
+      extend(TreeFactoryNode, superClass);
+
+      function TreeFactoryNode(props1, children1) {
+        this.props = props1;
+        this.children = children1;
+      }
+
+      return TreeFactoryNode;
+
+    })(BaseObject)), function(props, children) {
+      return new klass(props, children);
+    }) : void 0);
     mergePropsInto = options.mergePropsInto, inspectedName = options.inspectedName, preprocessElement = options.preprocessElement;
     mergePropsInto || (mergePropsInto = mergeIntoBasic);
     preprocessElement || (preprocessElement = preprocessElementBasic);
     Factory = function() {
-      var children, el, i, len, oneProps, props;
+      var children, el, j, len1, oneProps, props;
       oneProps = null;
       props = null;
       children = [];
-      for (i = 0, len = arguments.length; i < len; i++) {
-        el = arguments[i];
+      for (j = 0, len1 = arguments.length; j < len1; j++) {
+        el = arguments[j];
         if (el = preprocessElement(el)) {
           switch (el.constructor) {
             case Object:
@@ -241,10 +266,10 @@ module.exports = ObjectTreeFactory = (function() {
       props || (props = oneProps || {});
       return nodeFactory(props, children);
     };
-    if (klass = options["class"]) {
+    if (klass) {
       Factory["class"] = klass;
       klass.Factory = Factory;
-      abstractClass = klass.getAbstractClass();
+      abstractClass = (typeof klass.getAbstractClass === "function" ? klass.getAbstractClass() : void 0) || Object;
       bindList = compactFlatten([
         (function() {
           var results;
@@ -259,8 +284,8 @@ module.exports = ObjectTreeFactory = (function() {
         })(), options.bind
       ]);
       inspectedName || (inspectedName = klass.getName() + "Factory");
-      for (i = 0, len = bindList.length; i < len; i++) {
-        k = bindList[i];
+      for (j = 0, len1 = bindList.length; j < len1; j++) {
+        k = bindList[j];
         Factory[k] = fastBind(klass[k], klass);
       }
     }
