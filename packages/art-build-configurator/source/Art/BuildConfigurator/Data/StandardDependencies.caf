@@ -8,6 +8,7 @@ art-build-configurator:               :^1.11.5
 
 # Caffeine.Suite
 caffeine-script:                      :^0.44.5
+caffeine-script-runtime:              :^1.0.0
 
 # Non Art.Suite, Non Caffeine.Suite support npms
 detect-node:                          :^2.0.3
