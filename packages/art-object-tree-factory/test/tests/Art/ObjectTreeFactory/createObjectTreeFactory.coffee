@@ -28,7 +28,7 @@ module.exports = suite: ->
           props: @props
           children: (toPlainObjects child for child in @children)
 
-    f = createObjectTreeFactory class: MyClass
+    f = createObjectTreeFactory MyClass
     assert.eq (f foo: 123).plainObjects, props: {foo: 123}, children: []
 
     assert.eq(
