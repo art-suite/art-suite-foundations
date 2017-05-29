@@ -23,7 +23,7 @@ webpackNodeExternals = require 'webpack-node-externals'
 fs = require 'fs'
 path = require 'path'
 
-BuildConfigurator = require './namespace'
+Configurator = require './namespace'
 
 {StandardWebpackConfig} = require './Data'
 
@@ -82,4 +82,4 @@ defineModule module, class ConfigureWebpack extends BaseClass
   @standardWebpackConfigJs: StandardWebpackConfig.js
 
   @writeConfig: (npmRoot) =>
-    BuildConfigurator.updateFile path.join(npmRoot, @outFileName), @standardWebpackConfigJs
+    Configurator.updateFile path.join(npmRoot, @outFileName), @standardWebpackConfigJs

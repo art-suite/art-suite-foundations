@@ -31,12 +31,12 @@ createObjectTreeFactory
         else
           verbose && log if exists = fs.existsSync path
             if contents == (fs.readFileSync path).toString()
-              "same: #{path}".gray
+              "same:    #{path}".gray
             else
               if force
                 "overwriting: ".yellow + path.green
               else
-                "cowardly refusing to overwrite (use: force): ".yellow + path
+                "skipped: #{path}".gray + " (cowardly refusing to overwrite - use: force)".yellow
           else
             "writing: ".gray + path.green
 

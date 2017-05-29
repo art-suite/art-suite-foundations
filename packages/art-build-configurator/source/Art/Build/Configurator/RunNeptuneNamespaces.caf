@@ -2,7 +2,7 @@ import &ArtStandardLib
 
 NeptuneNamespacesGenerator = require 'neptune-namespaces/generator'
 
-(dirname, watch = true) ->
+(dirname, watch) ->
   existingRoots = array root in NeptuneNamespacesGenerator.standardRoots when &fs.existsSync "#{dirname}/#{root}"
     root
 
