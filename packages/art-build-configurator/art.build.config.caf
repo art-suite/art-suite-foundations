@@ -3,13 +3,14 @@ target:
 
 npm:
   dependencies:
-    webpack-node-externals: :^1.5.4
-    webpack-merge:          :^3.0.0
-    fs-extra:               :^3.0.0
-    colors:                 :^1.1.2
-    commander:              :^2.9.0
-    recursive-copy:         :^2.0.6
-    glob-promise:           :^3.1.0
+    art-object-tree-factory:  :^1.0.0
+    colors:                   :^1.1.2
+    commander:                :^2.9.0
+    fs-extra:                 :^3.0.0
+    glob-promise:             :^3.1.0
+    recursive-copy:           :^2.0.6
+    webpack-merge:            :^3.0.0
+    webpack-node-externals:   :^1.5.4
 
   description: "" Tools for configuring npm (package.json) and webpack (webpack.config.js)
 
@@ -18,4 +19,4 @@ npm:
 
 webpack:
   common: {}
-  targets: abcCommand: {}
+  targets: abcCommand: true, index: true

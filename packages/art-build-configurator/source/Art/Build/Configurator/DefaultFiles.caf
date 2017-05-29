@@ -1,4 +1,4 @@
-import &StandardImport, &ArtObjectTreeFactory, &FileBuilder
+import &StandardImport, &FileBuilder
 path = &path
 
 class DefaultFiles extends BaseClass

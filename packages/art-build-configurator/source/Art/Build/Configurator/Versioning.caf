@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtClassSystem
+import &StandardImport
 
 class Versioning extends BaseClass
   @classGetter

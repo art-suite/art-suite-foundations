@@ -3,7 +3,7 @@
 {pv, pretend, configure, init} = commander =
 
   &commander
-  .version &Package.version
+  .version &package.version
   .option '-p, --pretend',    "show the configs that will be generated without writing them"
   .option '-c, --configure',  "configure and update all"
   .option '--pv',             "show your package's current version"

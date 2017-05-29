@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-if (false) { // use build
+if (true) { // use build
   require('./build/abcCommand');
 } else {
-  require('caffeine-mc/register');
+  require('./register');
   require('./abcCommand');
 }

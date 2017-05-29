@@ -1,4 +1,4 @@
-import &ArtStandardLib
+import &StandardImport
 
 NeptuneNamespacesGenerator = require 'neptune-namespaces/generator'
 
