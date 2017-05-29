@@ -540,7 +540,7 @@ module.exports = Types = (function() {
     <->
        <-- .constructor
        --> .prototype
-    ^  Object.prototypeOf
+    ^  Object.getPrototypeOf
   
   MAP:
     A <-> aPrototype

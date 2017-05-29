@@ -544,7 +544,7 @@ module.exports = Types = (function() {
     <->
        <-- .constructor
        --> .prototype
-    ^  Object.prototypeOf
+    ^  Object.getPrototypeOf
   
   MAP:
     A <-> aPrototype
@@ -1426,11 +1426,11 @@ module.exports = StringExtensions = (function() {
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MathExtensions, Regexp, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
+var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
-Regexp = __webpack_require__(15);
+RegExpExtensions = __webpack_require__(15);
 
-numberRegexp = Regexp.numberRegexp;
+numberRegexp = RegExpExtensions.numberRegexp;
 
 float64Precision = 0.0000000001;
 
@@ -2371,61 +2371,63 @@ defineModule(module, function() {
 /* 15 */
 /***/ (function(module, exports) {
 
-var Regexp;
+var RegExpExtensions;
 
-module.exports = Regexp = (function() {
-  function Regexp() {}
+module.exports = RegExpExtensions = (function() {
+  var k, ref, v;
 
-  Regexp.escapeRegExp = function(string) {
+  function RegExpExtensions() {}
+
+  RegExpExtensions.escapeRegExp = function(string) {
     return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
   };
 
-  Regexp.findUrlProtocolRegexp = /([\w-]+)(:\/\/)/;
+  RegExpExtensions.findUrlProtocolRegExp = /([\w-]+)(:\/\/)/;
 
-  Regexp.findDomainRegexp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/;
+  RegExpExtensions.findDomainRegExp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/;
 
-  Regexp.urlQueryParamsRegexp = /(?:[-+=&*._\w]|%[a-f\d]{2})+/i;
+  RegExpExtensions.urlQueryParamsRegExp = /(?:[-+=&*._\w]|%[a-f\d]{2})+/i;
 
-  Regexp.findUrlPathRegexp = /(?:\/(?:[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2})*)*/;
+  RegExpExtensions.findUrlPathRegExp = /(?:\/(?:[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2})*)*/;
 
-  Regexp.findUrlPortRegexp = /(\:)(\d+)/;
+  RegExpExtensions.findUrlPortRegExp = /(\:)(\d+)/;
 
-  Regexp.findEmailRegexp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + Regexp.findDomainRegexp.source + ")", "i");
+  RegExpExtensions.findEmailRegExp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + RegExpExtensions.findDomainRegExp.source + ")", "i");
 
-  Regexp.emailRegexp = RegExp("^" + Regexp.findEmailRegexp.source + "$", "i");
+  RegExpExtensions.emailRegExp = RegExp("^" + RegExpExtensions.findEmailRegExp.source + "$", "i");
 
-  Regexp.numberRegexp = /([-]?\.[0-9]+)|([-]?[0-9]+(\.[0-9]+)?)/;
+  RegExpExtensions.numberRegExp = /([-]?\.[0-9]+)|([-]?[0-9]+(\.[0-9]+)?)/;
 
-  Regexp.urlProtocolRegexp = RegExp("^" + Regexp.findUrlProtocolRegexp.source + "$", "i");
+  RegExpExtensions.urlProtocolRegExp = RegExp("^" + RegExpExtensions.findUrlProtocolRegExp.source + "$", "i");
 
-  Regexp.domainRegexp = RegExp("^" + Regexp.findDomainRegexp.source + "$", "i");
+  RegExpExtensions.domainRegExp = RegExp("^" + RegExpExtensions.findDomainRegExp.source + "$", "i");
 
-  Regexp.urlPathRegexp = RegExp("^" + Regexp.findUrlPathRegexp.source + "$", "i");
+  RegExpExtensions.urlPathRegExp = RegExp("^" + RegExpExtensions.findUrlPathRegExp.source + "$", "i");
 
-  Regexp.urlQueryRegexp = RegExp("^" + Regexp.urlQueryParamsRegexp.source + "$", "i");
+  RegExpExtensions.urlQueryRegExp = RegExp("^" + RegExpExtensions.urlQueryParamsRegExp.source + "$", "i");
 
-  Regexp.isoDateRegexp = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+  RegExpExtensions.isoDateRegExp = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
 
-  Regexp.hex16ColorRegex = /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i;
+  RegExpExtensions.hex16ColorRegex = /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i;
 
-  Regexp.hex256ColorRegex = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
+  RegExpExtensions.hex256ColorRegex = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
 
-  Regexp.rgbColorRegex = /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/;
+  RegExpExtensions.rgbColorRegex = /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/;
 
-  Regexp.rgbaColorRegex = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
+  RegExpExtensions.rgbaColorRegex = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
 
-  Regexp.colorRegex = new RegExp("(" + Regexp.hex16ColorRegex.source + ")|(" + Regexp.hex256ColorRegex.source + ")|(" + Regexp.rgbColorRegex.source + ")|(" + Regexp.rgbaColorRegex.source + ")");
+  RegExpExtensions.colorRegex = new RegExp("(" + RegExpExtensions.hex16ColorRegex.source + ")|(" + RegExpExtensions.hex256ColorRegex.source + ")|(" + RegExpExtensions.rgbColorRegex.source + ")|(" + RegExpExtensions.rgbaColorRegex.source + ")");
 
-  Regexp.wordsRegex = /[^\s]+/g;
+  RegExpExtensions.wordsRegex = /[^\s]+/g;
 
-  Regexp.exactlyOneWordRegex = /^[^\s]+$/;
+  RegExpExtensions.exactlyOneWordRegex = /^[^\s]+$/;
 
 
   /*
   match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
   
   USAGE:
-    [__, protocol, __, domain, __, port, path, __, query] = str.match findUrlRegexp
+    [__, protocol, __, domain, __, port, path, __, query] = str.match findUrlRegExp
   
   DESIGN NOTE:
     The reason why I included the fixed strings ('://', ':' and '?') was so that
@@ -2434,13 +2436,23 @@ module.exports = Regexp = (function() {
       matchResult.slice(1).join ''
    */
 
-  Regexp.findUrlRegexp = RegExp("(?:" + Regexp.findUrlProtocolRegexp.source + ")(" + Regexp.findDomainRegexp.source + ")(?:" + Regexp.findUrlPortRegexp.source + ")?(" + Regexp.findUrlPathRegexp.source + ")?(?:(\\?)(" + Regexp.urlQueryParamsRegexp.source + ")?)?", "i");
+  RegExpExtensions.findUrlRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?", "i");
 
-  Regexp.findSourceReferenceUrlRegexp = RegExp("(" + Regexp.findUrlProtocolRegexp.source + ")(" + Regexp.findDomainRegexp.source + ")?(?:" + Regexp.findUrlPortRegexp.source + ")?(" + Regexp.findUrlPathRegexp.source + ")?(?:(\\?)(" + Regexp.urlQueryParamsRegexp.source + ")?)?(?:\\:(\\d+))?(?:\\:(\\d+))?", "i");
+  RegExpExtensions.findSourceReferenceUrlRegExp = RegExp("(" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")?(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:\\:(\\d+))?(?:\\:(\\d+))?", "i");
 
-  Regexp.urlRegexp = RegExp("^" + Regexp.findUrlRegexp.source + "$", "i");
+  RegExpExtensions.urlRegExp = RegExp("^" + RegExpExtensions.findUrlRegExp.source + "$", "i");
 
-  return Regexp;
+  ref = RegExpExtensions;
+  for (k in ref) {
+    v = ref[k];
+    if (!(/RegExp$/.test(k))) {
+      continue;
+    }
+    RegExpExtensions[k.replace(/RegExp/, "Regexp")] = v;
+    RegExpExtensions[k.replace(/RegExp/, "Regex")] = v;
+  }
+
+  return RegExpExtensions;
 
 })();
 
@@ -6482,7 +6494,7 @@ module.exports.includeInNamespace(__webpack_require__(55)).addModules({
   ParseUrl: __webpack_require__(21),
   Promise: __webpack_require__(14),
   PromisedFileReader: __webpack_require__(43),
-  Regexp: __webpack_require__(15),
+  RegExpExtensions: __webpack_require__(15),
   Ruby: __webpack_require__(44),
   ShallowClone: __webpack_require__(45),
   StringExtensions: __webpack_require__(7),
