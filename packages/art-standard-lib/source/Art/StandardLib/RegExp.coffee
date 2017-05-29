@@ -67,6 +67,6 @@ module.exports = class RegExp
   # OUT: see findUrlRegExp
   @urlRegExp: ///^#{@findUrlRegExp.source}$///i
 
-  # Regexp vs RegExp names
+  # old "Regexp" names - DEPRICATED
   for k, v of @ when /RegExp$/.test k
     @[k.replace /RegExp/, "Regexp"] = v
