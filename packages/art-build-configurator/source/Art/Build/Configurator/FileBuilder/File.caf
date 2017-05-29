@@ -27,8 +27,6 @@ createObjectTreeFactory
       if selected
         exists = fs.existsSync path
 
-        prefix = predend && "pretend-"
-
         if verbose
           logContents = if exists
             if contents == (fs.readFileSync path).toString()
@@ -43,7 +41,7 @@ createObjectTreeFactory
 
           log if pretend then "PRETEND-".green + logContents else logContents
 
-        if !predend && (!exists || force)
+        if !pretend && (!exists || force)
           fs.ensureDirSync Path.dirname path
           fs.writeFileSync path, contents
           path
