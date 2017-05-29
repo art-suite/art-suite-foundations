@@ -937,24 +937,15 @@ Caf.defMod(module, () => {
     BaseClass,
     isFunction,
     isRegExp,
-    predend,
     log;
   ({
     createObjectTreeFactory,
     BaseClass,
     isFunction,
     isRegExp,
-    predend,
     log
   } = Caf.import(
-    [
-      "createObjectTreeFactory",
-      "BaseClass",
-      "isFunction",
-      "isRegExp",
-      "predend",
-      "log"
-    ],
+    ["createObjectTreeFactory", "BaseClass", "isFunction", "isRegExp", "log"],
     [__webpack_require__(3), __webpack_require__(19), global]
   ));
   Path = __webpack_require__(2);
@@ -986,7 +977,6 @@ Caf.defMod(module, () => {
             fs,
             selected,
             exists,
-            prefix,
             logContents;
           ({ filename, contents } = this.props);
           ({
@@ -1004,8 +994,7 @@ Caf.defMod(module, () => {
                 : isRegExp(select) ? select.test(path) : undefined
             : true;
           return selected
-            ? (exists = fs.existsSync(path), prefix = predend &&
-                "pretend-", verbose
+            ? (exists = fs.existsSync(path), verbose
                 ? (logContents = exists
                     ? contents === fs.readFileSync(path).toString()
                         ? `same:    ${Caf.toString(path)}`.gray
@@ -1016,7 +1005,7 @@ Caf.defMod(module, () => {
                     : "writing: ".gray + path.green, log(
                     pretend ? "PRETEND-".green + logContents : logContents
                   ))
-                : undefined, !predend && (!exists || force)
+                : undefined, !pretend && (!exists || force)
                 ? (fs.ensureDirSync(Path.dirname(path)), fs.writeFileSync(
                     path,
                     contents
