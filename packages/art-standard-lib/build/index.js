@@ -2408,19 +2408,19 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.isoDateRegExp = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
 
-  RegExpExtensions.hex16ColorRegex = /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i;
+  RegExpExtensions.hex16ColorRegExp = /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i;
 
-  RegExpExtensions.hex256ColorRegex = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
+  RegExpExtensions.hex256ColorRegExp = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
 
-  RegExpExtensions.rgbColorRegex = /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/;
+  RegExpExtensions.rgbColorRegExp = /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/;
 
-  RegExpExtensions.rgbaColorRegex = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
+  RegExpExtensions.rgbaColorRegExp = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
 
-  RegExpExtensions.colorRegex = new RegExp("(" + RegExpExtensions.hex16ColorRegex.source + ")|(" + RegExpExtensions.hex256ColorRegex.source + ")|(" + RegExpExtensions.rgbColorRegex.source + ")|(" + RegExpExtensions.rgbaColorRegex.source + ")");
+  RegExpExtensions.colorRegExp = new RegExp("(" + RegExpExtensions.hex16ColorRegExp.source + ")|(" + RegExpExtensions.hex256ColorRegExp.source + ")|(" + RegExpExtensions.rgbColorRegExp.source + ")|(" + RegExpExtensions.rgbaColorRegExp.source + ")");
 
-  RegExpExtensions.wordsRegex = /[^\s]+/g;
+  RegExpExtensions.wordsRegExp = /[^\s]+/g;
 
-  RegExpExtensions.exactlyOneWordRegex = /^[^\s]+$/;
+  RegExpExtensions.exactlyOneWordRegExp = /^[^\s]+$/;
 
 
   /*
