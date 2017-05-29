@@ -1,4 +1,4 @@
-module.exports = class RegExp
+module.exports = class RegExpExtensions
   # http://stackoverflow.com/questions/201323/using-a-regular-expression-to-validate-an-email-address
   @escapeRegExp: (string) -> string.replace /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"
 
@@ -11,23 +11,23 @@ module.exports = class RegExp
   @findUrlPathRegExp:     /(?:\/(?:[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2})*)*/
   @findUrlPortRegExp:     /(\:)(\d+)/
 
-  @findEmailRegExp: ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegExp.source})///i
+  @findEmailRegExp:       ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegExp.source})///i
 
-  @emailRegExp: ///^#{@findEmailRegExp.source}$///i
+  @emailRegExp:           ///^#{@findEmailRegExp.source}$///i
 
-  @numberRegExp: /([-]?\.[0-9]+)|([-]?[0-9]+(\.[0-9]+)?)/
+  @numberRegExp:          /([-]?\.[0-9]+)|([-]?[0-9]+(\.[0-9]+)?)/
 
-  @urlProtocolRegExp: ///^#{@findUrlProtocolRegExp.source}$///i
-  @domainRegExp:      ///^#{@findDomainRegExp.source}$///i
-  @urlPathRegExp:     ///^#{@findUrlPathRegExp.source}$///i
-  @urlQueryRegExp:    ///^#{@urlQueryParamsRegExp.source}$///i
+  @urlProtocolRegExp:     ///^#{@findUrlProtocolRegExp.source}$///i
+  @domainRegExp:          ///^#{@findDomainRegExp.source}$///i
+  @urlPathRegExp:         ///^#{@findUrlPathRegExp.source}$///i
+  @urlQueryRegExp:        ///^#{@urlQueryParamsRegExp.source}$///i
 
-  @isoDateRegExp: /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/
+  @isoDateRegExp:         /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/
 
-  @hex16ColorRegex:   /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i
-  @hex256ColorRegex:  /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i
-  @rgbColorRegex:     /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/
-  @rgbaColorRegex:    /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/
+  @hex16ColorRegex:       /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i
+  @hex256ColorRegex:      /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i
+  @rgbColorRegex:         /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/
+  @rgbaColorRegex:        /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/
 
   @colorRegex:  new RegExp "(#{@hex16ColorRegex.source})|(#{@hex256ColorRegex.source})|(#{@rgbColorRegex.source})|(#{@rgbaColorRegex.source})"
 
@@ -67,6 +67,8 @@ module.exports = class RegExp
   # OUT: see findUrlRegExp
   @urlRegExp: ///^#{@findUrlRegExp.source}$///i
 
-  # old "Regexp" names - DEPRICATED
+  # *Regexp names DEPRICATED
+  # *Regex names - maybe DEPRICATED... ?
   for k, v of @ when /RegExp$/.test k
     @[k.replace /RegExp/, "Regexp"] = v
+    @[k.replace /RegExp/, "Regex"] = v

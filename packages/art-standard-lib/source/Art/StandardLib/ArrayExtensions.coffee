@@ -1,6 +1,6 @@
 {bound, max, intRand, modulo} = require "./MathExtensions"
 {isNumber, isString} = require './TypesExtended'
-{wordsRegex, exactlyOneWordRegex} = require './Regexp'
+{wordsRegex, exactlyOneWordRegex} = require './RegExpExtensions'
 
 module.exports = class ArrayExtensions
 

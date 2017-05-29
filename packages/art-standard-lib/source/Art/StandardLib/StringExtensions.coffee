@@ -1,6 +1,6 @@
 FoundationMath = require './MathExtensions'
 Types          = require './TypesExtended'
-{wordsRegex} = require './Regexp'
+{wordsRegex} = require './RegExpExtensions'
 {intRand} = FoundationMath
 {isString, isNumber, isPlainObject, isArray} = Types
 {compactFlatten} = require './Core'

@@ -13,7 +13,7 @@ module.exports = [
   require "./Environment"
   require "./ParseUrl"
   require "./PromisedFileReader"
-  require "./Regexp"
+  require "./RegExpExtensions"
   require "./Ruby"
   require "./ShallowClone"
   require "./Time"

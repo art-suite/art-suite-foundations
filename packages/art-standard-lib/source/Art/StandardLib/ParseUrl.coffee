@@ -1,4 +1,4 @@
-# TODO: DRY w.r.t. StandardLib/Regexp
+# TODO: DRY w.r.t. StandardLib/RegExpExtensions
 module.exports = class ParseUrl
 
   @parseQuery: (qs = global.location?.search || "") ->

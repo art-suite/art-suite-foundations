@@ -8,6 +8,7 @@
     "art-testbench": "^1.10.3",
     "bluebird": "^3.4.6",
     "caffeine-script": "^0.44.5",
+    "caffeine-script-runtime": "^1.0.0",
     "case-sensitive-paths-webpack-plugin": "^1.1.4",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.12.3",

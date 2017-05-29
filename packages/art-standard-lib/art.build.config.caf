@@ -1,0 +1,12 @@
+target: node: true
+package:
+  description: "" The Standard Library for JavaScript that aught to be.
+  dependencies:
+    bluebird:   :^3.4.6
+    dateformat: :^2.0.0
+
+webpack:
+  targets:
+    index: {}
+    Types: {}
+    Core: {}

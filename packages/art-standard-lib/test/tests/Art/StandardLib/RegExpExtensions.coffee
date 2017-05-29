@@ -3,7 +3,7 @@
 
 {emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, urlRegexp} = StandardLib
 
-suite "Art.StandardLib.StandardLib.Regexp", ->
+module.exports = suite: ->
   test "emailRegexp", ->
     assert.eq "shanebdavis@gmail.com".match(emailRegexp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
     assert.eq "shanebdavis@www.gmail.com".match(emailRegexp), ["shanebdavis@www.gmail.com", "shanebdavis", "www.gmail.com"]

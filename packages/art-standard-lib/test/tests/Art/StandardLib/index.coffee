@@ -18,7 +18,7 @@ module.exports
   ParseUrl:         require './parse_url'       
   PlainData:        require './plain_data'      
   Promise:          require './promise'         
-  Regexp:           require './regexp'          
+  RegExpExtensions: require './RegExpExtensions'
   Ruby:             require './ruby'            
   StringCase:       require './string_case'     
   String:           require './string'          

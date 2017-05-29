@@ -1,5 +1,5 @@
-Regexp     = require './Regexp'
-{numberRegexp} = Regexp
+RegExpExtensions     = require './RegExpExtensions'
+{numberRegexp} = RegExpExtensions
 
 float64Precision = 0.0000000001 # 52 bits
 float32Precision = 0.0000001    # 23 bits
