@@ -25,20 +25,22 @@ createObjectTreeFactory
       else true
 
       if selected
-        if (exists = fs.existsSync path) && !force
-          verbose && log.warn "cowardly refusing to overwrite (use: force): ".yellow + path
-          null
-        else if pretend
-          verbose && log "pretend-writing: ".gray + path
+        if pretend
+          verbose && log "pretend-writing: ".gray + path.green
           null
         else
-          if exists
+          verbose && log if exists = fs.existsSync path
             if contents == (fs.readFileSync path).toString()
-              verbose && log "same: #{path}".gray
+              "same: #{path}".gray
             else
-              verbose && log "overwriting: #{path}".yellow
+              if force
+                "overwriting: ".yellow + path.green
+              else
+                "cowardly refusing to overwrite (use: force): ".yellow + path
           else
-            verbose && log "writing: ".gray + path
-          fs.ensureDirSync Path.dirname path
-          fs.writeFileSync path, contents
-          path
+            "writing: ".gray + path.green
+
+          if !exists || force
+            fs.ensureDirSync Path.dirname path
+            fs.writeFileSync path, contents
+            path

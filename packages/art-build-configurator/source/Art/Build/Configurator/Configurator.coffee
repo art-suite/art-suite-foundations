@@ -1,4 +1,5 @@
-fsp = require 'fs-promise'
+fsp = require 'fs-extra'
+glob = require 'glob-promise'
 path = require 'path'
 
 realRequire = eval 'require'
@@ -22,55 +23,57 @@ module.exports = class BuildConfigurator
         targets: # default: index: {}
           index: # target 'index' specific config
   ###
-  @configFileName: "art.build.config.coffee"
+  @configFilename: "art.build.config.caf"
+  @configBasename: "art.build.config"
+  @registerLoadersFilename: 'register.js'
 
   @standardConfigFileContents:
     """
-    module.exports =
-      webpack:
-        common: {}
-        targets:
-          index: {}
-
+    webpack:
+      common: {}
+      targets:
+        index: {}
     """
 
   @registerLoaders: (npmRoot, vivify = false) =>
-    file = path.join npmRoot, @registerLoadersFileName
+    file = path.join npmRoot, @registerLoadersFilename
     fsp.exists file
     .then (exists) =>
       if exists
         realRequire file
       else
         if vivify
-          @updateFile @registerLoadersFileName, """
+          @updateFile @registerLoadersFilename, """
             require('coffee-script/register');
             require('caffeine-script/register');
           """
         {}
 
   @loadConfig: (npmRoot, vivifyConfigFile = false)=>
-    file = path.join npmRoot, @configFileName
-    fsp.exists file
-    .then (exists) =>
-      if exists
-        realRequire file
-      else
-        if vivifyConfigFile
-          @updateFile @configFileName, @standardConfigFileContents
-        {}
-    .then (config) =>
-      config.npm ||= config.package
-      p = if config.npm
-        Promise.resolve config.npm
-      else
-        fsp.exists packageFile = path.join npmRoot, ConfigurePackageJson.outFileName
-        .then (exists) =>
-          if exists
-            realRequire packageFile
-          else
-            {}
-      p.then (finalNpm) =>
-        merge config, npm: finalNpm
+    @registerLoaders npmRoot, vivifyConfigFile
+    .then =>
+      configFilepath = path.join process.cwd(), @configBasename
+      glob configFilepath + "*"
+      .then ([found]) =>
+        if found
+          realRequire configFilepath
+        else
+          if vivifyConfigFile
+            @updateFile @configFilename, @standardConfigFileContents
+          {}
+      .then (config) =>
+        config.npm ||= config.package
+        p = if config.npm
+          Promise.resolve config.npm
+        else
+          fsp.exists packageFile = path.join npmRoot, ConfigurePackageJson.outFileName
+          .then (exists) =>
+            if exists
+              realRequire packageFile
+            else
+              {}
+        p.then (finalNpm) =>
+          merge config, npm: finalNpm
 
   @updateFile: (fileName, contents) ->
     if fsp.existsSync fileName
@@ -80,26 +83,18 @@ module.exports = class BuildConfigurator
       log "generating and writing: ".gray + fileName.green
       fsp.writeFileSync fileName, contents
     else
-      log "no change: #{fileName}".gray
+      log "same: #{fileName}".gray
 
   @go: (npmRoot, options) =>
     {pretend, configure, init, force} = options
     log "PRETEND".red if pretend
     Promise.then =>
-      if init
-        @init merge options, {npmRoot}
-      else
-        @loadConfig npmRoot, configure
-        .then (abcConfig) =>
+      @init npmRoot, options if init
+      @loadAndWriteConfig npmRoot, options
 
-          if pretend
-            @pretend npmRoot, abcConfig
-          else
-            @writeConfig npmRoot, abcConfig
-
-  @init: (options) ->
-    wrote = compactFlatten require('./DefaultFiles').getInitStructure(options).write options
-    log "wrote #{wrote.length} files"
+  @init: (npmRoot, options) ->
+    wrote = compactFlatten require('./DefaultFiles').getDefaultFiles(npmRoot, options).write options
+    log "init: wrote #{wrote.length} files"
 
   @pretend: (npmRoot, abcConfig) ->
     log formattedInspect
@@ -110,6 +105,17 @@ module.exports = class BuildConfigurator
         configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
         out: "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
     , color: true
+
+  @loadAndWriteConfig: (npmRoot, options) ->
+    {pretend, configure} = options
+
+    @loadConfig npmRoot, configure
+    .then (abcConfig) =>
+      if pretend
+        @pretend npmRoot, abcConfig
+      else
+        @writeConfig npmRoot, abcConfig
+
 
   @writeConfig: (npmRoot, abcConfig) ->
     ConfigurePackageJson.writeConfig npmRoot, abcConfig
