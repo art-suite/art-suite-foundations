@@ -25,7 +25,7 @@ module.exports
   ParseUrl:           require './ParseUrl'          
   Promise:            require './Promise'           
   PromisedFileReader: require './PromisedFileReader'
-  Regexp:             require './Regexp'            
+  RegExp:             require './RegExp_'           
   Ruby:               require './Ruby'              
   ShallowClone:       require './ShallowClone'      
   StringExtensions:   require './StringExtensions'  

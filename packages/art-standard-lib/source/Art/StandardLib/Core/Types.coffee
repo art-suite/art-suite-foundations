@@ -126,7 +126,7 @@ module.exports = class Types
     <->
        <-- .constructor
        --> .prototype
-    ^  Object.prototypeOf
+    ^  Object.getPrototypeOf
 
   MAP:
     A <-> aPrototype
