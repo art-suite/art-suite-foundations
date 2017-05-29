@@ -719,151 +719,153 @@ Caf.defMod(module, () => {
     ],
     [__webpack_require__(5), global]
   ));
-  return Configurator = Caf.defClass(class Configurator {}, function(
-    Configurator,
-    classSuper,
-    instanceSuper
-  ) {
-    this.configFilename = "art.build.config.caf";
-    this.configBasename = "art.build.config";
-    this.registerLoadersFilename = "register.js";
-    this.go = (npmRoot, options) => {
-      let pretend, configure, init, force;
-      ({ pretend, configure, init, force } = options);
-      if (pretend) {
-        log("PRETEND".green);
-      }
-      return Promise
-        .then(() => {
-          if (init) {
-            this.init(npmRoot, options);
-          }
-          return this.runNeptuneNamespaces(npmRoot);
-        })
-        .then(() => {
-          return this.loadAndWriteConfig(npmRoot, options);
-        });
-    };
-    this.registerLoaders = (npmRoot, vivify = false) => {
-      let file;
-      file = path.join(npmRoot, this.registerLoadersFilename);
-      return fs.exists(file).then(exists => {
-        return exists
-          ? realRequire(file)
-          : (vivify
-              ? this.init(npmRoot, { verbose: true, select: /register.js/ })
-              : undefined, {});
-      });
-    };
-    this.loadConfig = (npmRoot, vivifyConfigFile = false) => {
-      return this.registerLoaders(npmRoot, vivifyConfigFile).then(() => {
-        let configFilepath;
-        configFilepath = path.join(process.cwd(), this.configBasename);
-        return __webpack_require__(34)(configFilepath + "*")
-          .then(results => {
-            return results.length > 0
-              ? realRequire(configFilepath)
-              : (vivifyConfigFile
-                  ? this.init(npmRoot, {
-                      verbose: true,
-                      select: /art.build.config/
-                    })
-                  : undefined, {});
+  return Configurator = Caf.defClass(
+    class Configurator extends Object {},
+    function(Configurator, classSuper, instanceSuper) {
+      this.configFilename = "art.build.config.caf";
+      this.configBasename = "art.build.config";
+      this.registerLoadersFilename = "register.js";
+      this.go = (npmRoot, options) => {
+        let pretend, configure, init, force;
+        ({ pretend, configure, init, force } = options);
+        if (pretend) {
+          log("PRETEND".green);
+        }
+        return Promise
+          .then(() => {
+            if (init) {
+              this.init(npmRoot, options);
+            }
+            return this.runNeptuneNamespaces(npmRoot);
           })
-          .then(config => {
-            let p, packageFile;
-            config.npm || (config.npm = config.package);
-            p = config.npm
-              ? Promise.resolve(config.npm)
-              : fs
-                  .exists(
-                    packageFile = path.join(
-                      npmRoot,
-                      ConfigurePackageJson.outFileName
-                    )
-                  )
-                  .then(exists => {
-                    return exists ? realRequire(packageFile) : {};
-                  });
-            return p.then(finalNpm => {
-              return merge(config, { npm: finalNpm });
-            });
+          .then(() => {
+            return this.loadAndWriteConfig(npmRoot, options);
           });
-      });
-    };
-    this.init = function(npmRoot, options) {
-      let wrote;
-      log(`\nINIT: ${Caf.toString(npmRoot)}`);
-      wrote = compactFlatten(
-        __webpack_require__(11)
-          .getDefaultFiles(npmRoot, options)
-          .write(options)
-      );
-      return log(`INIT: wrote ${Caf.toString(wrote.length)} files`);
-    };
-    this.pretendWriteConfig = function(npmRoot, abcConfig) {
-      return log(
-        formattedInspect(
-          {
-            npm: {
-              out: {
-                "package.json": ConfigurePackageJson.get(npmRoot, abcConfig)
+      };
+      this.registerLoaders = (npmRoot, vivify = false) => {
+        let file;
+        file = path.join(npmRoot, this.registerLoadersFilename);
+        return fs.exists(file).then(exists => {
+          return exists
+            ? realRequire(file)
+            : (vivify
+                ? this.init(npmRoot, { verbose: true, select: /register.js/ })
+                : undefined, {});
+        });
+      };
+      this.loadConfig = (npmRoot, vivifyConfigFile = false) => {
+        return this.registerLoaders(npmRoot, vivifyConfigFile).then(() => {
+          let configFilepath;
+          configFilepath = path.join(process.cwd(), this.configBasename);
+          return __webpack_require__(34)(configFilepath + "*")
+            .then(results => {
+              return results.length > 0
+                ? realRequire(configFilepath)
+                : (vivifyConfigFile
+                    ? this.init(npmRoot, {
+                        verbose: true,
+                        select: /art.build.config/
+                      })
+                    : undefined, {});
+            })
+            .then(config => {
+              let p, packageFile;
+              config.npm || (config.npm = config.package);
+              p = config.npm
+                ? Promise.resolve(config.npm)
+                : fs
+                    .exists(
+                      packageFile = path.join(
+                        npmRoot,
+                        ConfigurePackageJson.outFileName
+                      )
+                    )
+                    .then(exists => {
+                      return exists ? realRequire(packageFile) : {};
+                    });
+              return p.then(finalNpm => {
+                return merge(config, { npm: finalNpm });
+              });
+            });
+        });
+      };
+      this.init = function(npmRoot, options) {
+        let wrote;
+        log(`\nINIT: ${Caf.toString(npmRoot)}`);
+        wrote = compactFlatten(
+          __webpack_require__(11)
+            .getDefaultFiles(npmRoot, options)
+            .write(options)
+        );
+        return log(`INIT: wrote ${Caf.toString(wrote.length)} files`);
+      };
+      this.pretendWriteConfig = function(npmRoot, abcConfig) {
+        return log(
+          formattedInspect(
+            {
+              npm: {
+                out: {
+                  "package.json": ConfigurePackageJson.get(npmRoot, abcConfig)
+                }
+              },
+              webpack: {
+                configGeneratedOnDemand: ConfigureWebpack.get(
+                  npmRoot,
+                  abcConfig
+                ),
+                out: {
+                  "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
+                }
               }
             },
-            webpack: {
-              configGeneratedOnDemand: ConfigureWebpack.get(npmRoot, abcConfig),
-              out: {
-                "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
-              }
-            }
-          },
-          { color: true }
-        )
-      );
-    };
-    this.runNeptuneNamespaces = function(npmRoot, options) {
-      let executable, firstArg, isWebpackDevServer;
-      [executable, firstArg] = process.argv;
-      isWebpackDevServer = !!(executable.match(/\/node$/) &&
-        (Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/)));
-      log(`\nNN: ${Caf.toString(npmRoot)}`);
-      return __webpack_require__(12)(npmRoot);
-    };
-    this.loadAndWriteConfig = function(npmRoot, options) {
-      let pretend, configure;
-      ({ pretend, configure } = options);
-      log(`\nCONFIGURE: ${Caf.toString(npmRoot)}`);
-      return this.loadConfig(npmRoot, configure).then(abcConfig => {
-        return pretend
-          ? this.pretendWriteConfig(npmRoot, abcConfig)
-          : this.writeConfig(npmRoot, abcConfig);
-      });
-    };
-    this.writeConfig = function(npmRoot, abcConfig) {
-      ConfigurePackageJson.writeConfig(npmRoot, abcConfig);
-      return ConfigureWebpack.writeConfig(npmRoot, abcConfig);
-    };
-    this.getWebpackConfig = npmRoot => {
-      return this.loadConfig(npmRoot).then(abcConfig => {
-        this.writeConfig(npmRoot, abcConfig);
-        return this.runNeptuneNamespaces(npmRoot).then(() => {
-          return ConfigureWebpack.get(npmRoot, abcConfig);
+            { color: true }
+          )
+        );
+      };
+      this.runNeptuneNamespaces = function(npmRoot, options) {
+        let executable, firstArg, isWebpackDevServer;
+        [executable, firstArg] = process.argv;
+        isWebpackDevServer = !!(executable.match(/\/node$/) &&
+          (Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/)));
+        log(`\nNN: ${Caf.toString(npmRoot)}`);
+        return __webpack_require__(12)(npmRoot);
+      };
+      this.loadAndWriteConfig = function(npmRoot, options) {
+        let pretend, configure;
+        ({ pretend, configure } = options);
+        log(`\nCONFIGURE: ${Caf.toString(npmRoot)}`);
+        return this.loadConfig(npmRoot, configure).then(abcConfig => {
+          return pretend
+            ? this.pretendWriteConfig(npmRoot, abcConfig)
+            : this.writeConfig(npmRoot, abcConfig);
         });
-      });
-    };
-    this.updateFile = function(fileName, contents) {
-      let oldContents;
-      if (fs.existsSync(fileName)) {
-        oldContents = fs.readFileSync(fileName).toString();
-      }
-      return oldContents !== contents
-        ? (log("writing: ".gray + fileName.green), fs.writeFileSync(
-            fileName,
-            contents
-          ))
-        : log(`same:    ${Caf.toString(fileName)}`.gray);
-    };
-  });
+      };
+      this.writeConfig = function(npmRoot, abcConfig) {
+        ConfigurePackageJson.writeConfig(npmRoot, abcConfig);
+        return ConfigureWebpack.writeConfig(npmRoot, abcConfig);
+      };
+      this.getWebpackConfig = npmRoot => {
+        return this.loadConfig(npmRoot).then(abcConfig => {
+          this.writeConfig(npmRoot, abcConfig);
+          return this.runNeptuneNamespaces(npmRoot).then(() => {
+            return ConfigureWebpack.get(npmRoot, abcConfig);
+          });
+        });
+      };
+      this.updateFile = function(fileName, contents) {
+        let oldContents;
+        if (fs.existsSync(fileName)) {
+          oldContents = fs.readFileSync(fileName).toString();
+        }
+        return oldContents !== contents
+          ? (log("writing: ".gray + fileName.green), fs.writeFileSync(
+              fileName,
+              contents
+            ))
+          : log(`same:    ${Caf.toString(fileName)}`.gray);
+      };
+    }
+  );
 });
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
@@ -935,15 +937,24 @@ Caf.defMod(module, () => {
     BaseClass,
     isFunction,
     isRegExp,
+    predend,
     log;
   ({
     createObjectTreeFactory,
     BaseClass,
     isFunction,
     isRegExp,
+    predend,
     log
   } = Caf.import(
-    ["createObjectTreeFactory", "BaseClass", "isFunction", "isRegExp", "log"],
+    [
+      "createObjectTreeFactory",
+      "BaseClass",
+      "isFunction",
+      "isRegExp",
+      "predend",
+      "log"
+    ],
     [__webpack_require__(3), __webpack_require__(19), global]
   ));
   Path = __webpack_require__(2);
@@ -974,7 +985,9 @@ Caf.defMod(module, () => {
             select,
             fs,
             selected,
-            exists;
+            exists,
+            prefix,
+            logContents;
           ({ filename, contents } = this.props);
           ({
             path,
@@ -991,24 +1004,24 @@ Caf.defMod(module, () => {
                 : isRegExp(select) ? select.test(path) : undefined
             : true;
           return selected
-            ? pretend
-                ? (verbose && log("pretend-writing: ".gray + path.green), null)
-                : (verbose &&
-                    log(
-                      (exists = fs.existsSync(path))
-                        ? contents === fs.readFileSync(path).toString()
-                            ? `same:    ${Caf.toString(path)}`.gray
-                            : force
-                                ? "overwriting: ".yellow + path.green
-                                : `skipped: ${Caf.toString(path)}`.gray +
-                                    " (cowardly refusing to overwrite - use: force)".yellow
-                        : "writing: ".gray + path.green
-                    ), !exists || force
-                    ? (fs.ensureDirSync(Path.dirname(path)), fs.writeFileSync(
-                        path,
-                        contents
-                      ), path)
-                    : undefined)
+            ? (exists = fs.existsSync(path), prefix = predend &&
+                "pretend-", verbose
+                ? (logContents = exists
+                    ? contents === fs.readFileSync(path).toString()
+                        ? `same:    ${Caf.toString(path)}`.gray
+                        : force
+                            ? "overwriting: ".yellow + path.green
+                            : `skipped: ${Caf.toString(path)}`.gray +
+                                " (cowardly refusing to overwrite - use: force)".yellow
+                    : "writing: ".gray + path.green, log(
+                    pretend ? "PRETEND-".green + logContents : logContents
+                  ))
+                : undefined, !predend && (!exists || force)
+                ? (fs.ensureDirSync(Path.dirname(path)), fs.writeFileSync(
+                    path,
+                    contents
+                  ), path)
+                : undefined)
             : undefined;
         };
       }
