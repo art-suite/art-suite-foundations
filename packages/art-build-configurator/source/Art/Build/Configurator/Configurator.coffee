@@ -125,4 +125,5 @@ module.exports = class BuildConfigurator
   @getWebpackConfig: (npmRoot) =>
     @loadConfig(npmRoot)
     .then (abcConfig) =>
+      @writeConfig npmRoot, abcConfig
       ConfigureWebpack.get npmRoot, abcConfig
