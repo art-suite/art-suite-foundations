@@ -116,14 +116,17 @@ module.exports = class BuildConfigurator
       else
         @writeConfig npmRoot, abcConfig
 
-
   @writeConfig: (npmRoot, abcConfig) ->
     ConfigurePackageJson.writeConfig npmRoot, abcConfig
     ConfigureWebpack.writeConfig npmRoot, abcConfig
 
   # TODO: this should call: nn -s
   @getWebpackConfig: (npmRoot) =>
+    [executable, firstArg] = process.argv
+    isWebpackDevServer = !!(executable.match(/\/node$/) && firstArg?.match /webpack-dev-server/)
+
     @loadConfig(npmRoot)
     .then (abcConfig) =>
       @writeConfig npmRoot, abcConfig
+      require('./NeptuneNamespaces') npmRoot, isWebpackDevServer
       ConfigureWebpack.get npmRoot, abcConfig

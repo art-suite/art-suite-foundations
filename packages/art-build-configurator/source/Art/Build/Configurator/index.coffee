@@ -8,6 +8,7 @@ module.exports
   ConfigurePackageJson: require './ConfigurePackageJson'
   ConfigureWebpack:     require './ConfigureWebpack'    
   DefaultFiles:         require './DefaultFiles'        
+  NeptuneNamespaces:    require './NeptuneNamespaces'   
   Publish:              require './Publish'             
   StandardImport:       require './StandardImport'      
   Versioning:           require './Versioning'          
