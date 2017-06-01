@@ -64,18 +64,81 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+	"bin": {
+		"neptune-namespaces": "./nn",
+		"nn": "./nn"
+	},
+	"dependencies": {
+		"art-build-configurator": "^1.11.5",
+		"art-class-system": "^1.5.2",
+		"art-config": "^1.3.3",
+		"art-standard-lib": "^1.11.1",
+		"art-testbench": "^1.10.3",
+		"caffeine-script": "^0.44.5",
+		"caffeine-script-runtime": "^1.0.0",
+		"case-sensitive-paths-webpack-plugin": "^1.1.4",
+		"coffee-loader": "^0.7.2",
+		"coffee-script": "^1.12.3",
+		"colors": "^1.1.2",
+		"commander": "^2.9.0",
+		"css-loader": "^0.26.1",
+		"detect-node": "^2.0.3",
+		"fs-promise": "^1.0.0",
+		"glob-promise": "^3.1.0",
+		"json-loader": "^0.5.4",
+		"neptune-namespaces": "^2.2.2",
+		"script-loader": "^0.7.0",
+		"style-loader": "^0.13.1",
+		"webpack": "^2.2.1",
+		"webpack-dev-server": "^2.3.0",
+		"webpack-merge": "^3.0.0"
+	},
+	"description": "Generate index.coffee and namespace.coffee files from directory structures",
+	"devDependencies": {
+		"chai": "^3.5.0",
+		"mocha": "^2.5.3"
+	},
+	"license": "ISC",
+	"name": "neptune-namespaces",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --progress",
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
+	},
+	"version": "2.2.3"
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-standard-lib/Core");
+
+/***/ }),
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var NamespaceBaseClass, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-NamespaceBaseClass = __webpack_require__(1);
+NamespaceBaseClass = __webpack_require__(14);
 
 module.exports = global.Neptune || (global.Neptune = Neptune = (function(superClass) {
   extend(Neptune, superClass);
@@ -94,9 +157,9 @@ module.exports = global.Neptune || (global.Neptune = Neptune = (function(superCl
     return (klass != null ? klass.prototype : void 0) instanceof NamespaceBaseClass;
   };
 
-  Neptune.isNode = __webpack_require__(7);
+  Neptune.isNode = __webpack_require__(18);
 
-  Neptune.version = (__webpack_require__(4)).version;
+  Neptune.version = (__webpack_require__(3)).version;
 
   return Neptune;
 
@@ -106,7 +169,12 @@ NamespaceBaseClass.namespace = Neptune;
 
 
 /***/ }),
-/* 1 */
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -120,11 +188,11 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 var ArtStandardLibCore, NamespaceBaseClass, isExtendedClass, isFunction, isPlainArray, ref,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-__webpack_require__(3);
+__webpack_require__(16);
 
-__webpack_require__(2);
+__webpack_require__(15);
 
-ref = __webpack_require__(6), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(17), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
@@ -170,7 +238,7 @@ module.exports = NamespaceBaseClass = (function() {
   };
 
   NamespaceBaseClass.getNeptuneLib = function() {
-    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(5));
+    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(4));
   };
 
   NamespaceBaseClass.getInspectedObjects = function(includeModules) {
@@ -362,7 +430,7 @@ module.exports = NamespaceBaseClass = (function() {
 
 
 /***/ }),
-/* 2 */
+/* 15 */
 /***/ (function(module, exports) {
 
 if ((function() {}).name == null) {
@@ -388,7 +456,7 @@ global.Function.prototype.hasName = function() {
 
 
 /***/ }),
-/* 3 */
+/* 16 */
 /***/ (function(module, exports) {
 
 var g;
@@ -401,78 +469,26 @@ g.global || (g.global = g);
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"bin": {
-		"neptune-namespaces": "./nn",
-		"nn": "./nn"
-	},
-	"dependencies": {
-		"art-build-configurator": "^1.8.1",
-		"art-class-system": "^1.5.1",
-		"art-config": "^1.0.0",
-		"art-standard-lib": "^1.11.1",
-		"art-testbench": "^1.0.0",
-		"caffeine-script": "^0.38.1",
-		"case-sensitive-paths-webpack-plugin": "^1.1.4",
-		"coffee-loader": "^0.7.2",
-		"coffee-script": "^1.12.3",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"css-loader": "^0.26.1",
-		"detect-node": "^2.0.3",
-		"fs-promise": "^1.0.0",
-		"glob-promise": "^3.1.0",
-		"json-loader": "^0.5.4",
-		"neptune-namespaces": "^2.0.0",
-		"script-loader": "^0.7.0",
-		"style-loader": "^0.13.1",
-		"webpack": "^2.2.1",
-		"webpack-dev-server": "^2.3.0",
-		"webpack-merge": "^3.0.0"
-	},
-	"description": "Generate index.coffee and namespace.coffee files from directory structures",
-	"devDependencies": {
-		"chai": "^3.5.0",
-		"mocha": "^2.5.3"
-	},
-	"license": "ISC",
-	"name": "neptune-namespaces",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "2.2.2"
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib/Core");
-
-/***/ }),
-/* 6 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-standard-lib/Types");
 
 /***/ }),
-/* 7 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = require("detect-node");
 
 /***/ }),
-/* 8 */
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+module.exports = __webpack_require__(8);
 
 
 /***/ })
