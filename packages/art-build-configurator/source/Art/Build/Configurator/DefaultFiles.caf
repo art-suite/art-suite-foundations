@@ -3,6 +3,7 @@ path = &path
 
 class DefaultFiles extends BaseClass
   @getDefaultFiles: (npmRoot = process.cwd(), options = {})->
+    {app} = options
 
     npmName = path.basename npmRoot
     namespacePath = getCapitalizedCodeWords npmName
@@ -10,23 +11,22 @@ class DefaultFiles extends BaseClass
     mostSpecificName = peek namespacePath
     projectDotName = namespacePath.join '.'
 
-    Dir
-      '.'
-      File :.travis.yml """
+    fileBuilder
+      .travis.yml: """
         language: node_js
         node_js:
           - "6"
 
-      File :package.json "" {}
+      package.json: "" {}
 
-      File :webpack.config.js """
+      webpack.config.js: """
         module.exports = require("art-build-configurator").getWebpackConfig(__dirname);\n
 
-      File :register.js """
+      register.js: """
         require('coffee-script/register');
         require('caffeine-script/register');
 
-      File :index.js """
+      index.js: !app && """
         if (false) { // use build? - true == fase, false == good for development
           module.exports = require('./build');
         } else {
@@ -34,28 +34,43 @@ class DefaultFiles extends BaseClass
           module.exports = require('./index.caf');
         };
 
-      File :index.caf """
+      index.caf: !app && """
         &source/#{namespaceDirPath}
 
-      File :art.build.config.caf """
+      Client.caf: app && """
+        &source/#{namespaceDirPath}/Client
+
+      index.html: app && """
+        <html><body>
+          <h1>Development</h1>
+          <ul>
+            <li><a href="/Client?dev=true">Client</a></li>
+          </ul>
+          <h1>Production</h1>
+          <ul>
+            <li><a href="/Client">Client</a></li>
+          </ul>
+
+      art.build.config.caf: """
         target:
           ##
             configures for standard node-targeted library
             NOTE: node-targeted libraries can also be built into broswer-targeted libraries.
               They just can't be used *directly* in the browser
-          node: true
+          node: #{!app}
 
         npm:
           description: "" #{projectDotName}
+          dependencies: #{if app then 'art-suite-app: :git://github.com/imikimi/art-suite-app' else '{}'}
 
         webpack:
           # common properties are merged into each target's properties
           common: {}
 
           # each target's individual properties
-          targets: index: {}
+          targets: #{if app then 'Client' else 'index'}: {}
 
-      File :README.md """
+      README.md: """
         # #{projectDotName}
 
         > Initialized by Art.Build.Configurator
@@ -66,31 +81,160 @@ class DefaultFiles extends BaseClass
         npm install #{dashCase npmName}
         ```
 
-      Dir
-        :source
-        Dir
-          namespaceDirPath
-          File :StandardImport.caf """
-            &ArtStandardLib.merge &ArtStandardLib, @ArtClassSystem
+      source:
+        [namespaceDirPath]:
+          StandardImport.caf:
+            if app
+              """ &ArtSuite
+            else
+              """ &ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem
 
-      Dir
-        :test
-        File :index.js """
+          Client: app &&
+            Main.caf: """
+              &Models
+              &Pipelines
+              &ArtSuiteApp.initArtSuiteClient
+                MainComponent: &Components/App
+                title:         :#{projectDotName}
+
+            Components:
+              User.caf: """
+                import &StandardImport
+
+                class User extends FluxComponent
+                  @subscriptions :navState.alignUsersLeft
+
+                  render: ->
+                    Element
+                      padding: 10
+                      margin: 5
+                      size: ww: 1 hch: 1
+                      RectangleElement padding: -10 color: #0002
+                      TextElement
+                        &StyleProps.text
+                        size: ww: 1 hch: 1
+                        align: if @alignUsersLeft then :left else :right
+                        animators: align: true
+                        text: @props.user?.name
+
+              Users.caf: """
+                import &StandardImport
+
+                class Users extends FluxComponent
+                  @subscriptions allUsers: ""
+
+                  render: ->
+                    PagingScrollElement
+                      clip: true
+                      array user from @allUsers with &User {user}
+
+              App.caf: """
+                import &StandardImport
+
+                class App extends FluxComponent
+                  @subscriptions :navState.alignUsersLeft
+
+                  addUser: ->
+                    @models.user.create data: name: randomString()
+                    .then ->
+                      @models.allUsers.reload ""
+
+                  render: ->
+                    CanvasElement
+                      RectangleElement color: #48f #248
+
+                      Element
+                        padding: 10
+                        childrenLayout: :column
+
+                        Element
+                          margin: 10
+                          size: ww: 1 hch: 1
+                          childrenLayout: :row
+                          childrenAlignment: :bottomLeft
+                          TextElement &StyleProps.titleText, text: "#{projectDotName} Users"
+                          TextElement
+                            &StyleProps.text
+                            margin: 10
+                            on: pointerClick: @models.navState.toggleAlignUsersLeft
+                            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'
+                          TextElement
+                            &StyleProps.text
+                            margin: 10
+                            on: pointerClick: @addUser
+                            text: '+user'
+                        &Users()
+
+            StyleProps.caf: """
+              import &StandardImport
+              class StyleProps extends HotStyleProps
+                @text:
+                  fontFamily: :sans-serif
+                  color: :white
+
+                @titleText:
+                  fontSize:   24
+                  fontWeight: :bold
+                  fontFamily: :sans-serif
+                  color: :white
+
+            Models:
+              NavState.caf: """
+                import &StandardImport
+
+                class NavState extends ApplicationState
+                  @stateFields
+                    alignUsersLeft: true
+
+          Pipelines: app &&
+            User.caf: """
+              import &StandardImport
+
+              class User extends Pipeline
+                @query
+                  allUsers: (request) -> array request.pipeline.db
+
+                constructor: ->
+                  super
+                  @db =
+                    abc123: id: :abc123 name: :Alice
+                    efg456: id: :efg456 name: :Bill
+
+                @handlers
+                  get: ({key}) ->
+                    @db[key]
+
+                  create: ({data}) ->
+                    key = randomString()
+                    @db[key] = merge data, {} key
+
+                  update: ({data, key}) ->
+                    if @db[key]
+                      @db[key] = merge @db[key], data
+
+                  delete: ({key}) ->
+                    if @db[key]
+                      @db = objectWithout @db, key
+                      true
+
+      test:
+        index.js: """
           require('../register');
           require('./index.caf');
 
-        File :index.caf """
+        index.caf: """
           require '../index.caf'
           &art-testbench/testing
           .init
             synchronous: true
             defineTests: -> &tests
 
-        Dir
-          :tests
-          Dir
-            namespaceDirPath
-            File "Test.caf" """
+        StandardImport.caf: """
+          &ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...
+
+        tests:
+          [namespaceDirPath]:
+            Test.caf: """
               &StandardImport
               suite: ->
                 test '#{mostSpecificName}' -> assert.eq 1, 1

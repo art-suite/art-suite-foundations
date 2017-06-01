@@ -3,6 +3,7 @@
 
 module.exports = require './namespace'
 module.exports
+.includeInNamespace require './FileBuilder'
 .addModules
   Dir:  require './Dir' 
   File: require './File'

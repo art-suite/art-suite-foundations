@@ -10,6 +10,7 @@
   .option '--init',           'initialize a new Art-style project'
   .option '-f, --force',      'when initialize, force overwrite all'
   .option '-v, --verbose',    'verbose'
+  .option '--app',            'use with --init to initialize a working ArtSuite App'
   .on "--help", ->
     console.log
       """
