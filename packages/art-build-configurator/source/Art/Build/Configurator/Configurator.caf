@@ -32,6 +32,7 @@ class Configurator
       else
         if vivify
           @init npmRoot, verbose: true, select: /register.js/
+          realRequire file
         {}
 
   @loadConfig: (npmRoot, vivifyConfigFile = false)=>
