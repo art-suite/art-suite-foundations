@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 40);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -117,7 +117,7 @@ let Caf = __webpack_require__(1);
 Caf.defMod(module, () => {
   return __webpack_require__(5).merge(
     __webpack_require__(5),
-    __webpack_require__(9)
+    __webpack_require__(10)
   );
 });
 
@@ -131,7 +131,7 @@ var Build, Configurator,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Build = __webpack_require__(18);
+Build = __webpack_require__(20);
 
 module.exports = Build.Configurator || Build.addNamespace('Configurator', Configurator = (function(superClass) {
   extend(Configurator, superClass);
@@ -144,9 +144,9 @@ module.exports = Build.Configurator || Build.addNamespace('Configurator', Config
 
 })(Neptune.Base));
 
-__webpack_require__(15);
-
 __webpack_require__(17);
+
+__webpack_require__(19);
 
 
 /***/ }),
@@ -166,23 +166,76 @@ module.exports = require("fs");
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(15);
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(1);
+Caf.defMod(module, () => {
+  let Path, DirClass, createObjectTreeFactory, BaseClass, merge;
+  ({ createObjectTreeFactory, BaseClass, merge } = Caf.import(
+    ["createObjectTreeFactory", "BaseClass", "merge"],
+    [__webpack_require__(3), __webpack_require__(21), global]
+  ));
+  Path = __webpack_require__(2);
+  return createObjectTreeFactory(
+    DirClass = Caf.defClass(
+      class DirClass extends BaseClass {
+        constructor(props, children) {
+          let dirname;
+          super(...arguments);
+          this.props = props;
+          this.children = children;
+          [dirname, ...children] = this.children;
+          this.props.dirname = dirname;
+          this.children = children;
+        }
+      },
+      function(DirClass, classSuper, instanceSuper) {
+        this.getter({
+          plainObjects: function() {
+            return {
+              [this.props.dirname]: merge(
+                ...Caf.each(this.children, [], (child, k, into) => {
+                  into.push(child.plainObjects || child);
+                })
+              )
+            };
+          }
+        });
+        this.prototype.write = function(options = {}) {
+          let path;
+          path = Path.join(options.path || ".", this.props.dirname);
+          return Caf.each(this.children, [], (child, k, into) => {
+            into.push(child.write(merge(options, { path })));
+          });
+        };
+      }
+    )
+  );
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(17);
 
 module.exports.addModules({
-  StandardDependencies: __webpack_require__(10),
-  StandardPackageJson: __webpack_require__(29),
-  StandardWebpackConfig: __webpack_require__(30)
+  StandardDependencies: __webpack_require__(11),
+  StandardPackageJson: __webpack_require__(30),
+  StandardWebpackConfig: __webpack_require__(31)
 });
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-class-system");
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -215,7 +268,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -227,16 +280,14 @@ Caf.defMod(module, () => {
     BaseClass,
     getCapitalizedCodeWords,
     peek,
-    Dir,
-    File,
+    fileBuilder,
     dashCase,
     process;
   ({
     BaseClass,
     getCapitalizedCodeWords,
     peek,
-    Dir,
-    File,
+    fileBuilder,
     dashCase,
     process
   } = Caf.import(
@@ -244,93 +295,96 @@ Caf.defMod(module, () => {
       "BaseClass",
       "getCapitalizedCodeWords",
       "peek",
-      "Dir",
-      "File",
+      "fileBuilder",
       "dashCase",
       "process"
     ],
-    [__webpack_require__(3), __webpack_require__(16), global]
+    [__webpack_require__(3), __webpack_require__(18), global]
   ));
   path = __webpack_require__(2);
   return DefaultFiles = Caf.defClass(
     class DefaultFiles extends BaseClass {},
     function(DefaultFiles, classSuper, instanceSuper) {
       this.getDefaultFiles = function(npmRoot = process.cwd(), options = {}) {
-        let npmName,
+        let app,
+          npmName,
           namespacePath,
           namespaceDirPath,
           mostSpecificName,
           projectDotName;
+        ({ app } = options);
         npmName = path.basename(npmRoot);
         namespacePath = getCapitalizedCodeWords(npmName);
         namespaceDirPath = namespacePath.join("/");
         mostSpecificName = peek(namespacePath);
         projectDotName = namespacePath.join(".");
-        return Dir(
-          ".",
-          File(".travis.yml", 'language: node_js\nnode_js:\n  - "6"'),
-          File("package.json", "{}"),
-          File(
-            "webpack.config.js",
-            'module.exports = require("art-build-configurator").getWebpackConfig(__dirname);\n'
-          ),
-          File(
-            "register.js",
-            "require('coffee-script/register');\nrequire('caffeine-script/register');"
-          ),
-          File(
-            "index.js",
-            "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};"
-          ),
-          File("index.caf", `&source/${Caf.toString(namespaceDirPath)}`),
-          File(
-            "art.build.config.caf",
-            `target:\n  ##\n    configures for standard node-targeted library\n    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.\n      They just can't be used *directly* in the browser\n  node: true\n\nnpm:\n  description: "" ${Caf.toString(
-              projectDotName
-            )}\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: index: {}`
-          ),
-          File(
-            "README.md",
-            `# ${Caf.toString(
-              projectDotName
-            )}\n\n> Initialized by Art.Build.Configurator\n\n### Install\n\n\`\`\`coffeescript\nnpm install ${Caf.toString(
-              dashCase(npmName)
-            )}\n\`\`\``
-          ),
-          Dir(
-            "source",
-            Dir(
-              namespaceDirPath,
-              File(
-                "StandardImport.caf",
-                "&ArtStandardLib.merge &ArtStandardLib, @ArtClassSystem"
-              )
-            )
-          ),
-          Dir(
-            "test",
-            File(
-              "index.js",
-              "require('../register');\nrequire('./index.caf');"
-            ),
-            File(
-              "index.caf",
-              "require '../index.caf'\n&art-testbench/testing\n.init\n  synchronous: true\n  defineTests: -> &tests"
-            ),
-            Dir(
-              "tests",
-              Dir(
-                namespaceDirPath,
-                File(
-                  "Test.caf",
-                  `&StandardImport\nsuite: ->\n  test '${Caf.toString(
-                    mostSpecificName
-                  )}' -> assert.eq 1, 1`
-                )
-              )
-            )
-          )
-        );
+        return fileBuilder({
+          ".travis.yml": 'language: node_js\nnode_js:\n  - "6"',
+          "package.json": "{}",
+          "webpack.config.js": 'module.exports = require("art-build-configurator").getWebpackConfig(__dirname);\n',
+          "register.js": "require('coffee-script/register');\nrequire('caffeine-script/register');",
+          "index.js": !app &&
+            "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};",
+          "index.caf": !app && `&source/${Caf.toString(namespaceDirPath)}`,
+          "Client.caf": app &&
+            `&source/${Caf.toString(namespaceDirPath)}/Client`,
+          "index.html": app &&
+            '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>',
+          "art.build.config.caf": `target:\n  ##\n    configures for standard node-targeted library\n    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.\n      They just can't be used *directly* in the browser\n  node: ${Caf.toString(
+            !app
+          )}\n\nnpm:\n  description: "" ${Caf.toString(
+            projectDotName
+          )}\n  dependencies: ${Caf.toString(
+            app
+              ? "art-suite-app: :git://github.com/imikimi/art-suite-app"
+              : "{}"
+          )}\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: ${Caf.toString(
+            app ? "Client" : "index"
+          )}: {}`,
+          "README.md": `# ${Caf.toString(
+            projectDotName
+          )}\n\n> Initialized by Art.Build.Configurator\n\n### Install\n\n\`\`\`coffeescript\nnpm install ${Caf.toString(
+            dashCase(npmName)
+          )}\n\`\`\``,
+          source: {
+            [namespaceDirPath]: {
+              "StandardImport.caf": app
+                ? "&ArtSuite"
+                : "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem",
+              Client: app && {
+                "Main.caf": `&Models\n&Pipelines\n&ArtSuiteApp.initArtSuiteClient\n  MainComponent: &Components/App\n  title:         :${Caf.toString(
+                  projectDotName
+                )}`,
+                Components: {
+                  "User.caf": "import &StandardImport\n\nclass User extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  render: ->\n    Element\n      padding: 10\n      margin: 5\n      size: ww: 1 hch: 1\n      RectangleElement padding: -10 color: #0002\n      TextElement\n        &StyleProps.text\n        size: ww: 1 hch: 1\n        align: if @alignUsersLeft then :left else :right\n        animators: align: true\n        text: @props.user?.name",
+                  "Users.caf": 'import &StandardImport\n\nclass Users extends FluxComponent\n  @subscriptions allUsers: ""\n\n  render: ->\n    PagingScrollElement\n      clip: true\n      array user from @allUsers with &User {user}',
+                  "App.caf": `import &StandardImport\n\nclass App extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  addUser: ->\n    @models.user.create data: name: randomString()\n    .then ->\n      @models.allUsers.reload ""\n\n  render: ->\n    CanvasElement\n      RectangleElement color: #48f #248\n\n      Element\n        padding: 10\n        childrenLayout: :column\n\n        Element\n          margin: 10\n          size: ww: 1 hch: 1\n          childrenLayout: :row\n          childrenAlignment: :bottomLeft\n          TextElement &StyleProps.titleText, text: "${Caf.toString(
+                    projectDotName
+                  )} Users"\n          TextElement\n            &StyleProps.text\n            margin: 10\n            on: pointerClick: @models.navState.toggleAlignUsersLeft\n            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'\n          TextElement\n            &StyleProps.text\n            margin: 10\n            on: pointerClick: @addUser\n            text: '+user'\n        &Users()`
+                },
+                "StyleProps.caf": "import &StandardImport\nclass StyleProps extends HotStyleProps\n  @text:\n    fontFamily: :sans-serif\n    color: :white\n\n  @titleText:\n    fontSize:   24\n    fontWeight: :bold\n    fontFamily: :sans-serif\n    color: :white",
+                Models: {
+                  "NavState.caf": "import &StandardImport\n\nclass NavState extends ApplicationState\n  @stateFields\n    alignUsersLeft: true"
+                }
+              },
+              Pipelines: app && {
+                "User.caf": "import &StandardImport\n\nclass User extends Pipeline\n  @query\n    allUsers: (request) -> array request.pipeline.db\n\n  constructor: ->\n    super\n    @db =\n      abc123: id: :abc123 name: :Alice\n      efg456: id: :efg456 name: :Bill\n\n  @handlers\n    get: ({key}) ->\n      @db[key]\n\n    create: ({data}) ->\n      key = randomString()\n      @db[key] = merge data, {} key\n\n    update: ({data, key}) ->\n      if @db[key]\n        @db[key] = merge @db[key], data\n\n    delete: ({key}) ->\n      if @db[key]\n        @db = objectWithout @db, key\n        true"
+              }
+            }
+          },
+          test: {
+            "index.js": "require('../register');\nrequire('./index.caf');",
+            "index.caf": "require '../index.caf'\n&art-testbench/testing\n.init\n  synchronous: true\n  defineTests: -> &tests",
+            "StandardImport.caf": "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...",
+            tests: {
+              [namespaceDirPath]: {
+                "Test.caf": `&StandardImport\nsuite: ->\n  test '${Caf.toString(
+                  mostSpecificName
+                )}' -> assert.eq 1, 1`
+              }
+            }
+          }
+        });
       };
     }
   );
@@ -339,7 +393,104 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 12 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(1);
+Caf.defMod(module, () => {
+  let Path,
+    FileClass,
+    createObjectTreeFactory,
+    BaseClass,
+    isFunction,
+    isRegExp,
+    log;
+  ({
+    createObjectTreeFactory,
+    BaseClass,
+    isFunction,
+    isRegExp,
+    log
+  } = Caf.import(
+    ["createObjectTreeFactory", "BaseClass", "isFunction", "isRegExp", "log"],
+    [__webpack_require__(3), __webpack_require__(21), global]
+  ));
+  Path = __webpack_require__(2);
+  return createObjectTreeFactory(
+    FileClass = Caf.defClass(
+      class FileClass extends BaseClass {
+        constructor(props, children) {
+          super(...arguments);
+          this.props = props;
+          this.children = children;
+          this.props.filename = this.children[0];
+          this.props.contents = this.children[1];
+        }
+      },
+      function(FileClass, classSuper, instanceSuper) {
+        this.getter({
+          plainObjects: function() {
+            return { [this.props.filename]: this.props.contents };
+          }
+        });
+        this.prototype.write = function(options = {}) {
+          let filename,
+            contents,
+            path,
+            pretend,
+            force,
+            verbose,
+            select,
+            fs,
+            selected,
+            exists,
+            logContents;
+          ({ filename, contents } = this.props);
+          ({
+            path,
+            pretend,
+            force,
+            verbose,
+            select,
+            fs = require("fs-extra")
+          } = options);
+          path = Path.join(path || ".", filename);
+          selected = select != null
+            ? isFunction(select)
+                ? select(path)
+                : isRegExp(select) ? select.test(path) : undefined
+            : true;
+          return selected
+            ? (exists = fs.existsSync(path), verbose
+                ? (logContents = exists
+                    ? contents === fs.readFileSync(path).toString()
+                        ? `same:    ${Caf.toString(path)}`.gray
+                        : force
+                            ? "overwriting: ".yellow + path.green
+                            : `skipped: ${Caf.toString(path)}`.gray +
+                                " (cowardly refusing to overwrite - use: force)".yellow
+                    : "writing: ".gray + path.green, log(
+                    pretend ? "PRETEND-".green + logContents : logContents
+                  ))
+                : undefined, !pretend && (!exists || force)
+                ? (fs.ensureDirSync(Path.dirname(path)), fs.writeFileSync(
+                    path,
+                    contents
+                  ), path)
+                : undefined)
+            : undefined;
+        };
+      }
+    )
+  );
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -351,7 +502,7 @@ Caf.defMod(module, () => {
     __webpack_require__(3),
     global
   ]));
-  NeptuneNamespacesGenerator = __webpack_require__(36);
+  NeptuneNamespacesGenerator = __webpack_require__(37);
   return function(dirname, watch) {
     let existingRoots, workers;
     existingRoots = Caf.each(NeptuneNamespacesGenerator.standardRoots, [], (
@@ -399,7 +550,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigurePackageJson, StandardPackageJson, consistentJsonStringify, deepMerge, defineModule, fs, isPlainObject, path, ref,
@@ -412,9 +563,9 @@ fs = __webpack_require__(7);
 
 path = __webpack_require__(2);
 
-BaseClass = __webpack_require__(9).BaseClass;
+BaseClass = __webpack_require__(10).BaseClass;
 
-StandardPackageJson = __webpack_require__(8).StandardPackageJson;
+StandardPackageJson = __webpack_require__(9).StandardPackageJson;
 
 Configurator = __webpack_require__(4);
 
@@ -455,7 +606,7 @@ defineModule(module, ConfigurePackageJson = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigureWebpack, StandardWebpackConfig, array, compactFlatten, deepMerge, defineModule, fs, isPlainObject, log, merge, nodeExternals, object, objectKeyCount, path, ref, webpackMerge, webpackNodeExternals,
@@ -466,11 +617,11 @@ nodeExternals = null;
 
 ref = __webpack_require__(5), defineModule = ref.defineModule, isPlainObject = ref.isPlainObject, array = ref.array, object = ref.object, deepMerge = ref.deepMerge, log = ref.log, compactFlatten = ref.compactFlatten, objectKeyCount = ref.objectKeyCount, merge = ref.merge;
 
-webpackMerge = __webpack_require__(37);
+webpackMerge = __webpack_require__(38);
 
-webpackNodeExternals = __webpack_require__(38);
+webpackNodeExternals = __webpack_require__(39);
 
-BaseClass = __webpack_require__(9).BaseClass;
+BaseClass = __webpack_require__(10).BaseClass;
 
 fs = __webpack_require__(7);
 
@@ -478,7 +629,7 @@ path = __webpack_require__(2);
 
 Configurator = __webpack_require__(4);
 
-StandardWebpackConfig = __webpack_require__(8).StandardWebpackConfig;
+StandardWebpackConfig = __webpack_require__(9).StandardWebpackConfig;
 
 defineModule(module, ConfigureWebpack = (function(superClass) {
   extend(ConfigureWebpack, superClass);
@@ -577,7 +728,7 @@ defineModule(module, ConfigureWebpack = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Configurator, Data,
@@ -599,19 +750,19 @@ module.exports = Configurator.Data || Configurator.addNamespace('Data', Data = (
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(17);
+module.exports = __webpack_require__(19);
 
-module.exports.addModules({
-  Dir: __webpack_require__(25),
-  File: __webpack_require__(26)
+module.exports.includeInNamespace(__webpack_require__(27)).addModules({
+  Dir: __webpack_require__(8),
+  File: __webpack_require__(13)
 });
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Configurator, FileBuilder,
@@ -633,14 +784,14 @@ module.exports = Configurator.FileBuilder || Configurator.addNamespace('FileBuil
 
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Build,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(31);
+Art = __webpack_require__(32);
 
 module.exports = Art.Build || Art.addNamespace('Build', Build = (function(superClass) {
   extend(Build, superClass);
@@ -657,37 +808,37 @@ __webpack_require__(4);
 
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-object-tree-factory");
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(4);
 
-module.exports.includeInNamespace(__webpack_require__(24)).addModules({
-  ConfigurePackageJson: __webpack_require__(13),
-  ConfigureWebpack: __webpack_require__(14),
-  DefaultFiles: __webpack_require__(11),
-  Publish: __webpack_require__(27),
-  RunNeptuneNamespaces: __webpack_require__(12),
+module.exports.includeInNamespace(__webpack_require__(26)).addModules({
+  ConfigurePackageJson: __webpack_require__(15),
+  ConfigureWebpack: __webpack_require__(16),
+  DefaultFiles: __webpack_require__(12),
+  Publish: __webpack_require__(28),
+  RunNeptuneNamespaces: __webpack_require__(14),
   StandardImport: __webpack_require__(3),
-  Versioning: __webpack_require__(28)
+  Versioning: __webpack_require__(29)
 });
 
-__webpack_require__(8);
+__webpack_require__(9);
 
-__webpack_require__(16);
+__webpack_require__(18);
 
 
 /***/ }),
-/* 21 */,
-/* 22 */,
 /* 23 */,
-/* 24 */
+/* 24 */,
+/* 25 */,
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -706,11 +857,11 @@ Caf.defMod(module, () => {
     merge,
     compactFlatten,
     formattedInspect;
-  fs = __webpack_require__(33);
+  fs = __webpack_require__(34);
   path = __webpack_require__(2);
   realRequire = eval("require");
-  ConfigureWebpack = __webpack_require__(14);
-  ConfigurePackageJson = __webpack_require__(13);
+  ConfigureWebpack = __webpack_require__(16);
+  ConfigurePackageJson = __webpack_require__(15);
   ({
     log,
     Promise,
@@ -770,7 +921,7 @@ Caf.defMod(module, () => {
         return this.registerLoaders(npmRoot, vivifyConfigFile).then(() => {
           let configFilepath;
           configFilepath = path.join(process.cwd(), this.configBasename);
-          return __webpack_require__(34)(configFilepath + "*")
+          return __webpack_require__(35)(configFilepath + "*")
             .then(results => {
               return results.length > 0
                 ? realRequire(configFilepath)
@@ -806,7 +957,7 @@ Caf.defMod(module, () => {
         let wrote;
         log(`\nINIT: ${Caf.toString(npmRoot)}`);
         wrote = compactFlatten(
-          __webpack_require__(11)
+          __webpack_require__(12)
             .getDefaultFiles(npmRoot, options)
             .write(options)
         );
@@ -841,7 +992,7 @@ Caf.defMod(module, () => {
         isWebpackDevServer = !!(executable.match(/\/node$/) &&
           (Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/)));
         log(`\nNN: ${Caf.toString(npmRoot)}`);
-        return __webpack_require__(12)(npmRoot);
+        return __webpack_require__(14)(npmRoot);
       };
       this.loadAndWriteConfig = function(npmRoot, options) {
         let pretend, configure;
@@ -884,157 +1035,55 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(1);
-Caf.defMod(module, () => {
-  let Path, DirClass, createObjectTreeFactory, BaseClass, merge;
-  ({ createObjectTreeFactory, BaseClass, merge } = Caf.import(
-    ["createObjectTreeFactory", "BaseClass", "merge"],
-    [__webpack_require__(3), __webpack_require__(19), global]
-  ));
-  Path = __webpack_require__(2);
-  return createObjectTreeFactory(
-    DirClass = Caf.defClass(
-      class DirClass extends BaseClass {
-        constructor(props, children) {
-          let dirname;
-          super(...arguments);
-          this.props = props;
-          this.children = children;
-          [dirname, ...children] = this.children;
-          this.props.dirname = dirname;
-          this.children = children;
-        }
-      },
-      function(DirClass, classSuper, instanceSuper) {
-        this.getter({
-          plainObjects: function() {
-            return {
-              [this.props.dirname]: merge(
-                ...Caf.each(this.children, [], (child, k, into) => {
-                  into.push(child.plainObjects || child);
-                })
-              )
-            };
-          }
-        });
-        this.prototype.write = function(options = {}) {
-          let path;
-          path = Path.join(options.path || ".", this.props.dirname);
-          return Caf.each(this.children, [], (child, k, into) => {
-            into.push(child.write(merge(options, { path })));
-          });
-        };
-      }
-    )
-  );
-});
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(1);
-Caf.defMod(module, () => {
-  let Path,
-    FileClass,
-    createObjectTreeFactory,
-    BaseClass,
-    isFunction,
-    isRegExp,
-    log;
-  ({
-    createObjectTreeFactory,
-    BaseClass,
-    isFunction,
-    isRegExp,
-    log
-  } = Caf.import(
-    ["createObjectTreeFactory", "BaseClass", "isFunction", "isRegExp", "log"],
-    [__webpack_require__(3), __webpack_require__(19), global]
-  ));
-  Path = __webpack_require__(2);
-  return createObjectTreeFactory(
-    FileClass = Caf.defClass(
-      class FileClass extends BaseClass {
-        constructor(props, children) {
-          super(...arguments);
-          this.props = props;
-          this.children = children;
-          this.props.filename = this.children[0];
-          this.props.contents = this.children[1];
-        }
-      },
-      function(FileClass, classSuper, instanceSuper) {
-        this.getter({
-          plainObjects: function() {
-            return { [this.props.filename]: this.props.contents };
-          }
-        });
-        this.prototype.write = function(options = {}) {
-          let filename,
-            contents,
-            path,
-            pretend,
-            force,
-            verbose,
-            select,
-            fs,
-            selected,
-            exists,
-            logContents;
-          ({ filename, contents } = this.props);
-          ({
-            path,
-            pretend,
-            force,
-            verbose,
-            select,
-            fs = require("fs-extra")
-          } = options);
-          path = Path.join(path || ".", filename);
-          selected = select != null
-            ? isFunction(select)
-                ? select(path)
-                : isRegExp(select) ? select.test(path) : undefined
-            : true;
-          return selected
-            ? (exists = fs.existsSync(path), verbose
-                ? (logContents = exists
-                    ? contents === fs.readFileSync(path).toString()
-                        ? `same:    ${Caf.toString(path)}`.gray
-                        : force
-                            ? "overwriting: ".yellow + path.green
-                            : `skipped: ${Caf.toString(path)}`.gray +
-                                " (cowardly refusing to overwrite - use: force)".yellow
-                    : "writing: ".gray + path.green, log(
-                    pretend ? "PRETEND-".green + logContents : logContents
-                  ))
-                : undefined, !pretend && (!exists || force)
-                ? (fs.ensureDirSync(Path.dirname(path)), fs.writeFileSync(
-                    path,
-                    contents
-                  ), path)
-                : undefined)
-            : undefined;
-        };
-      }
-    )
-  );
-});
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
-
-/***/ }),
 /* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(1);
+Caf.defMod(module, () => {
+  let fileBuilder, isPlainObject, isString, Error, formattedInspect;
+  ({ isPlainObject, isString, Error, formattedInspect } = Caf.import(
+    ["isPlainObject", "isString", "Error", "formattedInspect"],
+    [__webpack_require__(3), global]
+  ));
+  return {
+    fileBuilder: fileBuilder = function(name, contents) {
+      return (() => {
+        switch (false) {
+          case !isPlainObject(name):
+            return __webpack_require__(8)(
+              ".",
+              Caf.each(name, [], (contents, n, into) => {
+                into.push(fileBuilder(n, contents));
+              })
+            );
+          case !isString(contents):
+            return __webpack_require__(13)(name, contents);
+          case !isPlainObject(contents):
+            return __webpack_require__(8)(name, fileBuilder(contents));
+          case !(contents === null ||
+            contents === undefined ||
+            contents === false):
+            return null;
+          default:
+            return (() => {
+              throw new Error(
+                `expecting string or plain object. got: ${Caf.toString(
+                  formattedInspect({ name, contents })
+                )}`
+              );
+            })();
+        }
+      })();
+    }
+  };
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1052,7 +1101,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1081,7 +1130,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var StandardPackageJson, deepMerge, fs, peek, ref;
@@ -1100,7 +1149,7 @@ module.exports = StandardPackageJson = (function() {
       name: peek(process.cwd().split("/")),
       version: fs.existsSync("package.json") ? JSON.parse(fs.readFileSync("package.json").toString()).version : "0.0.1",
       author: "Shane Brinkman-Davis Delamore, Imikimi LLC",
-      dependencies: __webpack_require__(10),
+      dependencies: __webpack_require__(11),
       scripts: {
         test: (abcConfig != null ? (ref1 = abcConfig.target) != null ? ref1.node : void 0 : void 0) ? "nn -s;mocha -u tdd --compilers coffee:coffee-script/register" : 'webpack-dev-server --progress',
         start: 'webpack-dev-server --hot --inline --progress',
@@ -1116,12 +1165,12 @@ module.exports = StandardPackageJson = (function() {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var CaseSensitivePathsPlugin, StandardWebpackConfig, path;
 
-CaseSensitivePathsPlugin = __webpack_require__(32);
+CaseSensitivePathsPlugin = __webpack_require__(33);
 
 path = __webpack_require__(2);
 
@@ -1178,14 +1227,14 @@ module.exports = StandardWebpackConfig = (function() {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(35);
+Neptune = __webpack_require__(36);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -1198,57 +1247,57 @@ module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(supe
 
 })(Neptune.Base));
 
-__webpack_require__(18);
+__webpack_require__(20);
 
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports) {
-
-module.exports = require("case-sensitive-paths-webpack-plugin");
 
 /***/ }),
 /* 33 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs-extra");
+module.exports = require("case-sensitive-paths-webpack-plugin");
 
 /***/ }),
 /* 34 */
 /***/ (function(module, exports) {
 
-module.exports = require("glob-promise");
+module.exports = require("fs-extra");
 
 /***/ }),
 /* 35 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces");
+module.exports = require("glob-promise");
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces/generator");
+module.exports = require("neptune-namespaces");
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports) {
 
-module.exports = require("webpack-merge");
+module.exports = require("neptune-namespaces/generator");
 
 /***/ }),
 /* 38 */
 /***/ (function(module, exports) {
 
+module.exports = require("webpack-merge");
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
+
 module.exports = require("webpack-node-externals");
 
 /***/ }),
-/* 39 */,
-/* 40 */
+/* 40 */,
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(20);
+module.exports = __webpack_require__(22);
 
 
 /***/ })
