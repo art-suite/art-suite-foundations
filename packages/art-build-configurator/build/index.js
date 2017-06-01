@@ -229,16 +229,26 @@ Caf.defMod(module, () => {
     peek,
     Dir,
     File,
-    dashCase;
+    dashCase,
+    process;
   ({
     BaseClass,
     getCapitalizedCodeWords,
     peek,
     Dir,
     File,
-    dashCase
+    dashCase,
+    process
   } = Caf.import(
-    ["BaseClass", "getCapitalizedCodeWords", "peek", "Dir", "File", "dashCase"],
+    [
+      "BaseClass",
+      "getCapitalizedCodeWords",
+      "peek",
+      "Dir",
+      "File",
+      "dashCase",
+      "process"
+    ],
     [__webpack_require__(3), __webpack_require__(16), global]
   ));
   path = __webpack_require__(2);
@@ -749,7 +759,10 @@ Caf.defMod(module, () => {
           return exists
             ? realRequire(file)
             : (vivify
-                ? this.init(npmRoot, { verbose: true, select: /register.js/ })
+                ? (this.init(npmRoot, {
+                    verbose: true,
+                    select: /register.js/
+                  }), realRequire(file))
                 : undefined, {});
         });
       };
