@@ -992,7 +992,7 @@ Caf.defMod(module, () => {
         isWebpackDevServer = !!(executable.match(/\/node$/) &&
           (Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/)));
         log(`\nNN: ${Caf.toString(npmRoot)}`);
-        return __webpack_require__(14)(npmRoot);
+        return __webpack_require__(14)(npmRoot, isWebpackDevServer);
       };
       this.loadAndWriteConfig = function(npmRoot, options) {
         let pretend, configure;

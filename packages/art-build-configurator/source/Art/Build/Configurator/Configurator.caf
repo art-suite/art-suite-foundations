@@ -81,7 +81,7 @@ class Configurator
     [executable, firstArg] = process.argv
     isWebpackDevServer = !!(executable.match(/\/node$/) && firstArg?.match /webpack-dev-server/)
     log "" \nNN: #{npmRoot}
-    &RunNeptuneNamespaces npmRoot
+    &RunNeptuneNamespaces npmRoot, isWebpackDevServer
 
   @loadAndWriteConfig: (npmRoot, options) ->
     {pretend, configure} = options
