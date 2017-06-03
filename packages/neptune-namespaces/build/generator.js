@@ -2,41 +2,41 @@ module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -47,7 +47,7 @@ module.exports =
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -56,15 +56,15 @@ module.exports =
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -314,30 +314,32 @@ module.exports = {
 		"art-config": "^1.3.3",
 		"art-standard-lib": "^1.11.1",
 		"art-testbench": "^1.10.3",
+		"bluebird": "^3.5.0",
 		"caffeine-script": "^0.44.5",
 		"caffeine-script-runtime": "^1.0.0",
-		"case-sensitive-paths-webpack-plugin": "^1.1.4",
-		"coffee-loader": "^0.7.2",
-		"coffee-script": "^1.12.3",
+		"case-sensitive-paths-webpack-plugin": "^2.1.1",
+		"chai": "^4.0.1",
+		"coffee-loader": "^0.7.3",
+		"coffee-script": "^1.12.6",
 		"colors": "^1.1.2",
 		"commander": "^2.9.0",
-		"css-loader": "^0.26.1",
+		"css-loader": "^0.28.4",
+		"dateformat": "^2.0.0",
 		"detect-node": "^2.0.3",
-		"fs-promise": "^1.0.0",
+		"fs-extra": "^3.0.1",
+		"glob": "^7.1.2",
 		"glob-promise": "^3.1.0",
 		"json-loader": "^0.5.4",
+		"mocha": "^3.4.2",
 		"neptune-namespaces": "^2.2.2",
 		"script-loader": "^0.7.0",
-		"style-loader": "^0.13.1",
-		"webpack": "^2.2.1",
-		"webpack-dev-server": "^2.3.0",
-		"webpack-merge": "^3.0.0"
+		"style-loader": "^0.18.1",
+		"webpack": "^2.6.1",
+		"webpack-dev-server": "^2.4.5",
+		"webpack-merge": "^4.1.0",
+		"webpack-node-externals": "^1.6.0"
 	},
 	"description": "Generate index.coffee and namespace.coffee files from directory structures",
-	"devDependencies": {
-		"chai": "^3.5.0",
-		"mocha": "^2.5.3"
-	},
 	"license": "ISC",
 	"name": "neptune-namespaces",
 	"scripts": {
@@ -363,7 +365,7 @@ var Generation, Generators,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Generation = __webpack_require__(13);
+Generation = __webpack_require__(15);
 
 module.exports = Generation.Generators || Generation.addNamespace('Generators', Generators = (function(superClass) {
   extend(Generators, superClass);
@@ -393,17 +395,17 @@ var Generator, IndexGenerator, NamespaceGenerator, NamespaceStructure, Path, col
 
 colors = __webpack_require__(6);
 
-glob = __webpack_require__(20);
+glob = __webpack_require__(22);
 
-fsp = __webpack_require__(19);
+fsp = __webpack_require__(21);
 
 ref = __webpack_require__(0), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, indent = ref.indent, pad = ref.pad, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, merge = ref.merge, getRelativePath = ref.getRelativePath, getAbsPath = ref.getAbsPath, getParentPath = ref.getParentPath, log = ref.log;
 
 Path = __webpack_require__(1);
 
-NamespaceStructure = __webpack_require__(12);
+NamespaceStructure = __webpack_require__(14);
 
-ref1 = __webpack_require__(11), IndexGenerator = ref1.IndexGenerator, NamespaceGenerator = ref1.NamespaceGenerator;
+ref1 = __webpack_require__(13), IndexGenerator = ref1.IndexGenerator, NamespaceGenerator = ref1.NamespaceGenerator;
 
 module.exports = Generator = (function() {
   Generator.standardRoots = ["source", "test", "performance", "src", "perf"];
@@ -662,6 +664,14 @@ module.exports = Generator = (function() {
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(7);
+
+
+/***/ }),
+/* 10 */,
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var NamespaceGenerator, alignColumns, compactFlatten, generatedByString, getRelativePath, log, max, neptuneBaseClass, pad, ref, ref1, requirePath;
 
 ref = __webpack_require__(0), compactFlatten = ref.compactFlatten, log = ref.log, getRelativePath = ref.getRelativePath, pad = ref.pad;
@@ -765,7 +775,7 @@ module.exports = NamespaceGenerator = (function() {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var NamespaceGenerator, generatedByString, neptuneBaseClass, ref, requirePath;
@@ -798,19 +808,19 @@ module.exports = NamespaceGenerator = (function() {
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(5);
 
 module.exports.addModules({
-  IndexGenerator: __webpack_require__(9),
-  NamespaceGenerator: __webpack_require__(10)
+  IndexGenerator: __webpack_require__(11),
+  NamespaceGenerator: __webpack_require__(12)
 });
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Namespace, NamespaceDir, NamespaceSet, NamespaceStructure, arrayWithoutLast, basename, fileWithoutExtension, globalNamespaceName, log, merge, peek, pushIfUnique, ref, ref1, shouldIgnore, shouldIncludeInNamespace, shouldNotNamespace, toFilename, toModuleName, upperCamelCase;
@@ -1047,14 +1057,14 @@ module.exports = NamespaceStructure = (function() {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Generation, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(21);
+Neptune = __webpack_require__(23);
 
 module.exports = Neptune.Generation || Neptune.addNamespace('Generation', Generation = (function(superClass) {
   extend(Generation, superClass);
@@ -1071,34 +1081,27 @@ __webpack_require__(5);
 
 
 /***/ }),
-/* 14 */,
-/* 15 */,
 /* 16 */,
 /* 17 */,
 /* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */,
+/* 21 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs-promise");
+module.exports = require("fs-extra");
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = require("glob-promise");
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(7);
-
 
 /***/ })
 /******/ ]);

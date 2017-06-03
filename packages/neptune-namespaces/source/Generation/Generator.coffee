@@ -1,6 +1,6 @@
 colors = require "colors"
 glob = require "glob-promise"
-fsp = require "fs-promise"
+fsp = require "fs-extra"
 {
   upperCamelCase, peek, pushIfUnique, indent, pad, withoutTrailingSlash, promiseSequence, merge
   getRelativePath

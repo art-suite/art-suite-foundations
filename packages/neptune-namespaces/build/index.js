@@ -2,41 +2,41 @@ module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -47,7 +47,7 @@ module.exports =
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -56,15 +56,15 @@ module.exports =
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -86,30 +86,32 @@ module.exports = {
 		"art-config": "^1.3.3",
 		"art-standard-lib": "^1.11.1",
 		"art-testbench": "^1.10.3",
+		"bluebird": "^3.5.0",
 		"caffeine-script": "^0.44.5",
 		"caffeine-script-runtime": "^1.0.0",
-		"case-sensitive-paths-webpack-plugin": "^1.1.4",
-		"coffee-loader": "^0.7.2",
-		"coffee-script": "^1.12.3",
+		"case-sensitive-paths-webpack-plugin": "^2.1.1",
+		"chai": "^4.0.1",
+		"coffee-loader": "^0.7.3",
+		"coffee-script": "^1.12.6",
 		"colors": "^1.1.2",
 		"commander": "^2.9.0",
-		"css-loader": "^0.26.1",
+		"css-loader": "^0.28.4",
+		"dateformat": "^2.0.0",
 		"detect-node": "^2.0.3",
-		"fs-promise": "^1.0.0",
+		"fs-extra": "^3.0.1",
+		"glob": "^7.1.2",
 		"glob-promise": "^3.1.0",
 		"json-loader": "^0.5.4",
+		"mocha": "^3.4.2",
 		"neptune-namespaces": "^2.2.2",
 		"script-loader": "^0.7.0",
-		"style-loader": "^0.13.1",
-		"webpack": "^2.2.1",
-		"webpack-dev-server": "^2.3.0",
-		"webpack-merge": "^3.0.0"
+		"style-loader": "^0.18.1",
+		"webpack": "^2.6.1",
+		"webpack-dev-server": "^2.4.5",
+		"webpack-merge": "^4.1.0",
+		"webpack-node-externals": "^1.6.0"
 	},
 	"description": "Generate index.coffee and namespace.coffee files from directory structures",
-	"devDependencies": {
-		"chai": "^3.5.0",
-		"mocha": "^2.5.3"
-	},
 	"license": "ISC",
 	"name": "neptune-namespaces",
 	"scripts": {
@@ -138,7 +140,7 @@ var NamespaceBaseClass, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-NamespaceBaseClass = __webpack_require__(14);
+NamespaceBaseClass = __webpack_require__(16);
 
 module.exports = global.Neptune || (global.Neptune = Neptune = (function(superClass) {
   extend(Neptune, superClass);
@@ -157,7 +159,7 @@ module.exports = global.Neptune || (global.Neptune = Neptune = (function(superCl
     return (klass != null ? klass.prototype : void 0) instanceof NamespaceBaseClass;
   };
 
-  Neptune.isNode = __webpack_require__(18);
+  Neptune.isNode = __webpack_require__(20);
 
   Neptune.version = (__webpack_require__(3)).version;
 
@@ -170,11 +172,19 @@ NamespaceBaseClass.namespace = Neptune;
 
 /***/ }),
 /* 9 */,
-/* 10 */,
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(8);
+
+
+/***/ }),
 /* 11 */,
 /* 12 */,
 /* 13 */,
-/* 14 */
+/* 14 */,
+/* 15 */,
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -188,11 +198,11 @@ change to take a name argument: @addNamespace: (name, namespace) ->
 var ArtStandardLibCore, NamespaceBaseClass, isExtendedClass, isFunction, isPlainArray, ref,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-__webpack_require__(16);
+__webpack_require__(18);
 
-__webpack_require__(15);
+__webpack_require__(17);
 
-ref = __webpack_require__(17), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(19), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
@@ -430,7 +440,7 @@ module.exports = NamespaceBaseClass = (function() {
 
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 if ((function() {}).name == null) {
@@ -456,7 +466,7 @@ global.Function.prototype.hasName = function() {
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 var g;
@@ -469,27 +479,16 @@ g.global || (g.global = g);
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-standard-lib/Types");
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = require("detect-node");
-
-/***/ }),
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(8);
-
 
 /***/ })
 /******/ ]);
