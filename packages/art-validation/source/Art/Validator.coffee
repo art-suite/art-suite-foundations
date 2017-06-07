@@ -1,5 +1,3 @@
-StandardLib = require 'art-standard-lib'
-
 {
   merge, log, BaseObject, shallowClone
   isNumber, isString, isPlainObject, isPlainArray
@@ -18,9 +16,28 @@ StandardLib = require 'art-standard-lib'
   object
   isDate
   pushIfNotPresent
-} = StandardLib
+} = require 'art-standard-lib'
 
 {validStatus} = require 'art-communication-status'
+
+march1973InMilliseconds = 100000000000
+toMilliseconds = (v) ->
+  if isNumber v
+    if v < march1973InMilliseconds
+      # assuming its a Seconds timestamp
+      # range: 1970-01-01 to 5138-11-16
+      v * 1000
+    else
+      # assuming its a Milliseconds timestamp
+      # range: 1973-03-03 to JavaScript max-date
+      v
+  else if isDate v
+    v | 0
+  else throw new Error 'invalid timestamp value: #{formattedInspect v}'
+
+toSeconds = (v) ->
+  (toMilliseconds(v) / 1000 + .5) | 0
+
 
 ###
 NOTES:
@@ -150,7 +167,14 @@ module.exports = class Validator extends BaseObject
     timestamp: # milliseconds since 1970; to get the current timestamp: Date.now()
       dataType: numberDataType
       validate:   (v) -> isNumber(v) || isDate v
-      preprocess: (v) -> if isNumber then v else v - 0
+      preprocess: toMilliseconds
+      decode: (v) -> new Date toMilliseconds v
+
+    secondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
+      dataType: numberDataType
+      validate:   (v) -> isNumber(v) || isDate v
+      preprocess: toSeconds
+      decode: (v) -> new Date toMilliseconds v
 
     color:
       validate: (v) -> isHexColor v
@@ -293,20 +317,29 @@ module.exports = class Validator extends BaseObject
 
   OUT: preprocessed fields - if they pass, otherwise error is thrown
   ###
-  preCreateSync: preCreateSync = (fields, options) ->
-    if @requiredFieldsPresent(fields) && @presentFieldsValid fields
+  preCreateSync: preCreateSync = (fields = {}, options) ->
+    out = try
+      @requiredFieldsPresent(fields) &&
+      @presentFieldsValid(fields) &&
       @preprocessFields fields, true
-    else @_throwError fields, options, true
+    catch error
+      log.error Validator: error_in: preCreateSync: {fields, options, this: @, error}
+
+    out || @_throwError fields, options, true
 
   validateSync: preCreateSync
 
   ###
   OUT: preprocessed fields - if they pass, otherwise error is thrown
   ###
-  preUpdateSync: (fields, options) ->
-    if @presentFieldsValid fields
+  preUpdateSync: (fields = {}, options) ->
+    out = try
+      @presentFieldsValid(fields) &&
       @preprocessFields fields
-    else @_throwError fields, options
+    catch error
+      log.error Validator: error_in: preUpdateSync: {fields, options, this: @, error}
+
+    out || @_throwError fields, options
 
   _throwError: (fields, options, forCreate) ->
     info = errors: errors = {}
@@ -367,7 +400,7 @@ module.exports = class Validator extends BaseObject
         processedFields ||= shallowClone fields
         processedFields[fieldName] = value
 
-    processedFields || fields
+    processedFields || fields || {}
 
   ####################
   # VALIDATION INFO CORE
