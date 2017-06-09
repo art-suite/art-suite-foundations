@@ -2,41 +2,41 @@ module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -47,7 +47,7 @@ module.exports =
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -56,15 +56,15 @@ module.exports =
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 40);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -105,7 +105,7 @@ module.exports = require("caffeine-script-runtime");
 
 /***/ }),
 
-/***/ 23:
+/***/ 24:
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -150,26 +150,26 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.14.2"
+	"version": "1.14.3"
 };
-
-/***/ }),
-
-/***/ 24:
-/***/ (function(module, exports) {
-
-module.exports = require("colors");
 
 /***/ }),
 
 /***/ 25:
 /***/ (function(module, exports) {
 
+module.exports = require("colors");
+
+/***/ }),
+
+/***/ 26:
+/***/ (function(module, exports) {
+
 module.exports = require("commander");
 
 /***/ }),
 
-/***/ 40:
+/***/ 27:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -183,9 +183,9 @@ Caf.defMod(module, () => {
     configure,
     init,
     commander;
-  __webpack_require__(24);
-  ({ pv, pretend, configure, init } = commander = __webpack_require__(25)
-    .version(__webpack_require__(23).version)
+  __webpack_require__(25);
+  ({ pv, pretend, configure, init } = commander = __webpack_require__(26)
+    .version(__webpack_require__(24).version)
     .option(
       "-p, --pretend",
       "show the configs that will be generated without writing them"
@@ -207,12 +207,12 @@ Caf.defMod(module, () => {
   return pv
     ? console.log(__webpack_require__(6).Versioning.current)
     : pretend || configure || init
-        ? __webpack_require__(6)
-            .go(process.cwd(), commander)
-            .catch(function(e) {
-              return console.error(e.stack);
-            })
-        : commander.outputHelp();
+      ? __webpack_require__(6)
+          .go(process.cwd(), commander)
+          .catch(function(e) {
+            return console.error(e.stack);
+          })
+      : commander.outputHelp();
 });
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
