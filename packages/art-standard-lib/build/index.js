@@ -5218,6 +5218,9 @@ module.exports = {
     Number of Milliseconds since epoch-start
    */
   toMilliseconds: toMilliseconds = function(v) {
+    if (v == null) {
+      return v;
+    }
     if (isNumber(v)) {
       if (v < march1973InMilliseconds) {
         return v * 1000;
@@ -5240,9 +5243,15 @@ module.exports = {
     Number of Seconds since epoch-start
    */
   toSeconds: function(v) {
+    if (v == null) {
+      return v;
+    }
     return (toMilliseconds(v) / 1000 + .5) | 0;
   },
   toDate: function(v) {
+    if (v == null) {
+      return v;
+    }
     if (isDate(v)) {
       return v;
     } else {
