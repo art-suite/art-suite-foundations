@@ -26,6 +26,5 @@ module.exports = [
   require "./Log"
   require "./CallStack"
 
-  # SEE: https://www.npmjs.com/package/dateformat
-  dateFormat: require "dateformat"
+  require './DateExtensions'
 ]

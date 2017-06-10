@@ -10,6 +10,7 @@ module.exports
   CallStack:          require './CallStack'         
   Clone:              require './Clone'             
   CommonJs:           require './CommonJs'          
+  DateExtensions:     require './DateExtensions'    
   Environment:        require './Environment'       
   Eq:                 require './Eq'                
   ErrorWithInfo:      require './ErrorWithInfo'     

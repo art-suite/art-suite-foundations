@@ -7,6 +7,7 @@ module.exports
   Array:            require './array'           
   CallStack:        require './CallStack'       
   Clone:            require './clone'           
+  DateExtensions:   require './DateExtensions'  
   Environment:      require './Environment'     
   Eq:               require './eq'              
   Iteration:        require './Iteration'       
