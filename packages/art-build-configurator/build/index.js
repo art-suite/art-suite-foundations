@@ -249,7 +249,7 @@ Caf.defMod(module, () => {
     "art-config": "^1.3.3",
     "art-standard-lib": "^1.11.1",
     "art-testbench": "^1.10.3",
-    "caffeine-script": "^0.44.5",
+    "caffeine-script": "^0.45.3",
     "caffeine-script-runtime": "^1.0.0",
     "coffee-script": "^1.12.6",
     "coffee-loader": "^0.7.3",
