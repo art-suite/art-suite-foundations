@@ -469,7 +469,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     isAbstractClass: -> !(@prototype instanceof @_firstAbstractAncestor)
     abstractPrototype: -> @_firstAbstractAncestor.prototype
     firstAbstractAncestor: -> @_firstAbstractAncestor
-    isSingletonClass: -> !!@getSingleton
+    isSingletonClass: -> @_singleton?.class == @
     concretePrototypeProperties: ->
       abstractClassPrototype = @getAbstractClass().prototype
       object @prototype, when: (v, k) ->
@@ -492,28 +492,43 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   ######################################################
 
   ###
+  SBD2017: this is the new path for singleton classes.
+  WHY: We can elliminate the need to DECLARE classes singleton.
+    Instead, we can just access the singleton for any class, if needed.
+  TODO: once we are 100% CaffeineScript, switch this to a @classGetter
+  ###
+  @getSingleton: getSingleton = ->
+    if @_singleton?.class == @
+      @_singleton
+    else
+      throw new Error "singleton classes cannot be abstract" if @getIsAbstractClass()
+      @_singleton = new @
+
+  ###
   creates the classGetter "singleton" which returns a single instance of the current class.
 
   IN: args are passed to the singleton constructor
   OUT: null
 
   The singleton instance is created on demand the first time it is accessed.
+
+  SBD2017: Possibly depricated; maybe we just need a singleton getter for everyone?
+    The problem is coffeescript doesn't properly inherit class getters.
+    BUT ES6 and CaffeineScript DO. So, when we switch over, I think we can do this.
   ###
   @singletonClass: (args...) ->
     if args.length > 0
+      # DEPRICATED: args...
+      # WHY: "new @ args..." doesn't work if @ is an ES6 class!
+      # The reason is ES6 constructor functions cannot be invoked w/o "new"
+      # which means you can only do args... with the new ES6 ...args method,
+      # not the way caffeineScript invokes "new @ args..."
       log.error args: args
       throw new Error "singletonClass args are DEPRICATED" if args.length > 0
     throw new Error "singleton classes cannot be abstract" if @getIsAbstractClass()
 
     @classGetter
-      singleton: ->
-        if @_singleton?.class == @
-          @_singleton
-        else
-          # NOTE: "new @ args..." doesn't work if @ is an ES6 class!
-          # The reason is ES6 constructor functions cannot be invoked w/o "new"
-          # which means you can only do args... with the new ES6 ...args method.
-          @_singleton = new @ #args...
+      singleton: getSingleton
       "#{decapitalize functionName @}": -> @getSingleton()
 
     null
