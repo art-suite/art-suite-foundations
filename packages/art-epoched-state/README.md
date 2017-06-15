@@ -1,6 +1,6 @@
 # Art.Epoch
 
-> Initialized by Art.Build.Configurator
+Manage state in epochs. Used by ArtEngine, ArtEvents, ArtReact, ArtFlux - you get the picture.
 
 ### Install
 
