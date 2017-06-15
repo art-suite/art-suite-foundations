@@ -17,3 +17,8 @@ suite: ->
 
   test "only one singleton" ->
     assert.equal MySingleton.singleton, MySingleton.singleton
+
+  test "singleton no longer needs declaration" ->
+    class MyNewSingleton extends BaseClass
+
+    assert.instanceof MyNewSingleton, MyNewSingleton.getSingleton()
