@@ -121,7 +121,7 @@ module.exports = {
 		"art-standard-lib": "^1.11.1",
 		"art-testbench": "^1.10.3",
 		"bluebird": "^3.5.0",
-		"caffeine-script": "^0.44.5",
+		"caffeine-script": "^0.45.3",
 		"caffeine-script-runtime": "^1.0.0",
 		"case-sensitive-paths-webpack-plugin": "^2.1.1",
 		"chai": "^4.0.1",
@@ -155,7 +155,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.14.3"
+	"version": "1.14.4"
 };
 
 /***/ }),
