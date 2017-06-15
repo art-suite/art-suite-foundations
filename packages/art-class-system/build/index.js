@@ -2,41 +2,41 @@ module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -47,7 +47,7 @@ module.exports =
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -56,15 +56,15 @@ module.exports =
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -87,7 +87,7 @@ nextUniqueObjectId = Unique.nextUniqueObjectId;
 ExtendablePropertyMixin = __webpack_require__(2);
 
 module.exports = BaseClass = (function(superClass) {
-  var createWithPostCreate, excludedKeys, imprintObject, warnedAboutIncludeOnce;
+  var createWithPostCreate, excludedKeys, getSingleton, imprintObject, warnedAboutIncludeOnce;
 
   extend(BaseClass, superClass);
 
@@ -552,7 +552,8 @@ module.exports = BaseClass = (function(superClass) {
       return this._firstAbstractAncestor;
     },
     isSingletonClass: function() {
-      return !!this.getSingleton;
+      var ref;
+      return ((ref = this._singleton) != null ? ref["class"] : void 0) === this;
     },
     concretePrototypeProperties: function() {
       var abstractClassPrototype;
@@ -581,12 +582,36 @@ module.exports = BaseClass = (function(superClass) {
 
 
   /*
+  SBD2017: this is the new path for singleton classes.
+  WHY: We can elliminate the need to DECLARE classes singleton.
+    Instead, we can just access the singleton for any class, if needed.
+  TODO: once we are 100% CaffeineScript, switch this to a @classGetter
+   */
+
+  BaseClass.getSingleton = getSingleton = function() {
+    var ref;
+    if (((ref = this._singleton) != null ? ref["class"] : void 0) === this) {
+      return this._singleton;
+    } else {
+      if (this.getIsAbstractClass()) {
+        throw new Error("singleton classes cannot be abstract");
+      }
+      return this._singleton = new this;
+    }
+  };
+
+
+  /*
   creates the classGetter "singleton" which returns a single instance of the current class.
   
   IN: args are passed to the singleton constructor
   OUT: null
   
   The singleton instance is created on demand the first time it is accessed.
+  
+  SBD2017: Possibly depricated; maybe we just need a singleton getter for everyone?
+    The problem is coffeescript doesn't properly inherit class getters.
+    BUT ES6 and CaffeineScript DO. So, when we switch over, I think we can do this.
    */
 
   BaseClass.singletonClass = function() {
@@ -605,14 +630,7 @@ module.exports = BaseClass = (function(superClass) {
     }
     this.classGetter((
       obj1 = {
-        singleton: function() {
-        var ref;
-        if (((ref = this._singleton) != null ? ref["class"] : void 0) === this) {
-          return this._singleton;
-        } else {
-          return this._singleton = new this;
-        }
-      }
+        singleton: getSingleton
       },
       obj1["" + (decapitalize(functionName(this)))] = function() {
         return this.getSingleton();
@@ -982,7 +1000,7 @@ var Art, ClassSystem,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(10);
+Art = __webpack_require__(11);
 
 module.exports = Art.ClassSystem || Art.addNamespace('ClassSystem', ClassSystem = (function(superClass) {
   extend(ClassSystem, superClass);
@@ -1030,10 +1048,10 @@ module.exports = function(module) {
 
 module.exports = __webpack_require__(4);
 
-module.exports.includeInNamespace(__webpack_require__(8)).addModules({
+module.exports.includeInNamespace(__webpack_require__(9)).addModules({
   BaseClass: __webpack_require__(0),
-  BaseObject: __webpack_require__(7),
-  DeclarableMixin: __webpack_require__(9),
+  BaseObject: __webpack_require__(8),
+  DeclarableMixin: __webpack_require__(10),
   ExtendablePropertyMixin: __webpack_require__(2),
   WebpackHotLoader: __webpack_require__(3)
 });
@@ -1041,6 +1059,13 @@ module.exports.includeInNamespace(__webpack_require__(8)).addModules({
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(6);
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject,
@@ -1060,7 +1085,7 @@ module.exports = BaseObject = (function(superClass) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
@@ -1071,7 +1096,7 @@ module.exports = [
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var defineModule, each, isPlainObject, log, lowerCamelCase, object, ref, upperCamelCase,
@@ -1173,14 +1198,14 @@ defineModule(module, function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(11);
+Neptune = __webpack_require__(12);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -1197,17 +1222,10 @@ __webpack_require__(4);
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(6);
-
 
 /***/ })
 /******/ ]);
