@@ -1,5 +1,5 @@
-Foundation = require 'art-foundation'
-{defineModule, log, Epoch} = Foundation
+{defineModule, log} = require 'art-standard-lib'
+{Epoch} = require 'art-foundation'
 
 defineModule module, class EventEpoch extends Epoch
   @singletonClass()

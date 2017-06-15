@@ -1,9 +1,7 @@
-Foundation = require 'art-foundation'
-EventEpoch = require './EventEpoch'
-Event = require './Event'
+{defineModule, isString, isFunction, log, isPlainObject, inspect} = require 'art-standard-lib'
 
-{defineModule, isString, isFunction, log, isPlainObject, inspect} = Foundation
-{eventEpoch} = EventEpoch
+Event = require './Event'
+{eventEpoch} = require './EventEpoch'
 
 ###
 to be used as a mixin via BaseObject's @include method

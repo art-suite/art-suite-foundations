@@ -8,12 +8,13 @@ TODO:
 
 ###
 
-Foundation = require 'art-foundation'
-Event = require "./Event"
-{defineModule, nextTick, isFunction, inspect, clone, arrayWith} = Foundation
-rawErrorLog = Foundation.Log.rawErrorLog
+{defineModule, Log, nextTick, isFunction, inspect, clone, arrayWith} = require 'art-standard-lib'
+{BaseClass} = require 'art-class-system'
 
-defineModule module, class EventManager extends Foundation.BaseObject
+Event = require "./Event"
+rawErrorLog = Log.rawErrorLog
+
+defineModule module, class EventManager extends BaseClass
 
   constructor: (parent) ->
     @parent = parent
