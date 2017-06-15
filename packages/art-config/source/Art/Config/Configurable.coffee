@@ -7,9 +7,11 @@
   deepMerge
   isPlainObject
 } = require 'art-standard-lib'
-{BaseObject} = require 'art-class-system'
+{BaseClass} = require 'art-class-system'
 
 ConfigRegistry = require './ConfigRegistry'
+
+{EventedMixin} = require 'art-events'
 
 #####################################
 ###
@@ -25,7 +27,7 @@ TO USE:
 ###
 #####################################
 
-defineModule module, class Configurable extends BaseObject
+defineModule module, class Configurable extends EventedMixin BaseClass
   @abstractClass()
 
   # call this to initialize default values for your config
@@ -61,8 +63,12 @@ defineModule module, class Configurable extends BaseObject
   # OVERRIDES
   #####################################
 
+  @on: (a...) ->
+    @getSingleton().on a...
+
   # called after @config has been updated
   @configured: ->
+    @getSingleton().handleEvent "configured"
 
   #####################################
   # HELPERS

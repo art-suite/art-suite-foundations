@@ -1,0 +1,11 @@
+import &ArtStandardLib, Neptune.Art.Config
+
+suite: ->
+  test "Configurable configured event" ->
+    class MyConfigurable extends Configurable
+      @defaults
+        name:     "TestName"
+        verbose:  false
+
+    MyConfigurable.configure
+    log getConfigurationPath: MyConfigurable.getConfigurationPath()

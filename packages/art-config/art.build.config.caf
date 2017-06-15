@@ -1,0 +1,11 @@
+module.exports =
+  target: node: true
+  package:
+    description: "" A powerful yet simple tool for configuring all your libraries consistently.
+    dependencies:
+      art-events:                       :^1.1.4
+
+  webpack:
+    common: {}
+    targets:
+      index: {}
