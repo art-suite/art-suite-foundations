@@ -1,14 +1,14 @@
 # Art.Suite
-neptune-namespaces:                   :^2.2.2
-art-build-configurator:               :^1.11.5
-art-class-system:                     :^1.5.2
-art-config:                           :^1.3.3
-art-standard-lib:                     :^1.11.1
-art-testbench:                        :^1.10.3
+neptune-namespaces:                   :*
+art-build-configurator:               :*
+art-class-system:                     :*
+art-config:                           :*
+art-standard-lib:                     :*
+art-testbench:                        :*
 
 # Caffeine.Suite
-caffeine-script:                      :^0.45.3
-caffeine-script-runtime:              :^1.0.0
+caffeine-script:                      :*
+caffeine-script-runtime:              :*
 
 # compilers
 coffee-script:                        :^1.12.6
