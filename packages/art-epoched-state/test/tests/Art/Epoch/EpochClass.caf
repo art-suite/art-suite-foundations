@@ -1,4 +1,4 @@
-import &StandardImport, Neptune.Art.Epoch
+import &StandardImport, Neptune.Art.EpochedState
 
 epoch = new EpochClass
 

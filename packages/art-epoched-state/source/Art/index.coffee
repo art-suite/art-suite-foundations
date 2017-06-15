@@ -3,4 +3,4 @@
 
 module.exports = require './namespace'
 module.exports
-require './Epoch'
+require './EpochedState'
