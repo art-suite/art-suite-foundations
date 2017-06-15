@@ -243,14 +243,14 @@ module.exports = require("art-class-system");
 let Caf = __webpack_require__(1);
 Caf.defMod(module, () => {
   return {
-    "neptune-namespaces": "^2.2.2",
-    "art-build-configurator": "^1.11.5",
-    "art-class-system": "^1.5.2",
-    "art-config": "^1.3.3",
-    "art-standard-lib": "^1.11.1",
-    "art-testbench": "^1.10.3",
-    "caffeine-script": "^0.45.3",
-    "caffeine-script-runtime": "^1.0.0",
+    "neptune-namespaces": "*",
+    "art-build-configurator": "*",
+    "art-class-system": "*",
+    "art-config": "*",
+    "art-standard-lib": "*",
+    "art-testbench": "*",
+    "caffeine-script": "*",
+    "caffeine-script-runtime": "*",
     "coffee-script": "^1.12.6",
     "coffee-loader": "^0.7.3",
     "css-loader": "^0.28.4",
