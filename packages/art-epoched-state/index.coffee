@@ -1,1 +1,1 @@
-module.exports = require './source/Art'
+module.exports = require('./source/Art').Epoch
