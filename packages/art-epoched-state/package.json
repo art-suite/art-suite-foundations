@@ -33,7 +33,7 @@
   },
   "description": "Art.Epoch",
   "license": "ISC",
-  "name": "art-epoch",
+  "name": "art-epoched-state",
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress",
