@@ -8,7 +8,7 @@ TODO:
 
 ###
 
-{defineModule, Log, nextTick, isFunction, inspect, clone, arrayWith} = require 'art-standard-lib'
+{defineModule, Log, nextTick, isFunction, inspect, clone, arrayWith, throwErrorOutOfStack} = require 'art-standard-lib'
 {BaseClass} = require 'art-class-system'
 
 Event = require "./Event"
@@ -76,7 +76,7 @@ defineModule module, class EventManager extends BaseClass
   handleErrorInHandler: (handler, event, error) ->
     if event.type == "eventException"
       rawErrorLog "exception in eventException handler.\nEvent:#{inspect event, 1}.\n\nError:\n#{error.stack}"
-      Foundation.throwErrorOutOfStack error
+      throwErrorOutOfStack error
     else if @eventHandlers["eventException"]
       @handleEvent new Event "eventException",
         event: clone event
@@ -87,4 +87,4 @@ defineModule module, class EventManager extends BaseClass
       rawErrorLog error
       rawErrorLog "Event: #{inspect event, 1}"
       rawErrorLog "Stack:\n#{error.stack}"
-      Foundation.throwErrorOutOfStack error
+      throwErrorOutOfStack error

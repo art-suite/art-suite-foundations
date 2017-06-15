@@ -1,4 +1,4 @@
-{defineModule, isString, isFunction, log, isPlainObject, inspect} = require 'art-standard-lib'
+{defineModule, isString, isFunction, log, isPlainObject, inspect, throwErrorOutOfStack} = require 'art-standard-lib'
 
 Event = require './Event'
 {eventEpoch} = require './EventEpoch'
@@ -137,4 +137,4 @@ defineModule module, -> (superClass) ->
       console.log "Event: #{inspect event, 1}"
       console.log "Handler:", handler
       console.log "Stack:", error.stack
-      Foundation.throwErrorOutOfStack error
+      throwErrorOutOfStack error

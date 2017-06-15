@@ -1,9 +1,7 @@
-{log, inspect, nextTick, BaseObject} = require 'art-foundation'
-Events = require 'art-events'
+import &ArtStandardLib, &ArtClassSystem, Neptune.Art.Events
 
-
-module.exports = suite: ->
-  class MyEventedObject extends Events.EventedMixin BaseObject
+suite: ->
+  class MyEventedObject extends EventedMixin BaseClass
 
   test "event(), when no handler, returns false", ->
     eo = new MyEventedObject
@@ -28,7 +26,7 @@ module.exports = suite: ->
     eo.on foo: (e)->
       assert.eq e.props.bar, 123
       done()
-    assert.eq true, eo.queueEvent "foo", -> new Events.Event "foo", bar:123
+    assert.eq true, eo.queueEvent "foo", -> new Event "foo", bar:123
 
   test "events handled in order they occured", (done)->
     eo = new MyEventedObject
@@ -52,7 +50,7 @@ module.exports = suite: ->
   test "show warning when handling events outside of an epoch", (done)->
     eo = new MyEventedObject
     eo.on foo: -> done()
-    eo.handleEvent new Events.Event "foo"
+    eo.handleEvent new Event "foo"
 
   test "events queued at other times are OK", (done)->
     eo = new MyEventedObject

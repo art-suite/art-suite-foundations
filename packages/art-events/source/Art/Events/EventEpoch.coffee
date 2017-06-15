@@ -1,7 +1,7 @@
 {defineModule, log} = require 'art-standard-lib'
-{Epoch} = require 'art-foundation'
+{EpochClass} = require 'art-epoched-state'
 
-defineModule module, class EventEpoch extends Epoch
+defineModule module, class EventEpoch extends EpochClass
   @singletonClass()
 
   # event is a function
