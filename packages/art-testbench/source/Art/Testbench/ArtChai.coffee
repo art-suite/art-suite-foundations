@@ -140,16 +140,20 @@ addTester "instanceof",
       v1
 
   (klass, obj) -> obj instanceof klass
-addTester "match",    (a, b) -> a.match  if isString b then escapeRegExp b else b
-addTester "notMatch", (a, b) -> !a.match if isString b then escapeRegExp b else b
-addTester "same",     (a, b) -> a == b
-addTester "notSame",  (a, b) -> a != b
+addTester "match",        (a, b) -> a.match  if isString b then escapeRegExp b else b
+addTester "notMatch",     (a, b) -> !a.match if isString b then escapeRegExp b else b
+addTester "same",         (a, b) -> a == b
+addTester "notSame",      (a, b) -> a != b
 addTester "doesNotExist", (a) -> !a?
-addTester "exists",    (a) -> a?
+addTester "exists",       (a) -> a?
 addTester "isNotPresent", (a) -> !present a
 addTester "isPresent",    (a) -> present a
-addTester "hasKeys",    (a) -> isPlainObject(a) && objectHasKeys(a)
-addTester "hasNoKeys",  (a) -> isPlainObject(a) && !objectHasKeys(a)
+addTester "hasKeys",      (a) -> isPlainObject(a) && objectHasKeys(a)
+addTester "hasNoKeys",    (a) -> isPlainObject(a) && !objectHasKeys(a)
+
+# Ruby/Caffeine Truth
+addTester "true",         (a) -> a != false && a?
+addTester "false",        (a) -> a == false || !a?
 
 # TODO: selectedPropsEq needs a better error message - I ALSO want to see what the actual selected values look like
 addTester "selectedPropsEq",
