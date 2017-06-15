@@ -4,7 +4,7 @@
     "art-build-configurator": "*",
     "art-class-system": "*",
     "art-config": "*",
-    "art-events": "^1.1.4",
+    "art-events": "*",
     "art-standard-lib": "*",
     "art-testbench": "*",
     "bluebird": "^3.5.0",
