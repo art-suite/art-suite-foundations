@@ -1,9 +1,7 @@
-Foundation = require 'art-foundation'
-EventEpoch = require './EventEpoch'
-Event = require './Event'
+{defineModule, isFunction, log, isPlainObject, inspect} = require 'art-standard-lib'
 
-{defineModule, isFunction, log, isPlainObject, inspect} = Foundation
-{eventEpoch} = EventEpoch
+{eventEpoch} = require './EventEpoch'
+Event = require './Event'
 
 ###
 to be used as a mixin via BaseObject's @include method
@@ -15,13 +13,14 @@ defineModule module, class EventedObjectBase
   @typeFromEventOrType: typeFromEventOrType = (eventOrType) -> eventOrType && (eventOrType.type || eventOrType)
 
   ###
-  Purpose:
-    handle event immediately
-    do some preprocessing on the event
+  EFFECT:
+    event is handled immediately if there is a handler for it.
+    NOTE: if eventPropertiesOrCreator is an eventCreator, it is NOT INVOKED
+      if there is no handler for eventType.
 
-  Inputs: see #event()'s inputs
+  IN: see normalizeEvent
 
-  Output: true if the event was actually handled
+  OUT: true if the event was actually handled
 
   IMPORTANT: This should only be called during an eventEpoch.
     This means:
@@ -32,20 +31,8 @@ defineModule module, class EventedObjectBase
       - send a new event triggered from the first
   ###
   handleEvent: (eventOrType, eventPropertiesOrCreator) ->
-    eventType = typeFromEventOrType eventOrType
-    return false unless eventType && @_hasEventHandler eventType
-
-    event = if eventOrType instanceof Event
-      eventOrType
-    else if isFunction eventPropertiesOrCreator
-      if isPlainObject e = eventPropertiesOrCreator()
-        new Event eventType, e
-      else
-        e
-    else
-      new Event eventType, eventPropertiesOrCreator
-
-    return false unless event
+    unless event = @_normalizedEventToHandle eventOrType, eventPropertiesOrCreator
+      return false
 
     event.target = @
     try
@@ -54,6 +41,44 @@ defineModule module, class EventedObjectBase
       @_handleErrorInHandler event, "unknown", e
     event.target = null
     true
+
+  ###
+  IN 1: (event instance)
+    EFFECT: returns event immediately
+
+  IN 2: (eventType, eventPropertiesOrCreator)
+    EFFECT:
+      eventPropertiesOrCreator: eventProperties, eventCreator or null
+      eventCreator: () -> Event instance, eventProperties or null
+        NOTE: if eventCreator returns null, null is returned from normalizeEvent
+
+      eventProperties: plain object used to create event: new Event eventType, eventProperties
+
+  OUT:
+    if !eventOrType? || !eventCreator?()? then null
+    else event instance
+  ###
+  normalizeEvent: (eventOrType, eventPropertiesOrCreator) ->
+    if eventOrType instanceof Event
+      eventOrType
+
+    else if isString eventType = eventOrType
+
+      if isFunction eventCreator = eventPropertiesOrCreator
+        if (e = eventCreator())?
+          if isPlainObject e
+            new Event eventType, e
+          else if e instanceof Event
+            e
+          else
+            throw new Error "expecting eventCreator to return EventInstance, null or plain object"
+        else
+          null
+      else
+        new Event eventType, eventPropertiesOrCreator
+
+    else
+      null
 
   ###
   Inputs:
@@ -105,3 +130,8 @@ defineModule module, class EventedObjectBase
     console.log "Handler:", handler
     console.log "Stack:", error.stack
     Foundation.throwErrorOutOfStack error
+
+  _normalizedEventToHandle: (eventOrType, eventPropertiesOrCreator) ->
+    (eventType = typeFromEventOrType eventOrType) &&
+    @_hasEventHandler(eventType) &&
+    @normalizeEvent eventOrType, eventPropertiesOrCreator
