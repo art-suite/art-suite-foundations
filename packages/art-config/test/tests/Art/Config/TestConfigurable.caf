@@ -1,10 +1,10 @@
-{merge, w, defineModule, log} = Neptune.Art.StandardLib
-{ConfigRegistry, Configurable} = Neptune.Art.Config
+import &ArtStandardLib
+{ConfigRegistry, Configurable} = &source/Art/Config
 
 expectedPath = w "Tests Art Config"
 pathedConfig = Tests: Art: Config: foo: 1
 
-defineModule module, class TestConfigurable extends Configurable
+class TestConfigurable extends Configurable
   @defaults
     name:     "TestName"
     verbose:  false
@@ -14,7 +14,8 @@ defineModule module, class TestConfigurable extends Configurable
       assert.eq TestConfigurable.getConfigurationPath(), expectedPath
 
     test "TestConfigurable.getPathedConfiguration - not found", ->
-      assert.eq undefined,
+      assert.eq
+        undefined
         TestConfigurable.getPathedConfiguration
           Tests: foo: 1
 
@@ -27,7 +28,8 @@ defineModule module, class TestConfigurable extends Configurable
       configBefore = TestConfigurable.config
       TestConfigurable.config.shouldBeDeleted = "bam!"
       TestConfigurable.reset()
-      assert.eq TestConfigurable.config,
+      assert.eq
+        TestConfigurable.config
         name: "TestName"
         verbose: false
 
@@ -42,7 +44,21 @@ defineModule module, class TestConfigurable extends Configurable
         novelProp: "cool"
         pathedConfig
 
-      assert.eq TestConfigurable.config,
+      assert.eq
+        TestConfigurable.config
         name: "TestName"
         foo: 1
         verbose: false
+
+    test "event", ->
+      # assert.isFunction TestConfigurable.on
+      new Promise (resolve) ->
+        TestConfigurable.on configured: ->
+          resolve()
+
+      TestConfigurable.reset()
+
+      ConfigRegistry.configure merge
+        # verbose: true
+        novelProp: "cool"
+        pathedConfig

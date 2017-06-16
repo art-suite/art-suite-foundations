@@ -488,7 +488,7 @@ module.exports = [
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, ref,
+/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, EventedMixin, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
@@ -498,6 +498,8 @@ ref = __webpack_require__(3), defineModule = ref.defineModule, log = ref.log, me
 BaseClass = __webpack_require__(2).BaseClass;
 
 ConfigRegistry = __webpack_require__(0);
+
+EventedMixin = __webpack_require__(11).EventedMixin;
 
 
 /*
@@ -573,7 +575,15 @@ defineModule(module, Configurable = (function(superClass) {
     return results;
   };
 
-  Configurable.configured = function() {};
+  Configurable.on = function() {
+    var a, ref1;
+    a = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return (ref1 = this.getSingleton()).on.apply(ref1, a);
+  };
+
+  Configurable.configured = function() {
+    return this.getSingleton().handleEvent("configured");
+  };
 
   Configurable.getConfigurationPath = function() {
     var _Configurable, _Neptune, i, path, ref1;
@@ -609,7 +619,7 @@ defineModule(module, Configurable = (function(superClass) {
 
   return Configurable;
 
-})(BaseClass));
+})(EventedMixin(BaseClass)));
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
@@ -621,7 +631,7 @@ var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(11);
+Neptune = __webpack_require__(12);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -639,6 +649,12 @@ __webpack_require__(5);
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-events");
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
