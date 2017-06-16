@@ -5200,14 +5200,17 @@ module.exports = Clone = (function() {
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isDate, isNumber, march1973InMilliseconds, ref, toMilliseconds;
+var dateFormat, isDate, isNumber, march1973InMilliseconds, ref, toDate, toMilliseconds;
 
 ref = __webpack_require__(2), isNumber = ref.isNumber, isDate = ref.isDate;
 
 march1973InMilliseconds = 100000000000;
 
 module.exports = {
-  dateFormat: __webpack_require__(48),
+  dateFormat: dateFormat = __webpack_require__(48),
+  formatDate: function(value, format) {
+    return dateFormat(toDate(value), format);
+  },
 
   /*
   IN:
@@ -5248,7 +5251,7 @@ module.exports = {
     }
     return (toMilliseconds(v) / 1000 + .5) | 0;
   },
-  toDate: function(v) {
+  toDate: toDate = function(v) {
     if (v == null) {
       return v;
     }
