@@ -22,3 +22,8 @@ suite: ->
   test "toSeconds null" -> assert.eq null, toSeconds null
   test "toMilliseconds null" -> assert.eq null, toMilliseconds null
   test "toDate null" -> assert.eq null, toDate null
+
+  test "formatDate" ->
+    assert.eq "Sat Jun 10 2017 12:32:21", formatDate seconds
+    assert.eq "Sat Jun 10 2017 12:32:21", formatDate milliseconds
+    assert.eq "Sat Jun 10 2017 12:32:21", formatDate date

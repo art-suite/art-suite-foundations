@@ -4,7 +4,12 @@ march1973InMilliseconds = 100000000000
 
 module.exports =
   # SEE: https://www.npmjs.com/package/dateformat
-  dateFormat: require "dateformat"
+
+  # DEPRICATED - why did they name it this??? It should be "formatDate" - a correct english sentance fragment
+  dateFormat: dateFormat = require "dateformat"
+
+  formatDate: (value, format) ->
+    dateFormat (toDate value), format
 
   ###
   IN:
@@ -41,7 +46,7 @@ module.exports =
     return v unless v?
     (toMilliseconds(v) / 1000 + .5) | 0
 
-  toDate: (v) ->
+  toDate: toDate = (v) ->
     return v unless v?
     if isDate v
       v
