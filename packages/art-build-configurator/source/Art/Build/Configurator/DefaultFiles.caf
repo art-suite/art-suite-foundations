@@ -17,6 +17,9 @@ class DefaultFiles extends BaseClass
         node_js:
           - "6"
 
+      .gitignore: """
+        node_modules/
+
       package.json: "" {}
 
       webpack.config.js: """
