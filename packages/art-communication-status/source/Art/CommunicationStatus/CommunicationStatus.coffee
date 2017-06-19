@@ -80,9 +80,12 @@ module.exports = class CommunicationStatus
     ###
     status: failure
 
-    DEPRICATED: use serverFailure
+    Use when the same code is used clientSide and serverSide.
+
+    Server code should convert :failure into :serverFailure when sending
+    a failing reply to a client.
     ###
-    failure:                    {}
+    failure:                    httpStatus: 500
 
   # add each status to CommunicationStatus for easy inclusion.
   # Each status has a unique string-name which is both its local-API name

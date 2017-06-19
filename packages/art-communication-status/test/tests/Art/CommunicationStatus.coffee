@@ -1,5 +1,5 @@
 {merge, w, defineModule, each} = Neptune.Art.StandardLib
-{encodeHttpStatus, communicationStatuses, networkFailure, decodeHttpStatus, clientFailureNotAuthorized, success, missing, serverFailure, clientFailure} = Neptune.Art.CommunicationStatus
+{encodeHttpStatus, communicationStatuses, networkFailure, decodeHttpStatus, failure, clientFailureNotAuthorized, success, missing, serverFailure, clientFailure} = Neptune.Art.CommunicationStatus
 
 defineModule module, suite:
   decodeHttpStatus: ->
@@ -21,6 +21,9 @@ defineModule module, suite:
     test "600", -> assert.rejects -> decodeHttpStatus 600
 
   encodeHttpStatus: ->
+    test "failure encodes to the same status as serverFailure", ->
+      assert.eq serverFailure, decodeHttpStatus(encodeHttpStatus failure).status
+
     each communicationStatuses, (props, status) ->
-      props.httpStatus && test "#{status}", ->
+      status != failure && props.httpStatus && test "#{status}", ->
         assert.eq status, decodeHttpStatus(encodeHttpStatus status).status
