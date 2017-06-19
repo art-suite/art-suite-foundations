@@ -284,8 +284,8 @@ module.exports = CommunicationStatus = (function() {
   };
 
   CommunicationStatus.encodeHttpStatus = function(status) {
-    var httpStatus;
-    if (!(httpStatus = CommunicationStatus.communicationStatuses[status].httpStatus)) {
+    var httpStatus, ref1;
+    if (!(httpStatus = (ref1 = CommunicationStatus.communicationStatuses[status]) != null ? ref1.httpStatus : void 0)) {
       throw new Error("There is no valid HttpStatus for " + status + ".");
     }
     return httpStatus;
