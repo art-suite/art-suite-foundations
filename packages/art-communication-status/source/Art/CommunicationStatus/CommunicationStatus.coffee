@@ -128,6 +128,6 @@ module.exports = class CommunicationStatus
     }
 
   @encodeHttpStatus: (status) =>
-    unless httpStatus = @communicationStatuses[status].httpStatus
+    unless httpStatus = @communicationStatuses[status]?.httpStatus
       throw new Error "There is no valid HttpStatus for #{status}."
     httpStatus
