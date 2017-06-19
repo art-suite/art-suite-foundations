@@ -330,6 +330,7 @@ Caf.defMod(module, () => {
         projectDotName = namespacePath.join(".");
         return fileBuilder({
           ".travis.yml": 'language: node_js\nnode_js:\n  - "6"',
+          ".gitignore": "node_modules/",
           "package.json": "{}",
           "webpack.config.js":
             'module.exports = require("art-build-configurator").getWebpackConfig(__dirname);\n',
