@@ -22,7 +22,7 @@ npm install
 
 # start your app!
 npm start
+``` 
 
-# visit your webpack-dev-server:
-open http://localhost:8080/webpack-dev-server/
-```
+Then go to:
+http://localhost:8080/webpack-dev-server/
