@@ -29,10 +29,10 @@ http://localhost:8080/webpack-dev-server/
 
 ##### Create Git Repository (highly recommended):
 
-After you have your app initialized, the create your git repository so you have a working state to roll back to as you work:
+After you have your app initialized, create a git repository so you have a working state to roll back to as you work:
 
 ```bash
 git init
-git add "\.?\w*"
+git add * ".[a-zA-Z]*"
 git commit -a -m 'initial checkin'
 ```
