@@ -2,41 +2,41 @@ module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -47,7 +47,7 @@ module.exports =
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -56,15 +56,15 @@ module.exports =
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,7 +75,7 @@ var Art, CommunicationStatus,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(3);
+Art = __webpack_require__(4);
 
 module.exports = Art.CommunicationStatus || Art.addNamespace('CommunicationStatus', CommunicationStatus = (function(superClass) {
   extend(CommunicationStatus, superClass);
@@ -95,133 +95,136 @@ module.exports = Art.CommunicationStatus || Art.addNamespace('CommunicationStatu
 
 module.exports = __webpack_require__(0);
 
-module.exports.includeInNamespace(__webpack_require__(2));
+module.exports.includeInNamespace(__webpack_require__(3));
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ref, ref1;
+
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.CommunicationStatus : void 0 : void 0) != null ? ref : __webpack_require__(1);
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
-
-/*
-A core set of status-codes that code can reason about easily.
-
-Goal:
-
-  Minimal set of codes so Clients can reason about network requests in a
-  consistant way.
-
-Strategy:
-
-  Have a small, simple set of status codes for our programs to reason about,
-  and, if necessary, allow the communication channel to return additional
-  information in the form of a 'message' that humans can look at to get more
-  information about any failures.
-
-Summary:
-
-  6 statuses:
-
-  success:        yay!
-  missing:        the resouce does not exist (404)
-  clientFailure:  fix client code or user inputs
-  serverFailure:  fix server code
-  networkFailure: retry when network is working
-  failure:        boo! Unknown failure type
-
-Automatic actions the Client can take on behalf of the user:
-
-  status:
-    missing:
-      alert "The resoure is not available."
-
-  failureTypes:
-    network:
-      automatic retries
-      test a known-good URL to validate if there is any network connection at all
-      alert "Please check your network connection."
-
-    client:
-      assuming the client is bug-free, ask the user to fix their submission (Ex: wrong password)
-      alert "Yikes! That's not quite right. Please try again."
-
-    server:
-      alert "Ooops! We're sorry, but something went wrong on our servers.
-        We'll fix it ASAP! In the mean time, how about some tea?"
-
-Why not HTTP Status codes?
-
-  1) They cover so much, most of which automatic code cannot do anything about
-  other than report an error, possibly to be viewed by a human later.
-
-  2) there is no HTTP status code for network failure.
-
-  3) 404 isn't really a client-error or a server-error, it's its own thing: status: missing
-
-    By definition:
-      a client-error means there is something the client can do to fix it.
-      a server-error means there is something the server can do to fix it.
-
-    Unless the 404-response itself was a bug, 404 fits in neither of those categories.
-
-    Example: If the client requests a resource once and it works, then
-    fires the exact same request again and the resource is now 404, it's not the client's
-    fault.
-
-Note, these status-codes are used at the core of other Art Libs:
-
-  ArtFlux
-  ArtEry
-  ArtRestClient
- */
 var CommunicationStatus;
 
 module.exports = CommunicationStatus = (function() {
-  var obj;
+  var k, ref, v;
 
   function CommunicationStatus() {}
 
+  CommunicationStatus.communicationStatuses = {
 
-  /*
-  status: success
-  
-  * An unqualified success.
-  * I guess it could be qualified, with additional information in another field,
-    but the 'expected' data should be present.
-   */
+    /*
+    status: success
+    
+    * An unqualified success.
+    * I guess it could be qualified, with additional information in another field,
+      but the 'expected' data should be present.
+     */
+    success: {
+      httpStatus: 200
 
-  CommunicationStatus.success = "success";
+      /*
+      status: missing
+      
+      * The request was properly formatted.
+      * There were no network errors.
+      * There were no server errors.
+      * The only problem is the server could not find the requested resource.
+       */
+    },
+    missing: {
+      httpStatus: 404
 
+      /*
+      status: clientFailure
+      
+      * The server rejected the request.
+      * There is something wrong with the client's request.
+      * It's up to the client to fix the problem.
+      * This includes mal-formed requests as well as invalid data.
+      * all 4xx errors except 404
+      NOTE: 404 is not necessarilly a client NOR server error, therefor it's status: missing
+       */
+    },
+    clientFailure: {
+      httpStatus: 400
 
-  /*
-  status: pending
-  
-  * The request is proceeding.
-  * No errors so far.
-   */
+      /*
+      status: notAuthorized
+      
+      * The resource exists, but the client is not allowed to access it.
+      
+      This is a form of clientFailure because the client could possibly change
+      something in the request to make it work.
+       */
+    },
+    clientFailureNotAuthorized: {
+      httpStatus: 403
 
-  CommunicationStatus.pending = "pending";
+      /*
+      status: serverFailure
+      
+      * There is something broken on the server.
+      * There is nothing the client can do to solve this problem.
+      
+      SBD: Possble rename to 'internalFailure': Reason: so it also makes sense for local library calls.
+        If something is failing in a local library, serverFailure makes less sense.
+        Then again, local libraries pretty-much don't need communicationStatus at all - they
+        can use 'throw' or 'promise.reject'
+       */
+    },
+    serverFailure: {
+      httpStatus: 500
 
+      /*
+      status: networkFailure
+      
+      * The remote-server could not be reached.
+      * There is nothing the code running on the Client NOR Server can do to fix this.
+      * There is something wrong with the network between the client computer and the server.
+      * The client can attempt to retry at a later time and it might magically work.
+      * The client-side-humans or server-side-humans can attempt to fix the network.
+      * The failure may be one of the following:
+        a) the local computer has no internet connection OR
+        b) the internet is in a shitstorm ;) OR
+        c) there is an network problem within the Servers' facility.
+       */
+    },
+    networkFailure: {},
 
-  /*
-  status: missing
-  
-  * The request was properly formatted.
-  * There were no network errors.
-  * There were no server errors.
-  * The only problem is the server could not find the requested resource.
-   */
+    /*
+    status: pending
+    
+    * The request is proceeding.
+    * No errors so far.
+     */
+    pending: {},
 
-  CommunicationStatus.missing = "missing";
+    /*
+    status: failure
+    
+    Use when the same code is used clientSide and serverSide.
+    
+    Server code should convert :failure into :serverFailure when sending
+    a failing reply to a client.
+     */
+    failure: {
+      httpStatus: 500
+    }
+  };
 
-
-  /*
-  status: failure
-  
-  * catch-all failure
-   */
-
-  CommunicationStatus.failure = "failure";
+  ref = CommunicationStatus.communicationStatuses;
+  for (k in ref) {
+    v = ref[k];
+    CommunicationStatus[k] = k;
+  }
 
 
   /*
@@ -232,41 +235,30 @@ module.exports = CommunicationStatus = (function() {
     return CommunicationStatus[status] === status;
   };
 
-  CommunicationStatus.networkFailure = "networkFailure";
-
-  CommunicationStatus.clientFailure = "clientFailure";
-
-  CommunicationStatus.serverFailure = "serverFailure";
-
   CommunicationStatus.decodeHttpStatus = function(httpStatus) {
-    var httpStatusCategory, status;
+    var status;
     if (httpStatus == null) {
       return {
         status: CommunicationStatus.networkFailure,
         message: "network failure"
       };
     }
-    httpStatusCategory = httpStatus / 100 | 0;
-    if (httpStatus === 404) {
-      return {
-        status: CommunicationStatus.missing,
-        httpStatus: httpStatus
-      };
-    }
-    if (httpStatusCategory === 2) {
-      return {
-        status: CommunicationStatus.success,
-        httpStatus: httpStatus
-      };
-    }
     status = (function() {
-      switch (httpStatusCategory) {
-        case 1:
-          return this.failure;
+      switch (httpStatus / 100 | 0) {
+        case 2:
+          return this.success;
         case 3:
           return this.missing;
         case 4:
-          return this.clientFailure;
+          switch (httpStatus) {
+            case 403:
+              return this.clientFailureNotAuthorized;
+            case 404:
+              return this.missing;
+            default:
+              return this.clientFailure;
+          }
+          break;
         case 5:
           switch (httpStatus) {
             case 502:
@@ -279,9 +271,6 @@ module.exports = CommunicationStatus = (function() {
             case 500:
               return this.serverFailure;
           }
-          break;
-        default:
-          return this.serverFailure;
       }
     }).call(CommunicationStatus);
     if (status == null) {
@@ -294,21 +283,12 @@ module.exports = CommunicationStatus = (function() {
     };
   };
 
-  CommunicationStatus.statusToHttpStatus = (
-    obj = {},
-    obj["" + CommunicationStatus.success] = 200,
-    obj["" + CommunicationStatus.missing] = 404,
-    obj["" + CommunicationStatus.clientFailure] = 400,
-    obj["" + CommunicationStatus.serverFailure] = 500,
-    obj["" + CommunicationStatus.failure] = 500,
-    obj
-  );
-
   CommunicationStatus.encodeHttpStatus = function(status) {
-    if (status === CommunicationStatus.networkFailure) {
-      throw new Error("There is no valide HttpStatus for networkFailure.");
+    var httpStatus;
+    if (!(httpStatus = CommunicationStatus.communicationStatuses[status].httpStatus)) {
+      throw new Error("There is no valid HttpStatus for " + status + ".");
     }
-    return CommunicationStatus.statusToHttpStatus[status];
+    return httpStatus;
   };
 
   return CommunicationStatus;
@@ -317,14 +297,14 @@ module.exports = CommunicationStatus = (function() {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Art, Neptune,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(4);
+Neptune = __webpack_require__(5);
 
 module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
   extend(Art, superClass);
@@ -341,19 +321,10 @@ __webpack_require__(0);
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ref, ref1;
-
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.CommunicationStatus : void 0 : void 0) != null ? ref : __webpack_require__(1);
-
 
 /***/ })
 /******/ ]);
