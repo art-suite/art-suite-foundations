@@ -27,7 +27,7 @@ npm start
 Then go to:
 http://localhost:8080/webpack-dev-server/
 
-##### Create Git Repository (highly recommended):
+#### Create Git Repository (highly recommended):
 
 After you have your app initialized, create a git repository so you have a working state to roll back to as you work:
 
