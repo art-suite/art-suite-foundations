@@ -104,6 +104,10 @@ defineModule module, class ConfigRegistry extends BaseObject
 
     @artConfigName ||= defaultArtConfigName
 
+    log ConfigRegistry: configure: setGlobals:
+      "Neptune.Art.configName": @artConfigName
+      "Neptune.Art.config":     @artConfig
+
     Neptune.Art.configName = @artConfigName
     Neptune.Art.config     = @artConfig
 
