@@ -14,6 +14,7 @@
   upperCamelCase
   expandPathedProperties
   clone
+  compactFlatten
 } = require 'art-standard-lib'
 {BaseObject} = require 'art-class-system'
 
@@ -61,9 +62,6 @@ defineModule module, class ConfigRegistry extends BaseObject
           artConfig
           externalEnvironment.artConfig
 
-    IF artConfig IS NOT SET:
-      artConfig is set to a clone of configureOptions with artConfigName removed.
-
   EFFECTS:
     callback @artConfig for callback in @configurables
 
@@ -97,12 +95,6 @@ defineModule module, class ConfigRegistry extends BaseObject
   @configure: (configureOptions...) =>
     {artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv, __testQueryString} = @configureOptions = deepMerge configureOptions...
 
-    unless artConfigArgument
-      artConfigArgument = merge @configureOptions
-      delete artConfigArgument.artConfigName
-
-    artConfigGlobal = global.artConfig
-
     externalEnvironment = @getExternalEnvironment __testEnv, __testQueryString
 
     @artConfigName = externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
@@ -117,50 +109,55 @@ defineModule module, class ConfigRegistry extends BaseObject
 
     @resetCurrentConfig()
 
-    for conf in [
+    for conf in compactFlatten [
+        # Configurables' defaultConfigs
+        configurable.getPathedDefaultConfig() for configurable in @configurables
+
+        # Config selected by artConfigName
         @configs[@artConfigName]
-        artConfigGlobal
+
+        # Config from global.artConfig
+        global.artConfig
+
+        # Config passed into this function's params: artConfig: {}
         artConfigArgument
+
+        # Config from the environment ('artConfig' from: BROWSER: query-string, NODE: shell environment)
         externalEnvironment.artConfig
       ]
       expandPathedProperties conf, @artConfig
-
-    @artConfigInput = clone @artConfig
 
     {verbose} = @artConfig
     if verbose
       log "------------- ConfigRegistry: inputs"
       log
         ConfigRegistry:
-          configs: Object.keys @configs
+          configNames: Object.keys @configs
           configurables: (c.namespacePath for c in @configurables)
 
-          artConfigName:
-            algorithm: "select first non-null"
+          setConfigName:
+            algorithm: "select LAST non-null"
             inputs:
-              fromExternalEnvironment: externalEnvironment.artConfigName
-              fromArguments:           artConfigNameArgument
-              default:                 defaultArtConfigName
+              defaultArtConfigName:         defaultArtConfigName
+              "global.artConfigName":       global.artConfigName
+              "arguments.artConfigName":    artConfigNameArgument
+              "environment.artConfigName":  externalEnvironment.artConfigName
 
-          artConfig:
-            algorithm: "deep merge all, last has priority"
+          setConfig:
+            algorithm: "deep, pathed merge-all, LAST has priority"
             inputs:
-              selected_config:      "#{@artConfigName}":   @configs[@artConfigName]
-              "global.artConfig":   artConfigGlobal
-              arguments:            artConfigArgument
-              environment:          externalEnvironment.artConfig
-
-    verbose && log "------------- ConfigRegistry: combined config"
-    verbose && log ConfigRegistry: {@artConfigName, @artConfig}
+              defaultConfigs:
+                configurable.getPathedDefaultConfig() for configurable in @configurables
+              "configs.#{@artConfigName}":  @configs[@artConfigName]
+              "global.artConfig":           global.artConfig
+              "arguments.artConfig":        artConfigArgument
+              "environment.artConfig":      externalEnvironment.artConfig
 
     verbose && log "------------- ConfigRegistry: configuring Configurables..."
     @_configureAllConfigurables()
 
-    verbose && log "------------- ConfigRegistry: Configurables configured"
-    if verbose
-      for {name, config} in @configurables
-        log "#{name}": config
-
+    verbose && log "------------- ConfigRegistry: configured"
+    verbose && log Art: configName: @artConfigName, config: @artConfig
     verbose && log "------------- ConfigRegistry: done"
 
   @resetCurrentConfig: => delete @artConfig[k] for k, v of @artConfig
@@ -211,7 +208,9 @@ defineModule module, class ConfigRegistry extends BaseObject
   ###############################
   @_configureAllConfigurables: ->
     configurable.configure @artConfig for configurable in @configurables
+    @_notifyConfigurablesConfigured()
 
+  @_notifyConfigurablesConfigured: ->
     for configurable in @configurables
       configurable.configured()
 

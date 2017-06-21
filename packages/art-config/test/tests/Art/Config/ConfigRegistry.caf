@@ -22,15 +22,8 @@ suite:
     teardown resetGlobals
 
     testArtConfigGlobalConfig "args", ->
-      ConfigRegistry.configure foo: "argsBar"
+      ConfigRegistry.configure artConfig: foo: "argsBar"
       foo: "argsBar"
-
-    testArtConfigGlobalConfig "merged args", ->
-      ConfigRegistry.configure
-        {} foo: "argsFoo"
-        {} bar: "argsBar"
-      foo: "argsFoo"
-      bar: "argsBar"
 
     testArtConfigGlobalConfig "global.artConfig", ->
       global.artConfig = foo: "globalBar"

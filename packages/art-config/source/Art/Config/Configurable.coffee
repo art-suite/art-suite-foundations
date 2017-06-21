@@ -34,7 +34,7 @@ defineModule module, class Configurable extends EventedMixin BaseClass
   @defaults: (defaults...) ->
     @defaultConfig = merge defaults...
 
-  @getDefaults: -> @defaultConfig
+  @getDefaultConfig: -> @defaultConfig
 
   # reset @config
   # NOTE: Intentionally doesn't replace @config. Instead, it leaves all direct references to @config intact. It just updates the @config object.
@@ -50,17 +50,13 @@ defineModule module, class Configurable extends EventedMixin BaseClass
   @getInspectedObjects: ->
     "#{@getConfigurationPath().join '.'}": @config
 
+  @getPathedDefaultConfig: ->
+    "#{@getConfigurationPath().join '.'}": @getDefaultConfig()
+
   # updates config
   @configure: (globalConfig) ->
     @reset()
-    for k, v of @getPathedConfiguration globalConfig when k.match /^[^A-Z]/
-      @config[k] = if isPlainObject v
-        deepMerge @config[k], v
-      else
-        v
-
-    @_updateGlobalConfig globalConfig
-    @config
+    mergeInto @config, @getConfigurationFromPath globalConfig
 
   #####################################
   # OVERRIDES
@@ -81,9 +77,9 @@ defineModule module, class Configurable extends EventedMixin BaseClass
     [_Neptune, path..., _Configurable] = @getNamespacePath().split '.'
     path
 
-  @getPathedConfiguration: (globalConfig) ->
-    globalConfig = globalConfig?[el] for el in @getConfigurationPath()
-    globalConfig
+  @getConfigurationFromPath: (config, path = @getConfigurationPath()) ->
+    config = config?[el] for el in path
+    config
 
   @_updateGlobalConfig: (globalConfig) ->
     [parentPath..., lastKey] = @getConfigurationPath()
