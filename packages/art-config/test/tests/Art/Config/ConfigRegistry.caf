@@ -12,7 +12,10 @@ testArtConfigGlobalConfig = (name, f) ->
 
 suite:
   globalArtConfig: ->
-    setup -> ConfigRegistry.configure()
+    setup ->
+      log "globalArtConfig setup - really, run the config!"
+      ConfigRegistry.configure()
+      log "globalArtConfig setup - really, ran it."
 
     test "Art.config" -> assert.equal ConfigRegistry.artConfig, Neptune.Art.config
     test "Art.configName" -> assert.equal ConfigRegistry.artConfigName, Neptune.Art.configName
