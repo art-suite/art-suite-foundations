@@ -23,7 +23,9 @@ suite: ->
   test "toMilliseconds null" -> assert.eq null, toMilliseconds null
   test "toDate null" -> assert.eq null, toDate null
 
+  # NOTE - the local timezone effects formatDate, so when testing
+  # in different timezones, this test would fail if we hardcoded the string
   test "formatDate" ->
-    assert.eq "Sat Jun 10 2017 12:32:21", formatDate seconds
-    assert.eq "Sat Jun 10 2017 12:32:21", formatDate milliseconds
-    assert.eq "Sat Jun 10 2017 12:32:21", formatDate date
+    baseline = formatDate date
+    assert.eq baseline, formatDate seconds
+    assert.eq baseline, formatDate milliseconds
