@@ -40,14 +40,16 @@ module.exports = class StringExtensions
 
   @randomBase62Character: -> base62Characters[intRand 62]
 
-  # should really use: https://www.npmjs.org/package/pluralize
-  # pluralize "food" >> "foods"
-  # pluralize 1, "food" -> "1 food"
-  # pluralize 0, "food" -> "0 foods"
-  # pluralize 2, "food" -> "2 foods"
-  # pluralize 3, "person", people" -> "2 people"
+  ###
+  should really use: https://www.npmjs.org/package/pluralize
+    pluralize "food" >> "foods"
+    pluralize 1, "food" -> "1 food"
+    pluralize 0, "food" -> "0 foods"
+    pluralize 2, "food" -> "2 foods"
+    pluralize 3, "person", people" -> "2 people"
+  ###
   @pluralize: pluralize = (a, b, pluralForm) ->
-    if typeof a is "number"
+    if isNumber a
       "#{a} #{if a == 1 then b else pluralForm || pluralize b}"
     else if isString a ||= b
       a + "s" # dumb, english solution
