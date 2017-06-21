@@ -13,6 +13,7 @@
   isString
   upperCamelCase
   expandPathedProperties
+  clone
 } = require 'art-standard-lib'
 {BaseObject} = require 'art-class-system'
 
@@ -111,6 +112,9 @@ defineModule module, class ConfigRegistry extends BaseObject
 
     @artConfigName ||= defaultArtConfigName
 
+    Neptune.Art.configName = @artConfigName
+    Neptune.Art.config     = @artConfig
+
     @resetCurrentConfig()
 
     for conf in [
@@ -120,6 +124,8 @@ defineModule module, class ConfigRegistry extends BaseObject
         externalEnvironment.artConfig
       ]
       expandPathedProperties conf, @artConfig
+
+    @artConfigInput = clone @artConfig
 
     {verbose} = @artConfig
     if verbose

@@ -1,1 +1,6 @@
-module.exports = require("./build");
+if (false) {
+  module.exports = require("./build");
+} else {
+  require("./register");
+  module.exports = require("./index.coffee");
+}

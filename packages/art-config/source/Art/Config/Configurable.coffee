@@ -51,13 +51,16 @@ defineModule module, class Configurable extends EventedMixin BaseClass
     "#{@getConfigurationPath().join '.'}": @config
 
   # updates config
-  @configure: (config) ->
+  @configure: (globalConfig) ->
     @reset()
-    for k, v of @getPathedConfiguration config when k.match /^[^A-Z]/
+    for k, v of @getPathedConfiguration globalConfig when k.match /^[^A-Z]/
       @config[k] = if isPlainObject v
         deepMerge @config[k], v
       else
         v
+
+    @_updateGlobalConfig globalConfig
+    @config
 
   #####################################
   # OVERRIDES
@@ -81,6 +84,12 @@ defineModule module, class Configurable extends EventedMixin BaseClass
   @getPathedConfiguration: (globalConfig) ->
     globalConfig = globalConfig?[el] for el in @getConfigurationPath()
     globalConfig
+
+  @_updateGlobalConfig: (globalConfig) ->
+    [parentPath..., lastKey] = @getConfigurationPath()
+    for el in parentPath
+      globalConfig = globalConfig[el] ||= {}
+    globalConfig[lastKey] = @config
 
   #####################################
   # PRIVATE

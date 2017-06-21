@@ -1,80 +1,93 @@
-{w, log, defineModule} = Neptune.Art.StandardLib
-{ConfigRegistry, Configurable} = Neptune.Art.Config
+import &StandardImport
 
 resetGlobals = ->
   global.artConfig = null
   global.artConfigName = null
 
-defineModule module, suite:
+testArtConfigGlobalConfig = (name, f) ->
+  test name, ->
+    assert.eq ConfigRegistry.artConfig, merge
+      Tests: Art: Config: name: "TestName", verbose: false
+      f()
+
+suite:
+  globalArtConfig: ->
+    setup -> ConfigRegistry.configure()
+
+    test "Art.config" -> assert.equal ConfigRegistry.artConfig, Neptune.Art.config
+    test "Art.configName" -> assert.equal ConfigRegistry.artConfigName, Neptune.Art.configName
+
   artConfigSources: ->
     setup resetGlobals
     teardown resetGlobals
 
-    test "args", ->
+    testArtConfigGlobalConfig "args", ->
       ConfigRegistry.configure foo: "argsBar"
-      assert.eq ConfigRegistry.artConfig, foo: "argsBar"
+      foo: "argsBar"
 
-    test "merged args", ->
-      ConfigRegistry.configure {foo: "argsFoo"}, {bar: "argsBar"}
-      assert.eq ConfigRegistry.artConfig,
-        foo: "argsFoo"
-        bar: "argsBar"
+    testArtConfigGlobalConfig "merged args", ->
+      ConfigRegistry.configure
+        {} foo: "argsFoo"
+        {} bar: "argsBar"
+      foo: "argsFoo"
+      bar: "argsBar"
 
-    test "global.artConfig", ->
+    testArtConfigGlobalConfig "global.artConfig", ->
       global.artConfig = foo: "globalBar"
       ConfigRegistry.configure()
-      assert.eq ConfigRegistry.artConfig, foo: "globalBar"
+      foo: "globalBar"
 
-    test "env", ->
+    testArtConfigGlobalConfig "env", ->
       ConfigRegistry.configure artConfig: {}, __testEnv: artConfig: JSON.stringify foo: "envBar"
-      assert.eq ConfigRegistry.artConfig, foo: "envBar"
+      foo: "envBar"
 
-    test "parseQuery", ->
+    testArtConfigGlobalConfig "parseQuery", ->
       ConfigRegistry.configure artConfig: {}, __testQueryString: "?artConfig=#{JSON.stringify foo: "queryBar"}"
-      assert.eq ConfigRegistry.artConfig, foo: "queryBar"
+      foo: "queryBar"
 
   pathedConfigProps: ->
     setup resetGlobals
     teardown resetGlobals
 
-    test "foo.bar: 'globalBar'", ->
+    testArtConfigGlobalConfig "foo.bar: 'globalBar'", ->
       global.artConfig = "foo.bar": "globalBar"
       ConfigRegistry.configure()
-      assert.eq ConfigRegistry.artConfig, foo: bar: "globalBar"
+      foo: bar: "globalBar"
 
   artConfigNameSources: ->
     setup resetGlobals
     teardown resetGlobals
 
-    test "baseline", ->
+    testArtConfigGlobalConfig "baseline", ->
       ConfigRegistry.configure()
-      assert.eq ConfigRegistry.artConfig, {}
       assert.eq ConfigRegistry.artConfigName, "Development"
+      {}
 
-    test "args", ->
+    testArtConfigGlobalConfig "args", ->
       ConfigRegistry.configure artConfigName: 'TestConfig'
-      assert.eq ConfigRegistry.artConfig, propA: "propAFromTestConfig"
       assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      propA: "propAFromTestConfig"
 
-    test "global", ->
+    testArtConfigGlobalConfig "global", ->
       global.artConfigName = 'TestConfig'
       ConfigRegistry.configure()
-      assert.eq ConfigRegistry.artConfig, propA: "propAFromTestConfig"
       assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      propA: "propAFromTestConfig"
 
-    test "env", ->
+    testArtConfigGlobalConfig "env", ->
       ConfigRegistry.configure artConfig: {}, __testEnv: artConfigName: 'TestConfig'
-      assert.eq ConfigRegistry.artConfig, propA: "propAFromTestConfig"
       assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      propA: "propAFromTestConfig"
 
-    test "parseQuery", ->
+    testArtConfigGlobalConfig "parseQuery", ->
       ConfigRegistry.configure artConfig: {}, __testQueryString: "?artConfigName=TestConfig"
-      assert.eq ConfigRegistry.artConfig, propA: "propAFromTestConfig"
       assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      propA: "propAFromTestConfig"
 
   configs: ->
     test "TestConfig got registered", ->
-      assert.eq ConfigRegistry.configs,
+      assert.eq
+        ConfigRegistry.configs
         TestConfig:
           propA: "propAFromTestConfig"
 
@@ -92,9 +105,7 @@ defineModule module, suite:
         ConfigRegistry.getExternalEnvironment artConfig: JSON.stringify foo: "envBar"
 
   normalizeArtConfigName: ->
-    test "normalizeArtConfigName 'prod'", -> assert.eq "Production", ConfigRegistry.normalizeArtConfigName "prod"
-    test "normalizeArtConfigName 'dev'", -> assert.eq "Development", ConfigRegistry.normalizeArtConfigName "dev"
-
-    test "normalizeArtConfigName 'development'", -> assert.eq "Development", ConfigRegistry.normalizeArtConfigName "development"
-
-    test "normalizeArtConfigName 'foo bar'", -> assert.eq "FooBar", ConfigRegistry.normalizeArtConfigName "foo bar"
+    test "normalizeArtConfigName 'prod'"          -> assert.eq :Production    ConfigRegistry.normalizeArtConfigName "prod"
+    test "normalizeArtConfigName 'dev'"           -> assert.eq :Development   ConfigRegistry.normalizeArtConfigName "dev"
+    test "normalizeArtConfigName 'development'",  -> assert.eq :Development   ConfigRegistry.normalizeArtConfigName "development"
+    test "normalizeArtConfigName 'foo bar'"       -> assert.eq :FooBar        ConfigRegistry.normalizeArtConfigName "foo bar"

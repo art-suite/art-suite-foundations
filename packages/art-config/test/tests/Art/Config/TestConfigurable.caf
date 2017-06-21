@@ -46,6 +46,10 @@ class TestConfigurable extends Configurable
 
       assert.eq
         TestConfigurable.config
+        Neptune.Art.config.Tests.Art.Config
+
+      assert.eq
+        TestConfigurable.config
         name: "TestName"
         foo: 1
         verbose: false

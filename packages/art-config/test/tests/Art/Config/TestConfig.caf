@@ -1,0 +1,5 @@
+import &StandardImport
+
+# Used by ConfigRegistry tests
+class TestConfig extends Configuration
+  propA:    "propAFromTestConfig"
