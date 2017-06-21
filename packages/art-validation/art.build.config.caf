@@ -1,0 +1,12 @@
+module.exports =
+  target: node: true
+
+  npm:
+    description: "" Validate object props.
+    dependencies:
+      art-communication-status: :*
+
+  webpack:
+    common: {}
+
+    targets: index: {}
