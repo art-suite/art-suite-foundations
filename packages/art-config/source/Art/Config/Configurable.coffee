@@ -81,12 +81,6 @@ defineModule module, class Configurable extends EventedMixin BaseClass
     config = config?[el] for el in path
     config
 
-  @_updateGlobalConfig: (globalConfig) ->
-    [parentPath..., lastKey] = @getConfigurationPath()
-    for el in parentPath
-      globalConfig = globalConfig[el] ||= {}
-    globalConfig[lastKey] = @config
-
   #####################################
   # PRIVATE
   #####################################
