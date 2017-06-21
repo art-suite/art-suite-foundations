@@ -71,12 +71,12 @@ module.exports =
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseObject, ConfigRegistry, Promise, deepMerge, defineModule, expandPathedProperties, formattedInspect, inspect, isPlainObject, isString, log, merge, mergeInto, parseQuery, pushIfNotPresent, ref, upperCamelCase,
+/* WEBPACK VAR INJECTION */(function(module) {var BaseObject, ConfigRegistry, Promise, clone, compactFlatten, deepMerge, defineModule, expandPathedProperties, formattedInspect, inspect, isPlainObject, isString, log, merge, mergeInto, parseQuery, pushIfNotPresent, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-ref = __webpack_require__(3), defineModule = ref.defineModule, log = ref.log, Promise = ref.Promise, inspect = ref.inspect, formattedInspect = ref.formattedInspect, merge = ref.merge, deepMerge = ref.deepMerge, mergeInto = ref.mergeInto, parseQuery = ref.parseQuery, pushIfNotPresent = ref.pushIfNotPresent, isPlainObject = ref.isPlainObject, isString = ref.isString, upperCamelCase = ref.upperCamelCase, expandPathedProperties = ref.expandPathedProperties;
+ref = __webpack_require__(3), defineModule = ref.defineModule, log = ref.log, Promise = ref.Promise, inspect = ref.inspect, formattedInspect = ref.formattedInspect, merge = ref.merge, deepMerge = ref.deepMerge, mergeInto = ref.mergeInto, parseQuery = ref.parseQuery, pushIfNotPresent = ref.pushIfNotPresent, isPlainObject = ref.isPlainObject, isString = ref.isString, upperCamelCase = ref.upperCamelCase, expandPathedProperties = ref.expandPathedProperties, clone = ref.clone, compactFlatten = ref.compactFlatten;
 
 BaseObject = __webpack_require__(2).BaseObject;
 
@@ -139,9 +139,6 @@ defineModule(module, ConfigRegistry = (function(superClass) {
           artConfig
           externalEnvironment.artConfig
   
-    IF artConfig IS NOT SET:
-      artConfig is set to a clone of configureOptions with artConfigName removed.
-  
   EFFECTS:
     callback @artConfig for callback in @configurables
   
@@ -174,14 +171,10 @@ defineModule(module, ConfigRegistry = (function(superClass) {
    */
 
   ConfigRegistry.configure = function() {
-    var __testEnv, __testQueryString, artConfigArgument, artConfigGlobal, artConfigNameArgument, c, conf, config, configureOptions, externalEnvironment, i, j, len, len1, name, obj, obj1, ref1, ref2, ref3, ref4, verbose;
+    var __testEnv, __testQueryString, artConfigArgument, artConfigNameArgument, c, conf, configurable, configureOptions, externalEnvironment, i, len, obj, ref1, ref2, verbose;
     configureOptions = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    log("ConfigRegistry#configure start...");
     ref1 = ConfigRegistry.configureOptions = deepMerge.apply(null, configureOptions), artConfigNameArgument = ref1.artConfigName, artConfigArgument = ref1.artConfig, __testEnv = ref1.__testEnv, __testQueryString = ref1.__testQueryString;
-    if (!artConfigArgument) {
-      artConfigArgument = merge(ConfigRegistry.configureOptions);
-      delete artConfigArgument.artConfigName;
-    }
-    artConfigGlobal = global.artConfig;
     externalEnvironment = ConfigRegistry.getExternalEnvironment(__testEnv, __testQueryString);
     ConfigRegistry.artConfigName = externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName;
     ConfigRegistry.artConfigName = ConfigRegistry.normalizeArtConfigName(ConfigRegistry.artConfigName);
@@ -189,8 +182,32 @@ defineModule(module, ConfigRegistry = (function(superClass) {
       throw new Error("no config registered with name: " + ConfigRegistry.artConfigName);
     }
     ConfigRegistry.artConfigName || (ConfigRegistry.artConfigName = defaultArtConfigName);
+    log("ConfigRegistry#configure here...");
+    log({
+      ConfigRegistry: {
+        configure: {
+          setGlobals: {
+            "Neptune.Art.configName": ConfigRegistry.artConfigName,
+            "Neptune.Art.config": ConfigRegistry.artConfig
+          }
+        }
+      }
+    });
+    Neptune.Art.configName = ConfigRegistry.artConfigName;
+    Neptune.Art.config = ConfigRegistry.artConfig;
     ConfigRegistry.resetCurrentConfig();
-    ref2 = [ConfigRegistry.configs[ConfigRegistry.artConfigName], artConfigGlobal, artConfigArgument, externalEnvironment.artConfig];
+    ref2 = compactFlatten([
+      (function() {
+        var j, len, ref2, results;
+        ref2 = this.configurables;
+        results = [];
+        for (j = 0, len = ref2.length; j < len; j++) {
+          configurable = ref2[j];
+          results.push(configurable.getPathedDefaultConfig());
+        }
+        return results;
+      }).call(ConfigRegistry), ConfigRegistry.configs[ConfigRegistry.artConfigName], global.artConfig, artConfigArgument, externalEnvironment.artConfig
+    ]);
     for (i = 0, len = ref2.length; i < len; i++) {
       conf = ref2[i];
       expandPathedProperties(conf, ConfigRegistry.artConfig);
@@ -200,7 +217,7 @@ defineModule(module, ConfigRegistry = (function(superClass) {
       log("------------- ConfigRegistry: inputs");
       log({
         ConfigRegistry: {
-          configs: Object.keys(ConfigRegistry.configs),
+          configNames: Object.keys(ConfigRegistry.configs),
           configurables: (function() {
             var j, len1, ref3, results;
             ref3 = this.configurables;
@@ -211,51 +228,49 @@ defineModule(module, ConfigRegistry = (function(superClass) {
             }
             return results;
           }).call(ConfigRegistry),
-          artConfigName: {
-            algorithm: "select first non-null",
+          setConfigName: {
+            algorithm: "select LAST non-null",
             inputs: {
-              fromExternalEnvironment: externalEnvironment.artConfigName,
-              fromArguments: artConfigNameArgument,
-              "default": defaultArtConfigName
+              defaultArtConfigName: defaultArtConfigName,
+              "global.artConfigName": global.artConfigName,
+              "arguments.artConfigName": artConfigNameArgument,
+              "environment.artConfigName": externalEnvironment.artConfigName
             }
           },
-          artConfig: {
-            algorithm: "deep merge all, last has priority",
-            inputs: {
-              selected_config: (
-                obj = {},
-                obj["" + ConfigRegistry.artConfigName] = ConfigRegistry.configs[ConfigRegistry.artConfigName],
-                obj
-              ),
-              "global.artConfig": artConfigGlobal,
-              "arguments": artConfigArgument,
-              environment: externalEnvironment.artConfig
-            }
+          setConfig: {
+            algorithm: "deep, pathed merge-all, LAST has priority",
+            inputs: (
+              obj = {
+                defaultConfigs: (function() {
+                var j, len1, ref3, results;
+                ref3 = this.configurables;
+                results = [];
+                for (j = 0, len1 = ref3.length; j < len1; j++) {
+                  configurable = ref3[j];
+                  results.push(configurable.getPathedDefaultConfig());
+                }
+                return results;
+              }).call(ConfigRegistry)
+              },
+              obj["configs." + ConfigRegistry.artConfigName] = ConfigRegistry.configs[ConfigRegistry.artConfigName],
+              obj["global.artConfig"] = global.artConfig,
+              obj["arguments.artConfig"] = artConfigArgument,
+              obj["environment.artConfig"] = externalEnvironment.artConfig,
+              obj
+            )
           }
         }
       });
     }
-    verbose && log("------------- ConfigRegistry: combined config");
-    verbose && log({
-      ConfigRegistry: {
-        artConfigName: ConfigRegistry.artConfigName,
-        artConfig: ConfigRegistry.artConfig
-      }
-    });
     verbose && log("------------- ConfigRegistry: configuring Configurables...");
     ConfigRegistry._configureAllConfigurables();
-    verbose && log("------------- ConfigRegistry: Configurables configured");
-    if (verbose) {
-      ref3 = ConfigRegistry.configurables;
-      for (j = 0, len1 = ref3.length; j < len1; j++) {
-        ref4 = ref3[j], name = ref4.name, config = ref4.config;
-        log((
-          obj1 = {},
-          obj1["" + name] = config,
-          obj1
-        ));
+    verbose && log("------------- ConfigRegistry: configured");
+    verbose && log({
+      Art: {
+        configName: ConfigRegistry.artConfigName,
+        config: ConfigRegistry.artConfig
       }
-    }
+    });
     return verbose && log("------------- ConfigRegistry: done");
   };
 
@@ -323,16 +338,21 @@ defineModule(module, ConfigRegistry = (function(superClass) {
   };
 
   ConfigRegistry._configureAllConfigurables = function() {
-    var configurable, i, j, len, len1, ref1, ref2, results;
+    var configurable, i, len, ref1;
     ref1 = this.configurables;
     for (i = 0, len = ref1.length; i < len; i++) {
       configurable = ref1[i];
       configurable.configure(this.artConfig);
     }
-    ref2 = this.configurables;
+    return this._notifyConfigurablesConfigured();
+  };
+
+  ConfigRegistry._notifyConfigurablesConfigured = function() {
+    var configurable, i, len, ref1, results;
+    ref1 = this.configurables;
     results = [];
-    for (j = 0, len1 = ref2.length; j < len1; j++) {
-      configurable = ref2[j];
+    for (i = 0, len = ref1.length; i < len; i++) {
+      configurable = ref1[i];
       results.push(configurable.configured());
     }
     return results;
@@ -528,7 +548,7 @@ defineModule(module, Configurable = (function(superClass) {
     return this.defaultConfig = merge.apply(null, defaults);
   };
 
-  Configurable.getDefaults = function() {
+  Configurable.getDefaultConfig = function() {
     return this.defaultConfig;
   };
 
@@ -561,18 +581,18 @@ defineModule(module, Configurable = (function(superClass) {
     );
   };
 
-  Configurable.configure = function(config) {
-    var k, ref1, results, v;
+  Configurable.getPathedDefaultConfig = function() {
+    var obj;
+    return (
+      obj = {},
+      obj["" + (this.getConfigurationPath().join('.'))] = this.getDefaultConfig(),
+      obj
+    );
+  };
+
+  Configurable.configure = function(globalConfig) {
     this.reset();
-    ref1 = this.getPathedConfiguration(config);
-    results = [];
-    for (k in ref1) {
-      v = ref1[k];
-      if (k.match(/^[^A-Z]/)) {
-        results.push(this.config[k] = isPlainObject(v) ? deepMerge(this.config[k], v) : v);
-      }
-    }
-    return results;
+    return mergeInto(this.config, this.getConfigurationFromPath(globalConfig));
   };
 
   Configurable.on = function() {
@@ -591,14 +611,16 @@ defineModule(module, Configurable = (function(superClass) {
     return path;
   };
 
-  Configurable.getPathedConfiguration = function(globalConfig) {
-    var el, i, len, ref1;
-    ref1 = this.getConfigurationPath();
-    for (i = 0, len = ref1.length; i < len; i++) {
-      el = ref1[i];
-      globalConfig = globalConfig != null ? globalConfig[el] : void 0;
+  Configurable.getConfigurationFromPath = function(config, path) {
+    var el, i, len;
+    if (path == null) {
+      path = this.getConfigurationPath();
     }
-    return globalConfig;
+    for (i = 0, len = path.length; i < len; i++) {
+      el = path[i];
+      config = config != null ? config[el] : void 0;
+    }
+    return config;
   };
 
   Configurable._register = function() {
