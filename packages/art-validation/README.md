@@ -1,1 +1,3 @@
-Initialized with Art-Build-Configurator
+# ArtValidator
+
+Validate object properties.
