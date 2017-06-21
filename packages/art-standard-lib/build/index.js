@@ -1096,8 +1096,18 @@ module.exports = StringExtensions = (function() {
     return base62Characters[intRand(62)];
   };
 
+
+  /*
+  should really use: https://www.npmjs.org/package/pluralize
+    pluralize "food" >> "foods"
+    pluralize 1, "food" -> "1 food"
+    pluralize 0, "food" -> "0 foods"
+    pluralize 2, "food" -> "2 foods"
+    pluralize 3, "person", people" -> "2 people"
+   */
+
   StringExtensions.pluralize = pluralize = function(a, b, pluralForm) {
-    if (typeof a === "number") {
+    if (isNumber(a)) {
       return a + " " + (a === 1 ? b : pluralForm || pluralize(b));
     } else if (isString(a || (a = b))) {
       return a + "s";
