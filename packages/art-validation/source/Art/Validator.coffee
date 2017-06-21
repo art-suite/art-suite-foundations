@@ -16,28 +16,12 @@
   object
   isDate
   pushIfNotPresent
+  toDate
+  toMilliseconds
+  toSeconds
 } = require 'art-standard-lib'
 
 {validStatus} = require 'art-communication-status'
-
-march1973InMilliseconds = 100000000000
-toMilliseconds = (v) ->
-  if isNumber v
-    if v < march1973InMilliseconds
-      # assuming its a Seconds timestamp
-      # range: 1970-01-01 to 5138-11-16
-      v * 1000
-    else
-      # assuming its a Milliseconds timestamp
-      # range: 1973-03-03 to JavaScript max-date
-      v
-  else if isDate v
-    v | 0
-  else throw new Error 'invalid timestamp value: #{formattedInspect v}'
-
-toSeconds = (v) ->
-  (toMilliseconds(v) / 1000 + .5) | 0
-
 
 ###
 NOTES:
@@ -168,13 +152,13 @@ module.exports = class Validator extends BaseObject
       dataType: numberDataType
       validate:   (v) -> isNumber(v) || isDate v
       preprocess: toMilliseconds
-      decode: (v) -> new Date toMilliseconds v
+      decode: toDate
 
     secondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
       dataType: numberDataType
       validate:   (v) -> isNumber(v) || isDate v
       preprocess: toSeconds
-      decode: (v) -> new Date toMilliseconds v
+      decode: toDate
 
     color:
       validate: (v) -> isHexColor v
