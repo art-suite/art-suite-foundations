@@ -93,7 +93,6 @@ defineModule module, class ConfigRegistry extends BaseObject
     queryString, and are only there as mocks for testing.
   ###
   @configure: (configureOptions...) =>
-    log "ConfigRegistry#configure start..."
     {artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv, __testQueryString} = @configureOptions = deepMerge configureOptions...
 
     externalEnvironment = @getExternalEnvironment __testEnv, __testQueryString
@@ -104,11 +103,6 @@ defineModule module, class ConfigRegistry extends BaseObject
     throw new Error "no config registered with name: #{@artConfigName}" if @artConfigName && !@configs[@artConfigName]
 
     @artConfigName ||= defaultArtConfigName
-
-    log "ConfigRegistry#configure here..."
-    log ConfigRegistry: configure: setGlobals:
-      "Neptune.Art.configName": @artConfigName
-      "Neptune.Art.config":     @artConfig
 
     Neptune.Art.configName = @artConfigName
     Neptune.Art.config     = @artConfig

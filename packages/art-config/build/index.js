@@ -173,7 +173,6 @@ defineModule(module, ConfigRegistry = (function(superClass) {
   ConfigRegistry.configure = function() {
     var __testEnv, __testQueryString, artConfigArgument, artConfigNameArgument, c, conf, configurable, configureOptions, externalEnvironment, i, len, obj, ref1, ref2, verbose;
     configureOptions = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    log("ConfigRegistry#configure start...");
     ref1 = ConfigRegistry.configureOptions = deepMerge.apply(null, configureOptions), artConfigNameArgument = ref1.artConfigName, artConfigArgument = ref1.artConfig, __testEnv = ref1.__testEnv, __testQueryString = ref1.__testQueryString;
     externalEnvironment = ConfigRegistry.getExternalEnvironment(__testEnv, __testQueryString);
     ConfigRegistry.artConfigName = externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName;
@@ -182,17 +181,6 @@ defineModule(module, ConfigRegistry = (function(superClass) {
       throw new Error("no config registered with name: " + ConfigRegistry.artConfigName);
     }
     ConfigRegistry.artConfigName || (ConfigRegistry.artConfigName = defaultArtConfigName);
-    log("ConfigRegistry#configure here...");
-    log({
-      ConfigRegistry: {
-        configure: {
-          setGlobals: {
-            "Neptune.Art.configName": ConfigRegistry.artConfigName,
-            "Neptune.Art.config": ConfigRegistry.artConfig
-          }
-        }
-      }
-    });
     Neptune.Art.configName = ConfigRegistry.artConfigName;
     Neptune.Art.config = ConfigRegistry.artConfig;
     ConfigRegistry.resetCurrentConfig();
