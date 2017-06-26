@@ -114,11 +114,11 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 var CommunicationStatus;
 
 module.exports = CommunicationStatus = (function() {
-  var k, ref, v;
+  var communicationStatuses, k, ref, v;
 
   function CommunicationStatus() {}
 
-  CommunicationStatus.communicationStatuses = {
+  CommunicationStatus.communicationStatuses = communicationStatuses = {
 
     /*
     status: success
@@ -154,7 +154,8 @@ module.exports = CommunicationStatus = (function() {
        */
     },
     clientFailure: {
-      httpStatus: 400
+      httpStatus: 400,
+      clientFailure: true
 
       /*
       status: notAuthorized
@@ -166,7 +167,8 @@ module.exports = CommunicationStatus = (function() {
        */
     },
     clientFailureNotAuthorized: {
-      httpStatus: 403
+      httpStatus: 403,
+      clientFailure: true
 
       /*
       status: serverFailure
@@ -225,6 +227,11 @@ module.exports = CommunicationStatus = (function() {
     v = ref[k];
     CommunicationStatus[k] = k;
   }
+
+  CommunicationStatus.isClientFailure = function(status) {
+    var ref1;
+    return !!((ref1 = communicationStatuses[status]) != null ? ref1.clientFailure : void 0);
+  };
 
 
   /*
