@@ -1,5 +1,5 @@
 module.exports = class CommunicationStatus
-  @communicationStatuses:
+  @communicationStatuses: communicationStatuses =
     ###
     status: success
 
@@ -29,7 +29,7 @@ module.exports = class CommunicationStatus
     * all 4xx errors except 404
     NOTE: 404 is not necessarilly a client NOR server error, therefor it's status: missing
     ###
-    clientFailure:              httpStatus: 400
+    clientFailure:              httpStatus: 400, clientFailure: true
 
     ###
     status: notAuthorized
@@ -39,7 +39,7 @@ module.exports = class CommunicationStatus
     This is a form of clientFailure because the client could possibly change
     something in the request to make it work.
     ###
-    clientFailureNotAuthorized: httpStatus: 403
+    clientFailureNotAuthorized: httpStatus: 403, clientFailure: true
 
     ###
     status: serverFailure
@@ -91,6 +91,8 @@ module.exports = class CommunicationStatus
   # Each status has a unique string-name which is both its local-API name
   # and the name passed over the wire when communicating remotely.
   @[k] = k for k, v of @communicationStatuses
+
+  @isClientFailure: (status) -> !!communicationStatuses[status]?.clientFailure
 
   ###
   OUT: true if status is a valid status-string
