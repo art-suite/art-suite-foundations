@@ -65,7 +65,7 @@ module.exports = class Iteration
     if arrayIterableTest source
       if whenBlock then withBlock v, k, into, w for v, k in source when w = whenBlock v, k
       else              withBlock v, k, into    for v, k in source
-    else
+    else if source?
       if whenBlock then withBlock v, k, into, w for k, v of source when w = whenBlock v, k
       else              withBlock v, k, into    for k, v of source
 
@@ -92,7 +92,7 @@ module.exports = class Iteration
       else
         for v, k in source
           break unless withBlock v, k, into
-    else
+    else if source?
       if whenBlock
         for k, v of source when w = whenBlock v, k
           break unless withBlock v, k, into, w

@@ -39,6 +39,15 @@ module.exports = suite:
         assert.eq values, 7
         assert.eq keys, 1
 
+    empty: ->
+      test "array null", ->
+        assert.eq [], array null, (v, k) ->
+
+      test "each null", ->
+        count = 0
+        each null, (v, k) -> count++
+        assert.eq 0, count
+
     when: ->
       test "objects", ->
         values = 0
