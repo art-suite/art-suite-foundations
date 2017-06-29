@@ -77,6 +77,7 @@ module.exports = class Types
       f is called on every non-plainObject and non-plainArray reachable by traversing
       the plainObject/plainArray structure
       If f is called on a propery of a plainObject, the key for that property is also passed in.
+  OUT: value
   ###
   @deepEach: deepEach = (v, f, key) ->
     if isPlainArray v
