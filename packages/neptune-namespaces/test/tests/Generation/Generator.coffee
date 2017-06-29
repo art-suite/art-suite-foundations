@@ -148,3 +148,20 @@ suite "NeptuneNamespaces.Generator", ->
       assert.match generatedFiles["root/namespace.coffee"], /require.*neptune-namespaces/
       assert.match generatedFiles["root/index.coffee"], "addModules"
       assert.doesNotMatch generatedFiles["root/index.coffee"], /(^|\n)require.*MyNamespace/
+
+  test "pathed", ->
+    generator = new Generator "root", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "root/Alpha.Beta/file.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/Alpha.Beta/index.coffee"
+        "root/Alpha.Beta/namespace.coffee"
+        "root/index.coffee"
+        "root/namespace.coffee"
+      ]
+      assert.match generatedFiles["root/Alpha.Beta/namespace.coffee"], /// addNamespace .* Alpha\.Beta .* class\ Beta ///
+      assert.match generatedFiles["root/index.coffee"], /// require.*\./Alpha\.Beta ///
+      assert.match generatedFiles["root/namespace.coffee"], /// require.*\./Alpha\.Beta ///
+      log {generatedFiles}

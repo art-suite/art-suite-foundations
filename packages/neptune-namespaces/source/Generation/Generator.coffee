@@ -129,7 +129,7 @@ module.exports = class Generator
   Input is a list of files with fill paths
   ###
   generateFromFiles: (files) =>
-    {namespaces} = new NamespaceStructure root: @root, files: files
+    {namespaces} = nss = new NamespaceStructure root: @root, files: files
 
     @showNamespaceStructure namespaces if @verbose
 

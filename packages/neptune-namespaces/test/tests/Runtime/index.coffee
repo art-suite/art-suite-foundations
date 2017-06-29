@@ -4,4 +4,4 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Neptune: require './Neptune'
+  NamespaceBaseClass: require './NamespaceBaseClass'

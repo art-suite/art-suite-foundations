@@ -51,7 +51,7 @@ module.exports = class NamespaceGenerator
       includeInNamespace && ".includeInNamespace require '#{requirePath includeInNamespace}'"
       ".addModules" if modules.length > 0
       alignColumns modules
-      "require '#{requirePath name}'" for name in namespace.getAllNamespacedSubdirRequires()
+      "require './#{name}'" for name in namespace.getAllNamespacedSubdirRequires()
     ]
 
     contents.join "\n"

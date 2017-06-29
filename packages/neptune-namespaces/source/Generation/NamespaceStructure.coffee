@@ -14,6 +14,8 @@
 } = require './Helper'
 {basename} = require 'path'
 
+{isPathedNamespace} = Neptune
+
 class NamespaceSet
   constructor: (items) ->
     @ignored = []
@@ -69,11 +71,19 @@ class Namespace
         out.push v
     out.sort()
 
+normalizeNamespaceName = (name) ->
+  if isPathedNamespace name
+    parts = for part in name.split '.' when part.length > 0
+      upperCamelCase part
+    parts.join '.'
+  else
+    upperCamelCase name
+
 class NamespaceDir
-  constructor: ({pathArray, @path, parent}) ->
+  constructor: ({namespaceName, @path, parent}) ->
     @files = []
     @subdirs = []
-    @namespaceName = upperCamelCase peek pathArray
+    @namespaceName = normalizeNamespaceName namespaceName
     @namespacePath = "#{parent?.namespacePath || globalNamespaceName}.#{@namespaceName}"
 
   addFile: (file)     ->
@@ -102,18 +112,18 @@ module.exports = class NamespaceStructure
   # out: namespacePath
   _addSourcePathArrayAndFile: ({pathArray, file, subdir}) ->
     unless pathArray
-      fileWithPathArray = file.split "/"
-      pathArray = arrayWithoutLast fileWithPathArray
-      file = peek fileWithPathArray
+      [pathArray..., file] = file.split "/"
     path = pathArray.join '/'
 
+    [namespacePath..., namespaceName] = pathArray
+
     dir = @_dirs[path] ||= new NamespaceDir
-      pathArray: pathArray
+      namespaceName: namespaceName
       path: path
       parent: if @root != path
         @_addSourcePathArrayAndFile
-          pathArray:  arrayWithoutLast pathArray
-          subdir:     peek pathArray
+          pathArray:  namespacePath
+          subdir:     namespaceName
 
     dir.addFile file
     dir.addSubdir subdir

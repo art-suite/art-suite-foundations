@@ -1,5 +1,5 @@
 {version} = require '../../package.json'
-{upperCamelCase, fileWithoutExtension, peek, arrayWithoutLast} = require './MiniFoundation'
+{log, upperCamelCase, fileWithoutExtension, peek, arrayWithoutLast} = require './MiniFoundation'
 Path = require "path"
 
 module.exports = class Helper
@@ -11,5 +11,4 @@ module.exports = class Helper
   @shouldIncludeInNamespace:  (file, namespaceName) -> toModuleName(file) == namespaceName
   @toFilename:                (path) -> peek path.split('/')
   @toModuleName:              toModuleName = (itemName) -> upperCamelCase fileWithoutExtension itemName
-  @requirePath: (filenameWithExtension) ->
-    "./" + Path.parse(filenameWithExtension).name
+  @requirePath: (filenameWithExtension) -> "./" + Path.parse(filenameWithExtension).name

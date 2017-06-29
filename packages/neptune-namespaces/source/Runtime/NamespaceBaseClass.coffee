@@ -65,9 +65,9 @@ module.exports = class NamespaceBaseClass
   @getVersions: ->
     out = {}
     out.version = @version if @ == Neptune
-    for key, subNamespace of @namespaces
-      out[key] = recurse if 0 < Object.keys(recurse = subNamespace.getVersions()).length
-      (out[key] ||= {}).version = subNamespace.version if subNamespace.version?
+    for key, subnamespace of @namespaces
+      out[key] = recurse if 0 < Object.keys(recurse = subnamespace.getVersions()).length
+      (out[key] ||= {}).version = subnamespace.version if subnamespace.version?
     out
 
   ################################################
@@ -75,10 +75,52 @@ module.exports = class NamespaceBaseClass
   # Used in generated index and namespace files
   ################################################
 
+  ###
+  IN:
+    "Foo" -> vivifies @Foo
+    "Foo.Bar" ->  vivifies @Foo.Bar
+    OR: ["Foo", "Bar", "Baz"] ->  vivifies @Foo.Bar.Baz
+  ###
+  @vivifySubnamespace: (name) ->
+    if isPathedNamespace name
+      name = name.split '.'
+
+    if isPlainArray path = name
+      namespace = @
+      namespace = namespace.vivifySubnamespace name for name in path
+      namespace
+    else
+      @namespaces[name] ||= @[name] = class PathedNamespace extends NamespaceBaseClass
+      ._init name, @
+
+  @addVersion: (namespace) ->
+    unless @versions
+      @versions = {}
+      @addVersion @ if namespace != @
+
+    {version = 'unknown'} = namespace
+    if existingVersion = @versions[version]
+      if isPlainArray existingVersion
+        existingVersion.push namespace
+      else
+        @versions[version] = [existingVersion, namespace]
+    else
+      @versions[version] = namespace
+
+  @isPathedNamespace: isPathedNamespace = (name) -> /\./.test name
+
   # OUT: namespace
   @addNamespace: (name, namespace) ->
-    @allNamespaces[namespace.namespacePath] =
-    @namespaces[name] = @[name] = namespace._init name, @
+    if isPathedNamespace name
+      [path..., name] = name.split(".")
+      @vivifySubnamespace(path).addNamespace name, namespace
+
+    else if existingNamespace = @namespaces[name]
+      existingNamespace.addVersion namespace
+
+    else
+      @allNamespaces[namespace.namespacePath] =
+      @namespaces[name] = @[name] = namespace._init name, @
 
   @addModules: (map) ->
     for name, module of map
@@ -144,7 +186,7 @@ module.exports = class NamespaceBaseClass
     @_name = name
     @modules = {}
     @namespaces = {}
-    @namespace._setChildNamespaceProps name, @
+    @namespace?._setChildNamespaceProps name, @
     @
 
   # @_addToNames will never add a property with the same name
@@ -184,3 +226,5 @@ module.exports = class NamespaceBaseClass
       @[propName]
     else
       @[propName] = value
+
+    @addVersion @ if propName == 'version'
