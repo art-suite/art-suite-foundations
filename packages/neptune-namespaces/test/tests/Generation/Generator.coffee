@@ -197,3 +197,18 @@ suite "NeptuneNamespaces.Generator", ->
       ]
       assert.match generatedFiles["root/Alpha.Beta/Gamma/namespace.coffee"],  /// require .* '\.\./namespace'     .* addNamespace        .* Gamma       ///
       assert.match generatedFiles["root/Alpha.Beta/namespace.coffee"],        /// require .* 'neptune-namespaces' .* vivifiySubnamespace .* Alpha\.Beta ///
+
+  test "pathed explicitly with includeInNamespace", ->
+    generator = new Generator "root", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "root/Alpha.Beta/file.coffee"
+        "root/Alpha.Beta/Beta.coffee"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "root/Alpha.Beta/index.coffee"
+        "root/Alpha.Beta/namespace.coffee"
+        "root/index.coffee"
+        "root/namespace.coffee"
+      ]
+      assert.match generatedFiles["root/Alpha.Beta/index.coffee"], /// includeInNamespace .* \.\/Beta ///

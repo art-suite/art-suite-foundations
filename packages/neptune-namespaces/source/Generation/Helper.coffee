@@ -8,7 +8,7 @@ module.exports = class Helper
   @neptuneBaseClass:          "#{@globalNamespaceName}.Base"
   @shouldIgnore:              (itemName) -> !!itemName.match /^(\..*|index.coffee|namespace.coffee)$/
   @shouldNotNamespace:        (itemName) -> !!itemName.match /^-/
-  @shouldIncludeInNamespace:  (file, namespaceName) -> toModuleName(file) == namespaceName
+  @shouldIncludeInNamespace:  (file, namespaceName) -> toModuleName(file) == peek namespaceName.split '.'
   @toFilename:                (path) -> peek path.split('/')
   @toModuleName:              toModuleName = (itemName) -> upperCamelCase fileWithoutExtension itemName
   @requirePath: (filenameWithExtension) -> "./" + Path.parse(filenameWithExtension).name
