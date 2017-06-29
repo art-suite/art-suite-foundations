@@ -9,7 +9,7 @@
 
 module.exports = class NamespaceGenerator
   @generate: (namespace, relativeFilePath) ->
-    {parent, path, namespaceName} = namespace
+    {parent, path, namespaceName, isPathNamespace} = namespace
     className = if isPathedNamespace namespaceName
       peek namespaceName.split '.'
     else
@@ -21,14 +21,20 @@ module.exports = class NamespaceGenerator
     else
       parent.path
 
+    requireParent = "(require '#{parentNamespacePath}')"
+
+    meat = if isPathNamespace
+      "#{requireParent}.vivifiySubnamespace '#{namespaceName}'"
+    else
+      """
+      #{requireParent}.addNamespace('#{namespaceName}', class #{className} extends #{neptuneBaseClass})
+      """
+
     """
     #{generatedByString}
     # file: #{relativeFilePath || path}/namespace.coffee
 
-    #{parentNamespaceName} = require '#{parentNamespacePath}'
-    module.exports = #{parentNamespaceName}.#{namespaceName} ||
-    #{parentNamespaceName}.addNamespace '#{namespaceName}', class #{className} extends #{neptuneBaseClass}
-      ;
+    module.exports = #{meat}
     #{
       a = for name in namespace.getAllNamespacedSubdirRequires()
         "require './#{name}/namespace'"

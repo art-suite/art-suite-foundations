@@ -22,7 +22,9 @@ class NamespaceSet
     @notNamespaced = []
     @namespaced = {}
 
-    @addItem item for item in items || []
+    if items
+      @addItem item for item in items
+      @length = items.length
 
   containsNormalizedItemName: (itemName) -> !!@namespaced[toModuleName itemName]
 
@@ -43,6 +45,7 @@ class Namespace
   constructor: ({@namespaceName, @path, @namespacePath, @files, @subdirs, @parent, @includeInNamespace})->
     @fileSet = new NamespaceSet @files
     @subdirSet = new NamespaceSet @subdirs
+    @isPathNamespace = @fileSet.length == 0 && @subdirSet.length <= 1
 
   getInspectedObjects: ->
     out =
