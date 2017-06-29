@@ -81,14 +81,14 @@ module.exports = {
 		"nn": "./nn"
 	},
 	"dependencies": {
-		"art-build-configurator": "^1.11.5",
-		"art-class-system": "^1.5.2",
-		"art-config": "^1.3.3",
-		"art-standard-lib": "^1.11.1",
-		"art-testbench": "^1.10.3",
+		"art-build-configurator": "*",
+		"art-class-system": "*",
+		"art-config": "*",
+		"art-standard-lib": "*",
+		"art-testbench": "*",
 		"bluebird": "^3.5.0",
-		"caffeine-script": "^0.44.5",
-		"caffeine-script-runtime": "^1.0.0",
+		"caffeine-script": "*",
+		"caffeine-script-runtime": "*",
 		"case-sensitive-paths-webpack-plugin": "^2.1.1",
 		"chai": "^4.0.1",
 		"coffee-loader": "^0.7.3",
@@ -103,7 +103,7 @@ module.exports = {
 		"glob-promise": "^3.1.0",
 		"json-loader": "^0.5.4",
 		"mocha": "^3.4.2",
-		"neptune-namespaces": "^2.2.2",
+		"neptune-namespaces": "*",
 		"script-loader": "^0.7.0",
 		"style-loader": "^0.18.1",
 		"webpack": "^2.6.1",
@@ -120,7 +120,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "2.2.4"
+	"version": "2.3.0"
 };
 
 /***/ }),
@@ -196,6 +196,9 @@ I think we can do that with one change: addNamespace needs to
 change to take a name argument: @addNamespace: (name, namespace) ->
  */
 var ArtStandardLibCore, NamespaceBaseClass, isExtendedClass, isFunction, isPlainArray, ref,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty,
+  slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 __webpack_require__(18);
@@ -207,7 +210,7 @@ ref = __webpack_require__(19), isFunction = ref.isFunction, isPlainArray = ref.i
 ArtStandardLibCore = null;
 
 module.exports = NamespaceBaseClass = (function() {
-  var excludedPropNames;
+  var excludedPropNames, isPathedNamespace;
 
   function NamespaceBaseClass() {}
 
@@ -277,26 +280,92 @@ module.exports = NamespaceBaseClass = (function() {
   };
 
   NamespaceBaseClass.getVersions = function() {
-    var key, out, recurse, ref1, subNamespace;
+    var key, out, recurse, ref1, subnamespace;
     out = {};
     if (this === Neptune) {
       out.version = this.version;
     }
     ref1 = this.namespaces;
     for (key in ref1) {
-      subNamespace = ref1[key];
-      if (0 < Object.keys(recurse = subNamespace.getVersions()).length) {
+      subnamespace = ref1[key];
+      if (0 < Object.keys(recurse = subnamespace.getVersions()).length) {
         out[key] = recurse;
       }
-      if (subNamespace.version != null) {
-        (out[key] || (out[key] = {})).version = subNamespace.version;
+      if (subnamespace.version != null) {
+        (out[key] || (out[key] = {})).version = subnamespace.version;
       }
     }
     return out;
   };
 
+
+  /*
+  IN:
+    "Foo" -> vivifies @Foo
+    "Foo.Bar" ->  vivifies @Foo.Bar
+    OR: ["Foo", "Bar", "Baz"] ->  vivifies @Foo.Bar.Baz
+   */
+
+  NamespaceBaseClass.vivifySubnamespace = function(name) {
+    var PathedNamespace, base, j, len, namespace, path;
+    if (isPathedNamespace(name)) {
+      name = name.split('.');
+    }
+    if (isPlainArray(path = name)) {
+      namespace = this;
+      for (j = 0, len = path.length; j < len; j++) {
+        name = path[j];
+        namespace = namespace.vivifySubnamespace(name);
+      }
+      return namespace;
+    } else {
+      return (base = this.namespaces)[name] || (base[name] = this[name] = PathedNamespace = (function(superClass) {
+        extend(PathedNamespace, superClass);
+
+        function PathedNamespace() {
+          return PathedNamespace.__super__.constructor.apply(this, arguments);
+        }
+
+        return PathedNamespace;
+
+      })(NamespaceBaseClass._init(name, this)));
+    }
+  };
+
+  NamespaceBaseClass.addVersion = function(namespace) {
+    var existingVersion, ref1, version;
+    if (!this.versions) {
+      this.versions = {};
+      if (namespace !== this) {
+        this.addVersion(this);
+      }
+    }
+    version = (ref1 = namespace.version) != null ? ref1 : 'unknown';
+    if (existingVersion = this.versions[version]) {
+      if (isPlainArray(existingVersion)) {
+        return existingVersion.push(namespace);
+      } else {
+        return this.versions[version] = [existingVersion, namespace];
+      }
+    } else {
+      return this.versions[version] = namespace;
+    }
+  };
+
+  NamespaceBaseClass.isPathedNamespace = isPathedNamespace = function(name) {
+    return /\./.test(name);
+  };
+
   NamespaceBaseClass.addNamespace = function(name, namespace) {
-    return this.allNamespaces[namespace.namespacePath] = this.namespaces[name] = this[name] = namespace._init(name, this);
+    var existingNamespace, j, path, ref1;
+    if (isPathedNamespace(name)) {
+      ref1 = name.split("."), path = 2 <= ref1.length ? slice.call(ref1, 0, j = ref1.length - 1) : (j = 0, []), name = ref1[j++];
+      return this.vivifySubnamespace(path).addNamespace(name, namespace);
+    } else if (existingNamespace = this.namespaces[name]) {
+      return existingNamespace.addVersion(namespace);
+    } else {
+      return this.allNamespaces[namespace.namespacePath] = this.namespaces[name] = this[name] = namespace._init(name, this);
+    }
   };
 
   NamespaceBaseClass.addModules = function(map) {
@@ -383,11 +452,14 @@ module.exports = NamespaceBaseClass = (function() {
    */
 
   NamespaceBaseClass._init = function(name, namespace1) {
+    var ref1;
     this.namespace = namespace1;
     this._name = name;
     this.modules = {};
     this.namespaces = {};
-    this.namespace._setChildNamespaceProps(name, this);
+    if ((ref1 = this.namespace) != null) {
+      ref1._setChildNamespaceProps(name, this);
+    }
     return this;
   };
 
@@ -428,9 +500,12 @@ module.exports = NamespaceBaseClass = (function() {
         addingFromString = addingFrom.namespacePath || addingFrom.propName || (Object.keys(addingFrom)).join(', ');
         console.error(this.namespacePath + " already has key: " + propName + ". Adding from: " + addingFromString);
       }
-      return this[propName];
+      this[propName];
     } else {
-      return this[propName] = value;
+      this[propName] = value;
+    }
+    if (propName === 'version') {
+      return this.addVersion(this);
     }
   };
 

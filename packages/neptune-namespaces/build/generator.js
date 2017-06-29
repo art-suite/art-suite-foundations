@@ -250,11 +250,11 @@ module.exports = require("path");
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Helper, Path, arrayWithoutLast, fileWithoutExtension, peek, ref, upperCamelCase, version;
+var Helper, Path, arrayWithoutLast, fileWithoutExtension, log, peek, ref, upperCamelCase, version;
 
 version = __webpack_require__(3).version;
 
-ref = __webpack_require__(0), upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast;
+ref = __webpack_require__(0), log = ref.log, upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast;
 
 Path = __webpack_require__(1);
 
@@ -278,7 +278,7 @@ module.exports = Helper = (function() {
   };
 
   Helper.shouldIncludeInNamespace = function(file, namespaceName) {
-    return toModuleName(file) === namespaceName;
+    return toModuleName(file) === peek(namespaceName.split('.'));
   };
 
   Helper.toFilename = function(path) {
@@ -309,14 +309,14 @@ module.exports = {
 		"nn": "./nn"
 	},
 	"dependencies": {
-		"art-build-configurator": "^1.11.5",
-		"art-class-system": "^1.5.2",
-		"art-config": "^1.3.3",
-		"art-standard-lib": "^1.11.1",
-		"art-testbench": "^1.10.3",
+		"art-build-configurator": "*",
+		"art-class-system": "*",
+		"art-config": "*",
+		"art-standard-lib": "*",
+		"art-testbench": "*",
 		"bluebird": "^3.5.0",
-		"caffeine-script": "^0.44.5",
-		"caffeine-script-runtime": "^1.0.0",
+		"caffeine-script": "*",
+		"caffeine-script-runtime": "*",
 		"case-sensitive-paths-webpack-plugin": "^2.1.1",
 		"chai": "^4.0.1",
 		"coffee-loader": "^0.7.3",
@@ -331,7 +331,7 @@ module.exports = {
 		"glob-promise": "^3.1.0",
 		"json-loader": "^0.5.4",
 		"mocha": "^3.4.2",
-		"neptune-namespaces": "^2.2.2",
+		"neptune-namespaces": "*",
 		"script-loader": "^0.7.0",
 		"style-loader": "^0.18.1",
 		"webpack": "^2.6.1",
@@ -348,7 +348,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "2.2.4"
+	"version": "2.3.0"
 };
 
 /***/ }),
@@ -361,13 +361,11 @@ module.exports = require("art-standard-lib/Core");
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Generation, Generators,
+var Generators,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Generation = __webpack_require__(15);
-
-module.exports = Generation.Generators || Generation.addNamespace('Generators', Generators = (function(superClass) {
+module.exports = (__webpack_require__(15)).addNamespace('Generators', Generators = (function(superClass) {
   extend(Generators, superClass);
 
   function Generators() {
@@ -616,11 +614,11 @@ module.exports = Generator = (function() {
    */
 
   Generator.prototype.generateFromFiles = function(files) {
-    var namespaces;
-    namespaces = new NamespaceStructure({
+    var namespaces, nss;
+    namespaces = (nss = new NamespaceStructure({
       root: this.root,
       files: files
-    }).namespaces;
+    })).namespaces;
     if (this.verbose) {
       this.showNamespaceStructure(namespaces);
     }
@@ -761,7 +759,7 @@ module.exports = NamespaceGenerator = (function() {
         results = [];
         for (j = 0, len = ref2.length; j < len; j++) {
           name = ref2[j];
-          results.push("require '" + (requirePath(name)) + "'");
+          results.push("require './" + name + "'");
         }
         return results;
       })()
@@ -778,25 +776,32 @@ module.exports = NamespaceGenerator = (function() {
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var NamespaceGenerator, generatedByString, neptuneBaseClass, ref, requirePath;
+var NamespaceGenerator, generatedByString, isPathedNamespace, neptuneBaseClass, peek, ref, requirePath;
 
 ref = __webpack_require__(2), generatedByString = ref.generatedByString, neptuneBaseClass = ref.neptuneBaseClass, requirePath = ref.requirePath;
+
+peek = __webpack_require__(0).peek;
+
+isPathedNamespace = Neptune.isPathedNamespace;
 
 module.exports = NamespaceGenerator = (function() {
   function NamespaceGenerator() {}
 
   NamespaceGenerator.generate = function(namespace, relativeFilePath) {
-    var a, name, namespaceName, parent, parentNamespaceName, parentNamespacePath, path;
-    parent = namespace.parent, path = namespace.path, namespaceName = namespace.namespaceName;
+    var a, className, isPathNamespace, meat, name, namespaceName, parent, parentNamespaceName, parentNamespacePath, path, requireParent;
+    parent = namespace.parent, path = namespace.path, namespaceName = namespace.namespaceName, isPathNamespace = namespace.isPathNamespace;
+    className = isPathedNamespace(namespaceName) ? peek(namespaceName.split('.')) : namespaceName;
     parentNamespaceName = parent.namespaceName;
     parentNamespacePath = parent.parent ? "../namespace" : parent.path;
-    return generatedByString + "\n# file: " + (relativeFilePath || path) + "/namespace.coffee\n\n" + parentNamespaceName + " = require '" + parentNamespacePath + "'\nmodule.exports = " + parentNamespaceName + "." + namespaceName + " ||\n" + parentNamespaceName + ".addNamespace '" + namespaceName + "', class " + namespaceName + " extends " + neptuneBaseClass + "\n  ;\n" + (a = (function() {
+    requireParent = "(require '" + parentNamespacePath + "')";
+    meat = isPathNamespace ? requireParent + ".vivifiySubnamespace '" + namespaceName + "'" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + neptuneBaseClass + ")";
+    return generatedByString + "\n# file: " + (relativeFilePath || path) + "/namespace.coffee\n\nmodule.exports = " + meat + "\n" + (a = (function() {
       var i, len, ref1, results;
       ref1 = namespace.getAllNamespacedSubdirRequires();
       results = [];
       for (i = 0, len = ref1.length; i < len; i++) {
         name = ref1[i];
-        results.push("require '" + (requirePath(name)) + "/namespace'");
+        results.push("require './" + name + "/namespace'");
       }
       return results;
     })(), a.join(";\n"));
@@ -823,7 +828,8 @@ module.exports.addModules({
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Namespace, NamespaceDir, NamespaceSet, NamespaceStructure, arrayWithoutLast, basename, fileWithoutExtension, globalNamespaceName, log, merge, peek, pushIfUnique, ref, ref1, shouldIgnore, shouldIncludeInNamespace, shouldNotNamespace, toFilename, toModuleName, upperCamelCase;
+var Namespace, NamespaceDir, NamespaceSet, NamespaceStructure, arrayWithoutLast, basename, fileWithoutExtension, globalNamespaceName, isPathedNamespace, log, merge, normalizeNamespaceName, peek, pushIfUnique, ref, ref1, shouldIgnore, shouldIncludeInNamespace, shouldNotNamespace, toFilename, toModuleName, upperCamelCase,
+  slice = [].slice;
 
 ref = __webpack_require__(0), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, log = ref.log, merge = ref.merge, arrayWithoutLast = ref.arrayWithoutLast, fileWithoutExtension = ref.fileWithoutExtension;
 
@@ -831,16 +837,20 @@ ref1 = __webpack_require__(2), globalNamespaceName = ref1.globalNamespaceName, s
 
 basename = __webpack_require__(1).basename;
 
+isPathedNamespace = Neptune.isPathedNamespace;
+
 NamespaceSet = (function() {
   function NamespaceSet(items) {
-    var i, item, len, ref2;
+    var i, item, len;
     this.ignored = [];
     this.notNamespaced = [];
     this.namespaced = {};
-    ref2 = items || [];
-    for (i = 0, len = ref2.length; i < len; i++) {
-      item = ref2[i];
-      this.addItem(item);
+    if (items) {
+      for (i = 0, len = items.length; i < len; i++) {
+        item = items[i];
+        this.addItem(item);
+      }
+      this.length = items.length;
     }
   }
 
@@ -884,6 +894,7 @@ Namespace = (function() {
     this.namespaceName = arg.namespaceName, this.path = arg.path, this.namespacePath = arg.namespacePath, this.files = arg.files, this.subdirs = arg.subdirs, this.parent = arg.parent, this.includeInNamespace = arg.includeInNamespace;
     this.fileSet = new NamespaceSet(this.files);
     this.subdirSet = new NamespaceSet(this.subdirs);
+    this.isPathNamespace = this.fileSet.length === 0 && this.subdirSet.length <= 1;
   }
 
   Namespace.prototype.getInspectedObjects = function() {
@@ -957,13 +968,34 @@ Namespace = (function() {
 
 })();
 
+normalizeNamespaceName = function(name) {
+  var part, parts;
+  if (isPathedNamespace(name)) {
+    parts = (function() {
+      var i, len, ref2, results;
+      ref2 = name.split('.');
+      results = [];
+      for (i = 0, len = ref2.length; i < len; i++) {
+        part = ref2[i];
+        if (part.length > 0) {
+          results.push(upperCamelCase(part));
+        }
+      }
+      return results;
+    })();
+    return parts.join('.');
+  } else {
+    return upperCamelCase(name);
+  }
+};
+
 NamespaceDir = (function() {
   function NamespaceDir(arg) {
-    var parent, pathArray;
-    pathArray = arg.pathArray, this.path = arg.path, parent = arg.parent;
+    var namespaceName, parent;
+    namespaceName = arg.namespaceName, this.path = arg.path, parent = arg.parent;
     this.files = [];
     this.subdirs = [];
-    this.namespaceName = upperCamelCase(peek(pathArray));
+    this.namespaceName = normalizeNamespaceName(namespaceName);
     this.namespacePath = ((parent != null ? parent.namespacePath : void 0) || globalNamespaceName) + "." + this.namespaceName;
   }
 
@@ -1010,20 +1042,19 @@ module.exports = NamespaceStructure = (function() {
   };
 
   NamespaceStructure.prototype._addSourcePathArrayAndFile = function(arg) {
-    var base, dir, file, fileWithPathArray, path, pathArray, subdir;
+    var base, dir, file, i, j, namespaceName, namespacePath, path, pathArray, ref2, subdir;
     pathArray = arg.pathArray, file = arg.file, subdir = arg.subdir;
     if (!pathArray) {
-      fileWithPathArray = file.split("/");
-      pathArray = arrayWithoutLast(fileWithPathArray);
-      file = peek(fileWithPathArray);
+      ref2 = file.split("/"), pathArray = 2 <= ref2.length ? slice.call(ref2, 0, i = ref2.length - 1) : (i = 0, []), file = ref2[i++];
     }
     path = pathArray.join('/');
+    namespacePath = 2 <= pathArray.length ? slice.call(pathArray, 0, j = pathArray.length - 1) : (j = 0, []), namespaceName = pathArray[j++];
     dir = (base = this._dirs)[path] || (base[path] = new NamespaceDir({
-      pathArray: pathArray,
+      namespaceName: namespaceName,
       path: path,
       parent: this.root !== path ? this._addSourcePathArrayAndFile({
-        pathArray: arrayWithoutLast(pathArray),
-        subdir: peek(pathArray)
+        pathArray: namespacePath,
+        subdir: namespaceName
       }) : void 0
     }));
     dir.addFile(file);
@@ -1060,13 +1091,11 @@ module.exports = NamespaceStructure = (function() {
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Generation, Neptune,
+var Generation,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(23);
-
-module.exports = Neptune.Generation || Neptune.addNamespace('Generation', Generation = (function(superClass) {
+module.exports = (__webpack_require__(23)).addNamespace('Generation', Generation = (function(superClass) {
   extend(Generation, superClass);
 
   function Generation() {
