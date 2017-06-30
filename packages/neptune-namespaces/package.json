@@ -28,6 +28,7 @@
     "json-loader": "^0.5.4",
     "mocha": "^3.4.2",
     "neptune-namespaces": "*",
+    "neptune-namespaces-runtime": "*",
     "script-loader": "^0.7.0",
     "style-loader": "^0.18.1",
     "webpack": "^2.6.1",

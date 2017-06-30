@@ -4,4 +4,3 @@
 module.exports = require './namespace'
 module.exports
 require './Generation'
-require './Runtime'

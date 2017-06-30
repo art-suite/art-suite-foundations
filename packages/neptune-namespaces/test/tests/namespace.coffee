@@ -2,5 +2,4 @@
 # file: tests/namespace.coffee
 
 module.exports = (require 'neptune-namespaces').addNamespace('Tests', class Tests extends Neptune.Base)
-require './Generation/namespace';
-require './Runtime/namespace'
+require './Generation/namespace'

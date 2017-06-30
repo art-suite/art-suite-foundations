@@ -1,6 +1,6 @@
 colors = require "colors"
 Path = require 'path'
-module.exports = class Lib
+module.exports = class MiniFoundation
   @[k] = v for k, v of require 'art-standard-lib/Core'
   {compactFlatten, isFunction, isPlainArray, isPlainObject, isString} = @
 

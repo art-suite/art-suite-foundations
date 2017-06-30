@@ -1,1 +1,1 @@
-module.exports = require "./source/Runtime/Neptune"
+module.exports = require "neptune-namespaces-runtime"
