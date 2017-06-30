@@ -1,0 +1,14 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "dependencies": {
+    "chai":   "^4.0.1",
+    "mocha":  "^3.4.2"
+  },
+  "description": "neptune-namespaces runtime",
+  "license": "ISC",
+  "name": "neptune-namespaces",
+  "scripts": {
+    "test": "mocha -u tdd"
+  },
+  "version": "3.0.0"
+}
