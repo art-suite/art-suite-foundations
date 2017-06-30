@@ -179,6 +179,7 @@ suite "NeptuneNamespaces.Generator", ->
         "root/index.coffee"
         "root/namespace.coffee"
       ]
+      log {generatedFiles}
       assert.match generatedFiles["root/Alpha/namespace.coffee"], /// vivifiySubnamespace.*Alpha ///
 
   test "pathed both ways", ->

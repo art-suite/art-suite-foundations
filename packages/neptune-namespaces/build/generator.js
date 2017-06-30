@@ -269,6 +269,8 @@ module.exports = Helper = (function() {
 
   Helper.neptuneBaseClass = Helper.globalNamespaceName + ".Namespace";
 
+  Helper.PackageNamespaceClassName = Helper.globalNamespaceName + ".PackageNamespace";
+
   Helper.shouldIgnore = function(itemName) {
     return !!itemName.match(/^(\..*|index.coffee|namespace.coffee)$/);
   };
@@ -315,7 +317,7 @@ module.exports = (__webpack_require__(13)).addNamespace('Generators', Generators
 
   return Generators;
 
-})(Neptune.Namespace));
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
@@ -717,9 +719,9 @@ module.exports = NamespaceGenerator = (function() {
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var NamespaceGenerator, generatedByString, isPathedNamespace, neptuneBaseClass, peek, ref, requirePath;
+var NamespaceGenerator, PackageNamespaceClassName, generatedByString, isPathedNamespace, neptuneBaseClass, peek, ref, requirePath;
 
-ref = __webpack_require__(2), generatedByString = ref.generatedByString, neptuneBaseClass = ref.neptuneBaseClass, requirePath = ref.requirePath;
+ref = __webpack_require__(2), generatedByString = ref.generatedByString, neptuneBaseClass = ref.neptuneBaseClass, PackageNamespaceClassName = ref.PackageNamespaceClassName, requirePath = ref.requirePath;
 
 peek = __webpack_require__(0).peek;
 
@@ -735,7 +737,7 @@ module.exports = NamespaceGenerator = (function() {
     parentNamespaceName = parent.namespaceName;
     parentNamespacePath = parent.parent ? "../namespace" : parent.path;
     requireParent = "(require '" + parentNamespacePath + "')";
-    meat = isPathNamespace ? requireParent + ".vivifiySubnamespace '" + namespaceName + "'" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + neptuneBaseClass + ")";
+    meat = isPathNamespace ? requireParent + ".vivifiySubnamespace '" + namespaceName + "'" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + ")";
     return generatedByString + "\n# file: " + (relativeFilePath || path) + "/namespace.coffee\n\nmodule.exports = " + meat + "\n" + (a = (function() {
       var i, len, ref1, results;
       ref1 = namespace.getAllNamespacedSubdirRequires();
@@ -1045,7 +1047,7 @@ module.exports = (__webpack_require__(18)).addNamespace('Generation', Generation
 
   return Generation;
 
-})(Neptune.Namespace));
+})(Neptune.PackageNamespace));
 
 __webpack_require__(3);
 

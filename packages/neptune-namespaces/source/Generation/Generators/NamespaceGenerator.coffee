@@ -1,6 +1,7 @@
 {
   generatedByString
   neptuneBaseClass
+  PackageNamespaceClassName
   requirePath
 } = require '../Helper'
 {peek} = require '../MiniFoundation'
@@ -27,7 +28,7 @@ module.exports = class NamespaceGenerator
       "#{requireParent}.vivifiySubnamespace '#{namespaceName}'"
     else
       """
-      #{requireParent}.addNamespace('#{namespaceName}', class #{className} extends #{neptuneBaseClass})
+      #{requireParent}.addNamespace('#{namespaceName}', class #{className} extends #{PackageNamespaceClassName})
       """
 
     """
