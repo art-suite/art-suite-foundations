@@ -232,4 +232,5 @@ module.exports = class Namespace
     else
       @[propName] = value
 
-    @addVersion @ if propName == 'version'
+    if propName == 'version'
+      @namespace.versionedNamespaces?[@getName()][value] = @
