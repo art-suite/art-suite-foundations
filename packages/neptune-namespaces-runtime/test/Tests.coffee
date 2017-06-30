@@ -1,3 +1,4 @@
+require '../index.coffee'
 {Namespace, PackageNamespace} = Neptune
 {assert} = require 'chai'
 console.log {Namespace, PackageNamespace}

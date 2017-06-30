@@ -2,13 +2,14 @@
 TODO: Make NN ugifly-mangler friendly. In order to do that, we need
 to stop using the function.name attribute.
 
-I think we can do that with one change: addNamespace needs to
-change to take a name argument: @addNamespace: (name, namespace) ->
+OLD:
+  I think we can do that with one change: addNamespace needs to
+  change to take a name argument: @addNamespace: (name, namespace) ->
 
+NEW:
+  Ok, that's done. Now I need to revisit the mangler issue.
+  Did this fix it?
 ###
-
-require "./global"
-require "./function"
 
 {isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Types'
 

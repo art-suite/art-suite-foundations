@@ -1,4 +1,5 @@
 require './global'
+require './function'
 version = (require "../../package.json").version
 
 if global.Neptune
