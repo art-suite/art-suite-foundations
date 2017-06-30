@@ -46,7 +46,7 @@ defineModule module, -> (superClass) -> class DeclarableMixin extends superClass
   @declarable: (map) ->
     each map, (options, name) =>
       if isPlainObject options
-        {preprocess, validate, extendable} = options
+        {preprocess, validate, extendable, getter} = options
 
       preprocess ||= (v) -> v
       validate ||= -> true
@@ -72,7 +72,7 @@ defineModule module, -> (superClass) -> class DeclarableMixin extends superClass
           @[internalName] = preprocess value
 
         # get
-        @[getterName] = -> @[internalName]
+        @[getterName] = getter || -> @[internalName]
 
         ##############################
         # instance-api
