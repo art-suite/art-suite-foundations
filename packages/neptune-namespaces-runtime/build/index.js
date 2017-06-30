@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,18 +76,19 @@ module.exports =
 TODO: Make NN ugifly-mangler friendly. In order to do that, we need
 to stop using the function.name attribute.
 
-I think we can do that with one change: addNamespace needs to
-change to take a name argument: @addNamespace: (name, namespace) ->
+OLD:
+  I think we can do that with one change: addNamespace needs to
+  change to take a name argument: @addNamespace: (name, namespace) ->
+
+NEW:
+  Ok, that's done. Now I need to revisit the mangler issue.
+  Did this fix it?
  */
 var ArtStandardLibCore, Namespace, isExtendedClass, isFunction, isPlainArray, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-__webpack_require__(1);
-
-__webpack_require__(5);
 
 ref = __webpack_require__(8), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
@@ -408,26 +409,15 @@ module.exports = Namespace = (function() {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-var g;
-
-g = typeof window !== "undefined" && window !== null ? window : typeof self !== "undefined" && self !== null ? self : global;
-
-g.self || (g.self = g);
-
-g.global || (g.global = g);
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Namespace, Neptune, version,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-__webpack_require__(1);
+__webpack_require__(5);
+
+__webpack_require__(4);
 
 version = (__webpack_require__(6)).version;
 
@@ -446,7 +436,7 @@ module.exports = global.Neptune = Neptune = (function(superClass) {
 
   Neptune.Namespace = Namespace;
 
-  Neptune.PackageNamespace = __webpack_require__(4);
+  Neptune.PackageNamespace = __webpack_require__(3);
 
   Neptune.namespacePath = "Neptune";
 
@@ -464,14 +454,14 @@ module.exports = global.Neptune = Neptune = (function(superClass) {
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(1);
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var PackageNamespace,
@@ -491,7 +481,7 @@ module.exports = PackageNamespace = (function(superClass) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 if ((function() {}).name == null) {
@@ -518,6 +508,19 @@ global.Function.prototype.getName = function() {
 global.Function.prototype.hasName = function() {
   return !!((this._name && this.hasOwnProperty("_name")) || this.name);
 };
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+var g;
+
+g = typeof window !== "undefined" && window !== null ? window : typeof self !== "undefined" && self !== null ? self : global;
+
+g.self || (g.self = g);
+
+g.global || (g.global = g);
 
 
 /***/ }),
