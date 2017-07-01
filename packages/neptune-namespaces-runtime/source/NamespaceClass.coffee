@@ -100,10 +100,15 @@ module.exports = class Namespace
       # initialized versions for this namespace, add the existing one
       @addVersionedNamespace name, @namespaces[name]
 
+
     {version} = namespace
+    console.warn "NN: adding #{@namespacePath}.versionedNamespaces.#{name}['#{version}']" + if namespace == @namespaces[name]
+      " (default)"
+    else ""
+
     throw new Error "expecting namespace '#{name}' in '#{@namespacePath}'' to have a version" unless version?
     if versions[version]
-      console.warn "NN: version #{version} for namespace #{name} already added"
+      console.warn "NN: versionedNamespace #{name} already added for version #{version}. Not added again."
     else
       versions[version] = namespace
     namespace
@@ -115,13 +120,13 @@ module.exports = class Namespace
       @vivifySubnamespace(path).addNamespace name, namespace
 
     else if existingNamespace = @namespaces[name]
-      info = "Namespace '#{name}' already added to '#{@namespacePath}'"
       unless (
             (namespace.prototype instanceof Neptune.PackageNamespace) &&
             (existingNamespace.prototype instanceof Neptune.PackageNamespace)
           )
-        throw new Error "Expecting PackageNamespaces: #{info}"
-      console.warn "NN: #{info}"
+        throw new Error "
+          PathedNamespace vs PackageNamespaces conflict for: #{@namespacePath}.#{name}'.
+          "
       @addVersionedNamespace name, namespace
 
     else
@@ -200,7 +205,7 @@ module.exports = class Namespace
 
   # @_addToNames will never add a property with the same name
   # as __super__ or any of the property names in the Namespace namespace.
-  excludedPropNames = ["__super__"].concat Object.keys Namespace
+  excludedPropNames = ["__super__", "_name"].concat Object.keys Namespace
 
   ###
   Helper for includeInNamespace.
