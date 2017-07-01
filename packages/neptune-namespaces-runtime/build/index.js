@@ -90,7 +90,7 @@ var ArtStandardLibCore, Namespace, isExtendedClass, isFunction, isPlainArray, re
   slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-ref = __webpack_require__(8), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(9), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
@@ -138,7 +138,7 @@ module.exports = Namespace = (function() {
   };
 
   Namespace.getNeptuneLib = function() {
-    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(7));
+    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(8));
   };
 
   Namespace.getInspectedObjects = function(includeModules) {
@@ -419,7 +419,7 @@ __webpack_require__(5);
 
 __webpack_require__(4);
 
-version = (__webpack_require__(6)).version;
+version = (__webpack_require__(7)).version;
 
 if (global.Neptune) {
   throw new Error("Load NeptuneNamespaces(" + version + ") FAILED. Another version already loaded: " + global.Neptune.version);
@@ -446,7 +446,7 @@ module.exports = global.Neptune = Neptune = (function(superClass) {
 
   Neptune.Base = Namespace;
 
-  Neptune.isNode = __webpack_require__(9);
+  Neptune.isNode = __webpack_require__(6);
 
   return Neptune;
 
@@ -527,74 +527,47 @@ g.global || (g.global = g);
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = {
-	"description": "imikimi art-suite and caffeine-suite dev",
-	"license": "stop whining",
-	"repository": "repo? we don need no repo",
-	"dependencies": {
-		"atob": "^2.0.3",
-		"aws": "0.0.3-2",
-		"aws-sdk": "^2.62.0",
-		"aws4": "^1.6.0",
-		"bluebird": "^3.5.0",
-		"case-sensitive-paths-webpack-plugin": "^2.1.1",
-		"chai": "^4.0.1",
-		"coffee-loader": "^0.7.3",
-		"coffee-script": "^1.12.6",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"compress": "^0.99.0",
-		"corsproxy": "^1.5.0",
-		"css-loader": "^0.28.4",
-		"dateformat": "^2.0.0",
-		"detect-node": "^2.0.3",
-		"dynamodb-local": "0.0.18",
-		"exif-parser": "^0.1.9",
-		"express": "^4.15.3",
-		"fs-extra": "^3.0.1",
-		"glob": "^7.1.2",
-		"glob-promise": "^3.1.0",
-		"javascript-detect-element-resize": "^0.5.3",
-		"json-loader": "^0.5.4",
-		"jsonwebtoken": "^7.4.1",
-		"keyboardevent-key-polyfill": "^1.1.0",
-		"mailgun-js": "^0.11.2",
-		"mocha": "^3.4.2",
-		"prettier": "^1.4.2",
-		"pusher": "^1.5.1",
-		"pusher-js": "^4.1.0",
-		"quantize": "^1.0.2",
-		"script-loader": "^0.7.0",
-		"stripe": "^4.22.0",
-		"style-loader": "^0.18.1",
-		"throng": "^4.0.0",
-		"uuid": "^3.0.1",
-		"webfontloader": "^1.6.28",
-		"webpack": "^2.6.1",
-		"webpack-dev-server": "^2.4.5",
-		"webpack-merge": "^4.1.0",
-		"webpack-node-externals": "^1.6.0",
-		"xhr2": "^0.1.4"
-	}
-};
+module.exports = false;
+
+// Only Node.JS has a process variable that is of [[Class]] process
+try {
+ module.exports = Object.prototype.toString.call(global.process) === '[object process]' 
+} catch(e) {}
+
 
 /***/ }),
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib/Core");
+module.exports = {
+	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+	"dependencies": {
+		"art-standard-lib": "*",
+		"coffee-script": "*"
+	},
+	"description": "Neptune.Namespaces.Runtime",
+	"license": "ISC",
+	"name": "neptune-namespaces-runtime",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --progress",
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
+	},
+	"version": "3.0.3"
+};
 
 /***/ }),
 /* 8 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib/Types");
+module.exports = require("art-standard-lib/Core");
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports) {
 
-module.exports = require("detect-node");
+module.exports = require("art-standard-lib/Types");
 
 /***/ })
 /******/ ]);
