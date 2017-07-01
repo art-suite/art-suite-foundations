@@ -1,7 +1,4 @@
-
-{ClassSystem, StandardLib} = Neptune.Art
-{log, clone, eq, inspect, nextTick} = StandardLib
-{BaseClass} = ClassSystem
+import &StandardImport
 
 module.exports = suite:
   "getters don't extend": ->

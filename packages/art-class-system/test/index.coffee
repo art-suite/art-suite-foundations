@@ -1,5 +1,4 @@
 require 'caffeine-mc/register'
-require '..'
 require "art-testbench/testing"
 .init
   synchronous: true
