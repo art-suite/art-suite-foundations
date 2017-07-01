@@ -102,8 +102,11 @@ module.exports = class Namespace
 
     {version} = namespace
     throw new Error "expecting namespace '#{name}' in '#{@namespacePath}'' to have a version" unless version?
-    throw new Error "version #{version} for namespace #{name} already added" if versions[version]
-    versions[version] = namespace
+    if versions[version]
+      console.warn "NN: version #{version} for namespace #{name} already added"
+    else
+      versions[version] = namespace
+    namespace
 
   # OUT: namespace
   @addNamespace: (name, namespace) ->
