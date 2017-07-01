@@ -25,7 +25,7 @@ module.exports = class NamespaceGenerator
     requireParent = "(require '#{parentNamespacePath}')"
 
     meat = if isPathNamespace
-      "#{requireParent}.vivifiySubnamespace '#{namespaceName}'"
+      "#{requireParent}.vivifySubnamespace '#{namespaceName}'"
     else
       """
       #{requireParent}.addNamespace('#{namespaceName}', class #{className} extends #{PackageNamespaceClassName})

@@ -17,20 +17,24 @@
 {isPathedNamespace} = Neptune
 
 class NamespaceSet
+  ###
+  @length: number of non-ignored items
+  ###
   constructor: (items) ->
     @ignored = []
     @notNamespaced = []
     @namespaced = {}
 
+    @length = 0
     if items
       @addItem item for item in items
-      @length = items.length
 
   containsNormalizedItemName: (itemName) -> !!@namespaced[toModuleName itemName]
 
   addItem: (item) ->
     itemName =  peek item.split '/'
     return @ignored.push "#{basename item}" if shouldIgnore itemName
+    @length++
     return @notNamespaced.push "#{basename item}" if shouldNotNamespace itemName
     @namespaced[toModuleName itemName] = item
 

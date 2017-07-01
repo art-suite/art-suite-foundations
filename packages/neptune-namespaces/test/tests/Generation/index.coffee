@@ -6,3 +6,4 @@ module.exports
 .addModules
   Generator:          require './Generator'         
   NamespaceStructure: require './NamespaceStructure'
+  Pathing:            require './Pathing'           
