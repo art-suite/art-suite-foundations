@@ -7,11 +7,13 @@ fsp = require "fs-extra"
   getAbsPath
   getParentPath
   log
+  normalizeDirectory
 } = require "./MiniFoundation"
 Path = require "path"
 NamespaceStructure = require './NamespaceStructure'
 
 {IndexGenerator, NamespaceGenerator} = require './Generators'
+{getPackageRoot} = require './PackageRoot'
 
 module.exports = class Generator
 
@@ -23,7 +25,11 @@ module.exports = class Generator
     "perf"
   ]
 
-  @generate: (globRoot, options = {}) ->
+  @findVersionFile: (path) ->
+    if packageRoot = getPackageRoot path
+      Path.join packageRoot, "package.json"
+
+  @generate: (globRoot, options = {}) =>
     glob globRoot
     .then (roots) ->
       filePromiseGenerators = for root in roots when fsp.statSync(root).isDirectory()
@@ -35,7 +41,7 @@ module.exports = class Generator
             .then ->
               Generator.watch root, merge options, lastGenerator: generator if options.watch
             .catch (error) ->
-              log "Error: ".red, foo
+              log error.stack
 
       promiseSequence filePromiseGenerators
 
@@ -65,6 +71,8 @@ module.exports = class Generator
   constructor: (@root, options = {}) ->
     throw new Error "root required" unless typeof @root == "string"
     {@pretend, @verbose, @lastGenerator, @force, @quiet} = options
+    @versionFile = Generator.findVersionFile @root
+
     @rootPrefix = getParentPath @root
 
   generateHelper: ({name, code}) ->
@@ -109,9 +117,12 @@ module.exports = class Generator
     for namespacePath, namespace of namespaces
       {path} = namespace
 
+      if @versionFile
+        relativeVersionFile = Path.relative normalizeDirectory(path), @versionFile
+
       @generateHelper
         name: "#{path}/namespace.coffee"
-        code: NamespaceGenerator.generate namespace, @getRelativePath path
+        code: NamespaceGenerator.generate namespace, @getRelativePath(path), relativeVersionFile
 
       @generateHelper
         name: "#{path}/index.coffee"

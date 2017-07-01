@@ -1,6 +1,6 @@
 {assert} = chai = require 'chai'
 require 'colors'
-MiniFoundation = require '../source/Generation/MiniFoundation'
+{MiniFoundation} = require '../source/NeptuneNamespaces'
 {log, formattedInspect} = MiniFoundation
 
 failWithExpectedMessage = (context, a, verb, b) ->

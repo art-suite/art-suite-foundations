@@ -50,6 +50,13 @@ class Namespace
     @fileSet = new NamespaceSet @files
     @subdirSet = new NamespaceSet @subdirs
     @isPathNamespace = @fileSet.length == 0 && @subdirSet.length <= 1
+    @isPackageNamespace = !@isPathNamespace
+
+  getIsRootPackageNamespace: ->
+    !@parent || !@parent.getIsInsidePackageNamespace()
+
+  getIsInsidePackageNamespace: ->
+    @isPackageNamespace || @parent?.getIsInsidePackageNamespace()
 
   getInspectedObjects: ->
     out =

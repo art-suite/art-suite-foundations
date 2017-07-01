@@ -1,1 +1,1 @@
-module.exports = require "./source/Generation/Generator"
+module.exports = require "./source/NeptuneNamespaces/Generator"

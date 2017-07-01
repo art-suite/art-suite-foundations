@@ -16,6 +16,12 @@ module.exports = class MiniFoundation
     else
       resolveNextPromise()
 
+  @normalizeDirectory: normalizeDirectory = (directory) ->
+    Path.normalize if Path.isAbsolute directory
+      directory
+    else
+      Path.join process.cwd(), directory
+
   @escapeJavascriptString: escapeJavascriptString = (str) =>
     JSON.stringify str
 

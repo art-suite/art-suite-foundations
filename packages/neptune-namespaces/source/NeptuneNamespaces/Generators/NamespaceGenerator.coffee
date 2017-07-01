@@ -9,7 +9,7 @@
 {isPathedNamespace} = Neptune
 
 module.exports = class NamespaceGenerator
-  @generate: (namespace, relativeFilePath) ->
+  @generate: (namespace, relativeFilePath, versionFile) ->
     {parent, path, namespaceName, isPathNamespace} = namespace
     className = if isPathedNamespace namespaceName
       peek namespaceName.split '.'
@@ -26,6 +26,11 @@ module.exports = class NamespaceGenerator
 
     meat = if isPathNamespace
       "#{requireParent}.vivifySubnamespace '#{namespaceName}'"
+    else if versionFile && namespace.getIsRootPackageNamespace()
+      """
+      #{requireParent}.addNamespace '#{namespaceName}', class #{className} extends #{PackageNamespaceClassName}
+        @version: require('#{versionFile}').version
+      """
     else
       """
       #{requireParent}.addNamespace('#{namespaceName}', class #{className} extends #{PackageNamespaceClassName})

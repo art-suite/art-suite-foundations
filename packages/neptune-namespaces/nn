@@ -2,9 +2,9 @@
 
 {
   log, withoutTrailingSlash, promiseSequence, compactFlatten
-} = require "./source/Generation/MiniFoundation"
+} = require "./source/NeptuneNamespaces/MiniFoundation"
 
-Generator = require "./source/Generation/Generator"
+Generator = require "./source/NeptuneNamespaces/Generator"
 {version} = require './package.json'
 
 standardRoots = for root in Generator.standardRoots
