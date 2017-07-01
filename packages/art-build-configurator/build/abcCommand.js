@@ -105,7 +105,78 @@ module.exports = require("caffeine-script-runtime");
 
 /***/ }),
 
-/***/ 24:
+/***/ 25:
+/***/ (function(module, exports) {
+
+module.exports = require("colors");
+
+/***/ }),
+
+/***/ 26:
+/***/ (function(module, exports) {
+
+module.exports = require("commander");
+
+/***/ }),
+
+/***/ 27:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(1);
+Caf.defMod(module, () => {
+  let process = global.process,
+    console = global.console,
+    pv,
+    pretend,
+    configure,
+    init,
+    commander;
+  __webpack_require__(25);
+  ({ pv, pretend, configure, init } = commander = __webpack_require__(26)
+    .version(__webpack_require__(8).version)
+    .option(
+      "-p, --pretend",
+      "show the configs that will be generated without writing them"
+    )
+    .option("-c, --configure", "configure and update all")
+    .option("--pv", "show your package's current version")
+    .option("--init", "initialize a new Art-style project")
+    .option("-f, --force", "when initialize, force overwrite all")
+    .option("-v, --verbose", "verbose")
+    .option("--app", "use with --init to initialize a working ArtSuite App")
+    .on("--help", function() {
+      return console.log(
+        `looks for ${Caf.toString(
+          __webpack_require__(6).configFileName
+        )} and configs as instructed`
+      );
+    })
+    .parse(process.argv));
+  return pv
+    ? console.log(__webpack_require__(6).Versioning.current)
+    : pretend || configure || init
+      ? __webpack_require__(6)
+          .go(process.cwd(), commander)
+          .catch(function(e) {
+            return console.error(e.stack);
+          })
+      : commander.outputHelp();
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
+
+/***/ }),
+
+/***/ 6:
+/***/ (function(module, exports) {
+
+module.exports = require("art-build-configurator");
+
+/***/ }),
+
+/***/ 8:
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -157,77 +228,6 @@ module.exports = {
 	},
 	"version": "1.15.0"
 };
-
-/***/ }),
-
-/***/ 25:
-/***/ (function(module, exports) {
-
-module.exports = require("colors");
-
-/***/ }),
-
-/***/ 26:
-/***/ (function(module, exports) {
-
-module.exports = require("commander");
-
-/***/ }),
-
-/***/ 27:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(1);
-Caf.defMod(module, () => {
-  let process = global.process,
-    console = global.console,
-    pv,
-    pretend,
-    configure,
-    init,
-    commander;
-  __webpack_require__(25);
-  ({ pv, pretend, configure, init } = commander = __webpack_require__(26)
-    .version(__webpack_require__(24).version)
-    .option(
-      "-p, --pretend",
-      "show the configs that will be generated without writing them"
-    )
-    .option("-c, --configure", "configure and update all")
-    .option("--pv", "show your package's current version")
-    .option("--init", "initialize a new Art-style project")
-    .option("-f, --force", "when initialize, force overwrite all")
-    .option("-v, --verbose", "verbose")
-    .option("--app", "use with --init to initialize a working ArtSuite App")
-    .on("--help", function() {
-      return console.log(
-        `looks for ${Caf.toString(
-          __webpack_require__(6).configFileName
-        )} and configs as instructed`
-      );
-    })
-    .parse(process.argv));
-  return pv
-    ? console.log(__webpack_require__(6).Versioning.current)
-    : pretend || configure || init
-      ? __webpack_require__(6)
-          .go(process.cwd(), commander)
-          .catch(function(e) {
-            return console.error(e.stack);
-          })
-      : commander.outputHelp();
-});
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
-
-/***/ }),
-
-/***/ 6:
-/***/ (function(module, exports) {
-
-module.exports = require("art-build-configurator");
 
 /***/ })
 

@@ -3,6 +3,7 @@
   isPlainObject
   deepMerge
   consistentJsonStringify
+  isFunction
 } = require 'art-standard-lib'
 
 fs = require 'fs'
@@ -21,8 +22,10 @@ defineModule module, class ConfigurePackageJson extends BaseClass
   IN:
   ###
   @get: (npmRoot, abcConfig) =>
-    deepMerge StandardPackageJson.get(abcConfig),
-      abcConfig.npm
+    if isFunction npmConfig = abcConfig.npm
+      npmConfig StandardPackageJson.get abcConfig
+    else
+      deepMerge StandardPackageJson.get(abcConfig), npmConfig
 
   ###
   consistentJsonStringify is there to guarantee a consistently formatted output for git.

@@ -117,7 +117,7 @@ let Caf = __webpack_require__(1);
 Caf.defMod(module, () => {
   return __webpack_require__(5).merge(
     __webpack_require__(5),
-    __webpack_require__(10)
+    __webpack_require__(11)
   );
 });
 
@@ -127,26 +127,26 @@ Caf.defMod(module, () => {
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Build, Configurator,
+var Configurator,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Build = __webpack_require__(20);
-
-module.exports = Build.Configurator || Build.addNamespace('Configurator', Configurator = (function(superClass) {
+module.exports = (__webpack_require__(21)).addNamespace('Configurator', Configurator = (function(superClass) {
   extend(Configurator, superClass);
 
   function Configurator() {
     return Configurator.__super__.constructor.apply(this, arguments);
   }
 
+  Configurator.version = __webpack_require__(8).version;
+
   return Configurator;
 
-})(Neptune.Base));
+})(Neptune.PackageNamespace));
 
-__webpack_require__(17);
+__webpack_require__(18);
 
-__webpack_require__(19);
+__webpack_require__(20);
 
 
 /***/ }),
@@ -164,6 +164,60 @@ module.exports = require("fs");
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+	"bin": {
+		"abc": "./abc"
+	},
+	"dependencies": {
+		"art-build-configurator": "*",
+		"art-class-system": "*",
+		"art-config": "*",
+		"art-object-tree-factory": "^1.0.0",
+		"art-standard-lib": "*",
+		"art-testbench": "*",
+		"bluebird": "^3.5.0",
+		"caffeine-script": "*",
+		"caffeine-script-runtime": "*",
+		"case-sensitive-paths-webpack-plugin": "^2.1.1",
+		"chai": "^4.0.1",
+		"coffee-loader": "^0.7.3",
+		"coffee-script": "^1.12.6",
+		"colors": "^1.1.2",
+		"commander": "^2.9.0",
+		"css-loader": "^0.28.4",
+		"dateformat": "^2.0.0",
+		"detect-node": "^2.0.3",
+		"fs-extra": "^3.0.0",
+		"glob": "^7.1.2",
+		"glob-promise": "^3.1.0",
+		"json-loader": "^0.5.4",
+		"mocha": "^3.4.2",
+		"neptune-namespaces": "*",
+		"recursive-copy": "^2.0.6",
+		"script-loader": "^0.7.0",
+		"style-loader": "^0.18.1",
+		"webpack": "^2.6.1",
+		"webpack-dev-server": "^2.4.5",
+		"webpack-merge": "^3.0.0",
+		"webpack-node-externals": "^1.5.4"
+	},
+	"description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
+	"license": "ISC",
+	"name": "art-build-configurator",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --progress",
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
+	},
+	"version": "1.15.0"
+};
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -173,7 +227,7 @@ Caf.defMod(module, () => {
   let Path, DirClass, createObjectTreeFactory, BaseClass, merge;
   ({ createObjectTreeFactory, BaseClass, merge } = Caf.import(
     ["createObjectTreeFactory", "BaseClass", "merge"],
-    [__webpack_require__(3), __webpack_require__(21), global]
+    [__webpack_require__(3), __webpack_require__(22), global]
   ));
   Path = __webpack_require__(2);
   return createObjectTreeFactory(
@@ -216,26 +270,26 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(17);
+module.exports = __webpack_require__(18);
 
 module.exports.addModules({
-  StandardDependencies: __webpack_require__(11),
+  StandardDependencies: __webpack_require__(12),
   StandardPackageJson: __webpack_require__(33),
   StandardWebpackConfig: __webpack_require__(34)
 });
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-class-system");
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -278,7 +332,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -309,7 +363,7 @@ Caf.defMod(module, () => {
       "dashCase",
       "process"
     ],
-    [__webpack_require__(3), __webpack_require__(18), global]
+    [__webpack_require__(3), __webpack_require__(19), global]
   ));
   path = __webpack_require__(2);
   return (DefaultFiles = Caf.defClass(
@@ -415,7 +469,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -437,7 +491,7 @@ Caf.defMod(module, () => {
     log
   } = Caf.import(
     ["createObjectTreeFactory", "BaseClass", "isFunction", "isRegExp", "log"],
-    [__webpack_require__(3), __webpack_require__(21), global]
+    [__webpack_require__(3), __webpack_require__(22), global]
   ));
   Path = __webpack_require__(2);
   return createObjectTreeFactory(
@@ -476,7 +530,7 @@ Caf.defMod(module, () => {
             force,
             verbose,
             select,
-            fs = __webpack_require__(22)
+            fs = __webpack_require__(23)
           } = options);
           path = Path.join(path || ".", filename);
           selected = select != null
@@ -521,7 +575,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -581,22 +635,22 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigurePackageJson, StandardPackageJson, consistentJsonStringify, deepMerge, defineModule, fs, isPlainObject, path, ref,
+/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigurePackageJson, StandardPackageJson, consistentJsonStringify, deepMerge, defineModule, fs, isFunction, isPlainObject, path, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-ref = __webpack_require__(5), defineModule = ref.defineModule, isPlainObject = ref.isPlainObject, deepMerge = ref.deepMerge, consistentJsonStringify = ref.consistentJsonStringify;
+ref = __webpack_require__(5), defineModule = ref.defineModule, isPlainObject = ref.isPlainObject, deepMerge = ref.deepMerge, consistentJsonStringify = ref.consistentJsonStringify, isFunction = ref.isFunction;
 
 fs = __webpack_require__(7);
 
 path = __webpack_require__(2);
 
-BaseClass = __webpack_require__(10).BaseClass;
+BaseClass = __webpack_require__(11).BaseClass;
 
-StandardPackageJson = __webpack_require__(9).StandardPackageJson;
+StandardPackageJson = __webpack_require__(10).StandardPackageJson;
 
 Configurator = __webpack_require__(4);
 
@@ -615,7 +669,12 @@ defineModule(module, ConfigurePackageJson = (function(superClass) {
    */
 
   ConfigurePackageJson.get = function(npmRoot, abcConfig) {
-    return deepMerge(StandardPackageJson.get(abcConfig), abcConfig.npm);
+    var npmConfig;
+    if (isFunction(npmConfig = abcConfig.npm)) {
+      return npmConfig(StandardPackageJson.get(abcConfig));
+    } else {
+      return deepMerge(StandardPackageJson.get(abcConfig), npmConfig);
+    }
   };
 
 
@@ -637,7 +696,7 @@ defineModule(module, ConfigurePackageJson = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigureWebpack, StandardWebpackConfig, array, compactFlatten, deepMerge, defineModule, fs, isPlainObject, log, merge, nodeExternals, object, objectKeyCount, path, ref, webpackMerge, webpackNodeExternals,
@@ -652,7 +711,7 @@ webpackMerge = __webpack_require__(40);
 
 webpackNodeExternals = __webpack_require__(41);
 
-BaseClass = __webpack_require__(10).BaseClass;
+BaseClass = __webpack_require__(11).BaseClass;
 
 fs = __webpack_require__(7);
 
@@ -660,7 +719,7 @@ path = __webpack_require__(2);
 
 Configurator = __webpack_require__(4);
 
-StandardWebpackConfig = __webpack_require__(9).StandardWebpackConfig;
+StandardWebpackConfig = __webpack_require__(10).StandardWebpackConfig;
 
 defineModule(module, ConfigureWebpack = (function(superClass) {
   extend(ConfigureWebpack, superClass);
@@ -759,16 +818,14 @@ defineModule(module, ConfigureWebpack = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Configurator, Data,
+var Data,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Configurator = __webpack_require__(4);
-
-module.exports = Configurator.Data || Configurator.addNamespace('Data', Data = (function(superClass) {
+module.exports = (__webpack_require__(4)).addNamespace('Data', Data = (function(superClass) {
   extend(Data, superClass);
 
   function Data() {
@@ -777,32 +834,30 @@ module.exports = Configurator.Data || Configurator.addNamespace('Data', Data = (
 
   return Data;
 
-})(Neptune.Base));
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(19);
-
-module.exports.includeInNamespace(__webpack_require__(29)).addModules({
-  Dir: __webpack_require__(8),
-  File: __webpack_require__(13)
-});
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Configurator, FileBuilder,
+module.exports = __webpack_require__(20);
+
+module.exports.includeInNamespace(__webpack_require__(29)).addModules({
+  Dir: __webpack_require__(9),
+  File: __webpack_require__(14)
+});
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var FileBuilder,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Configurator = __webpack_require__(4);
-
-module.exports = Configurator.FileBuilder || Configurator.addNamespace('FileBuilder', FileBuilder = (function(superClass) {
+module.exports = (__webpack_require__(4)).addNamespace('FileBuilder', FileBuilder = (function(superClass) {
   extend(FileBuilder, superClass);
 
   function FileBuilder() {
@@ -811,68 +866,52 @@ module.exports = Configurator.FileBuilder || Configurator.addNamespace('FileBuil
 
   return FileBuilder;
 
-})(Neptune.Base));
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, Build,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Art = __webpack_require__(35);
-
-module.exports = Art.Build || Art.addNamespace('Build', Build = (function(superClass) {
-  extend(Build, superClass);
-
-  function Build() {
-    return Build.__super__.constructor.apply(this, arguments);
-  }
-
-  return Build;
-
-})(Neptune.Base));
+module.exports = (__webpack_require__(35)).vivifySubnamespace('Build');
 
 __webpack_require__(4);
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-object-tree-factory");
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs-extra");
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(4);
 
 module.exports.includeInNamespace(__webpack_require__(28)).addModules({
-  ConfigurePackageJson: __webpack_require__(15),
-  ConfigureWebpack: __webpack_require__(16),
-  DefaultFiles: __webpack_require__(12),
+  ConfigurePackageJson: __webpack_require__(16),
+  ConfigureWebpack: __webpack_require__(17),
+  DefaultFiles: __webpack_require__(13),
   Publish: __webpack_require__(30),
-  RunNeptuneNamespaces: __webpack_require__(14),
+  RunNeptuneNamespaces: __webpack_require__(15),
   StandardImport: __webpack_require__(3),
   Versioning: __webpack_require__(31)
 });
 
-__webpack_require__(9);
+__webpack_require__(10);
 
-__webpack_require__(18);
+__webpack_require__(19);
 
 
 /***/ }),
-/* 24 */,
 /* 25 */,
 /* 26 */,
 /* 27 */,
@@ -895,11 +934,11 @@ Caf.defMod(module, () => {
     merge,
     compactFlatten,
     formattedInspect;
-  fs = __webpack_require__(22);
+  fs = __webpack_require__(23);
   path = __webpack_require__(2);
   realRequire = eval("require");
-  ConfigureWebpack = __webpack_require__(16);
-  ConfigurePackageJson = __webpack_require__(15);
+  ConfigureWebpack = __webpack_require__(17);
+  ConfigurePackageJson = __webpack_require__(16);
   ({
     log,
     Promise,
@@ -1002,7 +1041,7 @@ Caf.defMod(module, () => {
         let wrote;
         log(`\nINIT: ${Caf.toString(npmRoot)}`);
         wrote = compactFlatten(
-          __webpack_require__(12)
+          __webpack_require__(13)
             .getDefaultFiles(npmRoot, options)
             .write(options)
         );
@@ -1039,7 +1078,7 @@ Caf.defMod(module, () => {
           (Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/))
         );
         log(`\nNN: ${Caf.toString(npmRoot)}`);
-        return __webpack_require__(14)(npmRoot, isWebpackDevServer);
+        return __webpack_require__(15)(npmRoot, isWebpackDevServer);
       };
       this.loadAndWriteConfig = function(npmRoot, options) {
         let pretend, configure;
@@ -1099,16 +1138,16 @@ Caf.defMod(module, () => {
       return (() => {
         switch (false) {
           case !isPlainObject(name):
-            return __webpack_require__(8)(
+            return __webpack_require__(9)(
               ".",
               Caf.each(name, [], (contents, n, into) => {
                 into.push(fileBuilder(n, contents));
               })
             );
           case !isString(contents):
-            return __webpack_require__(13)(name, contents);
+            return __webpack_require__(14)(name, contents);
           case !isPlainObject(contents):
-            return __webpack_require__(8)(name, fileBuilder(contents));
+            return __webpack_require__(9)(name, fileBuilder(contents));
           case !(
             contents === null ||
             contents === undefined ||
@@ -1186,7 +1225,7 @@ Caf.defMod(module, () => {
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(23);
+module.exports = __webpack_require__(24);
 
 
 /***/ }),
@@ -1209,7 +1248,7 @@ module.exports = StandardPackageJson = (function() {
       name: peek(process.cwd().split("/")),
       version: fs.existsSync("package.json") ? JSON.parse(fs.readFileSync("package.json").toString()).version : "0.0.1",
       author: "Shane Brinkman-Davis Delamore, Imikimi LLC",
-      dependencies: __webpack_require__(11),
+      dependencies: __webpack_require__(12),
       scripts: {
         test: (abcConfig != null ? (ref1 = abcConfig.target) != null ? ref1.node : void 0 : void 0) ? "nn -s;mocha -u tdd --compilers coffee:coffee-script/register" : 'webpack-dev-server --progress',
         start: 'webpack-dev-server --hot --inline --progress',
@@ -1290,24 +1329,9 @@ module.exports = StandardWebpackConfig = (function() {
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, Neptune,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+module.exports = (__webpack_require__(38)).vivifySubnamespace('Art');
 
-Neptune = __webpack_require__(38);
-
-module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
-  extend(Art, superClass);
-
-  function Art() {
-    return Art.__super__.constructor.apply(this, arguments);
-  }
-
-  return Art;
-
-})(Neptune.Base));
-
-__webpack_require__(20);
+__webpack_require__(21);
 
 
 /***/ }),
