@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,19 +74,21 @@ module.exports =
 var MiniFoundation, Path, colors,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-colors = __webpack_require__(4);
+colors = __webpack_require__(5);
 
 Path = __webpack_require__(1);
 
 module.exports = MiniFoundation = (function() {
-  var compactFlatten, escapeJavascriptString, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, k, log, ref, ref1, v;
+  var compactFlatten, escapeJavascriptString, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, k, log, normalizeDirectory, ref, ref1, v;
 
   function MiniFoundation() {}
 
-  ref = __webpack_require__(15);
-  for (k in ref) {
-    v = ref[k];
-    MiniFoundation[k] = v;
+  if (v !== "Core") {
+    ref = __webpack_require__(17);
+    for (k in ref) {
+      v = ref[k];
+      MiniFoundation[k] = v;
+    }
   }
 
   ref1 = MiniFoundation, compactFlatten = ref1.compactFlatten, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, isPlainObject = ref1.isPlainObject, isString = ref1.isString;
@@ -106,6 +108,10 @@ module.exports = MiniFoundation = (function() {
     } else {
       return resolveNextPromise();
     }
+  };
+
+  MiniFoundation.normalizeDirectory = normalizeDirectory = function(directory) {
+    return Path.normalize(Path.isAbsolute(directory) ? directory : Path.join(process.cwd(), directory));
   };
 
   MiniFoundation.escapeJavascriptString = escapeJavascriptString = function(str) {
@@ -252,7 +258,7 @@ module.exports = require("path");
 
 var Helper, Path, arrayWithoutLast, fileWithoutExtension, log, peek, ref, upperCamelCase, version;
 
-version = __webpack_require__(14).version;
+version = __webpack_require__(4).version;
 
 ref = __webpack_require__(0), log = ref.log, upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast;
 
@@ -308,7 +314,7 @@ var Generators,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(13)).addNamespace('Generators', Generators = (function(superClass) {
+module.exports = (__webpack_require__(16)).addNamespace('Generators', Generators = (function(superClass) {
   extend(Generators, superClass);
 
   function Generators() {
@@ -324,32 +330,101 @@ module.exports = (__webpack_require__(13)).addNamespace('Generators', Generators
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("colors");
+module.exports = {
+	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+	"bin": {
+		"neptune-namespaces": "./nn",
+		"nn": "./nn"
+	},
+	"dependencies": {
+		"art-build-configurator": "*",
+		"art-class-system": "*",
+		"art-config": "*",
+		"art-standard-lib": "*",
+		"art-testbench": "*",
+		"bluebird": "^3.5.0",
+		"caffeine-script": "*",
+		"caffeine-script-runtime": "*",
+		"case-sensitive-paths-webpack-plugin": "^2.1.1",
+		"chai": "^4.0.1",
+		"coffee-loader": "^0.7.3",
+		"coffee-script": "^1.12.6",
+		"colors": "^1.1.2",
+		"commander": "^2.9.0",
+		"css-loader": "^0.28.4",
+		"dateformat": "^2.0.0",
+		"detect-node": "^2.0.3",
+		"fs-extra": "^3.0.1",
+		"glob": "^7.1.2",
+		"glob-promise": "^3.1.0",
+		"json-loader": "^0.5.4",
+		"mocha": "^3.4.2",
+		"neptune-namespaces": "*",
+		"neptune-namespaces-runtime": "*",
+		"script-loader": "^0.7.0",
+		"style-loader": "^0.18.1",
+		"webpack": "^2.6.1",
+		"webpack-dev-server": "^2.4.5",
+		"webpack-merge": "^4.1.0",
+		"webpack-node-externals": "^1.6.0"
+	},
+	"description": "Generate index.coffee and namespace.coffee files from directory structures",
+	"license": "ISC",
+	"name": "neptune-namespaces",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --progress",
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
+	},
+	"version": "3.2.1"
+};
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("colors");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs-extra");
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Generator, IndexGenerator, NamespaceGenerator, NamespaceStructure, Path, colors, fsp, getAbsPath, getParentPath, getRelativePath, glob, indent, log, merge, pad, peek, promiseSequence, pushIfUnique, ref, ref1, upperCamelCase, withoutTrailingSlash,
+var Generator, IndexGenerator, NamespaceGenerator, NamespaceStructure, Path, colors, fsp, getAbsPath, getPackageRoot, getParentPath, getRelativePath, glob, indent, log, merge, normalizeDirectory, pad, peek, promiseSequence, pushIfUnique, ref, ref1, upperCamelCase, withoutTrailingSlash,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   slice = [].slice;
 
-colors = __webpack_require__(4);
+colors = __webpack_require__(5);
 
-glob = __webpack_require__(17);
+glob = __webpack_require__(18);
 
-fsp = __webpack_require__(16);
+fsp = __webpack_require__(6);
 
-ref = __webpack_require__(0), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, indent = ref.indent, pad = ref.pad, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, merge = ref.merge, getRelativePath = ref.getRelativePath, getAbsPath = ref.getAbsPath, getParentPath = ref.getParentPath, log = ref.log;
+ref = __webpack_require__(0), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, indent = ref.indent, pad = ref.pad, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, merge = ref.merge, getRelativePath = ref.getRelativePath, getAbsPath = ref.getAbsPath, getParentPath = ref.getParentPath, log = ref.log, normalizeDirectory = ref.normalizeDirectory;
 
 Path = __webpack_require__(1);
 
-NamespaceStructure = __webpack_require__(12);
+NamespaceStructure = __webpack_require__(14);
 
-ref1 = __webpack_require__(11), IndexGenerator = ref1.IndexGenerator, NamespaceGenerator = ref1.NamespaceGenerator;
+ref1 = __webpack_require__(13), IndexGenerator = ref1.IndexGenerator, NamespaceGenerator = ref1.NamespaceGenerator;
+
+getPackageRoot = __webpack_require__(15).getPackageRoot;
 
 module.exports = Generator = (function() {
   Generator.standardRoots = ["source", "test", "performance", "src", "perf"];
+
+  Generator.findVersionFile = function(path) {
+    var packageRoot;
+    if (packageRoot = getPackageRoot(path)) {
+      return Path.join(packageRoot, "package.json");
+    }
+  };
 
   Generator.generate = function(globRoot, options) {
     if (options == null) {
@@ -374,7 +449,7 @@ module.exports = Generator = (function() {
                     }));
                   }
                 })["catch"](function(error) {
-                  return log("Error: ".red, foo);
+                  return log(error.stack);
                 });
               };
             })(root));
@@ -442,6 +517,7 @@ module.exports = Generator = (function() {
       throw new Error("root required");
     }
     this.pretend = options.pretend, this.verbose = options.verbose, this.lastGenerator = options.lastGenerator, this.force = options.force, this.quiet = options.quiet;
+    this.versionFile = Generator.findVersionFile(this.root);
     this.rootPrefix = getParentPath(this.root);
   }
 
@@ -449,7 +525,7 @@ module.exports = Generator = (function() {
     var code, name;
     name = arg1.name, code = arg1.code;
     if (this.pretend) {
-      this.log("\ngenerated: " + (this.getRelativePath(name).yellow));
+      this.log("\ngenerated: " + (this.getLogFileString(name).yellow));
       this.log(indent(code.green));
     }
     return this.generatedFiles[name] = code;
@@ -460,6 +536,10 @@ module.exports = Generator = (function() {
       path = this.root;
     }
     return getRelativePath(this.rootPrefix, path);
+  };
+
+  Generator.prototype.getLogFileString = function(file) {
+    return getRelativePath(process.cwd(), file);
   };
 
   Generator.prototype.writeFiles = function() {
@@ -478,18 +558,18 @@ module.exports = Generator = (function() {
             filesTotal++;
             if (((ref3 = _this.lastGenerator) != null ? ref3.generatedFiles[name] : void 0) === code) {
               if (_this.verbose) {
-                return _this.log(("no change: " + (_this.getRelativePath(name))).grey);
+                return _this.log(("no change: " + (_this.getLogFileString(name))).grey);
               }
             } else {
               p = fsp.existsSync(name) ? fsp.readFile(name, 'utf8') : Promise.resolve(null);
               return p.then(function(currentContents) {
                 if (_this.force || currentContents !== code) {
                   filesWritten++;
-                  _this.log("writing: " + (_this.getRelativePath(name).yellow));
+                  _this.log("writing: " + (_this.getLogFileString(name).yellow));
                   return fsp.writeFile(name, code);
                 }
               }, function(error) {
-                return _this.log(("error reading " + (_this.getRelativePath(name))).red, error);
+                return _this.log(("error reading " + (_this.getLogFileString(name))).red, error);
               });
             }
           };
@@ -510,15 +590,18 @@ module.exports = Generator = (function() {
   };
 
   Generator.prototype.generateFiles = function(namespaces) {
-    var namespace, namespacePath, path, results;
+    var namespace, namespacePath, path, relativeVersionFile, results;
     this.generatedFiles = {};
     results = [];
     for (namespacePath in namespaces) {
       namespace = namespaces[namespacePath];
       path = namespace.path;
+      if (this.versionFile) {
+        relativeVersionFile = Path.relative(normalizeDirectory(path), this.versionFile);
+      }
       this.generateHelper({
         name: path + "/namespace.coffee",
-        code: NamespaceGenerator.generate(namespace, this.getRelativePath(path))
+        code: NamespaceGenerator.generate(namespace, this.getRelativePath(path), relativeVersionFile)
       });
       results.push(this.generateHelper({
         name: path + "/index.coffee",
@@ -601,16 +684,16 @@ module.exports = Generator = (function() {
 
 
 /***/ }),
-/* 6 */,
-/* 7 */
+/* 8 */,
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(5);
+module.exports = __webpack_require__(7);
 
 
 /***/ }),
-/* 8 */,
-/* 9 */
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var NamespaceGenerator, alignColumns, compactFlatten, generatedByString, getRelativePath, log, max, neptuneBaseClass, pad, ref, ref1, requirePath;
@@ -716,7 +799,7 @@ module.exports = NamespaceGenerator = (function() {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var NamespaceGenerator, PackageNamespaceClassName, generatedByString, isPathedNamespace, neptuneBaseClass, peek, ref, requirePath;
@@ -730,14 +813,14 @@ isPathedNamespace = Neptune.isPathedNamespace;
 module.exports = NamespaceGenerator = (function() {
   function NamespaceGenerator() {}
 
-  NamespaceGenerator.generate = function(namespace, relativeFilePath) {
+  NamespaceGenerator.generate = function(namespace, relativeFilePath, versionFile) {
     var a, className, isPathNamespace, meat, name, namespaceName, parent, parentNamespaceName, parentNamespacePath, path, requireParent;
     parent = namespace.parent, path = namespace.path, namespaceName = namespace.namespaceName, isPathNamespace = namespace.isPathNamespace;
     className = isPathedNamespace(namespaceName) ? peek(namespaceName.split('.')) : namespaceName;
     parentNamespaceName = parent.namespaceName;
     parentNamespacePath = parent.parent ? "../namespace" : parent.path;
     requireParent = "(require '" + parentNamespacePath + "')";
-    meat = isPathNamespace ? requireParent + ".vivifiySubnamespace '" + namespaceName + "'" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + ")";
+    meat = isPathNamespace ? requireParent + ".vivifySubnamespace '" + namespaceName + "'" : versionFile && namespace.getIsRootPackageNamespace() ? requireParent + ".addNamespace '" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + "\n  @version: require('" + versionFile + "').version" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + ")";
     return generatedByString + "\n# file: " + (relativeFilePath || path) + "/namespace.coffee\n\nmodule.exports = " + meat + "\n" + (a = (function() {
       var i, len, ref1, results;
       ref1 = namespace.getAllNamespacedSubdirRequires();
@@ -756,19 +839,19 @@ module.exports = NamespaceGenerator = (function() {
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(3);
 
 module.exports.addModules({
-  IndexGenerator: __webpack_require__(9),
-  NamespaceGenerator: __webpack_require__(10)
+  IndexGenerator: __webpack_require__(11),
+  NamespaceGenerator: __webpack_require__(12)
 });
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Namespace, NamespaceDir, NamespaceSet, NamespaceStructure, arrayWithoutLast, basename, fileWithoutExtension, globalNamespaceName, isPathedNamespace, log, merge, normalizeNamespaceName, peek, pushIfUnique, ref, ref1, shouldIgnore, shouldIncludeInNamespace, shouldNotNamespace, toFilename, toModuleName, upperCamelCase,
@@ -783,17 +866,21 @@ basename = __webpack_require__(1).basename;
 isPathedNamespace = Neptune.isPathedNamespace;
 
 NamespaceSet = (function() {
+
+  /*
+  @length: number of non-ignored items
+   */
   function NamespaceSet(items) {
     var i, item, len;
     this.ignored = [];
     this.notNamespaced = [];
     this.namespaced = {};
+    this.length = 0;
     if (items) {
       for (i = 0, len = items.length; i < len; i++) {
         item = items[i];
         this.addItem(item);
       }
-      this.length = items.length;
     }
   }
 
@@ -807,6 +894,7 @@ NamespaceSet = (function() {
     if (shouldIgnore(itemName)) {
       return this.ignored.push("" + (basename(item)));
     }
+    this.length++;
     if (shouldNotNamespace(itemName)) {
       return this.notNamespaced.push("" + (basename(item)));
     }
@@ -838,7 +926,17 @@ Namespace = (function() {
     this.fileSet = new NamespaceSet(this.files);
     this.subdirSet = new NamespaceSet(this.subdirs);
     this.isPathNamespace = this.fileSet.length === 0 && this.subdirSet.length <= 1;
+    this.isPackageNamespace = !this.isPathNamespace;
   }
+
+  Namespace.prototype.getIsRootPackageNamespace = function() {
+    return !this.parent || !this.parent.getIsInsidePackageNamespace();
+  };
+
+  Namespace.prototype.getIsInsidePackageNamespace = function() {
+    var ref2;
+    return this.isPackageNamespace || ((ref2 = this.parent) != null ? ref2.getIsInsidePackageNamespace() : void 0);
+  };
 
   Namespace.prototype.getInspectedObjects = function() {
     var out, ref2, ref3;
@@ -1031,21 +1129,73 @@ module.exports = NamespaceStructure = (function() {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Generation,
+var PackageRoot, fs, normalizeDirectory, path;
+
+path = __webpack_require__(1);
+
+fs = __webpack_require__(6);
+
+normalizeDirectory = __webpack_require__(0).normalizeDirectory;
+
+module.exports = PackageRoot = (function() {
+  function PackageRoot() {}
+
+  PackageRoot.getPackageRoot = function(directory) {
+    return PackageRoot._findRootR(normalizeDirectory(directory));
+  };
+
+  PackageRoot._knownPackageRoots = {};
+
+
+  /*
+  IN:
+    directory: must be a normalized string pointing at an actual directory
+  OUT:
+    string representing the first parent directory that contains package.json
+    OR false if none found
+   */
+
+  PackageRoot._findRootR = function(directory) {
+    var knownSourceRoot;
+    if (knownSourceRoot = this._knownPackageRoots[directory]) {
+      return knownSourceRoot;
+    } else {
+      if (fs.existsSync(path.join(directory, "package.json"))) {
+        return directory;
+      } else if (directory !== "/" && directory.length > 0) {
+        return this._knownPackageRoots[directory] = this._findRootR(path.dirname(directory));
+      } else {
+        return false;
+      }
+    }
+  };
+
+  return PackageRoot;
+
+})();
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var NeptuneNamespaces,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(18)).addNamespace('Generation', Generation = (function(superClass) {
-  extend(Generation, superClass);
+module.exports = (__webpack_require__(19)).addNamespace('NeptuneNamespaces', NeptuneNamespaces = (function(superClass) {
+  extend(NeptuneNamespaces, superClass);
 
-  function Generation() {
-    return Generation.__super__.constructor.apply(this, arguments);
+  function NeptuneNamespaces() {
+    return NeptuneNamespaces.__super__.constructor.apply(this, arguments);
   }
 
-  return Generation;
+  NeptuneNamespaces.version = __webpack_require__(4).version;
+
+  return NeptuneNamespaces;
 
 })(Neptune.PackageNamespace));
 
@@ -1053,79 +1203,19 @@ __webpack_require__(3);
 
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"bin": {
-		"neptune-namespaces": "./nn",
-		"nn": "./nn"
-	},
-	"dependencies": {
-		"art-build-configurator": "*",
-		"art-class-system": "*",
-		"art-config": "*",
-		"art-standard-lib": "*",
-		"art-testbench": "*",
-		"bluebird": "^3.5.0",
-		"caffeine-script": "*",
-		"caffeine-script-runtime": "*",
-		"case-sensitive-paths-webpack-plugin": "^2.1.1",
-		"chai": "^4.0.1",
-		"coffee-loader": "^0.7.3",
-		"coffee-script": "^1.12.6",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"css-loader": "^0.28.4",
-		"dateformat": "^2.0.0",
-		"detect-node": "^2.0.3",
-		"fs-extra": "^3.0.1",
-		"glob": "^7.1.2",
-		"glob-promise": "^3.1.0",
-		"json-loader": "^0.5.4",
-		"mocha": "^3.4.2",
-		"neptune-namespaces": "*",
-		"neptune-namespaces-runtime": "*",
-		"script-loader": "^0.7.0",
-		"style-loader": "^0.18.1",
-		"webpack": "^2.6.1",
-		"webpack-dev-server": "^2.4.5",
-		"webpack-merge": "^4.1.0",
-		"webpack-node-externals": "^1.6.0"
-	},
-	"description": "Generate index.coffee and namespace.coffee files from directory structures",
-	"license": "ISC",
-	"name": "neptune-namespaces",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "3.1.0"
-};
-
-/***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-standard-lib/Core");
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-module.exports = require("fs-extra");
-
-/***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = require("glob-promise");
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
