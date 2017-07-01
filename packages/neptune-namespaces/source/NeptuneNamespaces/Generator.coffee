@@ -77,12 +77,15 @@ module.exports = class Generator
 
   generateHelper: ({name, code}) ->
     if @pretend
-      @log "\ngenerated: #{name.yellow}"
+      @log "\ngenerated: #{@getLogFileString(name).yellow}"
       @log indent code.green
     @generatedFiles[name] = code
 
   getRelativePath: (path = @root) ->
     getRelativePath @rootPrefix, path
+
+  getLogFileString: (file) ->
+    getRelativePath process.cwd(), file
 
   writeFiles: ->
     filesWritten = 0
@@ -91,7 +94,7 @@ module.exports = class Generator
       do (name, code) =>
         filesTotal++
         if @lastGenerator?.generatedFiles[name] == code
-          @log "no change: #{name}".grey if @verbose
+          @log "no change: #{@getLogFileString(name)}".grey if @verbose
         else
           p = if fsp.existsSync name
             fsp.readFile name, 'utf8'
@@ -100,10 +103,10 @@ module.exports = class Generator
           p.then (currentContents) =>
             if @force || currentContents != code
               filesWritten++
-              @log "writing: #{name.yellow}"
+              @log "writing: #{@getLogFileString(name).yellow}"
               fsp.writeFile name, code
           , (error) =>
-            @log "error reading #{name}".red, error
+            @log "error reading #{@getLogFileString(name)}".red, error
 
     Promise.all promises
     .then =>
