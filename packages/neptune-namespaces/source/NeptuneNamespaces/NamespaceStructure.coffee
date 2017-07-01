@@ -94,18 +94,25 @@ normalizeNamespaceName = (name) ->
     upperCamelCase name
 
 class NamespaceDir
-  constructor: ({namespaceName, @path, parent}) ->
+  constructor: ({namespaceName, @path, @parent}) ->
     @files = []
     @subdirs = []
     @namespaceName = normalizeNamespaceName namespaceName
-    @namespacePath = "#{parent?.namespacePath || globalNamespaceName}.#{@namespaceName}"
+    @namespacePath = "#{@parent?.namespacePath || globalNamespaceName}.#{@namespaceName}"
 
   addFile: (file)     ->
     file && if shouldIncludeInNamespace file, @namespaceName
       @includeInNamespace = file
     else
       pushIfUnique @files, file
+
   addSubdir: (subdir) -> subdir && pushIfUnique @subdirs, subdir
+
+  getInspectedObjects: ->
+    "#{@path}": {
+      @namespaceName, @namespacePath, @files, @subdirs
+      parent: @parent?.namespacePath
+    }
 
 module.exports = class NamespaceStructure
 
@@ -144,17 +151,20 @@ module.exports = class NamespaceStructure
 
     dir
 
+  addNamespace = (namespaces, dir) ->
+    if dir
+      namespaces[dir.namespacePath] ||= new Namespace merge dir,
+        parent: addNamespace namespaces, dir.parent
+    else
+      new Namespace
+        namespaceName:  globalNamespaceName
+        namespacePath:  globalNamespaceName
+        path:           'neptune-namespaces'
+
   _generateNamespaces: (dirs) ->
     namespaces = {}
-    globalNamespace = new Namespace
-      namespaceName: globalNamespaceName
-      path: 'neptune-namespaces'
-      namespacePath: globalNamespaceName
 
-    for name, info of dirs
-      namespaces[info.namespacePath] = new Namespace info
-    for namespacePath, namespace of namespaces
-      parentNamespacePath = arrayWithoutLast(namespacePath.split('.')).join '.'
-      namespace.parent = namespaces[parentNamespacePath] || globalNamespace
+    for name, dir of dirs
+      addNamespace namespaces, dir
 
     namespaces

@@ -49,8 +49,9 @@ suite "NeptuneNamespaces.Generation.Pathing", ->
         "source/Foo/index.coffee"
         "source/Foo/namespace.coffee"
       ]
-      assert.match generatedFiles["source/Foo/Alpha.Beta/Gamma/namespace.coffee"],  /// require .* '\.\./namespace'     .* addNamespace        .* Gamma       ///
-      assert.match generatedFiles["source/Foo/Alpha.Beta/namespace.coffee"],        /// require .* 'neptune-namespaces' .* vivifySubnamespace .* Alpha\.Beta ///
+      assert.match generatedFiles["source/Foo/Alpha.Beta/Gamma/namespace.coffee"],  /// require .* '\.\./namespace'     .* addNamespace       .* Gamma       ///
+      assert.match generatedFiles["source/Foo/Alpha.Beta/namespace.coffee"],        /// require .* '\.\./namespace'     .* vivifySubnamespace .* Alpha\.Beta ///
+      assert.match generatedFiles["source/Foo/namespace.coffee"],                   /// require .* 'neptune-namespaces' .* vivifySubnamespace .* Foo ///
 
   test "pathed explicitly with includeInNamespace", ->
     generator = new Generator "source/Foo", pretend: true, quiet: true
@@ -66,3 +67,17 @@ suite "NeptuneNamespaces.Generation.Pathing", ->
         "source/Foo/namespace.coffee"
       ]
       assert.match generatedFiles["source/Foo/Alpha.Beta/index.coffee"], /// includeInNamespace .* \.\/Beta ///
+
+  test "regression", ->
+    generator = new Generator "test/tests", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "test/tests/Art.ClassSystem/SingletonClass.caf"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "test/tests/Art.ClassSystem/index.coffee"
+        "test/tests/Art.ClassSystem/namespace.coffee"
+        "test/tests/index.coffee"
+        "test/tests/namespace.coffee"
+      ]
+      assert.notMatch generatedFiles["test/tests/Art.ClassSystem/namespace.coffee"], /// neptune-namespaces ///
