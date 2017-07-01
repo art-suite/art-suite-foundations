@@ -5016,7 +5016,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.18.0"
+	"version": "1.18.1"
 };
 
 /***/ }),
