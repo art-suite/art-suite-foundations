@@ -237,9 +237,11 @@ module.exports = Namespace = (function() {
       throw new Error("expecting namespace '" + name + "' in '" + this.namespacePath + "'' to have a version");
     }
     if (versions[version]) {
-      throw new Error("version " + version + " for namespace " + name + " already added");
+      console.warn("NN: version " + version + " for namespace " + name + " already added");
+    } else {
+      versions[version] = namespace;
     }
-    return versions[version] = namespace;
+    return namespace;
   };
 
   Namespace.addNamespace = function(name, namespace) {
@@ -554,7 +556,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "3.0.3"
+	"version": "3.0.4"
 };
 
 /***/ }),
