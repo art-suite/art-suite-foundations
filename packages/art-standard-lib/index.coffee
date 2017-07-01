@@ -1,1 +1,1 @@
-module.exports = Neptune?.Art?.StandardLib ? require './source/Art/StandardLib'
+module.exports = Neptune?.Art?.StandardLib ? require './source/Art.StandardLib'

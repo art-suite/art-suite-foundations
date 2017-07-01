@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 50);
+/******/ 	return __webpack_require__(__webpack_require__.s = 49);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -356,13 +356,11 @@ module.exports = StringCase = (function() {
 /***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
-var Core, StandardLib,
+var Core,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-StandardLib = __webpack_require__(4);
-
-module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (function(superClass) {
+module.exports = (__webpack_require__(8)).addNamespace('Core', Core = (function(superClass) {
   extend(Core, superClass);
 
   function Core() {
@@ -379,13 +377,11 @@ module.exports = StandardLib.Core || StandardLib.addNamespace('Core', Core = (fu
 /***/ 17:
 /***/ (function(module, exports, __webpack_require__) {
 
-var Inspect, Inspected,
+var Inspected,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Inspect = __webpack_require__(5);
-
-module.exports = Inspect.Inspected || Inspect.addNamespace('Inspected', Inspected = (function(superClass) {
+module.exports = (__webpack_require__(4)).addNamespace('Inspected', Inspected = (function(superClass) {
   extend(Inspected, superClass);
 
   function Inspected() {
@@ -783,32 +779,7 @@ module.exports = ArrayCompactFlatten = (function() {
 
 /***/ }),
 
-/***/ 30:
-/***/ (function(module, exports, __webpack_require__) {
-
-var Art, Neptune,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Neptune = __webpack_require__(32);
-
-module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
-  extend(Art, superClass);
-
-  function Art() {
-    return Art.__super__.constructor.apply(this, arguments);
-  }
-
-  return Art;
-
-})(Neptune.Base));
-
-__webpack_require__(4);
-
-
-/***/ }),
-
-/***/ 32:
+/***/ 31:
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
@@ -818,40 +789,11 @@ module.exports = require("neptune-namespaces");
 /***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, StandardLib,
+var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Art = __webpack_require__(30);
-
-module.exports = Art.StandardLib || Art.addNamespace('StandardLib', StandardLib = (function(superClass) {
-  extend(StandardLib, superClass);
-
-  function StandardLib() {
-    return StandardLib.__super__.constructor.apply(this, arguments);
-  }
-
-  return StandardLib;
-
-})(Neptune.Base));
-
-__webpack_require__(12);
-
-__webpack_require__(5);
-
-
-/***/ }),
-
-/***/ 5:
-/***/ (function(module, exports, __webpack_require__) {
-
-var Inspect, StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-StandardLib = __webpack_require__(4);
-
-module.exports = StandardLib.Inspect || StandardLib.addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(8)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
@@ -867,12 +809,37 @@ __webpack_require__(17);
 
 /***/ }),
 
-/***/ 50:
+/***/ 49:
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;
 
 module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(1);
+
+
+/***/ }),
+
+/***/ 8:
+/***/ (function(module, exports, __webpack_require__) {
+
+var StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(31)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+  extend(StandardLib, superClass);
+
+  function StandardLib() {
+    return StandardLib.__super__.constructor.apply(this, arguments);
+  }
+
+  return StandardLib;
+
+})(Neptune.Base));
+
+__webpack_require__(12);
+
+__webpack_require__(4);
 
 
 /***/ })
