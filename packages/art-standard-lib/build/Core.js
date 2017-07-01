@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 49);
+/******/ 	return __webpack_require__(__webpack_require__.s = 50);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -369,7 +369,7 @@ module.exports = (__webpack_require__(8)).addNamespace('Core', Core = (function(
 
   return Core;
 
-})(Neptune.Base));
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
@@ -390,7 +390,7 @@ module.exports = (__webpack_require__(4)).addNamespace('Inspected', Inspected = 
 
   return Inspected;
 
-})(Neptune.Base));
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
@@ -779,7 +779,57 @@ module.exports = ArrayCompactFlatten = (function() {
 
 /***/ }),
 
-/***/ 31:
+/***/ 30:
+/***/ (function(module, exports) {
+
+module.exports = {
+	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+	"dependencies": {
+		"art-build-configurator": "*",
+		"art-class-system": "*",
+		"art-config": "*",
+		"art-standard-lib": "*",
+		"art-testbench": "*",
+		"bluebird": "^3.5.0",
+		"caffeine-script": "*",
+		"caffeine-script-runtime": "*",
+		"case-sensitive-paths-webpack-plugin": "^2.1.1",
+		"chai": "^4.0.1",
+		"coffee-loader": "^0.7.3",
+		"coffee-script": "^1.12.6",
+		"colors": "^1.1.2",
+		"commander": "^2.9.0",
+		"css-loader": "^0.28.4",
+		"dateformat": "^2.0.0",
+		"detect-node": "^2.0.3",
+		"fs-extra": "^3.0.1",
+		"glob": "^7.1.2",
+		"glob-promise": "^3.1.0",
+		"json-loader": "^0.5.4",
+		"mocha": "^3.4.2",
+		"neptune-namespaces": "*",
+		"script-loader": "^0.7.0",
+		"style-loader": "^0.18.1",
+		"webpack": "^2.6.1",
+		"webpack-dev-server": "^2.4.5",
+		"webpack-merge": "^4.1.0",
+		"webpack-node-externals": "^1.6.0"
+	},
+	"description": "The Standard Library for JavaScript that aught to be.",
+	"license": "ISC",
+	"name": "art-standard-lib",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --progress",
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
+	},
+	"version": "1.18.0"
+};
+
+/***/ }),
+
+/***/ 32:
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
@@ -802,14 +852,14 @@ module.exports = (__webpack_require__(8)).addNamespace('Inspect', Inspect = (fun
 
   return Inspect;
 
-})(Neptune.Base));
+})(Neptune.PackageNamespace));
 
 __webpack_require__(17);
 
 
 /***/ }),
 
-/***/ 49:
+/***/ 50:
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;
@@ -826,16 +876,18 @@ var StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(31)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+module.exports = (__webpack_require__(32)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
 
   function StandardLib() {
     return StandardLib.__super__.constructor.apply(this, arguments);
   }
 
+  StandardLib.version = __webpack_require__(30).version;
+
   return StandardLib;
 
-})(Neptune.Base));
+})(Neptune.PackageNamespace));
 
 __webpack_require__(12);
 
