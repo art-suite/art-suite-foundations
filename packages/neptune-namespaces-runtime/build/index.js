@@ -233,11 +233,12 @@ module.exports = Namespace = (function() {
       this.addVersionedNamespace(name, this.namespaces[name]);
     }
     version = namespace.version;
+    console.warn(("NN: adding " + this.namespacePath + ".versionedNamespaces." + name + "['" + version + "']") + (namespace === this.namespaces[name] ? " (default)" : ""));
     if (version == null) {
       throw new Error("expecting namespace '" + name + "' in '" + this.namespacePath + "'' to have a version");
     }
     if (versions[version]) {
-      console.warn("NN: version " + version + " for namespace " + name + " already added");
+      console.warn("NN: versionedNamespace " + name + " already added for version " + version + ". Not added again.");
     } else {
       versions[version] = namespace;
     }
@@ -245,16 +246,14 @@ module.exports = Namespace = (function() {
   };
 
   Namespace.addNamespace = function(name, namespace) {
-    var existingNamespace, info, j, path, ref1;
+    var existingNamespace, j, path, ref1;
     if (isPathedNamespace(name)) {
       ref1 = name.split("."), path = 2 <= ref1.length ? slice.call(ref1, 0, j = ref1.length - 1) : (j = 0, []), name = ref1[j++];
       this.vivifySubnamespace(path).addNamespace(name, namespace);
     } else if (existingNamespace = this.namespaces[name]) {
-      info = "Namespace '" + name + "' already added to '" + this.namespacePath + "'";
       if (!((namespace.prototype instanceof Neptune.PackageNamespace) && (existingNamespace.prototype instanceof Neptune.PackageNamespace))) {
-        throw new Error("Expecting PackageNamespaces: " + info);
+        throw new Error("PathedNamespace vs PackageNamespaces conflict for: " + this.namespacePath + "." + name + "'.");
       }
-      console.warn("NN: " + info);
       this.addVersionedNamespace(name, namespace);
     } else {
       this.allNamespaces[namespace.namespacePath] = this.namespaces[name] = this[name] = namespace._init(name, this);
@@ -358,7 +357,7 @@ module.exports = Namespace = (function() {
     return this;
   };
 
-  excludedPropNames = ["__super__"].concat(Object.keys(Namespace));
+  excludedPropNames = ["__super__", "_name"].concat(Object.keys(Namespace));
 
 
   /*
@@ -556,7 +555,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "3.0.4"
+	"version": "3.0.5"
 };
 
 /***/ }),
