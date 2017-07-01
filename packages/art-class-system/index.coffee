@@ -1,1 +1,1 @@
-module.exports = require './source/Art/ClassSystem'
+module.exports = require './source/Art.ClassSystem'

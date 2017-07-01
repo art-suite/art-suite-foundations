@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -938,7 +938,7 @@ defineModule(module, function() {
   };
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
 
 /***/ }),
 /* 3 */
@@ -994,28 +994,6 @@ module.exports = WebpackHotLoader = (function() {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ClassSystem,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(11)).addNamespace('ClassSystem', ClassSystem = (function(superClass) {
-  extend(ClassSystem, superClass);
-
-  function ClassSystem() {
-    return ClassSystem.__super__.constructor.apply(this, arguments);
-  }
-
-  ClassSystem.version = __webpack_require__(12).version;
-
-  return ClassSystem;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -1043,29 +1021,29 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4);
+module.exports = __webpack_require__(10);
 
-module.exports.includeInNamespace(__webpack_require__(9)).addModules({
+module.exports.includeInNamespace(__webpack_require__(8)).addModules({
   BaseClass: __webpack_require__(0),
-  BaseObject: __webpack_require__(8),
-  DeclarableMixin: __webpack_require__(10),
+  BaseObject: __webpack_require__(7),
+  DeclarableMixin: __webpack_require__(9),
   ExtendablePropertyMixin: __webpack_require__(2),
   WebpackHotLoader: __webpack_require__(3)
 });
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(6);
+module.exports = __webpack_require__(5);
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject,
@@ -1085,7 +1063,7 @@ module.exports = BaseObject = (function(superClass) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
@@ -1096,7 +1074,7 @@ module.exports = [
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var defineModule, each, isPlainObject, log, lowerCamelCase, object, ref, upperCamelCase,
@@ -1195,19 +1173,32 @@ defineModule(module, function() {
   };
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ClassSystem,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(12)).addNamespace('Art.ClassSystem', ClassSystem = (function(superClass) {
+  extend(ClassSystem, superClass);
+
+  function ClassSystem() {
+    return ClassSystem.__super__.constructor.apply(this, arguments);
+  }
+
+  ClassSystem.version = __webpack_require__(11).version;
+
+  return ClassSystem;
+
+})(Neptune.PackageNamespace));
+
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = (__webpack_require__(13)).vivifySubnamespace('Art');
-
-__webpack_require__(4);
-
-
-/***/ }),
-/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -1256,7 +1247,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
