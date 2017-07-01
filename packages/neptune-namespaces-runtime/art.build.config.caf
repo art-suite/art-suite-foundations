@@ -1,3 +1,4 @@
+import &ArtStandardLib
 target:
   ##
     configures for standard node-targeted library
@@ -5,9 +6,14 @@ target:
       They just can't be used *directly* in the browser
   node: true
 
-npm:
-  description: "" Neptune.Namespaces.Runtime
-  dependencies: {}
+npm: (defaultPackage) ->
+  out = deepMerge
+    defaultPackage
+    description: "" Neptune.Namespaces.Runtime
+  out.dependencies =
+    art-standard-lib: :*
+    coffee-script:    :*
+  out
 
 webpack:
   # common properties are merged into each target's properties

@@ -1,6 +1,6 @@
 require './global'
 require './function'
-version = (require "../../package.json").version
+version = (require "../package.json").version
 
 if global.Neptune
   throw new Error "Load NeptuneNamespaces(#{version}) FAILED. Another version already loaded: #{global.Neptune.version}"
