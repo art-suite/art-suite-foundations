@@ -377,7 +377,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "3.2.1"
+	"version": "3.2.2"
 };
 
 /***/ }),
@@ -1032,12 +1032,12 @@ normalizeNamespaceName = function(name) {
 
 NamespaceDir = (function() {
   function NamespaceDir(arg) {
-    var namespaceName, parent;
-    namespaceName = arg.namespaceName, this.path = arg.path, parent = arg.parent;
+    var namespaceName, ref2;
+    namespaceName = arg.namespaceName, this.path = arg.path, this.parent = arg.parent;
     this.files = [];
     this.subdirs = [];
     this.namespaceName = normalizeNamespaceName(namespaceName);
-    this.namespacePath = ((parent != null ? parent.namespacePath : void 0) || globalNamespaceName) + "." + this.namespaceName;
+    this.namespacePath = (((ref2 = this.parent) != null ? ref2.namespacePath : void 0) || globalNamespaceName) + "." + this.namespaceName;
   }
 
   NamespaceDir.prototype.addFile = function(file) {
@@ -1048,11 +1048,28 @@ NamespaceDir = (function() {
     return subdir && pushIfUnique(this.subdirs, subdir);
   };
 
+  NamespaceDir.prototype.getInspectedObjects = function() {
+    var obj, ref2;
+    return (
+      obj = {},
+      obj["" + this.path] = {
+        namespaceName: this.namespaceName,
+        namespacePath: this.namespacePath,
+        files: this.files,
+        subdirs: this.subdirs,
+        parent: (ref2 = this.parent) != null ? ref2.namespacePath : void 0
+      },
+      obj
+    );
+  };
+
   return NamespaceDir;
 
 })();
 
 module.exports = NamespaceStructure = (function() {
+  var addNamespace;
+
   NamespaceStructure.shouldIgnore = shouldIgnore;
 
   NamespaceStructure.shouldNotNamespace = shouldNotNamespace;
@@ -1103,22 +1120,27 @@ module.exports = NamespaceStructure = (function() {
     return dir;
   };
 
-  NamespaceStructure.prototype._generateNamespaces = function(dirs) {
-    var globalNamespace, info, name, namespace, namespacePath, namespaces, parentNamespacePath;
-    namespaces = {};
-    globalNamespace = new Namespace({
-      namespaceName: globalNamespaceName,
-      path: 'neptune-namespaces',
-      namespacePath: globalNamespaceName
-    });
-    for (name in dirs) {
-      info = dirs[name];
-      namespaces[info.namespacePath] = new Namespace(info);
+  addNamespace = function(namespaces, dir) {
+    var name1;
+    if (dir) {
+      return namespaces[name1 = dir.namespacePath] || (namespaces[name1] = new Namespace(merge(dir, {
+        parent: addNamespace(namespaces, dir.parent)
+      })));
+    } else {
+      return new Namespace({
+        namespaceName: globalNamespaceName,
+        namespacePath: globalNamespaceName,
+        path: 'neptune-namespaces'
+      });
     }
-    for (namespacePath in namespaces) {
-      namespace = namespaces[namespacePath];
-      parentNamespacePath = arrayWithoutLast(namespacePath.split('.')).join('.');
-      namespace.parent = namespaces[parentNamespacePath] || globalNamespace;
+  };
+
+  NamespaceStructure.prototype._generateNamespaces = function(dirs) {
+    var dir, name, namespaces;
+    namespaces = {};
+    for (name in dirs) {
+      dir = dirs[name];
+      addNamespace(namespaces, dir);
     }
     return namespaces;
   };
