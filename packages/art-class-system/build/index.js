@@ -184,6 +184,10 @@ module.exports = BaseClass = (function(superClass) {
     return this;
   };
 
+  BaseClass.getHotReloadKey = function() {
+    return this.getName();
+  };
+
 
   /*
   IN:
@@ -231,8 +235,9 @@ module.exports = BaseClass = (function(superClass) {
       }) || klass;
     }
     return WebpackHotLoader.runHot(_module, function(moduleState) {
-      var classModuleState, hotReloaded, liveClass;
-      if (classModuleState = moduleState[klass.getName()]) {
+      var classModuleState, hotReloadKey, hotReloaded, liveClass;
+      hotReloadKey = klass.getHotReloadKey();
+      if (classModuleState = moduleState[hotReloadKey]) {
         liveClass = classModuleState.liveClass;
         hotReloaded = true;
         classModuleState.hotReloadVersion++;
@@ -243,12 +248,13 @@ module.exports = BaseClass = (function(superClass) {
         log({
           "Art.ClassSystem.BaseClass: class hot-reload": {
             "class": liveClass.getNamespacePath(),
-            version: classModuleState.hotReloadVersion
+            version: classModuleState.hotReloadVersion,
+            hotReloadKey: hotReloadKey
           }
         });
       } else {
         hotReloaded = false;
-        klass._hotClassModuleState = moduleState[klass.getName()] = classModuleState = {
+        klass._hotClassModuleState = moduleState[hotReloadKey] = classModuleState = {
           liveClass: liveClass = klass,
           hotUpdatedFromClass: null,
           hotReloadVersion: 0
@@ -1243,7 +1249,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.6.4"
+	"version": "1.7.1"
 };
 
 /***/ }),
