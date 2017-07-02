@@ -7,6 +7,8 @@
   toDate
   toSeconds
   toLowerCase
+  emailRegexp
+  urlRegexp
 } = require 'art-standard-lib'
 {
   booleanDataType
