@@ -1,6 +1,4 @@
-import &ArtStandardLib
-{Validator} = Neptune.Art
-log {Validator}
+import &StandardImport
 {normalizeFieldProps} = Validator
 
 assertIsTrimmedString = (ft) ->
