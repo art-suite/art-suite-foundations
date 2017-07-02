@@ -68,7 +68,7 @@ suite "NeptuneNamespaces.Generation.Pathing", ->
       ]
       assert.match generatedFiles["source/Foo/Alpha.Beta/index.coffee"], /// includeInNamespace .* \.\/Beta ///
 
-  test "regression", ->
+  test "regression A", ->
     generator = new Generator "test/tests", pretend: true, quiet: true
     generator.generateFromFiles [
         "test/tests/Art.ClassSystem/SingletonClass.caf"
@@ -81,3 +81,17 @@ suite "NeptuneNamespaces.Generation.Pathing", ->
         "test/tests/namespace.coffee"
       ]
       assert.notMatch generatedFiles["test/tests/Art.ClassSystem/namespace.coffee"], /// neptune-namespaces ///
+
+  test "regression B", ->
+    generator = new Generator "source/Art", pretend: true, quiet: true
+    generator.generateFromFiles [
+        "source/Art/React/React.caf"
+      ]
+    .then ({generatedFiles, namespaces}) ->
+      assert.eq Object.keys(generatedFiles).sort(), [
+        "source/Art/React/index.coffee"
+        "source/Art/React/namespace.coffee"
+        "source/Art/index.coffee"
+        "source/Art/namespace.coffee"
+      ]
+      assert.match generatedFiles["source/Art/React/namespace.coffee"], /// addNamespace ///

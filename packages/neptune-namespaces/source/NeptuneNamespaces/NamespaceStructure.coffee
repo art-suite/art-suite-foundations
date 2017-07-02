@@ -49,7 +49,7 @@ class Namespace
   constructor: ({@namespaceName, @path, @namespacePath, @files, @subdirs, @parent, @includeInNamespace})->
     @fileSet = new NamespaceSet @files
     @subdirSet = new NamespaceSet @subdirs
-    @isPathNamespace = @fileSet.length == 0 && @subdirSet.length <= 1
+    @isPathNamespace = @fileSet.length == 0 && !@includeInNamespace && @subdirSet.length <= 1
     @isPackageNamespace = !@isPathNamespace
 
   getIsRootPackageNamespace: ->
