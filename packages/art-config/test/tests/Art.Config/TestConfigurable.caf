@@ -1,5 +1,4 @@
-import &ArtStandardLib
-{ConfigRegistry, Configurable} = &source/Art/Config
+import &StandardImport
 
 expectedPath = w "Tests Art Config"
 
