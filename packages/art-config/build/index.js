@@ -542,7 +542,7 @@ defineModule(module, Configurable = (function(superClass) {
     var obj;
     return (
       obj = {},
-      obj["" + (this.getConfigurationPath().join('.'))] = this.config,
+      obj["" + (this.getConfigurationPathString())] = this.config,
       obj
     );
   };
@@ -551,12 +551,20 @@ defineModule(module, Configurable = (function(superClass) {
     var obj;
     return (
       obj = {},
-      obj["" + (this.getConfigurationPath().join('.'))] = this.getDefaultConfig(),
+      obj["" + (this.getConfigurationPathString())] = this.getDefaultConfig(),
       obj
     );
   };
 
   Configurable.configure = function(globalConfig) {
+    var obj;
+    globalConfig.verbose && log({
+      Configurable: (
+        obj = {},
+        obj["" + (this.getConfigurationPathString())] = this.getConfigurationFromPath(globalConfig),
+        obj
+      )
+    });
     this.reset();
     return mergeInto(this.config, this.getConfigurationFromPath(globalConfig));
   };
@@ -575,6 +583,10 @@ defineModule(module, Configurable = (function(superClass) {
     var _Configurable, _Neptune, i, path, ref1;
     ref1 = this.getNamespacePath().split('.'), _Neptune = ref1[0], path = 3 <= ref1.length ? slice.call(ref1, 1, i = ref1.length - 1) : (i = 1, []), _Configurable = ref1[i++];
     return path;
+  };
+
+  Configurable.getConfigurationPathString = function() {
+    return this.getConfigurationPath().join('.');
   };
 
   Configurable.getConfigurationFromPath = function(config, path) {
@@ -680,7 +692,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.6.3"
+	"version": "1.6.4"
 };
 
 /***/ }),
