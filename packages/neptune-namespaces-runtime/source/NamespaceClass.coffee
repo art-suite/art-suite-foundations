@@ -62,10 +62,10 @@ module.exports = class Namespace
 
   @getVersions: ->
     out = {}
-    out.version = @version if @ == Neptune
+    out.NeptuneNamespacesRuntime = @version if @ == Neptune
     for key, subnamespace of @namespaces
       out[key] = recurse if 0 < Object.keys(recurse = subnamespace.getVersions()).length
-      (out[key] ||= {}).version = subnamespace.version if subnamespace.version?
+      out[key] ||= subnamespace.version if subnamespace.version?
     out
 
   ################################################
@@ -205,7 +205,7 @@ module.exports = class Namespace
 
   # @_addToNames will never add a property with the same name
   # as __super__ or any of the property names in the Namespace namespace.
-  excludedPropNames = ["__super__", "_name"].concat Object.keys Namespace
+  excludedPropNames = ["__super__", "_name", "version"].concat Object.keys Namespace
 
   ###
   Helper for includeInNamespace.
