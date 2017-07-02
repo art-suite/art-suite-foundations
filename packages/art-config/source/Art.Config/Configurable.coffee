@@ -48,13 +48,14 @@ defineModule module, class Configurable extends EventedMixin BaseClass
     @config
 
   @getInspectedObjects: ->
-    "#{@getConfigurationPath().join '.'}": @config
+    "#{@getConfigurationPathString()}": @config
 
   @getPathedDefaultConfig: ->
-    "#{@getConfigurationPath().join '.'}": @getDefaultConfig()
+    "#{@getConfigurationPathString()}": @getDefaultConfig()
 
   # updates config
   @configure: (globalConfig) ->
+    globalConfig.verbose && log Configurable: "#{@getConfigurationPathString()}": @getConfigurationFromPath globalConfig
     @reset()
     mergeInto @config, @getConfigurationFromPath globalConfig
 
@@ -76,6 +77,8 @@ defineModule module, class Configurable extends EventedMixin BaseClass
   @getConfigurationPath: ->
     [_Neptune, path..., _Configurable] = @getNamespacePath().split '.'
     path
+
+  @getConfigurationPathString: -> @getConfigurationPath().join '.'
 
   @getConfigurationFromPath: (config, path = @getConfigurationPath()) ->
     config = config?[el] for el in path
