@@ -377,7 +377,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "3.2.2"
+	"version": "3.2.3"
 };
 
 /***/ }),
@@ -925,7 +925,7 @@ Namespace = (function() {
     this.namespaceName = arg.namespaceName, this.path = arg.path, this.namespacePath = arg.namespacePath, this.files = arg.files, this.subdirs = arg.subdirs, this.parent = arg.parent, this.includeInNamespace = arg.includeInNamespace;
     this.fileSet = new NamespaceSet(this.files);
     this.subdirSet = new NamespaceSet(this.subdirs);
-    this.isPathNamespace = this.fileSet.length === 0 && this.subdirSet.length <= 1;
+    this.isPathNamespace = this.fileSet.length === 0 && !this.includeInNamespace && this.subdirSet.length <= 1;
     this.isPackageNamespace = !this.isPathNamespace;
   }
 
