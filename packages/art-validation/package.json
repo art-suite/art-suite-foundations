@@ -34,7 +34,7 @@
   },
   "description": "Validate object props.",
   "license": "ISC",
-  "name": "art-validator",
+  "name": "art-validation",
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress",
