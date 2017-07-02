@@ -170,7 +170,7 @@ module.exports = Namespace = (function() {
     var key, out, recurse, ref1, subnamespace;
     out = {};
     if (this === Neptune) {
-      out.version = this.version;
+      out.NeptuneNamespacesRuntime = this.version;
     }
     ref1 = this.namespaces;
     for (key in ref1) {
@@ -179,7 +179,7 @@ module.exports = Namespace = (function() {
         out[key] = recurse;
       }
       if (subnamespace.version != null) {
-        (out[key] || (out[key] = {})).version = subnamespace.version;
+        out[key] || (out[key] = subnamespace.version);
       }
     }
     return out;
@@ -357,7 +357,7 @@ module.exports = Namespace = (function() {
     return this;
   };
 
-  excludedPropNames = ["__super__", "_name"].concat(Object.keys(Namespace));
+  excludedPropNames = ["__super__", "_name", "version"].concat(Object.keys(Namespace));
 
 
   /*
@@ -555,7 +555,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "3.0.5"
+	"version": "3.0.6"
 };
 
 /***/ }),
