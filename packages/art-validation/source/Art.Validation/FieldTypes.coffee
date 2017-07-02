@@ -18,6 +18,7 @@
   dateDataType
 } = require './DataTypes'
 
+{validStatus} = require 'art-communication-status'
 isId = (v) -> isString(v) && v.match ///^[-_a-z0-9]+$///i
 isHexColor = (v) -> isString(v) && v.match /^#([a-f0-9]{3})|([a-f0-9]{6})/i
 

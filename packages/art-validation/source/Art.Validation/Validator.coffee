@@ -19,8 +19,6 @@
   toSeconds
 } = require 'art-standard-lib'
 
-{validStatus} = require 'art-communication-status'
-
 {
   booleanDataType
   numberDataType
