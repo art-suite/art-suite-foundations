@@ -107,6 +107,8 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
     @
 
+  @getHotReloadKey: -> @getName()
+
   ###
   IN:
     _module should be the CommonJS 'module'
@@ -158,7 +160,8 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
     # hot reloading supported:
     WebpackHotLoader.runHot _module, (moduleState) ->
-      if classModuleState = moduleState[klass.getName()]
+      hotReloadKey = klass.getHotReloadKey()
+      if classModuleState = moduleState[hotReloadKey]
         # hot reloaded!
         {liveClass} = classModuleState
         hotReloaded = true
@@ -176,12 +179,13 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
         log "Art.ClassSystem.BaseClass: class hot-reload":
           class: liveClass.getNamespacePath()
           version: classModuleState.hotReloadVersion
+          hotReloadKey: hotReloadKey
       else
         # initial load
         hotReloaded = false
 
         klass._hotClassModuleState =
-        moduleState[klass.getName()] = classModuleState =
+        moduleState[hotReloadKey] = classModuleState =
           liveClass: liveClass = klass
           hotUpdatedFromClass: null
           hotReloadVersion: 0
