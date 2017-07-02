@@ -3,7 +3,6 @@
 
 module.exports = require './namespace'
 module.exports
-.includeInNamespace require './Events'
 .addModules
   Event:            require './Event'           
   EventedBaseMixin: require './EventedBaseMixin'
