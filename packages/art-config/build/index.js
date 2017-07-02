@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -443,22 +443,13 @@ defineModule(module, Configuration = (function(superClass) {
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Config,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+module.exports = __webpack_require__(9);
 
-module.exports = (__webpack_require__(10)).addNamespace('Config', Config = (function(superClass) {
-  extend(Config, superClass);
-
-  function Config() {
-    return Config.__super__.constructor.apply(this, arguments);
-  }
-
-  Config.version = __webpack_require__(11).version;
-
-  return Config;
-
-})(Neptune.PackageNamespace));
+module.exports.includeInNamespace(__webpack_require__(7)).addModules({
+  ConfigRegistry: __webpack_require__(0),
+  Configurable: __webpack_require__(8),
+  Configuration: __webpack_require__(4)
+});
 
 
 /***/ }),
@@ -467,22 +458,9 @@ module.exports = (__webpack_require__(10)).addNamespace('Config', Config = (func
 
 module.exports = __webpack_require__(5);
 
-module.exports.includeInNamespace(__webpack_require__(8)).addModules({
-  ConfigRegistry: __webpack_require__(0),
-  Configurable: __webpack_require__(9),
-  Configuration: __webpack_require__(4)
-});
-
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(6);
-
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
@@ -493,7 +471,7 @@ module.exports = [
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, EventedMixin, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, ref,
@@ -507,7 +485,7 @@ BaseClass = __webpack_require__(2).BaseClass;
 
 ConfigRegistry = __webpack_require__(0);
 
-EventedMixin = __webpack_require__(12).EventedMixin;
+EventedMixin = __webpack_require__(11).EventedMixin;
 
 
 /*
@@ -634,16 +612,29 @@ defineModule(module, Configurable = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(13)).vivifySubnamespace('Art');
+var Config,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-__webpack_require__(5);
+module.exports = (__webpack_require__(12)).addNamespace('Art.Config', Config = (function(superClass) {
+  extend(Config, superClass);
+
+  function Config() {
+    return Config.__super__.constructor.apply(this, arguments);
+  }
+
+  Config.version = __webpack_require__(10).version;
+
+  return Config;
+
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -689,17 +680,17 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.6.2"
+	"version": "1.6.3"
 };
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = require("art-events");
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
