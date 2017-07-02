@@ -4,4 +4,6 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Validator: require './Validator'
+  DataTypes:  require './DataTypes' 
+  FieldTypes: require './FieldTypes'
+  Validator:  require './Validator' 
