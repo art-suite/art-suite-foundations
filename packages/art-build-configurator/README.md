@@ -36,3 +36,18 @@ git init
 git add * ".[a-zA-Z]*"
 git commit -a -m 'initial checkin'
 ```
+
+### Configuring `package.json`
+
+The original motivation for ABC is the problem that `package.json` is not code. There is no way to dynamically configure it with plain npm + node. ABC solves that. ABC's config file `art.build.config.{caf/coffee/js}` is *evaluated* before it is applied. You can execute arbitrary code to generate and return the config object.
+
+The output package.json file is generated as follows:
+
+1. Extract the current *version* from the current package.json. This is the only thing that is persisted. Everything else is replaced.
+2. `defaultPackage = ABC's default package.json`
+3. One of two things can happen depending upon the type of `package = ArtBuildConfig.npm || ArtBuildConfig.package` (two aliases):
+	* package is an object: merged it: `deepMerge defaultPackage, package`
+	* package is a function: invoke it: `package(defaultPackage)` 
+4. Set version to the version read in step 1
+5. Write the resulting package.json
+
