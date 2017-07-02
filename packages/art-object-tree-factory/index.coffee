@@ -1,1 +1,1 @@
-module.exports = require './source/Art/ObjectTreeFactory'
+module.exports = require './source/Art.ObjectTreeFactory'

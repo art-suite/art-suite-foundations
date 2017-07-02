@@ -1,0 +1,10 @@
+target: node: true
+
+package:
+  description: "Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)"
+  scripts:
+    test:     "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
+
+webpack:
+  targets:
+    index: {}
