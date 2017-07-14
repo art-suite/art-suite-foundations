@@ -1,0 +1,3 @@
+&ArtStandardLib.merge
+  &ArtStandardLib
+  &ArtRestClient

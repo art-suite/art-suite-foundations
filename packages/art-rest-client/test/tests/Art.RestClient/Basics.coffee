@@ -8,8 +8,6 @@ arrayBufferToString = (buf) ->
   String.fromCharCode.apply null, new Uint8Array buf
 
 defineModule module, suite: ->
-  test "singleton", ->
-    assert.instanceof RestClient, RestClient.singleton
 
   test "get", ->
     RestClient.get "#{testAssetRoot}/array_buffer_rest_client_test/hello.txt"

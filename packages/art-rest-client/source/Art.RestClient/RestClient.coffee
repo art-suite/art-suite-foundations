@@ -25,6 +25,7 @@ require './.xhr2'
 
 module.exports = class RestClient extends BaseClass
   @singletonClass()
+  @RestClientClass: RestClient
 
   @legalVerbs: legalVerbs = {}
   each (w "get put post delete head"), (v) ->
@@ -36,17 +37,17 @@ module.exports = class RestClient extends BaseClass
   ########################
   # Can use most of the singleton API direclty on the class.
   # See the instance/singleton API below for API detials.
-  @get:             (url, options)          -> @singleton.get             url, options
-  @put:             (url, data, options)    -> @singleton.put             url, data, options
-  @post:            (url, data, options)    -> @singleton.post            url, data, options
-  @delete:          (url, options)          -> @singleton.delete          url, options
-  @getArrayBuffer:  (url, options)          -> @singleton.getArrayBuffer  url, options
-  @getJson:         (url, options)          -> @singleton.getJson         url, options
-  @deleteJson:      (url, options)          -> @singleton.deleteJson      url, options
-  @putJson:         (url, data, options)    -> @singleton.putJson         url, data, options
-  @postJson:        (url, data, options)    -> @singleton.postJson        url, data, options
-  @restRequest:     (options)               -> @singleton.restRequest     options
-  @restJsonRequest: (options)               -> @singleton.restJsonRequest options
+  @get:             (url, options)          -> RestClient.singleton.get             url, options
+  @put:             (url, data, options)    -> RestClient.singleton.put             url, data, options
+  @post:            (url, data, options)    -> RestClient.singleton.post            url, data, options
+  @delete:          (url, options)          -> RestClient.singleton.delete          url, options
+  @getArrayBuffer:  (url, options)          -> RestClient.singleton.getArrayBuffer  url, options
+  @getJson:         (url, options)          -> RestClient.singleton.getJson         url, options
+  @deleteJson:      (url, options)          -> RestClient.singleton.deleteJson      url, options
+  @putJson:         (url, data, options)    -> RestClient.singleton.putJson         url, data, options
+  @postJson:        (url, data, options)    -> RestClient.singleton.postJson        url, data, options
+  @restRequest:     (options)               -> RestClient.singleton.restRequest     options
+  @restJsonRequest: (options)               -> RestClient.singleton.restJsonRequest options
 
   ########################
   # INSTANCE API (singleton)

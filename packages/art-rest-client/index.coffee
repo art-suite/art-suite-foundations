@@ -1,1 +1,1 @@
-module.exports = (require './source/Art').RestClient
+module.exports = require './source/Art.RestClient'

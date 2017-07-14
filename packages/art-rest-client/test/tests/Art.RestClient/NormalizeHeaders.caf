@@ -1,4 +1,4 @@
-import &ArtStandardLib, Neptune.Art.RestClient
+import &StandardImport
 
 suite: ->
   test "cache-control", ->
