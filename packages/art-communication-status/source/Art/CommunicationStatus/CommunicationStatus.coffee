@@ -17,7 +17,7 @@ module.exports = class CommunicationStatus
     * There were no server errors.
     * The only problem is the server could not find the requested resource.
     ###
-    missing:                    httpStatus: 404
+    missing:                    httpStatus: 404, failure: true
 
     ###
     status: clientFailure
@@ -29,7 +29,7 @@ module.exports = class CommunicationStatus
     * all 4xx errors except 404
     NOTE: 404 is not necessarilly a client NOR server error, therefor it's status: missing
     ###
-    clientFailure:              httpStatus: 400, clientFailure: true
+    clientFailure:              httpStatus: 400, clientFailure: true, failure: true
 
     ###
     status: notAuthorized
@@ -39,7 +39,7 @@ module.exports = class CommunicationStatus
     This is a form of clientFailure because the client could possibly change
     something in the request to make it work.
     ###
-    clientFailureNotAuthorized: httpStatus: 403, clientFailure: true
+    clientFailureNotAuthorized: httpStatus: 403, clientFailure: true, failure: true
 
     ###
     status: serverFailure
@@ -52,7 +52,7 @@ module.exports = class CommunicationStatus
       Then again, local libraries pretty-much don't need communicationStatus at all - they
       can use 'throw' or 'promise.reject'
     ###
-    serverFailure:              httpStatus: 500
+    serverFailure:              httpStatus: 500, failure: true
 
     ###
     status: networkFailure
@@ -67,7 +67,14 @@ module.exports = class CommunicationStatus
       b) the internet is in a shitstorm ;) OR
       c) there is an network problem within the Servers' facility.
     ###
-    networkFailure:             {}
+    networkFailure:             failure: true
+
+    ###
+    status: aborted
+
+    * the request was aborted, AS REQUESTED BY THE CLIENT
+    ###
+    aborted:                    failure: true
 
     ###
     status: pending
@@ -85,7 +92,7 @@ module.exports = class CommunicationStatus
     Server code should convert :failure into :serverFailure when sending
     a failing reply to a client.
     ###
-    failure:                    httpStatus: 500
+    failure:                    httpStatus: 500, failure: true
 
   # add each status to CommunicationStatus for easy inclusion.
   # Each status has a unique string-name which is both its local-API name
@@ -93,6 +100,8 @@ module.exports = class CommunicationStatus
   @[k] = k for k, v of @communicationStatuses
 
   @isClientFailure: (status) -> !!communicationStatuses[status]?.clientFailure
+
+  @isFailure: (status) -> !!communicationStatuses[status]?.failure
 
   ###
   OUT: true if status is a valid status-string
