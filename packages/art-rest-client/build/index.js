@@ -2,41 +2,41 @@ module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -47,7 +47,7 @@ module.exports =
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -56,15 +56,15 @@ module.exports =
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -77,25 +77,30 @@ module.exports = require("art-standard-lib");
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4);
+module.exports = __webpack_require__(5);
 
-module.exports.addModules({
-  RestClient: __webpack_require__(3)
-});
+module.exports.includeInNamespace(__webpack_require__(4));
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(1);
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, appendQuery, capitalizedDashCase, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
+var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, aborted, appendQuery, capitalizedDashCase, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -103,11 +108,11 @@ StandardLib = __webpack_require__(0);
 
 ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo, object = ref.object, w = ref.w, capitalizedDashCase = ref.capitalizedDashCase, each = ref.each;
 
-ref1 = __webpack_require__(6), success = ref1.success, serverFailure = ref1.serverFailure, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
+ref1 = __webpack_require__(8), success = ref1.success, serverFailure = ref1.serverFailure, aborted = ref1.aborted, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
 
-BaseClass = __webpack_require__(5).BaseClass;
+BaseClass = __webpack_require__(7).BaseClass;
 
-__webpack_require__(2);
+__webpack_require__(3);
 
 module.exports = RestClient = (function(superClass) {
   var legalVerbs, normalizeHeaders;
@@ -120,6 +125,8 @@ module.exports = RestClient = (function(superClass) {
 
   RestClient.singletonClass();
 
+  RestClient.RestClientClass = RestClient;
+
   RestClient.legalVerbs = legalVerbs = {};
 
   each(w("get put post delete head"), function(v) {
@@ -129,47 +136,47 @@ module.exports = RestClient = (function(superClass) {
   });
 
   RestClient.get = function(url, options) {
-    return this.singleton.get(url, options);
+    return RestClient.singleton.get(url, options);
   };
 
   RestClient.put = function(url, data, options) {
-    return this.singleton.put(url, data, options);
+    return RestClient.singleton.put(url, data, options);
   };
 
   RestClient.post = function(url, data, options) {
-    return this.singleton.post(url, data, options);
+    return RestClient.singleton.post(url, data, options);
   };
 
   RestClient["delete"] = function(url, options) {
-    return this.singleton["delete"](url, options);
+    return RestClient.singleton["delete"](url, options);
   };
 
   RestClient.getArrayBuffer = function(url, options) {
-    return this.singleton.getArrayBuffer(url, options);
+    return RestClient.singleton.getArrayBuffer(url, options);
   };
 
   RestClient.getJson = function(url, options) {
-    return this.singleton.getJson(url, options);
+    return RestClient.singleton.getJson(url, options);
   };
 
   RestClient.deleteJson = function(url, options) {
-    return this.singleton.deleteJson(url, options);
+    return RestClient.singleton.deleteJson(url, options);
   };
 
   RestClient.putJson = function(url, data, options) {
-    return this.singleton.putJson(url, data, options);
+    return RestClient.singleton.putJson(url, data, options);
   };
 
   RestClient.postJson = function(url, data, options) {
-    return this.singleton.postJson(url, data, options);
+    return RestClient.singleton.postJson(url, data, options);
   };
 
   RestClient.restRequest = function(options) {
-    return this.singleton.restRequest(options);
+    return RestClient.singleton.restRequest(options);
   };
 
   RestClient.restJsonRequest = function(options) {
-    return this.singleton.restJsonRequest(options);
+    return RestClient.singleton.restJsonRequest(options);
   };
 
 
@@ -429,7 +436,13 @@ module.exports = RestClient = (function(superClass) {
       restRequestStatus = {
         request: request = new XMLHttpRequest,
         progress: 0,
-        options: options
+        options: options,
+        abort: function() {
+          request.abort();
+          return reject(new ErrorWithInfo("XMLHttpRequest aborted", merge(restRequestStatus, {
+            status: aborted
+          })));
+        }
       };
       getErrorResponse = function() {
         var error;
@@ -526,51 +539,95 @@ module.exports = RestClient = (function(superClass) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Art, Neptune,
+var RestClient,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Neptune = __webpack_require__(7);
+module.exports = (__webpack_require__(9)).addNamespace('Art.RestClient', RestClient = (function(superClass) {
+  extend(RestClient, superClass);
 
-module.exports = Neptune.Art || Neptune.addNamespace('Art', Art = (function(superClass) {
-  extend(Art, superClass);
-
-  function Art() {
-    return Art.__super__.constructor.apply(this, arguments);
+  function RestClient() {
+    return RestClient.__super__.constructor.apply(this, arguments);
   }
 
-  return Art;
+  RestClient.version = __webpack_require__(6).version;
 
-})(Neptune.Base));
+  return RestClient;
 
+})(Neptune.PackageNamespace));
 
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-class-system");
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-communication-status");
+module.exports = {
+	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+	"dependencies": {
+		"art-build-configurator": "*",
+		"art-class-system": "*",
+		"art-communication-status": "^1.0.0",
+		"art-config": "*",
+		"art-standard-lib": "*",
+		"art-testbench": "*",
+		"bluebird": "^3.5.0",
+		"caffeine-script": "*",
+		"caffeine-script-runtime": "*",
+		"case-sensitive-paths-webpack-plugin": "^2.1.1",
+		"chai": "^4.0.1",
+		"coffee-loader": "^0.7.3",
+		"coffee-script": "^1.12.6",
+		"colors": "^1.1.2",
+		"commander": "^2.9.0",
+		"css-loader": "^0.28.4",
+		"dateformat": "^2.0.0",
+		"detect-node": "^2.0.3",
+		"fs-extra": "^3.0.1",
+		"glob": "^7.1.2",
+		"glob-promise": "^3.1.0",
+		"json-loader": "^0.5.4",
+		"mocha": "^3.4.2",
+		"neptune-namespaces": "*",
+		"script-loader": "^0.7.0",
+		"style-loader": "^0.18.1",
+		"webpack": "^2.6.1",
+		"webpack-dev-server": "^2.4.5",
+		"webpack-merge": "^4.1.0",
+		"webpack-node-externals": "^1.6.0",
+		"xhr2": "^0.1.4"
+	},
+	"description": "Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.",
+	"license": "ISC",
+	"name": "art-rest-client",
+	"scripts": {
+		"build": "webpack --progress",
+		"start": "webpack-dev-server --hot --inline --progress",
+		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+		"testInBrowser": "webpack-dev-server --progress"
+	},
+	"version": "1.5.1"
+};
 
 /***/ }),
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces");
+module.exports = require("art-class-system");
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = (__webpack_require__(1)).RestClient;
+module.exports = require("art-communication-status");
 
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = require("neptune-namespaces");
 
 /***/ })
 /******/ ]);
