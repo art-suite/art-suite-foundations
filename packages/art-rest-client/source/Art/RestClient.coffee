@@ -11,7 +11,7 @@ StandardLib = require 'art-standard-lib'
   each
 } = require 'art-standard-lib'
 
-{success, serverFailure, failureTypes, decodeHttpStatus} = require 'art-communication-status'
+{success, serverFailure, aborted, failureTypes, decodeHttpStatus} = require 'art-communication-status'
 {BaseClass} = require 'art-class-system'
 # So this works in NODE:
 # TODO: we could maybe solve this better:
@@ -230,6 +230,9 @@ module.exports = class RestClient extends BaseClass
         request: request = new XMLHttpRequest
         progress: 0
         options: options
+        abort: ->
+          request.abort()
+          reject new ErrorWithInfo "XMLHttpRequest aborted", merge restRequestStatus, status: aborted
 
       getErrorResponse = ->
         try
