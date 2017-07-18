@@ -102,6 +102,7 @@ module.exports = class CommunicationStatus
   @isClientFailure: (status) -> !!communicationStatuses[status]?.clientFailure
 
   @isFailure: (status) -> !!communicationStatuses[status]?.failure
+  @isSuccess: (status) -> status == "success"
 
   ###
   OUT: true if status is a valid status-string
