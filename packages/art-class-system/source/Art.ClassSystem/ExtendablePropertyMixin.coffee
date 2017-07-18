@@ -110,12 +110,17 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
 
   IN: map
   IN: propertyExtender = (args...) ->
-    IN: @ is propValue
-    IN: 1 or more args
+    IN: 1 or more args to add
     OUT: new property value
+    THIS:
+      @ is set to a unique clone for the current Class or Instance.
+        cloned from the closest parent value OR the default value
     EFFECT:
-      Can optionaly modify @ directly. If you do, just return @.
-      @ is always the a unique clone for the current Class or Instance.
+      Can be pure functional and just return the new, extended data.
+      OR
+      Can modify @ directly, since it is an object/array/atomic value unique to the current class/instance.
+        If modifying @ directly, just return @.
+      Regardless, the returned value becomes the new extendable prop's value.
 
   EFFECT: for each {foo: defaultValue} in map, extendableProperty:
     defines standard getters:
