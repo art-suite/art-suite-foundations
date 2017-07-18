@@ -84,7 +84,9 @@ module.exports =
 
   trimmedString:
     validate: (v) -> isString v
-    preprocess: (v) -> v.trim()
+    preprocess: (v) ->
+      v = v.trim()
+      v.length > 0 && v
 
   function:
     dataType: functionDataType
