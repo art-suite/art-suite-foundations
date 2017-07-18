@@ -7,7 +7,8 @@ class DefaultFiles extends BaseClass
 
     npmName = path.basename npmRoot
     namespacePath = getCapitalizedCodeWords npmName
-    namespaceDirPath = namespacePath.join '/'
+    namespaceDirPath = namespacePath.join '.'
+    cafRequireFriendlyNamespaceDirPath = namespacePath.join ''
     mostSpecificName = peek namespacePath
     projectDotName = namespacePath.join '.'
 
@@ -38,10 +39,10 @@ class DefaultFiles extends BaseClass
         };
 
       index.caf: !app && """
-        &source/#{namespaceDirPath}
+        &source/#{cafRequireFriendlyNamespaceDirPath}
 
       Client.caf: app && """
-        &source/#{namespaceDirPath}/Client
+        &source/#{cafRequireFriendlyNamespaceDirPath}/Client
 
       index.html: app && """
         <html><body>
@@ -238,6 +239,6 @@ class DefaultFiles extends BaseClass
         tests:
           [namespaceDirPath]:
             Test.caf: """
-              &StandardImport
+              import &StandardImport
               suite: ->
                 test '#{mostSpecificName}' -> assert.eq 1, 1
