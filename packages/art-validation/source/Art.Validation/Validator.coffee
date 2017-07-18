@@ -293,7 +293,11 @@ module.exports = class Validator extends BaseClass
     fields && for fieldName, props of @_fieldProps
       {preprocess} = props
 
-      value = (oldValue = fields[fieldName]) ? (applyDefaults && props.default)
+      value = if undefined != oldValue = fields[fieldName]
+        oldValue
+      else
+        applyDefaults && props.default
+
       value = preprocess value if preprocess && value?
 
       if value != oldValue
