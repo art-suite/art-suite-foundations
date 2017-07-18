@@ -6181,7 +6181,7 @@ module.exports = ObjectDiff = (function() {
               called for each key in both where the value changed
     noChange: (key, value) -> null
               called for each key in both where the value stayed the same
-    eq:       (a, b) -> true if a is equal to b
+    eqTester: (a, b) -> true if a is equal to b
               DEFAULT: use javascript ===
               provided for custom concepts of equality
     oldObjKeyCount: null or a the number of keys in oldObj
@@ -6197,10 +6197,10 @@ module.exports = ObjectDiff = (function() {
   OUT: newObjKeyCount - number of keys in the new object
    */
 
-  ObjectDiff.objectDiff = function(newObj, oldObj, added, removed, changed, noChange, eq, oldObjKeyCount) {
+  ObjectDiff.objectDiff = function(newObj, oldObj, added, removed, changed, noChange, eqTester, oldObjKeyCount) {
     var k, newObjKeyCount, newValue, oldObjKeyCountIsAtLeast, oldValue;
-    if (eq == null) {
-      eq = defaultEq;
+    if (eqTester == null) {
+      eqTester = defaultEq;
     }
     newObjKeyCount = 0;
     if (!oldObj) {
@@ -6217,7 +6217,7 @@ module.exports = ObjectDiff = (function() {
       newObjKeyCount++;
       if (typeof (oldValue = oldObj[k]) !== "undefined" || oldObj.hasOwnProperty(k)) {
         oldObjKeyCountIsAtLeast++;
-        if (!eq(newValue, oldValue)) {
+        if (!eqTester(newValue, oldValue)) {
           changed(k, newValue, oldValue);
         } else {
           if (typeof noChange === "function") {
@@ -6236,6 +6236,42 @@ module.exports = ObjectDiff = (function() {
       }
     }
     return newObjKeyCount;
+  };
+
+
+  /*
+  IN:
+    newObj, oldObj, eqTester >> see above
+  OUT:
+    added:    key: addedItem
+    removed:  key: removedItem
+    changed:  key: {oldItem, newItem}
+   */
+
+  ObjectDiff.objectDiffReport = function(newObj, oldObj, eqTester) {
+    var added, changed, different, removed;
+    added = {};
+    removed = {};
+    changed = {};
+    different = null;
+    ObjectDiff.objectDiff(newObj, oldObj, function(key, addedItem) {
+      different = true;
+      return added[key] = addedItem;
+    }, function(key, removedItem) {
+      different = true;
+      return removed[key] = removedItem;
+    }, function(key, newItem, oldItem) {
+      different = true;
+      return changed[key] = {
+        oldItem: oldItem,
+        newItem: newItem
+      };
+    }, null, eqTester);
+    return different && {
+      added: added,
+      removed: removed,
+      changed: changed
+    };
   };
 
   return ObjectDiff;

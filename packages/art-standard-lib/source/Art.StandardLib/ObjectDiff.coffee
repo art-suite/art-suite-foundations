@@ -15,7 +15,7 @@ module.exports = class ObjectDiff
               called for each key in both where the value changed
     noChange: (key, value) -> null
               called for each key in both where the value stayed the same
-    eq:       (a, b) -> true if a is equal to b
+    eqTester: (a, b) -> true if a is equal to b
               DEFAULT: use javascript ===
               provided for custom concepts of equality
     oldObjKeyCount: null or a the number of keys in oldObj
@@ -30,7 +30,7 @@ module.exports = class ObjectDiff
 
   OUT: newObjKeyCount - number of keys in the new object
   ###
-  @objectDiff: (newObj, oldObj, added, removed, changed, noChange, eq = defaultEq, oldObjKeyCount) ->
+  @objectDiff: (newObj, oldObj, added, removed, changed, noChange, eqTester = defaultEq, oldObjKeyCount) ->
     newObjKeyCount = 0
     unless oldObj
       for k, newValue of newObj
@@ -43,7 +43,7 @@ module.exports = class ObjectDiff
       newObjKeyCount++
       if typeof (oldValue = oldObj[k]) != "undefined" || oldObj.hasOwnProperty k
         oldObjKeyCountIsAtLeast++
-        if !eq newValue, oldValue
+        if !eqTester newValue, oldValue
           changed k, newValue, oldValue
         else
           noChange? k, newValue
@@ -55,3 +55,28 @@ module.exports = class ObjectDiff
         removed k, oldObj[k] unless typeof newObj[k] != "undefined" || newObj.hasOwnProperty k
 
     newObjKeyCount
+
+  ###
+  IN:
+    newObj, oldObj, eqTester >> see above
+  OUT:
+    no changes: null
+    otherwise:
+      added:    key: addedItem
+      removed:  key: removedItem
+      changed:  key: {oldItem, newItem}
+  ###
+  @objectDiffReport: (newObj, oldObj, eqTester) =>
+    added = {}
+    removed = {}
+    changed = {}
+    different = null
+    @objectDiff newObj, oldObj,
+      (key, addedItem)   -> different = true; added[key]   = addedItem
+      (key, removedItem) -> different = true; removed[key] = removedItem
+      (key, newItem, oldItem) ->
+        different = true;
+        changed[key] = {oldItem, newItem}
+      null
+      eqTester
+    different && {added, removed, changed}
