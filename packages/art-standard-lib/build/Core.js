@@ -74,7 +74,7 @@ module.exports =
 
 module.exports = __webpack_require__(12);
 
-module.exports.includeInNamespace(__webpack_require__(23)).addModules({
+module.exports.includeInNamespace(__webpack_require__(24)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
   Merge: __webpack_require__(10),
   StringCase: __webpack_require__(11),
@@ -374,7 +374,7 @@ module.exports = (__webpack_require__(8)).addNamespace('Core', Core = (function(
 
 /***/ }),
 
-/***/ 17:
+/***/ 18:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected,
@@ -613,7 +613,7 @@ module.exports = Types = (function() {
 
 /***/ }),
 
-/***/ 23:
+/***/ 24:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [__webpack_require__(3), __webpack_require__(11), __webpack_require__(10), __webpack_require__(2)];
@@ -824,7 +824,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.18.1"
+	"version": "1.18.3"
 };
 
 /***/ }),
@@ -854,7 +854,7 @@ module.exports = (__webpack_require__(8)).addNamespace('Inspect', Inspect = (fun
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(17);
+__webpack_require__(18);
 
 
 /***/ }),
