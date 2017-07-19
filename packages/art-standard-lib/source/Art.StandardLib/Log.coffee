@@ -4,6 +4,7 @@ Inspect = require './Inspect/namespace'
 {peek} = require './ArrayExtensions'
 {merge} = require './Core'
 {deepResolve, containsPromises} = require './Promise'
+{isNode} = require './Environment'
 
 module.exports = class Log
   # autodetect context from
@@ -48,7 +49,7 @@ module.exports = class Log
 
   @rawErrorLog: =>
     return if @loggingHidden
-    if Neptune.isNode && "".red
+    if isNode && "".red
       str = if arguments.length > 1
         out = (a for a in arguments)
         out.join ' '
@@ -102,11 +103,14 @@ module.exports = class Log
     else
       logger m #, "\n# StandardLib.log called " + @contextString stack, className
 
+  standardOptions = if isNode
+    color: true
+  else {}
   # always returned the last argument passed in. That way you can:
   #     bar = foo # log foo's value in the middle of an expression, along with other values, without altering the rest of the expression
   #     bar = @log 1, 2, 3, foo
   @log: (args...) =>
-    @log.withOptions null, args...
+    @log.withOptions standardOptions, args...
 
   # IN: logger: (toLog, label, wasResolvedOrRejected: true/false)
   @log.resolvePromiseWrapper = (m, logger) ->
