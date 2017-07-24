@@ -3,6 +3,7 @@
 
 module.exports = require './namespace'
 module.exports
+.includeInNamespace require './Validation'
 .addModules
   DataTypes:  require './DataTypes' 
   FieldTypes: require './FieldTypes'
