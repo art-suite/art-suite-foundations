@@ -295,6 +295,7 @@ Caf.defMod(module, () => {
     DefaultFiles,
     BaseClass,
     getCapitalizedCodeWords,
+    log,
     peek,
     fileBuilder,
     dashCase,
@@ -302,6 +303,7 @@ Caf.defMod(module, () => {
   ({
     BaseClass,
     getCapitalizedCodeWords,
+    log,
     peek,
     fileBuilder,
     dashCase,
@@ -310,6 +312,7 @@ Caf.defMod(module, () => {
     [
       "BaseClass",
       "getCapitalizedCodeWords",
+      "log",
       "peek",
       "fileBuilder",
       "dashCase",
@@ -326,12 +329,17 @@ Caf.defMod(module, () => {
           npmName,
           namespacePath,
           namespaceDirPath,
+          cafRequireFriendlyNamespaceDirPath,
           mostSpecificName,
           projectDotName;
         ({ app } = options);
         npmName = path.basename(npmRoot);
         namespacePath = getCapitalizedCodeWords(npmName);
         namespaceDirPath = namespacePath.join(".");
+        cafRequireFriendlyNamespaceDirPath = namespacePath
+          .join("")
+          .replace(".", "");
+        log({ cafRequireFriendlyNamespaceDirPath });
         mostSpecificName = peek(namespacePath);
         projectDotName = namespacePath.join(".");
         return fileBuilder({
@@ -345,9 +353,14 @@ Caf.defMod(module, () => {
           "index.js":
             !app &&
               "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};",
-          "index.caf": !app && `&source/${Caf.toString(namespaceDirPath)}`,
+          "index.caf":
+            !app &&
+              `&source/${Caf.toString(cafRequireFriendlyNamespaceDirPath)}`,
           "Client.caf":
-            app && `&source/${Caf.toString(namespaceDirPath)}/Client`,
+            app &&
+              `&source/${Caf.toString(
+                cafRequireFriendlyNamespaceDirPath
+              )}/Client`,
           "index.html":
             app &&
               '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>',
@@ -383,7 +396,7 @@ Caf.defMod(module, () => {
                     'import &StandardImport\n\nclass Users extends FluxComponent\n  @subscriptions allUsers: ""\n\n  render: ->\n    PagingScrollElement\n      clip: true\n      array user from @allUsers with &User {user}',
                   "App.caf": `import &StandardImport\n\nclass App extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  addUser: ->\n    @models.user.create data: name: randomString()\n    .then ->\n      @models.allUsers.reload ""\n\n  render: ->\n    CanvasElement\n      RectangleElement color: #48f #248\n\n      Element\n        padding: 10\n        childrenLayout: :column\n\n        Element\n          margin: 10\n          size: ww: 1 hch: 1\n          childrenLayout: :row\n          childrenAlignment: :bottomLeft\n          TextElement &StyleProps.titleText, text: "${Caf.toString(
                     projectDotName
-                  )} Users"\n          TextElement\n            &StyleProps.text\n            margin: 10\n            on: pointerClick: @models.navState.toggleAlignUsersLeft\n            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'\n          TextElement\n            &StyleProps.text\n            margin: 10\n            on: pointerClick: @addUser\n            text: '+user'\n        &Users()`
+                  )} Users"\n          TextElement\n            &StyleProps.text\n            margin: 10\n            on: pointerClick: @models.navState.toggleAlignUsersLeft\n            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'\n            cursor: :pointer\n          TextElement\n            &StyleProps.text\n            margin: 10\n            on: pointerClick: @addUser\n            text:   :+user\n            cursor: :pointer\n        &Users()`
                 },
                 "StyleProps.caf":
                   "import &StandardImport\nclass StyleProps extends HotStyleProps\n  @text:\n    fontFamily: :sans-serif\n    color: :white\n\n  @titleText:\n    fontSize:   24\n    fontWeight: :bold\n    fontFamily: :sans-serif\n    color: :white",
@@ -406,7 +419,7 @@ Caf.defMod(module, () => {
               "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...",
             tests: {
               [namespaceDirPath]: {
-                "Test.caf": `&StandardImport\nsuite: ->\n  test '${Caf.toString(
+                "Test.caf": `import &StandardImport\nsuite: ->\n  test '${Caf.toString(
                   mostSpecificName
                 )}' -> assert.eq 1, 1`
               }
@@ -893,7 +906,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.15.0"
+	"version": "1.15.1"
 };
 
 /***/ }),
