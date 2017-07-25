@@ -8,7 +8,8 @@ class DefaultFiles extends BaseClass
     npmName = path.basename npmRoot
     namespacePath = getCapitalizedCodeWords npmName
     namespaceDirPath = namespacePath.join '.'
-    cafRequireFriendlyNamespaceDirPath = namespacePath.join ''
+    cafRequireFriendlyNamespaceDirPath = namespacePath.join('').replace ".", ""
+    log {} cafRequireFriendlyNamespaceDirPath
     mostSpecificName = peek namespacePath
     projectDotName = namespacePath.join '.'
 
@@ -162,11 +163,13 @@ class DefaultFiles extends BaseClass
                             margin: 10
                             on: pointerClick: @models.navState.toggleAlignUsersLeft
                             text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'
+                            cursor: :pointer
                           TextElement
                             &StyleProps.text
                             margin: 10
                             on: pointerClick: @addUser
-                            text: '+user'
+                            text:   :+user
+                            cursor: :pointer
                         &Users()
 
             StyleProps.caf: """
