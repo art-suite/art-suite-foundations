@@ -1,3 +1,4 @@
 &ArtStandardLib.merge
   &ArtStandardLib
   &ArtRestClient
+  test: (args...) -> global.test args...
