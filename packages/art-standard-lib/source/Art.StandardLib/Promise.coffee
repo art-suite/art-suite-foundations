@@ -1,6 +1,6 @@
 # promise-polyfill takes advantage of setImmediate for performance gains
 # This polyfil promises good setImmediate performance: https://github.com/YuzuJS/setImmediate
-BlueBirdPromise = require 'bluebird/js/browser/bluebird.core.min'
+Promise = BlueBirdPromise = require 'bluebird/js/browser/bluebird.core.min'
 # global.Promise ||= require 'promise-polyfill'
 {deepMap, deepEach, isFunction, isPlainObject} = require './TypesExtended'
 {defineModule} = require './CommonJs'
