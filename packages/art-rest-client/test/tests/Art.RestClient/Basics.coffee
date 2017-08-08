@@ -1,8 +1,11 @@
-{merge, w, defineModule} = Neptune.Art.StandardLib
+{merge, w, defineModule, isNode} = Neptune.Art.StandardLib
 {RestClient} = Neptune.Art
 {normalizeHeaders} = RestClient
 
-testAssetRoot = "https://raw.githubusercontent.com/imikimi/art-rest-client/master/test/assets"
+testAssetRoot = if isNode
+  "https://raw.githubusercontent.com/imikimi/art-rest-client/master/test/assets"
+else
+  "/test/assets"
 
 arrayBufferToString = (buf) ->
   String.fromCharCode.apply null, new Uint8Array buf
