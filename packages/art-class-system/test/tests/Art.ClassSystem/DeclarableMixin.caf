@@ -1,5 +1,4 @@
 import &StandardImport
-test = (a...) -> global.test a...
 
 suite:
   basic: ->

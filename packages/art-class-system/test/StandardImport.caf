@@ -1,3 +1,5 @@
 &ArtStandardLib.merge
   &ArtStandardLib
-  require '../index.coffee'
+  &ArtClassSystem
+  test: (args...) -> global.test args...
+  setup: (args...) -> global.setup args...

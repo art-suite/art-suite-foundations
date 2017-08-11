@@ -1,4 +1,4 @@
-import Neptune.Art.StandardLib, Neptune.Art.ClassSystem
+import &StandardImport
 
 suite: ->
   MySingleton = null
