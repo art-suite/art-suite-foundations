@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtClassSystem, Neptune.Art.Events
+import &StandardImport
 
 suite: ->
   class MyEventedObject extends EventedMixin BaseClass
