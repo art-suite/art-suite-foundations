@@ -520,15 +520,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     The problem is coffeescript doesn't properly inherit class getters.
     BUT ES6 and CaffeineScript DO. So, when we switch over, I think we can do this.
   ###
-  @singletonClass: (args...) ->
-    if args.length > 0
-      # DEPRICATED: args...
-      # WHY: "new @ args..." doesn't work if @ is an ES6 class!
-      # The reason is ES6 constructor functions cannot be invoked w/o "new"
-      # which means you can only do args... with the new ES6 ...args method,
-      # not the way caffeineScript invokes "new @ args..."
-      log.error args: args
-      throw new Error "singletonClass args are DEPRICATED" if args.length > 0
+  @singletonClass: ->
     throw new Error "singleton classes cannot be abstract" if @getIsAbstractClass()
 
     @classGetter
