@@ -73,8 +73,7 @@ module.exports =
 
 var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, clone, concatInto, decapitalize, extendClone, functionName, getModuleBeingDefined, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty,
-  slice = [].slice;
+  hasProp = {}.hasOwnProperty;
 
 StandardLib = __webpack_require__(1);
 
@@ -621,16 +620,7 @@ module.exports = BaseClass = (function(superClass) {
    */
 
   BaseClass.singletonClass = function() {
-    var args, obj1;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    if (args.length > 0) {
-      log.error({
-        args: args
-      });
-      if (args.length > 0) {
-        throw new Error("singletonClass args are DEPRICATED");
-      }
-    }
+    var obj1;
     if (this.getIsAbstractClass()) {
       throw new Error("singleton classes cannot be abstract");
     }
@@ -856,12 +846,17 @@ defineModule(module, function() {
       
       IN: map
       IN: propertyExtender = (args...) ->
-        IN: @ is propValue
-        IN: 1 or more args
+        IN: 1 or more args to add
         OUT: new property value
+        THIS:
+          @ is set to a unique clone for the current Class or Instance.
+            cloned from the closest parent value OR the default value
         EFFECT:
-          Can optionaly modify @ directly. If you do, just return @.
-          @ is always the a unique clone for the current Class or Instance.
+          Can be pure functional and just return the new, extended data.
+          OR
+          Can modify @ directly, since it is an object/array/atomic value unique to the current class/instance.
+            If modifying @ directly, just return @.
+          Regardless, the returned value becomes the new extendable prop's value.
       
       EFFECT: for each {foo: defaultValue} in map, extendableProperty:
         defines standard getters:
@@ -1072,10 +1067,12 @@ module.exports = BaseObject = (function(superClass) {
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
+console.log("ClassSystem init");
+
 module.exports = [
   {
     createWithPostCreate: __webpack_require__(0).createWithPostCreate
-  }, [__webpack_require__(0), "mixInto createAllClass  createHotWithPostCreate"]
+  }
 ];
 
 
@@ -1249,7 +1246,7 @@ module.exports = {
 		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
 		"testInBrowser": "webpack-dev-server --progress"
 	},
-	"version": "1.7.1"
+	"version": "1.8.0"
 };
 
 /***/ }),
