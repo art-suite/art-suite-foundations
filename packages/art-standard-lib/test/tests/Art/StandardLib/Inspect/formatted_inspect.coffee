@@ -1,6 +1,6 @@
 
 {StandardLib} = Neptune.Art
-{log} = StandardLib
+{log, isNode} = StandardLib
 {formattedInspectString, escapeJavascriptString, formattedInspect, stripAnsi, ansiSafeStringLength, alignTabs, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
 {BaseClass} = require 'art-class-system'
 testFIMultiLine = (input, out, maxLineLength = 0) ->
@@ -17,22 +17,23 @@ testAlignTabs = (str, testStr, maxLineLength = 10000) ->
 
 module.exports = suite:
   color: ->
-    test 'colored string', ->
-      assert.eq '\u001b[32m"hi"\u001b[39m', formattedInspect "hi", color: true
+    if isNode
+      test 'colored string', ->
+        assert.eq '\u001b[32m"hi"\u001b[39m', formattedInspect "hi", color: true
 
-    test 'colored []', ->
-      assert.eq "\u001b[90m[]\u001b[39m", formattedInspect [], color: true
+      test 'colored []', ->
+        assert.eq "\u001b[90m[]\u001b[39m", formattedInspect [], color: true
 
-    test 'colored a:1', ->
-      assert.eq "\u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m", formattedInspect {a:1}, color: true
+      test 'colored a:1', ->
+        assert.eq "\u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m", formattedInspect {a:1}, color: true
 
-    test 'colored all', ->
-      assert.eq """
-        \u001b[90m[]\u001b[39m
-          \u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m
-          \u001b[32m"hi"\u001b[39m
-        """,
-        formattedInspect [{a:1}, "hi"], color: true
+      test 'colored all', ->
+        assert.eq """
+          \u001b[90m[]\u001b[39m
+            \u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m
+            \u001b[32m"hi"\u001b[39m
+          """,
+          formattedInspect [{a:1}, "hi"], color: true
 
   strings: ->
     test 'with newlines', ->
@@ -109,16 +110,17 @@ module.exports = suite:
     testFI (new Foo), "<#{Foo.namespacePath}>"
 
   ansiSafeStringLength: ->
-    test 'basic', ->
-      assert.eq 5, ansiSafeStringLength "basic"
+    if isNode
+      test 'basic', ->
+        assert.eq 5, ansiSafeStringLength "basic"
 
-    test 'colored', ->
-      assert.lt 5, "basic".red.length
-      assert.eq 5, ansiSafeStringLength "basic".red
+      test 'colored', ->
+        assert.lt 5, "basic".red.length
+        assert.eq 5, ansiSafeStringLength "basic".red
 
-    test 'stripAnsi', ->
-      assert.eq "basic", stripAnsi "basic".red
-      assert.neq "basic", "basic".red
+      test 'stripAnsi', ->
+        assert.eq "basic", stripAnsi "basic".red
+        assert.neq "basic", "basic".red
 
   alignTabs: ->
 

@@ -4,7 +4,9 @@ Inspect = require './Inspect/namespace'
 {peek} = require './ArrayExtensions'
 {merge} = require './Core'
 {deepResolve, containsPromises} = require './Promise'
-{isNode} = require './Environment'
+{isNode, getEnv} = require './Environment'
+
+{disableLog} = getEnv()
 
 module.exports = class Log
   # autodetect context from
@@ -110,7 +112,10 @@ module.exports = class Log
   #     bar = foo # log foo's value in the middle of an expression, along with other values, without altering the rest of the expression
   #     bar = @log 1, 2, 3, foo
   @log: (args...) =>
-    @log.withOptions standardOptions, args...
+    if disableLog
+      peek args
+    else
+      @log.withOptions standardOptions, args...
 
   # IN: logger: (toLog, label, wasResolvedOrRejected: true/false)
   @log.resolvePromiseWrapper = (m, logger) ->
