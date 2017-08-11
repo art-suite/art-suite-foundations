@@ -14,8 +14,8 @@ module.exports = class StringCase
 
   @getLowerCaseCodeWords:   (str) => word.toLowerCase() for word in @getCodeWords str
   @getCapitalizedCodeWords: (str) => @capitalize word.toLowerCase() for word in @getCodeWords str
-  @upperCamelCase:        (str) => (@capitalize word for word in @getLowerCaseCodeWords str).join ""
-  @lowerCamelCase:        (str) => @decapitalize @upperCamelCase str
+  @upperCamelCase:        (str, joiner = "") => (@capitalize word for word in @getLowerCaseCodeWords str).join joiner
+  @lowerCamelCase:        (str, joiner = "") => @decapitalize @upperCamelCase str, joiner
   @snakeCase:             (str) => (@getLowerCaseCodeWords str).join "_"
   @dashCase:              (str) => (@getLowerCaseCodeWords str).join "-"
   @capitalizedDashCase:   (str) => (@getCapitalizedCodeWords str).join "-"
