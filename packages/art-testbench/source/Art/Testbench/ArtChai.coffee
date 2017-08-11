@@ -96,7 +96,7 @@ failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
 
 failWithExpectedMessageBase = (context, a, b, lines) ->
   assert.fail a, b, compactFlattenJoin("\n\n", [
-    "Context: #{context}" if context
+    "Context: #{formattedInspect context}" if context
     "expected"
     lines
   ]) + "\n"

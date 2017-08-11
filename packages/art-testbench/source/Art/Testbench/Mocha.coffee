@@ -1,4 +1,4 @@
-{isNode, log, isFunction, isPlainObject, merge} = require 'art-standard-lib'
+{isNode, log, isFunction, isPlainObject, merge, Promise} = require 'art-standard-lib'
 {ConfigRegistry} = require 'art-config'
 chai = require './ArtChai'
 global.assert = chai.assert
