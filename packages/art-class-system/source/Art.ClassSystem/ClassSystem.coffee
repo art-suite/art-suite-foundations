@@ -1,4 +1,3 @@
-console.log "ClassSystem init"
-module.exports = [
+module.exports =
   createWithPostCreate: require("./BaseClass").createWithPostCreate
-]
+
