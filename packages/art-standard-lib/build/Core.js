@@ -316,8 +316,11 @@ module.exports = StringCase = (function() {
     return results;
   };
 
-  StringCase.upperCamelCase = function(str) {
+  StringCase.upperCamelCase = function(str, joiner) {
     var word;
+    if (joiner == null) {
+      joiner = "";
+    }
     return ((function() {
       var i, len, ref, results;
       ref = this.getLowerCaseCodeWords(str);
@@ -327,11 +330,14 @@ module.exports = StringCase = (function() {
         results.push(this.capitalize(word));
       }
       return results;
-    }).call(StringCase)).join("");
+    }).call(StringCase)).join(joiner);
   };
 
-  StringCase.lowerCamelCase = function(str) {
-    return StringCase.decapitalize(StringCase.upperCamelCase(str));
+  StringCase.lowerCamelCase = function(str, joiner) {
+    if (joiner == null) {
+      joiner = "";
+    }
+    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
   };
 
   StringCase.snakeCase = function(str) {
@@ -782,50 +788,7 @@ module.exports = ArrayCompactFlatten = (function() {
 /***/ 30:
 /***/ (function(module, exports) {
 
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"dependencies": {
-		"art-build-configurator": "*",
-		"art-class-system": "*",
-		"art-config": "*",
-		"art-standard-lib": "*",
-		"art-testbench": "*",
-		"bluebird": "^3.5.0",
-		"caffeine-script": "*",
-		"caffeine-script-runtime": "*",
-		"case-sensitive-paths-webpack-plugin": "^2.1.1",
-		"chai": "^4.0.1",
-		"coffee-loader": "^0.7.3",
-		"coffee-script": "^1.12.6",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"css-loader": "^0.28.4",
-		"dateformat": "^2.0.0",
-		"detect-node": "^2.0.3",
-		"fs-extra": "^3.0.1",
-		"glob": "^7.1.2",
-		"glob-promise": "^3.1.0",
-		"json-loader": "^0.5.4",
-		"mocha": "^3.4.2",
-		"neptune-namespaces": "*",
-		"script-loader": "^0.7.0",
-		"style-loader": "^0.18.1",
-		"webpack": "^2.6.1",
-		"webpack-dev-server": "^2.4.5",
-		"webpack-merge": "^4.1.0",
-		"webpack-node-externals": "^1.6.0"
-	},
-	"description": "The Standard Library for JavaScript that aught to be.",
-	"license": "ISC",
-	"name": "art-standard-lib",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "1.18.3"
-};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.20.0"}
 
 /***/ }),
 
