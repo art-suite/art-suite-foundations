@@ -37,19 +37,19 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   ###
   NOTE: only hasOwnProperties are considered! Inherited properties are not touched.
   IN:
-    toObject:   object will be altered to be an "imprint" of fromObject
-    fromObject: object pattern used to imprint toObject
+    targetObject:   object will be altered to be an "imprint" of fromObject
+    fromObject: object pattern used to imprint targetObject
     preserveState:
       false:
-        toObject has every property updated to exactly match fromObject
+        targetObject has every property updated to exactly match fromObject
 
         This includes:
-          1. delete properties in toObject that are not in fromObject
-          2. add every property in fromObject but not in toObject
-          3. overwriting every property in toObject also in fromObject
+          1. delete properties in targetObject that are not in fromObject
+          2. add every property in fromObject but not in targetObject
+          3. overwriting every property in targetObject also in fromObject
 
       true:
-        Attempts to preserve the state of toObject while updating its functionality.
+        Attempts to preserve the state of targetObject while updating its functionality.
         This means properties which are functions in either object are updated.
 
         WARNING: This is a grey area for JavaScript. It is not entirely clear what is
@@ -57,33 +57,62 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
         Imprint actions taken when preserving State:
 
-        1. DO NOTHING to properties in toObject that are not in fromObject
-        2. add every property in fromObject but not in toObject
-        3. properties in toObject that are also in fromObject are updated
+        1. DO NOTHING to properties in targetObject that are not in fromObject
+        2. add every property in fromObject but not in targetObject
+        3. properties in targetObject that are also in fromObject are updated
           if one of the following are true:
           - isFunction fromObject[propName]
-          - isFunction toObject[propName]
-          - !toObject.hasOwnProperty propName
+          - isFunction targetObject[propName]
           - propName does NOT start with "_"
+          NOTE: property existance is detected using Object.getOwnPropertyDescriptor
 
   ###
-  @imprintObject: imprintObject = (toObject, fromObject, preserveState = false) ->
+  thoroughDeleteProperty = (object, propName) ->
+    Object.defineProperty object, propName,
+        configurable: true
+        writable: false
+        value: 1
+
+    delete object[propName]
+
+  nonImprintableProps = ["__proto__", "prototype"]
+
+  @imprintObject: imprintObject = (targetObject, sourceObject, preserveState = false) ->
+    targetPropertyNames = Object.getOwnPropertyNames targetObject
+    sourcePropertyNames = Object.getOwnPropertyNames sourceObject
 
     unless preserveState
-      for k, v of toObject when !fromObject.hasOwnProperty k
-        delete toObject[k]
+      for targetPropName in targetPropertyNames when !(targetPropName in sourcePropertyNames)
+        thoroughDeleteProperty targetObject, targetPropName
 
-    for k, fromValue of fromObject when fromObject.hasOwnProperty k
+    for sourcePropName in sourcePropertyNames when !(sourcePropName in nonImprintableProps)
+      targetPropDescriptor = Object.getOwnPropertyDescriptor targetObject, sourcePropName
+      sourcePropDescriptor = Object.getOwnPropertyDescriptor sourceObject, sourcePropName
       if (
           !preserveState ||
-          isFunction(fromValue) ||
-          isFunction(toObject[k]) ||
-          !k.match(/^_/) ||
-          !toObject.hasOwnProperty k
+          !targetPropDescriptor ||
+          isFunction(sourcePropDescriptor.value) ||
+          isFunction(targetPropDescriptor?.value) ||
+          !sourcePropName.match /^_/
         )
-        toObject[k] = fromValue
+        Object.defineProperty targetObject, sourcePropName, sourcePropDescriptor
 
-    fromObject
+    # OLD
+    # unless preserveState
+    #   for k, v of targetObject when !sourceObject.hasOwnProperty k
+    #     delete targetObject[k]
+
+    # for k, fromValue of sourceObject when sourceObject.hasOwnProperty k
+    #   if (
+    #       !preserveState ||
+    #       isFunction(fromValue) ||
+    #       isFunction(targetObject[k]) ||
+    #       !k.match(/^_/) ||
+    #       !targetObject.hasOwnProperty k
+    #     )
+    #     targetObject[k] = fromValue
+
+    sourceObject
 
   ###
   imprints both the class and its prototype.
@@ -175,6 +204,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
         klass._name = liveClass._name
         liveClass.imprintFromClass klass
+        liveClass.classModuleState = classModuleState
 
         log "Art.ClassSystem.BaseClass: class hot-reload":
           class: liveClass.getNamespacePath()
@@ -185,7 +215,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
         hotReloaded = false
 
         klass._hotClassModuleState =
-        moduleState[hotReloadKey] = classModuleState =
+        moduleState[hotReloadKey] = klass.classModuleState = classModuleState =
           liveClass: liveClass = klass
           hotUpdatedFromClass: null
           hotReloadVersion: 0
