@@ -179,7 +179,7 @@ Caf.defMod(module, () => {
   let Path, DirClass, createObjectTreeFactory, BaseClass, merge;
   ({ createObjectTreeFactory, BaseClass, merge } = Caf.import(
     ["createObjectTreeFactory", "BaseClass", "merge"],
-    [__webpack_require__(3), __webpack_require__(21), global]
+    [global, __webpack_require__(3), __webpack_require__(21)]
   ));
   Path = __webpack_require__(2);
   return createObjectTreeFactory(
@@ -318,7 +318,7 @@ Caf.defMod(module, () => {
       "dashCase",
       "process"
     ],
-    [__webpack_require__(3), __webpack_require__(18), global]
+    [global, __webpack_require__(3), __webpack_require__(18)]
   ));
   path = __webpack_require__(2);
   return (DefaultFiles = Caf.defClass(
@@ -352,18 +352,18 @@ Caf.defMod(module, () => {
             "require('coffee-script/register');\nrequire('caffeine-script/register');",
           "index.js":
             !app &&
-              "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};",
+            "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};",
           "index.caf":
             !app &&
-              `&source/${Caf.toString(cafRequireFriendlyNamespaceDirPath)}`,
+            `&source/${Caf.toString(cafRequireFriendlyNamespaceDirPath)}`,
           "Client.caf":
             app &&
-              `&source/${Caf.toString(
-                cafRequireFriendlyNamespaceDirPath
-              )}/Client`,
+            `&source/${Caf.toString(
+              cafRequireFriendlyNamespaceDirPath
+            )}/Client`,
           "index.html":
             app &&
-              '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>',
+            '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>',
           "art.build.config.caf": `target:\n  ##\n    configures for standard node-targeted library\n    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.\n      They just can't be used *directly* in the browser\n  node: ${Caf.toString(
             !app
           )}\n\nnpm:\n  description: "" ${Caf.toString(
@@ -456,7 +456,7 @@ Caf.defMod(module, () => {
     log
   } = Caf.import(
     ["createObjectTreeFactory", "BaseClass", "isFunction", "isRegExp", "log"],
-    [__webpack_require__(3), __webpack_require__(21), global]
+    [global, __webpack_require__(3), __webpack_require__(21)]
   ));
   Path = __webpack_require__(2);
   return createObjectTreeFactory(
@@ -498,11 +498,12 @@ Caf.defMod(module, () => {
             fs = __webpack_require__(22)
           } = options);
           path = Path.join(path || ".", filename);
-          selected = select != null
-            ? isFunction(select)
-              ? select(path)
-              : isRegExp(select) ? select.test(path) : undefined
-            : true;
+          selected =
+            select != null
+              ? isFunction(select)
+                ? select(path)
+                : isRegExp(select) ? select.test(path) : undefined
+              : true;
           return selected
             ? (
                 (exists = fs.existsSync(path)),
@@ -514,8 +515,8 @@ Caf.defMod(module, () => {
                           : force
                             ? "overwriting: ".yellow + path.green
                             : `skipped: ${Caf.toString(path)}`.gray +
-                                " (cowardly refusing to overwrite - use: force)"
-                                  .yellow
+                              " (cowardly refusing to overwrite - use: force)"
+                                .yellow
                         : "writing: ".gray + path.green),
                       log(
                         pretend ? "PRETEND-".green + logContents : logContents
@@ -550,7 +551,7 @@ Caf.defMod(module, () => {
   let NeptuneNamespacesGenerator, Promise, log;
   ({ Promise, log } = Caf.import(
     ["Promise", "log"],
-    [__webpack_require__(3), global]
+    [global, __webpack_require__(3)]
   ));
   NeptuneNamespacesGenerator = __webpack_require__(35);
   return function(dirname, watch) {
@@ -859,55 +860,7 @@ module.exports = require("fs-extra");
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"bin": {
-		"abc": "./abc"
-	},
-	"dependencies": {
-		"art-build-configurator": "*",
-		"art-class-system": "*",
-		"art-config": "*",
-		"art-object-tree-factory": "^1.0.0",
-		"art-standard-lib": "*",
-		"art-testbench": "*",
-		"bluebird": "^3.5.0",
-		"caffeine-script": "*",
-		"caffeine-script-runtime": "*",
-		"case-sensitive-paths-webpack-plugin": "^2.1.1",
-		"chai": "^4.0.1",
-		"coffee-loader": "^0.7.3",
-		"coffee-script": "^1.12.6",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"css-loader": "^0.28.4",
-		"dateformat": "^2.0.0",
-		"detect-node": "^2.0.3",
-		"fs-extra": "^3.0.0",
-		"glob": "^7.1.2",
-		"glob-promise": "^3.1.0",
-		"json-loader": "^0.5.4",
-		"mocha": "^3.4.2",
-		"neptune-namespaces": "*",
-		"recursive-copy": "^2.0.6",
-		"script-loader": "^0.7.0",
-		"style-loader": "^0.18.1",
-		"webpack": "^2.6.1",
-		"webpack-dev-server": "^2.4.5",
-		"webpack-merge": "^3.0.0",
-		"webpack-node-externals": "^1.5.4"
-	},
-	"description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
-	"license": "ISC",
-	"name": "art-build-configurator",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "1.15.1"
-};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"^1.0.0","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.0","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^3.0.0","webpack-node-externals":"^1.5.4"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.15.1"}
 
 /***/ }),
 /* 24 */
@@ -971,7 +924,7 @@ Caf.defMod(module, () => {
       "compactFlatten",
       "formattedInspect"
     ],
-    [__webpack_require__(5), global]
+    [global, __webpack_require__(5)]
   ));
   return (Configurator = Caf.defClass(
     class Configurator extends Object {},
@@ -1147,7 +1100,7 @@ Caf.defMod(module, () => {
   let fileBuilder, isPlainObject, isString, Error, formattedInspect;
   ({ isPlainObject, isString, Error, formattedInspect } = Caf.import(
     ["isPlainObject", "isString", "Error", "formattedInspect"],
-    [__webpack_require__(3), global]
+    [global, __webpack_require__(3)]
   ));
   return {
     fileBuilder: (fileBuilder = function(name, contents) {
@@ -1219,7 +1172,7 @@ Caf.defMod(module, () => {
   let Versioning, BaseClass, JSON;
   ({ BaseClass, JSON } = Caf.import(
     ["BaseClass", "JSON"],
-    [__webpack_require__(3), global]
+    [global, __webpack_require__(3)]
   ));
   return (Versioning = Caf.defClass(
     class Versioning extends BaseClass {},
