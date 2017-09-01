@@ -4,4 +4,5 @@
 module.exports = require './namespace'
 module.exports
 .addModules
+  Limits:    require './Limits'   
   Validator: require './Validator'

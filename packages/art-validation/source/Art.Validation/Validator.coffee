@@ -137,7 +137,7 @@ module.exports = class Validator extends BaseClass
     object fields, normalizeFieldProps
 
   @normalizeFieldProps: normalizeFieldProps = (ft) ->
-    ft = if isPlainObject ft
+    fieldProps = if isPlainObject ft
 
       normalizeFieldTypeProp normalizeInstanceOfProp normalizeDepricatedProps normalizePlainObjectProps ft
 
@@ -161,7 +161,7 @@ module.exports = class Validator extends BaseClass
     else
       throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
 
-    merge FieldTypes[ft.fieldType], ft
+    merge FieldTypes[fieldProps.fieldType], fieldProps
 
   constructor: (fieldDeclarationMap, options) ->
     @_fieldProps = {}
@@ -217,7 +217,7 @@ module.exports = class Validator extends BaseClass
     out = try
       @requiredFieldsPresent(fields) &&
       @presentFieldsValid(fields) &&
-      @preprocessFields fields, true
+      @presentFieldLengthsValid @preprocessFields fields, true
     catch error
       log.error Validator: error_in: preCreateSync: {fields, options, this: @, error}
 
@@ -231,7 +231,7 @@ module.exports = class Validator extends BaseClass
   preUpdateSync: (fields = {}, options) ->
     out = try
       @presentFieldsValid(fields) &&
-      @preprocessFields fields
+      @presentFieldLengthsValid @preprocessFields fields
     catch error
       log.error Validator: error_in: preUpdateSync: {fields, options, this: @, error}
 
@@ -248,6 +248,14 @@ module.exports = class Validator extends BaseClass
       else
         "invalid #{f}"
 
+    # maxLength / minLength errors
+    array fields, messageFields,
+      when: (value, fieldName) => @_fieldProps[fieldName] && !errors[fieldName] && !@presentFieldLengthValid fieldName, value
+      with: (value, fieldName) =>
+        errors[fieldName] = 'invalid'
+        {maxLength, minLength} = @_fieldProps[fieldName]
+        "#{fieldName} length must be #{if maxLength? && value.length > maxLength then "<= #{maxLength}" else ">= #{minLength}"} (was: #{value.length})"
+
     forCreate && array @missingFields(fields), messageFields, (f) ->
       errors[f] = "missing"
       "missing #{f}"
@@ -260,12 +268,19 @@ module.exports = class Validator extends BaseClass
   ####################
   # VALIDATION CORE
   ####################
-  presentFieldValid: (fields, fieldName) ->
+  presentFieldValid: (fields, fieldName, value) ->
     if fieldProps = @_fieldProps[fieldName]
-      {validate} = fieldProps
-      !validate || !(value = fields[fieldName])? || value == null || value == undefined || validate value, fieldName, fields
+      {validate, maxLength, minLength} = fieldProps
+      !validate || !value? || value == null || value == undefined || validate value, fieldName, fields
     else
       !@exclusive
+
+  presentFieldLengthValid: (fieldName, value) ->
+    if fieldProps = @_fieldProps[fieldName]
+      {maxLength, minLength} = fieldProps
+      (!maxLength? || value.length <= maxLength) &&
+      (!minLength? || value.length >= minLength)
+    else true
 
   requiredFieldPresent: (fields, fieldName) ->
     return true unless fieldProps = @_fieldProps[fieldName]
@@ -273,13 +288,18 @@ module.exports = class Validator extends BaseClass
     return false if fieldProps.present  && !present fields[fieldName]
     true
 
+  presentFieldLengthsValid: (fields) ->
+    for fieldName, fieldValue of fields when fieldValue?
+      return false unless @presentFieldLengthValid fieldName, fieldValue
+    fields
+
   presentFieldsValid: (fields) ->
-    for fieldName, __ of fields
-      return false unless @presentFieldValid fields, fieldName
+    for fieldName, fieldValue of fields
+      return false unless @presentFieldValid fields, fieldName, fieldValue
     true
 
   requiredFieldsPresent: (fields) ->
-    for fieldName, __ of @_fieldProps
+    for fieldName, fieldValue of @_fieldProps
       return false unless @requiredFieldPresent fields, fieldName
     true
 
@@ -309,7 +329,7 @@ module.exports = class Validator extends BaseClass
   # VALIDATION INFO CORE
   ####################
   invalidFields: (fields) ->
-    k for k, v of fields when !@presentFieldValid fields, k
+    k for k, v of fields when !@presentFieldValid fields, k, v
 
   missingFields: (fields) ->
     k for k in @_requiredFields when !@requiredFieldPresent fields, k
