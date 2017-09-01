@@ -208,25 +208,30 @@ module.exports = class Validator extends BaseClass
     inspectedObjects: ->
       Validator: @_fieldProps
 
-  ###
-  IN:
-    fields: object with fields to validate OR Promise returning said object
+  # 2017-09-01 NEW API:
+  # I'm going to drop the async stuff. It just makes this lib more complex than it needs to be
+  # with modest savings to other libs. All it does is ensure fields are resolved before doing
+  # fully synchronous work.
 
-  OUT:
-    promise.then (validatedPreprocessedFields) ->
-    .catch (validationFailureInfoObject) ->
-  ###
-  preCreate: preCreate = (fields, options) -> Promise.resolve(fields).then (fields) => @preCreateSync fields, options
+  #<DEPRICATED>
+  preCreate: (fields, options) ->
+    log.error "Validator.preCreate is DEPRICATED. Use .validate or .validateCreate"
+    Promise.resolve(fields).then (fields) => @preCreateSync fields, options
 
-  ###
-  IN:
-    fields: object with fields to validate OR Promise returning said object
+  preUpdate: (fields, options) ->
+    log.error "Validator.preUpdate is DEPRICATED. Use .validateUpdate"
+    Promise.resolve(fields).then (fields) => @preUpdateSync fields, options
 
-  OUT:
-    promise.then (validatedPreprocessedFields) ->
-    .catch (validationFailureInfoObject) ->
-  ###
-  preUpdate: (fields, options) -> Promise.resolve(fields).then (fields) => @preUpdateSync fields, options
+  validateSync: -> throw new Error "DEPRICATED: use validate"
+
+  preCreateSync: (fields = {}, options) ->
+    log.error "preCreateSync is DEPRICATED. use .validateCreate or just .validate"
+    @validateCreate fields, options
+
+  preUpdateSync: (fields = {}, options) ->
+    log.error "preUpdateSync is DEPRICATED. use validateUpdate"
+    @validateUpdate fields, options
+  #</DEPRICATED>
 
   ###
   IN:
@@ -236,8 +241,10 @@ module.exports = class Validator extends BaseClass
       logErrors: false - if true, will log.error errors
 
   OUT: preprocessed fields - if they pass, otherwise error is thrown
+
+  NOTE: missing fields are errors
   ###
-  preCreateSync: preCreateSync = (fields = {}, options) ->
+  validateCreate: validateCreate = (fields = {}, options) ->
     processedFields = null
     out = try
       @requiredFieldsPresent(fields) &&
@@ -248,20 +255,20 @@ module.exports = class Validator extends BaseClass
 
     out || @_throwError fields, processedFields, options, true
 
-  validateSync: -> throw new Error "DEPRICATED: use validate"
-
-  # 2017-09-01 NEW API:
-  # I'm going to drop the async stuff. It just makes this lib more complex than it needs to be
-  # with modest savings to other libs. All it does is ensure fields are resolved before doing
-  # fully synchronous work.
-  validate:       preCreateSync
-  validateCreate: preCreateSync
-  validateUpdate: preUpdateSync
+  validate:       validateCreate
 
   ###
+  IN:
+    fields: - the object to check
+    options:
+      context: string - included in validation errors for reference
+      logErrors: false - if true, will log.error errors
+
   OUT: preprocessed fields - if they pass, otherwise error is thrown
+
+  NOTE: missing fields are ignored
   ###
-  preUpdateSync: preUpdateSync = (fields = {}, options) ->
+  validateUpdate: validateUpdate = (fields = {}, options) ->
     out = try
       @presentFieldsValid(fields) &&
       @postValidateFields processedFields =  @preprocessFields fields
@@ -289,9 +296,8 @@ module.exports = class Validator extends BaseClass
       errors[f] = "missing"
       "missing #{f}"
 
-    log.error Validator_preCreate_errors: {options, info} if options?.logErrors
     message = "Invalid fields for #{options?.context || @context || "Validator"} #{if forCreate then 'create' else 'update'}: #{messageFields.join ', '}"
-    info.fields = fields #if options?.includeFieldsInErrors
+    info.fields = fields
     throw new ErrorWithInfo message, info
 
   ####################
