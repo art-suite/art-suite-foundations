@@ -54,15 +54,19 @@ suite:
       new Validator
 
   exclusive: ->
-    test "exclusive", ->
+    test "exclusive only allows declared fields", ->
       v = new Validator {id: 'trimmedString'}, exclusive: true
       v.preCreate id: "hi"
       .then -> assert.rejects v.preCreate id: "id", foo: "bar"
+      .then -> assert.rejects v.preUpdate id: "id", foo: "bar"
+      .then -> v.preCreate id: "id"
+      .then -> v.preUpdate id: "id"
 
     test "inclusive", ->
       v = new Validator id: 'trimmedString'
       v.preCreate id: "hi"
       .then -> v.preCreate id: "id", foo: "bar"
+      .then -> v.preUpdate id: "id", foo: "bar"
 
   trimmedString: ->
     test "id: 'trimmedString'", ->
