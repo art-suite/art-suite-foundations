@@ -111,7 +111,7 @@ module.exports = class Validator extends BaseClass
 
   normalizePlainObjectProps = (ft) ->
     out = null
-    for k, v of ft
+    for k, v of ft when k != "fields"
       if isPlainObject subObject = v
         out = shallowClone ft unless out
         out[k] = true
@@ -128,8 +128,10 @@ module.exports = class Validator extends BaseClass
     ft
 
   normalizeFieldTypeProp = (ft) ->
-    if ft.fieldType
-      merge normalizeFieldProps(ft.fieldType), ft
+    {fieldType, fields} = ft
+    fieldType ||= "object" if fields
+    if fieldType
+      merge normalizeFieldProps(fieldType), ft
     else
       ft
 
@@ -161,7 +163,30 @@ module.exports = class Validator extends BaseClass
     else
       throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
 
-    merge FieldTypes[fieldProps.fieldType], fieldProps
+    fieldPropsWithGeneratedPostValidator merge FieldTypes[fieldProps.fieldType], fieldProps
+
+  fieldPropsWithGeneratedPostValidator = (fieldProps) ->
+    {postValidate, maxLength, minLength, fields} = fieldProps
+    if maxLength? || minLength? || fields?
+
+      log "Create fields" if fields
+      validator = new Validator fields, exclusive: true if fields
+
+      fieldProps.postValidate = (value, fieldName, fields) ->
+        if postValidate
+          return false unless postValidate value, fieldName, fields
+        if value?
+          return false if maxLength? && value.length > maxLength
+          return false if minLength? && value.length < minLength
+          try
+            validator?.validate value
+            true
+          catch
+            false
+        else
+          true
+
+    fieldProps
 
   constructor: (fieldDeclarationMap, options) ->
     @_fieldProps = {}
@@ -192,7 +217,6 @@ module.exports = class Validator extends BaseClass
     .catch (validationFailureInfoObject) ->
   ###
   preCreate: preCreate = (fields, options) -> Promise.resolve(fields).then (fields) => @preCreateSync fields, options
-  validate: preCreate
 
   ###
   IN:
@@ -214,30 +238,39 @@ module.exports = class Validator extends BaseClass
   OUT: preprocessed fields - if they pass, otherwise error is thrown
   ###
   preCreateSync: preCreateSync = (fields = {}, options) ->
+    processedFields = null
     out = try
       @requiredFieldsPresent(fields) &&
       @presentFieldsValid(fields) &&
-      @presentFieldLengthsValid @preprocessFields fields, true
+      @postValidateFields processedFields = @preprocessFields fields, true
     catch error
       log.error Validator: error_in: preCreateSync: {fields, options, this: @, error}
 
-    out || @_throwError fields, options, true
+    out || @_throwError fields, processedFields, options, true
 
-  validateSync: preCreateSync
+  validateSync: -> throw new Error "DEPRICATED: use validate"
+
+  # 2017-09-01 NEW API:
+  # I'm going to drop the async stuff. It just makes this lib more complex than it needs to be
+  # with modest savings to other libs. All it does is ensure fields are resolved before doing
+  # fully synchronous work.
+  validate:       preCreateSync
+  validateCreate: preCreateSync
+  validateUpdate: preUpdateSync
 
   ###
   OUT: preprocessed fields - if they pass, otherwise error is thrown
   ###
-  preUpdateSync: (fields = {}, options) ->
+  preUpdateSync: preUpdateSync = (fields = {}, options) ->
     out = try
       @presentFieldsValid(fields) &&
-      @presentFieldLengthsValid @preprocessFields fields
+      @postValidateFields processedFields =  @preprocessFields fields
     catch error
       log.error Validator: error_in: preUpdateSync: {fields, options, this: @, error}
 
-    out || @_throwError fields, options
+    out || @_throwError fields, processedFields, options
 
-  _throwError: (fields, options, forCreate) ->
+  _throwError: (fields, processedFields, options, forCreate) ->
     info = errors: errors = {}
     messageFields = []
 
@@ -248,13 +281,9 @@ module.exports = class Validator extends BaseClass
       else
         "invalid #{f}"
 
-    # maxLength / minLength errors
-    array fields, messageFields,
-      when: (value, fieldName) => @_fieldProps[fieldName] && !errors[fieldName] && !@presentFieldLengthValid fieldName, value
-      with: (value, fieldName) =>
-        errors[fieldName] = 'invalid'
-        {maxLength, minLength} = @_fieldProps[fieldName]
-        "#{fieldName} length must be #{if maxLength? && value.length > maxLength then "<= #{maxLength}" else ">= #{minLength}"} (was: #{value.length})"
+    array @postInvalidFields(processedFields), messageFields, (f) =>
+      errors[f] = "invalid"
+      "invalid processed #{f}"
 
     forCreate && array @missingFields(fields), messageFields, (f) ->
       errors[f] = "missing"
@@ -268,30 +297,25 @@ module.exports = class Validator extends BaseClass
   ####################
   # VALIDATION CORE
   ####################
+  presentFieldPostValid: (fields, fieldName, value) ->
+    if fieldProps = @_fieldProps[fieldName]
+      {postValidate} = fieldProps
+      !postValidate || !value? || value == null || value == undefined || postValidate value, fieldName, fields
+    else
+      true
+
   presentFieldValid: (fields, fieldName, value) ->
     if fieldProps = @_fieldProps[fieldName]
-      {validate, maxLength, minLength} = fieldProps
+      {validate} = fieldProps
       !validate || !value? || value == null || value == undefined || validate value, fieldName, fields
     else
       !@exclusive
-
-  presentFieldLengthValid: (fieldName, value) ->
-    if fieldProps = @_fieldProps[fieldName]
-      {maxLength, minLength} = fieldProps
-      (!maxLength? || value.length <= maxLength) &&
-      (!minLength? || value.length >= minLength)
-    else true
 
   requiredFieldPresent: (fields, fieldName) ->
     return true unless fieldProps = @_fieldProps[fieldName]
     return false if fieldProps.required && !fields[fieldName]?
     return false if fieldProps.present  && !present fields[fieldName]
     true
-
-  presentFieldLengthsValid: (fields) ->
-    for fieldName, fieldValue of fields when fieldValue?
-      return false unless @presentFieldLengthValid fieldName, fieldValue
-    fields
 
   presentFieldsValid: (fields) ->
     for fieldName, fieldValue of fields
@@ -302,6 +326,12 @@ module.exports = class Validator extends BaseClass
     for fieldName, fieldValue of @_fieldProps
       return false unless @requiredFieldPresent fields, fieldName
     true
+
+
+  postValidateFields: (fields) ->
+    for fieldName, fieldValue of fields
+      return false unless @presentFieldPostValid fields, fieldName, fieldValue
+    fields
 
   ####################
   # PREPROCESS CORE
@@ -330,6 +360,9 @@ module.exports = class Validator extends BaseClass
   ####################
   invalidFields: (fields) ->
     k for k, v of fields when !@presentFieldValid fields, k, v
+
+  postInvalidFields: (fields) ->
+    k for k, v of fields when !@presentFieldPostValid fields, k, v
 
   missingFields: (fields) ->
     k for k in @_requiredFields when !@requiredFieldPresent fields, k

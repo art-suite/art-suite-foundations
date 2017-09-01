@@ -1,0 +1,29 @@
+import &StandardImport
+
+suite: ->
+  test "fields" ->
+    v = new Validator
+      dimensions:
+        fields:
+          x: :number
+          y: :number
+
+    v.validate dimensions: x: 1
+    v.validate dimensions: {}
+    v.validate dimensions: null
+    v.validate dimensions: undefined
+    assert.throws -> v.validate dimensions: "not a string"
+    assert.throws -> v.validate dimensions: 1
+    assert.throws -> v.validate dimensions: []
+    assert.throws -> v.validate dimensions: x: "not a string"
+    assert.throws -> v.validate dimensions: z: 1
+
+  test "required fields" ->
+    v = new Validator
+      dimensions: required:
+        fields:
+          x: :number
+          y: :number
+
+    assert.throws -> v.validate dimensions: null
+    assert.throws -> v.validate dimensions: undefined

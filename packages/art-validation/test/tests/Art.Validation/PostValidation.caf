@@ -1,0 +1,18 @@
+import &StandardImport
+
+suite: ->
+  test "postValidate" ->
+    v = new Validator
+      message:
+        validate: isString
+        preprocess: lowerCamelCase
+        postValidate: (v) ->
+          v.match /Queen/
+
+    v.validate message: "myQueen"
+    v.validate message: "my queen"
+    out = v.validate message: "my what a queen you are"
+    assert.eq out, message: "myWhatAQueenYouAre"
+    assert.throws -> v.validate message: 123
+    assert.throws -> v.validate message: "myqueen"
+    assert.throws -> v.validate message: "queen"
