@@ -6,27 +6,31 @@
   isPlainArray
   isFunction
   isDate
+  isJsonType
+  merge
+  object
 } = require 'art-standard-lib'
 
-module.exports =
-  ###
-  @dataTypes only includes the Standard Json types:
-    except 'null':
-      no field has the type of 'null'
-      instead, it has some other type and can be 'null' unless it is 'required'
-  ###
-  boolean:    validate: (a) -> isBoolean a
-  number:     validate: (a) -> isNumber a
-  string:     validate: (a) -> isString a
-  object:     validate: (a) -> isPlainObject a
-  array:      validate: (a) -> isPlainArray a
-  function:   validate: (a) -> isFunction a
-  date:       validate: (a) -> isDate a
 
-  booleanDataType:  "boolean"
-  numberDataType:   "number"
-  stringDataType:   "string"
-  objectDataType:   "object"
-  arrayDataType:    "array"
-  functionDataType: "function"
-  dateDataType:     "date"
+###
+@dataTypes only includes the Standard Json types:
+  except 'null':
+    no field has the type of 'null'
+    instead, it has some other type and can be 'null' unless it is 'required'
+###
+base =
+  boolean:    validate: isBoolean
+  number:     validate: isNumber
+  string:     validate: isString
+  object:     validate: isPlainObject
+  array:      validate: isPlainArray
+  function:   validate: isFunction
+  date:       validate: isDate
+  json:       validate: isJsonType
+  any:        {}
+
+module.exports = merge base,
+  # for every dataType, declare: booleanDataType: 'boolean'
+  object base,
+    key: (v, k) -> "#{k}DataType"
+    with: (v, k) -> k

@@ -68,6 +68,12 @@ suite:
       .then -> v.preCreate id: "id", foo: "bar"
       .then -> v.preUpdate id: "id", foo: "bar"
 
+    test "true is sufficient for declaring expected fields", ->
+      v = new Validator {id: true, foo: true}, exclusive: true
+      v.preCreate id: "hi"
+      .then -> v.preCreate id: "id", foo: "bar"
+      .then -> v.preUpdate id: "id", foo: "bar"
+
   trimmedString: ->
     test "id: 'trimmedString'", ->
       v = new Validator id: 'trimmedString'
@@ -157,8 +163,6 @@ suite:
       class Bar extends Foo
       v = new Validator
         foo: instanceof: Foo
-
-      log null_instanceof: null instanceof Foo
 
       Promise.resolve()
       .then -> v.preCreate foo: new Foo

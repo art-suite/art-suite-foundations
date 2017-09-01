@@ -9,6 +9,7 @@
   toLowerCase
   emailRegexp
   urlRegexp
+  log
 } = require 'art-standard-lib'
 {
   booleanDataType
@@ -18,7 +19,9 @@
   arrayDataType
   functionDataType
   dateDataType
-} = require './DataTypes'
+  anyDataType
+  jsonDataType
+} = DataTypes = require './DataTypes'
 
 {validStatus} = require 'art-communication-status'
 isId = (v) -> isString(v) && v.match ///^[-_a-z0-9]+$///i
@@ -38,12 +41,14 @@ You can add your own, too, but they are ignored by this class.
 #   This:           @fields webPage: @fieldTypes.id
 #   is the same as: @fields webPage: validate: (v) -> isId v
 #   and this:       @fields webPage: fieldType: "id"
-module.exports =
+module.exports = FieldTypes =
   boolean:  dataType: booleanDataType
   number:   dataType: numberDataType
-  string:   {}
+  string:   dataType: stringDataType
   object:   dataType: objectDataType
   array:    dataType: arrayDataType
+  any:      dataType: anyDataType
+  json:     dataType: jsonDataType
 
   count:    dataType: numberDataType, default: 0
 
@@ -90,3 +95,10 @@ module.exports =
 
   function:
     dataType: functionDataType
+
+
+# apply defaults
+for k, v of FieldTypes
+  v.fieldType = k
+  v.dataType ||= stringDataType
+  v.validate ||= DataTypes[v.dataType].validate

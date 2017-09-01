@@ -99,12 +99,6 @@ EXAMPLES:
 
 module.exports = class Validator extends BaseClass
 
-  # apply defaults
-  for k, v of FieldTypes
-    v.fieldType = k
-    v.dataType ||= stringDataType
-    v.validate ||= DataTypes[v.dataType].validate
-
   normalizeInstanceOfProp = (ft) ->
     if _instanceof = ft.instanceof
       {validate} = ft
@@ -162,6 +156,8 @@ module.exports = class Validator extends BaseClass
           ft[string] = true
       ft
 
+    else if ft == true
+      FieldTypes.any
     else
       throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
 
@@ -245,9 +241,12 @@ module.exports = class Validator extends BaseClass
     info = errors: errors = {}
     messageFields = []
 
-    array @invalidFields(fields), messageFields, (f) ->
+    array @invalidFields(fields), messageFields, (f) =>
       errors[f] = "invalid"
-      "invalid #{f}"
+      if @exclusive && !@_fieldProps[f]
+        "unexpected '#{f}' field"
+      else
+        "invalid #{f}"
 
     forCreate && array @missingFields(fields), messageFields, (f) ->
       errors[f] = "missing"
