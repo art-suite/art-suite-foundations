@@ -56,107 +56,97 @@ suite:
   exclusive: ->
     test "exclusive only allows declared fields", ->
       v = new Validator {id: 'trimmedString'}, exclusive: true
-      v.preCreate id: "hi"
-      .then -> assert.rejects v.preCreate id: "id", foo: "bar"
-      .then -> assert.rejects v.preUpdate id: "id", foo: "bar"
-      .then -> v.preCreate id: "id"
-      .then -> v.preUpdate id: "id"
+      v.validate id: "hi"
+      assert.throws -> v.validate id: "id", foo: "bar"
+      assert.throws -> v.validateUpdate id: "id", foo: "bar"
+      v.validate id: "id"
+      v.validateUpdate id: "id"
 
     test "inclusive", ->
       v = new Validator id: 'trimmedString'
-      v.preCreate id: "hi"
-      .then -> v.preCreate id: "id", foo: "bar"
-      .then -> v.preUpdate id: "id", foo: "bar"
+      v.validate id: "hi"
+      v.validate id: "id", foo: "bar"
+      v.validateUpdate id: "id", foo: "bar"
 
     test "true is sufficient for declaring expected fields", ->
       v = new Validator {id: true, foo: true}, exclusive: true
-      v.preCreate id: "hi"
-      .then -> v.preCreate id: "id", foo: "bar"
-      .then -> v.preUpdate id: "id", foo: "bar"
+      v.validate id: "hi"
+      v.validate id: "id", foo: "bar"
+      v.validateUpdate id: "id", foo: "bar"
 
   trimmedString: ->
     test "id: 'trimmedString'", ->
       v = new Validator id: 'trimmedString'
-      v.preCreate id: "ok"
-      .then -> v.preCreate {}
-      .then -> assert.rejects v.preCreate id: 123
+      v.validate id: "ok"
+      v.validate {}
+      assert.throws -> v.validate id: 123
 
     test "required: 'trimmedString'", ->
       v = new Validator id: required: fieldType: 'trimmedString'
-      assert.rejects v.preCreate id: 123
-      .then -> assert.rejects v.preCreate()
+      v.validate id: "hi"
+      assert.throws -> v.validate id: 123
+      assert.throws -> v.validate()
 
     test "requiredPresent: 'trimmedString'", ->
       v = new Validator id: required: present: fieldType: 'trimmedString'
-      assert.rejects v.preCreate(id: 123), "with number"
-      .then -> assert.rejects v.preCreate(), "missing"
-      .then -> assert.rejects v.preCreate(id: ""), "id:''"
-      .then -> assert.rejects v.preCreate(id: "  "), "id:'  '"
-      .then -> v.preCreate id: "hi"
+      assert.throws -> v.validate(id: 123), "with number"
+      assert.throws -> v.validate(), "missing"
+      assert.throws -> v.validate(id: ""), "id:''"
+      assert.throws -> v.validate(id: "  "), "id:'  '"
+      v.validate id: "hi"
 
   declarationTypes: ->
     test "fieldType: 'id'", ->
       v = new Validator
         id: fieldType: "id"
 
-      assert.rejects v.preCreate {}
-      .then -> v.preUpdate {}
-      .then -> v.preCreate id: "123"
-      .then -> assert.rejects v.preCreate(id: 123)
+      assert.throws -> v.validate {}
+      v.validateUpdate {}
+      v.validate id: "123"
+      assert.rejects -> v.validate(id: 123)
       .then ({info}) -> assert.eq info.errors, id: "invalid"
 
     test "validate: ->", ->
       v = new Validator
         id: validate: (v) -> isString v
 
-      v.preCreate {}
-      .then -> v.preUpdate {}
-      .then -> v.preCreate id: "123"
-      .then -> assert.rejects v.preCreate id: 123
+      v.validate {}
+      v.validateUpdate {}
+      v.validate id: "123"
+      assert.rejects -> v.validate id: 123
       .then ({info}) -> assert.eq info.errors, id: "invalid"
 
     test "preprocess: ->", ->
       v = new Validator
         id: preprocess: (v) -> "#{v}a"
 
-      Promise.resolve()
-      .then ->
-        v.preUpdate id: "123"
-        .then ({id}) -> assert.eq id, "123a"
+      {id} = v.validateUpdate id: "123"
+      assert.eq id, "123a"
 
-      .then ->
-        v.preUpdate id: 456
-        .then ({id}) -> assert.eq id, "456a"
+      {id} = v.validateUpdate id: 456
+      assert.eq id, "456a"
 
 
     test "present: true", ->
       v = new Validator
         id: present: true
 
-      v.preCreate id: "123"
-      .then -> assert.rejects v.preCreate id: ""
-      .then -> assert.rejects v.preCreate id: null
-      .then -> assert.rejects v.preCreate id: undefined
-      .then -> v.preCreate id: false
-      .then -> v.preCreate id: 123
+      v.validate id: "123"
+      assert.throws -> v.validate id: ""
+      assert.throws -> v.validate id: null
+      assert.throws -> v.validate id: undefined
+      v.validate id: false
+      v.validate id: 123
 
     test "required: true", ->
       v = new Validator
         id: required: true
 
-      v.preCreate id: 123
-      .then -> assert.rejects v.preCreate id: null
+      v.validate id: 123
+      assert.rejects -> v.validate id: null
       .then ({info}) -> assert.eq info.errors, id: "missing"
-
-      .then -> assert.rejects v.preCreate id: undefined
+      .then -> assert.rejects -> v.validate id: undefined
       .then ({info}) -> assert.eq info.errors, id: "missing"
-
-      # .then -> assert.rejects v.preCreate {}
-      # .then ({info}) -> assert.eq info.errors, id: "missing"
-
-      # .then -> v.preCreate id: false # is OK since it's not null nor undefined
-      # .then -> v.preUpdate id: null
-      # .then -> v.preUpdate id: 123
 
     test "instanceof: Foo", ->
       class Foo
@@ -165,11 +155,10 @@ suite:
         foo: instanceof: Foo
 
       Promise.resolve()
-      .then -> v.preCreate foo: new Foo
-      .then -> v.preCreate foo: new Bar
-      .then -> v.preCreate foo: null
-      .then ->
-        assert.rejects v.preCreate foo: {}
+      v.validate foo: new Foo
+      v.validate foo: new Bar
+      v.validate foo: null
+      assert.rejects -> v.validate foo: {}
       .then ({info}) -> assert.eq info.errors, foo: "invalid"
 
   defaults:
@@ -221,14 +210,12 @@ suite:
       v = new Validator
         foo: required: validate: (v) -> v.match /// ^email\:#{findEmailRegexp.source}$
 
-      assert.rejects v.preCreate id: 123
-      .then -> assert.rejects v.preCreate foo: "test@test.com"
-      .then -> assert.rejects v.preCreate foo: "email:me@test"
-      .then -> assert.rejects v.preCreate foo: "email:me"
+      assert.throws -> v.validate id: 123
+      assert.throws -> v.validate foo: "test@test.com"
+      assert.throws -> v.validate foo: "email:me@test"
+      assert.rejects -> v.validate foo: "email:me"
       .then ({info}) -> assert.eq info.errors, foo: "invalid"
-      .then -> assert.rejects v.preUpdate foo: "email:me"
+      .then -> assert.rejects -> v.validateUpdate foo: "email:me"
       .then ({info, stack}) -> assert.eq info.errors, foo: "invalid"
-      .then -> v.preUpdate()
-      # .then -> v.preCreate foo: "email:me@test.com"
-      # .then -> v.preUpdate foo: "email:me@test.com"
+      .then -> v.validateUpdate()
 
