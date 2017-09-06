@@ -4980,7 +4980,7 @@ module.exports = Unique = (function() {
 /* 30 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.20.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.21.0"}
 
 /***/ }),
 /* 31 */
@@ -5193,9 +5193,9 @@ module.exports = Clone = (function() {
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dateFormat, isDate, isNumber, march1973InMilliseconds, ref, toDate, toMilliseconds;
+var dateFormat, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
 
-ref = __webpack_require__(2), isNumber = ref.isNumber, isDate = ref.isDate;
+ref = __webpack_require__(2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
 
 march1973InMilliseconds = 100000000000;
 
@@ -5216,6 +5216,9 @@ module.exports = {
   toMilliseconds: toMilliseconds = function(v) {
     if (v == null) {
       return v;
+    }
+    if (isString(v)) {
+      v = v - 0;
     }
     if (isNumber(v)) {
       if (v < march1973InMilliseconds) {
@@ -5452,11 +5455,7 @@ formattedInspectObject = function(m, maxLineLength, options) {
         if (options.color) {
           key = key.blue;
         }
-        if (isPlainObject(value) && objectKeyCount(value) === 1) {
-          results.push(key + " " + v);
-        } else {
-          results.push(key + "\t" + v);
-        }
+        results.push(key + "\t" + v);
       }
       return results;
     })();
@@ -5589,35 +5588,89 @@ formattedInspectRecursive = function(m, maxLineLength, options) {
   }
 };
 
+
+/*
+TODO:
+
+  special mode for a chunk of lines that all have this pattern:
+
+    /^\s*([a-z]:\t)*[^\t]+$/
+
+  Example:
+    hi: there: my: friends: "my value"
+    somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+  Currently that becomes:
+    hi:                   there:            my:       friends: "my value"
+    somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+  Which is pretty awkward. I want:
+    hi: there: my: friends:                           "my value"
+    somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+  Basically, replace all but the last tab with a space.
+
+  But only if ALL lines in a chunk are this pattern.
+
+  CounterExample:
+    properties:
+      autoTags:          type: "text", analyzer: "standard"
+      autoText:          type: "text", analyzer: "english"
+      updatedAt:         type: "long"
+      createdAt:         type: "long"
+      title:             type: "text", analyzer: "english"
+      userId:            type: "keyword"
+      lastPostCreatedAt: type: "long"
+      lastPostId:        type: "keyword"
+      lastChapterPostId: type: "keyword"
+      postCount:         type: "integer"
+      followerCount:     type: "integer"
+      activityCount:     type: "long"
+      messageCount:      type: "long"
+      isProfileTopic:    type: "boolean"
+      private:           type: "boolean"
+
+  Should NOT look like this:
+    properties:
+      autoTags:                type: "text", analyzer: "standard"
+      autoText:                type: "text", analyzer: "english"
+      updatedAt: type:         "long"
+      createdAt: type:         "long"
+      title:                   type: "text", analyzer: "english"
+      userId: type:            "keyword"
+      lastPostCreatedAt: type: "long"
+      lastPostId: type:        "keyword"
+      lastChapterPostId: type: "keyword"
+      postCount: type:         "integer"
+      followerCount: type:     "integer"
+      activityCount: type:     "long"
+      messageCount: type:      "long"
+      isProfileTopic: type:    "boolean"
+      private: type:           "boolean"
+ */
+
 alignTabs = function(linesString, maxLineLength) {
-  var alignedLines, el, elLength, elements, expandAmount, i, j, l, len, len1, line, lines, maxColumnSizes, maxColumnWidth, numColumnsToPad, r, spaceAvailable, tabStops;
+  var alignedLines, el, elLength, elements, expandAmount, i, j, l, len, len1, line, lines, maxColumnSizes, maxColumnWidth, r, spaceAvailable, tabStops;
   if (maxLineLength == null) {
     maxLineLength = 10000;
   }
   tabStops = 1;
   lines = linesString.split("\n");
-  numColumnsToPad = null;
   maxColumnSizes = [];
   maxColumnWidth = maxLineLength / 2;
   for (j = 0, len = lines.length; j < len; j++) {
     line = lines[j];
-    if (!((elements = line.split("\t")).length > 1)) {
-      continue;
-    }
-    if (numColumnsToPad == null) {
-      numColumnsToPad = elements.length - 1;
-    } else if (numColumnsToPad !== elements.length - 1) {
-      numColumnsToPad = 1;
-    }
-    for (i = l = 0, len1 = elements.length; l < len1; i = ++l) {
-      el = elements[i];
-      if (!(i < elements.length - 1 && (i === 0 || ansiSafeStringLength(el) < maxColumnWidth))) {
-        continue;
+    if ((elements = line.split("\t")).length > 1) {
+      for (i = l = 0, len1 = elements.length; l < len1; i = ++l) {
+        el = elements[i];
+        if (!(i < elements.length - 1 && (i === 0 || ansiSafeStringLength(el) < maxColumnWidth))) {
+          continue;
+        }
+        if (maxColumnSizes.length === i) {
+          maxColumnSizes.push(0);
+        }
+        maxColumnSizes[i] = max(maxColumnSizes[i], ansiSafeStringLength(el) + 1);
       }
-      if (maxColumnSizes.length === i) {
-        maxColumnSizes.push(0);
-      }
-      maxColumnSizes[i] = max(maxColumnSizes[i], ansiSafeStringLength(el) + 1);
     }
   }
   alignedLines = (function() {
