@@ -51,10 +51,10 @@ formattedInspectObject = (m, maxLineLength, options) ->
     finalInspectedValues = for [k, v, value] in inspectedValues
       key = "#{k}:"
       key = key.blue if options.color
-      if isPlainObject(value) && objectKeyCount(value) == 1
-        "#{key} #{v}"
-      else
-        "#{key}\t#{v}"
+      # if isPlainObject(value) && objectKeyCount(value) == 1
+      #   "#{key} #{v}"
+      # else
+      "#{key}\t#{v}"
 
     finalInspectedValues.join if !forceMultilineOutput && maxLineLength >= inspectedLength + (inspectedValues.length - 1) * 2
       ",\t"
@@ -163,6 +163,66 @@ formattedInspectRecursive = (m, maxLineLength, options) ->
     else
       out
 
+###
+TODO:
+
+  special mode for a chunk of lines that all have this pattern:
+
+    /^\s*([a-z]:\t)*[^\t]+$/
+
+  Example:
+    hi: there: my: friends: "my value"
+    somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+  Currently that becomes:
+    hi:                   there:            my:       friends: "my value"
+    somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+  Which is pretty awkward. I want:
+    hi: there: my: friends:                           "my value"
+    somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+  Basically, replace all but the last tab with a space.
+
+  But only if ALL lines in a chunk are this pattern.
+
+  CounterExample:
+    properties:
+      autoTags:          type: "text", analyzer: "standard"
+      autoText:          type: "text", analyzer: "english"
+      updatedAt:         type: "long"
+      createdAt:         type: "long"
+      title:             type: "text", analyzer: "english"
+      userId:            type: "keyword"
+      lastPostCreatedAt: type: "long"
+      lastPostId:        type: "keyword"
+      lastChapterPostId: type: "keyword"
+      postCount:         type: "integer"
+      followerCount:     type: "integer"
+      activityCount:     type: "long"
+      messageCount:      type: "long"
+      isProfileTopic:    type: "boolean"
+      private:           type: "boolean"
+
+  Should NOT look like this:
+    properties:
+      autoTags:                type: "text", analyzer: "standard"
+      autoText:                type: "text", analyzer: "english"
+      updatedAt: type:         "long"
+      createdAt: type:         "long"
+      title:                   type: "text", analyzer: "english"
+      userId: type:            "keyword"
+      lastPostCreatedAt: type: "long"
+      lastPostId: type:        "keyword"
+      lastChapterPostId: type: "keyword"
+      postCount: type:         "integer"
+      followerCount: type:     "integer"
+      activityCount: type:     "long"
+      messageCount: type:      "long"
+      isProfileTopic: type:    "boolean"
+      private: type:           "boolean"
+###
+
 alignTabs = (linesString, maxLineLength = 10000) ->
   tabStops = 1
   lines = linesString.split "\n"
@@ -176,15 +236,9 @@ alignTabs = (linesString, maxLineLength = 10000) ->
   #   {} AttributeName: "id",         AttributeType: "S"
   # A better test would be if each column had the same label...
 
-  numColumnsToPad = null
   maxColumnSizes = []
   maxColumnWidth = maxLineLength / 2
   for line in lines when (elements = line.split "\t").length > 1
-    if !numColumnsToPad?
-      numColumnsToPad = elements.length - 1
-    else if numColumnsToPad != elements.length - 1
-      numColumnsToPad = 1
-
     for el, i in elements when i < elements.length - 1 && (i == 0 || ansiSafeStringLength(el) < maxColumnWidth)
       maxColumnSizes.push 0 if maxColumnSizes.length == i
       maxColumnSizes[i] = max maxColumnSizes[i], ansiSafeStringLength(el) + 1
