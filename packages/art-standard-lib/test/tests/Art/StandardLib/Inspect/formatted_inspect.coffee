@@ -278,7 +278,7 @@ module.exports = suite:
       testFIMultiLine a:1, wxyz:4, "a:    1\nwxyz: 4", 10
       testFIMultiLine a: {b:1}, wxyz: {abc: 4},
         """
-        a: b:      1
+        a:    b:   1
         wxyz: abc: 4
         """
         100
@@ -472,7 +472,7 @@ module.exports = suite:
         version: "1.10.2"
         Neptune.CaffeineMc:
           Neptune.CaffeineMc.Compilers: modules: "JavaScript"
-          modules:                               "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
+          modules:                      "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
 
         Neptune.Art:
           Neptune.Art.ClassSystem: modules: "BaseClass, BaseObject, WebpackHotLoader"
@@ -480,7 +480,7 @@ module.exports = suite:
             Neptune.Art.StandardLib.Core: modules: "ArrayCompactFlatten, Merge, StringCase, Types"
             Neptune.Art.StandardLib.Inspect:
               Neptune.Art.StandardLib.Inspect.Inspected: modules: "Array, Core, Object, String"
-              modules: "FormattedInspect, InspectedObjectLiteral, InspectedObjects, Inspector, Inspector2, PlainObjects"
+              modules:                                   "FormattedInspect, InspectedObjectLiteral, InspectedObjects, Inspector, Inspector2, PlainObjects"
 
             modules:
               "ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
