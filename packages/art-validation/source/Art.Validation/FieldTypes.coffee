@@ -24,7 +24,7 @@
 } = DataTypes = require './DataTypes'
 
 {validStatus} = require 'art-communication-status'
-isId = (v) -> isString(v) && v.match ///^[-_a-z0-9]+$///i
+isId = (v) -> isString(v) && v.match ///^[-_a-z0-9]{1,100}$///i
 isHexColor = (v) -> isString(v) && v.match /^#([a-f0-9]{3})|([a-f0-9]{6})/i
 
 ###
@@ -92,6 +92,7 @@ module.exports = FieldTypes =
     preprocess: (v) ->
       v = v.trim()
       v.length > 0 && v
+    maxLength: 1024 # a reasonable upper cap; can be overridden
 
   function:
     dataType: functionDataType

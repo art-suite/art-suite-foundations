@@ -169,7 +169,6 @@ module.exports = class Validator extends BaseClass
     {postValidate, maxLength, minLength, fields} = fieldProps
     if maxLength? || minLength? || fields?
 
-      log "Create fields" if fields
       validator = new Validator fields, exclusive: true if fields
 
       fieldProps.postValidate = (value, fieldName, fields) ->
