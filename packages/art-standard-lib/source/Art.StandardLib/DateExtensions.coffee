@@ -1,4 +1,4 @@
-{isNumber, isDate} = require './Core/Types'
+{isString, isNumber, isDate} = require './Core/Types'
 
 march1973InMilliseconds = 100000000000
 
@@ -21,6 +21,7 @@ module.exports =
   ###
   toMilliseconds: toMilliseconds = (v) ->
     return v unless v?
+    v = v - 0 if isString v
     if isNumber v
       if v < march1973InMilliseconds
         # assuming its a Seconds timestamp
