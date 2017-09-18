@@ -1,6 +1,6 @@
 {defineModule} = require './CommonJs'
 {formattedInspect} = require './Inspect'
-{mergeInto, isFunction, upperCamelCase} = require './Core'
+{mergeInto, isFunction, upperCamelCase, compactFlatten, merge} = require './Core'
 
 ###
 TODO:
@@ -22,10 +22,22 @@ defineModule module, class RequestError extends Error
   ###
   constructor: (props) ->
     super
-    {sourceLib, message, @type, @key, @status, @data} = @props = props
-    @name = "#{sourceLib || ""}RequestError"
+    {sourceLib, message, @requestData, @type, @key, @status, @data, responseData} = @props = merge props
+    @responseData = @data ||= responseData
+    @name = upperCamelCase "#{sourceLib || ""} RequestError"
+    if @props.data
+      delete @props.data
+      @props.data = @responseData
 
-    @message = "#{if message then message + " " else ""}#{@status}: #{@type} #{@key} #{formattedInspect {@data}}"
+    responseDataString = @data && formattedInspect {@data}
+    @message = compactFlatten([
+      message
+      (@status || "failure") + ":"
+      if responseDataString?.length < 80 && !@requestData
+        [@type, @key, responseDataString]
+      else
+        "\n\n" + formattedInspect merge {@type, @key, @requestData, @responseData}
+    ]).join ' '
 
     @info = @props # Support DEPRICATED API
 
@@ -36,4 +48,4 @@ defineModule module, class RequestError extends Error
       @stack = (new Error).stack
 
   toString: ->
-    ["#{@name}: #{@message}", formattedInspect {@props}, ""].join "\n\n"
+    ["#{@name} #{@message}", formattedInspect {@props}, ""].join "\n\n"

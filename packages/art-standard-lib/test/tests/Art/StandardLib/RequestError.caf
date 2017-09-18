@@ -1,8 +1,8 @@
 import &StandardImport
 
 suite: ->
-  test "new RequestError with no params is rejected" ->
-    assert.rejects -> new RequestError
+  test "new RequestError with no params is ok" ->
+    new RequestError
 
   test "new RequestError with {} is OK" ->
     new RequestError {}
