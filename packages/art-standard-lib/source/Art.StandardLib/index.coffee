@@ -27,6 +27,7 @@ module.exports
   Promise:            require './Promise'           
   PromisedFileReader: require './PromisedFileReader'
   RegExpExtensions:   require './RegExpExtensions'  
+  RequestError:       require './RequestError'      
   Ruby:               require './Ruby'              
   ShallowClone:       require './ShallowClone'      
   StringExtensions:   require './StringExtensions'  
