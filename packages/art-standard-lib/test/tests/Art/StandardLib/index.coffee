@@ -20,6 +20,7 @@ module.exports
   PlainData:        require './plain_data'      
   Promise:          require './promise'         
   RegExpExtensions: require './RegExpExtensions'
+  RequestError:     require './RequestError'    
   Ruby:             require './ruby'            
   StringCase:       require './string_case'     
   String:           require './string'          

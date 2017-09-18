@@ -22,10 +22,10 @@ defineModule module, class RequestError extends Error
   ###
   constructor: (props) ->
     super
-    {sourceLib, @type, @key, @status, @data} = @props = props
+    {sourceLib, message, @type, @key, @status, @data} = @props = props
     @name = "#{sourceLib || ""}RequestError"
 
-    @message = "#{message || "(no message)"} #{formattedInspect {@type, @key, @status, @data}}"
+    @message = "#{if message then message + " " else ""}#{@status}: #{@type} #{@key} #{formattedInspect {@data}}"
 
     @info = @props # Support DEPRICATED API
 
