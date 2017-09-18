@@ -4,14 +4,14 @@
 StandardLib = require 'art-standard-lib'
 {
   objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log,
-  objectKeyCount, appendQuery, object, ErrorWithInfo
+  objectKeyCount, appendQuery, object, RequestError
   object
   w
   capitalizedDashCase
   each
 } = require 'art-standard-lib'
 
-{success, serverFailure, aborted, failureTypes, decodeHttpStatus} = require 'art-communication-status'
+{success, failure, serverFailure, aborted, failureTypes, decodeHttpStatus} = require 'art-communication-status'
 {BaseClass} = require 'art-class-system'
 # So this works in NODE:
 # TODO: we could maybe solve this better:
@@ -225,7 +225,19 @@ module.exports = class RestClient extends BaseClass
   _normalizedRestRequest: (options) ->
     {method, url, body, headers, onProgress, responseType, showProgressAfter} = options
 
+
     new Promise (resolve, reject) ->
+
+      fail = (props) ->
+        reject new RequestError merge props, {
+          sourceLib: "ArtRestClient"
+          body
+          headers
+          responseType
+          key:      url
+          type:     method
+          progress: restRequestStatus.progress
+        }
 
       restRequestStatus =
         request: request = new XMLHttpRequest
@@ -233,11 +245,11 @@ module.exports = class RestClient extends BaseClass
         options: options
         abort: ->
           request.abort()
-          reject new ErrorWithInfo "XMLHttpRequest aborted", merge restRequestStatus, status: aborted
+          fail status: aborted, message: "XMLHttpRequest aborted"
 
       getErrorResponse = ->
         try
-          response: getResponse()
+          getResponse()
         catch error
           status:       serverFailure
           rawResponse:  request.response
@@ -265,7 +277,7 @@ module.exports = class RestClient extends BaseClass
 
       request.addEventListener "error", (event) ->
         requestResolved = true
-        reject new ErrorWithInfo "XMLHttpRequest error event triggered", merge restRequestStatus, {event}, decodeHttpStatus()
+        fail status: failure, message: "XMLHttpRequest error event triggered", data: {event}
 
       request.addEventListener "load", (event) ->
         requestResolved = true
@@ -273,14 +285,11 @@ module.exports = class RestClient extends BaseClass
         decodedHttpStatus = decodeHttpStatus httpStatus = request.status
 
         unless (decodedHttpStatus.status == success) && (try resolve getResponse(); true)
-          info = merge restRequestStatus, decodedHttpStatus, {event}, getErrorResponse()
-          stringInfo = formattedInspect info: objectWithout info, "event", "request"
           message = if decodedHttpStatus.status == success
+            decodedHttpStatus.status = serverFailure
             "error processing successful response"
-          else
-            "request status: #{decodedHttpStatus.status} (#{request.status})"
-          message += "\n\n#{stringInfo}"
-          reject new ErrorWithInfo message, info
+
+          fail merge decodedHttpStatus, {message, event, data: getErrorResponse()}
 
       if onProgress
         initialProgressCalled = showProgressAfter <= 0
