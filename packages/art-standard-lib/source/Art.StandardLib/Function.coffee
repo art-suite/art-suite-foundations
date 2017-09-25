@@ -15,6 +15,20 @@ module.exports = class Function
       else                                        -> fn.apply _this, arguments
 
 ###
+PERFORMANCE 2017-09-22
+  Faster with normal bind:
+    Chrome: 4x
+    Edge: 2x
+  Faster with fastBind
+    FF: 7.8x faster
+    Safari:
+      OSX:  12.4x
+      iOS:  11x
+  Android:
+    S8 Samsung browser: fastBindFaster: 6.5
+    S8: normalBindFaster: 4x
+###
+###
 TODO:
 
 The above options are not hot-reload compatible. However, this alternative would be:
