@@ -697,7 +697,7 @@ module.exports = ArrayCompactFlatten = (function() {
    */
 
   ArrayCompactFlatten.flatten = flatten = function(firstArg) {
-    return compactFlattenIfNeeded(arguments.length === 1 ? isArrayOrArguments(firstArg) ? firstArg : [firstArg] : arguments);
+    return compactFlattenIfNeeded(arguments.length === 1 ? firstArg : arguments);
   };
 
 
@@ -762,6 +762,12 @@ module.exports = ArrayCompactFlatten = (function() {
   compactFlattenIfNeeded = function(array, keepTester) {
     if (keepTester == null) {
       keepTester = keepAll;
+    }
+    if (array == null) {
+      return array;
+    }
+    if ((array != null) && !isArrayOrArguments(array)) {
+      return [array];
     }
     if (needsFlatteningOrCompacting(array, keepTester)) {
       return doFlattenInternal(array, keepTester);
@@ -1020,7 +1026,7 @@ escapedDoubleQuoteRegex = /[\\]["]/g;
 floor = Math.floor;
 
 module.exports = StringExtensions = (function() {
-  var base62Characters, consistentJsonStringify, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, pluralize, repeat, standardIndent;
+  var base62Characters, consistentJsonStringify, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, pluralize, repeat, standardIndent;
 
   function StringExtensions() {}
 
@@ -1221,6 +1227,49 @@ module.exports = StringExtensions = (function() {
     openArray: '[',
     closeObject: "}",
     closeArray: "]"
+  };
+
+  StringExtensions.jsStringify = function(obj) {
+    return jsStringifyR(obj, "");
+  };
+
+  jsStringifyR = function(o, s) {
+    var el, first, j, k, len, v;
+    if (isPlainObject(o)) {
+      s += "{";
+      first = true;
+      for (k in o) {
+        v = o[k];
+        if (first) {
+          first = false;
+        } else {
+          s += ",";
+        }
+        if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(k)) {
+          s += k;
+        } else {
+          s += JSON.stringify(k);
+        }
+        s += ":";
+        s = jsStringifyR(v, s);
+      }
+      return s + "}";
+    } else if (isArray(o)) {
+      s += "[";
+      first = true;
+      for (j = 0, len = o.length; j < len; j++) {
+        el = o[j];
+        if (first) {
+          first = false;
+        } else {
+          s += ",";
+        }
+        s = jsStringifyR(el, s);
+      }
+      return s + "]";
+    } else {
+      return s + JSON.stringify(o);
+    }
   };
 
   StringExtensions.consistentJsonStringify = consistentJsonStringify = function(object, indent) {
@@ -5008,7 +5057,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.22.1"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.23.1"}
 
 /***/ }),
 /* 32 */
@@ -5370,6 +5419,22 @@ module.exports = Function = (function() {
   return Function;
 
 })();
+
+
+/*
+PERFORMANCE 2017-09-22
+  Faster with normal bind:
+    Chrome: 4x
+    Edge: 2x
+  Faster with fastBind
+    FF: 7.8x faster
+    Safari:
+      OSX:  12.4x
+      iOS:  11x
+  Android:
+    S8 Samsung browser: fastBindFaster: 6.5
+    S8: normalBindFaster: 4x
+ */
 
 
 /*
@@ -7105,7 +7170,7 @@ module.exports = Inspector2 = (function(superClass) {
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var RequestError, defineModule, formattedInspect, isFunction, mergeInto, ref, upperCamelCase,
+/* WEBPACK VAR INJECTION */(function(module) {var RequestError, compactFlatten, defineModule, formattedInspect, isFunction, merge, mergeInto, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -7113,7 +7178,7 @@ defineModule = __webpack_require__(7).defineModule;
 
 formattedInspect = __webpack_require__(8).formattedInspect;
 
-ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase;
+ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
 
 
 /*
@@ -7139,13 +7204,26 @@ defineModule(module, RequestError = (function(superClass) {
    */
 
   function RequestError(props) {
-    var message, ref1, sourceLib;
+    var message, ref1, responseData, responseDataString, sourceLib;
     RequestError.__super__.constructor.apply(this, arguments);
-    ref1 = this.props = props, sourceLib = ref1.sourceLib, message = ref1.message, this.type = ref1.type, this.key = ref1.key, this.status = ref1.status, this.data = ref1.data;
-    this.name = (sourceLib || "") + "RequestError";
-    this.message = "" + (message ? message + " " : "") + this.status + ": " + this.type + " " + this.key + " " + (formattedInspect({
+    ref1 = this.props = merge(props), sourceLib = ref1.sourceLib, message = ref1.message, this.requestData = ref1.requestData, this.type = ref1.type, this.key = ref1.key, this.status = ref1.status, this.data = ref1.data, responseData = ref1.responseData;
+    this.responseData = this.data || (this.data = responseData);
+    this.name = upperCamelCase((sourceLib || "") + " RequestError");
+    if (this.props.data) {
+      delete this.props.data;
+      this.props.data = this.responseData;
+    }
+    responseDataString = this.data && formattedInspect({
       data: this.data
-    }));
+    });
+    this.message = compactFlatten([
+      message, (this.status || "failure") + ":", (responseDataString != null ? responseDataString.length : void 0) < 80 && !this.requestData ? [this.type, this.key, responseDataString] : "\n\n" + formattedInspect(merge({
+        type: this.type,
+        key: this.key,
+        requestData: this.requestData,
+        responseData: this.responseData
+      }))
+    ]).join(' ');
     this.info = this.props;
     if (isFunction(Error.captureStackTrace)) {
       Error.captureStackTrace(this, this.constructor);
@@ -7156,7 +7234,7 @@ defineModule(module, RequestError = (function(superClass) {
 
   RequestError.prototype.toString = function() {
     return [
-      this.name + ": " + this.message, formattedInspect({
+      this.name + " " + this.message, formattedInspect({
         props: this.props
       }, "")
     ].join("\n\n");
