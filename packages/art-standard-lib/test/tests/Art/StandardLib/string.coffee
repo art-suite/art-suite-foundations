@@ -4,6 +4,7 @@
   eq, clone, inspect, capitalize, upperCamelCase, lowerCamelCase
   snakeCase, pluralize, allIndexes, randomString
   consistentJsonStringify
+  jsStringify
   splitRuns
   humanFriendlyShorten
   compactFlattenJoin
@@ -31,6 +32,40 @@ suite "Art.StandardLib.StandardLib.String.pluralize", ->
   test "pluralize 1, 'user'", -> assert.eq "1 user",  pluralize 1, "user"
   test "pluralize 2, 'user'", -> assert.eq "2 users", pluralize 2, "user"
 
+suite "Art.StandardLib.StandardLib.String.jsStringify", ->
+  list = [
+    null
+    true
+    false
+    0
+    -123
+    123
+    123.456
+    'hi'
+    'hi\nthere'
+    []
+    [1]
+    [1,2,3]
+    {}
+    {a:1}
+    {a:1, b:2}
+    {
+      number: 1
+      string: "hi"
+      null: null
+      true: true
+      false: false
+      object: foo:1, bar:2
+      array: [1, 2, 3]
+    }
+    [
+      1, "hi", null, true, false, {bar:1, foo:2}, [1, 2, 3]
+    ]
+
+  ]
+  for o in list
+    test "#{jsStringify o}", ->
+      assert.eq o, eval jsStringify o
 
 suite "Art.StandardLib.StandardLib.String.consistentJsonStringify", ->
   test "consistentJsonStringify null, true, false", ->

@@ -150,6 +150,39 @@ module.exports = class StringExtensions
     closeObject: "}"
     closeArray: "]"
 
+  @jsStringify: (obj) ->
+    jsStringifyR obj, ""
+
+  jsStringifyR = (o, s) ->
+    if isPlainObject o
+      s += "{"
+      first = true
+      for k, v of o
+        if first
+          first = false
+        else
+          s += ","
+        if /^[a-zA-Z_][a-zA-Z0-9_]*$/.test k
+          s += k
+        else
+          s += JSON.stringify k
+        s += ":"
+        s = jsStringifyR v, s
+
+      s + "}"
+    else if isArray o
+      s += "["
+      first = true
+      for el in o
+        if first
+          first = false
+        else
+          s += ","
+        s = jsStringifyR el, s
+      s + "]"
+    else
+      s + JSON.stringify o
+
   @consistentJsonStringify: consistentJsonStringify = (object, indent) ->
     out = if object == false || object == true || object == null || isNumber object
       "" + object
