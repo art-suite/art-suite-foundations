@@ -42,10 +42,7 @@ module.exports = class ArrayCompactFlatten
   ###
   @flatten: flatten = (firstArg)->
     compactFlattenIfNeeded if arguments.length == 1
-      if isArrayOrArguments firstArg
-        firstArg
-      else
-        [firstArg]
+      firstArg
     else
       arguments
 
@@ -91,6 +88,8 @@ module.exports = class ArrayCompactFlatten
 
   keepAll = -> true
   compactFlattenIfNeeded = (array, keepTester = keepAll)->
+    return array unless array?
+    return [array] if array? && !isArrayOrArguments array
     if needsFlatteningOrCompacting array, keepTester
       doFlattenInternal array, keepTester
     else if array.constructor != Array
