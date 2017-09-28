@@ -14,8 +14,8 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     else
       @props = null
 
-  @escapeHtmlString: escapeHtmlString = (string) ->
-    string.replace /["<>&]/, (match) ->
+  @escapeHtmlString: escapeHtmlString = (string = "") ->
+    "#{string}".replace /["<>&]/, (match) ->
       switch match
       when :" then "" &quot;
       when :& then "" &amp;
