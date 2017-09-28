@@ -24,7 +24,7 @@ defineModule module, -> (superClass) -> class DeclarableMixin extends superClass
           options:
             preprocess: (v) -> newV
             validate:   (v) -> truthish
-            extendable:
+            extendable: defaultValue
               If present, this is an extendable property.
               See: @extendableProperty
               passed to: @extendableProperty "#{key}": options.extendable
