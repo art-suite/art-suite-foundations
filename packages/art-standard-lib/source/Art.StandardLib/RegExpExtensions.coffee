@@ -8,7 +8,8 @@ module.exports = class RegExpExtensions
 
   # https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
   # https://tools.ietf.org/html/rfc3986#section-3.3
-  @findUrlPathRegExp:     /(?:\/(?:[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2})*)*/
+  @findLegalUrlCharacterRegExp: /// [-._~!$&'()*+,;=:@\w] | %[a-f\d]{2} ///
+  @findUrlPathRegExp:     /// (?: \/ (?: (?: #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) (?:#{@findLegalUrlCharacterRegExp.source}) )? ) * ///
   @findUrlPortRegExp:     /(\:)(\d+)/
 
   @findEmailRegExp:       ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegExp.source})///i
@@ -54,6 +55,18 @@ module.exports = class RegExpExtensions
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
     ///i
 
+  @findUrlWithOptionalProtocolRegExp:  ///
+    (?:#{@findUrlProtocolRegExp.source})?
+    (#{@findDomainRegExp.source})
+    (?:#{@findUrlPortRegExp.source})?
+    (#{@findUrlPathRegExp.source})?
+    (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
+    ///i
+
+  @findAllUrlsRegExp: ///#{@findUrlRegExp.source}///ig
+
+  @findAllUrlsWithOptionalProtocolRegExp:  ///#{@findUrlWithOptionalProtocolRegExp.source}///ig
+
   @findSourceReferenceUrlRegExp: ///
     (#{@findUrlProtocolRegExp.source})
     (#{@findDomainRegExp.source})?
@@ -66,6 +79,9 @@ module.exports = class RegExpExtensions
 
   # OUT: see findUrlRegExp
   @urlRegExp: ///^#{@findUrlRegExp.source}$///i
+
+  # OUT: see findUrlRegExp
+  @urlWithOptionalProtocolRegExp: ///^#{@findUrlWithOptionalProtocolRegExp.source}$///i
 
   # *Regexp names DEPRICATED
   # *Regex names - maybe DEPRICATED... ?
