@@ -88,3 +88,14 @@ module.exports = class RegExpExtensions
   for k, v of @ when /RegExp$/.test k
     @[k.replace /RegExp/, "Regexp"] = v
     @[k.replace /RegExp/, "Regex"] = v
+
+  lc = (s) -> s.toLocaleLowerCase()
+  @normalizeUrl: (url) =>
+    url = if @findUrlProtocolRegExp.exec(url)?.index == 0
+      url
+    else
+      "http://#{url}"
+
+    url
+    .replace @findDomainRegExp, lc
+    .replace @findUrlProtocolRegExp, lc
