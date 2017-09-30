@@ -102,5 +102,6 @@ module.exports = suite: ->
       "/localhost:9200/imikimi_oz_dev"
       undefined
       undefined
+      undefined
+      undefined
     ]
-

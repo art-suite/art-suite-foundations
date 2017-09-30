@@ -4,14 +4,14 @@ module.exports = class RegExpExtensions
 
   @findUrlProtocolRegExp: /([\w-]+)(:\/\/)/
   @findDomainRegExp:      /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/
-  @urlQueryParamsRegExp:  /(?:[-+=&*._\w]|%[a-f\d]{2})+/i
+  @urlQueryParamsRegExp:  ///(?:[-+=&*._\w]|%[a-f\d]{2})* (?!\.) (?:[-+=&*._\w]|%[a-f\d]{2})///i
 
   # https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
   # https://tools.ietf.org/html/rfc3986#section-3.3
   @findLegalUrlCharacterRegExp: /// [-._~!$&'()*+,;=:@\w] | %[a-f\d]{2} ///
   @findUrlPathRegExp:     /// (?: \/ (?: (?: #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) (?:#{@findLegalUrlCharacterRegExp.source}) )? ) * ///
   @findUrlPortRegExp:     /(\:)(\d+)/
-  @findUrlFragmentRegExp: /// (\#) ( (?: #{@findLegalUrlCharacterRegExp.source} ) * ) ///
+  @findUrlFragmentRegExp: /// (\#) ( (?: (?: #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) #{@findLegalUrlCharacterRegExp.source} | ) ) ///
 
   @findEmailRegExp:       ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegExp.source})///i
 
