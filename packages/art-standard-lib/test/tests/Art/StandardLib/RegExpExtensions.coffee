@@ -1,7 +1,11 @@
 
 {StandardLib} = Neptune.Art
 
-{emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, urlRegexp} = StandardLib
+{emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast} = StandardLib
+
+popNullish = (a) ->
+  a = arrayWithoutLast a while !peek(a)?
+  a
 
 module.exports = suite: ->
   test "emailRegexp", ->
@@ -63,13 +67,29 @@ module.exports = suite: ->
     assert.eq "foo%20bar".match(urlQueryRegexp), ["foo%20bar"]
 
   test "urlRegexp successes", ->
-    assert.eq "http://foo.com".match(urlRegexp),                      ["http://foo.com",                      "http", "://", "foo.com", undefined, undefined, undefined, undefined, undefined]
-    assert.eq "http://foo.com/here".match(urlRegexp),                 ["http://foo.com/here",                 "http", "://", "foo.com", undefined, undefined, "/here", undefined, undefined]
-    assert.eq "http://foo.com?this=that".match(urlRegexp),            ["http://foo.com?this=that",            "http", "://", "foo.com", undefined, undefined, undefined, "?", "this=that"]
-    assert.eq "http://foo.com?".match(urlRegexp),                     ["http://foo.com?",                     "http", "://", "foo.com", undefined, undefined, undefined, "?", undefined]
-    assert.eq "http://foo.com/?this=that".match(urlRegexp),           ["http://foo.com/?this=that",           "http", "://", "foo.com", undefined, undefined, "/",       "?", "this=that"]
-    assert.eq "http://foo.com/here?this=that".match(urlRegexp),       ["http://foo.com/here?this=that",       "http", "://", "foo.com", undefined, undefined, "/here",   "?", "this=that"]
-    assert.eq "http://foo.com:9000/here?this=that".match(urlRegexp),  ["http://foo.com:9000/here?this=that",  "http", "://", "foo.com", ":",       "9000",    "/here",   "?", "this=that"]
+    assert.eq popNullish("http://foo.com"                                .match urlRegexp),  ["http://foo.com",                      "http", "://", "foo.com"]
+    assert.eq popNullish("http://foo.com#hi"                             .match urlRegexp),  ["http://foo.com#hi",                   "http", "://", "foo.com", undefined, undefined, undefined, undefined, undefined, "#", "hi"]
+    assert.eq popNullish("http://foo.com/here"                           .match urlRegexp),  ["http://foo.com/here",                 "http", "://", "foo.com", undefined, undefined, "/here"]
+    assert.eq popNullish("http://foo.com?this=that"                      .match urlRegexp),  ["http://foo.com?this=that",            "http", "://", "foo.com", undefined, undefined, undefined, "?", "this=that"]
+    assert.eq popNullish("http://foo.com?this=that#hi"                   .match urlRegexp),  ["http://foo.com?this=that#hi",         "http", "://", "foo.com", undefined, undefined, undefined, "?", "this=that", "#", "hi"]
+    assert.eq popNullish("http://foo.com?"                               .match urlRegexp),  ["http://foo.com?",                     "http", "://", "foo.com", undefined, undefined, undefined, "?"]
+    assert.eq popNullish("http://foo.com/?this=that"                     .match urlRegexp),  ["http://foo.com/?this=that",           "http", "://", "foo.com", undefined, undefined, "/",       "?", "this=that"]
+    assert.eq popNullish("http://foo.com/here?this=that"                 .match urlRegexp),  ["http://foo.com/here?this=that",       "http", "://", "foo.com", undefined, undefined, "/here",   "?", "this=that"]
+    assert.eq popNullish("http://foo.com:9000/here?this=that"            .match urlRegexp),  ["http://foo.com:9000/here?this=that",  "http", "://", "foo.com", ":",       "9000",    "/here",   "?", "this=that"]
+
+  test "urlRegexp matches return all matched characters", ->
+    tester = (url) ->
+      assert.eq url, compactFlatten((url.match urlRegexp).slice(1)).join ''
+
+    tester "http://foo.com"
+    tester "http://foo.com#hi"
+    tester "http://foo.com/here"
+    tester "http://foo.com?this=that"
+    tester "http://foo.com?this=that#hi"
+    tester "http://foo.com?"
+    tester "http://foo.com/?this=that"
+    tester "http://foo.com/here?this=that"
+    tester "http://foo.com:9000/here?this=that"
 
   test "regressions", ->
     assert.eq "http://localhost:1337/localhost:9200/imikimi_oz_dev".match(urlRegexp), [

@@ -11,6 +11,7 @@ module.exports = class RegExpExtensions
   @findLegalUrlCharacterRegExp: /// [-._~!$&'()*+,;=:@\w] | %[a-f\d]{2} ///
   @findUrlPathRegExp:     /// (?: \/ (?: (?: #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) (?:#{@findLegalUrlCharacterRegExp.source}) )? ) * ///
   @findUrlPortRegExp:     /(\:)(\d+)/
+  @findUrlFragmentRegExp: /// (\#) ( (?: #{@findLegalUrlCharacterRegExp.source} ) * ) ///
 
   @findEmailRegExp:       ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegExp.source})///i
 
@@ -39,7 +40,7 @@ module.exports = class RegExpExtensions
   match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
 
   USAGE:
-    [__, protocol, __, domain, __, port, path, __, query] = str.match findUrlRegExp
+    [__, protocol, __, domain, __, port, path, __, query, __, fragment] = str.match findUrlRegExp
 
   DESIGN NOTE:
     The reason why I included the fixed strings ('://', ':' and '?') was so that
@@ -53,6 +54,7 @@ module.exports = class RegExpExtensions
     (?:#{@findUrlPortRegExp.source})?
     (#{@findUrlPathRegExp.source})?
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
+    (?:#{@findUrlFragmentRegExp.source})?
     ///i
 
   @findUrlWithOptionalProtocolRegExp:  ///
@@ -61,6 +63,7 @@ module.exports = class RegExpExtensions
     (?:#{@findUrlPortRegExp.source})?
     (#{@findUrlPathRegExp.source})?
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
+    (?:#{@findUrlFragmentRegExp.source})?
     ///i
 
   @findAllUrlsRegExp: ///#{@findUrlRegExp.source}///ig
