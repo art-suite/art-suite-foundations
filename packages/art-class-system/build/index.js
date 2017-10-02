@@ -73,7 +73,8 @@ module.exports =
 
 var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, clone, concatInto, decapitalize, extendClone, functionName, getModuleBeingDefined, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  hasProp = {}.hasOwnProperty,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 StandardLib = __webpack_require__(1);
 
@@ -86,7 +87,7 @@ nextUniqueObjectId = Unique.nextUniqueObjectId;
 ExtendablePropertyMixin = __webpack_require__(2);
 
 module.exports = BaseClass = (function(superClass) {
-  var createWithPostCreate, excludedKeys, getSingleton, imprintObject, warnedAboutIncludeOnce;
+  var createWithPostCreate, excludedKeys, getSingleton, imprintObject, nonImprintableProps, thoroughDeleteProperty, warnedAboutIncludeOnce;
 
   extend(BaseClass, superClass);
 
@@ -105,19 +106,19 @@ module.exports = BaseClass = (function(superClass) {
   /*
   NOTE: only hasOwnProperties are considered! Inherited properties are not touched.
   IN:
-    toObject:   object will be altered to be an "imprint" of fromObject
-    fromObject: object pattern used to imprint toObject
+    targetObject:   object will be altered to be an "imprint" of fromObject
+    fromObject: object pattern used to imprint targetObject
     preserveState:
       false:
-        toObject has every property updated to exactly match fromObject
+        targetObject has every property updated to exactly match fromObject
   
         This includes:
-          1. delete properties in toObject that are not in fromObject
-          2. add every property in fromObject but not in toObject
-          3. overwriting every property in toObject also in fromObject
+          1. delete properties in targetObject that are not in fromObject
+          2. add every property in fromObject but not in targetObject
+          3. overwriting every property in targetObject also in fromObject
   
       true:
-        Attempts to preserve the state of toObject while updating its functionality.
+        Attempts to preserve the state of targetObject while updating its functionality.
         This means properties which are functions in either object are updated.
   
         WARNING: This is a grey area for JavaScript. It is not entirely clear what is
@@ -125,38 +126,54 @@ module.exports = BaseClass = (function(superClass) {
   
         Imprint actions taken when preserving State:
   
-        1. DO NOTHING to properties in toObject that are not in fromObject
-        2. add every property in fromObject but not in toObject
-        3. properties in toObject that are also in fromObject are updated
+        1. DO NOTHING to properties in targetObject that are not in fromObject
+        2. add every property in fromObject but not in targetObject
+        3. properties in targetObject that are also in fromObject are updated
           if one of the following are true:
           - isFunction fromObject[propName]
-          - isFunction toObject[propName]
-          - !toObject.hasOwnProperty propName
+          - isFunction targetObject[propName]
           - propName does NOT start with "_"
+          NOTE: property existance is detected using Object.getOwnPropertyDescriptor
    */
 
-  BaseClass.imprintObject = imprintObject = function(toObject, fromObject, preserveState) {
-    var fromValue, k, v;
+  thoroughDeleteProperty = function(object, propName) {
+    Object.defineProperty(object, propName, {
+      configurable: true,
+      writable: false,
+      value: 1
+    });
+    return delete object[propName];
+  };
+
+  nonImprintableProps = ["__proto__", "prototype"];
+
+  BaseClass.imprintObject = imprintObject = function(targetObject, sourceObject, preserveState) {
+    var i, j, len, len1, sourcePropDescriptor, sourcePropName, sourcePropertyNames, targetPropDescriptor, targetPropName, targetPropertyNames;
     if (preserveState == null) {
       preserveState = false;
     }
+    targetPropertyNames = Object.getOwnPropertyNames(targetObject);
+    sourcePropertyNames = Object.getOwnPropertyNames(sourceObject);
     if (!preserveState) {
-      for (k in toObject) {
-        v = toObject[k];
-        if (!fromObject.hasOwnProperty(k)) {
-          delete toObject[k];
+      for (i = 0, len = targetPropertyNames.length; i < len; i++) {
+        targetPropName = targetPropertyNames[i];
+        if (!(indexOf.call(sourcePropertyNames, targetPropName) >= 0)) {
+          thoroughDeleteProperty(targetObject, targetPropName);
         }
       }
     }
-    for (k in fromObject) {
-      fromValue = fromObject[k];
-      if (fromObject.hasOwnProperty(k)) {
-        if (!preserveState || isFunction(fromValue) || isFunction(toObject[k]) || !k.match(/^_/) || !toObject.hasOwnProperty(k)) {
-          toObject[k] = fromValue;
-        }
+    for (j = 0, len1 = sourcePropertyNames.length; j < len1; j++) {
+      sourcePropName = sourcePropertyNames[j];
+      if (!(!(indexOf.call(nonImprintableProps, sourcePropName) >= 0))) {
+        continue;
+      }
+      targetPropDescriptor = Object.getOwnPropertyDescriptor(targetObject, sourcePropName);
+      sourcePropDescriptor = Object.getOwnPropertyDescriptor(sourceObject, sourcePropName);
+      if (!preserveState || !targetPropDescriptor || isFunction(sourcePropDescriptor.value) || isFunction(targetPropDescriptor != null ? targetPropDescriptor.value : void 0) || !sourcePropName.match(/^_/)) {
+        Object.defineProperty(targetObject, sourcePropName, sourcePropDescriptor);
       }
     }
-    return fromObject;
+    return sourceObject;
   };
 
 
@@ -244,6 +261,7 @@ module.exports = BaseClass = (function(superClass) {
         liveClass.namespace._setChildNamespaceProps(liveClass.getName(), klass);
         klass._name = liveClass._name;
         liveClass.imprintFromClass(klass);
+        liveClass.classModuleState = classModuleState;
         log({
           "Art.ClassSystem.BaseClass: class hot-reload": {
             "class": liveClass.getNamespacePath(),
@@ -253,7 +271,7 @@ module.exports = BaseClass = (function(superClass) {
         });
       } else {
         hotReloaded = false;
-        klass._hotClassModuleState = moduleState[hotReloadKey] = classModuleState = {
+        klass._hotClassModuleState = moduleState[hotReloadKey] = klass.classModuleState = classModuleState = {
           liveClass: liveClass = klass,
           hotUpdatedFromClass: null,
           hotReloadVersion: 0
@@ -714,19 +732,27 @@ module.exports = require("art-standard-lib");
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var clone, concatInto, defineModule, each, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, log, lowerCamelCase, mergeInto, object, ref, upperCamelCase,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+/* WEBPACK VAR INJECTION */(function(module) {var clone, concatInto, defineModule, each, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, log, lowerCamelCase, merge, mergeInto, object, ref, upperCamelCase,
+  extend1 = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty,
+  slice = [].slice;
 
-ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, clone = ref.clone, isString = ref.isString, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect;
+ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, clone = ref.clone, isString = ref.isString, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect, merge = ref.merge;
+
+
+/*
+Todo:
+  validatedDeclarable / validatedExtendableProperty
+    Which use Art.Validation
+ */
 
 defineModule(module, function() {
   return function(superClass) {
     var ExtendablePropertyMixin;
     return ExtendablePropertyMixin = (function(superClass1) {
-      var arrayPropertyExtender, getOwnProperty, objectPropertyExtender;
+      var arrayPropertyExtender, defaultExtender, getOwnProperty, noOptions, objectPropertyExtender;
 
-      extend(ExtendablePropertyMixin, superClass1);
+      extend1(ExtendablePropertyMixin, superClass1);
 
       function ExtendablePropertyMixin() {
         return ExtendablePropertyMixin.__super__.constructor.apply(this, arguments);
@@ -749,10 +775,11 @@ defineModule(module, function() {
        */
 
       ExtendablePropertyMixin.getOwnProperty = getOwnProperty = function(object, property, init) {
+        var ref1;
         if (object.hasOwnProperty(property)) {
           return object[property];
         } else {
-          return object[property] = isFunction(init) ? init(object) : clone(object[property] || init);
+          return object[property] = isFunction(init) ? init(object) : clone((ref1 = object[property]) != null ? ref1 : init);
         }
       };
 
@@ -773,11 +800,11 @@ defineModule(module, function() {
       OUT: ignore
        */
 
-      ExtendablePropertyMixin.objectPropertyExtender = objectPropertyExtender = function(mapOrKey, value) {
+      ExtendablePropertyMixin.objectPropertyExtender = objectPropertyExtender = function(toExtend, mapOrKey, value) {
         if (isString(mapOrKey)) {
-          this[mapOrKey] = value;
+          toExtend[mapOrKey] = value;
         } else if (isPlainObject(mapOrKey)) {
-          mergeInto(this, mapOrKey);
+          mergeInto(toExtend, mapOrKey);
         } else {
           log({
             mapOrKey: mapOrKey,
@@ -788,22 +815,17 @@ defineModule(module, function() {
             value: value
           })));
         }
-        return this;
+        return toExtend;
       };
 
 
       /*
       arrayPropertyExtender
       
-      IN: @ is set to the property-value to extend
-      
-      API 1:
-        IN: array
-        EFFECT: concatInto propValue, array
-      
-      API 2:
-        IN: value
-        EFFECT: propValue.push value
+      IN: valueToExtend, value
+        value:
+          array: concatInto propValue, array
+          non-array: propValue.push value
       
       NOTE: if you want to concat an array-as-a-value to the end of propValue, do this:
         arrayPropertyExtender.call propValue, [arrayAsValue]
@@ -811,13 +833,13 @@ defineModule(module, function() {
       OUT: ignore
        */
 
-      ExtendablePropertyMixin.arrayPropertyExtender = arrayPropertyExtender = function(arrayOrValue) {
+      ExtendablePropertyMixin.arrayPropertyExtender = arrayPropertyExtender = function(toExtend, arrayOrValue) {
         if (isPlainArray(arrayOrValue)) {
-          concatInto(this, arrayOrValue);
+          concatInto(toExtend, arrayOrValue);
         } else {
-          this.push(arrayOrValue);
+          toExtend.push(arrayOrValue);
         }
-        return this;
+        return toExtend;
       };
 
 
@@ -842,95 +864,166 @@ defineModule(module, function() {
         JavaScript doesn't have any built-in mechanisms for inheriting.
       
       BASIC API:
-      @extendableProperty: (map, propertyExtender = defaultPropertyExtender) -> ...
+      @extendableProperty: (map, options) -> ...
       
-      IN: map
-      IN: propertyExtender = (args...) ->
-        IN: 1 or more args to add
-        OUT: new property value
-        THIS:
-          @ is set to a unique clone for the current Class or Instance.
-            cloned from the closest parent value OR the default value
-        EFFECT:
-          Can be pure functional and just return the new, extended data.
-          OR
-          Can modify @ directly, since it is an object/array/atomic value unique to the current class/instance.
-            If modifying @ directly, just return @.
-          Regardless, the returned value becomes the new extendable prop's value.
+      IN:
+        map: name: defaultValue
+        options:
+          declarable: true/false
+            if true, slightly alters the created functions:
+              for: @extendableProperty foo: ...
+              generates:
+                @foo
+      
+          extend:
+            DEFAULTS:
+              switch defaultValue
+              when is Object then objectPropertyExtender
+              when is Array  then arrayPropetyExtender
+              else                defaultExtender
+      
+            (extendable, extendWithValues...) -> newExtendedOwnPropertyValue
+              IN:
+                extendable: the current, extended value, already cloned, so direct mutation is OK
+                extendWithValues: 1 or more values passed into the extend funtion by the client.
+                  Ex: for an array, this is either a single value or an array
+                  Ex: for an object, this is either a single object or two args: key, value
+              OUT: new property value to set own-property to
+              EFFECT:
+                Can be pure functional and just return the new, extended data.
+                OR
+                Can modify extendable directly, since it is an object/array/atomic value unique to the current class/instance.
+                  If modifying extendable directly, be sure to return extendable.
+                Regardless, the returned value becomes the new extendable prop's value.
+      
+      
       
       EFFECT: for each {foo: defaultValue} in map, extendableProperty:
-        defines standard getters:
-          @class.getFoo()
-          @prototype.getFoo()
-          @prototype.foo # getter
-          WARNING:
-            !!! Don't modify the object returned by a getter !!!
+        WARNING:
+          !!! Don't modify the object returned by a getter !!!
       
-            Getters only return the current, most-extended property value. It may not be extended to the
-            current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
-            the extended property.
+          Getters only return the current, most-extended property value. It may not be extended to the
+          current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
+          the extended property.
       
-        defines extender functions:
-          @class.foo value            # extends the property on the PROTOTYPE object
-          @class.extendFoo value      # extends the property on the PROTOTYPE object
-          @prototype.extendFoo value  # extends the property on the INSTANCE object (which inherits from the prototype)
+        declarable:
+          getters:
+            @getFoo:
+            getFoo:
       
-          EFFECT: extends the property if not already extended
-          OUT: extendedPropValue
+          extenders:
+            @foo:
+            foo:
       
-          API 1: IN: 0 args
-            NO ADDITIONAL EFFECT - just returns the extended property
-          API 2: IN: 1 or more args
-            In addition to extending and returning the extended property:
-            calls: propExtender extendedPropValue, args...
+        non-declarable:
       
-        NOTE: gthe prototype getters call the class getter for extension purposes.
-          The result is each instance won't get its own version of the property.
-          E.G. Interitance is done at the Class level, not the Instance level.
+          getters:
+            @getFoo:
+            @getter foo:
+      
+          extenders:
+            @foo:
+            @extendFoo:
+            extendFoo:
+      
+            IN:
+              0-args: nothing happens beyond the standard EFFECT
+              1+args: passed to the "extend" function
+      
+            EFFECT: creates a extension (clone) of the property for the currnet class, subclass or instance
+            OUT: the current, extendedPropValue
+      
+            API 1: IN: 0 args
+              NO ADDITIONAL EFFECT - just returns the extended property
+            API 2: IN: 1 or more args
+              In addition to extending and returning the extended property:
+              calls: propExtender extendedPropValue, args...
+      
+          NOTE: gthe prototype getters call the class getter for extension purposes.
+            The result is each instance won't get its own version of the property.
+            E.G. Interitance is done at the Class level, not the Instance level.
        */
 
-      ExtendablePropertyMixin.extendableProperty = function(map, customPropertyExtender) {
+      defaultExtender = function(toExtend, v) {
+        if (v === void 0) {
+          throw new Error("not expecting undefined");
+        }
+        return v;
+      };
+
+      noOptions = {};
+
+      ExtendablePropertyMixin.extendableProperty = function(map, options) {
+        var declarable, extend;
+        if (options == null) {
+          options = noOptions;
+        }
+        if (isFunction(options)) {
+          throw new Error("customPropertyExtender not supported, use extend: option ");
+        }
+        extend = options.extend, declarable = options.declarable;
         return each(map, (function(_this) {
           return function(defaultValue, name) {
-            var extenderName, getterName, internalName, propertyExtender, ucProp;
+            var extenderName, getterName, instanceGetter, internalName, propertyExtender, ucProp;
             name = lowerCamelCase(name);
             ucProp = upperCamelCase(name);
             internalName = _this.propInternalName(name);
             getterName = "get" + ucProp;
             extenderName = "extend" + ucProp;
-            propertyExtender = customPropertyExtender || (function() {
-              if (isPlainObject(defaultValue)) {
+            propertyExtender = (function() {
+              if (extend != null) {
+                return extend;
+              } else if (isPlainObject(defaultValue)) {
                 return objectPropertyExtender;
               } else if (isPlainArray(defaultValue)) {
                 return arrayPropertyExtender;
               } else {
-                throw new Error("Unsupported property type for extendableProperty: " + (inspect(defaultValue)) + ". Please specify a custom propertyExtender function.");
+                if (defaultValue === void 0) {
+                  throw new Error("defaultValue must not be undefined");
+                }
+                return defaultExtender;
               }
             })();
             _this[getterName] = function() {
-              return this.prototype[internalName] || defaultValue;
+              var ref1;
+              return (ref1 = this.prototype[internalName]) != null ? ref1 : defaultValue;
             };
-            _this.addGetter(name, function() {
-              return this[internalName] || defaultValue;
-            });
+            instanceGetter = function() {
+              var ref1;
+              return (ref1 = this[internalName]) != null ? ref1 : defaultValue;
+            };
+            if (declarable) {
+              _this.prototype[getterName] = instanceGetter;
+            } else {
+              _this.addGetter(name, instanceGetter);
+            }
             _this[name] = _this[extenderName] = function(value) {
               var extendablePropValue;
               extendablePropValue = getOwnProperty(this.prototype, internalName, defaultValue);
               if (arguments.length > 0) {
-                this.prototype[internalName] = propertyExtender.apply(extendablePropValue, arguments);
+                this.prototype[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
               return extendablePropValue;
             };
-            return _this.prototype[extenderName] = function(value) {
+            _this.prototype[extenderName] = function(value) {
               var extendablePropValue;
               extendablePropValue = getOwnProperty(this, internalName, defaultValue);
               if (arguments.length > 0) {
-                this[internalName] = propertyExtender.apply(extendablePropValue, arguments);
+                this[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
               return extendablePropValue;
             };
+            if (declarable) {
+              return _this.prototype[name] = _this.prototype[extenderName];
+            }
           };
         })(this));
+      };
+
+      ExtendablePropertyMixin.declarable = function(map, options) {
+        return this.extendableProperty(map, merge(options, {
+          declarable: true
+        }));
       };
 
       return ExtendablePropertyMixin;
@@ -1103,7 +1196,7 @@ defineModule(module, function() {
               options:
                 preprocess: (v) -> newV
                 validate:   (v) -> truthish
-                extendable:
+                extendable: defaultValue
                   If present, this is an extendable property.
                   See: @extendableProperty
                   passed to: @extendableProperty "#{key}": options.extendable
@@ -1200,50 +1293,7 @@ module.exports = (__webpack_require__(12)).addNamespace('Art.ClassSystem', Class
 /* 11 */
 /***/ (function(module, exports) {
 
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"dependencies": {
-		"art-build-configurator": "*",
-		"art-class-system": "*",
-		"art-config": "*",
-		"art-standard-lib": "*",
-		"art-testbench": "*",
-		"bluebird": "^3.5.0",
-		"caffeine-script": "*",
-		"caffeine-script-runtime": "*",
-		"case-sensitive-paths-webpack-plugin": "^2.1.1",
-		"chai": "^4.0.1",
-		"coffee-loader": "^0.7.3",
-		"coffee-script": "^1.12.6",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"css-loader": "^0.28.4",
-		"dateformat": "^2.0.0",
-		"detect-node": "^2.0.3",
-		"fs-extra": "^3.0.1",
-		"glob": "^7.1.2",
-		"glob-promise": "^3.1.0",
-		"json-loader": "^0.5.4",
-		"mocha": "^3.4.2",
-		"neptune-namespaces": "*",
-		"script-loader": "^0.7.0",
-		"style-loader": "^0.18.1",
-		"webpack": "^2.6.1",
-		"webpack-dev-server": "^2.4.5",
-		"webpack-merge": "^4.1.0",
-		"webpack-node-externals": "^1.6.0"
-	},
-	"description": "Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.",
-	"license": "ISC",
-	"name": "art-class-system",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "1.8.1"
-};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.0"}
 
 /***/ }),
 /* 12 */
