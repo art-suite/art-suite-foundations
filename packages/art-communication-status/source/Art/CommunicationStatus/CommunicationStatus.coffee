@@ -52,7 +52,7 @@ module.exports = class CommunicationStatus
       Then again, local libraries pretty-much don't need communicationStatus at all - they
       can use 'throw' or 'promise.reject'
     ###
-    serverFailure:              httpStatus: 500, failure: true
+    serverFailure:              httpStatus: 500, failure: true, serverFailure: true
 
     ###
     status: networkFailure
@@ -100,6 +100,7 @@ module.exports = class CommunicationStatus
   @[k] = k for k, v of @communicationStatuses
 
   @isClientFailure: (status) -> !!communicationStatuses[status]?.clientFailure
+  @isServerFailure: (status) -> !!communicationStatuses[status]?.serverFailure
 
   @isFailure: (status) -> !!communicationStatuses[status]?.failure
   @isSuccess: (status) -> status == "success"
