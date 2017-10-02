@@ -1007,13 +1007,13 @@ module.exports = MinimalBaseObject = (function() {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var FoundationMath, StringExtensions, Types, compactFlatten, escapedDoubleQuoteRegex, floor, intRand, isArray, isNumber, isPlainObject, isString, wordsRegex;
+var FoundationMath, StringExtensions, Types, compactFlatten, escapedDoubleQuoteRegex, floor, intRand, isArray, isBrowser, isNumber, isPlainObject, isString, wordsRegex;
 
 FoundationMath = __webpack_require__(9);
 
 Types = __webpack_require__(0);
 
-wordsRegex = __webpack_require__(15).wordsRegex;
+wordsRegex = __webpack_require__(16).wordsRegex;
 
 intRand = FoundationMath.intRand;
 
@@ -1021,12 +1021,14 @@ isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPl
 
 compactFlatten = __webpack_require__(1).compactFlatten;
 
+isBrowser = __webpack_require__(14).isBrowser;
+
 escapedDoubleQuoteRegex = /[\\]["]/g;
 
 floor = Math.floor;
 
 module.exports = StringExtensions = (function() {
-  var base62Characters, consistentJsonStringify, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, pluralize, repeat, standardIndent;
+  var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, pluralize, randomString, repeat, standardIndent;
 
   function StringExtensions() {}
 
@@ -1051,7 +1053,7 @@ module.exports = StringExtensions = (function() {
 
   StringExtensions.base62Characters = base62Characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  StringExtensions.randomString = function(length, chars) {
+  StringExtensions.randomString = randomString = function(length, chars, randomNumbers) {
     var charsLength, i, result;
     if (length == null) {
       length = 32;
@@ -1061,15 +1063,32 @@ module.exports = StringExtensions = (function() {
     }
     result = '';
     charsLength = chars.length;
-    return ((function() {
-      var j, ref, results;
-      results = [];
-      for (i = j = 0, ref = length; j < ref; i = j += 1) {
-        results.push(chars[intRand(charsLength)]);
-      }
-      return results;
-    })()).join('');
+    if (randomNumbers) {
+      return ((function() {
+        var j, ref, results;
+        results = [];
+        for (i = j = 0, ref = length; j < ref; i = j += 1) {
+          results.push(chars[randomNumbers[i] % charsLength]);
+        }
+        return results;
+      })()).join('');
+    } else {
+      return ((function() {
+        var j, ref, results;
+        results = [];
+        for (i = j = 0, ref = length; j < ref; i = j += 1) {
+          results.push(chars[intRand(charsLength)]);
+        }
+        return results;
+      })()).join('');
+    }
   };
+
+  StringExtensions.cryptoRandomString = isBrowser ? ((crypto = global.crypto, global), function(l, c) {
+    return randomString(l, c, crypto.getRandomValues(new Uint8Array(l)));
+  }) : (crypto = __webpack_require__(62), function(l, c) {
+    return randomString(l, c, crypto.randomBytes(l));
+  });
 
   StringExtensions.randomBase62Character = function() {
     return base62Characters[intRand(62)];
@@ -1518,7 +1537,7 @@ __webpack_require__(39);
 
 var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
-RegExpExtensions = __webpack_require__(15);
+RegExpExtensions = __webpack_require__(16);
 
 numberRegexp = RegExpExtensions.numberRegexp;
 
@@ -2042,6 +2061,39 @@ module.exports = (__webpack_require__(10)).addNamespace('Core', Core = (function
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
+
+defineModule = __webpack_require__(7).defineModule;
+
+ParseUrl = __webpack_require__(22);
+
+isNode = __webpack_require__(63);
+
+defineModule(module, Environment = (function() {
+  function Environment() {}
+
+  Environment.getEnv = function() {
+    var ref, ref1, ret;
+    ret = ((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0;
+    return ret || {};
+  };
+
+  Environment.isBrowser = !!(global.window && global.navigator && global.document);
+
+  Environment.isWebWorker = !!(!Environment.isBrowser && global.importScripts);
+
+  Environment.isNode = !!isNode;
+
+  return Environment;
+
+})());
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
 
 Promise = BlueBirdPromise = __webpack_require__(61);
@@ -2050,7 +2102,7 @@ ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, is
 
 defineModule = __webpack_require__(7).defineModule;
 
-getEnv = __webpack_require__(17).getEnv;
+getEnv = __webpack_require__(14).getEnv;
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -2438,7 +2490,7 @@ defineModule(module, function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 var RegExpExtensions;
@@ -2456,13 +2508,15 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.findDomainRegExp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/;
 
-  RegExpExtensions.urlQueryParamsRegExp = /(?:[-+=&*._\w]|%[a-f\d]{2})+/i;
+  RegExpExtensions.urlQueryParamsRegExp = /(?:[-+=&*._\w]|%[a-f\d]{2})*(?!\.)(?:[-+=&*._\w]|%[a-f\d]{2})/i;
 
   RegExpExtensions.findLegalUrlCharacterRegExp = /[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2}/;
 
   RegExpExtensions.findUrlPathRegExp = RegExp("(?:\\/(?:(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "))?)*");
 
   RegExpExtensions.findUrlPortRegExp = /(\:)(\d+)/;
+
+  RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
 
   RegExpExtensions.findEmailRegExp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + RegExpExtensions.findDomainRegExp.source + ")", "i");
 
@@ -2499,7 +2553,7 @@ module.exports = RegExpExtensions = (function() {
   match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
   
   USAGE:
-    [__, protocol, __, domain, __, port, path, __, query] = str.match findUrlRegExp
+    [__, protocol, __, domain, __, port, path, __, query, __, fragment] = str.match findUrlRegExp
   
   DESIGN NOTE:
     The reason why I included the fixed strings ('://', ':' and '?') was so that
@@ -2508,9 +2562,9 @@ module.exports = RegExpExtensions = (function() {
       matchResult.slice(1).join ''
    */
 
-  RegExpExtensions.findUrlRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?", "i");
+  RegExpExtensions.findUrlRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
 
-  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")?(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?", "i");
+  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")?(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
 
   RegExpExtensions.findAllUrlsRegExp = RegExp("" + RegExpExtensions.findUrlRegExp.source, "ig");
 
@@ -2548,7 +2602,7 @@ module.exports = RegExpExtensions = (function() {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
@@ -2558,7 +2612,7 @@ ref = __webpack_require__(9), bound = ref.bound, max = ref.max, intRand = ref.in
 
 ref1 = __webpack_require__(0), isNumber = ref1.isNumber, isString = ref1.isString;
 
-ref2 = __webpack_require__(15), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
+ref2 = __webpack_require__(16), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
 module.exports = ArrayExtensions = (function() {
   var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSort, rightOfIndex, w;
@@ -3147,39 +3201,6 @@ module.exports = ArrayExtensions = (function() {
 
 })();
 
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
-
-defineModule = __webpack_require__(7).defineModule;
-
-ParseUrl = __webpack_require__(22);
-
-isNode = __webpack_require__(62);
-
-defineModule(module, Environment = (function() {
-  function Environment() {}
-
-  Environment.getEnv = function() {
-    var ref, ref1, ret;
-    ret = ((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0;
-    return ret || {};
-  };
-
-  Environment.isBrowser = !!(global.window && global.navigator && global.document);
-
-  Environment.isWebWorker = !!(!Environment.isBrowser && global.importScripts);
-
-  Environment.isNode = !!isNode;
-
-  return Environment;
-
-})());
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
 /* 18 */
@@ -4046,7 +4067,7 @@ module.exports = [__webpack_require__(3), __webpack_require__(12), __webpack_req
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-remove = __webpack_require__(16).remove;
+remove = __webpack_require__(17).remove;
 
 objectKeyCount = __webpack_require__(21).objectKeyCount;
 
@@ -5085,7 +5106,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.25.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.26.0"}
 
 /***/ }),
 /* 32 */
@@ -5099,7 +5120,7 @@ module.exports = require("neptune-namespaces");
 
 var AsyncExtensions, Promise;
 
-Promise = __webpack_require__(14);
+Promise = __webpack_require__(15);
 
 module.exports = AsyncExtensions = (function() {
   var timeout;
@@ -5965,13 +5986,13 @@ callStack = __webpack_require__(24).callStack;
 
 isString = __webpack_require__(0).isString;
 
-peek = __webpack_require__(16).peek;
+peek = __webpack_require__(17).peek;
 
 merge = __webpack_require__(1).merge;
 
-ref = __webpack_require__(14), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
+ref = __webpack_require__(15), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
 
-ref1 = __webpack_require__(17), isNode = ref1.isNode, getEnv = ref1.getEnv;
+ref1 = __webpack_require__(14), isNode = ref1.isNode, getEnv = ref1.getEnv;
 
 disableLog = getEnv().disableLog;
 
@@ -6408,7 +6429,7 @@ module.exports = ObjectDiff = (function() {
 
 var Promise, PromisedFileReader;
 
-Promise = __webpack_require__(14);
+Promise = __webpack_require__(15);
 
 module.exports = PromisedFileReader = (function() {
   function PromisedFileReader() {}
@@ -6731,13 +6752,13 @@ module.exports = require("dateformat");
 module.exports = __webpack_require__(10);
 
 module.exports.includeInNamespace(__webpack_require__(60)).addModules({
-  ArrayExtensions: __webpack_require__(16),
+  ArrayExtensions: __webpack_require__(17),
   AsyncExtensions: __webpack_require__(33),
   CallStack: __webpack_require__(24),
   Clone: __webpack_require__(34),
   CommonJs: __webpack_require__(7),
   DateExtensions: __webpack_require__(35),
-  Environment: __webpack_require__(17),
+  Environment: __webpack_require__(14),
   Eq: __webpack_require__(26),
   ErrorWithInfo: __webpack_require__(36),
   Function: __webpack_require__(37),
@@ -6750,9 +6771,9 @@ module.exports.includeInNamespace(__webpack_require__(60)).addModules({
   ObjectDiff: __webpack_require__(43),
   ObjectExtensions: __webpack_require__(21),
   ParseUrl: __webpack_require__(22),
-  Promise: __webpack_require__(14),
+  Promise: __webpack_require__(15),
   PromisedFileReader: __webpack_require__(44),
-  RegExpExtensions: __webpack_require__(15),
+  RegExpExtensions: __webpack_require__(16),
   RequestError: __webpack_require__(59),
   Ruby: __webpack_require__(45),
   ShallowClone: __webpack_require__(46),
@@ -7278,7 +7299,7 @@ defineModule(module, RequestError = (function(superClass) {
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), [__webpack_require__(14), "testPromise", "containsPromises", "deepAll"], __webpack_require__(16), __webpack_require__(33), __webpack_require__(21), __webpack_require__(6), __webpack_require__(26), __webpack_require__(37), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(17), __webpack_require__(22), __webpack_require__(44), __webpack_require__(15), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(7), __webpack_require__(29), __webpack_require__(8), __webpack_require__(34), __webpack_require__(41), __webpack_require__(24), __webpack_require__(35)];
+module.exports = [__webpack_require__(1), [__webpack_require__(15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(17), __webpack_require__(33), __webpack_require__(21), __webpack_require__(6), __webpack_require__(26), __webpack_require__(37), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(14), __webpack_require__(22), __webpack_require__(44), __webpack_require__(16), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(7), __webpack_require__(29), __webpack_require__(8), __webpack_require__(34), __webpack_require__(41), __webpack_require__(24), __webpack_require__(35)];
 
 
 /***/ }),
@@ -7289,6 +7310,12 @@ module.exports = require("bluebird/js/browser/bluebird.core.min");
 
 /***/ }),
 /* 62 */
+/***/ (function(module, exports) {
+
+module.exports = require("crypto");
+
+/***/ }),
+/* 63 */
 /***/ (function(module, exports) {
 
 module.exports = require("detect-node");
