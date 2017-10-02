@@ -1,6 +1,6 @@
 if (true) {
   module.exports = require("./build");
 } else {
-  require("./register");
+  require('coffee-script/register');
   module.exports = require("./index.coffee");
 }
