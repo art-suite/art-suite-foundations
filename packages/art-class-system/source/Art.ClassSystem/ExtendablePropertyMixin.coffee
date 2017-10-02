@@ -15,6 +15,29 @@
 Todo:
   validatedDeclarable / validatedExtendableProperty
     Which use Art.Validation
+
+TODO:
+  When we switch to ES6, we should make the
+  class API look identical to the current instance API.
+
+  That means declarable API looks like this:
+    @extendableProperty foo: {}
+
+    # extend:
+    @foo: hi: 123
+
+  The differnce is we add a ":".
+
+  The benefit is it's a normal getter/setter pair:
+
+    @foo = hi: 123
+
+    log @foo
+
+  The one diference is the "setter" is really an
+  "extender"
+
+
 ###
 
 defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends superClass
