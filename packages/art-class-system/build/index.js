@@ -929,7 +929,6 @@ defineModule(module, function() {
             @foo:
             @extendFoo:
             extendFoo:
-            @setter foo:
       
             IN:
               0-args: nothing happens beyond the standard EFFECT
@@ -959,7 +958,7 @@ defineModule(module, function() {
       noOptions = {};
 
       ExtendablePropertyMixin.extendableProperty = function(map, options) {
-        var declarable, extend, oldExtender;
+        var declarable, extend, noSetter, oldExtender;
         if (options == null) {
           options = noOptions;
         }
@@ -973,7 +972,7 @@ defineModule(module, function() {
             }
           };
         }
-        extend = options.extend, declarable = options.declarable;
+        extend = options.extend, declarable = options.declarable, noSetter = options.noSetter;
         return each(map, (function(_this) {
           return function(defaultValue, name) {
             var extenderName, getterName, instanceExtender, instanceGetter, internalName, propertyExtender, ucProp;
@@ -1000,15 +999,6 @@ defineModule(module, function() {
               var ref1;
               return (ref1 = this.prototype[internalName]) != null ? ref1 : defaultValue;
             };
-            instanceGetter = function() {
-              var ref1;
-              return (ref1 = this[internalName]) != null ? ref1 : defaultValue;
-            };
-            if (declarable) {
-              _this.prototype[getterName] = instanceGetter;
-            } else {
-              _this.addGetter(name, instanceGetter);
-            }
             _this[name] = _this[extenderName] = function(value) {
               var extendablePropValue;
               extendablePropValue = getOwnProperty(this.prototype, internalName, defaultValue);
@@ -1016,6 +1006,10 @@ defineModule(module, function() {
                 this.prototype[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
               return extendablePropValue;
+            };
+            instanceGetter = function() {
+              var ref1;
+              return (ref1 = this[internalName]) != null ? ref1 : defaultValue;
             };
             instanceExtender = _this.prototype[extenderName] = function(value) {
               var extendablePropValue;
@@ -1026,7 +1020,13 @@ defineModule(module, function() {
               return extendablePropValue;
             };
             if (declarable) {
+              _this.prototype[getterName] = instanceGetter;
               return _this.prototype[name] = instanceExtender;
+            } else {
+              if (!noSetter) {
+                _this.addSetter(name, instanceExtender);
+              }
+              return _this.addGetter(name, instanceGetter);
             }
           };
         })(this));
