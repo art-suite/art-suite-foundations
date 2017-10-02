@@ -1,6 +1,67 @@
 import &StandardImport
 
 module.exports = suite:
+  simpleTypes:
+
+    null: ->
+      Foo = null
+      setup ->
+        class Foo extends BaseClass
+          @extendableProperty
+            myAny: null
+
+      test "get", ->
+        assert.eq null, Foo.getMyAny()
+        assert.eq null, (new Foo).getMyAny()
+
+      test "extend", ->
+        Foo.extendMyAny 1
+        foo = new Foo
+        foo.extendMyAny 2
+        assert.eq Foo.getMyAny(), 1
+        assert.eq foo.getMyAny(), 2
+
+      test "extend undefined not allowed", ->
+        assert.throws -> Foo.extendMyAny undefined
+
+    boolean: ->
+      Foo = null
+      setup ->
+        class Foo extends BaseClass
+          @extendableProperty
+            myFlag: false
+
+      test "get", ->
+        assert.eq false, Foo.getMyFlag()
+        assert.eq false, (new Foo).getMyFlag()
+
+      test "type is not checked", ->
+        Foo.extendMyFlag 1
+        assert.eq Foo.getMyFlag(), 1
+
+      test "extend instance doesn't alter class", ->
+        foo = new Foo
+        foo.extendMyFlag true
+        assert.eq Foo.getMyFlag(), false
+        assert.eq foo.getMyFlag(), true
+
+      test "instance inherits class's value", ->
+        Foo.extendMyFlag true
+        foo = new Foo
+        assert.eq Foo.getMyFlag(), true
+        assert.eq foo.getMyFlag(), true
+
+  declarable: ->
+    test "{}", ->
+      class Foo extends BaseClass
+        @declarable {map: foo: 1}, declarable: true
+        @map bar: 2
+
+      foo = new Foo
+      foo.map baz: 3
+      assert.eq Foo.getMap(), foo:1, bar: 2
+      assert.eq foo.getMap(), foo:1, bar: 2, baz: 3
+
   "getters don't extend": ->
     test "[]", ->
       a = null

@@ -8,7 +8,14 @@
   mergeInto
   concatInto
   formattedInspect
+  merge
 } = require 'art-standard-lib'
+
+###
+Todo:
+  validatedDeclarable / validatedExtendableProperty
+    Which use Art.Validation
+###
 
 defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends superClass
 
@@ -27,13 +34,20 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
     otherwise, initialize and return it with init()
   ###
   @getOwnProperty: getOwnProperty = (object, property, init) ->
+    # if property == "_myFlag"
+    #   log
+    #     getOwnProperty:
+    #       property:       property
+    #       hasOwnProperty: object.hasOwnProperty property
+    #       init: init
+
     if object.hasOwnProperty property
       object[property]
     else
       object[property] = if isFunction init
         init object
       else
-        clone object[property] || init
+        clone object[property] ? init
 
   ###
   objectPropertyExtender
@@ -50,40 +64,35 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
 
   OUT: ignore
   ###
-  @objectPropertyExtender: objectPropertyExtender = (mapOrKey, value) ->
+  @objectPropertyExtender: objectPropertyExtender = (toExtend, mapOrKey, value) ->
     if isString mapOrKey
-      @[mapOrKey] = value
+      toExtend[mapOrKey] = value
     else if isPlainObject mapOrKey
-      mergeInto @, mapOrKey
+      mergeInto toExtend, mapOrKey
     else
       log mapOrKey: mapOrKey, type: mapOrKey?.constructor
       throw new Error "first value argument must be a plain object or string: #{formattedInspect {key:mapOrKey, value}}"
-    @
+    toExtend
 
   ###
   arrayPropertyExtender
 
-  IN: @ is set to the property-value to extend
-
-  API 1:
-    IN: array
-    EFFECT: concatInto propValue, array
-
-  API 2:
-    IN: value
-    EFFECT: propValue.push value
+  IN: valueToExtend, value
+    value:
+      array: concatInto propValue, array
+      non-array: propValue.push value
 
   NOTE: if you want to concat an array-as-a-value to the end of propValue, do this:
     arrayPropertyExtender.call propValue, [arrayAsValue]
 
   OUT: ignore
   ###
-  @arrayPropertyExtender: arrayPropertyExtender = (arrayOrValue) ->
+  @arrayPropertyExtender: arrayPropertyExtender = (toExtend, arrayOrValue) ->
     if isPlainArray arrayOrValue
-      concatInto @, arrayOrValue
+      concatInto toExtend, arrayOrValue
     else
-      @push arrayOrValue
-    @
+      toExtend.push arrayOrValue
+    toExtend
 
   ###
   Extendable Properties
@@ -106,81 +115,139 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
     JavaScript doesn't have any built-in mechanisms for inheriting.
 
   BASIC API:
-  @extendableProperty: (map, propertyExtender = defaultPropertyExtender) -> ...
+  @extendableProperty: (map, options) -> ...
 
-  IN: map
-  IN: propertyExtender = (args...) ->
-    IN: 1 or more args to add
-    OUT: new property value
-    THIS:
-      @ is set to a unique clone for the current Class or Instance.
-        cloned from the closest parent value OR the default value
-    EFFECT:
-      Can be pure functional and just return the new, extended data.
-      OR
-      Can modify @ directly, since it is an object/array/atomic value unique to the current class/instance.
-        If modifying @ directly, just return @.
-      Regardless, the returned value becomes the new extendable prop's value.
+  IN:
+    map: name: defaultValue
+    options:
+      declarable: true/false
+        if true, slightly alters the created functions:
+          for: @extendableProperty foo: ...
+          generates:
+            @foo
+
+      extend:
+        DEFAULTS:
+          switch defaultValue
+          when is Object then objectPropertyExtender
+          when is Array  then arrayPropetyExtender
+          else                defaultExtender
+
+        (extendable, extendWithValues...) -> newExtendedOwnPropertyValue
+          IN:
+            extendable: the current, extended value, already cloned, so direct mutation is OK
+            extendWithValues: 1 or more values passed into the extend funtion by the client.
+              Ex: for an array, this is either a single value or an array
+              Ex: for an object, this is either a single object or two args: key, value
+          OUT: new property value to set own-property to
+          EFFECT:
+            Can be pure functional and just return the new, extended data.
+            OR
+            Can modify extendable directly, since it is an object/array/atomic value unique to the current class/instance.
+              If modifying extendable directly, be sure to return extendable.
+            Regardless, the returned value becomes the new extendable prop's value.
+
+
 
   EFFECT: for each {foo: defaultValue} in map, extendableProperty:
-    defines standard getters:
-      @class.getFoo()
-      @prototype.getFoo()
-      @prototype.foo # getter
-      WARNING:
-        !!! Don't modify the object returned by a getter !!!
+    WARNING:
+      !!! Don't modify the object returned by a getter !!!
 
-        Getters only return the current, most-extended property value. It may not be extended to the
-        current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
-        the extended property.
+      Getters only return the current, most-extended property value. It may not be extended to the
+      current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
+      the extended property.
 
-    defines extender functions:
-      @class.foo value            # extends the property on the PROTOTYPE object
-      @class.extendFoo value      # extends the property on the PROTOTYPE object
-      @prototype.extendFoo value  # extends the property on the INSTANCE object (which inherits from the prototype)
+    declarable:
+      getters:
+        @getFoo:
+        getFoo:
 
-      EFFECT: extends the property if not already extended
-      OUT: extendedPropValue
+      extenders:
+        @foo:
+        foo:
 
-      API 1: IN: 0 args
-        NO ADDITIONAL EFFECT - just returns the extended property
-      API 2: IN: 1 or more args
-        In addition to extending and returning the extended property:
-        calls: propExtender extendedPropValue, args...
+    non-declarable:
 
-    NOTE: gthe prototype getters call the class getter for extension purposes.
-      The result is each instance won't get its own version of the property.
-      E.G. Interitance is done at the Class level, not the Instance level.
+      getters:
+        @getFoo:
+        @getter foo:
+
+      extenders:
+        @foo:
+        @extendFoo:
+        extendFoo:
+
+        IN:
+          0-args: nothing happens beyond the standard EFFECT
+          1+args: passed to the "extend" function
+
+        EFFECT: creates a extension (clone) of the property for the currnet class, subclass or instance
+        OUT: the current, extendedPropValue
+
+        API 1: IN: 0 args
+          NO ADDITIONAL EFFECT - just returns the extended property
+        API 2: IN: 1 or more args
+          In addition to extending and returning the extended property:
+          calls: propExtender extendedPropValue, args...
+
+      NOTE: gthe prototype getters call the class getter for extension purposes.
+        The result is each instance won't get its own version of the property.
+        E.G. Interitance is done at the Class level, not the Instance level.
 
   ###
-  @extendableProperty: (map, customPropertyExtender) ->
+  defaultExtender = (toExtend, v) ->
+    throw new Error "not expecting undefined" if v == undefined
+    v
+
+  noOptions = {}
+
+  @extendableProperty: (map, options = noOptions) ->
+    throw new Error "customPropertyExtender not supported, use extend: option " if isFunction options
+    {extend, declarable} = options
     each map, (defaultValue, name) =>
+
       name          = lowerCamelCase name
       ucProp        = upperCamelCase name
       internalName  = @propInternalName name
       getterName    = "get#{ucProp}"
       extenderName  = "extend#{ucProp}"
 
-      propertyExtender = customPropertyExtender ||
+      propertyExtender = extend ?
         if      isPlainObject defaultValue then objectPropertyExtender
         else if isPlainArray  defaultValue then arrayPropertyExtender
-        else throw new Error "Unsupported property type for extendableProperty: #{inspect defaultValue}. Please specify a custom propertyExtender function."
+        else
+          throw new Error "defaultValue must not be undefined" unless defaultValue != undefined
+          defaultExtender
 
-      @[getterName] = -> @prototype[internalName] || defaultValue
-      @addGetter name, -> @[internalName] || defaultValue
+      @[getterName] = -> @prototype[internalName] ? defaultValue
+      instanceGetter = -> @[internalName] ? defaultValue
+      if declarable
+        @prototype[getterName] = instanceGetter
+      else
+        @addGetter name, instanceGetter
 
+      # extend prototype (class)
       # IN: value (must match defaultValue's type - an object or an array)
       # EFFECT: property has been extended for the class-object this was called on (not affecting any parent class)
       # OUT: the extendable property's current value
       @[name] = @[extenderName] = (value) ->
         extendablePropValue = getOwnProperty @prototype, internalName, defaultValue
-        @prototype[internalName] = propertyExtender.apply extendablePropValue, arguments if arguments.length > 0
+        if arguments.length > 0
+          @prototype[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue
 
+      # extend this (instance)
       # IN: value (must match defaultValue's type - an object or an array)
       # EFFECT: property has been extended for the current instance-object this was called on (not affecting it's class or any parent-class)
       # OUT: the extendable property's current value
       @prototype[extenderName] = (value) ->
         extendablePropValue = getOwnProperty @, internalName, defaultValue
-        @[internalName] = propertyExtender.apply extendablePropValue, arguments if arguments.length > 0
+        if arguments.length > 0
+          @[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue
+
+      if declarable
+        @prototype[name] = @prototype[extenderName]
+
+  @declarable: (map, options) ->
+    @extendableProperty map, merge options, declarable: true

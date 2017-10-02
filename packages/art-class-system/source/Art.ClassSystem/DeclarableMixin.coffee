@@ -3,6 +3,8 @@
   isPlainObject
 } = require 'art-standard-lib'
 
+# DEPRICATED: just use @declarable on BaseClass now (provided by the ExtendableProperyMixin)
+#
 # TODO: instead of the ad-hoc solution here, use ArtFoundation.Validator!
 # but, validator needs:
 #   a) to be its own NPM
