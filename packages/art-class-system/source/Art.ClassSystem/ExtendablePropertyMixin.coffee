@@ -177,7 +177,6 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
         @foo:
         @extendFoo:
         extendFoo:
-        @setter foo:
 
         IN:
           0-args: nothing happens beyond the standard EFFECT
@@ -208,7 +207,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       log.warn "DEPRICATED customPropertyExtender not supported, use extend: option "
       options = extend: (extendable, args...) ->
         oldExtender.apply extendable, args
-    {extend, declarable} = options
+    {extend, declarable, noSetter} = options
     each map, (defaultValue, name) =>
 
       name          = lowerCamelCase name
@@ -224,12 +223,10 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
           throw new Error "defaultValue must not be undefined" unless defaultValue != undefined
           defaultExtender
 
+      ###########################
+      # Class Methods
+      ###########################
       @[getterName] = -> @prototype[internalName] ? defaultValue
-      instanceGetter = -> @[internalName] ? defaultValue
-      if declarable
-        @prototype[getterName] = instanceGetter
-      else
-        @addGetter name, instanceGetter
 
       # extend prototype (class)
       # IN: value (must match defaultValue's type - an object or an array)
@@ -241,6 +238,10 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
           @prototype[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue
 
+      ###########################
+      # Instance Methods
+      ###########################
+      instanceGetter = -> @[internalName] ? defaultValue
       # extend this (instance)
       # IN: value (must match defaultValue's type - an object or an array)
       # EFFECT: property has been extended for the current instance-object this was called on (not affecting it's class or any parent-class)
@@ -252,9 +253,11 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
         extendablePropValue
 
       if declarable
+        @prototype[getterName] = instanceGetter
         @prototype[name] = instanceExtender
-      # else
-        # @addSetter name, instanceExtender
+      else
+        @addSetter name, instanceExtender unless noSetter
+        @addGetter name, instanceGetter
 
   @declarable: (map, options) ->
     @extendableProperty map, merge options, declarable: true
