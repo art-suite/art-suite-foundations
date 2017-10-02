@@ -4,6 +4,7 @@ Types          = require './TypesExtended'
 {intRand} = FoundationMath
 {isString, isNumber, isPlainObject, isArray} = Types
 {compactFlatten} = require './Core'
+{isBrowser} = require './Environment'
 
 escapedDoubleQuoteRegex    = /[\\]["]/g
 
@@ -33,10 +34,20 @@ module.exports = class StringExtensions
 
   @base62Characters: base62Characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-  @randomString: (length = 32, chars = base62Characters) ->
+  @randomString: randomString = (length = 32, chars = base62Characters, randomNumbers) ->
     result = ''
     charsLength = chars.length
-    (chars[intRand charsLength] for i in [0...length] by 1).join ''
+    if randomNumbers
+      (chars[randomNumbers[i] % charsLength] for i in [0...length] by 1).join ''
+    else
+      (chars[intRand charsLength] for i in [0...length] by 1).join ''
+
+  @cryptoRandomString: if isBrowser
+    {crypto} = global
+    (l, c) -> randomString l, c, crypto.getRandomValues new Uint8Array l
+  else
+    crypto = require 'crypto'
+    (l, c) -> randomString l, c, crypto.randomBytes l
 
   @randomBase62Character: -> base62Characters[intRand 62]
 
