@@ -21,8 +21,9 @@ module.exports = suite:
         assert.eq Foo.getMyAny(), 1
         assert.eq foo.getMyAny(), 2
 
-      test "extend undefined not allowed", ->
-        assert.throws -> Foo.extendMyAny undefined
+      test "extend undefined is ignored", ->
+        Foo.extendMyAny undefined
+        assert.eq Foo.getMyAny(), null
 
     boolean: ->
       Foo = null

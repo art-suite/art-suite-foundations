@@ -801,6 +801,9 @@ defineModule(module, function() {
        */
 
       ExtendablePropertyMixin.objectPropertyExtender = objectPropertyExtender = function(toExtend, mapOrKey, value) {
+        if (mapOrKey === void 0 || mapOrKey === null) {
+          return toExtend;
+        }
         if (isString(mapOrKey)) {
           toExtend[mapOrKey] = value;
         } else if (isPlainObject(mapOrKey)) {
@@ -808,6 +811,7 @@ defineModule(module, function() {
         } else {
           log({
             mapOrKey: mapOrKey,
+            value: value,
             type: mapOrKey != null ? mapOrKey.constructor : void 0
           });
           throw new Error("first value argument must be a plain object or string: " + (formattedInspect({
@@ -925,6 +929,7 @@ defineModule(module, function() {
             @foo:
             @extendFoo:
             extendFoo:
+            @setter foo:
       
             IN:
               0-args: nothing happens beyond the standard EFFECT
@@ -971,7 +976,7 @@ defineModule(module, function() {
         extend = options.extend, declarable = options.declarable;
         return each(map, (function(_this) {
           return function(defaultValue, name) {
-            var extenderName, getterName, instanceGetter, internalName, propertyExtender, ucProp;
+            var extenderName, getterName, instanceExtender, instanceGetter, internalName, propertyExtender, ucProp;
             name = lowerCamelCase(name);
             ucProp = upperCamelCase(name);
             internalName = _this.propInternalName(name);
@@ -1007,21 +1012,21 @@ defineModule(module, function() {
             _this[name] = _this[extenderName] = function(value) {
               var extendablePropValue;
               extendablePropValue = getOwnProperty(this.prototype, internalName, defaultValue);
-              if (arguments.length > 0) {
+              if (arguments.length > 0 && value !== void 0) {
                 this.prototype[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
               return extendablePropValue;
             };
-            _this.prototype[extenderName] = function(value) {
+            instanceExtender = _this.prototype[extenderName] = function(value) {
               var extendablePropValue;
               extendablePropValue = getOwnProperty(this, internalName, defaultValue);
-              if (arguments.length > 0) {
+              if (arguments.length > 0 && value !== void 0) {
                 this[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
               return extendablePropValue;
             };
             if (declarable) {
-              return _this.prototype[name] = _this.prototype[extenderName];
+              return _this.prototype[name] = instanceExtender;
             }
           };
         })(this));

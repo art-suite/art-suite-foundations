@@ -65,12 +65,13 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
   OUT: ignore
   ###
   @objectPropertyExtender: objectPropertyExtender = (toExtend, mapOrKey, value) ->
+    return toExtend if mapOrKey == undefined || mapOrKey == null
     if isString mapOrKey
       toExtend[mapOrKey] = value
     else if isPlainObject mapOrKey
       mergeInto toExtend, mapOrKey
     else
-      log mapOrKey: mapOrKey, type: mapOrKey?.constructor
+      log {mapOrKey, value, type: mapOrKey?.constructor}
       throw new Error "first value argument must be a plain object or string: #{formattedInspect {key:mapOrKey, value}}"
     toExtend
 
@@ -176,6 +177,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
         @foo:
         @extendFoo:
         extendFoo:
+        @setter foo:
 
         IN:
           0-args: nothing happens beyond the standard EFFECT
@@ -235,7 +237,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       # OUT: the extendable property's current value
       @[name] = @[extenderName] = (value) ->
         extendablePropValue = getOwnProperty @prototype, internalName, defaultValue
-        if arguments.length > 0
+        if arguments.length > 0 && value != undefined
           @prototype[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue
 
@@ -243,14 +245,16 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       # IN: value (must match defaultValue's type - an object or an array)
       # EFFECT: property has been extended for the current instance-object this was called on (not affecting it's class or any parent-class)
       # OUT: the extendable property's current value
-      @prototype[extenderName] = (value) ->
+      instanceExtender = @prototype[extenderName] = (value) ->
         extendablePropValue = getOwnProperty @, internalName, defaultValue
-        if arguments.length > 0
+        if arguments.length > 0 && value != undefined
           @[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue
 
       if declarable
-        @prototype[name] = @prototype[extenderName]
+        @prototype[name] = instanceExtender
+      # else
+        # @addSetter name, instanceExtender
 
   @declarable: (map, options) ->
     @extendableProperty map, merge options, declarable: true
