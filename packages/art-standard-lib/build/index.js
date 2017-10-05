@@ -802,7 +802,7 @@ module.exports = (__webpack_require__(10)).addNamespace('Inspect', Inspect = (fu
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(18);
+__webpack_require__(19);
 
 
 /***/ }),
@@ -1013,7 +1013,7 @@ FoundationMath = __webpack_require__(9);
 
 Types = __webpack_require__(0);
 
-wordsRegex = __webpack_require__(16).wordsRegex;
+wordsRegex = __webpack_require__(17).wordsRegex;
 
 intRand = FoundationMath.intRand;
 
@@ -1521,7 +1521,7 @@ module.exports = __webpack_require__(4);
 
 module.exports.includeInNamespace(__webpack_require__(53)).addModules({
   FormattedInspect: __webpack_require__(38),
-  InspectedObjectLiteral: __webpack_require__(19),
+  InspectedObjectLiteral: __webpack_require__(20),
   InspectedObjects: __webpack_require__(27),
   Inspector: __webpack_require__(28),
   Inspector2: __webpack_require__(58),
@@ -1537,7 +1537,7 @@ __webpack_require__(39);
 
 var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
-RegExpExtensions = __webpack_require__(16);
+RegExpExtensions = __webpack_require__(17);
 
 numberRegexp = RegExpExtensions.numberRegexp;
 
@@ -2094,6 +2094,295 @@ defineModule(module, Environment = (function() {
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
+  slice = [].slice,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
+
+ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
+
+object = __webpack_require__(29).object;
+
+module.exports = ObjectExtensions = (function() {
+  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
+
+  function ObjectExtensions() {}
+
+  ObjectExtensions.countKeys = function(o) {
+    return Object.keys(o).length;
+  };
+
+  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
+    var count, k, v;
+    count = 0;
+    for (k in o) {
+      v = o[k];
+      count++;
+    }
+    return count;
+  };
+
+  ObjectExtensions.objectHasKeys = function(o) {
+    var b, k;
+    for (k in o) {
+      b = o[k];
+      return true;
+    }
+    return false;
+  };
+
+  ObjectExtensions.objectLength = objectKeyCount;
+
+
+  /*
+  NOTE:
+    null and undefined keys are NOT SUPPORTED
+  
+    They should be converted to strings, first,
+    which is what they would become anyway.
+  
+  IN: 0 or more arguments
+    out = {}
+    list = arguments
+  
+    for element in list
+      objects: merge into out
+      arrays or argument lists: recurse using element as the list
+      null or undefined: skip
+      else out[element] = next element (or undefined if none)
+  
+  OUT: plain object
+   */
+
+  toObjectInternal = function(list, out) {
+    var element, j, key, len;
+    key = null;
+    for (j = 0, len = list.length; j < len; j++) {
+      element = list[j];
+      if (key) {
+        out[key] = element;
+        key = null;
+      } else if (isPlainObject(element)) {
+        mergeInto(out, element);
+      } else if (isArrayOrArguments(element)) {
+        toObjectInternal(element, out);
+      } else if (element != null) {
+        key = element;
+      }
+    }
+    if (key) {
+      return out[key] = void 0;
+    }
+  };
+
+  ObjectExtensions.toObject = function() {
+    var out;
+    out = {};
+    toObjectInternal(arguments, out);
+    return out;
+  };
+
+
+  /*
+  IN:
+    inputArray: any array
+    transformFunction: (element) -> [key, value]
+      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
+   */
+
+  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
+    var element, j, key, len, outputMap, ref2, value;
+    if (transformFunction == null) {
+      transformFunction = function(element) {
+        return element;
+      };
+    }
+    outputMap = {};
+    for (j = 0, len = inputArray.length; j < len; j++) {
+      element = inputArray[j];
+      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
+      outputMap[key] = value;
+    }
+    return outputMap;
+  };
+
+
+  /*
+  IN:
+    obj: the object to select fields from
+  
+    2nd argument can be:
+      selectFunction: (value, key) -> true / false
+  
+    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
+   */
+
+  ObjectExtensions.select = function(obj, a) {
+    var j, k, len, prop, properties, result, v;
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    if (isFunction(a)) {
+      if (a.length === 1) {
+        for (k in obj) {
+          v = obj[k];
+          if (a(v)) {
+            result[k] = v;
+          }
+        }
+      } else {
+        for (k in obj) {
+          v = obj[k];
+          if (a(k, v)) {
+            result[k] = v;
+          }
+        }
+      }
+    } else {
+      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
+      for (j = 0, len = properties.length; j < len; j++) {
+        prop = properties[j];
+        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
+          result[prop] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  ObjectExtensions.selectAll = function() {
+    var j, len, obj, prop, properties, ref2, result;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    ref2 = compactFlatten(properties);
+    for (j = 0, len = ref2.length; j < len; j++) {
+      prop = ref2[j];
+      result[prop] = obj[prop];
+    }
+    return result;
+  };
+
+  ObjectExtensions.objectWithDefinedValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v !== void 0;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithExistingValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v != null;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithPresentValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return present(v);
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithout = function() {
+    var anythingToDo, j, len, obj, prop, properties, result, v;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    if (properties.length === 1 && !(typeof properties[0] === "string")) {
+      properties = properties[0];
+    }
+    anythingToDo = false;
+    for (j = 0, len = properties.length; j < len; j++) {
+      prop = properties[j];
+      if (obj.hasOwnProperty(prop)) {
+        anythingToDo = true;
+        break;
+      }
+    }
+    if (anythingToDo) {
+      result = {};
+      for (prop in obj) {
+        v = obj[prop];
+        if (indexOf.call(properties, prop) < 0) {
+          result[prop] = v;
+        }
+      }
+      return result;
+    } else {
+      return obj;
+    }
+  };
+
+  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
+    return !!key.match(/[\s\.\/]/);
+  };
+
+  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
+    var i, j, key, len;
+    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
+    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
+      key = propertyPath[i];
+      if (i === propertyPath.length - 1) {
+        action(obj, key);
+      } else {
+        obj = obj[key] || (obj[key] = {});
+      }
+    }
+    return obj;
+  };
+
+  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
+    withPropertyPath(obj, propertyPath, function(o, k) {
+      return o[k] = value;
+    });
+    return obj;
+  };
+
+  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
+    var k, v;
+    if (into == null) {
+      into = {};
+    }
+    if (pathExpansionEnabled == null) {
+      pathExpansionEnabled = true;
+    }
+    for (k in obj) {
+      v = obj[k];
+      if (pathExpansionEnabled && propertyIsPathed(k)) {
+        withPropertyPath(into, k, function(o, finalKey) {
+          if (isPlainObject(v)) {
+            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
+          } else {
+            return o[finalKey] = v;
+          }
+        });
+      } else if (isPlainObject(v)) {
+        expandPathedProperties(v, into[k] || (into[k] = {}), false);
+      } else {
+        into[k] = v;
+      }
+    }
+    return into;
+  };
+
+  return ObjectExtensions;
+
+})();
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
 
 Promise = BlueBirdPromise = __webpack_require__(61);
@@ -2490,7 +2779,7 @@ defineModule(module, function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 var RegExpExtensions;
@@ -2602,7 +2891,7 @@ module.exports = RegExpExtensions = (function() {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
@@ -2612,7 +2901,7 @@ ref = __webpack_require__(9), bound = ref.bound, max = ref.max, intRand = ref.in
 
 ref1 = __webpack_require__(0), isNumber = ref1.isNumber, isString = ref1.isString;
 
-ref2 = __webpack_require__(16), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
+ref2 = __webpack_require__(17), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
 module.exports = ArrayExtensions = (function() {
   var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSort, rightOfIndex, w;
@@ -3203,7 +3492,7 @@ module.exports = ArrayExtensions = (function() {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected,
@@ -3223,7 +3512,7 @@ module.exports = (__webpack_require__(4)).addNamespace('Inspected', Inspected = 
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjectLiteral, compare;
@@ -3258,7 +3547,7 @@ module.exports = InspectedObjectLiteral = (function() {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -3486,295 +3775,6 @@ module.exports = global.Map || (Map = (function(superClass) {
   return Map;
 
 })(MinimalBaseObject));
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
-  slice = [].slice,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
-
-ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
-
-object = __webpack_require__(29).object;
-
-module.exports = ObjectExtensions = (function() {
-  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
-
-  function ObjectExtensions() {}
-
-  ObjectExtensions.countKeys = function(o) {
-    return Object.keys(o).length;
-  };
-
-  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
-    var count, k, v;
-    count = 0;
-    for (k in o) {
-      v = o[k];
-      count++;
-    }
-    return count;
-  };
-
-  ObjectExtensions.objectHasKeys = function(o) {
-    var b, k;
-    for (k in o) {
-      b = o[k];
-      return true;
-    }
-    return false;
-  };
-
-  ObjectExtensions.objectLength = objectKeyCount;
-
-
-  /*
-  NOTE:
-    null and undefined keys are NOT SUPPORTED
-  
-    They should be converted to strings, first,
-    which is what they would become anyway.
-  
-  IN: 0 or more arguments
-    out = {}
-    list = arguments
-  
-    for element in list
-      objects: merge into out
-      arrays or argument lists: recurse using element as the list
-      null or undefined: skip
-      else out[element] = next element (or undefined if none)
-  
-  OUT: plain object
-   */
-
-  toObjectInternal = function(list, out) {
-    var element, j, key, len;
-    key = null;
-    for (j = 0, len = list.length; j < len; j++) {
-      element = list[j];
-      if (key) {
-        out[key] = element;
-        key = null;
-      } else if (isPlainObject(element)) {
-        mergeInto(out, element);
-      } else if (isArrayOrArguments(element)) {
-        toObjectInternal(element, out);
-      } else if (element != null) {
-        key = element;
-      }
-    }
-    if (key) {
-      return out[key] = void 0;
-    }
-  };
-
-  ObjectExtensions.toObject = function() {
-    var out;
-    out = {};
-    toObjectInternal(arguments, out);
-    return out;
-  };
-
-
-  /*
-  IN:
-    inputArray: any array
-    transformFunction: (element) -> [key, value]
-      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
-   */
-
-  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
-    var element, j, key, len, outputMap, ref2, value;
-    if (transformFunction == null) {
-      transformFunction = function(element) {
-        return element;
-      };
-    }
-    outputMap = {};
-    for (j = 0, len = inputArray.length; j < len; j++) {
-      element = inputArray[j];
-      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
-      outputMap[key] = value;
-    }
-    return outputMap;
-  };
-
-
-  /*
-  IN:
-    obj: the object to select fields from
-  
-    2nd argument can be:
-      selectFunction: (value, key) -> true / false
-  
-    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
-   */
-
-  ObjectExtensions.select = function(obj, a) {
-    var j, k, len, prop, properties, result, v;
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    if (isFunction(a)) {
-      if (a.length === 1) {
-        for (k in obj) {
-          v = obj[k];
-          if (a(v)) {
-            result[k] = v;
-          }
-        }
-      } else {
-        for (k in obj) {
-          v = obj[k];
-          if (a(k, v)) {
-            result[k] = v;
-          }
-        }
-      }
-    } else {
-      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
-      for (j = 0, len = properties.length; j < len; j++) {
-        prop = properties[j];
-        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
-          result[prop] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  ObjectExtensions.selectAll = function() {
-    var j, len, obj, prop, properties, ref2, result;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    ref2 = compactFlatten(properties);
-    for (j = 0, len = ref2.length; j < len; j++) {
-      prop = ref2[j];
-      result[prop] = obj[prop];
-    }
-    return result;
-  };
-
-  ObjectExtensions.objectWithDefinedValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v !== void 0;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithExistingValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v != null;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithPresentValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return present(v);
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithout = function() {
-    var anythingToDo, j, len, obj, prop, properties, result, v;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    if (properties.length === 1 && !(typeof properties[0] === "string")) {
-      properties = properties[0];
-    }
-    anythingToDo = false;
-    for (j = 0, len = properties.length; j < len; j++) {
-      prop = properties[j];
-      if (obj.hasOwnProperty(prop)) {
-        anythingToDo = true;
-        break;
-      }
-    }
-    if (anythingToDo) {
-      result = {};
-      for (prop in obj) {
-        v = obj[prop];
-        if (indexOf.call(properties, prop) < 0) {
-          result[prop] = v;
-        }
-      }
-      return result;
-    } else {
-      return obj;
-    }
-  };
-
-  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
-    return !!key.match(/[\s\.\/]/);
-  };
-
-  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
-    var i, j, key, len;
-    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
-    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
-      key = propertyPath[i];
-      if (i === propertyPath.length - 1) {
-        action(obj, key);
-      } else {
-        obj = obj[key] || (obj[key] = {});
-      }
-    }
-    return obj;
-  };
-
-  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
-    withPropertyPath(obj, propertyPath, function(o, k) {
-      return o[k] = value;
-    });
-    return obj;
-  };
-
-  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
-    var k, v;
-    if (into == null) {
-      into = {};
-    }
-    if (pathExpansionEnabled == null) {
-      pathExpansionEnabled = true;
-    }
-    for (k in obj) {
-      v = obj[k];
-      if (pathExpansionEnabled && propertyIsPathed(k)) {
-        withPropertyPath(into, k, function(o, finalKey) {
-          if (isPlainObject(v)) {
-            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
-          } else {
-            return o[finalKey] = v;
-          }
-        });
-      } else if (isPlainObject(v)) {
-        expandPathedProperties(v, into[k] || (into[k] = {}), false);
-      } else {
-        into[k] = v;
-      }
-    }
-    return into;
-  };
-
-  return ObjectExtensions;
-
-})();
 
 
 /***/ }),
@@ -4067,9 +4067,9 @@ module.exports = [__webpack_require__(3), __webpack_require__(12), __webpack_req
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-remove = __webpack_require__(17).remove;
+remove = __webpack_require__(18).remove;
 
-objectKeyCount = __webpack_require__(21).objectKeyCount;
+objectKeyCount = __webpack_require__(15).objectKeyCount;
 
 floatTrue0 = __webpack_require__(9).floatTrue0;
 
@@ -4376,7 +4376,7 @@ ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonN
 
 escapeJavascriptString = __webpack_require__(6).escapeJavascriptString;
 
-inspectedObjectLiteral = __webpack_require__(19).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
 
 dateFormat = __webpack_require__(48);
 
@@ -4453,7 +4453,7 @@ module.exports = InspectedObjects = (function() {
 var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-Map = __webpack_require__(20);
+Map = __webpack_require__(21);
 
 escapeJavascriptString = __webpack_require__(6).escapeJavascriptString;
 
@@ -5106,7 +5106,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.26.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.26.1"}
 
 /***/ }),
 /* 32 */
@@ -5120,7 +5120,7 @@ module.exports = require("neptune-namespaces");
 
 var AsyncExtensions, Promise;
 
-Promise = __webpack_require__(15);
+Promise = __webpack_require__(16);
 
 module.exports = AsyncExtensions = (function() {
   var timeout;
@@ -5188,7 +5188,7 @@ populateClone would need to take an additional argument - the clone function to 
  */
 var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject, uniquePropertyName;
 
-Map = __webpack_require__(20);
+Map = __webpack_require__(21);
 
 Unique = __webpack_require__(30);
 
@@ -5513,7 +5513,7 @@ ref1 = __webpack_require__(6), pad = ref1.pad, stripTrailingWhitespace = ref1.st
 
 inspect = __webpack_require__(28).inspect;
 
-objectKeyCount = __webpack_require__(21).objectKeyCount;
+objectKeyCount = __webpack_require__(15).objectKeyCount;
 
 toInspectedObjects = __webpack_require__(27).toInspectedObjects;
 
@@ -5920,7 +5920,7 @@ module.exports = FormattedInspect = (function() {
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(18);
+module.exports = __webpack_require__(19);
 
 module.exports.addModules({
   Array: __webpack_require__(54),
@@ -5938,7 +5938,7 @@ var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction,
 
 ref = __webpack_require__(0), deepMap = ref.deepMap, hasKeys = ref.hasKeys, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction, isClass = ref.isClass;
 
-inspectedObjectLiteral = __webpack_require__(19).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
 
 module.exports = PlainObjects = (function() {
   var toPlainObjects;
@@ -5986,11 +5986,11 @@ callStack = __webpack_require__(24).callStack;
 
 isString = __webpack_require__(0).isString;
 
-peek = __webpack_require__(17).peek;
+peek = __webpack_require__(18).peek;
 
 merge = __webpack_require__(1).merge;
 
-ref = __webpack_require__(15), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
+ref = __webpack_require__(16), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
 
 ref1 = __webpack_require__(14), isNode = ref1.isNode, getEnv = ref1.getEnv;
 
@@ -6429,7 +6429,7 @@ module.exports = ObjectDiff = (function() {
 
 var Promise, PromisedFileReader;
 
-Promise = __webpack_require__(15);
+Promise = __webpack_require__(16);
 
 module.exports = PromisedFileReader = (function() {
   function PromisedFileReader() {}
@@ -6752,7 +6752,7 @@ module.exports = require("dateformat");
 module.exports = __webpack_require__(10);
 
 module.exports.includeInNamespace(__webpack_require__(60)).addModules({
-  ArrayExtensions: __webpack_require__(17),
+  ArrayExtensions: __webpack_require__(18),
   AsyncExtensions: __webpack_require__(33),
   CallStack: __webpack_require__(24),
   Clone: __webpack_require__(34),
@@ -6764,16 +6764,16 @@ module.exports.includeInNamespace(__webpack_require__(60)).addModules({
   Function: __webpack_require__(37),
   Iteration: __webpack_require__(29),
   Log: __webpack_require__(41),
-  Map: __webpack_require__(20),
+  Map: __webpack_require__(21),
   MapExtensions: __webpack_require__(42),
   MathExtensions: __webpack_require__(9),
   MinimalBaseObject: __webpack_require__(5),
   ObjectDiff: __webpack_require__(43),
-  ObjectExtensions: __webpack_require__(21),
+  ObjectExtensions: __webpack_require__(15),
   ParseUrl: __webpack_require__(22),
-  Promise: __webpack_require__(15),
+  Promise: __webpack_require__(16),
   PromisedFileReader: __webpack_require__(44),
-  RegExpExtensions: __webpack_require__(16),
+  RegExpExtensions: __webpack_require__(17),
   RequestError: __webpack_require__(59),
   Ruby: __webpack_require__(45),
   ShallowClone: __webpack_require__(46),
@@ -6808,7 +6808,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(28), "shallowInspect inspectLean inspect"], __webpack_require__(38), __webpack_require__(27), __webpack_require__(40), __webpack_require__(19)];
+module.exports = [[__webpack_require__(28), "shallowInspect inspectLean inspect"], __webpack_require__(38), __webpack_require__(27), __webpack_require__(40), __webpack_require__(20)];
 
 
 /***/ }),
@@ -7003,7 +7003,7 @@ var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArr
 
 MinimalBaseObject = __webpack_require__(5);
 
-Map = __webpack_require__(20);
+Map = __webpack_require__(21);
 
 Inspected = __webpack_require__(39);
 
@@ -7219,7 +7219,7 @@ module.exports = Inspector2 = (function(superClass) {
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var RequestError, compactFlatten, defineModule, formattedInspect, isFunction, merge, mergeInto, ref, upperCamelCase,
+/* WEBPACK VAR INJECTION */(function(module) {var RequestError, compactFlatten, defineModule, formattedInspect, isFunction, merge, mergeInto, objectWithout, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -7228,6 +7228,8 @@ defineModule = __webpack_require__(7).defineModule;
 formattedInspect = __webpack_require__(8).formattedInspect;
 
 ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
+
+objectWithout = __webpack_require__(15).objectWithout;
 
 
 /*
@@ -7265,20 +7267,23 @@ defineModule(module, RequestError = (function(superClass) {
     responseDataString = this.data && formattedInspect({
       data: this.data
     });
-    this.message = compactFlatten([
-      message, (this.status || "failure") + ":", (responseDataString != null ? responseDataString.length : void 0) < 80 && !this.requestData ? [this.type, this.key, responseDataString] : "\n\n" + formattedInspect(merge({
+    this.message = message || compactFlatten([
+      (this.status || "failure") + ":", (responseDataString != null ? responseDataString.length : void 0) < 80 && !this.requestData ? [this.type, this.key, responseDataString] : "\n\n" + formattedInspect(merge({
         type: this.type,
         key: this.key,
         requestData: this.requestData,
         responseData: this.responseData
       }))
     ]).join(' ');
-    this.info = this.props;
-    if (isFunction(Error.captureStackTrace)) {
+    if (this.props.stack) {
+      this.stack = this.props.stack;
+      this.props = objectWithout(this.props, "stack");
+    } else if (isFunction(Error.captureStackTrace)) {
       Error.captureStackTrace(this, this.constructor);
     } else {
       this.stack = (new Error).stack;
     }
+    this.info = this.props;
   }
 
   RequestError.prototype.toString = function() {
@@ -7299,7 +7304,7 @@ defineModule(module, RequestError = (function(superClass) {
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), [__webpack_require__(15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(17), __webpack_require__(33), __webpack_require__(21), __webpack_require__(6), __webpack_require__(26), __webpack_require__(37), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(14), __webpack_require__(22), __webpack_require__(44), __webpack_require__(16), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(7), __webpack_require__(29), __webpack_require__(8), __webpack_require__(34), __webpack_require__(41), __webpack_require__(24), __webpack_require__(35)];
+module.exports = [__webpack_require__(1), [__webpack_require__(16), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(33), __webpack_require__(15), __webpack_require__(6), __webpack_require__(26), __webpack_require__(37), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(14), __webpack_require__(22), __webpack_require__(44), __webpack_require__(17), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(7), __webpack_require__(29), __webpack_require__(8), __webpack_require__(34), __webpack_require__(41), __webpack_require__(24), __webpack_require__(35)];
 
 
 /***/ }),
