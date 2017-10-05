@@ -17,8 +17,8 @@ suite "Art.StandardLib.StandardLib.Time", ->
     insideTime = insideTime.remainder
 
     log insideTime:insideTime, outsideTime:outsideTime, totalTime: totalTime
-    assert.eq true, outsideTime <= insideTime
-    assert.eq true, outsideTime + insideTime <= totalTime
+    assert.lte outsideTime, insideTime, "outsideTime"
+    assert.lte outsideTime + insideTime, totalTime, "outsideTime + insideTime"
 
 
     # o = {}
