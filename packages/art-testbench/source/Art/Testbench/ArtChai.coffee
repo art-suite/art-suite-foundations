@@ -4,7 +4,6 @@
   Types
   object
   inspectedObjectLiteral
-  wordsArray
   compactFlattenJoin
   isFunction
   inspectLean
@@ -13,6 +12,10 @@
   present
   objectHasKeys
   isPlainObject
+  lowerCamelCase
+  array
+  each
+  w
 } = StandardLib = require 'art-standard-lib'
 
 {assert} = Chai
@@ -131,7 +134,7 @@ assert.rejectsWith = (promise, rejectValue, context) ->
     assert.eq value, rejectValue, "rejects with: #{context}"
 
 addTester name, tester for name, tester of Types when name.match /^is/
-addTester name, StandardLib[name] for name in wordsArray "gt gte lte lt eq neq floatEq"
+addTester name, StandardLib[name] for name in w "gt gte lte lt eq neq floatEq"
 addTester "instanceof",
   customFailure: (name, v1, v2, context) ->
     failWithExpectedMessage context,
@@ -190,5 +193,16 @@ for k, v of assert when isFunction v
   assert.resolved[k] = ->
     Promise.all arguments
     .then (args) -> v args
+
+# ArtCommunicationStatus tests
+statuses = w "missing clientFailure clientFailureNotAuthorized"
+each statuses, (status) ->
+  assert[name = lowerCamelCase "is #{status}"] = (promise, context) ->
+    assert.rejects -> promise
+    .then (response) ->
+      if response.status != status
+        log "#{name}": expected: status, got: response.status, response: response
+      assert.eq response.status, status, context
+      response
 
 module.exports = Chai
