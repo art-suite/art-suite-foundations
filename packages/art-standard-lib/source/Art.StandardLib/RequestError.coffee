@@ -1,6 +1,7 @@
 {defineModule} = require './CommonJs'
 {formattedInspect} = require './Inspect'
 {mergeInto, isFunction, upperCamelCase, compactFlatten, merge} = require './Core'
+{objectWithout} = require './ObjectExtensions'
 
 ###
 TODO:
@@ -30,8 +31,7 @@ defineModule module, class RequestError extends Error
       @props.data = @responseData
 
     responseDataString = @data && formattedInspect {@data}
-    @message = compactFlatten([
-      message
+    @message = message ||compactFlatten([
       (@status || "failure") + ":"
       if responseDataString?.length < 80 && !@requestData
         [@type, @key, responseDataString]
@@ -39,13 +39,19 @@ defineModule module, class RequestError extends Error
         "\n\n" + formattedInspect merge {@type, @key, @requestData, @responseData}
     ]).join ' '
 
-    @info = @props # Support DEPRICATED API
-
-    if isFunction Error.captureStackTrace
+    if @props.stack
+      # custom stack override
+      {@stack} = @props
+      @props = objectWithout @props, "stack"
+    else if isFunction Error.captureStackTrace
       # Node only
       Error.captureStackTrace @, @constructor
     else
       @stack = (new Error).stack
 
+    # Support DEPRICATED API
+    @info = @props
+
   toString: ->
     ["#{@name} #{@message}", formattedInspect {@props}, ""].join "\n\n"
+
