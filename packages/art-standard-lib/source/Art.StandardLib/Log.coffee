@@ -128,7 +128,7 @@ module.exports = class Log
       .then (resolvedM) =>
         logger resolvedM, "RESOLVED_#{logId}", true
       .catch (rejected) =>
-        logger rejected, "REJECTED_#{logId}", true
+        logger rejected, "REJECTED_#{logId}", true, true
 
     else
       logger m, false
