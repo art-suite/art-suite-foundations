@@ -33,7 +33,9 @@ module.exports = class AsyncExtensions
   #-------------------------------------
   # throwErrorOutOfStack
   #-------------------------------------
-  @throwErrorOutOfStack: (e) => timeout 0, -> throw e
+  @throwErrorOutOfStack: (e) =>
+    console.log e
+    timeout 0, -> throw e
   @evalAndThrowErrorsOutOfStack: (f) =>
     try
       f()
