@@ -1,13 +1,14 @@
 
 {StandardLib} = Neptune.Art
-{toInspectedObjects, inspectedObjectLiteral, log} = StandardLib
+{toInspectedObjects, inspectedObjectLiteral, log, neq} = StandardLib
 
 suite "Art.StandardLib.Inspect.toInspectedObjects", ->
   test "toInspectedObjects 'hi'", ->
     assert.eq toInspectedObjects('hi'), "hi" # inspectedObjectLiteral '"hi"'
 
   test "toInspectedObjects function", ->
-    assert.eq toInspectedObjects((a)->), inspectedObjectLiteral '(a) -> {}'
+    if neq toInspectedObjects((a)->), inspectedObjectLiteral 'function(a) {}'
+      assert.eq toInspectedObjects((a)->), inspectedObjectLiteral '(a) -> {}'
 
   test "toInspectedObjects a:1", ->
     assert.eq toInspectedObjects(a:1), a: 1

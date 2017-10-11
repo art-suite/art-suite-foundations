@@ -46,20 +46,21 @@ module.exports = suite:
     class Foo extends BaseClass
       @namespacePath: "MyNamespace.Foo"
 
-    testFI = (input, out) ->
+    testFI = (input, out, altOut) ->
       test str = "formattedInspect #{inspect input}", ->
         o = formattedInspect input
         # log "input: #{input}"
         # log "actual output: #{o}"
         # log "expected output: #{out}"
         if isString out
-          assert.eq o, out
+          if altOut != o
+            assert.eq o, out
         else
           assert.match o, out
 
     testFI '"hi"', "'\"hi\"'"
     testFI "'hi'", '"\'hi\'"'
-    testFI ((a)->123), '(a) -> { return 123; }'
+    testFI ((a)->123), '(a) -> { return 123; }', 'function(a) { return 123; }'
     testFI a:1, "a: 1"
     testFI /hi/, "/hi/"
     testFI inspect:(->'myInspectOutput'), ///

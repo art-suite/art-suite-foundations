@@ -72,7 +72,7 @@ class ValuesIterator
 # DEPRICATED - really, we should just use a standard polyfill
 # this class exists because javascript hash keys must be strings
 # this simple and inefficient class allows us to use objects as keys
-module.exports = global.Map ||
+module.exports = if (m = new global.Map).set(1, 2) == m then global.Map else
   class Map extends MinimalBaseObject
 
     constructor: ->
@@ -131,16 +131,3 @@ module.exports = global.Map ||
       undefined
 
     has:    (key) -> !!@_map[Unique.id key]
-
-    # DEPRICATED
-    remove:       -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-    exists:       -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-    findFirst:    -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-    map:          -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-    verifyNodes:  -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-    @inverseMap:  -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-
-    @getter
-      length:     -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-      nodes:      -> throw new Error "DEPRICATED - trying to be ES6-Map-compatible"
-

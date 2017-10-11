@@ -1,5 +1,4 @@
 {
-  Map
   inspect
   isArray
   isString
@@ -11,6 +10,7 @@
   objectName
   isBrowserObject
   present
+  Promise
   isPromise
   hasKeys
   hasOwnKeys
@@ -228,19 +228,23 @@ module.exports = suite:
 
     myExtendedInstance = new MyExtendedClass
 
-    MyEs6ExtendedClass = `class MyEs6ExtendedClass extends BaseClass {}`
+    try
+      MyEs6ExtendedClass = eval "(function(){class MyEs6ExtendedClass extends Neptune.Art.ClassSystem.BaseClass {};return MyEs6ExtendedClass;})()"
 
     global.MyExtendedClass = MyExtendedClass
     global.myExtendedInstance = myExtendedInstance
 
+
     test "{}", -> assert.eq null, getSuper {}
     test "[]", -> assert.eq {}, getSuper []
     test "->", -> assert.eq Function.__proto__, getSuper ->
-    test "MyEs6ExtendedClass -> BaseClass", ->
+    MyEs6ExtendedClass && test "MyEs6ExtendedClass -> BaseClass", ->
+      # evaluating in a funciton so that IE11 doesn't choke
       # only works with ES6 classes - which will be available in CoffeeScript 2 and CaffeineScript
+      Neptune.Art.StandardLib.log {MyEs6ExtendedClass: eval "123"}
       assert.eq BaseClass, getSuper MyEs6ExtendedClass
 
-    test "myExtendedInstance -> BaseClass.prototype", ->
+    MyEs6ExtendedClass && test "myExtendedInstance -> BaseClass.prototype", ->
       assert.eq Object.getPrototypeOf(myExtendedInstance), MyExtendedClass.prototype
       assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), Neptune.Art.ClassSystem.BaseClass.prototype
       assert.eq getSuper(myExtendedInstance), BaseClass.prototype
