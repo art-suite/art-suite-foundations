@@ -99,7 +99,11 @@ failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
 
 failWithExpectedMessageBase = (context, a, b, lines) ->
   assert.fail a, b, compactFlattenJoin("\n\n", [
-    "Context: #{formattedInspect context}" if context
+    if context
+      if isString context
+        context
+      else
+        formattedInspect context
     "expected"
     lines
   ]) + "\n"
@@ -197,6 +201,7 @@ for k, v of assert when isFunction v
 # ArtCommunicationStatus tests
 statuses = w "missing clientFailure clientFailureNotAuthorized"
 each statuses, (status) ->
+  assert[status] =
   assert[name = lowerCamelCase "is #{status}"] = (promise, context) ->
     assert.rejects -> promise
     .then (response) ->
