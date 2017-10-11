@@ -1,4 +1,4 @@
-import &StandardImport
+{compactFlatten, compact, flatten} = require '../../../StandardImport'
 
 suite: ->
   test "compactFlatten with only compacting needed", ->
@@ -17,21 +17,3 @@ suite: ->
     structure = [0, [false], 1, 2, null, 3, [4, undefined, 5]]
     assert.eq (compactFlatten structure), [0, false, 1, 2, 3, 4, 5]
     assert.eq (compactFlatten structure, (a) -> !!a), [1, 2, 3, 4, 5]
-
-  # test "flatten, compact(flatten), compactFlatten", ->
-  #   toArgs = (args...) -> args
-
-  #   structure = toArgs
-  #     "child1" if false
-  #     "child2"
-  #     [
-  #       null
-  #       "child3"
-  #       false
-  #       "child4"
-  #     ]
-
-  #   assert.eq [undefined, "child2", null, "child3", false, "child4"], flatten structure
-  #   assert.eq ["child2", "child3", false, "child4"], compact flatten structure
-  #   assert.eq ["child2", "child3", false, "child4"], compactFlatten structure
-
