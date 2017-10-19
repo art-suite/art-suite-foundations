@@ -1084,9 +1084,11 @@ module.exports = StringExtensions = (function() {
     }
   };
 
-  StringExtensions.cryptoRandomString = isBrowser ? ((crypto = global.crypto, global), function(l, c) {
+  StringExtensions.cryptoRandomString = isBrowser ? ((crypto = global.crypto, global), crypto ? function(l, c) {
     return randomString(l, c, crypto.getRandomValues(new Uint8Array(l)));
-  }) : (crypto = __webpack_require__(62), function(l, c) {
+  } : (console.warn("window.crypto not available, using standard random for cryptoRandomString"), function(l, c) {
+    return randomString(l, c);
+  })) : (crypto = __webpack_require__(62), function(l, c) {
     return randomString(l, c, crypto.randomBytes(l));
   });
 
@@ -3569,7 +3571,7 @@ Unlike Javascript objects, you can use any object or value as keys. This include
 Arrays and Objects are assigned a unique id using the StandardLib.Unique library.
 "0", "", null, undefined and 0 are all different unique keys and can each have unique values.
  */
-var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator,
+var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -3647,7 +3649,7 @@ ValuesIterator = (function() {
 
 })();
 
-module.exports = global.Map || (Map = (function(superClass) {
+module.exports = (m = new global.Map).set(1, 2) === m ? global.Map : Map = (function(superClass) {
   extend(Map, superClass);
 
   function Map() {
@@ -3739,42 +3741,9 @@ module.exports = global.Map || (Map = (function(superClass) {
     return !!this._map[Unique.id(key)];
   };
 
-  Map.prototype.remove = function() {
-    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-  };
-
-  Map.prototype.exists = function() {
-    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-  };
-
-  Map.prototype.findFirst = function() {
-    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-  };
-
-  Map.prototype.map = function() {
-    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-  };
-
-  Map.prototype.verifyNodes = function() {
-    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-  };
-
-  Map.inverseMap = function() {
-    throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-  };
-
-  Map.getter({
-    length: function() {
-      throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-    },
-    nodes: function() {
-      throw new Error("DEPRICATED - trying to be ES6-Map-compatible");
-    }
-  });
-
   return Map;
 
-})(MinimalBaseObject));
+})(MinimalBaseObject);
 
 
 /***/ }),
@@ -3784,25 +3753,34 @@ module.exports = global.Map || (Map = (function(superClass) {
 var ParseUrl;
 
 module.exports = ParseUrl = (function() {
-  var generateQuery;
+  var generateQuery, parsedGlobalQuery;
 
   function ParseUrl() {}
 
+  parsedGlobalQuery = null;
+
   ParseUrl.parseQuery = function(qs) {
-    var i, j, key, len, obj, pair, ref, ref1, val;
-    if (qs == null) {
-      qs = ((ref = global.location) != null ? ref.search : void 0) || "";
+    var i, isCurrentLocation, j, key, len, obj, pair, ref, ref1, val;
+    if ((isCurrentLocation = qs == null) && parsedGlobalQuery) {
+      return parsedGlobalQuery;
     }
+    qs || (qs = ((ref = global.location) != null ? ref.search : void 0) || "");
     obj = {};
     ref1 = qs.replace(/^\?/, '').split('&');
     for (j = 0, len = ref1.length; j < len; j++) {
       pair = ref1[j];
-      i = pair.indexOf('=');
-      key = pair.slice(0, i);
-      val = pair.slice(i + 1);
-      if (key.length > 0) {
-        obj[key] = decodeURIComponent(val);
+      if ((i = pair.indexOf('=')) >= 0) {
+        key = pair.slice(0, i);
+        val = pair.slice(i + 1);
+        if (key.length > 0) {
+          obj[key] = decodeURIComponent(val);
+        }
+      } else {
+        obj[pair] = true;
       }
+    }
+    if (isCurrentLocation) {
+      parsedGlobalQuery = obj;
     }
     return obj;
   };
@@ -5106,7 +5084,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.26.3"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.27.0"}
 
 /***/ }),
 /* 32 */
@@ -5149,6 +5127,7 @@ module.exports = AsyncExtensions = (function() {
   };
 
   AsyncExtensions.throwErrorOutOfStack = function(e) {
+    console.log(e);
     return timeout(0, function() {
       throw e;
     });
