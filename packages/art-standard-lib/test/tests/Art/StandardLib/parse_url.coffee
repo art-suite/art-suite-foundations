@@ -1,10 +1,21 @@
 
 {StandardLib} = Neptune.Art
 
-{parseUrl} = StandardLib
+{parseUrl, parseQuery} = StandardLib
 
-if self.document
-  suite "Art.StandardLib.StandardLib.parseUrl", ->
+module.exports = suite:
+  parseQuery: ->
+    testParseQuery = (input, expected) ->
+      test input, ->
+        assert.eq parseQuery(input), expected
+
+    testParseQuery "?foo", foo: true
+    testParseQuery "?foo=hi", foo: 'hi'
+    testParseQuery "foo=hi", foo: 'hi'
+    testParseQuery "?foo=hi&bar=bye", foo: 'hi', bar: 'bye'
+    testParseQuery "?foo=hi%20there", foo: 'hi there'
+
+  parseUrl: ->
     test "just domain", ->
       a = parseUrl "myDomain.com"
       assert.eq a,

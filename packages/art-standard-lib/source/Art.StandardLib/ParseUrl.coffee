@@ -1,13 +1,21 @@
 # TODO: DRY w.r.t. StandardLib/RegExpExtensions
 module.exports = class ParseUrl
 
-  @parseQuery: (qs = global.location?.search || "") ->
+  parsedGlobalQuery = null
+
+  @parseQuery: (qs) ->
+    return parsedGlobalQuery if (isCurrentLocation = !qs?) && parsedGlobalQuery
+    qs ||= global.location?.search || ""
     obj = {}
     for pair in qs.replace(/^\?/, '').split('&')
-      i = pair.indexOf '='
-      key = pair.slice 0, i
-      val = pair.slice i+1
-      obj[key] = decodeURIComponent val if key.length > 0
+      if (i = pair.indexOf '=') >= 0
+        key = pair.slice 0, i
+        val = pair.slice i+1
+        obj[key] = decodeURIComponent val if key.length > 0
+      else
+        obj[pair] = true
+    if isCurrentLocation
+      parsedGlobalQuery = obj
     obj
 
   @generateQuery: generateQuery= (o) ->
