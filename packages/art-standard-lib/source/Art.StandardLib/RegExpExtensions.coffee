@@ -11,7 +11,7 @@ module.exports = class RegExpExtensions
   @findLegalUrlCharacterRegExp: /// [-._~!$&'()*+,;=:@\w] | %[a-f\d]{2} ///
   @findUrlPathRegExp:     /// (?: \/ (?: (?: #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) (?:#{@findLegalUrlCharacterRegExp.source}) )? ) * ///
   @findUrlPortRegExp:     /(\:)(\d+)/
-  @findUrlFragmentRegExp: /// (\#) ( (?: (?: #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) #{@findLegalUrlCharacterRegExp.source} | ) ) ///
+  @findUrlFragmentRegExp: /// (\#) ( (?: (?: \? | #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) #{@findLegalUrlCharacterRegExp.source} | ) ) ///
 
   @findEmailRegExp:       ///([_\w-]+(?:\.[_\w]+)*)@(#{@findDomainRegExp.source})///i
 
