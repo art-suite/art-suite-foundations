@@ -2807,7 +2807,7 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.findUrlPortRegExp = /(\:)(\d+)/;
 
-  RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
+  RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:\\?|" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
 
   RegExpExtensions.findEmailRegExp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + RegExpExtensions.findDomainRegExp.source + ")", "i");
 
