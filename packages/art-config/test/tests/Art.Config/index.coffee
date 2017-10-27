@@ -5,5 +5,6 @@ module.exports = require './namespace'
 module.exports
 .addModules
   ConfigRegistry:   require './ConfigRegistry'  
+  Lib:              require './Lib'             
   TestConfig:       require './TestConfig'      
   TestConfigurable: require './TestConfigurable'

@@ -46,10 +46,10 @@ class TestConfigurable extends Configurable
         # same object
         assert.equal configBefore, TestConfigurable.config
 
-      test "ConfigRegistry.configure", ->
+      test "configure", ->
         TestConfigurable.reset()
 
-        ConfigRegistry.configure artConfig: merge
+        configure artConfig: merge
           # verbose: true
           novelProp: "cool"
           pathedConfig
@@ -72,7 +72,7 @@ class TestConfigurable extends Configurable
 
         TestConfigurable.reset()
 
-        ConfigRegistry.configure artConfig: merge
+        configure artConfig: merge
           # verbose: true
           novelProp: "cool"
           pathedConfig

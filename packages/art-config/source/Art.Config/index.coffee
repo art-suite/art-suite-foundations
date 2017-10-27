@@ -8,3 +8,5 @@ module.exports
   ConfigRegistry: require './ConfigRegistry'
   Configurable:   require './Configurable'  
   Configuration:  require './Configuration' 
+  Lib:            require './Lib'           
+  Main:           require './Main'          

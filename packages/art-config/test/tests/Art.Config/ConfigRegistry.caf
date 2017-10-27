@@ -6,38 +6,38 @@ resetGlobals = ->
 
 testArtConfigGlobalConfig = (name, f) ->
   test name, ->
-    assert.eq ConfigRegistry.artConfig, merge
+    value = f()
+    assert.eq Main.artConfig, merge
       Tests: Art: Config: name: "TestName", verbose: false
-      f()
+      value
 
 suite:
   globalArtConfig: ->
     setup ->
-      ConfigRegistry.configure()
+      configure()
 
-    test "Art.config" -> assert.equal ConfigRegistry.artConfig, Neptune.Art.config
-    test "Art.configName" -> assert.equal ConfigRegistry.artConfigName, Neptune.Art.configName
+    test "Art.config"     -> assert.equal Main.artConfig, Neptune.Art.config
+    test "Art.configName" -> assert.equal Main.artConfigName, Neptune.Art.configName
+
+    test "Art.Config.config"     -> assert.equal Main.artConfig,     Neptune.Art.Config.config
+    test "Art.Config.configName" -> assert.equal Main.artConfigName, Neptune.Art.Config.configName
 
   artConfigSources: ->
     setup resetGlobals
     teardown resetGlobals
 
     testArtConfigGlobalConfig "args", ->
-      ConfigRegistry.configure artConfig: foo: "argsBar"
+      configure artConfig: foo: "argsBar"
       foo: "argsBar"
 
     testArtConfigGlobalConfig "global.artConfig", ->
       global.artConfig = foo: "globalBar"
-      ConfigRegistry.configure()
+      configure()
       foo: "globalBar"
 
     testArtConfigGlobalConfig "env", ->
-      ConfigRegistry.configure artConfig: {}, __testEnv: artConfig: JSON.stringify foo: "envBar"
+      configure artConfig: {}, __testEnv: artConfig: foo: "envBar"
       foo: "envBar"
-
-    testArtConfigGlobalConfig "parseQuery", ->
-      ConfigRegistry.configure artConfig: {}, __testQueryString: "?artConfig=#{JSON.stringify foo: "queryBar"}"
-      foo: "queryBar"
 
   pathedConfigProps: ->
     setup resetGlobals
@@ -45,7 +45,7 @@ suite:
 
     testArtConfigGlobalConfig "foo.bar: 'globalBar'", ->
       global.artConfig = "foo.bar": "globalBar"
-      ConfigRegistry.configure()
+      configure()
       foo: bar: "globalBar"
 
   artConfigNameSources: ->
@@ -53,29 +53,24 @@ suite:
     teardown resetGlobals
 
     testArtConfigGlobalConfig "baseline", ->
-      ConfigRegistry.configure()
-      assert.eq ConfigRegistry.artConfigName, "Development"
+      configure()
+      assert.eq Main.artConfigName, "Development"
       {}
 
     testArtConfigGlobalConfig "args", ->
-      ConfigRegistry.configure artConfigName: 'TestConfig'
-      assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      configure artConfigName: 'TestConfig'
+      assert.eq Main.artConfigName, 'TestConfig'
       propA: "propAFromTestConfig"
 
     testArtConfigGlobalConfig "global", ->
       global.artConfigName = 'TestConfig'
-      ConfigRegistry.configure()
-      assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      configure()
+      assert.eq Main.artConfigName, 'TestConfig'
       propA: "propAFromTestConfig"
 
     testArtConfigGlobalConfig "env", ->
-      ConfigRegistry.configure artConfig: {}, __testEnv: artConfigName: 'TestConfig'
-      assert.eq ConfigRegistry.artConfigName, 'TestConfig'
-      propA: "propAFromTestConfig"
-
-    testArtConfigGlobalConfig "parseQuery", ->
-      ConfigRegistry.configure artConfig: {}, __testQueryString: "?artConfigName=TestConfig"
-      assert.eq ConfigRegistry.artConfigName, 'TestConfig'
+      configure artConfig: {}, __testEnv: artConfigName: 'TestConfig'
+      assert.eq Main.artConfigName, 'TestConfig'
       propA: "propAFromTestConfig"
 
   configs: ->
@@ -84,22 +79,3 @@ suite:
         ConfigRegistry.configs
         TestConfig:
           propA: "propAFromTestConfig"
-
-  getExternalEnvironment: ->
-    test "query param", ->
-      assert.eq
-        artConfig: foo: 1
-        artConfigName: undefined
-        ConfigRegistry.getExternalEnvironment null, '?artConfig={"foo":%201}'
-
-    test "env", ->
-      assert.eq
-        artConfig: foo: "envBar"
-        artConfigName: undefined
-        ConfigRegistry.getExternalEnvironment artConfig: JSON.stringify foo: "envBar"
-
-  normalizeArtConfigName: ->
-    test "normalizeArtConfigName 'prod'"          -> assert.eq :Production    ConfigRegistry.normalizeArtConfigName "prod"
-    test "normalizeArtConfigName 'dev'"           -> assert.eq :Development   ConfigRegistry.normalizeArtConfigName "dev"
-    test "normalizeArtConfigName 'development'",  -> assert.eq :Development   ConfigRegistry.normalizeArtConfigName "development"
-    test "normalizeArtConfigName 'foo bar'"       -> assert.eq :FooBar        ConfigRegistry.normalizeArtConfigName "foo bar"
