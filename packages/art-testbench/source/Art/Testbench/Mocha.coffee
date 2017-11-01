@@ -1,5 +1,5 @@
 {isNode, log, isFunction, isPlainObject, merge, Promise} = require 'art-standard-lib'
-{ConfigRegistry} = require 'art-config'
+{configure} = require 'art-config'
 chai = require './ArtChai'
 global.assert = chai.assert
 
@@ -119,13 +119,13 @@ module.exports = class MyMocha
 
     if synchronous || isNode
       try
-        ConfigRegistry.configure options
+        configure options
         @_runSync defineTests
       catch error
         log.error "Art.Foundation.Mocha": {error}
 
     else
-      Promise.resolve ConfigRegistry.configure options
+      Promise.resolve configure options
       .then => @_run options.defineTests
 
   @defineGlobals: ->
