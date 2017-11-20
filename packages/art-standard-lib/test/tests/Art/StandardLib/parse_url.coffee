@@ -1,7 +1,7 @@
 
 {StandardLib} = Neptune.Art
 
-{parseUrl, parseQuery} = StandardLib
+{urlJoin, parseUrl, parseQuery} = StandardLib
 
 module.exports = suite:
   parseQuery: ->
@@ -14,6 +14,20 @@ module.exports = suite:
     testParseQuery "foo=hi", foo: 'hi'
     testParseQuery "?foo=hi&bar=bye", foo: 'hi', bar: 'bye'
     testParseQuery "?foo=hi%20there", foo: 'hi there'
+
+  urlJoin: ->
+    tests = [
+      ['http://foo.com/bob',     'http://foo.com/', 'bob' ]
+      ['http://foo.com/bob',     'http://foo.com/', '/bob']
+      ['http://foo.com/bob',     'http://foo.com',  '/bob']
+      ['http://foo.com/bob',     'http://foo.com',  'bob' ]
+      ['http://foo.com/bob/',    'http://foo.com',  'bob/' ]
+      ['http://foo.com/bob/foo', 'http://foo.com',  'bob/foo' ]
+    ]
+
+    for [out, uri, path] in tests
+      test "#{uri} + #{path} = #{out}", ->
+        assert.eq out, urlJoin uri, path
 
   parseUrl: ->
     test "just domain", ->

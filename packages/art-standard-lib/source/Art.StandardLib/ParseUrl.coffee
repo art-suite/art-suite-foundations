@@ -23,6 +23,8 @@ module.exports = class ParseUrl
       "#{encodeURIComponent k}=#{encodeURIComponent v}"
     parts.join "&"
 
+  @urlJoin: (uri, path) -> "#{uri.replace /\/$/, ''}/#{path.replace /^\//, ''}"
+
   @appendQuery: (uri, o) ->
     str = generateQuery o
     "#{uri}#{if uri.match /\?/ then "&" else "?"}#{str}"
