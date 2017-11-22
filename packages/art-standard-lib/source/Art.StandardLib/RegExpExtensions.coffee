@@ -33,6 +33,21 @@ module.exports = class RegExpExtensions
 
   @colorRegExp:  new RegExp "(#{@hex16ColorRegExp.source})|(#{@hex256ColorRegExp.source})|(#{@rgbColorRegExp.source})|(#{@rgbaColorRegExp.source})"
 
+  @findColorRegExp:
+    ///
+    \# [a-f0-9]{8} \b |
+    \# [a-f0-9]{6} \b |
+    \# [a-f0-9]{3,4} \b |
+    rgba? \ *
+      \(
+      \ * \d+ %? \ *,
+      \ * \d+ %? \ *,
+      \ * \d+ %?
+      (?: \ * , (?: \d+) | (?: \d*\.?\d+))
+      \ *
+      \)
+    ///i
+
   @wordsRegExp: /[^\s]+/g
   @exactlyOneWordRegExp: /^[^\s]+$/
 
