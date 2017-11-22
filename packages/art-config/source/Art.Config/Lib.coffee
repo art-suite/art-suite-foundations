@@ -75,8 +75,11 @@ defineModule module, class Lib
         null
     else {}
 
-    for k, v of externalEnvironment when m = k.match /^artConfig\.(.+)$/
-      artConfig[m[1]] = smartJsonDecode v
+    for k, v of externalEnvironment when m = k.match /^artConfig([\._])(.+)$/
+      if m[1] == "_"
+        artConfig[m[2].replace /_/g, '.'] = smartJsonDecode v
+      else
+        artConfig[m[2]] = smartJsonDecode v
 
     {artConfig, artConfigName}
 
