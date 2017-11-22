@@ -11,7 +11,7 @@ StandardLib = require 'art-standard-lib'
   each
 } = require 'art-standard-lib'
 
-{success, failure, serverFailure, aborted, failureTypes, decodeHttpStatus} = require 'art-communication-status'
+{networkFailure, success, serverFailure, aborted, failureTypes, decodeHttpStatus} = require 'art-communication-status'
 {BaseClass} = require 'art-class-system'
 # So this works in NODE:
 # TODO: we could maybe solve this better:
@@ -166,7 +166,7 @@ module.exports = class RestClient extends BaseClass
 
   ###
   restRequest: (options) ->
-    {verb, method, url, data, body, headers, onProgress, responseType, formData, showProgressAfter} = options
+    {verb, method, url, data, body, query, headers, onProgress, responseType, formData, showProgressAfter} = options
     showProgressAfter = 100 unless isNumber showProgressAfter
 
     method ||= verb
@@ -186,6 +186,8 @@ module.exports = class RestClient extends BaseClass
         info: "can't GET with body"
         options: options
       throw new Error "With their ultimate wisdom, the gods decree: NO DATA WITH GET"
+
+    url = appendQuery url, query if query
 
     @_normalizedRestRequest {
       method
@@ -277,7 +279,9 @@ module.exports = class RestClient extends BaseClass
 
       request.addEventListener "error", (event) ->
         requestResolved = true
-        fail status: failure, message: "XMLHttpRequest error event triggered", data: {event}
+        # This gets triggered when there is no network connection.
+        # Is it triggered other times?
+        fail status: networkFailure, message: "XMLHttpRequest error event triggered", data: {event}
 
       request.addEventListener "load", (event) ->
         requestResolved = true
