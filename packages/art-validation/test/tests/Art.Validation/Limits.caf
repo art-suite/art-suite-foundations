@@ -6,30 +6,29 @@ suite:
       v = new Validator id:
         fieldType: 'trimmedString'
         maxLength: 5
-      assert.rejects v.preCreate id: "  too long man"
+      assert.throws -> v.validateCreate id: "  too long man"
 
     test "maxLength is after preprocess" ->
       v = new Validator id:
         fieldType: 'trimmedString'
         maxLength: 5
-      v.preCreate id: "   123   "
-      .then ({id}) ->
-        assert.eq id, "123"
+      assert.eq
+        id: "123"
+        v.validateCreate id: "   123   "
 
   minLength: ->
     test "minLength" ->
       v = new Validator id:
         fieldType: 'trimmedString'
         minLength: 5
-      assert.rejects v.preCreate id: "shrt"
-      .then ->
-        v.preCreate id: "long enough"
+      assert.throws -> v.validateCreate id: "shrt"
+      v.validateCreate id: "long enough"
 
     test "minLength is after preprocess" ->
       v = new Validator id:
         fieldType: 'trimmedString'
         minLength: 5
-      assert.rejects v.preCreate id: "   123   "
+      assert.throws -> v.validateCreate id: "   123   "
 
   both: ->
     test "minLength and maxLength" ->
@@ -37,8 +36,7 @@ suite:
         fieldType: 'trimmedString'
         minLength: 5
         maxLength: 10
-      assert.rejects v.preCreate id: "1234"
-      .then -> assert.rejects v.preCreate id: "1234567890-"
-      .then ->
-        v.preCreate id: "12345"
-        v.preCreate id: "1234567890"
+      assert.throws -> v.validateCreate id: "1234"
+      assert.throws -> v.validateCreate id: "1234567890-"
+      v.validateCreate id: "12345"
+      v.validateCreate id: "1234567890"

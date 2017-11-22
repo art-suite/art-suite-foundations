@@ -64,7 +64,7 @@ USAGE:
             validate() must return true
           NOTE: validate is evaluated BEFORE preprocess
 
-        preprocess: (v1) -> v2
+        preprocess: (v1, forCreate) -> v2
           whenever this field is included in an update OR create operation,
             after validation succeeds,
             value = preprocess value
@@ -169,7 +169,9 @@ module.exports = class Validator extends BaseClass
     {postValidate, maxLength, minLength, fields} = fieldProps
     if maxLength? || minLength? || fields?
 
-      validator = new Validator fields, exclusive: true if fields
+      if fields
+        validator = new Validator fields, exclusive: true
+        fieldProps.preprocess = (value, forCreate) -> validator.preprocessFields value, forCreate
 
       fieldProps.postValidate = (value, fieldName, fields) ->
         if postValidate
@@ -352,7 +354,7 @@ module.exports = class Validator extends BaseClass
       else
         applyDefaults && props.default
 
-      value = preprocess value if preprocess && value?
+      value = preprocess value, applyDefaults if preprocess && value?
 
       if value != oldValue
         processedFields ||= shallowClone fields

@@ -25,7 +25,7 @@
 
 {validStatus} = require 'art-communication-status'
 isId = (v) -> isString(v) && v.match ///^[-_a-z0-9]{1,100}$///i
-isHexColor = (v) -> isString(v) && v.match /^#([a-f0-9]{3})|([a-f0-9]{6})/i
+isHexColor = (v) -> (/^#([a-f0-9]{3})|([a-f0-9]{6})/i).test "#{v}"
 
 ###
 standard FieldType props:
@@ -74,7 +74,12 @@ module.exports = FieldTypes =
     decode: toDate
 
   color:
-    validate: (v) -> isHexColor v
+    validate:   (v) -> isHexColor v
+    preprocess: (v) ->
+      log preprocess_color:
+        v: v
+        stringed: "#{v}"
+      "#{v}"
 
   email:
     validate: (v) -> isString(v) && v.trim().match emailRegexp

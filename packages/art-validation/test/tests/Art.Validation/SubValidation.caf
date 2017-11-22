@@ -27,3 +27,19 @@ suite: ->
 
     assert.throws -> v.validate dimensions: null
     assert.throws -> v.validate dimensions: undefined
+
+  test "preprocess" ->
+    v = new Validator
+      normalFoo:
+        preprocess: (v) -> v.trim()
+      myFields: required:
+        fields:
+          foo:
+            preprocess: (v) -> v.trim()
+
+    assert.eq
+      myFields: foo: "hi"
+      normalFoo: "hi"
+      v.validate
+        myFields: foo: "   hi   "
+        normalFoo: " hi "

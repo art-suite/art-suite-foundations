@@ -5,7 +5,7 @@ suite: ->
     v = new Validator
       message:
         validate: isString
-        preprocess: lowerCamelCase
+        preprocess: (v) -> lowerCamelCase v
         postValidate: (v) ->
           v.match /Queen/
 
