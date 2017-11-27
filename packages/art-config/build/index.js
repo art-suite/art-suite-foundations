@@ -250,8 +250,12 @@ defineModule(module, Lib = (function() {
     })();
     for (k in externalEnvironment) {
       v = externalEnvironment[k];
-      if (m = k.match(/^artConfig\.(.+)$/)) {
-        artConfig[m[1]] = smartJsonDecode(v);
+      if (m = k.match(/^artConfig([\._])(.+)$/)) {
+        if (m[1] === "_") {
+          artConfig[m[2].replace(/_/g, '.')] = smartJsonDecode(v);
+        } else {
+          artConfig[m[2]] = smartJsonDecode(v);
+        }
       }
     }
     return {
@@ -371,7 +375,7 @@ defineModule(module, Main = (function() {
    */
 
   Main.configure = function() {
-    var __testEnv, artConfigArgument, artConfigNameArgument, c, conf, configurable, configureOptions, externalEnvironment, i, len, obj, ref2, ref3, verbose;
+    var __testEnv, artConfigArgument, artConfigNameArgument, c, conf, configurable, configureOptions, externalEnvironment, i, len, obj, ref2, ref3, ref4, verbose;
     configureOptions = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     ref2 = Main.configureOptions = deepMerge.apply(null, configureOptions), artConfigNameArgument = ref2.artConfigName, artConfigArgument = ref2.artConfig, __testEnv = ref2.__testEnv;
     externalEnvironment = getExternalEnvironment(__testEnv);
@@ -401,17 +405,18 @@ defineModule(module, Main = (function() {
       expandPathedProperties(conf, Main.artConfig);
     }
     verbose = Main.artConfig.verbose;
+    verbose || (verbose = (ref4 = Main.configureOptions) != null ? ref4.verbose : void 0);
     if (verbose) {
       log("------------- ConfigRegistry: inputs");
       log({
         ConfigRegistry: {
           configNames: Object.keys(ConfigRegistry.configs),
           configurables: (function() {
-            var j, len1, ref4, results;
-            ref4 = ConfigRegistry.configurables;
+            var j, len1, ref5, results;
+            ref5 = ConfigRegistry.configurables;
             results = [];
-            for (j = 0, len1 = ref4.length; j < len1; j++) {
-              c = ref4[j];
+            for (j = 0, len1 = ref5.length; j < len1; j++) {
+              c = ref5[j];
               results.push(c.namespacePath);
             }
             return results;
@@ -430,11 +435,11 @@ defineModule(module, Main = (function() {
             inputs: (
               obj = {
                 defaultConfigs: (function() {
-                var j, len1, ref4, results;
-                ref4 = ConfigRegistry.configurables;
+                var j, len1, ref5, results;
+                ref5 = ConfigRegistry.configurables;
                 results = [];
-                for (j = 0, len1 = ref4.length; j < len1; j++) {
-                  configurable = ref4[j];
+                for (j = 0, len1 = ref5.length; j < len1; j++) {
+                  configurable = ref5[j];
                   results.push(configurable.getPathedDefaultConfig());
                 }
                 return results;
@@ -449,17 +454,19 @@ defineModule(module, Main = (function() {
           }
         }
       });
+      log("------------- ConfigRegistry: configuring Configurables...");
     }
-    verbose && log("------------- ConfigRegistry: configuring Configurables...");
     Main._configureAllConfigurables();
-    verbose && log("------------- ConfigRegistry: configured");
-    verbose && log({
-      Art: {
-        configName: Main.artConfigName,
-        config: Main.artConfig
-      }
-    });
-    return verbose && log("------------- ConfigRegistry: done");
+    if (verbose) {
+      log("------------- ConfigRegistry: configured");
+      log({
+        Art: {
+          configName: Main.artConfigName,
+          config: Main.artConfig
+        }
+      });
+      return log("------------- ConfigRegistry: done");
+    }
   };
 
   Main.resetCurrentConfig = function() {
@@ -716,7 +723,7 @@ module.exports = (__webpack_require__(14)).addNamespace('Art.Config', Config = (
 /* 12 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-events":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"A powerful yet simple tool for configuring all your libraries consistently.","license":"ISC","name":"art-config","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.7.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-events":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"A powerful yet simple tool for configuring all your libraries consistently.","license":"ISC","name":"art-config","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.7.1"}
 
 /***/ }),
 /* 13 */
