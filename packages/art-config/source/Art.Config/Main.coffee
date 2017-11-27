@@ -121,6 +121,7 @@ defineModule module, class Main
       expandPathedProperties conf, @artConfig
 
     {verbose} = @artConfig
+    verbose ||= @configureOptions?.verbose
     if verbose
       log "------------- ConfigRegistry: inputs"
       log
@@ -146,12 +147,13 @@ defineModule module, class Main
               "arguments.artConfig":        artConfigArgument
               "environment.artConfig":      externalEnvironment.artConfig
 
-    verbose && log "------------- ConfigRegistry: configuring Configurables..."
+      log "------------- ConfigRegistry: configuring Configurables..."
     @_configureAllConfigurables()
 
-    verbose && log "------------- ConfigRegistry: configured"
-    verbose && log Art: configName: @artConfigName, config: @artConfig
-    verbose && log "------------- ConfigRegistry: done"
+    if verbose
+      log "------------- ConfigRegistry: configured"
+      log Art: configName: @artConfigName, config: @artConfig
+      log "------------- ConfigRegistry: done"
 
   @resetCurrentConfig: => delete @artConfig[k] for k, v of @artConfig
 
