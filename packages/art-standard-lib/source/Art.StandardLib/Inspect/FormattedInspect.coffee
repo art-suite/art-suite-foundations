@@ -25,7 +25,7 @@ formattedInspectObject = (m, maxLineLength, options) ->
         "#{inspected}"
       else
         newLineWithIndentString + inspected.replace /\n/g, newLineWithIndentString
-      inspected += "\n"
+      inspected += "\n" unless /\n\s*$/.test inspected
     else if ansiSafeStringLength(inspected) > maxLineLength - (key.length + 2)
       inspected = "#{newLineWithIndentString}#{inspected}\n"
 
@@ -98,7 +98,8 @@ formattedInspectArray = (m, maxLineLength, options) ->
 
     if inspectedHasNewlines
       oneLinerOk = false
-      inspected = inspected.replace(/\n/g, newLineWithIndentString) + "\n"
+      inspected = inspected.replace /\n/g, newLineWithIndentString
+      inspected += "\n" unless /\n\s*$/.test inspected
 
     lengthOfInspectedValues += ansiSafeStringLength inspected
     inspected
