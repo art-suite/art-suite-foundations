@@ -371,7 +371,6 @@ module.exports = suite:
               1
               2
 
-
           {}
             b1: []
               2
@@ -485,7 +484,6 @@ module.exports = suite:
 
             modules:
               "ArrayExtensions, AsyncExtensions, CallStack, Clone, CommonJs, Eq, ErrorWithInfo, Function, Iteration, Log, Map, MathExtensions, MinimalBaseObject, ObjectDiff, ObjectExtensions, ParseUrl, Promise, PromisedFileReader, Regexp, Ruby, ShallowClone, StringExtensions, Time, TypesExtended, Unique"
-
 
           Neptune.Art.ObjectTreeFactory: {}
       """, 150
