@@ -109,7 +109,7 @@ module.exports = class RestClient extends BaseClass
   delete:  (url, options)           -> @restRequest merge options, verb: "DELETE", url: url
 
   # OUT: Promise -> responseData is ArrayBuffer
-  @getArrayBuffer: (url, options)   -> @restRequest merge options, verb: "GET",    url: url, responseType: "arraybuffer"
+  getArrayBuffer: (url, options)    -> @restRequest merge options, verb: "GET",    url: url, responseType: "arraybuffer"
 
   ###
   get/put/post/deleteJson
