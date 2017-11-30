@@ -75,11 +75,7 @@ module.exports = FieldTypes =
 
   color:
     validate:   (v) -> isHexColor v
-    preprocess: (v) ->
-      log preprocess_color:
-        v: v
-        stringed: "#{v}"
-      "#{v}"
+    preprocess: (v) -> "#{v}"
 
   email:
     validate: (v) -> isString(v) && v.trim().match emailRegexp
