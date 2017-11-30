@@ -6074,7 +6074,7 @@ module.exports = Log = (function() {
     if (Log.loggingHidden) {
       return;
     }
-    if (Neptune.isNode && "".red) {
+    if (isNode && "".red) {
       str = arguments.length > 1 ? (out = (function() {
         var i, len, results;
         results = [];
@@ -6131,7 +6131,7 @@ module.exports = Log = (function() {
     var className, logger;
     className = options.className;
     logger = getLogger(options);
-    if (Neptune.isNode) {
+    if (isNode) {
       return logger(isString(m) ? m : Inspect.formattedInspect(m, merge({
         maxLineLength: process.stdout.columns
       }, options)));
