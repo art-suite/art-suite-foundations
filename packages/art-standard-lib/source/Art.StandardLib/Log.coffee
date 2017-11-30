@@ -64,7 +64,7 @@ module.exports = class Log
 
   @rawWarningLog: =>
     return if @loggingHidden
-    if Neptune.isNode && "".red
+    if isNode && "".red
       str = if arguments.length > 1
         out = (a for a in arguments)
         out.join ' '
@@ -97,7 +97,7 @@ module.exports = class Log
   @_logNow: (m, stack, options) =>
     {className} = options
     logger = getLogger options
-    if Neptune.isNode
+    if isNode
       logger if isString m
         m
       else
