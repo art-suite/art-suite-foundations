@@ -166,7 +166,7 @@ module.exports = class RestClient extends BaseClass
 
   ###
   restRequest: (options) ->
-    {verb, method, url, data, body, query, headers, onProgress, responseType, formData, showProgressAfter} = options
+    {verb, verbose, method, url, data, body, query, headers, onProgress, responseType, formData, showProgressAfter} = options
     showProgressAfter = 100 unless isNumber showProgressAfter
 
     method ||= verb
@@ -190,6 +190,7 @@ module.exports = class RestClient extends BaseClass
     url = appendQuery url, query if query
 
     @_normalizedRestRequest {
+      verbose
       method
       url
       body
@@ -225,7 +226,7 @@ module.exports = class RestClient extends BaseClass
 
   # no error checking, only normalized options expected
   _normalizedRestRequest: (options) ->
-    {method, url, body, headers, onProgress, responseType, showProgressAfter} = options
+    {method, url, body, headers, onProgress, responseType, showProgressAfter, verbose} = options
 
 
     new Promise (resolve, reject) ->
@@ -314,4 +315,5 @@ module.exports = class RestClient extends BaseClass
         else
           request.upload.addEventListener "progress", progressCallbackInternal
 
+      log "ArtRestClient: #{method} #{url}" if verbose
       request.send body
