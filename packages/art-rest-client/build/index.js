@@ -100,15 +100,15 @@ module.exports = __webpack_require__(1);
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BaseClass, ErrorWithInfo, Promise, RestClient, StandardLib, aborted, appendQuery, capitalizedDashCase, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
+var BaseClass, Promise, RequestError, RestClient, StandardLib, aborted, appendQuery, capitalizedDashCase, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, networkFailure, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 StandardLib = __webpack_require__(0);
 
-ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, ErrorWithInfo = ref.ErrorWithInfo, object = ref.object, w = ref.w, capitalizedDashCase = ref.capitalizedDashCase, each = ref.each;
+ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, RequestError = ref.RequestError, object = ref.object, w = ref.w, capitalizedDashCase = ref.capitalizedDashCase, each = ref.each;
 
-ref1 = __webpack_require__(8), success = ref1.success, serverFailure = ref1.serverFailure, aborted = ref1.aborted, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
+ref1 = __webpack_require__(8), networkFailure = ref1.networkFailure, success = ref1.success, serverFailure = ref1.serverFailure, aborted = ref1.aborted, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
 
 BaseClass = __webpack_require__(7).BaseClass;
 
@@ -260,7 +260,7 @@ module.exports = RestClient = (function(superClass) {
     }));
   };
 
-  RestClient.getArrayBuffer = function(url, options) {
+  RestClient.prototype.getArrayBuffer = function(url, options) {
     return this.restRequest(merge(options, {
       verb: "GET",
       url: url,
@@ -351,8 +351,8 @@ module.exports = RestClient = (function(superClass) {
    */
 
   RestClient.prototype.restRequest = function(options) {
-    var body, data, formData, headers, k, method, onProgress, responseType, showProgressAfter, specifiedVerb, url, v, verb;
-    verb = options.verb, method = options.method, url = options.url, data = options.data, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
+    var body, data, formData, headers, k, method, onProgress, query, responseType, showProgressAfter, specifiedVerb, url, v, verb, verbose;
+    verb = options.verb, verbose = options.verbose, method = options.method, url = options.url, data = options.data, body = options.body, query = options.query, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
     if (!isNumber(showProgressAfter)) {
       showProgressAfter = 100;
     }
@@ -382,7 +382,11 @@ module.exports = RestClient = (function(superClass) {
       });
       throw new Error("With their ultimate wisdom, the gods decree: NO DATA WITH GET");
     }
+    if (query) {
+      url = appendQuery(url, query);
+    }
     return this._normalizedRestRequest({
+      verbose: verbose,
       method: method,
       url: url,
       body: body,
@@ -429,27 +433,37 @@ module.exports = RestClient = (function(superClass) {
   };
 
   RestClient.prototype._normalizedRestRequest = function(options) {
-    var body, headers, method, onProgress, responseType, showProgressAfter, url;
-    method = options.method, url = options.url, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, showProgressAfter = options.showProgressAfter;
+    var body, headers, method, onProgress, responseType, showProgressAfter, url, verbose;
+    method = options.method, url = options.url, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, showProgressAfter = options.showProgressAfter, verbose = options.verbose;
     return new Promise(function(resolve, reject) {
-      var getErrorResponse, getResponse, initialProgressCalled, k, lastProgressEvent, progressCallbackInternal, request, requestResolved, restRequestStatus, v;
+      var fail, getErrorResponse, getResponse, initialProgressCalled, k, lastProgressEvent, progressCallbackInternal, request, requestResolved, restRequestStatus, v;
+      fail = function(props) {
+        return reject(new RequestError(merge(props, {
+          sourceLib: "ArtRestClient",
+          body: body,
+          headers: headers,
+          responseType: responseType,
+          key: url,
+          type: method,
+          progress: restRequestStatus.progress
+        })));
+      };
       restRequestStatus = {
         request: request = new XMLHttpRequest,
         progress: 0,
         options: options,
         abort: function() {
           request.abort();
-          return reject(new ErrorWithInfo("XMLHttpRequest aborted", merge(restRequestStatus, {
-            status: aborted
-          })));
+          return fail({
+            status: aborted,
+            message: "XMLHttpRequest aborted"
+          });
         }
       };
       getErrorResponse = function() {
         var error;
         try {
-          return {
-            response: getResponse()
-          };
+          return getResponse();
         } catch (error1) {
           error = error1;
           return {
@@ -481,12 +495,16 @@ module.exports = RestClient = (function(superClass) {
       requestResolved = false;
       request.addEventListener("error", function(event) {
         requestResolved = true;
-        return reject(new ErrorWithInfo("XMLHttpRequest error event triggered", merge(restRequestStatus, {
-          event: event
-        }, decodeHttpStatus())));
+        return fail({
+          status: networkFailure,
+          message: "XMLHttpRequest error event triggered",
+          data: {
+            event: event
+          }
+        });
       });
       request.addEventListener("load", function(event) {
-        var decodedHttpStatus, httpStatus, info, message, stringInfo;
+        var decodedHttpStatus, httpStatus, message;
         requestResolved = true;
         decodedHttpStatus = decodeHttpStatus(httpStatus = request.status);
         if (!((decodedHttpStatus.status === success) && ((function() {
@@ -495,15 +513,12 @@ module.exports = RestClient = (function(superClass) {
             return true;
           } catch (error1) {}
         })()))) {
-          info = merge(restRequestStatus, decodedHttpStatus, {
-            event: event
-          }, getErrorResponse());
-          stringInfo = formattedInspect({
-            info: objectWithout(info, "event", "request")
-          });
-          message = decodedHttpStatus.status === success ? "error processing successful response" : "request status: " + decodedHttpStatus.status + " (" + request.status + ")";
-          message += "\n\n" + stringInfo;
-          return reject(new ErrorWithInfo(message, info));
+          message = decodedHttpStatus.status === success ? (decodedHttpStatus.status = serverFailure, "error processing successful response") : void 0;
+          return fail(merge(decodedHttpStatus, {
+            message: message,
+            event: event,
+            data: getErrorResponse()
+          }));
         }
       });
       if (onProgress) {
@@ -528,6 +543,9 @@ module.exports = RestClient = (function(superClass) {
         } else {
           request.upload.addEventListener("progress", progressCallbackInternal);
         }
+      }
+      if (verbose) {
+        log("ArtRestClient: " + method + " " + url);
       }
       return request.send(body);
     });
@@ -564,52 +582,7 @@ module.exports = (__webpack_require__(9)).addNamespace('Art.RestClient', RestCli
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"dependencies": {
-		"art-build-configurator": "*",
-		"art-class-system": "*",
-		"art-communication-status": "^1.0.0",
-		"art-config": "*",
-		"art-standard-lib": "*",
-		"art-testbench": "*",
-		"bluebird": "^3.5.0",
-		"caffeine-script": "*",
-		"caffeine-script-runtime": "*",
-		"case-sensitive-paths-webpack-plugin": "^2.1.1",
-		"chai": "^4.0.1",
-		"coffee-loader": "^0.7.3",
-		"coffee-script": "^1.12.6",
-		"colors": "^1.1.2",
-		"commander": "^2.9.0",
-		"css-loader": "^0.28.4",
-		"dateformat": "^2.0.0",
-		"detect-node": "^2.0.3",
-		"fs-extra": "^3.0.1",
-		"glob": "^7.1.2",
-		"glob-promise": "^3.1.0",
-		"json-loader": "^0.5.4",
-		"mocha": "^3.4.2",
-		"neptune-namespaces": "*",
-		"script-loader": "^0.7.0",
-		"style-loader": "^0.18.1",
-		"webpack": "^2.6.1",
-		"webpack-dev-server": "^2.4.5",
-		"webpack-merge": "^4.1.0",
-		"webpack-node-externals": "^1.6.0",
-		"xhr2": "^0.1.4"
-	},
-	"description": "Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.",
-	"license": "ISC",
-	"name": "art-rest-client",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "1.5.1"
-};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-communication-status":"^1.0.0","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0","xhr2":"^0.1.4"},"description":"Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.","license":"ISC","name":"art-rest-client","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.6.2"}
 
 /***/ }),
 /* 7 */
