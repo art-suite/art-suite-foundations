@@ -84,13 +84,13 @@ NEW:
   Ok, that's done. Now I need to revisit the mangler issue.
   Did this fix it?
  */
-var ArtStandardLibCore, Namespace, isExtendedClass, isFunction, isPlainArray, ref,
+var ArtStandardLibCore, Namespace, isClass, isExtendedClass, isFunction, isPlainArray, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-ref = __webpack_require__(9), isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(9), isClass = ref.isClass, isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
@@ -328,7 +328,7 @@ module.exports = Namespace = (function() {
    */
 
   Namespace._setChildNamespaceProps = function(name, child) {
-    if (isFunction(child)) {
+    if (isFunction(child) || isClass(child)) {
       if (isFunction(child["class"])) {
         this._setChildNamespaceProps(name, child["class"]);
       }
@@ -540,23 +540,7 @@ try {
 /* 7 */
 /***/ (function(module, exports) {
 
-module.exports = {
-	"author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-	"dependencies": {
-		"art-standard-lib": "*",
-		"coffee-script": "*"
-	},
-	"description": "Neptune.Namespaces.Runtime",
-	"license": "ISC",
-	"name": "neptune-namespaces-runtime",
-	"scripts": {
-		"build": "webpack --progress",
-		"start": "webpack-dev-server --hot --inline --progress",
-		"test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-		"testInBrowser": "webpack-dev-server --progress"
-	},
-	"version": "3.0.6"
-};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-standard-lib":"*","coffee-script":"*"},"description":"Neptune.Namespaces.Runtime","license":"ISC","name":"neptune-namespaces-runtime","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"3.0.7"}
 
 /***/ }),
 /* 8 */
