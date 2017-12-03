@@ -424,6 +424,19 @@ module.exports = BaseClass = (function(superClass) {
     return this;
   };
 
+  BaseClass.getNamespacePath = function() {
+    return this.namespacePath;
+  };
+
+  BaseClass.getNamespacePathWithExtendsInfo = function() {
+    var ref, ref1, ref2, ref3;
+    if (!this.namespacePath || ((ref = this.__super__) != null ? (ref1 = ref["class"]) != null ? ref1.namespacePath : void 0 : void 0) === this.namespacePath) {
+      return this.namespacePath = ((ref2 = (ref3 = this.namespace) != null ? ref3.namespacePath : void 0) != null ? ref2 : '(no parent namespace)') + "." + (this.getName()) + " extends " + (this.__super__["class"].getNamespacePath());
+    } else {
+      return this.namespacePath;
+    }
+  };
+
   BaseClass.getClassName = function(klass) {
     if (klass == null) {
       klass = this;
