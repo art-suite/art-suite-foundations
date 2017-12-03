@@ -361,7 +361,11 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   ######################################################
   # Class Info
   ######################################################
-  @getNamespacePath: -> @namespacePath
+  @getNamespacePath: ->
+    if @namespacePath == @__super__?.class?.namespacePath
+      "ParentNamespaceNotSet.#{@getName()}"
+    else
+      @namespacePath
 
   @getNamespacePathWithExtendsInfo: ->
     if !@namespacePath || @__super__?.class?.namespacePath == @namespacePath
