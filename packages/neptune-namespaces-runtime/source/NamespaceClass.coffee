@@ -11,7 +11,7 @@ NEW:
   Did this fix it?
 ###
 
-{isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Types'
+{isClass, isFunction, isPlainArray, isExtendedClass} = require 'art-standard-lib/Types'
 
 ArtStandardLibCore = null
 
@@ -185,7 +185,7 @@ module.exports = class Namespace
     get their namespace-props set.
   ###
   @_setChildNamespaceProps: (name, child) ->
-    if isFunction child
+    if isFunction(child) || isClass(child)
       @_setChildNamespaceProps name, child.class if isFunction child.class
       child.namespace = @
       child.namespacePath = @namespacePath + "." + name
