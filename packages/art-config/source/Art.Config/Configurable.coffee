@@ -98,3 +98,6 @@ defineModule module, class Configurable extends EventedMixin BaseClass
       # only register once
       @_register()
     super
+
+    # TODO: just return @config with any @hasOwnProperty values bound and mixed in
+    # @config.config = @config # for backward compatability
