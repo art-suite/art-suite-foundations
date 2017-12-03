@@ -270,7 +270,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     #   The above command makes your file work either way - as part of the full namespace or
     #   included by itself.
     @namespacePath = if @namespace = @_namespace ? null
-      "#{@namespace.namespacePath}.#{@getName}"
+      "#{@namespace.namespacePath}.#{@getName()}"
     else
       null
 
