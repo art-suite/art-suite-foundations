@@ -262,13 +262,25 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   {hotReloadEnabled, hotReloaded, classModuleState, module} = options
   ###
   @postCreate: (options) ->
-    # don't inherit NeptuneNamespace values:
-    @namespace = @namespacePath = null
+    # TODO - once we switch fully to ES6, we should revisit how we handle @namespace
+    # Normally, @namespace and @namespacePath get set by the parent NeptuneNamespace's index file AFTER postCreate.
+    # However, if you need to require a file directly without requiring everything else in the namespace,
+    #   you can add: @setNamespace require './namespace'
+    #   to your class and you'll still get all the useful namespace functions.
+    #   The above command makes your file work either way - as part of the full namespace or
+    #   included by itself.
+    @namespacePath = if @namespace = @_namespace ? null
+      "#{@namespace.namespacePath}.#{@getName}"
+    else
+      null
 
     if @getIsAbstractClass()
       @postCreateAbstractClass options
     else
       @postCreateConcreteClass options
+
+  @setNamespace: (ns) ->
+    @_namespace = ns
 
   @postCreateAbstractClass: (options) -> @
   @postCreateConcreteClass: (options) -> @
