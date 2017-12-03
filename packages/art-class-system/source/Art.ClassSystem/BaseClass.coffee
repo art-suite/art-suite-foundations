@@ -262,6 +262,9 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   {hotReloadEnabled, hotReloaded, classModuleState, module} = options
   ###
   @postCreate: (options) ->
+    # don't inherit NeptuneNamespace values:
+    @namespace = @namespacePath = null
+
     if @getIsAbstractClass()
       @postCreateAbstractClass options
     else
@@ -270,7 +273,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   @postCreateAbstractClass: (options) -> @
   @postCreateConcreteClass: (options) -> @
 
-  excludedKeys = ["__super__", "namespace", "namespacePath"].concat Object.keys Neptune.Base
+  # excludedKeys = ["__super__", "namespace", "namespacePath"].concat Object.keys Neptune.Base
 
   constructor: ->
     @__uniqueId = null
@@ -362,8 +365,8 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   # Class Info
   ######################################################
   @getNamespacePath: ->
-    if @namespacePath == @__super__?.class?.namespacePath
-      "ParentNamespaceNotSet.#{@getName()}"
+    unless @namespacePath
+      "parentNamespaceNotSet.#{@getName()}"
     else
       @namespacePath
 
