@@ -100,4 +100,5 @@ defineModule module, class Configurable extends EventedMixin BaseClass
     super
 
     # TODO: just return @config with any @hasOwnProperty values bound and mixed in
+    # WHY?: Because, then we can just do &MyConfig.configValue - much nicer than &MyConfig.config.configValue
     # @config.config = @config # for backward compatability
