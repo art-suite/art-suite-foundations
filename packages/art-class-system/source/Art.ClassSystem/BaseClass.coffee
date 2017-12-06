@@ -269,10 +269,11 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     #   to your class and you'll still get all the useful namespace functions.
     #   The above command makes your file work either way - as part of the full namespace or
     #   included by itself.
-    @namespacePath = if @namespace = @_namespace ? null
-      "#{@namespace.namespacePath}.#{@getName()}"
-    else
-      null
+    # SBD: I pulled the following code because it breaks hot-reloading.
+    # @namespacePath = if @namespace = @_namespace ? null
+    #   "#{@namespace.namespacePath}.#{@getName()}"
+    # else
+    #   null
 
     if @getIsAbstractClass()
       @postCreateAbstractClass options
