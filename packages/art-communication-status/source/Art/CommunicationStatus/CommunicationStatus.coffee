@@ -127,9 +127,9 @@ module.exports = class CommunicationStatus
         switch httpStatus
           # gateway failures
           when 502, 503, 504 then @networkFailure
+          when 501, 505, 530 then @clientFailure
 
           # Not implemented / HTTP Version not Supported
-          when 501, 505      then @clientFailure
           when 500           then @serverFailure
 
     throw new Error "unhandled httpStatus: #{httpStatus}" unless status?
