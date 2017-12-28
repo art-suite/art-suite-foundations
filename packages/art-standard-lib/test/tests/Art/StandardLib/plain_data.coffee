@@ -1,6 +1,6 @@
 
 {StandardLib} = Neptune.Art
-{deepEach, deepMap, log, inspect, toJsonStructure} = StandardLib
+{merge, deepEach, deepMap, log, inspect, toJsonStructure, compact} = StandardLib
 
 suite "Art.StandardLib.StandardLib.PlainData", ->
 
@@ -113,3 +113,20 @@ suite "Art.StandardLib.StandardLib.PlainData", ->
         assert.equal true, b == c[0]
         assert.equal false, a == c
 
+    suite "postprocessArray", ->
+      test "basic", ->
+        c = deepMap [1,2,3], ((v) -> if v == 2 then v else null), postprocessArray: compact
+        assert.eq c, [2]
+
+      test "deep", ->
+        c = deepMap [1,[2,3], 2], ((v) -> if v == 2 then v else null), postprocessArray: compact
+        assert.eq c, [[2], 2]
+
+    suite "postprocessObject", ->
+      test "basic", ->
+        c = deepMap {a:1,b:2,c:3}, ((v) -> if v == 2 then v else undefined), postprocessObject: merge
+        assert.eq c, b: 2
+
+      test "deep", ->
+        c = deepMap {a:1,b:{b1:2,b2:3}, c:2}, ((v) -> if v == 2 then v else undefined), postprocessObject: merge
+        assert.eq c, c: 2, b: b1: 2

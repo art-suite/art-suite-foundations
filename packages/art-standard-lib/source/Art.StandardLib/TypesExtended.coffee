@@ -111,7 +111,11 @@ module.exports = class Types
       if r!=v
         res ||= array.slice()
         res[i] = r
-    res || array
+    res ||= array
+    if p = options?.postprocessArray
+      p res
+    else
+      res
 
   cloneObjectUpToKey = (obj, k) ->
     res = {}
@@ -127,7 +131,12 @@ module.exports = class Types
       if r!=v || res
         res ||= cloneObjectUpToKey obj, k
         res[k] = r
-    res || obj
+
+    res ||= obj
+    if p = options?.postprocessObject
+      p res
+    else
+      res
 
   noopMapper = (v) -> v
   ###
