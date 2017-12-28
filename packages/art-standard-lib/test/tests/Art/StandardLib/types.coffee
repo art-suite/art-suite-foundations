@@ -19,6 +19,8 @@
   isArrayIterable
   getSuper
   Map
+  isArguments
+  log
 } = Neptune.Art.StandardLib
 {BaseClass} = require 'art-class-system'
 
@@ -107,6 +109,16 @@ module.exports = suite:
       assert.eq false, isPlainObject "foo"
       assert.eq false, isPlainObject []
       assert.eq false, isPlainObject ->
+
+  isArguments: ->
+    test "actual args", ->
+      assert.eq true, isArguments (-> arguments)()
+
+    test "just array", ->
+      assert.eq false, isArguments []
+
+    test "quacks-like-a-duck-args", ->
+      assert.eq true, isArguments length: 0, callee: ->
 
   isClass: ->
     test "isClass empty-class is false - only class we can't detect correctly", ->
