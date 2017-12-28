@@ -48,7 +48,7 @@ module.exports = suite:
     test "isPromise Promise.reject()", -> assert.eq true, isPromise Promise.reject()
     test "isPromise 1 is false", -> assert.eq false, isPromise 1
     test "isPromise {} is false", -> assert.eq false, isPromise {}
-    test "isPromise Promise is false", -> assert.eq false, isPromise isPromise
+    test "isPromise Promise is false", -> assert.eq false, isPromise Promise
 
   isArrayIterable: ->
     test "isArrayIterable [] is true", -> assert.eq true, isArrayIterable []

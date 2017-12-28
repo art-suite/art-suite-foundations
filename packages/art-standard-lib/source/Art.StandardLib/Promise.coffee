@@ -15,6 +15,9 @@ BlueBirdPromise.config
   cancellation:     promiseDebug
   monitoring:       promiseDebug
 
+
+{isPromise} = require './Core/Types'
+
 ErrorWithInfo = require "./ErrorWithInfo"
 
 ###
@@ -63,7 +66,7 @@ defineModule module, ->
     # @resolve: Promise.resolve
     # @then: (f) -> Promise.resolve().then f
 
-    @isPromise: isPromise = (f) -> isFunction f?.then
+    @isPromise: isPromise
     @testPromise: (promise) ->
       promise.then  (v) -> console.log "promise.resolve", v
       promise.catch (v) -> console.log "promise.reject", v
