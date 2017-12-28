@@ -1,13 +1,15 @@
 {compactFlatten} = require './ArrayCompactFlatten'
 module.exports = class StringCase
 
-  @getCodeWords: (str) ->
+  @getCodeWords: getCodeWords = (str) ->
     _words = str.match /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g
     return [] unless _words
     words = for word in _words
       word.match /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g #/[A-Z]+[a-z0-9]*|[a-z0-9]+/g
 
     compactFlatten words
+
+  @codeWords: getCodeWords
 
   @lowerCase: (str) -> str?.toLocaleLowerCase()
   @upperCase: (str) -> str?.toLocaleUpperCase()
