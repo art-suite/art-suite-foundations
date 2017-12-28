@@ -21,6 +21,7 @@
   Map
   isArguments
   log
+  gt, lt, gte, lte
 } = Neptune.Art.StandardLib
 {BaseClass} = require 'art-class-system'
 
@@ -234,6 +235,24 @@ module.exports = suite:
       assert.eq true, present 0, "hi"
       assert.eq true, present false, "hi"
       assert.eq "hi", present "", "hi"
+
+  inequality: ->
+    testInequality = (a, b) ->
+      test "#{a}.gt/lt/gte/lte #{b}", ->
+        assert.eq gt(a, b), a > b, "gt"
+        assert.eq lt(a, b), a < b, "lt"
+        assert.eq gte(a, b), a >= b, "gte"
+        assert.eq lte(a, b), a <= b, "lte"
+
+    testInequality 1, 0
+    testInequality 0, 1
+    testInequality 0, 0
+    testInequality 1, 1
+    testInequality 1, 2
+    testInequality 2, 1
+    testInequality "hi", "hi"
+    testInequality "hi1", "hi2"
+    testInequality "hi2", "hi1"
 
   getSuper: ->
     class MyExtendedClass extends BaseClass

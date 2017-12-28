@@ -1,13 +1,36 @@
-
 {isPlainObject, mergeInto, isString, isFunction, isObject, isPlainArray, isJsonAtomicType} = Core = require './Core'
 
 module.exports = class Types
   mergeInto @, Core.Types
 
-  @gt:  (a, b) -> if isFunction a.gt  then a.gt b else a > b
-  @lt:  (a, b) -> if isFunction a.lt  then a.lt b else a < b
-  @gte: (a, b) -> if isFunction a.gte then a.gte b else a >= b
-  @lte: (a, b) -> if isFunction a.lte then a.lte b else a <= b
+  throwInequalityError = (a, b) ->
+    throw new Error "Value types are not compatible for inequality tests. a: #{a?.constructor.name}, b: #{b?.constructor.name}"
+
+  # 12-2017 TODO: Performance test: I think these should be as performant as just the direct operators for the normal cases.
+  #   If so, we can replace them for all operators in CaffeineScript and get operator overloading.
+  #   NOTE: a.constructor == b.constructor doesn't work across JavaScript zones (that's not the right word. but in browser, iFrames)
+  #     We may want to use: typeof a == typeof b, but that needs perf-tested too.
+
+  # TODO: perfTest
+  #   Compare:
+  #     a.constructor == b.constructor
+  #   with
+  #     typeof a == typeof b
+
+  # https://run.perf.zone/view/compare-type-equality-1514486807306
+  # Results: safari sucks for constructor comparison. Chrome, FF and Safarai are very fast for sameType
+
+  # Safari, FF and Chrome are all full-speed
+  # Edge doesn't perform at all well, but even with the simplest function it's almost the same ((a, b) -> a > b is terrible in Edge)
+  #   I think it may be a testing glitch
+  # https://run.perf.zone/view/operator-overloading-optimized-1514491281013
+
+  tEq = (a, b) -> typeof a == typeof b
+
+  @gt:  (a, b)->  if a? && b? then s = tEq a, b; (s && a >  b) || (if (s && a <= b) then false else a.gt  b) else throwInequalityError a, b
+  @lt:  (a, b)->  if a? && b? then s = tEq a, b; (s && a <  b) || (if (s && a >= b) then false else a.lt  b) else throwInequalityError a, b
+  @gte: (a, b)->  if a? && b? then s = tEq a, b; (s && a >= b) || (if (s && a <  b) then false else a.gte b) else throwInequalityError a, b
+  @lte: (a, b)->  if a? && b? then s = tEq a, b; (s && a <= b) || (if (s && a >  b) then false else a.lte b) else throwInequalityError a, b
 
   ###
   like RubyOnRails#present:
