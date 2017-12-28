@@ -16,7 +16,7 @@ What is the differences?
 {ArtStandardLibMultipleContextTypeSupport} = global
 
 module.exports = class Types
-  @isPromise: (obj) => isFunction obj?.then
+  @isPromise: (obj) => isFunction(obj?.then) && !isFunction obj
   @isRegExp:  if ArtStandardLibMultipleContextTypeSupport
       (obj) => obj.constructor.name == "RegExp"
     else
