@@ -76,41 +76,57 @@ var Core, Types, isFunction, isJsonAtomicType, isObject, isPlainArray, isPlainOb
 ref = Core = __webpack_require__(1), isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, isString = ref.isString, isFunction = ref.isFunction, isObject = ref.isObject, isPlainArray = ref.isPlainArray, isJsonAtomicType = ref.isJsonAtomicType;
 
 module.exports = Types = (function() {
-  var cloneObjectUpToKey, deepEach, deepEachAll, deepMap, deepMapArray, deepMapObject, functionName, noopMapper, objectName, toJsonStructure, toPostMessageStructure;
+  var cloneObjectUpToKey, deepEach, deepEachAll, deepMap, deepMapArray, deepMapObject, functionName, noopMapper, objectName, tEq, throwInequalityError, toJsonStructure, toPostMessageStructure;
 
   function Types() {}
 
   mergeInto(Types, Core.Types);
 
+  throwInequalityError = function(a, b) {
+    throw new Error("Value types are not compatible for inequality tests. a: " + (a != null ? a.constructor.name : void 0) + ", b: " + (b != null ? b.constructor.name : void 0));
+  };
+
+  tEq = function(a, b) {
+    return typeof a === typeof b;
+  };
+
   Types.gt = function(a, b) {
-    if (isFunction(a.gt)) {
-      return a.gt(b);
+    var s;
+    if ((a != null) && (b != null)) {
+      s = tEq(a, b);
+      return (s && a > b) || ((s && a <= b) ? false : a.gt(b));
     } else {
-      return a > b;
+      return throwInequalityError(a, b);
     }
   };
 
   Types.lt = function(a, b) {
-    if (isFunction(a.lt)) {
-      return a.lt(b);
+    var s;
+    if ((a != null) && (b != null)) {
+      s = tEq(a, b);
+      return (s && a < b) || ((s && a >= b) ? false : a.lt(b));
     } else {
-      return a < b;
+      return throwInequalityError(a, b);
     }
   };
 
   Types.gte = function(a, b) {
-    if (isFunction(a.gte)) {
-      return a.gte(b);
+    var s;
+    if ((a != null) && (b != null)) {
+      s = tEq(a, b);
+      return (s && a >= b) || ((s && a < b) ? false : a.gte(b));
     } else {
-      return a >= b;
+      return throwInequalityError(a, b);
     }
   };
 
   Types.lte = function(a, b) {
-    if (isFunction(a.lte)) {
-      return a.lte(b);
+    var s;
+    if ((a != null) && (b != null)) {
+      s = tEq(a, b);
+      return (s && a <= b) || ((s && a > b) ? false : a.lte(b));
     } else {
-      return a <= b;
+      return throwInequalityError(a, b);
     }
   };
 
@@ -5104,7 +5120,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.1"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.2"}
 
 /***/ }),
 /* 32 */
