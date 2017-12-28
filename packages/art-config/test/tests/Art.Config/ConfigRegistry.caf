@@ -61,17 +61,21 @@ suite:
       configure artConfigName: 'TestConfig'
       assert.eq Main.artConfigName, 'TestConfig'
       propA: "propAFromTestConfig"
+      MyGrouping: propB: "foo",  propC: "bar"
 
     testArtConfigGlobalConfig "global", ->
       global.artConfigName = 'TestConfig'
       configure()
       assert.eq Main.artConfigName, 'TestConfig'
       propA: "propAFromTestConfig"
+      MyGrouping: propB: "foo",  propC: "bar"
+
 
     testArtConfigGlobalConfig "env", ->
       configure artConfig: {}, __testEnv: artConfigName: 'TestConfig'
       assert.eq Main.artConfigName, 'TestConfig'
       propA: "propAFromTestConfig"
+      MyGrouping: propB: "foo",  propC: "bar"
 
   configs: ->
     test "TestConfig got registered", ->
@@ -79,3 +83,4 @@ suite:
         ConfigRegistry.configs
         TestConfig:
           propA: "propAFromTestConfig"
+          MyGrouping: propB: "foo",  propC: "bar"

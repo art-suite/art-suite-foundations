@@ -2,6 +2,8 @@
   defineModule
   log
   merge
+  mergeInto
+  deepMerge
 } = require 'art-standard-lib'
 {BaseObject} = require 'art-class-system'
 
@@ -19,3 +21,6 @@ defineModule module, class Configuration extends BaseObject
 
   @getProps: ->
     @getConcretePrototypeProperties()
+
+  @deepMergeInConfig: (config) ->
+    mergeInto @prototype, deepMerge @getProps(), config
