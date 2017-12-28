@@ -97,7 +97,7 @@ module.exports = Types = (function() {
   function Types() {}
 
   Types.isPromise = function(obj) {
-    return isFunction(obj != null ? obj.then : void 0) && !isFunction(obj);
+    return isFunction(obj != null ? obj.then : void 0);
   };
 
   Types.isRegExp = ArtStandardLibMultipleContextTypeSupport ? function(obj) {

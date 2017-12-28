@@ -251,7 +251,7 @@ module.exports = Types = (function() {
    */
 
   deepMapArray = function(array, mapper, options) {
-    var i, j, len, r, res, v;
+    var i, j, len, p, r, res, v;
     res = null;
     for (i = j = 0, len = array.length; j < len; i = ++j) {
       v = array[i];
@@ -261,7 +261,12 @@ module.exports = Types = (function() {
         res[i] = r;
       }
     }
-    return res || array;
+    res || (res = array);
+    if (p = options != null ? options.postprocessArray : void 0) {
+      return p(res);
+    } else {
+      return res;
+    }
   };
 
   cloneObjectUpToKey = function(obj, k) {
@@ -278,7 +283,7 @@ module.exports = Types = (function() {
   };
 
   deepMapObject = function(obj, mapper, options) {
-    var k, r, res, v;
+    var k, p, r, res, v;
     res = null;
     for (k in obj) {
       v = obj[k];
@@ -288,7 +293,12 @@ module.exports = Types = (function() {
         res[k] = r;
       }
     }
-    return res || obj;
+    res || (res = obj);
+    if (p = options != null ? options.postprocessObject : void 0) {
+      return p(res);
+    } else {
+      return res;
+    }
   };
 
   noopMapper = function(v) {
@@ -432,7 +442,7 @@ module.exports = Types = (function() {
   function Types() {}
 
   Types.isPromise = function(obj) {
-    return isFunction(obj != null ? obj.then : void 0) && !isFunction(obj);
+    return isFunction(obj != null ? obj.then : void 0);
   };
 
   Types.isRegExp = ArtStandardLibMultipleContextTypeSupport ? function(obj) {
@@ -5094,7 +5104,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.29.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.30.0"}
 
 /***/ }),
 /* 32 */
