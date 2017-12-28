@@ -442,7 +442,7 @@ module.exports = Types = (function() {
   function Types() {}
 
   Types.isPromise = function(obj) {
-    return isFunction(obj != null ? obj.then : void 0);
+    return (obj != null) && isFunction(obj.then) && !isFunction(obj);
   };
 
   Types.isRegExp = ArtStandardLibMultipleContextTypeSupport ? function(obj) {
@@ -2399,7 +2399,7 @@ module.exports = ObjectExtensions = (function() {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, promiseDebug, ref;
+/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, promiseDebug, ref;
 
 Promise = BlueBirdPromise = __webpack_require__(61);
 
@@ -2419,6 +2419,8 @@ BlueBirdPromise.config({
   cancellation: promiseDebug,
   monitoring: promiseDebug
 });
+
+isPromise = __webpack_require__(2).isPromise;
 
 ErrorWithInfo = __webpack_require__(36);
 
@@ -2464,13 +2466,11 @@ TODO:
 defineModule(module, function() {
   var ArtPromise, k, v;
   ArtPromise = (function() {
-    var deepAll, isPromise, noop;
+    var deepAll, noop;
 
     function ArtPromise() {}
 
-    ArtPromise.isPromise = isPromise = function(f) {
-      return isFunction(f != null ? f.then : void 0);
-    };
+    ArtPromise.isPromise = isPromise;
 
     ArtPromise.testPromise = function(promise) {
       promise.then(function(v) {
@@ -5104,7 +5104,7 @@ module.exports = Unique = (function() {
 /* 31 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.1"}
 
 /***/ }),
 /* 32 */
