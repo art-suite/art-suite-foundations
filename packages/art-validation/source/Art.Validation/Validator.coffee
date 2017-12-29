@@ -35,13 +35,29 @@ FieldTypes = require './FieldTypes'
 DataTypes = require './DataTypes'
 
 ###
-NOTES:
+CONCEPTS:
 
-  validators are evaluated before preprocessors
+  Each field can have up to three custom functions:
 
-  preprocessors should NOT throw validation-related errors
+    validate: (v) -> true/false
 
-  TODO?: We could add postValidators to allow you to validate AFTER the preprocessor...
+      Validate is evaludated first. If it returns a false value, validation fails.
+
+      NOTE: Return false for validation failures, DO NOT THROUGH ERRORS
+
+    preprocess: (v1) -> v2
+
+      Preprocess can arbitrarily transform the input value to any output value.
+
+      The output-value is what is passed back after successful validation.
+
+      NOTE: preprocessors should NOT throw validation-related errors
+
+    postValidate: (v) -> true/false
+
+      Post-validate is evaludated last. It works the same as validate, but
+      sometimes it's easy to normalize the input first with 'preprocess' and
+      THEN validate it.
 
 USAGE:
   new Validator validatorFieldsProps, options
@@ -53,6 +69,9 @@ USAGE:
       options:
         exclusive: true/false
           if true, only fields listed in validatorFieldsProps are allowed.
+
+        context: String
+          String to attached to errors for clarity.
 
     fieldProps:
       string or plainObject
@@ -252,7 +271,7 @@ module.exports = class Validator extends BaseClass
       @presentFieldsValid(fields) &&
       @postValidateFields processedFields = @preprocessFields fields, true
     catch error
-      log.error Validator: error_in: preCreateSync: {fields, options, this: @, error}
+      log.error Validator: error_in: validateCreate: {fields, options, this: @, error}
 
     out || @_throwError fields, processedFields, options, true
 
@@ -274,7 +293,7 @@ module.exports = class Validator extends BaseClass
       @presentFieldsValid(fields) &&
       @postValidateFields processedFields =  @preprocessFields fields
     catch error
-      log.error Validator: error_in: preUpdateSync: {fields, options, this: @, error}
+      log.error Validator: error_in: validateUpdate: {fields, options, this: @, error}
 
     out || @_throwError fields, processedFields, options
 
@@ -297,9 +316,9 @@ module.exports = class Validator extends BaseClass
       errors[f] = "missing"
       "missing #{f}"
 
-    message = "Invalid fields for #{options?.context || @context || "Validator"} #{if forCreate then 'create' else 'update'}: #{messageFields.join ', '}"
+    message = "#{options?.context ? @context} #{if forCreate then 'Create' else 'Update'}-Validation failed. Invalid fields: #{messageFields.join ', '}"
     info.fields = fields
-    throw new ErrorWithInfo message, info
+    throw new ErrorWithInfo message.trim(), info
 
   ####################
   # VALIDATION CORE
