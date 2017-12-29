@@ -25,6 +25,24 @@ module.exports = class Types
   #   I think it may be a testing glitch
   # https://run.perf.zone/view/operator-overloading-optimized-1514491281013
 
+  # GRR - in my realworld tests, even a simplified version still is way slow in all browsers
+  # https://run.perf.zone/view/operator-overloading-optimized-1514494600425
+  ###
+  # simplified - as simple as I can make it
+  # sacrifices some semantics
+  gt = (a, b)->
+    if (o = a > b) || a <= b
+      return o
+    a.gt b
+
+  # just a tad more complex and only sacrifices clear errors
+  gt = (a, b)->
+    if typeof a == typeof b
+      if (o = a > b) || a <= b
+        return o
+    a.gt b
+  ###
+
   tEq = (a, b) -> typeof a == typeof b
 
   @gt:  (a, b)->  if a? && b? then s = tEq a, b; (s && a >  b) || (if (s && a <= b) then false else a.gt  b) else throwInequalityError a, b
