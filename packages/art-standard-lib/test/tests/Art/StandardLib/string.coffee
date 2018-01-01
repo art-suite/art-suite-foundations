@@ -9,6 +9,7 @@
   humanFriendlyShorten
   cryptoRandomString
   compactFlattenJoin
+  getPadding
 } = StandardLib
 
 
@@ -22,6 +23,11 @@ hfsStest = (input, maxLength, output) ->
 
 module.exports = suite:
   misc: ->
+    test "getPadding", ->
+      assert.eq '', getPadding 0
+      assert.eq ' ', getPadding 1
+      assert.eq '  ', getPadding 2
+      assert.eq '--', getPadding 2, '-'
 
     test "randomString", ->
       assert.eq 32, randomString(32).length

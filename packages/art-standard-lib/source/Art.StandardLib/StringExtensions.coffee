@@ -78,12 +78,15 @@ module.exports = class StringExtensions
       str.toString()
 
   @getPadding: getPadding = (length, padding = " ")->
-    Array(length).join padding
+    out = ""
+    for i in [0...length]
+      out += padding
+    out
 
   @pad: (str, length, padding, alignRight)->
     str = String(str)
     return str if str.length >= length
-    exactPadding = getPadding Math.max(length - str.length + 1, 0), padding
+    exactPadding = getPadding Math.max(length - str.length, 0), padding
     if alignRight
       exactPadding + str
     else
