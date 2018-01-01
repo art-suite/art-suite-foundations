@@ -1,4 +1,5 @@
 {isString, isNumber, isDate} = require './Core/Types'
+{formattedInspect} = require './Inspect'
 
 march1973InMilliseconds = 100000000000
 
@@ -33,7 +34,7 @@ module.exports =
         v
     else if isDate v
       v - 0
-    else throw new Error 'invalid timestamp value: #{formattedInspect v}'
+    else throw new Error "invalid timestamp value: #{formattedInspect v}"
 
   ###
   IN:
