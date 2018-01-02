@@ -1,7 +1,7 @@
 module.exports = [
   {
     Config: require './Configuration'
-    config: {}
+    config: {yesArtConfig:true}
     configName:           defaultArtConfigName = "Development"
     defaultArtConfigName
   }

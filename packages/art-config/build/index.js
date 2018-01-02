@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -296,25 +296,35 @@ defineModule(module, Lib = (function() {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseObject, ConfigRegistry, Main, Promise, clone, compactFlatten, deepMerge, defineModule, expandPathedProperties, formattedInspect, getExternalEnvironment, inspect, isPlainObject, isString, log, merge, mergeInto, normalizeArtConfigName, parseQuery, pushIfNotPresent, ref, ref1, upperCamelCase,
+/* WEBPACK VAR INJECTION */(function(module) {var ConfigRegistry, Main, Promise, clone, compactFlatten, deepMerge, defineModule, expandPathedProperties, formattedInspect, getExternalEnvironment, inspect, isPlainObject, isString, log, merge, mergeInto, normalizeArtConfigName, parseQuery, pushIfNotPresent, ref, ref1, upperCamelCase,
   slice = [].slice;
 
 ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, Promise = ref.Promise, inspect = ref.inspect, formattedInspect = ref.formattedInspect, merge = ref.merge, deepMerge = ref.deepMerge, mergeInto = ref.mergeInto, parseQuery = ref.parseQuery, pushIfNotPresent = ref.pushIfNotPresent, isPlainObject = ref.isPlainObject, isString = ref.isString, upperCamelCase = ref.upperCamelCase, expandPathedProperties = ref.expandPathedProperties, clone = ref.clone, compactFlatten = ref.compactFlatten;
-
-BaseObject = __webpack_require__(3).BaseObject;
 
 ConfigRegistry = __webpack_require__(2);
 
 ref1 = __webpack_require__(5), normalizeArtConfigName = ref1.normalizeArtConfigName, getExternalEnvironment = ref1.getExternalEnvironment;
 
 defineModule(module, Main = (function() {
-  var defaultArtConfigName;
+  var getArtConfig, getArtConfigName, getDefaultArtConfigName, setArtConfigName;
 
   function Main() {}
 
-  Main.artConfigName = defaultArtConfigName = "Development";
+  getArtConfigName = function() {
+    return Neptune.Art.Config.configName;
+  };
 
-  Main.artConfig = {};
+  getArtConfig = function() {
+    return Neptune.Art.Config.config;
+  };
+
+  getDefaultArtConfigName = function() {
+    return Neptune.Art.Config.defaultArtConfigName;
+  };
+
+  setArtConfigName = function(name) {
+    return Neptune.Art.Config.configName = name;
+  };
 
 
   /*
@@ -328,7 +338,7 @@ defineModule(module, Main = (function() {
       default: "Development"
   
       EFFECT:
-        @artConfigName =
+        ArtConfig.configName =
           externalEnvironment.artConfigName ||
           artConfigName
   
@@ -341,7 +351,7 @@ defineModule(module, Main = (function() {
       default: {}
   
       EFFECT:
-        mergeInto @artConfig, deepMerge
+        mergeInto ArtConfig.config, deepMerge
           ConfigRegistry.configs[artConfigName]
           global.artConfig
           artConfig
@@ -379,18 +389,24 @@ defineModule(module, Main = (function() {
    */
 
   Main.configure = function() {
-    var __testEnv, artConfigArgument, artConfigNameArgument, c, conf, configurable, configureOptions, externalEnvironment, i, len, obj, ref2, ref3, ref4, verbose;
+    var __testEnv, artConfigArgument, artConfigNameArgument, c, conf, config, configName, configurable, configureOptions, defaultArtConfigName, externalEnvironment, i, len, obj, ref2, ref3, ref4, verbose;
     configureOptions = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     ref2 = Main.configureOptions = deepMerge.apply(null, configureOptions), artConfigNameArgument = ref2.artConfigName, artConfigArgument = ref2.artConfig, __testEnv = ref2.__testEnv;
     externalEnvironment = getExternalEnvironment(__testEnv);
-    Main.artConfigName = externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName;
-    Main.artConfigName = normalizeArtConfigName(Main.artConfigName);
-    if (Main.artConfigName && !ConfigRegistry.configs[Main.artConfigName]) {
-      throw new Error("no config registered with name: " + Main.artConfigName);
-    }
-    Main.artConfigName || (Main.artConfigName = defaultArtConfigName);
-    Neptune.Art.Config.configName = Neptune.Art.configName = Main.artConfigName;
-    Neptune.Art.Config.config = Neptune.Art.config = Main.artConfig;
+    config = getArtConfig();
+    defaultArtConfigName = getDefaultArtConfigName();
+    configName = (function() {
+      if (normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName)) {
+        configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName);
+        if (configName && !ConfigRegistry.configs[configName]) {
+          throw new Error("no config registered with name: " + configName);
+        }
+        return configName;
+      } else {
+        return defaultArtConfigName;
+      }
+    })();
+    setArtConfigName(configName);
     Main.resetCurrentConfig();
     ref3 = compactFlatten([
       (function() {
@@ -402,13 +418,13 @@ defineModule(module, Main = (function() {
           results.push(configurable.getPathedDefaultConfig());
         }
         return results;
-      })(), ConfigRegistry.configs[Main.artConfigName], global.artConfig, artConfigArgument, externalEnvironment.artConfig
+      })(), ConfigRegistry.configs[configName], global.artConfig, artConfigArgument, externalEnvironment.artConfig
     ]);
     for (i = 0, len = ref3.length; i < len; i++) {
       conf = ref3[i];
-      expandPathedProperties(conf, Main.artConfig);
+      expandPathedProperties(conf, config);
     }
-    verbose = Main.artConfig.verbose;
+    verbose = config.verbose;
     verbose || (verbose = (ref4 = Main.configureOptions) != null ? ref4.verbose : void 0);
     if (verbose) {
       log("------------- ConfigRegistry: inputs");
@@ -449,7 +465,7 @@ defineModule(module, Main = (function() {
                 return results;
               })()
               },
-              obj["configs." + Main.artConfigName] = ConfigRegistry.configs[Main.artConfigName],
+              obj["configs." + configName] = ConfigRegistry.configs[configName],
               obj["global.artConfig"] = global.artConfig,
               obj["arguments.artConfig"] = artConfigArgument,
               obj["environment.artConfig"] = externalEnvironment.artConfig,
@@ -465,21 +481,22 @@ defineModule(module, Main = (function() {
       log("------------- ConfigRegistry: configured");
       log({
         Art: {
-          configName: Main.artConfigName,
-          config: Main.artConfig
+          configName: configName,
+          config: config
         }
       });
-      return log("------------- ConfigRegistry: done");
+      log("------------- ConfigRegistry: done");
     }
+    return config;
   };
 
   Main.resetCurrentConfig = function() {
-    var k, ref2, results, v;
-    ref2 = Main.artConfig;
+    var config, k, results, v;
+    config = getArtConfig();
     results = [];
-    for (k in ref2) {
-      v = ref2[k];
-      results.push(delete Main.artConfig[k]);
+    for (k in config) {
+      v = config[k];
+      results.push(delete config[k]);
     }
     return results;
   };
@@ -493,7 +510,7 @@ defineModule(module, Main = (function() {
     ref2 = ConfigRegistry.configurables;
     for (i = 0, len = ref2.length; i < len; i++) {
       configurable = ref2[i];
-      configurable.configure(this.artConfig);
+      configurable.configure(getArtConfig());
     }
     return this._notifyConfigurablesConfigured();
   };
@@ -519,15 +536,22 @@ defineModule(module, Main = (function() {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(11);
+var Config,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-module.exports.includeInNamespace(__webpack_require__(9)).addModules({
-  ConfigRegistry: __webpack_require__(2),
-  Configurable: __webpack_require__(10),
-  Configuration: __webpack_require__(4),
-  Lib: __webpack_require__(5),
-  Main: __webpack_require__(6)
-});
+module.exports = (__webpack_require__(14)).addNamespace('Art.Config', Config = (function(superClass) {
+  extend(Config, superClass);
+
+  function Config() {
+    return Config.__super__.constructor.apply(this, arguments);
+  }
+
+  Config.version = __webpack_require__(12).version;
+
+  return Config;
+
+})(Neptune.PackageNamespace));
 
 
 /***/ }),
@@ -536,23 +560,45 @@ module.exports.includeInNamespace(__webpack_require__(9)).addModules({
 
 module.exports = __webpack_require__(7);
 
+module.exports.includeInNamespace(__webpack_require__(10)).addModules({
+  ConfigRegistry: __webpack_require__(2),
+  Configurable: __webpack_require__(11),
+  Configuration: __webpack_require__(4),
+  Lib: __webpack_require__(5),
+  Main: __webpack_require__(6)
+});
+
 
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [
-  {
-    Config: __webpack_require__(4)
-  }, __webpack_require__(6)
-];
+module.exports = __webpack_require__(8);
 
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, EventedMixin, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, ref,
+var defaultArtConfigName;
+
+module.exports = [
+  {
+    Config: __webpack_require__(4),
+    config: {
+      yesArtConfig: true
+    },
+    configName: defaultArtConfigName = "Development",
+    defaultArtConfigName: defaultArtConfigName
+  }, __webpack_require__(6)
+];
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, EventedMixin, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, namespace, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
@@ -560,6 +606,8 @@ module.exports = [
 ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, merge = ref.merge, isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, deepMerge = ref.deepMerge, isPlainObject = ref.isPlainObject;
 
 BaseClass = __webpack_require__(3).BaseClass;
+
+namespace = __webpack_require__(7);
 
 ConfigRegistry = __webpack_require__(2);
 
@@ -586,34 +634,38 @@ defineModule(module, Configurable = (function(superClass) {
 
   Configurable.abstractClass();
 
-  Configurable.defaults = function() {
-    var defaults;
-    defaults = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return this.defaultConfig = merge.apply(null, defaults);
-  };
+  Configurable.declarable({
+    defaults: {}
+  });
 
-  Configurable.getDefaultConfig = function() {
-    return this.defaultConfig;
+  Configurable.extendConfig = function() {
+    if (this.hasOwnProperty("config")) {
+      return this.config;
+    } else {
+      return this.config = {};
+    }
   };
 
   Configurable.reset = function() {
-    var k, ref1, ref2, v;
-    if (this.config) {
-      ref1 = this.config;
-      for (k in ref1) {
-        v = ref1[k];
-        delete this.config[k];
+    var config, defaults, k, ref1, v;
+    defaults = this.getDefaults();
+    config = this.extendConfig();
+    for (k in config) {
+      v = config[k];
+      if (defaults[k] == null) {
+        delete config[k];
       }
-    } else {
-      this.config = {};
     }
-    if (this.defaultConfig) {
-      mergeInto(this.config, this.defaultConfig);
+    mergeInto(config, defaults);
+    if (this.hasOwnProperty("namespace")) {
+      if (this.namespace === namespace) {
+        throw new Error;
+      }
+      if ((ref1 = this.namespace) != null) {
+        ref1.config || (ref1.config = config);
+      }
     }
-    if ((ref2 = this.namespace) != null) {
-      ref2.config = this.config;
-    }
-    return this.config;
+    return config;
   };
 
   Configurable.getInspectedObjects = function() {
@@ -629,7 +681,7 @@ defineModule(module, Configurable = (function(superClass) {
     var obj;
     return (
       obj = {},
-      obj["" + (this.getConfigurationPathString())] = this.getDefaultConfig(),
+      obj["" + (this.getConfigurationPathString())] = this.getDefaults(),
       obj
     );
   };
@@ -643,8 +695,7 @@ defineModule(module, Configurable = (function(superClass) {
         obj
       )
     });
-    this.reset();
-    return mergeInto(this.config, this.getConfigurationFromPath(globalConfig));
+    return mergeInto(this.reset(), this.getConfigurationFromPath(globalConfig));
   };
 
   Configurable.on = function() {
@@ -702,32 +753,10 @@ defineModule(module, Configurable = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Config,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(14)).addNamespace('Art.Config', Config = (function(superClass) {
-  extend(Config, superClass);
-
-  function Config() {
-    return Config.__super__.constructor.apply(this, arguments);
-  }
-
-  Config.version = __webpack_require__(12).version;
-
-  return Config;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-events":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"A powerful yet simple tool for configuring all your libraries consistently.","license":"ISC","name":"art-config","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.8.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-events":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"A powerful yet simple tool for configuring all your libraries consistently.","license":"ISC","name":"art-config","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.8.2"}
 
 /***/ }),
 /* 13 */

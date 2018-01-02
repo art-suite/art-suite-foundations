@@ -16,17 +16,16 @@
   clone
   compactFlatten
 } = require 'art-standard-lib'
-{BaseClass} = require 'art-class-system'
 ConfigRegistry = require './ConfigRegistry'
 {normalizeArtConfigName, getExternalEnvironment} = require './Lib'
-ArtConfig = require './namespace'
 
-defineModule module, class Main extends BaseClass
+defineModule module, class Main
 
-  @classGetter
-    artConfigName:  -> ArtConfig.configName
-    artConfig:      -> ArtConfig.config
+  getArtConfigName        = -> Neptune.Art.Config.configName
+  getArtConfig            = -> Neptune.Art.Config.config
+  getDefaultArtConfigName = -> Neptune.Art.Config.defaultArtConfigName
 
+  setArtConfigName        = (name) -> Neptune.Art.Config.configName = name
   ###
   IN: configureOptions:
     artConfigName: string
@@ -91,14 +90,18 @@ defineModule module, class Main extends BaseClass
     {artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv} = @configureOptions = deepMerge configureOptions...
 
     externalEnvironment = getExternalEnvironment __testEnv
+    config = getArtConfig()
+    defaultArtConfigName = getDefaultArtConfigName()
 
-    ArtConfig.configName = if normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
+    configName = if normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
       configName = normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
       if configName && !ConfigRegistry.configs[configName]
         throw new Error "no config registered with name: #{configName}"
       configName
     else
-      ArtConfig.defaultArtConfigName
+      defaultArtConfigName
+
+    setArtConfigName configName
 
     @resetCurrentConfig()
 
@@ -107,7 +110,7 @@ defineModule module, class Main extends BaseClass
         configurable.getPathedDefaultConfig() for configurable in ConfigRegistry.configurables
 
         # Config selected by artConfigName
-        ConfigRegistry.configs[@artConfigName]
+        ConfigRegistry.configs[configName]
 
         # Config from global.artConfig
         global.artConfig
@@ -118,9 +121,9 @@ defineModule module, class Main extends BaseClass
         # Config from the environment ('artConfig' from: BROWSER: query-string, NODE: shell environment)
         externalEnvironment.artConfig
       ]
-      expandPathedProperties conf, @artConfig
+      expandPathedProperties conf, config
 
-    {verbose} = @artConfig
+    {verbose} = config
     verbose ||= @configureOptions?.verbose
     if verbose
       log "------------- ConfigRegistry: inputs"
@@ -132,7 +135,7 @@ defineModule module, class Main extends BaseClass
           setConfigName:
             algorithm: "select LAST non-null"
             inputs:
-              defaultArtConfigName:         ArtConfig.defaultArtConfigName
+              defaultArtConfigName:         defaultArtConfigName
               "global.artConfigName":       global.artConfigName
               "arguments.artConfigName":    artConfigNameArgument
               "environment.artConfigName":  externalEnvironment.artConfigName
@@ -142,7 +145,7 @@ defineModule module, class Main extends BaseClass
             inputs:
               defaultConfigs:
                 configurable.getPathedDefaultConfig() for configurable in ConfigRegistry.configurables
-              "configs.#{@artConfigName}":  ConfigRegistry.configs[@artConfigName]
+              "configs.#{configName}":      ConfigRegistry.configs[configName]
               "global.artConfig":           global.artConfig
               "arguments.artConfig":        artConfigArgument
               "environment.artConfig":      externalEnvironment.artConfig
@@ -152,18 +155,19 @@ defineModule module, class Main extends BaseClass
 
     if verbose
       log "------------- ConfigRegistry: configured"
-      log Art: configName: @artConfigName, config: @artConfig
+      log Art: {configName, config}
       log "------------- ConfigRegistry: done"
 
-  @resetCurrentConfig: => delete @artConfig[k] for k, v of @artConfig
+    config
 
-  @reload: => @configure @configureOptions
+  @resetCurrentConfig: => config = getArtConfig(); delete config[k] for k, v of config
+  @reload:             => @configure @configureOptions
 
   ###############################
   # PRIVATE
   ###############################
   @_configureAllConfigurables: ->
-    configurable.configure @artConfig for configurable in ConfigRegistry.configurables
+    configurable.configure getArtConfig() for configurable in ConfigRegistry.configurables
     @_notifyConfigurablesConfigured()
 
   @_notifyConfigurablesConfigured: ->

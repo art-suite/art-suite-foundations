@@ -7,7 +7,7 @@ resetGlobals = ->
 testArtConfigGlobalConfig = (name, f) ->
   test name, ->
     value = f()
-    assert.eq Main.artConfig, merge
+    assert.eq Neptune.Art.Config.config, merge
       Tests: Art: Config: name: "TestName", verbose: false
       value
 
@@ -16,8 +16,8 @@ suite:
     setup ->
       configure()
 
-    test "Art.Config.config"     -> assert.equal Main.artConfig,     Neptune.Art.Config.config
-    test "Art.Config.configName" -> assert.equal Main.artConfigName, Neptune.Art.Config.configName
+    test "Art.Config.config"     -> assert.isObject Neptune.Art.Config.config
+    test "Art.Config.configName" -> assert.isString Neptune.Art.Config.configName
 
   artConfigSources: ->
     setup resetGlobals
@@ -51,26 +51,26 @@ suite:
 
     testArtConfigGlobalConfig "baseline", ->
       configure()
-      assert.eq Main.artConfigName, "Development"
+      assert.eq Neptune.Art.Config.configName, "Development"
       {}
 
     testArtConfigGlobalConfig "args", ->
       configure artConfigName: 'TestConfig'
-      assert.eq Main.artConfigName, 'TestConfig'
+      assert.eq Neptune.Art.Config.configName, 'TestConfig'
       propA: "propAFromTestConfig"
       MyGrouping: propB: "foo",  propC: "bar"
 
     testArtConfigGlobalConfig "global", ->
       global.artConfigName = 'TestConfig'
       configure()
-      assert.eq Main.artConfigName, 'TestConfig'
+      assert.eq Neptune.Art.Config.configName, 'TestConfig'
       propA: "propAFromTestConfig"
       MyGrouping: propB: "foo",  propC: "bar"
 
 
     testArtConfigGlobalConfig "env", ->
       configure artConfig: {}, __testEnv: artConfigName: 'TestConfig'
-      assert.eq Main.artConfigName, 'TestConfig'
+      assert.eq Neptune.Art.Config.configName, 'TestConfig'
       propA: "propAFromTestConfig"
       MyGrouping: propB: "foo",  propC: "bar"
 
