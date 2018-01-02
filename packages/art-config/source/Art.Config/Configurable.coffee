@@ -6,6 +6,7 @@
   mergeInto
   deepMerge
   isPlainObject
+  ErrorWithInfo
 } = require 'art-standard-lib'
 {BaseClass} = require 'art-class-system'
 
@@ -53,8 +54,7 @@ defineModule module, class Configurable extends EventedMixin BaseClass
     delete config[k] for k, v of config when !defaults[k]?
     mergeInto config, defaults
 
-    if @hasOwnProperty "namespace"
-      throw new Error if @namespace == namespace
+    if @namespace != namespace
       @namespace?.config ||= config
     config
 
