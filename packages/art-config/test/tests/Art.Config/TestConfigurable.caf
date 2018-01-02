@@ -56,7 +56,7 @@ class TestConfigurable extends Configurable
 
         assert.eq
           TestConfigurable.config
-          Neptune.Art.Config.config.Tests.Art.Config
+          getArtConfig().Tests.Art.Config
 
         assert.eq
           TestConfigurable.config
