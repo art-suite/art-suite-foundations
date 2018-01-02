@@ -36,6 +36,9 @@ defineModule module, class Configurable extends EventedMixin BaseClass
   @declarable
     defaults: {}
 
+  # backward compatibility
+  @getDefaultConfig: -> @getDefaults()
+
   # NOTE: writing our own extendConfig instead of BaseClass's extendProperty
   # BECAUSE: we want a working, inheritable, classGetter - but CoffeeScript 1.x can't do that.
   # SO, instead, we actually name the prop @config, not @_config
