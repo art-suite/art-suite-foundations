@@ -21,9 +21,9 @@ ConfigRegistry = require './ConfigRegistry'
 
 defineModule module, class Main
 
-  getArtConfigName        = -> Neptune.Art.Config.configName
-  getArtConfig            = -> Neptune.Art.Config.config
-  getDefaultArtConfigName = -> Neptune.Art.Config.defaultArtConfigName
+  @getArtConfigName       : getArtConfigName        = -> Neptune.Art.Config.configName
+  @getArtConfig           : getArtConfig            = -> Neptune.Art.Config.config
+  @getDefaultArtConfigName: getDefaultArtConfigName = -> Neptune.Art.Config.defaultArtConfigName
 
   setArtConfigName        = (name) -> Neptune.Art.Config.configName = name
   ###
