@@ -132,7 +132,7 @@ defineModule module, class Main extends BaseClass
           setConfigName:
             algorithm: "select LAST non-null"
             inputs:
-              defaultArtConfigName:         defaultArtConfigName
+              defaultArtConfigName:         ArtConfig.defaultArtConfigName
               "global.artConfigName":       global.artConfigName
               "arguments.artConfigName":    artConfigNameArgument
               "environment.artConfigName":  externalEnvironment.artConfigName
