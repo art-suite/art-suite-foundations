@@ -9,6 +9,8 @@
 } = require 'art-standard-lib'
 {BaseClass} = require 'art-class-system'
 
+namespace = require './namespace'
+
 ConfigRegistry = require './ConfigRegistry'
 
 {EventedMixin} = require 'art-events'
@@ -30,34 +32,42 @@ TO USE:
 defineModule module, class Configurable extends EventedMixin BaseClass
   @abstractClass()
 
-  # call this to initialize default values for your config
-  @defaults: (defaults...) ->
-    @defaultConfig = merge defaults...
+  @declarable
+    defaults: {}
 
-  @getDefaultConfig: -> @defaultConfig
+  # NOTE: writing our own extendConfig instead of BaseClass's extendProperty
+  # BECAUSE: we want a working, inheritable, classGetter - but CoffeeScript 1.x can't do that.
+  # SO, instead, we actually name the prop @config, not @_config
+  # Would work in: ES6 / CoffeeScript 2.0 / CaffeineScript - we just need to update EVERYTHING :)
+  @extendConfig: ->
+    if @hasOwnProperty "config"
+      @config
+    else
+      @config = {}
 
   # reset @config
   # NOTE: Intentionally doesn't replace @config. Instead, it leaves all direct references to @config intact. It just updates the @config object.
   @reset: ->
-    if @config
-      delete @config[k] for k, v of @config
-    else
-      @config = {}
-    mergeInto @config, @defaultConfig if @defaultConfig
-    @namespace?.config = @config
-    @config
+    defaults = @getDefaults()
+    config = @extendConfig()
+    delete config[k] for k, v of config when !defaults[k]?
+    mergeInto config, defaults
+
+    if @hasOwnProperty "namespace"
+      throw new Error if @namespace == namespace
+      @namespace?.config ||= config
+    config
 
   @getInspectedObjects: ->
     "#{@getConfigurationPathString()}": @config
 
   @getPathedDefaultConfig: ->
-    "#{@getConfigurationPathString()}": @getDefaultConfig()
+    "#{@getConfigurationPathString()}": @getDefaults()
 
   # updates config
   @configure: (globalConfig) ->
     globalConfig.verbose && log Configurable: "#{@getConfigurationPathString()}": @getConfigurationFromPath globalConfig
-    @reset()
-    mergeInto @config, @getConfigurationFromPath globalConfig
+    mergeInto @reset(), @getConfigurationFromPath globalConfig
 
   #####################################
   # OVERRIDES

@@ -16,14 +16,16 @@
   clone
   compactFlatten
 } = require 'art-standard-lib'
-{BaseObject} = require 'art-class-system'
+{BaseClass} = require 'art-class-system'
 ConfigRegistry = require './ConfigRegistry'
 {normalizeArtConfigName, getExternalEnvironment} = require './Lib'
+ArtConfig = require './namespace'
 
-defineModule module, class Main
+defineModule module, class Main extends BaseClass
 
-  @artConfigName: defaultArtConfigName = "Development"
-  @artConfig: {}
+  @classGetter
+    artConfigName:  -> ArtConfig.configName
+    artConfig:      -> ArtConfig.config
 
   ###
   IN: configureOptions:
@@ -36,7 +38,7 @@ defineModule module, class Main
       default: "Development"
 
       EFFECT:
-        @artConfigName =
+        ArtConfig.configName =
           externalEnvironment.artConfigName ||
           artConfigName
 
@@ -49,7 +51,7 @@ defineModule module, class Main
       default: {}
 
       EFFECT:
-        mergeInto @artConfig, deepMerge
+        mergeInto ArtConfig.config, deepMerge
           ConfigRegistry.configs[artConfigName]
           global.artConfig
           artConfig
@@ -90,15 +92,13 @@ defineModule module, class Main
 
     externalEnvironment = getExternalEnvironment __testEnv
 
-    @artConfigName = externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
-    @artConfigName = normalizeArtConfigName @artConfigName
-
-    throw new Error "no config registered with name: #{@artConfigName}" if @artConfigName && !ConfigRegistry.configs[@artConfigName]
-
-    @artConfigName ||= defaultArtConfigName
-
-    Neptune.Art.Config.configName = Neptune.Art.configName = @artConfigName
-    Neptune.Art.Config.config     = Neptune.Art.config     = @artConfig
+    ArtConfig.configName = if normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
+      configName = normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
+      if configName && !ConfigRegistry.configs[configName]
+        throw new Error "no config registered with name: #{configName}"
+      configName
+    else
+      ArtConfig.defaultArtConfigName
 
     @resetCurrentConfig()
 

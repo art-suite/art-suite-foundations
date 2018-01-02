@@ -16,9 +16,6 @@ suite:
     setup ->
       configure()
 
-    test "Art.config"     -> assert.equal Main.artConfig, Neptune.Art.config
-    test "Art.configName" -> assert.equal Main.artConfigName, Neptune.Art.configName
-
     test "Art.Config.config"     -> assert.equal Main.artConfig,     Neptune.Art.Config.config
     test "Art.Config.configName" -> assert.equal Main.artConfigName, Neptune.Art.Config.configName
 

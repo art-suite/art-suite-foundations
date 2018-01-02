@@ -13,8 +13,8 @@ class TestConfigurable extends Configurable
 
   @suite:
     ConfigurableApi: ->
-      test "getDefaultConfig" ->
-        assert.eq TestConfigurable.getDefaultConfig(), defaultConfig
+      test "getDefaults" ->
+        assert.eq TestConfigurable.getDefaults(), defaultConfig
 
       test "getPathedDefaultConfig" ->
         assert.eq TestConfigurable.getPathedDefaultConfig(), "#{configPath}": defaultConfig
@@ -56,7 +56,7 @@ class TestConfigurable extends Configurable
 
         assert.eq
           TestConfigurable.config
-          Neptune.Art.config.Tests.Art.Config
+          Neptune.Art.Config.config.Tests.Art.Config
 
         assert.eq
           TestConfigurable.config
