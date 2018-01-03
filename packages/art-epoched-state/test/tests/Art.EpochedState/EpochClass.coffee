@@ -1,8 +1,9 @@
-import &StandardImport, Neptune.Art.EpochedState
+# import &StandardImport, Neptune.Art.EpochedState
+{EpochClass} = require '../../StandardImport'
 
 epoch = new EpochClass
 
-suite: ->
+module.exports = suite: ->
   test "queue function", (done)->
     epoch.queueItem ->
       done()
