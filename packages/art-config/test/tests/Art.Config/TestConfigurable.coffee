@@ -1,4 +1,4 @@
-{w, Configurable} = require '../../StandardImport'
+{w, configure, merge, getArtConfig, defineModule, Configurable} = require '../../StandardImport'
 
 expectedPath = w "Tests Art Config"
 
@@ -6,7 +6,7 @@ configPath = "Tests.Art.Config"
 pathedConfig = "#{configPath}": foo: 1
 expanededPathedConfig = Tests: Art: Config: foo: 1
 
-class TestConfigurable extends Configurable
+defineModule module, class TestConfigurable extends Configurable
   @defaults defaultConfig =
     name:     "TestName"
     verbose:  false

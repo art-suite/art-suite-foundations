@@ -1,4 +1,4 @@
-{} = require '../../StandardImport'
+{configure,ConfigRegistry, getArtConfig,getArtConfigName,merge} = require '../../StandardImport'
 
 resetGlobals = ->
   global.artConfig = null
@@ -11,7 +11,7 @@ testArtConfigGlobalConfig = (name, f) ->
       Tests: Art: Config: name: "TestName", verbose: false
       value
 
-suite:
+module.exports = suite:
   globalArtConfig: ->
     setup ->
       configure()

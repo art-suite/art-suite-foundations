@@ -1,7 +1,7 @@
-{Configuration} = require '../../StandardImport'
+{Configuration, defineModule, log} = require '../../StandardImport'
 
 # Used by ConfigRegistry tests
-class TestConfig extends Configuration
+defineModule module, class TestConfig extends Configuration
   propA:    "propAFromTestConfig"
   MyGrouping:
     propB:  "foo"
