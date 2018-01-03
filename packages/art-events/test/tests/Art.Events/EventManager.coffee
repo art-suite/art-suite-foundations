@@ -1,4 +1,4 @@
-{inspect} = require 'art-foundation'
+{inspect} = require '../../StandardImport'
 Events = require 'art-events'
 
 module.exports = suite: ->

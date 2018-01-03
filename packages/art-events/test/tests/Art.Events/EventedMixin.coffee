@@ -1,6 +1,6 @@
-import &StandardImport
+{nextTick, defineModule, Event, BaseClass, EventedMixin, log, merge} = require '../../StandardImport'
 
-suite: ->
+defineModule module, suite: ->
   class MyEventedObject extends EventedMixin BaseClass
 
   test "event(), when no handler, returns false", ->
