@@ -1,5 +1,5 @@
-&ArtStandardLib.merge
-  &ArtStandardLib
+ArtStandardLib = require 'art-standard-lib'
+module.exports = ArtStandardLib.merge ArtStandardLib,
   require '../index'
   test: (args...) -> global.test args...
   setup: (args...) -> global.setup args...

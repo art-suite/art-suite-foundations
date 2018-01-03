@@ -1,4 +1,4 @@
-import &StandardImport
+{} = require '../../StandardImport'
 
 resetGlobals = ->
   global.artConfig = null
@@ -16,11 +16,11 @@ suite:
     setup ->
       configure()
 
-    test "Art.Config.config"     ->
+    test "Art.Config.config",     ->
       assert.isObject getArtConfig()
       assert.eq Neptune.Art.Config.config, getArtConfig()
 
-    test "Art.Config.configName" ->
+    test "Art.Config.configName", ->
       assert.isString getArtConfigName()
       assert.eq Neptune.Art.Config.configName, getArtConfigName()
 
@@ -81,8 +81,7 @@ suite:
 
   configs: ->
     test "TestConfig got registered", ->
-      assert.eq
-        ConfigRegistry.configs
+      assert.eq ConfigRegistry.configs,
         TestConfig:
           propA: "propAFromTestConfig"
           MyGrouping: propB: "foo",  propC: "bar"
