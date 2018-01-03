@@ -1,4 +1,4 @@
-import &StandardImport
+{w, Configurable} = require '../../StandardImport'
 
 expectedPath = w "Tests Art Config"
 
@@ -13,10 +13,10 @@ class TestConfigurable extends Configurable
 
   @suite:
     ConfigurableApi: ->
-      test "getDefaults" ->
+      test "getDefaults", ->
         assert.eq TestConfigurable.getDefaults(), defaultConfig
 
-      test "getPathedDefaultConfig" ->
+      test "getPathedDefaultConfig", ->
         assert.eq TestConfigurable.getPathedDefaultConfig(), "#{configPath}": defaultConfig
 
     Configuring: ->
@@ -24,8 +24,7 @@ class TestConfigurable extends Configurable
         assert.eq TestConfigurable.getConfigurationPath(), expectedPath
 
       test "TestConfigurable.getConfigurationFromPath - not found", ->
-        assert.eq
-          undefined
+        assert.eq undefined,
           TestConfigurable.getConfigurationFromPath
             Tests: foo: 1
 
@@ -38,8 +37,7 @@ class TestConfigurable extends Configurable
         configBefore = TestConfigurable.config
         TestConfigurable.config.shouldBeDeleted = "bam!"
         TestConfigurable.reset()
-        assert.eq
-          TestConfigurable.config
+        assert.eq TestConfigurable.config,
           name: "TestName"
           verbose: false
 
@@ -54,12 +52,10 @@ class TestConfigurable extends Configurable
           novelProp: "cool"
           pathedConfig
 
-        assert.eq
-          TestConfigurable.config
+        assert.eq TestConfigurable.config,
           getArtConfig().Tests.Art.Config
 
-        assert.eq
-          TestConfigurable.config
+        assert.eq TestConfigurable.config,
           name: "TestName"
           foo: 1
           verbose: false

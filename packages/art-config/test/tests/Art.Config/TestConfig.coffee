@@ -1,4 +1,4 @@
-import &StandardImport
+{Configuration} = require '../../StandardImport'
 
 # Used by ConfigRegistry tests
 class TestConfig extends Configuration
