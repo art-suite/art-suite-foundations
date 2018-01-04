@@ -83,30 +83,32 @@ module.exports = class ObjectTreeFactory
     mergePropsInto ||= mergeIntoBasic
     preprocessElement ||= preprocessElementBasic
 
+    _children = _props = _oneProps = null
 
-    Factory = ->
-      oneProps = null
-      props = null
-      children = []
-
-      for el in arguments when el = preprocessElement el
+    applyArgs = (args) ->
+      for el in args when el = preprocessElement el
         switch el.constructor
           when Object
-            if oneProps
-              props = {}
-              mergePropsInto props, oneProps
-              oneProps = null
-            if props
-              mergePropsInto props, el
+            if _oneProps
+              _props = {}
+              mergePropsInto _props, _oneProps
+              _oneProps = null
+            if _props
+              mergePropsInto _props, el
             else
-              oneProps = el
+              _oneProps = el
 
-          when Array
-            deepArgsProcessing el, children
-          else children.push el
+          when Array then applyArgs el
+          else _children.push el
 
-      props ||= oneProps || {}
-      nodeFactory props, children
+    Factory = ->
+      _oneProps = null
+      _props = null
+      _children = []
+
+      applyArgs arguments
+
+      nodeFactory _props || _oneProps || {}, _children
 
 
     if klass

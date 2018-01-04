@@ -1,5 +1,5 @@
 {createObjectTreeFactories} = Neptune.Art.ObjectTreeFactory
-{wordsArray, lowerCamelCase, log, mergeInto, isPlainObject, isString} = Neptune.Art.StandardLib
+{toInspectedObjects, wordsArray, lowerCamelCase, log, mergeInto, isPlainObject, isString} = Neptune.Art.StandardLib
 {BaseObject} = Neptune.Art.ClassSystem
 
 testNamesString = "Alice Bill John SallyMae"
@@ -7,6 +7,10 @@ testNames = wordsArray testNamesString
 testNamesLowerCamelCased = (lowerCamelCase name for name in testNames)
 
 suite "Art.Foundation.Tools.ObjectTreeFactory.createObjectTreeFactories", ->
+  class MyClass extends BaseObject
+    constructor: (@nodeName, @props, @children) ->
+    @getter inspectedObjects: -> [@nodeName, @props].concat toInspectedObjects @children
+
   test "createObjectTreeFactories testNamesString", ->
     keys = Object.keys createObjectTreeFactories testNamesString, ->
     assert.eq keys, testNames
@@ -25,15 +29,18 @@ suite "Art.Foundation.Tools.ObjectTreeFactory.createObjectTreeFactories", ->
 
   test 'full test createObjectTreeFactories "Alice"', ->
     {Alice} = createObjectTreeFactories "Alice",
-      (nodeName, props, children) -> [nodeName, props, children]
+      (nodeName, props, children) -> new MyClass nodeName, props, children
 
-    assert.eq ["Alice", {myProp: "myPropValue"}, ["Alice", {}]], Alice myProp:"myPropValue", Alice()
+    tree = Alice myProp:"myPropValue", Alice()
+    assert.eq ["Alice", {myProp: "myPropValue"}, ["Alice", {}]], tree.inspectedObjects
 
   test 'full test createObjectTreeFactoriesFromFactoryFactories "Bill"', ->
-    {Bill} = createObjectTreeFactories "Bill",
-      (nodeName) -> (props, children) -> [nodeName, props, children]
 
-    assert.eq ["Bill", {myProp: "myPropValue"}, ["Bill", {}]], Bill myProp:"myPropValue", Bill()
+    {Bill} = createObjectTreeFactories "Bill",
+      (nodeName) -> (props, children) -> new MyClass nodeName, props, children
+
+    tree = Bill myProp:"myPropValue", Bill()
+    assert.eq ["Bill", {myProp: "myPropValue"}, ["Bill", {}]], tree.inspectedObjects
 
 class MyObject extends BaseObject
   constructor: (@name, @props, @children) ->
