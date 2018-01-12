@@ -299,9 +299,10 @@ Caf.defMod(module, () => {
     [
       "BaseClass",
       "getCapitalizedCodeWords",
-      "log",
       "peek",
+      "log",
       "fileBuilder",
+      "merge",
       "dashCase",
       "process"
     ],
@@ -309,9 +310,10 @@ Caf.defMod(module, () => {
     (
       BaseClass,
       getCapitalizedCodeWords,
-      log,
       peek,
+      log,
       fileBuilder,
+      merge,
       dashCase,
       process
     ) => {
@@ -326,6 +328,8 @@ Caf.defMod(module, () => {
               options = {}
             ) {
               let app,
+                clientApp,
+                demoApp,
                 npmName,
                 namespacePath,
                 namespaceDirPath,
@@ -333,108 +337,144 @@ Caf.defMod(module, () => {
                 mostSpecificName,
                 projectDotName;
               ({ app } = options);
+              if (app === "demo") {
+                clientApp = true;
+                demoApp = true;
+              } else {
+                if (app != null) {
+                  clientApp = true;
+                }
+              }
               npmName = path.basename(npmRoot);
               namespacePath = getCapitalizedCodeWords(npmName);
               namespaceDirPath = namespacePath.join(".");
               cafRequireFriendlyNamespaceDirPath = namespacePath
                 .join("")
                 .replace(".", "");
-              log({ cafRequireFriendlyNamespaceDirPath });
               mostSpecificName = peek(namespacePath);
               projectDotName = namespacePath.join(".");
-              return fileBuilder({
-                ".travis.yml": 'language: node_js\nnode_js:\n  - "6"',
-                ".gitignore": "node_modules/",
-                "package.json": "{}",
-                "webpack.config.js":
-                  'module.exports = require("art-build-configurator").getWebpackConfig(__dirname);\n',
-                "register.js":
-                  "require('coffee-script/register');\nrequire('caffeine-script/register');",
-                "index.js":
-                  !app &&
-                  "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};",
-                "index.caf":
-                  !app &&
-                  `&source/${Caf.toString(cafRequireFriendlyNamespaceDirPath)}`,
-                "Client.caf":
-                  app &&
-                  `&source/${Caf.toString(
-                    cafRequireFriendlyNamespaceDirPath
-                  )}/Client`,
-                "index.html":
-                  app &&
-                  '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>',
-                "art.build.config.caf": `target:\n  ##\n    configures for standard node-targeted library\n    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.\n      They just can't be used *directly* in the browser\n  node: ${Caf.toString(
-                  !app
-                )}\n\nnpm:\n  description: "" ${Caf.toString(
-                  projectDotName
-                )}\n  dependencies: ${Caf.toString(
-                  app
-                    ? "art-suite-app: :git://github.com/imikimi/art-suite-app"
-                    : "{}"
-                )}\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: ${Caf.toString(
-                  app ? "Client" : "index"
-                )}: {}`,
-                "README.md": `# ${Caf.toString(
-                  projectDotName
-                )}\n\n> Initialized by Art.Build.Configurator\n\n### Install\n\n\`\`\`coffeescript\nnpm install ${Caf.toString(
-                  dashCase(npmName)
-                )}\n\`\`\``,
-                source: {
-                  [namespaceDirPath]: {
-                    "StandardImport.caf": app
-                      ? "&ArtSuite"
-                      : "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem",
-                    Client: app && {
-                      "Main.caf": `&Models\n&Pipelines\n&ArtSuiteApp.initArtSuiteClient\n  MainComponent: &Components/App\n  title:         :${Caf.toString(
-                        projectDotName
-                      )}`,
-                      Components: {
-                        "User.caf":
-                          "import &StandardImport\n\nclass User extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  render: ->\n    Element\n      size: ww: 1 hch: 1\n      TextElement\n        &TextStyles.text\n        size: ww: 1 hch: 1\n        align: if @alignUsersLeft then :left else :right\n        animators: align: true\n        text: @props.user?.name",
-                        "Users.caf":
-                          'import &StandardImport\n\nclass Users extends FluxComponent\n  @subscriptions allUsers: ""\n\n  render: ->\n    ScrollElement\n      clip: true\n      childrenMargins: 10\n      array user from @allUsers with &User {user}',
-                        "App.caf": `import &StandardImport\n\nclass App extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  addUser: ->\n    @models.user.create data: name: randomElement\n      ""\n        Craig   David   Elle      Frank\n        Greg    Hank    Ian       Jan\n        Kelly   Lois    Mary      Noah\n        Piper   Quinn   Robert    Sally\n        Tuck    Udy     Violette  William\n        Xavier  Yesler  Zane\n      .split /\\s+/\n\n    .then ->\n      @models.allUsers.reload ""\n\n  render: ->\n    CanvasElement\n      &StyleProps.background\n\n      Element\n        padding: 10\n        childrenLayout:   :column\n        childrenMargins:  10\n\n        Element\n          margin: 10\n          size: ww: 1 hch: 1\n          childrenLayout:     :row\n          childrenAlignment:  :centerLeft\n          childrenMargins:    10\n          TextElement &TextStyles.titleText, text: "${Caf.toString(
-                          projectDotName
-                        )} Users"\n\n          &Button\n            text:   :add-user\n            action: @addUser\n\n          Element()\n\n          &Button\n            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'\n            action: @models.navState.toggleAlignUsersLeft\n\n        &Users()`,
-                        "Button.caf":
-                          "import &StandardImport\n\nclass Button extends PointerActionsMixin Component\n\n  render: ->\n    Element\n      on:         @pointerHandlers\n      size:       cs: 1\n      padding:    10\n      cursor:     :pointer\n      animators:  :draw\n      draw:\n        rectangle: radius: 5\n        &Palette[if @hover then :lightPrimary else :primary]\n\n      TextElement\n        &TextStyles.text\n        color:  &TextPalette.white.primary\n        text:   @props.text"
-                      },
-                      "StyleProps.caf":
-                        "import &StandardImport\nclass StyleProps extends HotStyleProps\n  @background: draw: #f7f7f7",
-                      "Palette.caf":
-                        "import &StandardImport\nclass Palette extends HotStyleProps\n  @primary: #48f\n  @lightPrimary: #aac8ff",
-                      "TextPalette.caf":
-                        "import &StandardImport\nclass TextStyles extends HotStyleProps\n  @black:\n    primary:          rgbColor #000000d2\n    secondary:        rgbColor #0008\n    disabled:         rgbColor #0004\n\n  @white:\n    primary:          rgbColor #fffd\n    secondary:        rgbColor #fff8\n    disabled:         rgbColor #fff4",
-                      "TextStyles.caf":
-                        "import &StandardImport\nclass TextStyles extends HotStyleProps\n  @text:\n    fontFamily: :sans-serif\n    color: &TextPalette.black.secondary\n\n  @titleText:\n    fontSize:   24\n    fontWeight: :bold\n    fontFamily: :sans-serif\n    color: &TextPalette.black.primary",
-                      Models: {
-                        "NavState.caf":
-                          "import &StandardImport\n\nclass NavState extends ApplicationState\n  @stateFields\n    alignUsersLeft: true"
-                      }
-                    },
-                    Pipelines: app && {
-                      "User.caf":
-                        "import &StandardImport\n\nclass User extends Pipeline\n  @query\n    allUsers: (request) -> array request.pipeline.db\n\n  constructor: ->\n    super\n    @db =\n      abc123: id: :abc123 name: :Alice\n      efg456: id: :efg456 name: :Bill\n\n  @handlers\n    get: ({key}) ->\n      @db[key]\n\n    create: ({data}) ->\n      key = randomString()\n      @db[key] = merge data, {} key\n\n    update: ({data, key}) ->\n      if @db[key]\n        @db[key] = merge @db[key], data\n\n    delete: ({key}) ->\n      if @db[key]\n        @db = objectWithout @db, key\n        true"
-                    }
-                  }
-                },
-                test: {
-                  "index.js":
-                    "require('../register');\nrequire('./index.caf');",
-                  "index.caf":
-                    "require '../index.caf'\n&art-testbench/testing\n.init\n  synchronous: true\n  defineTests: -> &tests",
-                  "StandardImport.caf":
-                    "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...",
-                  tests: {
-                    [namespaceDirPath]: {
-                      "Test.caf": `import &StandardImport\nsuite: ->\n  test '${Caf.toString(
-                        mostSpecificName
-                      )}' -> assert.eq 1, 1`
-                    }
-                  }
+              log("-----------------------------------------");
+              log(
+                clientApp
+                  ? demoApp
+                    ? "Initializing Demo ArtSuite client app."
+                    : "Initializing Minimal ArtSuite client app."
+                  : "Initializing Basic ArtSuite NPM Module."
+              );
+              log("-----------------------------------------");
+              log({
+                InitAppInfo: {
+                  name: mostSpecificName,
+                  npmName,
+                  NeptuneNamespace: projectDotName
                 }
               });
+              return fileBuilder(
+                merge(
+                  {
+                    ".gitignore": "node_modules/",
+                    ".travis.yml": 'language: node_js\nnode_js:\n  - "6"',
+                    "package.json": "{}",
+                    "art.build.config.caf": `target:\n  ##\n    configures for standard node-targeted library\n    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.\n      They just can't be used *directly* in the browser\n  node: ${Caf.toString(
+                      !clientApp
+                    )}\n\nnpm:\n  description: "" ${Caf.toString(
+                      projectDotName
+                    )}\n  dependencies: ${Caf.toString(
+                      clientApp
+                        ? "art-suite-clientApp: :git://github.com/imikimi/art-suite-clientApp"
+                        : "{}"
+                    )}\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: ${Caf.toString(
+                      clientApp ? "Client" : "index"
+                    )}: {}`
+                  },
+                  clientApp
+                    ? {
+                        "Client.caf": `&source/${Caf.toString(
+                          cafRequireFriendlyNamespaceDirPath
+                        )}/Client`,
+                        "index.html":
+                          '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>'
+                      }
+                    : {
+                        "index.js":
+                          "if (false) { // use build? - true == fase, false == good for development\n  module.exports = require('./build');\n} else {\n  require('./register');\n  module.exports = require('./index.caf');\n};",
+                        "index.caf": `&source/${Caf.toString(
+                          cafRequireFriendlyNamespaceDirPath
+                        )}`
+                      },
+                  {
+                    "README.md": `# ${Caf.toString(
+                      projectDotName
+                    )}\n\n> Initialized by Art.Build.Configurator\n\n### Install\n\n\`\`\`coffeescript\nnpm install ${Caf.toString(
+                      dashCase(npmName)
+                    )}\n\`\`\``,
+                    test: {
+                      "index.js":
+                        "require('../register');\nrequire('./index.caf');",
+                      "index.caf":
+                        "require '../index.caf'\n&art-testbench/testing\n.init\n  synchronous: true\n  defineTests: -> &tests",
+                      "StandardImport.caf":
+                        "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...",
+                      tests: {
+                        [namespaceDirPath]: {
+                          "Test.caf": `import &StandardImport\nsuite: ->\n  test '${Caf.toString(
+                            mostSpecificName
+                          )}' -> assert.eq 1, 1`
+                        }
+                      }
+                    },
+                    source: {
+                      [namespaceDirPath]: {
+                        "StandardImport.caf": clientApp
+                          ? "&ArtSuite"
+                          : "&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem",
+                        Client: clientApp
+                          ? !demoApp
+                            ? {
+                                "Main.caf": `import &StandardImport\n\n&ArtSuiteApp.initArtSuiteClient\n  title:         :${Caf.toString(
+                                  projectDotName
+                                )}\n  MainComponent:\n    class CanvasComponent extends Component\n\n      render: ->\n        CanvasElement\n          draw: #eee\n\n          TextElement\n            padding: 10\n            text: "" 'Hello world!' - ${Caf.toString(
+                                  projectDotName
+                                )}`
+                              }
+                            : {
+                                "Main.caf": `import &StandardImport\n&Models\n&Pipelines\n\n&ArtSuiteApp.initArtSuiteClient\n  title:         :${Caf.toString(
+                                  projectDotName
+                                )}\n  MainComponent:\n    class CanvasComponent extends Component\n\n      render: ->\n        CanvasElement &Components/App()`,
+                                Components: {
+                                  "User.caf":
+                                    "import &StandardImport\n\nclass User extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  render: ->\n    Element\n      size: ww: 1 hch: 1\n      TextElement\n        &TextStyles.text\n        size: ww: 1 hch: 1\n        align: if @alignUsersLeft then :left else :right\n        animators: align: true\n        text: @props.user?.name",
+                                  "Users.caf":
+                                    'import &StandardImport\n\nclass Users extends FluxComponent\n  @subscriptions allUsers: ""\n\n  render: ->\n    ScrollElement\n      clip: true\n      childrenMargins: 10\n      array user from @allUsers with &User {user}',
+                                  "App.caf": `import &StandardImport\n\nclass App extends FluxComponent\n  @subscriptions :navState.alignUsersLeft\n\n  addUser: ->\n    @models.user.create data: name: randomElement\n      ""\n        Craig   David   Elle      Frank\n        Greg    Hank    Ian       Jan\n        Kelly   Lois    Mary      Noah\n        Piper   Quinn   Robert    Sally\n        Tuck    Udy     Violette  William\n        Xavier  Yesler  Zane\n      .split /\\s+/\n\n    .then ->\n      @models.allUsers.reload ""\n\n  render: ->\n    Element\n      &StyleProps.background\n\n      Element\n        padding: 10\n        childrenLayout:   :column\n        childrenMargins:  10\n\n        Element\n          margin: 10\n          size: ww: 1 hch: 1\n          childrenLayout:     :row\n          childrenAlignment:  :centerLeft\n          childrenMargins:    10\n          TextElement &TextStyles.titleText, text: "${Caf.toString(
+                                    projectDotName
+                                  )} Users"\n\n          &Button\n            text:   :add-user\n            action: @addUser\n\n          Element()\n\n          &Button\n            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'\n            action: @models.navState.toggleAlignUsersLeft\n\n        &Users()`,
+                                  "Button.caf":
+                                    "import &StandardImport\n\nclass Button extends PointerActionsMixin Component\n\n  render: ->\n    Element\n      on:         @pointerHandlers\n      size:       cs: 1\n      padding:    10\n      cursor:     :pointer\n      animators:  :draw\n      draw:\n        rectangle: radius: 5\n        &Palette[if @hover then :secondary else :primary]\n\n      TextElement\n        &TextStyles.text\n        color:  &TextPalette.white.primary\n        text:   @props.text"
+                                },
+                                "StyleProps.caf":
+                                  "import &StandardImport\nclass StyleProps extends HotStyleProps\n  @background: draw: #f7f7f7",
+                                "Palette.caf":
+                                  "import &StandardImport\nclass Palette extends HotStyleProps\n  @primary: #48f\n  @secondary: #f49",
+                                "TextPalette.caf":
+                                  "import &StandardImport\nclass TextStyles extends HotStyleProps\n  @black:\n    primary:          rgbColor #000000d2\n    secondary:        rgbColor #0008\n    disabled:         rgbColor #0004\n\n  @white:\n    primary:          rgbColor #fffd\n    secondary:        rgbColor #fff8\n    disabled:         rgbColor #fff4",
+                                "TextStyles.caf":
+                                  "import &StandardImport\nclass TextStyles extends HotStyleProps\n  @text:\n    fontFamily: :sans-serif\n    color: &TextPalette.black.secondary\n\n  @titleText:\n    fontSize:   24\n    fontWeight: :bold\n    fontFamily: :sans-serif\n    color: &TextPalette.black.primary",
+                                Models: {
+                                  "NavState.caf":
+                                    "import &StandardImport\n\nclass NavState extends ApplicationState\n  @stateFields\n    alignUsersLeft: true"
+                                }
+                              }
+                          : undefined,
+                        Pipelines: demoApp && {
+                          "User.caf":
+                            "import &StandardImport\n\nclass User extends Pipeline\n  @query\n    allUsers: (request) -> array request.pipeline.db\n\n  constructor: ->\n    super\n    @db =\n      abc123: id: :abc123 name: :Alice\n      efg456: id: :efg456 name: :Bill\n\n  @handlers\n    get: ({key}) ->\n      @db[key]\n\n    create: ({data}) ->\n      key = randomString()\n      @db[key] = merge data, {} key\n\n    update: ({data, key}) ->\n      if @db[key]\n        @db[key] = merge @db[key], data\n\n    delete: ({key}) ->\n      if @db[key]\n        @db = objectWithout @db, key\n        true"
+                        }
+                      }
+                    }
+                  }
+                )
+              );
             };
           }
         ))
@@ -862,7 +902,7 @@ module.exports = require("fs-extra");
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"^1.0.0","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.0","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^3.0.0","webpack-node-externals":"^1.5.4"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.15.2"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"^1.0.0","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.0","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^3.0.0","webpack-node-externals":"^1.5.4"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.15.3"}
 
 /***/ }),
 /* 24 */
@@ -1361,7 +1401,10 @@ Caf.defMod(module, () => {
     .option("--init", "initialize a new Art-style project")
     .option("-f, --force", "when initialize, force overwrite all")
     .option("-v, --verbose", "verbose")
-    .option("--app", "use with --init to initialize a working ArtSuite App")
+    .option(
+      "--app [basic|demo]",
+      "use with --init to initialize a working ArtSuite App [default: basic]"
+    )
     .on("--help", function() {
       return console.log(
         `looks for ${Caf.toString(
