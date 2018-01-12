@@ -5,56 +5,45 @@ class DefaultFiles extends BaseClass
   @getDefaultFiles: (npmRoot = process.cwd(), options = {})->
     {app} = options
 
+    if app == "demo"
+      clientApp = true
+      demoApp = true
+    else if app?
+      clientApp = true
+
     npmName = path.basename npmRoot
     namespacePath = getCapitalizedCodeWords npmName
     namespaceDirPath = namespacePath.join '.'
     cafRequireFriendlyNamespaceDirPath = namespacePath.join('').replace ".", ""
-    log {} cafRequireFriendlyNamespaceDirPath
     mostSpecificName = peek namespacePath
     projectDotName = namespacePath.join '.'
+    log "" -----------------------------------------
+    log
+      if clientApp
+        if demoApp
+          "Initializing Demo ArtSuite client app."
+        else
+          "Initializing Minimal ArtSuite client app."
+      else
+        "Initializing Basic ArtSuite NPM Module."
+    log "" -----------------------------------------
 
-    fileBuilder
+    log InitAppInfo:
+      name: mostSpecificName
+      npmName: npmName
+      NeptuneNamespace: projectDotName
+
+    fileBuilder merge
+
+      .gitignore: """
+        node_modules/
+
       .travis.yml: """
         language: node_js
         node_js:
           - "6"
 
-      .gitignore: """
-        node_modules/
-
       package.json: "" {}
-
-      webpack.config.js: """
-        module.exports = require("art-build-configurator").getWebpackConfig(__dirname);\n
-
-      register.js: """
-        require('coffee-script/register');
-        require('caffeine-script/register');
-
-      index.js: !app && """
-        if (false) { // use build? - true == fase, false == good for development
-          module.exports = require('./build');
-        } else {
-          require('./register');
-          module.exports = require('./index.caf');
-        };
-
-      index.caf: !app && """
-        &source/#{cafRequireFriendlyNamespaceDirPath}
-
-      Client.caf: app && """
-        &source/#{cafRequireFriendlyNamespaceDirPath}/Client
-
-      index.html: app && """
-        <html><body>
-          <h1>Development</h1>
-          <ul>
-            <li><a href="/Client?dev=true">Client</a></li>
-          </ul>
-          <h1>Production</h1>
-          <ul>
-            <li><a href="/Client">Client</a></li>
-          </ul>
 
       art.build.config.caf: """
         target:
@@ -62,18 +51,45 @@ class DefaultFiles extends BaseClass
             configures for standard node-targeted library
             NOTE: node-targeted libraries can also be built into broswer-targeted libraries.
               They just can't be used *directly* in the browser
-          node: #{!app}
+          node: #{!clientApp}
 
         npm:
           description: "" #{projectDotName}
-          dependencies: #{if app then 'art-suite-app: :git://github.com/imikimi/art-suite-app' else '{}'}
+          dependencies: #{if clientApp then 'art-suite-clientApp: :git://github.com/imikimi/art-suite-clientApp' else '{}'}
 
         webpack:
           # common properties are merged into each target's properties
           common: {}
 
           # each target's individual properties
-          targets: #{if app then 'Client' else 'index'}: {}
+          targets: #{if clientApp then 'Client' else 'index'}: {}
+
+      if clientApp
+        Client.caf: """
+          &source/#{cafRequireFriendlyNamespaceDirPath}/Client
+
+        index.html: """
+          <html><body>
+            <h1>Development</h1>
+            <ul>
+              <li><a href="/Client?dev=true">Client</a></li>
+            </ul>
+            <h1>Production</h1>
+            <ul>
+              <li><a href="/Client">Client</a></li>
+            </ul>
+
+      else
+        index.js: """
+          if (false) { // use build? - true == fase, false == good for development
+            module.exports = require('./build');
+          } else {
+            require('./register');
+            module.exports = require('./index.caf');
+          };
+
+        index.caf: """
+          &source/#{cafRequireFriendlyNamespaceDirPath}
 
       README.md: """
         # #{projectDotName}
@@ -86,168 +102,214 @@ class DefaultFiles extends BaseClass
         npm install #{dashCase npmName}
         ```
 
+      test:
+        index.js: """
+          require('../register');
+          require('./index.caf');
+
+        index.caf: """
+          require '../index.caf'
+          &art-testbench/testing
+          .init
+            synchronous: true
+            defineTests: -> &tests
+
+        StandardImport.caf: """
+          &ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...
+
+        tests:
+          [namespaceDirPath]:
+            Test.caf: """
+              import &StandardImport
+              suite: ->
+                test '#{mostSpecificName}' -> assert.eq 1, 1
+
       source:
         [namespaceDirPath]:
           StandardImport.caf:
-            if app
+            if clientApp
               """ &ArtSuite
             else
               """ &ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem
 
-          Client: app &&
-            Main.caf: """
-              &Models
-              &Pipelines
-              &ArtSuiteApp.initArtSuiteClient
-                MainComponent: &Components/App
-                title:         :#{projectDotName}
-
-            Components:
-              User.caf: """
+          Client: if clientApp
+            unless demoApp
+              Main.caf: """
                 import &StandardImport
 
-                class User extends FluxComponent
-                  @subscriptions :navState.alignUsersLeft
+                &ArtSuiteApp.initArtSuiteClient
+                  title:         :#{projectDotName}
+                  MainComponent:
+                    class CanvasComponent extends Component
 
-                  render: ->
-                    Element
-                      size: ww: 1 hch: 1
-                      TextElement
-                        &TextStyles.text
-                        size: ww: 1 hch: 1
-                        align: if @alignUsersLeft then :left else :right
-                        animators: align: true
-                        text: @props.user?.name
+                      render: ->
+                        CanvasElement
+                          draw: #eee
 
-              Users.caf: """
+                          TextElement
+                            padding: 10
+                            text: "" 'Hello world!' - #{projectDotName}
+
+            else
+              Main.caf: """
                 import &StandardImport
+                &Models
+                &Pipelines
 
-                class Users extends FluxComponent
-                  @subscriptions allUsers: ""
+                &ArtSuiteApp.initArtSuiteClient
+                  title:         :#{projectDotName}
+                  MainComponent:
+                    class CanvasComponent extends Component
 
-                  render: ->
-                    ScrollElement
-                      clip: true
-                      childrenMargins: 10
-                      array user from @allUsers with &User {user}
+                      render: ->
+                        CanvasElement &Components/App()
 
-              App.caf: """
-                import &StandardImport
+              Components:
+                User.caf: """
+                  import &StandardImport
 
-                class App extends FluxComponent
-                  @subscriptions :navState.alignUsersLeft
+                  class User extends FluxComponent
+                    @subscriptions :navState.alignUsersLeft
 
-                  addUser: ->
-                    @models.user.create data: name: randomElement
-                      ""
-                        Craig   David   Elle      Frank
-                        Greg    Hank    Ian       Jan
-                        Kelly   Lois    Mary      Noah
-                        Piper   Quinn   Robert    Sally
-                        Tuck    Udy     Violette  William
-                        Xavier  Yesler  Zane
-                      .split /\\s+/
-
-                    .then ->
-                      @models.allUsers.reload ""
-
-                  render: ->
-                    CanvasElement
-                      &StyleProps.background
-
+                    render: ->
                       Element
-                        padding: 10
-                        childrenLayout:   :column
-                        childrenMargins:  10
+                        size: ww: 1 hch: 1
+                        TextElement
+                          &TextStyles.text
+                          size: ww: 1 hch: 1
+                          align: if @alignUsersLeft then :left else :right
+                          animators: align: true
+                          text: @props.user?.name
+
+                Users.caf: """
+                  import &StandardImport
+
+                  class Users extends FluxComponent
+                    @subscriptions allUsers: ""
+
+                    render: ->
+                      ScrollElement
+                        clip: true
+                        childrenMargins: 10
+                        array user from @allUsers with &User {user}
+
+                App.caf: """
+                  import &StandardImport
+
+                  class App extends FluxComponent
+                    @subscriptions :navState.alignUsersLeft
+
+                    addUser: ->
+                      @models.user.create data: name: randomElement
+                        ""
+                          Craig   David   Elle      Frank
+                          Greg    Hank    Ian       Jan
+                          Kelly   Lois    Mary      Noah
+                          Piper   Quinn   Robert    Sally
+                          Tuck    Udy     Violette  William
+                          Xavier  Yesler  Zane
+                        .split /\\s+/
+
+                      .then ->
+                        @models.allUsers.reload ""
+
+                    render: ->
+                      Element
+                        &StyleProps.background
 
                         Element
-                          margin: 10
-                          size: ww: 1 hch: 1
-                          childrenLayout:     :row
-                          childrenAlignment:  :centerLeft
-                          childrenMargins:    10
-                          TextElement &TextStyles.titleText, text: "#{projectDotName} Users"
+                          padding: 10
+                          childrenLayout:   :column
+                          childrenMargins:  10
 
-                          &Button
-                            text:   :add-user
-                            action: @addUser
+                          Element
+                            margin: 10
+                            size: ww: 1 hch: 1
+                            childrenLayout:     :row
+                            childrenAlignment:  :centerLeft
+                            childrenMargins:    10
+                            TextElement &TextStyles.titleText, text: "#{projectDotName} Users"
 
-                          Element()
+                            &Button
+                              text:   :add-user
+                              action: @addUser
 
-                          &Button
-                            text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'
-                            action: @models.navState.toggleAlignUsersLeft
+                            Element()
 
-                        &Users()
+                            &Button
+                              text: if @alignUsersLeft then 'alignment: left' else 'alignment: right'
+                              action: @models.navState.toggleAlignUsersLeft
 
-              Button.caf: """
+                          &Users()
+
+                Button.caf: """
+                  import &StandardImport
+
+                  class Button extends PointerActionsMixin Component
+
+                    render: ->
+                      Element
+                        on:         @pointerHandlers
+                        size:       cs: 1
+                        padding:    10
+                        cursor:     :pointer
+                        animators:  :draw
+                        draw:
+                          rectangle: radius: 5
+                          &Palette[if @hover then :secondary else :primary]
+
+                        TextElement
+                          &TextStyles.text
+                          color:  &TextPalette.white.primary
+                          text:   @props.text
+
+
+              StyleProps.caf: """
                 import &StandardImport
+                class StyleProps extends HotStyleProps
+                  @background: draw: #f7f7f7
 
-                class Button extends PointerActionsMixin Component
-
-                  render: ->
-                    Element
-                      on:         @pointerHandlers
-                      size:       cs: 1
-                      padding:    10
-                      cursor:     :pointer
-                      animators:  :draw
-                      draw:
-                        rectangle: radius: 5
-                        &Palette[if @hover then :lightPrimary else :primary]
-
-                      TextElement
-                        &TextStyles.text
-                        color:  &TextPalette.white.primary
-                        text:   @props.text
-
-
-            StyleProps.caf: """
-              import &StandardImport
-              class StyleProps extends HotStyleProps
-                @background: draw: #f7f7f7
-
-            Palette.caf: """
-              import &StandardImport
-              class Palette extends HotStyleProps
-                @primary: #48f
-                @lightPrimary: #aac8ff
-
-            TextPalette.caf: """
-              import &StandardImport
-              class TextStyles extends HotStyleProps
-                @black:
-                  primary:          rgbColor #000000d2
-                  secondary:        rgbColor #0008
-                  disabled:         rgbColor #0004
-
-                @white:
-                  primary:          rgbColor #fffd
-                  secondary:        rgbColor #fff8
-                  disabled:         rgbColor #fff4
-
-            TextStyles.caf: """
-              import &StandardImport
-              class TextStyles extends HotStyleProps
-                @text:
-                  fontFamily: :sans-serif
-                  color: &TextPalette.black.secondary
-
-                @titleText:
-                  fontSize:   24
-                  fontWeight: :bold
-                  fontFamily: :sans-serif
-                  color: &TextPalette.black.primary
-
-            Models:
-              NavState.caf: """
+              Palette.caf: """
                 import &StandardImport
+                class Palette extends HotStyleProps
+                  @primary: #48f
+                  @secondary: #f49
 
-                class NavState extends ApplicationState
-                  @stateFields
-                    alignUsersLeft: true
+              TextPalette.caf: """
+                import &StandardImport
+                class TextStyles extends HotStyleProps
+                  @black:
+                    primary:          rgbColor #000000d2
+                    secondary:        rgbColor #0008
+                    disabled:         rgbColor #0004
 
-          Pipelines: app &&
+                  @white:
+                    primary:          rgbColor #fffd
+                    secondary:        rgbColor #fff8
+                    disabled:         rgbColor #fff4
+
+              TextStyles.caf: """
+                import &StandardImport
+                class TextStyles extends HotStyleProps
+                  @text:
+                    fontFamily: :sans-serif
+                    color: &TextPalette.black.secondary
+
+                  @titleText:
+                    fontSize:   24
+                    fontWeight: :bold
+                    fontFamily: :sans-serif
+                    color: &TextPalette.black.primary
+
+              Models:
+                NavState.caf: """
+                  import &StandardImport
+
+                  class NavState extends ApplicationState
+                    @stateFields
+                      alignUsersLeft: true
+
+          Pipelines: demoApp &&
             User.caf: """
               import &StandardImport
 
@@ -277,25 +339,3 @@ class DefaultFiles extends BaseClass
                     if @db[key]
                       @db = objectWithout @db, key
                       true
-
-      test:
-        index.js: """
-          require('../register');
-          require('./index.caf');
-
-        index.caf: """
-          require '../index.caf'
-          &art-testbench/testing
-          .init
-            synchronous: true
-            defineTests: -> &tests
-
-        StandardImport.caf: """
-          &ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, test: (args...) -> global.test args...
-
-        tests:
-          [namespaceDirPath]:
-            Test.caf: """
-              import &StandardImport
-              suite: ->
-                test '#{mostSpecificName}' -> assert.eq 1, 1
