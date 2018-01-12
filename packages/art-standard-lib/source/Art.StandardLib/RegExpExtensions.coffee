@@ -31,22 +31,15 @@ module.exports = class RegExpExtensions
   @rgbColorRegExp:        /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/
   @rgbaColorRegExp:       /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/
 
-  @colorRegExp:  new RegExp "(#{@hex16ColorRegExp.source})|(#{@hex256ColorRegExp.source})|(#{@rgbColorRegExp.source})|(#{@rgbaColorRegExp.source})"
-
   @findColorRegExp:
     ///
-    \# [a-f0-9]{8} \b |
-    \# [a-f0-9]{6} \b |
-    \# [a-f0-9]{3,4} \b |
-    rgba? \ *
-      \(
-      \ * \d+ %? \ *,
-      \ * \d+ %? \ *,
-      \ * \d+ %?
-      (?: \ * , (?: \d+) | (?: \d*\.?\d+))
-      \ *
-      \)
+    (#{@hex16ColorRegExp.source}) |
+    (#{@hex256ColorRegExp.source}) |
+    (#{@rgbColorRegExp.source}) |
+    (#{@rgbaColorRegExp.source})
     ///i
+
+  @colorRegExp: /// ^ #{@findColorRegExp.source} $ ///
 
   @wordsRegExp: /[^\s]+/g
   @exactlyOneWordRegExp: /^[^\s]+$/
