@@ -47,3 +47,42 @@ succeeding: 762
 failing: 3
 knownFailing: 2
 ```
+
+### TestSuite
+
+A tiny bit of magic that lets you share code across tests, but not execute it multiple times.
+
+Example:
+
+```coffeescript
+class Tests extends &ArtTestbench.TestSuite
+  @setupAndVerifyAssumptions: =>
+    authenticate()
+    .then ({userId}) ->
+      createTestPost()
+      .then (post) -> {post, userId}
+
+  @testDelete: =>
+    @setupAndVerifyAssumptions()
+    .tap ({userId}) ->
+      pipelines.user.delete userId
+
+  @testPostAndTopicAreGone: =>
+    @testDelete()
+    .then ({post})->
+      Promise.all []
+        pipelines.post.get  returnNullIfMissing: true key: post.id
+        pipelines.topic.get returnNullIfMissing: true key: post.topicId
+    .then ([deletedPost, deletedTopic])->
+      assert.doesNotExist deletedPost
+      assert.doesNotExist deletedTopic
+
+```
+
+Creates the following tests:
+
+* setupAndVerifyAssumptions
+* testDelete
+* testPostAndTopicAreGone
+
+Any class method that starts out with `setup.*` or `test.*` will get a test created that invokes that method - AND - invoking that method is wrapped in a reusable promise. Calling it again, just gets the previous, cached result.
