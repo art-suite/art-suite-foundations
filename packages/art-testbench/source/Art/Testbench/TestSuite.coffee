@@ -5,15 +5,16 @@ module.exports = class TestSuite extends BaseClass
   @abstractClass()
 
   @postCreate: ->
-    for key in Object.keys @ when /^(test|setup)/.test key
-      do (key) =>
-        tester = @[key]
-        wrappedTester = @[key] = => @["_"+key] ||= if true
-          # log "test: #{@getName()}.#{key}"
-          Promise.then -> tester()
-          .tap => log "pass: #{@getName()}.#{key}"
-          .catch (e)=>
-            log "fail: #{@getName()}.#{key}"
-            throw e
-        test key, -> wrappedTester()
+    suite @getName(), =>
+      for key in Object.keys @ when /^(test|setup)/.test key
+        do (key) =>
+          tester = @[key]
+          wrappedTester = @[key] = => @["_"+key] ||= if true
+            # log "test: #{@getName()}.#{key}"
+            Promise.then -> tester()
+            .tap => log "pass: #{@getName()}.#{key}"
+            .catch (e)=>
+              log "fail: #{@getName()}.#{key}"
+              throw e
+          test key, -> wrappedTester()
     "do not use"
