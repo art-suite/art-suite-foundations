@@ -7,11 +7,8 @@ module.exports = class AsyncExtensions
   # IN: f (optional) - function to invoke after delay
   # OUT: promise.then -> # delay has elapsed
   @timeout: timeout = (ms, f) =>
-    new Promise (resolve) ->
-      setTimeout ->
-        f?()
-        resolve()
-      , ms
+    p = new Promise (resolve) -> setTimeout resolve, ms
+    if f? then p.then f else p
 
   @requestAnimationFrame:
     self.requestAnimationFrame       ||

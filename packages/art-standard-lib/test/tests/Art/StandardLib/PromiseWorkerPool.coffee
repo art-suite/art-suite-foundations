@@ -1,0 +1,90 @@
+
+{currentSecond, timeout, PromiseWorkerPool, timeout, Promise, intRand, log, deepAll} = Neptune.Art.StandardLib
+
+module.exports = suite:
+  basics: ->
+    test "create", ->
+      new PromiseWorkerPool
+
+    test "queue 1", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+      .queue -> workCount++
+      .then (results)->
+        assert.eq workCount, 1
+        assert.eq results, [0]
+
+  async: ->
+    test "queue 1", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+      .queue -> timeout 50, -> workCount++
+      .then (results)->
+        assert.eq workCount, 1
+        assert.eq results, [0]
+
+    test "queue 9", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+
+      for i in [0...9]
+        pwp.queue -> timeout 50, -> workCount++
+
+      pwp.start().then (results)->
+        assert.eq results, [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        assert.eq workCount, 9
+
+    test "queue 11", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+
+      for i in [0...11]
+        pwp.queue -> timeout 10, -> workCount++
+
+      pwp.start().then (results)->
+        assert.eq results, (i for i in [0...11])
+        assert.eq workCount, 11
+
+    test "queue 100", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+
+      start = currentSecond()
+      for i in [0...100]
+        pwp.queue -> timeout 50, -> workCount++
+
+      pwp.then (results)->
+        assert.eq results, (i for i in [0...100])
+        assert.eq workCount, 100
+        end = currentSecond()
+        delta = (end - start) * 1000 | 0
+        assert.gt delta, 500, "100 jobs * 50ms each / 10 workers >> should be between 500 and 600 ms"
+        assert.lt delta, 600, "100 jobs * 50ms each / 10 workers >> should be between 500 and 600 ms"
+
+  errors: ->
+
+    test "catch: queue 11, fail on 5", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+
+      for i in [0...11]
+        pwp.queue -> timeout 10, ->
+          if 5 == workCount++
+            throw new Error "fake-fail because we hate 5s!"
+
+      pwp.catch (rejectedWith) ->
+        assert.match rejectedWith.message, /fake-fail/
+
+    test "then-catch: 11, fail on 5", ->
+      workCount = 0
+      pwp = (new PromiseWorkerPool)
+
+      for i in [0...11]
+        pwp.queue -> timeout 10, ->
+          if 5 == workCount++
+            throw new Error "fake-fail because we hate 5s!"
+
+      pwp.then(
+        -> throw new Error "should not succeed"
+        (rejectedWith) -> assert.match rejectedWith.message, /fake-fail/
+      )

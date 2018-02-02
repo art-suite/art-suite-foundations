@@ -26,6 +26,7 @@ module.exports
   ParseUrl:           require './ParseUrl'          
   Promise:            require './Promise'           
   PromisedFileReader: require './PromisedFileReader'
+  PromiseWorkerPool:  require './PromiseWorkerPool' 
   RegExpExtensions:   require './RegExpExtensions'  
   RequestError:       require './RequestError'      
   Ruby:               require './Ruby'              
