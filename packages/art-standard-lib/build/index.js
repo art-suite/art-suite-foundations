@@ -436,12 +436,12 @@ module.exports = Types = (function() {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(13);
+module.exports = __webpack_require__(14);
 
 module.exports.includeInNamespace(__webpack_require__(25)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(11),
-  StringCase: __webpack_require__(12),
+  Merge: __webpack_require__(12),
+  StringCase: __webpack_require__(13),
   Types: __webpack_require__(2)
 });
 
@@ -833,15 +833,15 @@ module.exports = ArrayCompactFlatten = (function() {
 module.exports = __webpack_require__(5);
 
 module.exports.includeInNamespace(__webpack_require__(53)).addModules({
-  FormattedInspect: __webpack_require__(38),
+  FormattedInspect: __webpack_require__(39),
   InspectedObjectLiteral: __webpack_require__(20),
   InspectedObjects: __webpack_require__(27),
   Inspector: __webpack_require__(28),
   Inspector2: __webpack_require__(58),
-  PlainObjects: __webpack_require__(40)
+  PlainObjects: __webpack_require__(41)
 });
 
-__webpack_require__(39);
+__webpack_require__(40);
 
 
 /***/ }),
@@ -852,7 +852,7 @@ var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(10)).addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(11)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
@@ -1082,7 +1082,7 @@ isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPl
 
 compactFlatten = __webpack_require__(1).compactFlatten;
 
-isBrowser = __webpack_require__(14).isBrowser;
+isBrowser = __webpack_require__(15).isBrowser;
 
 escapedDoubleQuoteRegex = /[\\]["]/g;
 
@@ -1149,7 +1149,7 @@ module.exports = StringExtensions = (function() {
     return randomString(l, c, crypto.getRandomValues(new Uint8Array(l)));
   } : (console.warn("window.crypto not available, using standard random for cryptoRandomString"), function(l, c) {
     return randomString(l, c);
-  })) : (crypto = __webpack_require__(62), function(l, c) {
+  })) : (crypto = __webpack_require__(63), function(l, c) {
     return randomString(l, c, crypto.randomBytes(l));
   });
 
@@ -1784,668 +1784,15 @@ module.exports = MathExtensions = (function() {
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(32)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
-  extend(StandardLib, superClass);
-
-  function StandardLib() {
-    return StandardLib.__super__.constructor.apply(this, arguments);
-  }
-
-  StandardLib.version = __webpack_require__(31).version;
-
-  return StandardLib;
-
-})(Neptune.PackageNamespace));
-
-__webpack_require__(13);
-
-__webpack_require__(5);
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Merge, compactFlatten, isPlainObject;
-
-compactFlatten = __webpack_require__(3).compactFlatten;
-
-isPlainObject = __webpack_require__(2).isPlainObject;
-
-module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, pureMerge;
-
-  function Merge() {}
-
-
-  /*
-  
-  merge "flattens" its arguments and then adds all keys from all objects in
-  the list into a new object which is returned.
-  
-  return: new object
-  
-  The first object's keys are added first. If two or more objects have the same
-  keys, the value set in the result is the last object's in the list with that key.
-   */
-
-  Merge.merge = merge = function() {
-    return mergeInto({}, arguments);
-  };
-
-
-  /*
-  The same as 'merge' with one difference:
-  
-  Instead of a new object, all objects are merged into the first object in the list.
-  
-  return: first object in the flattened list
-  return: null if no source objects
-   */
-
-  Merge.mergeInto = mergeInto = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== result) {
-        for (k in source) {
-          v = source[k];
-          if (v !== void 0) {
-            result[k] = v;
-          }
-        }
-      }
-    }
-    return result;
-  };
-
-
-  /*
-  Just like mergeInfo except only merge into the result object
-  UNLESS 'result' already has that property with a non-undefined value.
-  
-  if
-    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
-  then
-    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
-  
-  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
-   */
-
-  Merge.mergeIntoUnless = function() {
-    var i, j, k, ref, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
-      source = sources[i];
-      for (k in source) {
-        v = source[k];
-        if (result[k] === void 0) {
-          result[k] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  Merge.deepMerge = deepMerge = function() {
-    var k, list, out, v, val;
-    list = compactFlatten(arguments);
-    out = merge(list);
-    for (k in out) {
-      v = out[k];
-      if (isPlainObject(v)) {
-        out[k] = deepMerge((function() {
-          var j, len, results;
-          results = [];
-          for (j = 0, len = list.length; j < len; j++) {
-            val = list[j];
-            results.push(val[k]);
-          }
-          return results;
-        })());
-      }
-    }
-    return out;
-  };
-
-  Merge.hasAllProps = function(o1, o2) {
-    var k, v;
-    for (k in o1) {
-      v = o1[k];
-      if (!o2.hasOwnProperty(k)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  Merge.pureMerge = pureMerge = function() {
-    var j, last, len, source, sources;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    if (sources.length === 1) {
-      return sources[0];
-    }
-    last = sources[sources.length - 1];
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== last) {
-        if (!Merge.hasAllProps(source, last)) {
-          return Merge.merge(sources);
-        }
-      }
-    }
-    return last;
-  };
-
-
-  /*
-  I might consider adding "o" - which works like Object-Tree constructors:
-    First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
-    Last, all remaining items get added to the "children" list
-  The question is, what does it return? Options:
-  
-    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-  
-  Options if both objects and non-object values are present:
-    a. return compactFlatten [plainObject, nonObjectValues]
-    b. return merge plainObject, children: nonObjectValues
-    c. return new MClass plainObject, nonObjectValues
-      class MClass extends BaseObject
-        @properties "props children"
-        constructor: (@props, @children) ->
-   */
-
-  Merge.m = pureMerge;
-
-  return Merge;
-
-})();
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var StringCase, compactFlatten;
-
-compactFlatten = __webpack_require__(3).compactFlatten;
-
-module.exports = StringCase = (function() {
-  var getCodeWords;
-
-  function StringCase() {}
-
-  StringCase.getCodeWords = getCodeWords = function(str) {
-    var _words, word, words;
-    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g);
-    if (!_words) {
-      return [];
-    }
-    words = (function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = _words.length; i < len; i++) {
-        word = _words[i];
-        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
-      }
-      return results;
-    })();
-    return compactFlatten(words);
-  };
-
-  StringCase.codeWords = getCodeWords;
-
-  StringCase.lowerCase = function(str) {
-    return str != null ? str.toLocaleLowerCase() : void 0;
-  };
-
-  StringCase.upperCase = function(str) {
-    return str != null ? str.toLocaleUpperCase() : void 0;
-  };
-
-  StringCase.capitalize = function(str) {
-    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.decapitalize = function(str) {
-    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.getLowerCaseCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(StringCase.lowerCase(word));
-    }
-    return results;
-  };
-
-  StringCase.getCapitalizedCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
-    }
-    return results;
-  };
-
-  StringCase.upperCamelCase = function(str, joiner) {
-    var word;
-    if (joiner == null) {
-      joiner = "";
-    }
-    return ((function() {
-      var i, len, ref, results;
-      ref = this.getLowerCaseCodeWords(str);
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        word = ref[i];
-        results.push(this.capitalize(word));
-      }
-      return results;
-    }).call(StringCase)).join(joiner);
-  };
-
-  StringCase.lowerCamelCase = function(str, joiner) {
-    if (joiner == null) {
-      joiner = "";
-    }
-    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
-  };
-
-  StringCase.snakeCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("_");
-  };
-
-  StringCase.dashCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("-");
-  };
-
-  StringCase.capitalizedDashCase = function(str) {
-    return (StringCase.getCapitalizedCodeWords(str)).join("-");
-  };
-
-  return StringCase;
-
-})();
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Core,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(10)).addNamespace('Core', Core = (function(superClass) {
-  extend(Core, superClass);
-
-  function Core() {
-    return Core.__super__.constructor.apply(this, arguments);
-  }
-
-  return Core;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
-
-defineModule = __webpack_require__(8).defineModule;
-
-ParseUrl = __webpack_require__(22);
-
-isNode = __webpack_require__(63);
-
-defineModule(module, Environment = (function() {
-  function Environment() {}
-
-  Environment.getEnv = function() {
-    var ref, ref1, ret;
-    ret = ((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0;
-    return ret || {};
-  };
-
-  Environment.isBrowser = !!(global.window && global.navigator && global.document);
-
-  Environment.isWebWorker = !!(!Environment.isBrowser && global.importScripts);
-
-  Environment.isNode = !!isNode;
-
-  return Environment;
-
-})());
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
-  slice = [].slice,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
-
-ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
-
-object = __webpack_require__(29).object;
-
-module.exports = ObjectExtensions = (function() {
-  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
-
-  function ObjectExtensions() {}
-
-  ObjectExtensions.countKeys = function(o) {
-    return Object.keys(o).length;
-  };
-
-  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
-    var count, k, v;
-    count = 0;
-    for (k in o) {
-      v = o[k];
-      count++;
-    }
-    return count;
-  };
-
-  ObjectExtensions.objectHasKeys = function(o) {
-    var b, k;
-    for (k in o) {
-      b = o[k];
-      return true;
-    }
-    return false;
-  };
-
-  ObjectExtensions.objectLength = objectKeyCount;
-
-
-  /*
-  NOTE:
-    null and undefined keys are NOT SUPPORTED
-  
-    They should be converted to strings, first,
-    which is what they would become anyway.
-  
-  IN: 0 or more arguments
-    out = {}
-    list = arguments
-  
-    for element in list
-      objects: merge into out
-      arrays or argument lists: recurse using element as the list
-      null or undefined: skip
-      else out[element] = next element (or undefined if none)
-  
-  OUT: plain object
-   */
-
-  toObjectInternal = function(list, out) {
-    var element, j, key, len;
-    key = null;
-    for (j = 0, len = list.length; j < len; j++) {
-      element = list[j];
-      if (key) {
-        out[key] = element;
-        key = null;
-      } else if (isPlainObject(element)) {
-        mergeInto(out, element);
-      } else if (isArrayOrArguments(element)) {
-        toObjectInternal(element, out);
-      } else if (element != null) {
-        key = element;
-      }
-    }
-    if (key) {
-      return out[key] = void 0;
-    }
-  };
-
-  ObjectExtensions.toObject = function() {
-    var out;
-    out = {};
-    toObjectInternal(arguments, out);
-    return out;
-  };
-
-
-  /*
-  IN:
-    inputArray: any array
-    transformFunction: (element) -> [key, value]
-      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
-   */
-
-  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
-    var element, j, key, len, outputMap, ref2, value;
-    if (transformFunction == null) {
-      transformFunction = function(element) {
-        return element;
-      };
-    }
-    outputMap = {};
-    for (j = 0, len = inputArray.length; j < len; j++) {
-      element = inputArray[j];
-      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
-      outputMap[key] = value;
-    }
-    return outputMap;
-  };
-
-
-  /*
-  IN:
-    obj: the object to select fields from
-  
-    2nd argument can be:
-      selectFunction: (value, key) -> true / false
-  
-    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
-   */
-
-  ObjectExtensions.select = function(obj, a) {
-    var j, k, len, prop, properties, result, v;
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    if (isFunction(a)) {
-      if (a.length === 1) {
-        for (k in obj) {
-          v = obj[k];
-          if (a(v)) {
-            result[k] = v;
-          }
-        }
-      } else {
-        for (k in obj) {
-          v = obj[k];
-          if (a(k, v)) {
-            result[k] = v;
-          }
-        }
-      }
-    } else {
-      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
-      for (j = 0, len = properties.length; j < len; j++) {
-        prop = properties[j];
-        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
-          result[prop] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  ObjectExtensions.selectAll = function() {
-    var j, len, obj, prop, properties, ref2, result;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    ref2 = compactFlatten(properties);
-    for (j = 0, len = ref2.length; j < len; j++) {
-      prop = ref2[j];
-      result[prop] = obj[prop];
-    }
-    return result;
-  };
-
-  ObjectExtensions.objectWithDefinedValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v !== void 0;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithExistingValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v != null;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithPresentValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return present(v);
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithout = function() {
-    var anythingToDo, j, len, obj, prop, properties, result, v;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    if (properties.length === 1 && !(typeof properties[0] === "string")) {
-      properties = properties[0];
-    }
-    anythingToDo = false;
-    for (j = 0, len = properties.length; j < len; j++) {
-      prop = properties[j];
-      if (obj.hasOwnProperty(prop)) {
-        anythingToDo = true;
-        break;
-      }
-    }
-    if (anythingToDo) {
-      result = {};
-      for (prop in obj) {
-        v = obj[prop];
-        if (indexOf.call(properties, prop) < 0) {
-          result[prop] = v;
-        }
-      }
-      return result;
-    } else {
-      return obj;
-    }
-  };
-
-  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
-    return !!key.match(/[\s\.\/]/);
-  };
-
-  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
-    var i, j, key, len;
-    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
-    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
-      key = propertyPath[i];
-      if (i === propertyPath.length - 1) {
-        action(obj, key);
-      } else {
-        obj = obj[key] || (obj[key] = {});
-      }
-    }
-    return obj;
-  };
-
-  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
-    withPropertyPath(obj, propertyPath, function(o, k) {
-      return o[k] = value;
-    });
-    return obj;
-  };
-
-  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
-    var k, v;
-    if (into == null) {
-      into = {};
-    }
-    if (pathExpansionEnabled == null) {
-      pathExpansionEnabled = true;
-    }
-    for (k in obj) {
-      v = obj[k];
-      if (pathExpansionEnabled && propertyIsPathed(k)) {
-        withPropertyPath(into, k, function(o, finalKey) {
-          if (isPlainObject(v)) {
-            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
-          } else {
-            return o[finalKey] = v;
-          }
-        });
-      } else if (isPlainObject(v)) {
-        expandPathedProperties(v, into[k] || (into[k] = {}), false);
-      } else {
-        into[k] = v;
-      }
-    }
-    return into;
-  };
-
-  return ObjectExtensions;
-
-})();
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, promiseDebug, ref;
 
-Promise = BlueBirdPromise = __webpack_require__(61);
+Promise = BlueBirdPromise = __webpack_require__(62);
 
 ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
 defineModule = __webpack_require__(8).defineModule;
 
-getEnv = __webpack_require__(14).getEnv;
+getEnv = __webpack_require__(15).getEnv;
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -2460,7 +1807,7 @@ BlueBirdPromise.config({
 
 isPromise = __webpack_require__(2).isPromise;
 
-ErrorWithInfo = __webpack_require__(36);
+ErrorWithInfo = __webpack_require__(37);
 
 
 /*
@@ -2831,6 +2178,659 @@ defineModule(module, function() {
 });
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(33)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+  extend(StandardLib, superClass);
+
+  function StandardLib() {
+    return StandardLib.__super__.constructor.apply(this, arguments);
+  }
+
+  StandardLib.version = __webpack_require__(32).version;
+
+  return StandardLib;
+
+})(Neptune.PackageNamespace));
+
+__webpack_require__(14);
+
+__webpack_require__(5);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Merge, compactFlatten, isPlainObject;
+
+compactFlatten = __webpack_require__(3).compactFlatten;
+
+isPlainObject = __webpack_require__(2).isPlainObject;
+
+module.exports = Merge = (function() {
+  var deepMerge, merge, mergeInto, pureMerge;
+
+  function Merge() {}
+
+
+  /*
+  
+  merge "flattens" its arguments and then adds all keys from all objects in
+  the list into a new object which is returned.
+  
+  return: new object
+  
+  The first object's keys are added first. If two or more objects have the same
+  keys, the value set in the result is the last object's in the list with that key.
+   */
+
+  Merge.merge = merge = function() {
+    return mergeInto({}, arguments);
+  };
+
+
+  /*
+  The same as 'merge' with one difference:
+  
+  Instead of a new object, all objects are merged into the first object in the list.
+  
+  return: first object in the flattened list
+  return: null if no source objects
+   */
+
+  Merge.mergeInto = mergeInto = function() {
+    var j, k, len, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          if (v !== void 0) {
+            result[k] = v;
+          }
+        }
+      }
+    }
+    return result;
+  };
+
+
+  /*
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
+  
+  if
+    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
+  then
+    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
+  
+  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
+   */
+
+  Merge.mergeIntoUnless = function() {
+    var i, j, k, ref, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
+      source = sources[i];
+      for (k in source) {
+        v = source[k];
+        if (result[k] === void 0) {
+          result[k] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  Merge.deepMerge = deepMerge = function() {
+    var k, list, out, v, val;
+    list = compactFlatten(arguments);
+    out = merge(list);
+    for (k in out) {
+      v = out[k];
+      if (isPlainObject(v)) {
+        out[k] = deepMerge((function() {
+          var j, len, results;
+          results = [];
+          for (j = 0, len = list.length; j < len; j++) {
+            val = list[j];
+            results.push(val[k]);
+          }
+          return results;
+        })());
+      }
+    }
+    return out;
+  };
+
+  Merge.hasAllProps = function(o1, o2) {
+    var k, v;
+    for (k in o1) {
+      v = o1[k];
+      if (!o2.hasOwnProperty(k)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  Merge.pureMerge = pureMerge = function() {
+    var j, last, len, source, sources;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    if (sources.length === 1) {
+      return sources[0];
+    }
+    last = sources[sources.length - 1];
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== last) {
+        if (!Merge.hasAllProps(source, last)) {
+          return Merge.merge(sources);
+        }
+      }
+    }
+    return last;
+  };
+
+
+  /*
+  I might consider adding "o" - which works like Object-Tree constructors:
+    First, it compact-flattens args
+    Second, it gathers up and merges all plain-objects in its arguments list
+    Last, all remaining items get added to the "children" list
+  The question is, what does it return? Options:
+  
+    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
+  
+  Options if both objects and non-object values are present:
+    a. return compactFlatten [plainObject, nonObjectValues]
+    b. return merge plainObject, children: nonObjectValues
+    c. return new MClass plainObject, nonObjectValues
+      class MClass extends BaseObject
+        @properties "props children"
+        constructor: (@props, @children) ->
+   */
+
+  Merge.m = pureMerge;
+
+  return Merge;
+
+})();
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var StringCase, compactFlatten;
+
+compactFlatten = __webpack_require__(3).compactFlatten;
+
+module.exports = StringCase = (function() {
+  var getCodeWords;
+
+  function StringCase() {}
+
+  StringCase.getCodeWords = getCodeWords = function(str) {
+    var _words, word, words;
+    _words = str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g);
+    if (!_words) {
+      return [];
+    }
+    words = (function() {
+      var i, len, results;
+      results = [];
+      for (i = 0, len = _words.length; i < len; i++) {
+        word = _words[i];
+        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
+      }
+      return results;
+    })();
+    return compactFlatten(words);
+  };
+
+  StringCase.codeWords = getCodeWords;
+
+  StringCase.lowerCase = function(str) {
+    return str != null ? str.toLocaleLowerCase() : void 0;
+  };
+
+  StringCase.upperCase = function(str) {
+    return str != null ? str.toLocaleUpperCase() : void 0;
+  };
+
+  StringCase.capitalize = function(str) {
+    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.decapitalize = function(str) {
+    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.getLowerCaseCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(StringCase.lowerCase(word));
+    }
+    return results;
+  };
+
+  StringCase.getCapitalizedCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
+    }
+    return results;
+  };
+
+  StringCase.upperCamelCase = function(str, joiner) {
+    var word;
+    if (joiner == null) {
+      joiner = "";
+    }
+    return ((function() {
+      var i, len, ref, results;
+      ref = this.getLowerCaseCodeWords(str);
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        word = ref[i];
+        results.push(this.capitalize(word));
+      }
+      return results;
+    }).call(StringCase)).join(joiner);
+  };
+
+  StringCase.lowerCamelCase = function(str, joiner) {
+    if (joiner == null) {
+      joiner = "";
+    }
+    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
+  };
+
+  StringCase.snakeCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("_");
+  };
+
+  StringCase.dashCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("-");
+  };
+
+  StringCase.capitalizedDashCase = function(str) {
+    return (StringCase.getCapitalizedCodeWords(str)).join("-");
+  };
+
+  return StringCase;
+
+})();
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Core,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(11)).addNamespace('Core', Core = (function(superClass) {
+  extend(Core, superClass);
+
+  function Core() {
+    return Core.__super__.constructor.apply(this, arguments);
+  }
+
+  return Core;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
+
+defineModule = __webpack_require__(8).defineModule;
+
+ParseUrl = __webpack_require__(22);
+
+isNode = __webpack_require__(64);
+
+defineModule(module, Environment = (function() {
+  function Environment() {}
+
+  Environment.getEnv = function() {
+    var ref, ref1, ret;
+    ret = ((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0;
+    return ret || {};
+  };
+
+  Environment.isBrowser = !!(global.window && global.navigator && global.document);
+
+  Environment.isWebWorker = !!(!Environment.isBrowser && global.importScripts);
+
+  Environment.isNode = !!isNode;
+
+  return Environment;
+
+})());
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
+  slice = [].slice,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
+
+ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
+
+object = __webpack_require__(29).object;
+
+module.exports = ObjectExtensions = (function() {
+  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
+
+  function ObjectExtensions() {}
+
+  ObjectExtensions.countKeys = function(o) {
+    return Object.keys(o).length;
+  };
+
+  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
+    var count, k, v;
+    count = 0;
+    for (k in o) {
+      v = o[k];
+      count++;
+    }
+    return count;
+  };
+
+  ObjectExtensions.objectHasKeys = function(o) {
+    var b, k;
+    for (k in o) {
+      b = o[k];
+      return true;
+    }
+    return false;
+  };
+
+  ObjectExtensions.objectLength = objectKeyCount;
+
+
+  /*
+  NOTE:
+    null and undefined keys are NOT SUPPORTED
+  
+    They should be converted to strings, first,
+    which is what they would become anyway.
+  
+  IN: 0 or more arguments
+    out = {}
+    list = arguments
+  
+    for element in list
+      objects: merge into out
+      arrays or argument lists: recurse using element as the list
+      null or undefined: skip
+      else out[element] = next element (or undefined if none)
+  
+  OUT: plain object
+   */
+
+  toObjectInternal = function(list, out) {
+    var element, j, key, len;
+    key = null;
+    for (j = 0, len = list.length; j < len; j++) {
+      element = list[j];
+      if (key) {
+        out[key] = element;
+        key = null;
+      } else if (isPlainObject(element)) {
+        mergeInto(out, element);
+      } else if (isArrayOrArguments(element)) {
+        toObjectInternal(element, out);
+      } else if (element != null) {
+        key = element;
+      }
+    }
+    if (key) {
+      return out[key] = void 0;
+    }
+  };
+
+  ObjectExtensions.toObject = function() {
+    var out;
+    out = {};
+    toObjectInternal(arguments, out);
+    return out;
+  };
+
+
+  /*
+  IN:
+    inputArray: any array
+    transformFunction: (element) -> [key, value]
+      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
+   */
+
+  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
+    var element, j, key, len, outputMap, ref2, value;
+    if (transformFunction == null) {
+      transformFunction = function(element) {
+        return element;
+      };
+    }
+    outputMap = {};
+    for (j = 0, len = inputArray.length; j < len; j++) {
+      element = inputArray[j];
+      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
+      outputMap[key] = value;
+    }
+    return outputMap;
+  };
+
+
+  /*
+  IN:
+    obj: the object to select fields from
+  
+    2nd argument can be:
+      selectFunction: (value, key) -> true / false
+  
+    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
+   */
+
+  ObjectExtensions.select = function(obj, a) {
+    var j, k, len, prop, properties, result, v;
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    if (isFunction(a)) {
+      if (a.length === 1) {
+        for (k in obj) {
+          v = obj[k];
+          if (a(v)) {
+            result[k] = v;
+          }
+        }
+      } else {
+        for (k in obj) {
+          v = obj[k];
+          if (a(k, v)) {
+            result[k] = v;
+          }
+        }
+      }
+    } else {
+      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
+      for (j = 0, len = properties.length; j < len; j++) {
+        prop = properties[j];
+        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
+          result[prop] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  ObjectExtensions.selectAll = function() {
+    var j, len, obj, prop, properties, ref2, result;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    ref2 = compactFlatten(properties);
+    for (j = 0, len = ref2.length; j < len; j++) {
+      prop = ref2[j];
+      result[prop] = obj[prop];
+    }
+    return result;
+  };
+
+  ObjectExtensions.objectWithDefinedValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v !== void 0;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithExistingValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v != null;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithPresentValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return present(v);
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithout = function() {
+    var anythingToDo, j, len, obj, prop, properties, result, v;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    if (properties.length === 1 && !(typeof properties[0] === "string")) {
+      properties = properties[0];
+    }
+    anythingToDo = false;
+    for (j = 0, len = properties.length; j < len; j++) {
+      prop = properties[j];
+      if (obj.hasOwnProperty(prop)) {
+        anythingToDo = true;
+        break;
+      }
+    }
+    if (anythingToDo) {
+      result = {};
+      for (prop in obj) {
+        v = obj[prop];
+        if (indexOf.call(properties, prop) < 0) {
+          result[prop] = v;
+        }
+      }
+      return result;
+    } else {
+      return obj;
+    }
+  };
+
+  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
+    return !!key.match(/[\s\.\/]/);
+  };
+
+  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
+    var i, j, key, len;
+    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
+    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
+      key = propertyPath[i];
+      if (i === propertyPath.length - 1) {
+        action(obj, key);
+      } else {
+        obj = obj[key] || (obj[key] = {});
+      }
+    }
+    return obj;
+  };
+
+  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
+    withPropertyPath(obj, propertyPath, function(o, k) {
+      return o[k] = value;
+    });
+    return obj;
+  };
+
+  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
+    var k, v;
+    if (into == null) {
+      into = {};
+    }
+    if (pathExpansionEnabled == null) {
+      pathExpansionEnabled = true;
+    }
+    for (k in obj) {
+      v = obj[k];
+      if (pathExpansionEnabled && propertyIsPathed(k)) {
+        withPropertyPath(into, k, function(o, finalKey) {
+          if (isPlainObject(v)) {
+            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
+          } else {
+            return o[finalKey] = v;
+          }
+        });
+      } else if (isPlainObject(v)) {
+        expandPathedProperties(v, into[k] || (into[k] = {}), false);
+      } else {
+        into[k] = v;
+      }
+    }
+    return into;
+  };
+
+  return ObjectExtensions;
+
+})();
+
 
 /***/ }),
 /* 17 */
@@ -3629,7 +3629,7 @@ var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Unique = __webpack_require__(30);
+Unique = __webpack_require__(31);
 
 MinimalBaseObject = __webpack_require__(6);
 
@@ -4093,7 +4093,7 @@ module.exports = CallStack = (function() {
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(12), __webpack_require__(11), __webpack_require__(2)];
+module.exports = [__webpack_require__(3), __webpack_require__(13), __webpack_require__(12), __webpack_require__(2)];
 
 
 /***/ }),
@@ -4105,7 +4105,7 @@ var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
 
 remove = __webpack_require__(18).remove;
 
-objectKeyCount = __webpack_require__(15).objectKeyCount;
+objectKeyCount = __webpack_require__(16).objectKeyCount;
 
 floatTrue0 = __webpack_require__(9).floatTrue0;
 
@@ -5076,6 +5076,294 @@ module.exports = Iteration = (function() {
 
 /***/ }),
 /* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, isNode, isString, merge, peek, ref, ref1,
+  slice = [].slice;
+
+Inspect = __webpack_require__(5);
+
+callStack = __webpack_require__(24).callStack;
+
+isString = __webpack_require__(0).isString;
+
+peek = __webpack_require__(18).peek;
+
+merge = __webpack_require__(1).merge;
+
+ref = __webpack_require__(10), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
+
+ref1 = __webpack_require__(15), isNode = ref1.isNode, getEnv = ref1.getEnv;
+
+disableLog = getEnv().disableLog;
+
+module.exports = Log = (function() {
+  var getLogger, noOptions, promiseLogId, standardOptions;
+
+  function Log() {}
+
+  Log.contextString = function(stack, defaultContext) {
+    var caller, context;
+    if (stack && (caller = stack[1])) {
+      if (caller.original) {
+        return caller.original;
+      } else {
+        context = caller["function"] ? caller["class"] ? caller["class"] + "::" + caller["function"] + "()" : caller["function"] + "()" : defaultContext ? defaultContext + ":" : "";
+        if (caller.sourceFileName) {
+          return "at " + caller.sourceFileName + ("-" + caller.sourceLine + ": ") + context;
+        }
+      }
+    } else {
+      return "at " + (defaultContext || "(unknown context)");
+    }
+  };
+
+  Log.autoSizedIndepect = function(toInspect, maxLength, maxDepth) {
+    var depth, inspected;
+    if (maxLength == null) {
+      maxLength = 512;
+    }
+    if (maxDepth == null) {
+      maxDepth = 10;
+    }
+    inspected = null;
+    depth = maxDepth;
+    while ((inspected = Inspect.inspectLean(toInspect, {
+        maxDepth: depth,
+        maxLength: maxLength
+      })).match(/\.\.\.$/)) {
+      depth--;
+    }
+    return inspected;
+  };
+
+  Log.loggedParamsString = function(params) {
+    if (typeof params === "string") {
+      return params;
+    } else {
+      return Log.autoSizedIndepect(params);
+    }
+  };
+
+  Log.hideLogging = function() {
+    return Log.loggingHidden = true;
+  };
+
+  Log.showLogging = function() {
+    return Log.loggingHidden = false;
+  };
+
+  Log.rawLog = function() {
+    if (!Log.loggingHidden) {
+      return console.log.apply(console, arguments);
+    }
+  };
+
+  Log.rawErrorLog = function() {
+    var a, out, str;
+    if (Log.loggingHidden) {
+      return;
+    }
+    if (isNode && "".red) {
+      str = arguments.length > 1 ? (out = (function() {
+        var i, len, results;
+        results = [];
+        for (i = 0, len = arguments.length; i < len; i++) {
+          a = arguments[i];
+          results.push(a);
+        }
+        return results;
+      }).apply(Log, arguments), out.join(' ')) : arguments[0];
+      return console.error(str.red);
+    } else {
+      return console.error.apply(console, arguments);
+    }
+  };
+
+  Log.rawWarningLog = function() {
+    var a, out, str;
+    if (Log.loggingHidden) {
+      return;
+    }
+    if (isNode && "".red) {
+      str = arguments.length > 1 ? (out = (function() {
+        var i, len, results;
+        results = [];
+        for (i = 0, len = arguments.length; i < len; i++) {
+          a = arguments[i];
+          results.push(a);
+        }
+        return results;
+      }).apply(Log, arguments), out.join(' ')) : arguments[0];
+      return console.warn(str.yellow);
+    } else {
+      return console.warn.apply(console, arguments);
+    }
+  };
+
+  noOptions = {};
+
+  getLogger = function(arg) {
+    var isError, isWarning;
+    isError = arg.isError, isWarning = arg.isWarning;
+    if (isError) {
+      return Log.rawErrorLog;
+    } else if (isWarning) {
+      return Log.rawWarningLog;
+    } else {
+      return Log.rawLog;
+    }
+  };
+
+  promiseLogId = 1;
+
+  Log.logCore = function(m, stack, options) {
+    if (options == null) {
+      options = noOptions;
+    }
+    if (Log.alternativeLogger) {
+      Log.alternativeLogger.logCore(m, stack, options);
+    }
+    if (options.resolvePromises) {
+      return Log.log.resolvePromiseWrapper(m, function(toLog, label) {
+        var obj1;
+        return Log._logNow((
+          obj1 = {},
+          obj1["" + label] = toLog,
+          obj1
+        ), stack, options);
+      });
+    } else {
+      return Log._logNow(m, stack, options);
+    }
+  };
+
+  Log._logNow = function(m, stack, options) {
+    var className, logger;
+    className = options.className;
+    logger = getLogger(options);
+    if (isNode) {
+      return logger(isString(m) ? m : Inspect.formattedInspect(m, merge({
+        maxLineLength: process.stdout.columns
+      }, options)));
+    } else {
+      return logger(m);
+    }
+  };
+
+  standardOptions = isNode ? {
+    color: true
+  } : {};
+
+  Log.log = function() {
+    var args, ref2;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if (disableLog) {
+      return peek(args);
+    } else {
+      return (ref2 = Log.log).withOptions.apply(ref2, [standardOptions].concat(slice.call(args)));
+    }
+  };
+
+  Log.log.resolvePromiseWrapper = function(m, logger) {
+    var logId, toResolve;
+    if (containsPromises(m)) {
+      toResolve = m;
+      logId = promiseLogId++;
+      logger(m, "RESOLVING_" + logId, false);
+      return deepResolve(toResolve).then((function(_this) {
+        return function(resolvedM) {
+          return logger(resolvedM, "RESOLVED_" + logId, true);
+        };
+      })(this))["catch"]((function(_this) {
+        return function(rejected) {
+          return logger(rejected, "REJECTED_" + logId, true, true);
+        };
+      })(this));
+    } else {
+      return logger(m, false);
+    }
+  };
+
+  Log.log.withOptions = function() {
+    var args, m, options;
+    options = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    m = args.length === 1 ? args[0] : args;
+    Log.logCore(m, callStack(), options);
+    return peek(args);
+  };
+
+
+  /*
+  
+  IN:
+    labelString, value
+    OR object with one or more properties (usually just one)
+      returns the last value of the objects last key-value pair
+  
+  EX:
+    log.withLabel foo: myObject
+     * out: myObject
+  
+    log.withLabel "foo", myObject
+     * out: myObject
+   */
+
+  Log.log.withLabel = function(a, b) {
+    var k, obj, ret, v;
+    if (isString(a)) {
+      obj = {};
+      obj[a] = b;
+      Log.log(obj);
+      return b;
+    } else {
+      ret = null;
+      for (k in a) {
+        v = a[k];
+        ret = v;
+      }
+      Log.log(obj);
+      return ret;
+    }
+  };
+
+  Log.log.labeled = Log.log.withLabel;
+
+  Log.log.error = function() {
+    var args, ref2;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return (ref2 = Log.log).withOptions.apply(ref2, [{
+      isError: true
+    }].concat(slice.call(args)));
+  };
+
+  Log.log.warn = function() {
+    var args, ref2;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return (ref2 = Log.log).withOptions.apply(ref2, [{
+      isWarning: true
+    }].concat(slice.call(args)));
+  };
+
+  Log.logL = function(obj) {
+    var k, ret, v;
+    console.warn("DEPRICATED: logL. USE log.labeled");
+    ret = null;
+    for (k in obj) {
+      v = obj[k];
+      ret = v;
+    }
+    Log.log(obj);
+    return ret;
+  };
+
+  return Log;
+
+})();
+
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports) {
 
 var Unique, nextId;
@@ -5139,24 +5427,24 @@ module.exports = Unique = (function() {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.4"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.5"}
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AsyncExtensions, Promise;
 
-Promise = __webpack_require__(16);
+Promise = __webpack_require__(10);
 
 module.exports = AsyncExtensions = (function() {
   var timeout;
@@ -5164,14 +5452,15 @@ module.exports = AsyncExtensions = (function() {
   function AsyncExtensions() {}
 
   AsyncExtensions.timeout = timeout = function(ms, f) {
-    return new Promise(function(resolve) {
-      return setTimeout(function() {
-        if (typeof f === "function") {
-          f();
-        }
-        return resolve();
-      }, ms);
+    var p;
+    p = new Promise(function(resolve) {
+      return setTimeout(resolve, ms);
     });
+    if (f != null) {
+      return p.then(f);
+    } else {
+      return p;
+    }
   };
 
   AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
@@ -5208,7 +5497,7 @@ module.exports = AsyncExtensions = (function() {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -5227,7 +5516,7 @@ var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject
 
 Map = __webpack_require__(21);
 
-Unique = __webpack_require__(30);
+Unique = __webpack_require__(31);
 
 inspect = __webpack_require__(4).inspect;
 
@@ -5325,7 +5614,7 @@ module.exports = Clone = (function() {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
@@ -5398,7 +5687,7 @@ module.exports = {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var ErrorWithInfo, defineModule, formattedInspect, isFunction, mergeInto, ref,
@@ -5443,7 +5732,7 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 var Function;
@@ -5539,7 +5828,7 @@ in debug mode and the faster(?), non hot-reload options in production mode.
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, objectKeyCount, pad, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects;
@@ -5552,7 +5841,7 @@ ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.st
 
 inspect = __webpack_require__(28).inspect;
 
-objectKeyCount = __webpack_require__(15).objectKeyCount;
+objectKeyCount = __webpack_require__(16).objectKeyCount;
 
 toInspectedObjects = __webpack_require__(27).toInspectedObjects;
 
@@ -5961,7 +6250,7 @@ module.exports = FormattedInspect = (function() {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(19);
@@ -5975,7 +6264,7 @@ module.exports.addModules({
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction, isPlainArray, isPlainObject, ref;
@@ -6013,294 +6302,6 @@ module.exports = PlainObjects = (function() {
   };
 
   return PlainObjects;
-
-})();
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, isNode, isString, merge, peek, ref, ref1,
-  slice = [].slice;
-
-Inspect = __webpack_require__(5);
-
-callStack = __webpack_require__(24).callStack;
-
-isString = __webpack_require__(0).isString;
-
-peek = __webpack_require__(18).peek;
-
-merge = __webpack_require__(1).merge;
-
-ref = __webpack_require__(16), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
-
-ref1 = __webpack_require__(14), isNode = ref1.isNode, getEnv = ref1.getEnv;
-
-disableLog = getEnv().disableLog;
-
-module.exports = Log = (function() {
-  var getLogger, noOptions, promiseLogId, standardOptions;
-
-  function Log() {}
-
-  Log.contextString = function(stack, defaultContext) {
-    var caller, context;
-    if (stack && (caller = stack[1])) {
-      if (caller.original) {
-        return caller.original;
-      } else {
-        context = caller["function"] ? caller["class"] ? caller["class"] + "::" + caller["function"] + "()" : caller["function"] + "()" : defaultContext ? defaultContext + ":" : "";
-        if (caller.sourceFileName) {
-          return "at " + caller.sourceFileName + ("-" + caller.sourceLine + ": ") + context;
-        }
-      }
-    } else {
-      return "at " + (defaultContext || "(unknown context)");
-    }
-  };
-
-  Log.autoSizedIndepect = function(toInspect, maxLength, maxDepth) {
-    var depth, inspected;
-    if (maxLength == null) {
-      maxLength = 512;
-    }
-    if (maxDepth == null) {
-      maxDepth = 10;
-    }
-    inspected = null;
-    depth = maxDepth;
-    while ((inspected = Inspect.inspectLean(toInspect, {
-        maxDepth: depth,
-        maxLength: maxLength
-      })).match(/\.\.\.$/)) {
-      depth--;
-    }
-    return inspected;
-  };
-
-  Log.loggedParamsString = function(params) {
-    if (typeof params === "string") {
-      return params;
-    } else {
-      return Log.autoSizedIndepect(params);
-    }
-  };
-
-  Log.hideLogging = function() {
-    return Log.loggingHidden = true;
-  };
-
-  Log.showLogging = function() {
-    return Log.loggingHidden = false;
-  };
-
-  Log.rawLog = function() {
-    if (!Log.loggingHidden) {
-      return console.log.apply(console, arguments);
-    }
-  };
-
-  Log.rawErrorLog = function() {
-    var a, out, str;
-    if (Log.loggingHidden) {
-      return;
-    }
-    if (isNode && "".red) {
-      str = arguments.length > 1 ? (out = (function() {
-        var i, len, results;
-        results = [];
-        for (i = 0, len = arguments.length; i < len; i++) {
-          a = arguments[i];
-          results.push(a);
-        }
-        return results;
-      }).apply(Log, arguments), out.join(' ')) : arguments[0];
-      return console.error(str.red);
-    } else {
-      return console.error.apply(console, arguments);
-    }
-  };
-
-  Log.rawWarningLog = function() {
-    var a, out, str;
-    if (Log.loggingHidden) {
-      return;
-    }
-    if (isNode && "".red) {
-      str = arguments.length > 1 ? (out = (function() {
-        var i, len, results;
-        results = [];
-        for (i = 0, len = arguments.length; i < len; i++) {
-          a = arguments[i];
-          results.push(a);
-        }
-        return results;
-      }).apply(Log, arguments), out.join(' ')) : arguments[0];
-      return console.warn(str.yellow);
-    } else {
-      return console.warn.apply(console, arguments);
-    }
-  };
-
-  noOptions = {};
-
-  getLogger = function(arg) {
-    var isError, isWarning;
-    isError = arg.isError, isWarning = arg.isWarning;
-    if (isError) {
-      return Log.rawErrorLog;
-    } else if (isWarning) {
-      return Log.rawWarningLog;
-    } else {
-      return Log.rawLog;
-    }
-  };
-
-  promiseLogId = 1;
-
-  Log.logCore = function(m, stack, options) {
-    if (options == null) {
-      options = noOptions;
-    }
-    if (Log.alternativeLogger) {
-      Log.alternativeLogger.logCore(m, stack, options);
-    }
-    if (options.resolvePromises) {
-      return Log.log.resolvePromiseWrapper(m, function(toLog, label) {
-        var obj1;
-        return Log._logNow((
-          obj1 = {},
-          obj1["" + label] = toLog,
-          obj1
-        ), stack, options);
-      });
-    } else {
-      return Log._logNow(m, stack, options);
-    }
-  };
-
-  Log._logNow = function(m, stack, options) {
-    var className, logger;
-    className = options.className;
-    logger = getLogger(options);
-    if (isNode) {
-      return logger(isString(m) ? m : Inspect.formattedInspect(m, merge({
-        maxLineLength: process.stdout.columns
-      }, options)));
-    } else {
-      return logger(m);
-    }
-  };
-
-  standardOptions = isNode ? {
-    color: true
-  } : {};
-
-  Log.log = function() {
-    var args, ref2;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    if (disableLog) {
-      return peek(args);
-    } else {
-      return (ref2 = Log.log).withOptions.apply(ref2, [standardOptions].concat(slice.call(args)));
-    }
-  };
-
-  Log.log.resolvePromiseWrapper = function(m, logger) {
-    var logId, toResolve;
-    if (containsPromises(m)) {
-      toResolve = m;
-      logId = promiseLogId++;
-      logger(m, "RESOLVING_" + logId, false);
-      return deepResolve(toResolve).then((function(_this) {
-        return function(resolvedM) {
-          return logger(resolvedM, "RESOLVED_" + logId, true);
-        };
-      })(this))["catch"]((function(_this) {
-        return function(rejected) {
-          return logger(rejected, "REJECTED_" + logId, true, true);
-        };
-      })(this));
-    } else {
-      return logger(m, false);
-    }
-  };
-
-  Log.log.withOptions = function() {
-    var args, m, options;
-    options = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    m = args.length === 1 ? args[0] : args;
-    Log.logCore(m, callStack(), options);
-    return peek(args);
-  };
-
-
-  /*
-  
-  IN:
-    labelString, value
-    OR object with one or more properties (usually just one)
-      returns the last value of the objects last key-value pair
-  
-  EX:
-    log.withLabel foo: myObject
-     * out: myObject
-  
-    log.withLabel "foo", myObject
-     * out: myObject
-   */
-
-  Log.log.withLabel = function(a, b) {
-    var k, obj, ret, v;
-    if (isString(a)) {
-      obj = {};
-      obj[a] = b;
-      Log.log(obj);
-      return b;
-    } else {
-      ret = null;
-      for (k in a) {
-        v = a[k];
-        ret = v;
-      }
-      Log.log(obj);
-      return ret;
-    }
-  };
-
-  Log.log.labeled = Log.log.withLabel;
-
-  Log.log.error = function() {
-    var args, ref2;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return (ref2 = Log.log).withOptions.apply(ref2, [{
-      isError: true
-    }].concat(slice.call(args)));
-  };
-
-  Log.log.warn = function() {
-    var args, ref2;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return (ref2 = Log.log).withOptions.apply(ref2, [{
-      isWarning: true
-    }].concat(slice.call(args)));
-  };
-
-  Log.logL = function(obj) {
-    var k, ret, v;
-    console.warn("DEPRICATED: logL. USE log.labeled");
-    ret = null;
-    for (k in obj) {
-      v = obj[k];
-      ret = v;
-    }
-    Log.log(obj);
-    return ret;
-  };
-
-  return Log;
 
 })();
 
@@ -6473,7 +6474,7 @@ module.exports = ObjectDiff = (function() {
 
 var Promise, PromisedFileReader;
 
-Promise = __webpack_require__(16);
+Promise = __webpack_require__(10);
 
 module.exports = PromisedFileReader = (function() {
   function PromisedFileReader() {}
@@ -6793,38 +6794,39 @@ module.exports = require("dateformat");
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(10);
+module.exports = __webpack_require__(11);
 
-module.exports.includeInNamespace(__webpack_require__(60)).addModules({
+module.exports.includeInNamespace(__webpack_require__(61)).addModules({
   ArrayExtensions: __webpack_require__(18),
-  AsyncExtensions: __webpack_require__(33),
+  AsyncExtensions: __webpack_require__(34),
   CallStack: __webpack_require__(24),
-  Clone: __webpack_require__(34),
+  Clone: __webpack_require__(35),
   CommonJs: __webpack_require__(8),
-  DateExtensions: __webpack_require__(35),
-  Environment: __webpack_require__(14),
+  DateExtensions: __webpack_require__(36),
+  Environment: __webpack_require__(15),
   Eq: __webpack_require__(26),
-  ErrorWithInfo: __webpack_require__(36),
-  Function: __webpack_require__(37),
+  ErrorWithInfo: __webpack_require__(37),
+  Function: __webpack_require__(38),
   Iteration: __webpack_require__(29),
-  Log: __webpack_require__(41),
+  Log: __webpack_require__(30),
   Map: __webpack_require__(21),
   MapExtensions: __webpack_require__(42),
   MathExtensions: __webpack_require__(9),
   MinimalBaseObject: __webpack_require__(6),
   ObjectDiff: __webpack_require__(43),
-  ObjectExtensions: __webpack_require__(15),
+  ObjectExtensions: __webpack_require__(16),
   ParseUrl: __webpack_require__(22),
-  Promise: __webpack_require__(16),
+  Promise: __webpack_require__(10),
   PromisedFileReader: __webpack_require__(44),
+  PromiseWorkerPool: __webpack_require__(59),
   RegExpExtensions: __webpack_require__(17),
-  RequestError: __webpack_require__(59),
+  RequestError: __webpack_require__(60),
   Ruby: __webpack_require__(45),
   ShallowClone: __webpack_require__(46),
   StringExtensions: __webpack_require__(7),
   Time: __webpack_require__(47),
   TypesExtended: __webpack_require__(0),
-  Unique: __webpack_require__(30)
+  Unique: __webpack_require__(31)
 });
 
 __webpack_require__(1);
@@ -6852,7 +6854,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(28), "shallowInspect inspectLean inspect"], __webpack_require__(38), __webpack_require__(27), __webpack_require__(40), __webpack_require__(20)];
+module.exports = [[__webpack_require__(28), "shallowInspect inspectLean inspect"], __webpack_require__(39), __webpack_require__(27), __webpack_require__(41), __webpack_require__(20)];
 
 
 /***/ }),
@@ -7049,7 +7051,7 @@ MinimalBaseObject = __webpack_require__(6);
 
 Map = __webpack_require__(21);
 
-Inspected = __webpack_require__(39);
+Inspected = __webpack_require__(40);
 
 escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
 
@@ -7263,6 +7265,96 @@ module.exports = Inspector2 = (function(superClass) {
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var Promise, PromiseWorkerPool, log;
+
+Promise = __webpack_require__(10);
+
+log = __webpack_require__(30).log;
+
+
+/*
+  usage:
+
+  pwp = new PromiseWorkerPool
+    numWorkers: 10
+
+   * queue all your jobs
+  pwp.queue (jobIndex, totalJobCount) -> work, optionally returning promise
+     * jobIndex is the order the worker was queued in
+
+   * start the queue
+  pwp.then (results) ->
+     * results is the results from all your workerPromises in the same order they were queued
+ */
+
+module.exports = PromiseWorkerPool = (function() {
+  function PromiseWorkerPool(options) {
+    var ref;
+    this.numWorkers = (ref = (options || {}).numWorkers) != null ? ref : 10;
+    this._queue = [];
+  }
+
+  PromiseWorkerPool.prototype.queue = function(job) {
+    if (this._startPromise) {
+      throw new Error("already started");
+    }
+    this._queue.push(job);
+    return this;
+  };
+
+  PromiseWorkerPool.prototype.start = function() {
+    return this._startPromise || (this._startPromise = Promise.then((function(_this) {
+      return function() {
+        var doNextAction, jobIndex, numJobs, numWorkers, results, workerPromises;
+        jobIndex = 0;
+        doNextAction = function() {
+          var currentJobIndex, job;
+          if (_this._queue.length > (currentJobIndex = jobIndex)) {
+            jobIndex++;
+            if (job = _this._queue[currentJobIndex]) {
+              _this._queue[currentJobIndex] = null;
+              return Promise.then(function() {
+                return job(currentJobIndex, numJobs);
+              }).then(function(result) {
+                return results[currentJobIndex] = result;
+              }).then(doNextAction);
+            } else {
+              return Promise.then(doNextAction);
+            }
+          } else {
+            return Promise.resolve("queue done");
+          }
+        };
+        results = new Array(numJobs = _this._queue.length);
+        workerPromises = [];
+        numWorkers = _this.numWorkers;
+        while (workerPromises.length < numWorkers) {
+          workerPromises.push(doNextAction());
+        }
+        return Promise.all(workerPromises).then(function() {
+          return results;
+        });
+      };
+    })(this)));
+  };
+
+  PromiseWorkerPool.prototype.then = function(a, b) {
+    return this.start().then(a, b);
+  };
+
+  PromiseWorkerPool.prototype["catch"] = function(a) {
+    return this.start()["catch"](a);
+  };
+
+  return PromiseWorkerPool;
+
+})();
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(module) {var RequestError, compactFlatten, defineModule, formattedInspect, isFunction, merge, mergeInto, objectWithout, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -7273,7 +7365,7 @@ formattedInspect = __webpack_require__(4).formattedInspect;
 
 ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
 
-objectWithout = __webpack_require__(15).objectWithout;
+objectWithout = __webpack_require__(16).objectWithout;
 
 
 /*
@@ -7345,26 +7437,26 @@ defineModule(module, RequestError = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), [__webpack_require__(16), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(33), __webpack_require__(15), __webpack_require__(7), __webpack_require__(26), __webpack_require__(37), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(14), __webpack_require__(22), __webpack_require__(44), __webpack_require__(17), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(8), __webpack_require__(29), __webpack_require__(4), __webpack_require__(34), __webpack_require__(41), __webpack_require__(24), __webpack_require__(35)];
+module.exports = [__webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(34), __webpack_require__(16), __webpack_require__(7), __webpack_require__(26), __webpack_require__(38), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(15), __webpack_require__(22), __webpack_require__(44), __webpack_require__(17), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(8), __webpack_require__(29), __webpack_require__(4), __webpack_require__(35), __webpack_require__(30), __webpack_require__(24), __webpack_require__(36)];
 
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports) {
-
-module.exports = require("bluebird/js/browser/bluebird.core.min");
 
 /***/ }),
 /* 62 */
 /***/ (function(module, exports) {
 
-module.exports = require("crypto");
+module.exports = require("bluebird/js/browser/bluebird.core.min");
 
 /***/ }),
 /* 63 */
+/***/ (function(module, exports) {
+
+module.exports = require("crypto");
+
+/***/ }),
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = require("detect-node");
