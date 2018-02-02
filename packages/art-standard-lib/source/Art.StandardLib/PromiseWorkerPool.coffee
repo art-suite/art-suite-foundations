@@ -19,9 +19,7 @@ Promise = require './Promise'
 
 module.exports = class PromiseWorkerPool
 
-  constructor: (options) ->
-    {@numWorkers = 10} = options || {}
-    @_queue   = []
+  constructor: (@numWorkers = 10) -> @_queue = []
 
   queue: (job) ->
     throw new Error "already started" if @_startPromise
