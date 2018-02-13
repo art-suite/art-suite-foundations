@@ -135,8 +135,14 @@ suite:
       assert.throws -> v.validate id: ""
       assert.throws -> v.validate id: null
       assert.throws -> v.validate id: undefined
+      assert.throws -> v.validateUpdate id: ""
+      assert.throws -> v.validateUpdate id: null
+      assert.throws -> v.validateUpdate id: undefined
+
       v.validate id: false
       v.validate id: 123
+      v.validateUpdate id: false
+      v.validateUpdate id: 123
 
     test "required: true", ->
       v = new Validator
