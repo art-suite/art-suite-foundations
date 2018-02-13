@@ -227,7 +227,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
 
   @extendableProperty: (map, options = noOptions) ->
     if isFunction oldExtender = options
-      log.warn "DEPRICATED customPropertyExtender not supported, use extend: option "
+      log.error "DEPRICATED customPropertyExtender not supported, use extend: option "
       options = extend: (extendable, args...) ->
         oldExtender.apply extendable, args
     {extend, declarable, noSetter} = options
