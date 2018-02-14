@@ -27,7 +27,10 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       if @props
         ' ' +
           array propValue, propName from @props
-            "" #{propName}="#{escapeHtmlString propValue}"
+            if propValue == true
+              propName
+            else
+              "" #{propName}="#{escapeHtmlString propValue}"
           .join ' '
 
   compile: (indent) ->
@@ -47,6 +50,8 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
         "" #{indent}<#{@name}#{@propsString}>
         compiledChildren
         "" #{indent}</#{@name}>
+    else if @name == "link" || @name == "meta"
+      [] "" #{indent}<#{@name}#{@propsString}>
     else
       [] "" #{indent}<#{@name}#{@propsString}></#{@name}>
 
