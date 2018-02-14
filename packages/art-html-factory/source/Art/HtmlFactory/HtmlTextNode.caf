@@ -43,17 +43,22 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
   ##################
   # PRIVATE
   ##################
+  applyIndent = (indent, line) ->
+    if indent
+      indent + line
+    else
+      line
   _compile: (indent) ->
 
     if compiledChildren = @_getCompiledChildren indent
       []
-        "" #{indent}<#{@name}#{@propsString}>
+        applyIndent indent, "" <#{@name}#{@propsString}>
         compiledChildren
-        "" #{indent}</#{@name}>
+        applyIndent indent, "" </#{@name}>
     else if @name == "link" || @name == "meta"
-      [] "" #{indent}<#{@name}#{@propsString}>
+      applyIndent indent, "" <#{@name}#{@propsString}>
     else
-      [] "" #{indent}<#{@name}#{@propsString}></#{@name}>
+      applyIndent indent, "" <#{@name}#{@propsString}></#{@name}>
 
 
   _getCompiledChildren: (indent) ->
@@ -61,6 +66,9 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       indent = indent + '  ' if indent?
       array child from @children
         if isString child
-          "#{indent}#{child.replace /\n/, "\n#{indent}"}"
+          if indent?
+            "#{indent}#{child.replace /\n/g, "\n#{indent}"}"
+          else
+            child
         else
           child._compile indent
