@@ -27,6 +27,7 @@ module.exports
   Promise:            require './Promise'           
   PromisedFileReader: require './PromisedFileReader'
   PromiseWorkerPool:  require './PromiseWorkerPool' 
+  PushBackTimer:      require './PushBackTimer'     
   RegExpExtensions:   require './RegExpExtensions'  
   RequestError:       require './RequestError'      
   Ruby:               require './Ruby'              
