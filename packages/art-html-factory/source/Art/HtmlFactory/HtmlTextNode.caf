@@ -50,15 +50,23 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       line
   _compile: (indent) ->
 
-    if compiledChildren = @_getCompiledChildren indent
+    switch @name
+    when :a, :b
       []
-        applyIndent indent, "" <#{@name}#{@propsString}>
-        compiledChildren
-        applyIndent indent, "" </#{@name}>
-    else if @name == "link" || @name == "meta"
-      applyIndent indent, "" <#{@name}#{@propsString}>
+        "" <#{@name}#{@propsString}>
+        @_getCompiledChildren()
+        "" </#{@name}>
+      .join ''
     else
-      applyIndent indent, "" <#{@name}#{@propsString}></#{@name}>
+      if compiledChildren = @_getCompiledChildren indent
+        []
+          applyIndent indent, "" <#{@name}#{@propsString}>
+          compiledChildren
+          applyIndent indent, "" </#{@name}>
+      else if @name == "link" || @name == "meta"
+        applyIndent indent, "" <#{@name}#{@propsString}>
+      else
+        applyIndent indent, "" <#{@name}#{@propsString}></#{@name}>
 
 
   _getCompiledChildren: (indent) ->
