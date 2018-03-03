@@ -5,6 +5,7 @@ module.exports = require './namespace'
 module.exports
 .addModules
   ArtChai:              require './ArtChai'             
+  ChainedTest:          require './ChainedTest'         
   Mocha:                require './Mocha'               
   MochaBrowserReporter: require './MochaBrowserReporter'
   Perf:                 require './Perf'                
