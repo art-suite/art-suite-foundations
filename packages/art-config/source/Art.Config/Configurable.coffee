@@ -81,7 +81,7 @@ defineModule module, class Configurable extends EventedMixin BaseClass
 
   # called after @config has been updated
   @configured: ->
-    @getSingleton().handleEvent "configured"
+    @getSingleton().handleEvent "configured", {@config}
 
   #####################################
   # HELPERS
