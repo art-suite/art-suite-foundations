@@ -438,7 +438,7 @@ module.exports = Types = (function() {
 
 module.exports = __webpack_require__(14);
 
-module.exports.includeInNamespace(__webpack_require__(25)).addModules({
+module.exports.includeInNamespace(__webpack_require__(26)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
   Merge: __webpack_require__(12),
   StringCase: __webpack_require__(13),
@@ -833,15 +833,15 @@ module.exports = ArrayCompactFlatten = (function() {
 module.exports = __webpack_require__(5);
 
 module.exports.includeInNamespace(__webpack_require__(53)).addModules({
-  FormattedInspect: __webpack_require__(39),
+  FormattedInspect: __webpack_require__(40),
   InspectedObjectLiteral: __webpack_require__(20),
-  InspectedObjects: __webpack_require__(27),
-  Inspector: __webpack_require__(28),
+  InspectedObjects: __webpack_require__(28),
+  Inspector: __webpack_require__(29),
   Inspector2: __webpack_require__(58),
-  PlainObjects: __webpack_require__(41)
+  PlainObjects: __webpack_require__(42)
 });
 
-__webpack_require__(40);
+__webpack_require__(41);
 
 
 /***/ }),
@@ -1149,7 +1149,7 @@ module.exports = StringExtensions = (function() {
     return randomString(l, c, crypto.getRandomValues(new Uint8Array(l)));
   } : (console.warn("window.crypto not available, using standard random for cryptoRandomString"), function(l, c) {
     return randomString(l, c);
-  })) : (crypto = __webpack_require__(63), function(l, c) {
+  })) : (crypto = __webpack_require__(64), function(l, c) {
     return randomString(l, c, crypto.randomBytes(l));
   });
 
@@ -1786,7 +1786,7 @@ module.exports = MathExtensions = (function() {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, promiseDebug, ref;
 
-Promise = BlueBirdPromise = __webpack_require__(62);
+Promise = BlueBirdPromise = __webpack_require__(63);
 
 ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
@@ -1807,7 +1807,7 @@ BlueBirdPromise.config({
 
 isPromise = __webpack_require__(2).isPromise;
 
-ErrorWithInfo = __webpack_require__(37);
+ErrorWithInfo = __webpack_require__(38);
 
 
 /*
@@ -2187,14 +2187,14 @@ var StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(33)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+module.exports = (__webpack_require__(35)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
 
   function StandardLib() {
     return StandardLib.__super__.constructor.apply(this, arguments);
   }
 
-  StandardLib.version = __webpack_require__(32).version;
+  StandardLib.version = __webpack_require__(34).version;
 
   return StandardLib;
 
@@ -2520,7 +2520,7 @@ defineModule = __webpack_require__(8).defineModule;
 
 ParseUrl = __webpack_require__(22);
 
-isNode = __webpack_require__(64);
+isNode = __webpack_require__(65);
 
 defineModule(module, Environment = (function() {
   function Environment() {}
@@ -2555,7 +2555,7 @@ ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach
 
 ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
 
-object = __webpack_require__(29).object;
+object = __webpack_require__(30).object;
 
 module.exports = ObjectExtensions = (function() {
   var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
@@ -2893,6 +2893,8 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.exactlyOneWordRegExp = /^[^\s]+$/;
 
+  RegExpExtensions.findUrlOrigin = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?", "i");
+
 
   /*
   match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
@@ -2907,15 +2909,15 @@ module.exports = RegExpExtensions = (function() {
       matchResult.slice(1).join ''
    */
 
-  RegExpExtensions.findUrlRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
+  RegExpExtensions.findUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
 
-  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")?(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
+  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
 
   RegExpExtensions.findAllUrlsRegExp = RegExp("" + RegExpExtensions.findUrlRegExp.source, "ig");
 
   RegExpExtensions.findAllUrlsWithOptionalProtocolRegExp = RegExp("" + RegExpExtensions.findUrlWithOptionalProtocolRegExp.source, "ig");
 
-  RegExpExtensions.findSourceReferenceUrlRegExp = RegExp("(" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")?(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:\\:(\\d+))?(?:\\:(\\d+))?", "i");
+  RegExpExtensions.findSourceReferenceUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:\\:(\\d+))?(?:\\:(\\d+))?", "i");
 
   RegExpExtensions.urlRegExp = RegExp("^" + RegExpExtensions.findUrlRegExp.source + "$", "i");
 
@@ -3573,7 +3575,7 @@ module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = 
 
 var InspectedObjectLiteral, compare;
 
-compare = __webpack_require__(26).compare;
+compare = __webpack_require__(27).compare;
 
 module.exports = InspectedObjectLiteral = (function() {
   InspectedObjectLiteral.inspectedObjectLiteral = function(literal, isError) {
@@ -3629,7 +3631,7 @@ var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Unique = __webpack_require__(31);
+Unique = __webpack_require__(33);
 
 MinimalBaseObject = __webpack_require__(6);
 
@@ -3932,6 +3934,64 @@ module.exports = function(module) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var AsyncExtensions, Promise;
+
+Promise = __webpack_require__(10);
+
+module.exports = AsyncExtensions = (function() {
+  var timeout;
+
+  function AsyncExtensions() {}
+
+  AsyncExtensions.timeout = timeout = function(ms, f) {
+    var p;
+    p = new Promise(function(resolve) {
+      return setTimeout(resolve, ms);
+    });
+    if (f != null) {
+      return p.then(f);
+    } else {
+      return p;
+    }
+  };
+
+  AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
+    return setTimeout(f, 1000 / 60);
+  };
+
+  AsyncExtensions.nextTick = function(f) {
+    return Promise.resolve().then(function() {
+      return typeof f === "function" ? f() : void 0;
+    });
+  };
+
+  AsyncExtensions.throwErrorOutOfStack = function(e) {
+    console.log(e);
+    return timeout(0, function() {
+      throw e;
+    });
+  };
+
+  AsyncExtensions.evalAndThrowErrorsOutOfStack = function(f) {
+    var e;
+    try {
+      return f();
+    } catch (error) {
+      e = error;
+      Neptune.Art.StandardLib.log.error("evalAndThrowErrorsOutOfStack", e);
+      return AsyncExtensions.throwErrorOutOfStack(e);
+    }
+  };
+
+  return AsyncExtensions;
+
+})();
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var CallStack, inspect, isString, parseUrl;
 
 isString = __webpack_require__(0).isString;
@@ -4090,14 +4150,14 @@ module.exports = CallStack = (function() {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [__webpack_require__(3), __webpack_require__(13), __webpack_require__(12), __webpack_require__(2)];
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
@@ -4403,7 +4463,7 @@ module.exports = Eq = (function() {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
@@ -4483,7 +4543,7 @@ module.exports = InspectedObjects = (function() {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
@@ -4718,7 +4778,7 @@ module.exports = Inspector = (function() {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1;
@@ -5075,7 +5135,7 @@ module.exports = Iteration = (function() {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, isNode, isString, merge, peek, ref, ref1,
@@ -5083,7 +5143,7 @@ var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, 
 
 Inspect = __webpack_require__(5);
 
-callStack = __webpack_require__(24).callStack;
+callStack = __webpack_require__(25).callStack;
 
 isString = __webpack_require__(0).isString;
 
@@ -5363,7 +5423,135 @@ module.exports = Log = (function() {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Time, base, commaize, dateSecondMinusPerformanceSecond, initDateSecond, initPerformanceSecond;
+
+commaize = __webpack_require__(9).commaize;
+
+self.performance || (self.performance = {});
+
+(base = self.performance).now || (base.now = self.performance.mozNow || self.performance.msNow || self.performance.oNow || self.performance.webkitNow || function() {
+  return new Date().getTime();
+});
+
+initPerformanceSecond = self.performance.now() / 1000;
+
+initDateSecond = new Date().getTime() / 1000;
+
+dateSecondMinusPerformanceSecond = initDateSecond - initPerformanceSecond;
+
+module.exports = Time = (function() {
+  var currentSecond, multiples, timerStack;
+
+  function Time() {}
+
+  multiples = [["mo", 30 * 24 * 60 * 60], ["d", 24 * 60 * 60], ["h", 60 * 60], ["m", 60], ["s", 1], ["ms", .001], ["μs", .000001], ["ns", .000000001]];
+
+  Time.dateSecondToPerformanceSecond = function(dateSecond) {
+    return dateSecond - dateSecondMinusPerformanceSecond;
+  };
+
+  Time.performanceSecondToDateSecond = function(performanceSecond) {
+    return performanceSecond + dateSecondMinusPerformanceSecond;
+  };
+
+  Time.timeStampToPerformanceSecond = function(htmlEventTimeStamp) {
+    return htmlEventTimeStamp / 1000 - dateSecondMinusPerformanceSecond;
+  };
+
+  Time.durationString = function(seconds) {
+    var i, len, multiplier, name, ref;
+    for (i = 0, len = multiples.length; i < len; i++) {
+      ref = multiples[i], name = ref[0], multiplier = ref[1];
+      if (seconds >= multiplier) {
+        return "" + ((seconds / multiplier) | 0) + name;
+      }
+    }
+    return "0";
+  };
+
+  Time.dateAgeInSeconds = function(date) {
+    return ((new Date) - date) * .001;
+  };
+
+  Time.dateToSeconds = function(date) {
+    return post.getTime() * .001;
+  };
+
+  Time.perTimeString = function(secondsPerRun) {
+    var perTime;
+    perTime = 1 / secondsPerRun;
+    if (perTime > 100) {
+      return (commaize(perTime | 0)) + "/s";
+    } else if (perTime * 60 > 100) {
+      return (commaize(perTime * 60 | 0)) + "/m";
+    } else {
+      return (commaize(perTime * 3600 | 0)) + "/h";
+    }
+  };
+
+  Time.currentMillisecond = function() {
+    return self.performance.now();
+  };
+
+  Time.currentSecond = currentSecond = function() {
+    return self.performance.now() / 1000;
+  };
+
+  Time.currentDateSecond = function() {
+    return new Date().getTime() / 1000;
+  };
+
+  Time.time = function(a, b) {
+    var f, fResult, start, timeResult;
+    f = b || a;
+    start = currentSecond();
+    fResult = f();
+    timeResult = currentSecond() - start;
+    if (b) {
+      Neptune.Art.StandardLib.log("time: " + a + " took " + (Time.durationString(timeResult)));
+      return fResult;
+    } else {
+      return timeResult;
+    }
+  };
+
+  timerStack = [];
+
+  Time.stackTime = function(f) {
+    var start, subTimeTotal, timeResult, tsl;
+    start = currentSecond();
+    timerStack.push(0);
+    f();
+    subTimeTotal = timerStack.pop();
+    timeResult = currentSecond() - start;
+    if ((tsl = timerStack.length) > 0) {
+      timerStack[tsl - 1] += timeResult;
+    }
+    return {
+      count: 1,
+      total: timeResult,
+      subTimeTotal: subTimeTotal,
+      remainder: timeResult - subTimeTotal
+    };
+  };
+
+  Time.logTimeSinceLast = function(a) {
+    var time;
+    time = Time.currentSecond();
+    console.log(a + " (" + (Time.lastTime ? Time.durationString(time - Time.lastTime) : void 0) + ")");
+    return Time.lastTime = time;
+  };
+
+  return Time;
+
+})();
+
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports) {
 
 var Unique, nextId;
@@ -5427,77 +5615,19 @@ module.exports = Unique = (function() {
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.31.6"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.32.0"}
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AsyncExtensions, Promise;
-
-Promise = __webpack_require__(10);
-
-module.exports = AsyncExtensions = (function() {
-  var timeout;
-
-  function AsyncExtensions() {}
-
-  AsyncExtensions.timeout = timeout = function(ms, f) {
-    var p;
-    p = new Promise(function(resolve) {
-      return setTimeout(resolve, ms);
-    });
-    if (f != null) {
-      return p.then(f);
-    } else {
-      return p;
-    }
-  };
-
-  AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
-    return setTimeout(f, 1000 / 60);
-  };
-
-  AsyncExtensions.nextTick = function(f) {
-    return Promise.resolve().then(function() {
-      return typeof f === "function" ? f() : void 0;
-    });
-  };
-
-  AsyncExtensions.throwErrorOutOfStack = function(e) {
-    console.log(e);
-    return timeout(0, function() {
-      throw e;
-    });
-  };
-
-  AsyncExtensions.evalAndThrowErrorsOutOfStack = function(f) {
-    var e;
-    try {
-      return f();
-    } catch (error) {
-      e = error;
-      Neptune.Art.StandardLib.log.error("evalAndThrowErrorsOutOfStack", e);
-      return AsyncExtensions.throwErrorOutOfStack(e);
-    }
-  };
-
-  return AsyncExtensions;
-
-})();
-
-
-/***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -5516,7 +5646,7 @@ var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject
 
 Map = __webpack_require__(21);
 
-Unique = __webpack_require__(31);
+Unique = __webpack_require__(33);
 
 inspect = __webpack_require__(4).inspect;
 
@@ -5614,7 +5744,7 @@ module.exports = Clone = (function() {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
@@ -5687,7 +5817,7 @@ module.exports = {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var ErrorWithInfo, defineModule, formattedInspect, isFunction, mergeInto, ref,
@@ -5732,7 +5862,7 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 var Function;
@@ -5828,7 +5958,7 @@ in debug mode and the faster(?), non hot-reload options in production mode.
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, objectKeyCount, pad, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects;
@@ -5839,11 +5969,11 @@ max = Math.max;
 
 ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.stripTrailingWhitespace, escapeJavascriptString = ref1.escapeJavascriptString;
 
-inspect = __webpack_require__(28).inspect;
+inspect = __webpack_require__(29).inspect;
 
 objectKeyCount = __webpack_require__(16).objectKeyCount;
 
-toInspectedObjects = __webpack_require__(27).toInspectedObjects;
+toInspectedObjects = __webpack_require__(28).toInspectedObjects;
 
 indentString = '  ';
 
@@ -6250,7 +6380,7 @@ module.exports = FormattedInspect = (function() {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(19);
@@ -6264,7 +6394,7 @@ module.exports.addModules({
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction, isPlainArray, isPlainObject, ref;
@@ -6307,7 +6437,7 @@ module.exports = PlainObjects = (function() {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 var MapExtensions;
@@ -6338,7 +6468,7 @@ module.exports = MapExtensions = (function() {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 var ObjectDiff;
@@ -6469,7 +6599,7 @@ module.exports = ObjectDiff = (function() {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Promise, PromisedFileReader;
@@ -6521,7 +6651,7 @@ module.exports = PromisedFileReader = (function() {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 var Ruby,
@@ -6606,7 +6736,7 @@ module.exports = Ruby = (function() {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 
@@ -6657,134 +6787,6 @@ module.exports = ShallowClone = (function() {
 
 
 /***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Time, base, commaize, dateSecondMinusPerformanceSecond, initDateSecond, initPerformanceSecond;
-
-commaize = __webpack_require__(9).commaize;
-
-self.performance || (self.performance = {});
-
-(base = self.performance).now || (base.now = self.performance.mozNow || self.performance.msNow || self.performance.oNow || self.performance.webkitNow || function() {
-  return new Date().getTime();
-});
-
-initPerformanceSecond = self.performance.now() / 1000;
-
-initDateSecond = new Date().getTime() / 1000;
-
-dateSecondMinusPerformanceSecond = initDateSecond - initPerformanceSecond;
-
-module.exports = Time = (function() {
-  var currentSecond, multiples, timerStack;
-
-  function Time() {}
-
-  multiples = [["mo", 30 * 24 * 60 * 60], ["d", 24 * 60 * 60], ["h", 60 * 60], ["m", 60], ["s", 1], ["ms", .001], ["μs", .000001], ["ns", .000000001]];
-
-  Time.dateSecondToPerformanceSecond = function(dateSecond) {
-    return dateSecond - dateSecondMinusPerformanceSecond;
-  };
-
-  Time.performanceSecondToDateSecond = function(performanceSecond) {
-    return performanceSecond + dateSecondMinusPerformanceSecond;
-  };
-
-  Time.timeStampToPerformanceSecond = function(htmlEventTimeStamp) {
-    return htmlEventTimeStamp / 1000 - dateSecondMinusPerformanceSecond;
-  };
-
-  Time.durationString = function(seconds) {
-    var i, len, multiplier, name, ref;
-    for (i = 0, len = multiples.length; i < len; i++) {
-      ref = multiples[i], name = ref[0], multiplier = ref[1];
-      if (seconds >= multiplier) {
-        return "" + ((seconds / multiplier) | 0) + name;
-      }
-    }
-    return "0";
-  };
-
-  Time.dateAgeInSeconds = function(date) {
-    return ((new Date) - date) * .001;
-  };
-
-  Time.dateToSeconds = function(date) {
-    return post.getTime() * .001;
-  };
-
-  Time.perTimeString = function(secondsPerRun) {
-    var perTime;
-    perTime = 1 / secondsPerRun;
-    if (perTime > 100) {
-      return (commaize(perTime | 0)) + "/s";
-    } else if (perTime * 60 > 100) {
-      return (commaize(perTime * 60 | 0)) + "/m";
-    } else {
-      return (commaize(perTime * 3600 | 0)) + "/h";
-    }
-  };
-
-  Time.currentMillisecond = function() {
-    return self.performance.now();
-  };
-
-  Time.currentSecond = currentSecond = function() {
-    return self.performance.now() / 1000;
-  };
-
-  Time.currentDateSecond = function() {
-    return new Date().getTime() / 1000;
-  };
-
-  Time.time = function(a, b) {
-    var f, fResult, start, timeResult;
-    f = b || a;
-    start = currentSecond();
-    fResult = f();
-    timeResult = currentSecond() - start;
-    if (b) {
-      Neptune.Art.StandardLib.log("time: " + a + " took " + (Time.durationString(timeResult)));
-      return fResult;
-    } else {
-      return timeResult;
-    }
-  };
-
-  timerStack = [];
-
-  Time.stackTime = function(f) {
-    var start, subTimeTotal, timeResult, tsl;
-    start = currentSecond();
-    timerStack.push(0);
-    f();
-    subTimeTotal = timerStack.pop();
-    timeResult = currentSecond() - start;
-    if ((tsl = timerStack.length) > 0) {
-      timerStack[tsl - 1] += timeResult;
-    }
-    return {
-      count: 1,
-      total: timeResult,
-      subTimeTotal: subTimeTotal,
-      remainder: timeResult - subTimeTotal
-    };
-  };
-
-  Time.logTimeSinceLast = function(a) {
-    var time;
-    time = Time.currentSecond();
-    console.log(a + " (" + (Time.lastTime ? Time.durationString(time - Time.lastTime) : void 0) + ")");
-    return Time.lastTime = time;
-  };
-
-  return Time;
-
-})();
-
-
-/***/ }),
 /* 48 */
 /***/ (function(module, exports) {
 
@@ -6796,37 +6798,38 @@ module.exports = require("dateformat");
 
 module.exports = __webpack_require__(11);
 
-module.exports.includeInNamespace(__webpack_require__(61)).addModules({
+module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   ArrayExtensions: __webpack_require__(18),
-  AsyncExtensions: __webpack_require__(34),
-  CallStack: __webpack_require__(24),
-  Clone: __webpack_require__(35),
+  AsyncExtensions: __webpack_require__(24),
+  CallStack: __webpack_require__(25),
+  Clone: __webpack_require__(36),
   CommonJs: __webpack_require__(8),
-  DateExtensions: __webpack_require__(36),
+  DateExtensions: __webpack_require__(37),
   Environment: __webpack_require__(15),
-  Eq: __webpack_require__(26),
-  ErrorWithInfo: __webpack_require__(37),
-  Function: __webpack_require__(38),
-  Iteration: __webpack_require__(29),
-  Log: __webpack_require__(30),
+  Eq: __webpack_require__(27),
+  ErrorWithInfo: __webpack_require__(38),
+  Function: __webpack_require__(39),
+  Iteration: __webpack_require__(30),
+  Log: __webpack_require__(31),
   Map: __webpack_require__(21),
-  MapExtensions: __webpack_require__(42),
+  MapExtensions: __webpack_require__(43),
   MathExtensions: __webpack_require__(9),
   MinimalBaseObject: __webpack_require__(6),
-  ObjectDiff: __webpack_require__(43),
+  ObjectDiff: __webpack_require__(44),
   ObjectExtensions: __webpack_require__(16),
   ParseUrl: __webpack_require__(22),
   Promise: __webpack_require__(10),
-  PromisedFileReader: __webpack_require__(44),
+  PromisedFileReader: __webpack_require__(45),
   PromiseWorkerPool: __webpack_require__(59),
+  PushBackTimer: __webpack_require__(60),
   RegExpExtensions: __webpack_require__(17),
-  RequestError: __webpack_require__(60),
-  Ruby: __webpack_require__(45),
-  ShallowClone: __webpack_require__(46),
+  RequestError: __webpack_require__(61),
+  Ruby: __webpack_require__(46),
+  ShallowClone: __webpack_require__(47),
   StringExtensions: __webpack_require__(7),
-  Time: __webpack_require__(47),
+  Time: __webpack_require__(32),
   TypesExtended: __webpack_require__(0),
-  Unique: __webpack_require__(31)
+  Unique: __webpack_require__(33)
 });
 
 __webpack_require__(1);
@@ -6854,7 +6857,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(28), "shallowInspect inspectLean inspect"], __webpack_require__(39), __webpack_require__(27), __webpack_require__(41), __webpack_require__(20)];
+module.exports = [[__webpack_require__(29), "shallowInspect inspectLean inspect"], __webpack_require__(40), __webpack_require__(28), __webpack_require__(42), __webpack_require__(20)];
 
 
 /***/ }),
@@ -7051,7 +7054,7 @@ MinimalBaseObject = __webpack_require__(6);
 
 Map = __webpack_require__(21);
 
-Inspected = __webpack_require__(40);
+Inspected = __webpack_require__(41);
 
 escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
 
@@ -7269,7 +7272,7 @@ var Promise, PromiseWorkerPool, log;
 
 Promise = __webpack_require__(10);
 
-log = __webpack_require__(30).log;
+log = __webpack_require__(31).log;
 
 
 /*
@@ -7354,6 +7357,38 @@ module.exports = PromiseWorkerPool = (function() {
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var PushBackTimer, currentSecond, timeout;
+
+currentSecond = __webpack_require__(32).currentSecond;
+
+timeout = __webpack_require__(24).timeout;
+
+module.exports = PushBackTimer = (function() {
+  function PushBackTimer() {
+    this._lastTime = null;
+  }
+
+  PushBackTimer.prototype.timeout = function(ms, action) {
+    var lastTime;
+    this._lastTime = lastTime = currentSecond();
+    return timeout(ms, (function(_this) {
+      return function() {
+        if (_this._lastTime === lastTime) {
+          return action();
+        }
+      };
+    })(this));
+  };
+
+  return PushBackTimer;
+
+})();
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(module) {var RequestError, compactFlatten, defineModule, formattedInspect, isFunction, merge, mergeInto, objectWithout, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -7436,26 +7471,26 @@ defineModule(module, RequestError = (function(superClass) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(34), __webpack_require__(16), __webpack_require__(7), __webpack_require__(26), __webpack_require__(38), __webpack_require__(43), __webpack_require__(42), __webpack_require__(9), __webpack_require__(15), __webpack_require__(22), __webpack_require__(44), __webpack_require__(17), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(0), __webpack_require__(8), __webpack_require__(29), __webpack_require__(4), __webpack_require__(35), __webpack_require__(30), __webpack_require__(24), __webpack_require__(36)];
+module.exports = [__webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(16), __webpack_require__(7), __webpack_require__(27), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(15), __webpack_require__(22), __webpack_require__(45), __webpack_require__(17), __webpack_require__(46), __webpack_require__(47), __webpack_require__(32), __webpack_require__(0), __webpack_require__(8), __webpack_require__(30), __webpack_require__(4), __webpack_require__(36), __webpack_require__(31), __webpack_require__(25), __webpack_require__(37)];
 
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports) {
-
-module.exports = require("bluebird/js/browser/bluebird.core.min");
 
 /***/ }),
 /* 63 */
 /***/ (function(module, exports) {
 
-module.exports = require("crypto");
+module.exports = require("bluebird/js/browser/bluebird.core.min");
 
 /***/ }),
 /* 64 */
+/***/ (function(module, exports) {
+
+module.exports = require("crypto");
+
+/***/ }),
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = require("detect-node");
