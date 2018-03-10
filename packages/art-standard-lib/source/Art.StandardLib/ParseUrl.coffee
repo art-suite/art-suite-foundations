@@ -1,7 +1,20 @@
 # TODO: DRY w.r.t. StandardLib/RegExpExtensions
+{escapeRegExp, findUrlOrigin} = require './RegExpExtensions'
+
 module.exports = class ParseUrl
 
   parsedGlobalQuery = null
+
+  @sameOrigin: (url, origin = global.document?.location?.origin) ->
+    [origin] = origin.match findUrlOrigin
+    ///
+    ^
+    (
+      (#{escapeRegExp origin})
+      |
+      (?![a-z]+\:)
+    )
+    ///i.test url
 
   @parseQuery: (qs) ->
     return parsedGlobalQuery if (isCurrentLocation = !qs?) && parsedGlobalQuery

@@ -1,7 +1,6 @@
-
-{StandardLib} = Neptune.Art
-
-{urlJoin, parseUrl, parseQuery} = StandardLib
+{
+  urlJoin, parseUrl, parseQuery, sameOrigin
+} = Neptune.Art.StandardLib
 
 module.exports = suite:
   parseQuery: ->
@@ -61,3 +60,20 @@ module.exports = suite:
           param1: "foo,bar"
           param2: "baz"
         anchor: "myAnchor"
+
+  sameOrigin: ->
+    tests = [
+      [true,  "/",                        "http://foo.com"]
+      [true,  "/foo",                     "http://foo.com"]
+      [true,  "/",                        "http://foo.com:8080"]
+      [true,  'http://foo.com/anything',  'http://foo.com']
+      [true,  'https://foo.com/anything', 'https://foo.com']
+      [true,  'http://foo.com/anything',  'http://foo.com/anythingelse']
+      [false, 'http://foo.com/anything',  'https://foo.com']
+      [false, 'http://foo.com/anything',  'http://bar.com']
+      [false, 'http://foo.com/anything',  'http://foo.com:8080']
+      [false, 'http://foo.com/anything',  'http://bar.com']
+    ]
+    for [result, url, origin] in tests
+      test "#{result}: sameOrigin '#{url}', '#{origin}'", ->
+        assert.eq result, sameOrigin url, origin
