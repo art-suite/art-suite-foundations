@@ -44,6 +44,13 @@ module.exports = class RegExpExtensions
   @wordsRegExp: /[^\s]+/g
   @exactlyOneWordRegExp: /^[^\s]+$/
 
+  # protocol, domain and port
+  @findUrlOrigin: ///
+    (?:#{@findUrlProtocolRegExp.source})
+    (#{@findDomainRegExp.source})
+    (?:#{@findUrlPortRegExp.source})?
+    ///i
+
   ###
   match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
 
@@ -57,18 +64,14 @@ module.exports = class RegExpExtensions
       matchResult.slice(1).join ''
   ###
   @findUrlRegExp:  ///
-    (?:#{@findUrlProtocolRegExp.source})
-    (#{@findDomainRegExp.source})
-    (?:#{@findUrlPortRegExp.source})?
+    #{@findUrlOrigin.source}
     (#{@findUrlPathRegExp.source})?
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
     (?:#{@findUrlFragmentRegExp.source})?
     ///i
 
   @findUrlWithOptionalProtocolRegExp:  ///
-    (?:#{@findUrlProtocolRegExp.source})?
-    (#{@findDomainRegExp.source})
-    (?:#{@findUrlPortRegExp.source})?
+    #{@findUrlOrigin.source}
     (#{@findUrlPathRegExp.source})?
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
     (?:#{@findUrlFragmentRegExp.source})?
@@ -79,9 +82,7 @@ module.exports = class RegExpExtensions
   @findAllUrlsWithOptionalProtocolRegExp:  ///#{@findUrlWithOptionalProtocolRegExp.source}///ig
 
   @findSourceReferenceUrlRegExp: ///
-    (#{@findUrlProtocolRegExp.source})
-    (#{@findDomainRegExp.source})?
-    (?:#{@findUrlPortRegExp.source})?
+    #{@findUrlOrigin.source}
     (#{@findUrlPathRegExp.source})?
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
     (?:\:(\d+))?

@@ -1,7 +1,7 @@
-
-{StandardLib} = Neptune.Art
-
-{emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast} = StandardLib
+{
+  log
+  findUrlOrigin, emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast
+} = Neptune.Art.StandardLib
 
 popNullish = (a) ->
   a = arrayWithoutLast a while !peek(a)?
@@ -25,6 +25,12 @@ module.exports = suite: ->
 
   test "domainRegexp failures", ->
     assert.eq !!".com".match(domainRegexp), false
+
+  test "findUrlOrigin", ->
+    assert.eq "http://foo.com".match(findUrlOrigin),        ["http://foo.com",      "http",   "://", "foo.com",     undefined,  undefined]
+    assert.eq "http://www.foo.com".match(findUrlOrigin),    ["http://www.foo.com",  "http",   "://", "www.foo.com", undefined,  undefined]
+    assert.eq "https://foo.com".match(findUrlOrigin),       ["https://foo.com",     "https",  "://", "foo.com",     undefined,  undefined]
+    assert.eq "https://foo.com:8080".match(findUrlOrigin),  ["https://foo.com:8080","https",  "://", "foo.com",     ":",        "8080"]
 
   test "urlProtocolRegexp successes", ->
     assert.eq "https://".match(urlProtocolRegexp), ["https://", "https", "://"]
