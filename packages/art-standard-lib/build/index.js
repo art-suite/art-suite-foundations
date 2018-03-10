@@ -436,12 +436,12 @@ module.exports = Types = (function() {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(14);
+module.exports = __webpack_require__(15);
 
 module.exports.includeInNamespace(__webpack_require__(26)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(12),
-  StringCase: __webpack_require__(13),
+  Merge: __webpack_require__(13),
+  StringCase: __webpack_require__(14),
   Types: __webpack_require__(2)
 });
 
@@ -852,7 +852,7 @@ var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(11)).addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(12)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
@@ -1074,7 +1074,7 @@ FoundationMath = __webpack_require__(9);
 
 Types = __webpack_require__(0);
 
-wordsRegex = __webpack_require__(17).wordsRegex;
+wordsRegex = __webpack_require__(11).wordsRegex;
 
 intRand = FoundationMath.intRand;
 
@@ -1082,7 +1082,7 @@ isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPl
 
 compactFlatten = __webpack_require__(1).compactFlatten;
 
-isBrowser = __webpack_require__(15).isBrowser;
+isBrowser = __webpack_require__(16).isBrowser;
 
 escapedDoubleQuoteRegex = /[\\]["]/g;
 
@@ -1587,7 +1587,7 @@ module.exports = CommonJs = (function() {
 
 var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
-RegExpExtensions = __webpack_require__(17);
+RegExpExtensions = __webpack_require__(11);
 
 numberRegexp = RegExpExtensions.numberRegexp;
 
@@ -1792,7 +1792,7 @@ ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, is
 
 defineModule = __webpack_require__(8).defineModule;
 
-getEnv = __webpack_require__(15).getEnv;
+getEnv = __webpack_require__(16).getEnv;
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -2181,6 +2181,122 @@ defineModule(module, function() {
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+var RegExpExtensions;
+
+module.exports = RegExpExtensions = (function() {
+  var k, lc, ref, v;
+
+  function RegExpExtensions() {}
+
+  RegExpExtensions.escapeRegExp = function(string) {
+    return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  };
+
+  RegExpExtensions.findUrlProtocolRegExp = /([\w-]+)(:\/\/)/;
+
+  RegExpExtensions.findDomainRegExp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/;
+
+  RegExpExtensions.urlQueryParamsRegExp = /(?:[-+=&*._\w]|%[a-f\d]{2})*(?!\.)(?:[-+=&*._\w]|%[a-f\d]{2})/i;
+
+  RegExpExtensions.findLegalUrlCharacterRegExp = /[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2}/;
+
+  RegExpExtensions.findUrlPathRegExp = RegExp("(?:\\/(?:(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "))?)*");
+
+  RegExpExtensions.findUrlPortRegExp = /(\:)(\d+)/;
+
+  RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:\\?|" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
+
+  RegExpExtensions.findEmailRegExp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + RegExpExtensions.findDomainRegExp.source + ")", "i");
+
+  RegExpExtensions.emailRegExp = RegExp("^" + RegExpExtensions.findEmailRegExp.source + "$", "i");
+
+  RegExpExtensions.numberRegExp = /([-]?\.[0-9]+)|([-]?[0-9]+(\.[0-9]+)?)/;
+
+  RegExpExtensions.urlProtocolRegExp = RegExp("^" + RegExpExtensions.findUrlProtocolRegExp.source + "$", "i");
+
+  RegExpExtensions.domainRegExp = RegExp("^" + RegExpExtensions.findDomainRegExp.source + "$", "i");
+
+  RegExpExtensions.urlPathRegExp = RegExp("^" + RegExpExtensions.findUrlPathRegExp.source + "$", "i");
+
+  RegExpExtensions.urlQueryRegExp = RegExp("^" + RegExpExtensions.urlQueryParamsRegExp.source + "$", "i");
+
+  RegExpExtensions.isoDateRegExp = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
+
+  RegExpExtensions.hex16ColorRegExp = /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i;
+
+  RegExpExtensions.hex256ColorRegExp = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
+
+  RegExpExtensions.rgbColorRegExp = /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/;
+
+  RegExpExtensions.rgbaColorRegExp = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
+
+  RegExpExtensions.findColorRegExp = RegExp("(" + RegExpExtensions.hex16ColorRegExp.source + ")|(" + RegExpExtensions.hex256ColorRegExp.source + ")|(" + RegExpExtensions.rgbColorRegExp.source + ")|(" + RegExpExtensions.rgbaColorRegExp.source + ")", "i");
+
+  RegExpExtensions.colorRegExp = RegExp("^" + RegExpExtensions.findColorRegExp.source + "$");
+
+  RegExpExtensions.wordsRegExp = /[^\s]+/g;
+
+  RegExpExtensions.exactlyOneWordRegExp = /^[^\s]+$/;
+
+  RegExpExtensions.findUrlOrigin = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?", "i");
+
+
+  /*
+  match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
+  
+  USAGE:
+    [__, protocol, __, domain, __, port, path, __, query, __, fragment] = str.match findUrlRegExp
+  
+  DESIGN NOTE:
+    The reason why I included the fixed strings ('://', ':' and '?') was so that
+    you can take the matchResult, alter individual elements and create a value url easily by:
+  
+      matchResult.slice(1).join ''
+   */
+
+  RegExpExtensions.findUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
+
+  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
+
+  RegExpExtensions.findAllUrlsRegExp = RegExp("" + RegExpExtensions.findUrlRegExp.source, "ig");
+
+  RegExpExtensions.findAllUrlsWithOptionalProtocolRegExp = RegExp("" + RegExpExtensions.findUrlWithOptionalProtocolRegExp.source, "ig");
+
+  RegExpExtensions.findSourceReferenceUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:\\:(\\d+))?(?:\\:(\\d+))?", "i");
+
+  RegExpExtensions.urlRegExp = RegExp("^" + RegExpExtensions.findUrlRegExp.source + "$", "i");
+
+  RegExpExtensions.urlWithOptionalProtocolRegExp = RegExp("^" + RegExpExtensions.findUrlWithOptionalProtocolRegExp.source + "$", "i");
+
+  ref = RegExpExtensions;
+  for (k in ref) {
+    v = ref[k];
+    if (!(/RegExp$/.test(k))) {
+      continue;
+    }
+    RegExpExtensions[k.replace(/RegExp/, "Regexp")] = v;
+    RegExpExtensions[k.replace(/RegExp/, "Regex")] = v;
+  }
+
+  lc = function(s) {
+    return s.toLocaleLowerCase();
+  };
+
+  RegExpExtensions.normalizeUrl = function(url) {
+    var ref1;
+    url = ((ref1 = RegExpExtensions.findUrlProtocolRegExp.exec(url)) != null ? ref1.index : void 0) === 0 ? url : "http://" + url;
+    return url.replace(RegExpExtensions.findDomainRegExp, lc).replace(RegExpExtensions.findUrlProtocolRegExp, lc);
+  };
+
+  return RegExpExtensions;
+
+})();
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var StandardLib,
@@ -2200,13 +2316,13 @@ module.exports = (__webpack_require__(35)).addNamespace('Art.StandardLib', Stand
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(14);
+__webpack_require__(15);
 
 __webpack_require__(5);
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
@@ -2379,7 +2495,7 @@ module.exports = Merge = (function() {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
@@ -2491,14 +2607,14 @@ module.exports = StringCase = (function() {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(11)).addNamespace('Core', Core = (function(superClass) {
+module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function(superClass) {
   extend(Core, superClass);
 
   function Core() {
@@ -2511,7 +2627,7 @@ module.exports = (__webpack_require__(11)).addNamespace('Core', Core = (function
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
@@ -2544,7 +2660,7 @@ defineModule(module, Environment = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
@@ -2833,122 +2949,6 @@ module.exports = ObjectExtensions = (function() {
 
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-var RegExpExtensions;
-
-module.exports = RegExpExtensions = (function() {
-  var k, lc, ref, v;
-
-  function RegExpExtensions() {}
-
-  RegExpExtensions.escapeRegExp = function(string) {
-    return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-  };
-
-  RegExpExtensions.findUrlProtocolRegExp = /([\w-]+)(:\/\/)/;
-
-  RegExpExtensions.findDomainRegExp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/;
-
-  RegExpExtensions.urlQueryParamsRegExp = /(?:[-+=&*._\w]|%[a-f\d]{2})*(?!\.)(?:[-+=&*._\w]|%[a-f\d]{2})/i;
-
-  RegExpExtensions.findLegalUrlCharacterRegExp = /[-._~!$&'()*+,;=:@\w]|%[a-f\d]{2}/;
-
-  RegExpExtensions.findUrlPathRegExp = RegExp("(?:\\/(?:(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)(?:" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "))?)*");
-
-  RegExpExtensions.findUrlPortRegExp = /(\:)(\d+)/;
-
-  RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:\\?|" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
-
-  RegExpExtensions.findEmailRegExp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + RegExpExtensions.findDomainRegExp.source + ")", "i");
-
-  RegExpExtensions.emailRegExp = RegExp("^" + RegExpExtensions.findEmailRegExp.source + "$", "i");
-
-  RegExpExtensions.numberRegExp = /([-]?\.[0-9]+)|([-]?[0-9]+(\.[0-9]+)?)/;
-
-  RegExpExtensions.urlProtocolRegExp = RegExp("^" + RegExpExtensions.findUrlProtocolRegExp.source + "$", "i");
-
-  RegExpExtensions.domainRegExp = RegExp("^" + RegExpExtensions.findDomainRegExp.source + "$", "i");
-
-  RegExpExtensions.urlPathRegExp = RegExp("^" + RegExpExtensions.findUrlPathRegExp.source + "$", "i");
-
-  RegExpExtensions.urlQueryRegExp = RegExp("^" + RegExpExtensions.urlQueryParamsRegExp.source + "$", "i");
-
-  RegExpExtensions.isoDateRegExp = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
-
-  RegExpExtensions.hex16ColorRegExp = /^#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?$/i;
-
-  RegExpExtensions.hex256ColorRegExp = /^#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?$/i;
-
-  RegExpExtensions.rgbColorRegExp = /rgb *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *\)/;
-
-  RegExpExtensions.rgbaColorRegExp = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
-
-  RegExpExtensions.findColorRegExp = RegExp("(" + RegExpExtensions.hex16ColorRegExp.source + ")|(" + RegExpExtensions.hex256ColorRegExp.source + ")|(" + RegExpExtensions.rgbColorRegExp.source + ")|(" + RegExpExtensions.rgbaColorRegExp.source + ")", "i");
-
-  RegExpExtensions.colorRegExp = RegExp("^" + RegExpExtensions.findColorRegExp.source + "$");
-
-  RegExpExtensions.wordsRegExp = /[^\s]+/g;
-
-  RegExpExtensions.exactlyOneWordRegExp = /^[^\s]+$/;
-
-  RegExpExtensions.findUrlOrigin = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?", "i");
-
-
-  /*
-  match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
-  
-  USAGE:
-    [__, protocol, __, domain, __, port, path, __, query, __, fragment] = str.match findUrlRegExp
-  
-  DESIGN NOTE:
-    The reason why I included the fixed strings ('://', ':' and '?') was so that
-    you can take the matchResult, alter individual elements and create a value url easily by:
-  
-      matchResult.slice(1).join ''
-   */
-
-  RegExpExtensions.findUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
-
-  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
-
-  RegExpExtensions.findAllUrlsRegExp = RegExp("" + RegExpExtensions.findUrlRegExp.source, "ig");
-
-  RegExpExtensions.findAllUrlsWithOptionalProtocolRegExp = RegExp("" + RegExpExtensions.findUrlWithOptionalProtocolRegExp.source, "ig");
-
-  RegExpExtensions.findSourceReferenceUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:\\:(\\d+))?(?:\\:(\\d+))?", "i");
-
-  RegExpExtensions.urlRegExp = RegExp("^" + RegExpExtensions.findUrlRegExp.source + "$", "i");
-
-  RegExpExtensions.urlWithOptionalProtocolRegExp = RegExp("^" + RegExpExtensions.findUrlWithOptionalProtocolRegExp.source + "$", "i");
-
-  ref = RegExpExtensions;
-  for (k in ref) {
-    v = ref[k];
-    if (!(/RegExp$/.test(k))) {
-      continue;
-    }
-    RegExpExtensions[k.replace(/RegExp/, "Regexp")] = v;
-    RegExpExtensions[k.replace(/RegExp/, "Regex")] = v;
-  }
-
-  lc = function(s) {
-    return s.toLocaleLowerCase();
-  };
-
-  RegExpExtensions.normalizeUrl = function(url) {
-    var ref1;
-    url = ((ref1 = RegExpExtensions.findUrlProtocolRegExp.exec(url)) != null ? ref1.index : void 0) === 0 ? url : "http://" + url;
-    return url.replace(RegExpExtensions.findDomainRegExp, lc).replace(RegExpExtensions.findUrlProtocolRegExp, lc);
-  };
-
-  return RegExpExtensions;
-
-})();
-
-
-/***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2959,7 +2959,7 @@ ref = __webpack_require__(9), bound = ref.bound, max = ref.max, intRand = ref.in
 
 ref1 = __webpack_require__(0), isNumber = ref1.isNumber, isString = ref1.isString;
 
-ref2 = __webpack_require__(17), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
+ref2 = __webpack_require__(11), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
 module.exports = ArrayExtensions = (function() {
   var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSort, rightOfIndex, w;
@@ -3804,9 +3804,11 @@ module.exports = (m = new global.Map).set(1, 2) === m ? global.Map : Map = (func
 
 /***/ }),
 /* 22 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-var ParseUrl;
+var ParseUrl, escapeRegExp, findUrlOrigin, ref;
+
+ref = __webpack_require__(11), escapeRegExp = ref.escapeRegExp, findUrlOrigin = ref.findUrlOrigin;
 
 module.exports = ParseUrl = (function() {
   var generateQuery, parsedGlobalQuery;
@@ -3815,16 +3817,25 @@ module.exports = ParseUrl = (function() {
 
   parsedGlobalQuery = null;
 
+  ParseUrl.sameOrigin = function(url, origin) {
+    var ref1, ref2;
+    if (origin == null) {
+      origin = (ref1 = global.document) != null ? (ref2 = ref1.location) != null ? ref2.origin : void 0 : void 0;
+    }
+    origin = origin.match(findUrlOrigin)[0];
+    return RegExp("^((" + (escapeRegExp(origin)) + ")|(?![a-z]+\\:))", "i").test(url);
+  };
+
   ParseUrl.parseQuery = function(qs) {
-    var i, isCurrentLocation, j, key, len, obj, pair, ref, ref1, val;
+    var i, isCurrentLocation, j, key, len, obj, pair, ref1, ref2, val;
     if ((isCurrentLocation = qs == null) && parsedGlobalQuery) {
       return parsedGlobalQuery;
     }
-    qs || (qs = ((ref = global.location) != null ? ref.search : void 0) || "");
+    qs || (qs = ((ref1 = global.location) != null ? ref1.search : void 0) || "");
     obj = {};
-    ref1 = qs.replace(/^\?/, '').split('&');
-    for (j = 0, len = ref1.length; j < len; j++) {
-      pair = ref1[j];
+    ref2 = qs.replace(/^\?/, '').split('&');
+    for (j = 0, len = ref2.length; j < len; j++) {
+      pair = ref2[j];
       if ((i = pair.indexOf('=')) >= 0) {
         key = pair.slice(0, i);
         val = pair.slice(i + 1);
@@ -4153,7 +4164,7 @@ module.exports = CallStack = (function() {
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(13), __webpack_require__(12), __webpack_require__(2)];
+module.exports = [__webpack_require__(3), __webpack_require__(14), __webpack_require__(13), __webpack_require__(2)];
 
 
 /***/ }),
@@ -4165,7 +4176,7 @@ var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
 
 remove = __webpack_require__(18).remove;
 
-objectKeyCount = __webpack_require__(16).objectKeyCount;
+objectKeyCount = __webpack_require__(17).objectKeyCount;
 
 floatTrue0 = __webpack_require__(9).floatTrue0;
 
@@ -5153,7 +5164,7 @@ merge = __webpack_require__(1).merge;
 
 ref = __webpack_require__(10), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
 
-ref1 = __webpack_require__(15), isNode = ref1.isNode, getEnv = ref1.getEnv;
+ref1 = __webpack_require__(16), isNode = ref1.isNode, getEnv = ref1.getEnv;
 
 disableLog = getEnv().disableLog;
 
@@ -5971,7 +5982,7 @@ ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.st
 
 inspect = __webpack_require__(29).inspect;
 
-objectKeyCount = __webpack_require__(16).objectKeyCount;
+objectKeyCount = __webpack_require__(17).objectKeyCount;
 
 toInspectedObjects = __webpack_require__(28).toInspectedObjects;
 
@@ -6796,7 +6807,7 @@ module.exports = require("dateformat");
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(11);
+module.exports = __webpack_require__(12);
 
 module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   ArrayExtensions: __webpack_require__(18),
@@ -6805,7 +6816,7 @@ module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   Clone: __webpack_require__(36),
   CommonJs: __webpack_require__(8),
   DateExtensions: __webpack_require__(37),
-  Environment: __webpack_require__(15),
+  Environment: __webpack_require__(16),
   Eq: __webpack_require__(27),
   ErrorWithInfo: __webpack_require__(38),
   Function: __webpack_require__(39),
@@ -6816,13 +6827,13 @@ module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   MathExtensions: __webpack_require__(9),
   MinimalBaseObject: __webpack_require__(6),
   ObjectDiff: __webpack_require__(44),
-  ObjectExtensions: __webpack_require__(16),
+  ObjectExtensions: __webpack_require__(17),
   ParseUrl: __webpack_require__(22),
   Promise: __webpack_require__(10),
   PromisedFileReader: __webpack_require__(45),
   PromiseWorkerPool: __webpack_require__(59),
   PushBackTimer: __webpack_require__(60),
-  RegExpExtensions: __webpack_require__(17),
+  RegExpExtensions: __webpack_require__(11),
   RequestError: __webpack_require__(61),
   Ruby: __webpack_require__(46),
   ShallowClone: __webpack_require__(47),
@@ -7399,7 +7410,7 @@ formattedInspect = __webpack_require__(4).formattedInspect;
 
 ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
 
-objectWithout = __webpack_require__(16).objectWithout;
+objectWithout = __webpack_require__(17).objectWithout;
 
 
 /*
@@ -7474,7 +7485,7 @@ defineModule(module, RequestError = (function(superClass) {
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(16), __webpack_require__(7), __webpack_require__(27), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(15), __webpack_require__(22), __webpack_require__(45), __webpack_require__(17), __webpack_require__(46), __webpack_require__(47), __webpack_require__(32), __webpack_require__(0), __webpack_require__(8), __webpack_require__(30), __webpack_require__(4), __webpack_require__(36), __webpack_require__(31), __webpack_require__(25), __webpack_require__(37)];
+module.exports = [__webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(17), __webpack_require__(7), __webpack_require__(27), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(16), __webpack_require__(22), __webpack_require__(45), __webpack_require__(11), __webpack_require__(46), __webpack_require__(47), __webpack_require__(32), __webpack_require__(0), __webpack_require__(8), __webpack_require__(30), __webpack_require__(4), __webpack_require__(36), __webpack_require__(31), __webpack_require__(25), __webpack_require__(37)];
 
 
 /***/ }),

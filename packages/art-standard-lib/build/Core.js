@@ -72,19 +72,19 @@ module.exports =
 /***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(14);
+module.exports = __webpack_require__(15);
 
 module.exports.includeInNamespace(__webpack_require__(26)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(12),
-  StringCase: __webpack_require__(13),
+  Merge: __webpack_require__(13),
+  StringCase: __webpack_require__(14),
   Types: __webpack_require__(2)
 });
 
 
 /***/ }),
 
-/***/ 11:
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 var StandardLib,
@@ -104,14 +104,14 @@ module.exports = (__webpack_require__(35)).addNamespace('Art.StandardLib', Stand
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(14);
+__webpack_require__(15);
 
 __webpack_require__(5);
 
 
 /***/ }),
 
-/***/ 12:
+/***/ 13:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
@@ -285,7 +285,7 @@ module.exports = Merge = (function() {
 
 /***/ }),
 
-/***/ 13:
+/***/ 14:
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
@@ -398,14 +398,14 @@ module.exports = StringCase = (function() {
 
 /***/ }),
 
-/***/ 14:
+/***/ 15:
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(11)).addNamespace('Core', Core = (function(superClass) {
+module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function(superClass) {
   extend(Core, superClass);
 
   function Core() {
@@ -661,7 +661,7 @@ module.exports = Types = (function() {
 /***/ 26:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(13), __webpack_require__(12), __webpack_require__(2)];
+module.exports = [__webpack_require__(3), __webpack_require__(14), __webpack_require__(13), __webpack_require__(2)];
 
 
 /***/ }),
@@ -851,7 +851,7 @@ var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(11)).addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(12)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
