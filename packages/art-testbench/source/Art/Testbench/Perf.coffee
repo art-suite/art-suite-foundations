@@ -192,7 +192,7 @@ defineModule module, ->
 
       (done) =>
 
-        runTestsForDuration = (isWarmup, done) ->
+        runTestsForDuration = (isWarmup, done) =>
           targetDuration = if isWarmup then warmUpDuration else testDuration
           totalTests = 0
           endTime = startTime = currentSecond()
