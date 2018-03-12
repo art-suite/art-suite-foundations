@@ -27,6 +27,7 @@ module.exports = suite: ->
     assert.eq !!".com".match(domainRegexp), false
 
   test "findUrlOrigin", ->
+    assert.eq "file://".match(findUrlOrigin),               ["file://",             "file",   "://", undefined,     undefined,  undefined]
     assert.eq "http://foo.com".match(findUrlOrigin),        ["http://foo.com",      "http",   "://", "foo.com",     undefined,  undefined]
     assert.eq "http://www.foo.com".match(findUrlOrigin),    ["http://www.foo.com",  "http",   "://", "www.foo.com", undefined,  undefined]
     assert.eq "https://foo.com".match(findUrlOrigin),       ["https://foo.com",     "https",  "://", "foo.com",     undefined,  undefined]
