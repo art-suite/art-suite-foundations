@@ -1,6 +1,7 @@
 {
   log
   findUrlOrigin, emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast
+  findUrlWithOptionalProtocolRegExp
 } = Neptune.Art.StandardLib
 
 popNullish = (a) ->
@@ -112,3 +113,8 @@ module.exports = suite: ->
       undefined
       undefined
     ]
+
+  test "findUrlWithOptionalProtocolRegExp", ->
+    assert.eq findUrlWithOptionalProtocolRegExp.exec("hi there.com")[0], 'there.com'
+    assert.eq findUrlWithOptionalProtocolRegExp.exec("hi there.com/bar")[0], 'there.com/bar'
+    assert.eq findUrlWithOptionalProtocolRegExp.exec("hi http://there.com")[0], 'http://there.com'

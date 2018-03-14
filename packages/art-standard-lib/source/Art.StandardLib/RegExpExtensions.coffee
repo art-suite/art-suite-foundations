@@ -71,7 +71,9 @@ module.exports = class RegExpExtensions
     ///i
 
   @findUrlWithOptionalProtocolRegExp:  ///
-    #{@findUrlOrigin.source}
+    (?:#{@findUrlProtocolRegExp.source})?
+    (#{@findDomainRegExp.source})
+    (?:#{@findUrlPortRegExp.source})?
     (#{@findUrlPathRegExp.source})?
     (?:(\?)(#{@urlQueryParamsRegExp.source})?)?
     (?:#{@findUrlFragmentRegExp.source})?
