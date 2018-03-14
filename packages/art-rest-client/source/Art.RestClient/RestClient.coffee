@@ -1,6 +1,11 @@
 # uses XMLHttpRequest2
 #  http://www.w3.org/TR/XMLHttpRequest2/
 #  http://www.html5rocks.com/en/tutorials/file/xhr2/
+
+# The new-new is 'fetch' - seems to be getting decent support
+#   https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+#   https://caniuse.com/#feat=fetch
+
 StandardLib = require 'art-standard-lib'
 {
   objectWithout, formattedInspect, present, Promise, merge, isNumber, timeout, log,
@@ -239,6 +244,7 @@ module.exports = class RestClient extends BaseClass
           responseType
           key:      url
           type:     method
+          responseUrl: request.responseURL
           progress: restRequestStatus.progress
         }
 
