@@ -30,12 +30,12 @@ module.exports = class RegExpExtensions
   #   at least one non-space in domain
   @findEmailRegExp:       ///
     (
-      (?: [^\s\n"\\] | \\. )+
+      (?: [^<>\s\n"\\] | \\. )+
       |
       " (?: [^"\\] | \\. )* "
     )
     @
-    ([^\s\n]+)
+    ([^\s\n<>]+)
     ///i
 
   @emailRegExp:           ///^#{@findEmailRegExp.source}$///i
