@@ -2,6 +2,7 @@
   log
   findUrlOrigin, emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast
   findUrlWithOptionalProtocolRegExp
+  array
 } = Neptune.Art.StandardLib
 
 popNullish = (a) ->
@@ -9,9 +10,29 @@ popNullish = (a) ->
   a
 
 module.exports = suite: ->
+  emails = [
+    "shanebdavis@gmail.com"
+    "shane😇davis@gmail.com"
+    "shanebdavis@www.gmail.com"
+    "shane.davis@www.gmail.com"
+    '"shane davis"@www.gmail.com'
+    "shane\\@davis@www.gmail.com"
+    "user+mailbox@example.com"
+    "customer/department=shipping@example.com"
+    "$A12345@example.com"
+    "!def!xyz%abc@example.com"
+    "_somename@example.com"
+    "a.collewijn-haan@quicknet.nl"
+  ]
+  array emails, (email)->
+    test "emailRegexp #{email}", ->
+      assert.match email, emailRegexp
+      [first] = emailRegexp.exec email
+      assert.eq first, email
+
   test "emailRegexp", ->
-    assert.eq "shanebdavis@gmail.com".match(emailRegexp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
-    assert.eq "shanebdavis@www.gmail.com".match(emailRegexp), ["shanebdavis@www.gmail.com", "shanebdavis", "www.gmail.com"]
+    assert.eq "shanebdavis@gmail.com"       .match(emailRegexp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
+    assert.eq "shanebdavis@www.gmail.com"   .match(emailRegexp), ["shanebdavis@www.gmail.com", "shanebdavis", "www.gmail.com"]
 
   test "domainRegexp successes", ->
     assert.eq "gmail.com".match(domainRegexp), ["gmail.com"]
