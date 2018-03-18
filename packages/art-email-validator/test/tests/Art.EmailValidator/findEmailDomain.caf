@@ -1,0 +1,11 @@
+import &StandardImport
+suite: ->
+  each domain in []
+      :gmail.com
+      :yahoo.com
+      :mail.ru
+    test domain, ->
+      findEmailDomain domain
+      .then (result) ->
+        assert.match result, domainRegExp
+

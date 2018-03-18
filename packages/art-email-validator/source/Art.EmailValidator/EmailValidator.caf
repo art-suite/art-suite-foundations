@@ -1,0 +1,98 @@
+import &StandardImport
+
+# https://tools.ietf.org/html/rfc3696
+# terms: local@domain
+# lengths:
+#   total:  320 max
+#   local:  64 max
+#   domain: 255 max
+maxEmailLength = 320
+
+# OUT: the lowest priority mail server
+findEmailDomain: findEmailDomain = (domain) ->
+  Promise.withCallback (callback) -> &dns.resolveMx domain, callback
+  .then (dnsAddresses)->
+    result = null
+    lowestPriority = 0
+
+    each {priority, exchange} in dnsAddresses
+      if !result? || priority < lowestPriority
+        lowestPriority = priority
+        result = exchange
+
+    result
+
+###
+  IN:
+    options:
+      email:        the email address to check
+      emailServer:  the email server to check with
+      smtpFrom:         the smtpFrom-address to tell the email server [default: email]
+      smtpHost:         the smtpHost to tell the email server [default: the domain of part of: smtpFrom]
+      timeout:      number in miliseconds to wait before timing out when checking mailbox [default: 5000]
+      domain:       server-name used in error messages to make them friendly [default: emailServer]
+
+    socket:
+      an already-open socket, OR, can be used for testing w/o a real SMTP connection
+      (Note: Comcast blocks outgoing port-25 connections in the US - as-of 2018)
+
+  OUT: valid: t/f, message: reason for failure if valid is false
+validateMailbox: validateMailbox = (options = {}, socket) ->
+  {emailServer, email} = options
+  {domain = emailServer, timeout = 5000} = options
+  {smtpFrom = email, smtpHost = smtpFrom.split('@')[1]} = options
+
+  currentCommandIndex = 0
+  smtpCommands =
+    "helo #{smtpHost}"
+    "mail from:<#{smtpFrom}>"
+    "rcpt to:<#{email}>"
+
+  new Promise (resolve, reject)->
+    socket ?= &net.createConnection 25, emailServer
+    socket.setTimeout timeout, ->
+      socket.destroy()
+      reject new ErrorWithInfo "#{domain} failed to respond.", {emailServer}
+
+    socket.on 'error', (socketError) ->
+      socket.destroy()
+      if socketError.code == 'ECONNRESET'
+        resolve valid: false, message: '#{domain} refused #{email}.'
+      else
+        reject new ErrorWithInfo "socket socketError #{#err.code}", {emailServer, socketError}
+
+    socket.on 'data', (data) ->
+      if data.toString()[0] != '2'
+        socket.destroy()
+
+        resolve valid: false, message: '#{domain} refused #{email}.'
+
+      if currentCommandIndex < smtpCommands.length
+        socket.write smtpCommands[currentCommandIndex] + "\n", -> currentCommandIndex++
+      else
+        socket.destroy()
+        resolve valid: true
+
+###
+  IN:
+    options:
+      email: email address to check (string)
+      see validateMailbox or other options
+
+    socket: null or open socket or compatible object for testing
+
+  OUT: Promise.then ({valid, message}) ->
+validateEmail: validateEmail = (options = {}, socket) ->
+  {email} = options
+  if email.length < maxEmailLength && found = emailRegexp.exec email
+    findEmailDomain domain = found[2]
+    .catch (error) ->
+      valid: false, message: "Could not find email server for #{domain}."
+
+    .then (emailServer) ->
+      validateMailbox
+        merge options, {domain, emailServer}
+        socket
+
+  else
+    Promise.resolve valid: false, message: "Not a valid email address."

@@ -1,0 +1,29 @@
+import &StandardImport
+suite: ->
+  @timeout 10000
+
+  each [email, emailServer] in []
+      [] :shanebdavis@gmail.com :gmail-smtp-in.l.google.com
+    test "valid #{email} #{emailServer}" ->
+      validateEmail
+        {}
+          email
+          smtpFrom: "test@art.suite.com"
+          domain: :gmail.com
+        newTestSocket()
+      .then (result) ->
+        assert.eq result, valid: true
+
+  each [email, emailServer] in []
+      [] "shanebdavis_xyz@gmail.com" :gmail-smtp-in.l.google.com
+    test "invalid #{email} #{emailServer}" ->
+      validateEmail
+        {}
+          email
+          smtpFrom: "test@art.suite.com"
+          domain: :gmail.com
+        newTestSocket()
+      .then (result) ->
+        assert.eq result,
+          valid: false
+          message: "" gmail.com refused shanebdavis_xyz@gmail.com.

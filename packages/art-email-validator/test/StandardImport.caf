@@ -1,0 +1,26 @@
+import &ArtStandardLib
+merge
+  &ArtStandardLib
+  &ArtClassSystem
+  &ArtEmailValidator
+
+  test: (args...) -> global.test args...
+
+  newTestSocket: ->
+    unless getEnv().REAL_SMTP
+      on: (event, handler) ~>
+        (@_handlers ?= {})[event] = handler
+        if event == "data"
+          nextTick -> handler "" 220 mx.google.com ESMTP b2si3142061edh.379 - gsmtp\n
+
+      destroy: ~>
+      setTimeout: (miliseconds) -> assert.isNumber miliseconds
+      write: (data, callback) ~>
+        assert.ok true, present data
+        nextTick ->
+          callback?()
+          nextTick ->
+            @_handlers?.data? if !(found = /^rcpt to:<([^>]+)/.exec data) || found[1] == :shanebdavis@gmail.com
+              "" 250 2.1.0 OK b2si3142061edh.379 - gsmtp\n
+            else
+              "" 550-5.1.1 The email account that you tried to reach does not exist.
