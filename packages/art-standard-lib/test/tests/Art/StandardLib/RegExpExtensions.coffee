@@ -24,6 +24,7 @@ module.exports = suite: ->
     "!def!xyz%abc@example.com"
     "_somename@example.com"
     "a.collewijn-haan@quicknet.nl"
+    "a3col@icloud.com"
   ]
   array emails, (email)->
     test "emailRegexp #{email}", ->
