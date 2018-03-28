@@ -45,6 +45,10 @@ class DefaultFiles extends BaseClass
 
       package.json: "" {}
 
+      register.js: ""
+        require('coffee-script/register');
+        require('caffeine-mc/register');
+
       art.build.config.caf: """
         target:
           ##
