@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = 53);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -832,12 +832,12 @@ module.exports = ArrayCompactFlatten = (function() {
 
 module.exports = __webpack_require__(5);
 
-module.exports.includeInNamespace(__webpack_require__(53)).addModules({
+module.exports.includeInNamespace(__webpack_require__(54)).addModules({
   FormattedInspect: __webpack_require__(40),
   InspectedObjectLiteral: __webpack_require__(20),
   InspectedObjects: __webpack_require__(28),
   Inspector: __webpack_require__(29),
-  Inspector2: __webpack_require__(58),
+  Inspector2: __webpack_require__(59),
   PlainObjects: __webpack_require__(42)
 });
 
@@ -2208,7 +2208,7 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:\\?|" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
 
-  RegExpExtensions.findEmailRegExp = RegExp("([_\\w-]+(?:\\.[_\\w]+)*)@(" + RegExpExtensions.findDomainRegExp.source + ")", "i");
+  RegExpExtensions.findEmailRegExp = /((?:[^<>\s\n"\\]|\\.)+|"(?:[^"\\]|\\.)*")@([^\s\n<>]+)/i;
 
   RegExpExtensions.emailRegExp = RegExp("^" + RegExpExtensions.findEmailRegExp.source + "$", "i");
 
@@ -2258,7 +2258,7 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.findUrlRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
 
-  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp(RegExpExtensions.findUrlOrigin.source + "(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
+  RegExpExtensions.findUrlWithOptionalProtocolRegExp = RegExp("(?:" + RegExpExtensions.findUrlProtocolRegExp.source + ")?(" + RegExpExtensions.findDomainRegExp.source + ")(?:" + RegExpExtensions.findUrlPortRegExp.source + ")?(" + RegExpExtensions.findUrlPathRegExp.source + ")?(?:(\\?)(" + RegExpExtensions.urlQueryParamsRegExp.source + ")?)?(?:" + RegExpExtensions.findUrlFragmentRegExp.source + ")?", "i");
 
   RegExpExtensions.findAllUrlsRegExp = RegExp("" + RegExpExtensions.findUrlRegExp.source, "ig");
 
@@ -2962,7 +2962,7 @@ ref1 = __webpack_require__(0), isNumber = ref1.isNumber, isString = ref1.isStrin
 ref2 = __webpack_require__(11), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
 module.exports = ArrayExtensions = (function() {
-  var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSort, rightOfIndex, w;
+  var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSortInPlace, rightOfIndex, w;
 
   function ArrayExtensions() {}
 
@@ -3199,7 +3199,7 @@ module.exports = ArrayExtensions = (function() {
     return array[Math.random() * fromFirstN | 0];
   };
 
-  ArrayExtensions.randomSort = randomSort = function(array) {
+  ArrayExtensions.randomSortInPlace = randomSortInPlace = function(array) {
     var a, i, j, len, p, ref3;
     len = array.length;
     for (i = p = ref3 = len - 1; p >= 0; i = p += -1) {
@@ -3213,11 +3213,13 @@ module.exports = ArrayExtensions = (function() {
 
   ArrayExtensions.arrayWithRandomSort = function(array) {
     if (array) {
-      return randomSort(array.slice());
+      return randomSortInPlace(array.slice());
     } else {
       return [];
     }
   };
+
+  ArrayExtensions.randomSort = ArrayExtensions.arrayWithRandomSort;
 
   ArrayExtensions.insert = function(array, index, item) {
     if (index < 0) {
@@ -3950,7 +3952,7 @@ var AsyncExtensions, Promise;
 Promise = __webpack_require__(10);
 
 module.exports = AsyncExtensions = (function() {
-  var timeout;
+  var interval, timeout;
 
   function AsyncExtensions() {}
 
@@ -3964,6 +3966,19 @@ module.exports = AsyncExtensions = (function() {
     } else {
       return p;
     }
+  };
+
+  AsyncExtensions.interval = interval = function(ms, f) {
+    if (f == null) {
+      f = function() {};
+    }
+    return new Promise(function(resolve) {
+      return setInterval(function() {
+        return Promise.then(f).then(function() {
+          return resolve();
+        });
+      }, ms);
+    });
   };
 
   AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
@@ -4485,7 +4500,7 @@ escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
 
 inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
 
-dateFormat = __webpack_require__(48);
+dateFormat = __webpack_require__(49);
 
 module.exports = InspectedObjects = (function() {
   var toInspectedObjects;
@@ -5629,7 +5644,7 @@ module.exports = Unique = (function() {
 /* 34 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.32.1"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.32.5"}
 
 /***/ }),
 /* 35 */
@@ -5767,7 +5782,7 @@ formattedInspect = __webpack_require__(4).formattedInspect;
 march1973InMilliseconds = 100000000000;
 
 module.exports = {
-  dateFormat: dateFormat = __webpack_require__(48),
+  dateFormat: dateFormat = __webpack_require__(49),
   formatDate: function(value, format) {
     return dateFormat(toDate(value), format);
   },
@@ -6397,10 +6412,10 @@ module.exports = FormattedInspect = (function() {
 module.exports = __webpack_require__(19);
 
 module.exports.addModules({
-  Array: __webpack_require__(54),
-  Core: __webpack_require__(55),
-  Object: __webpack_require__(56),
-  String: __webpack_require__(57)
+  Array: __webpack_require__(55),
+  Core: __webpack_require__(56),
+  Object: __webpack_require__(57),
+  String: __webpack_require__(58)
 });
 
 
@@ -6663,6 +6678,46 @@ module.exports = PromisedFileReader = (function() {
 
 /***/ }),
 /* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ReschedulableTimer, currentSecond, timeout;
+
+currentSecond = __webpack_require__(32).currentSecond;
+
+timeout = __webpack_require__(24).timeout;
+
+module.exports = ReschedulableTimer = (function() {
+  function ReschedulableTimer() {
+    this._currentScheduleNumber = 0;
+  }
+
+
+  /*
+  every time you call timeout it effectively cancels all previously pending timeouts
+  leaving only this, new timeout active.
+  
+  In actuality, the repvious timeouts complete at some point, but their 'actions' are skipped.
+   */
+
+  ReschedulableTimer.prototype.timeout = function(ms, action) {
+    var thisScheduleNumber;
+    thisScheduleNumber = this._currentScheduleNumber += 1;
+    return timeout(ms, (function(_this) {
+      return function() {
+        if (_this._currentScheduleNumber === thisScheduleNumber) {
+          return action();
+        }
+      };
+    })(this));
+  };
+
+  return ReschedulableTimer;
+
+})();
+
+
+/***/ }),
+/* 47 */
 /***/ (function(module, exports) {
 
 var Ruby,
@@ -6747,7 +6802,7 @@ module.exports = Ruby = (function() {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 
@@ -6798,13 +6853,13 @@ module.exports = ShallowClone = (function() {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = require("dateformat");
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(12);
@@ -6831,12 +6886,12 @@ module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   ParseUrl: __webpack_require__(22),
   Promise: __webpack_require__(10),
   PromisedFileReader: __webpack_require__(45),
-  PromiseWorkerPool: __webpack_require__(59),
-  PushBackTimer: __webpack_require__(60),
+  PromiseWorkerPool: __webpack_require__(60),
   RegExpExtensions: __webpack_require__(11),
   RequestError: __webpack_require__(61),
-  Ruby: __webpack_require__(46),
-  ShallowClone: __webpack_require__(47),
+  ReschedulableTimer: __webpack_require__(46),
+  Ruby: __webpack_require__(47),
+  ShallowClone: __webpack_require__(48),
   StringExtensions: __webpack_require__(7),
   Time: __webpack_require__(32),
   TypesExtended: __webpack_require__(0),
@@ -6849,18 +6904,18 @@ __webpack_require__(4);
 
 
 /***/ }),
-/* 50 */,
 /* 51 */,
-/* 52 */
+/* 52 */,
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1;
 
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.StandardLib : void 0 : void 0) != null ? ref : __webpack_require__(49);
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.StandardLib : void 0 : void 0) != null ? ref : __webpack_require__(50);
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -6872,7 +6927,7 @@ module.exports = [[__webpack_require__(29), "shallowInspect inspectLean inspect"
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Array, MinimalBaseObject,
@@ -6922,7 +6977,7 @@ module.exports = Array = (function(superClass) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, MinimalBaseObject,
@@ -6958,7 +7013,7 @@ module.exports = Core = (function(superClass) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, Object,
@@ -7024,7 +7079,7 @@ module.exports = Object = (function(superClass) {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, String, escapeJavascriptString,
@@ -7053,7 +7108,7 @@ module.exports = String = (function(superClass) {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArray, isBrowserObject, isClass, isDate, isFunction, isHTMLImageElement, isObject, isPlainObject, isRegExp, isString, objectName, parentString, ref,
@@ -7276,7 +7331,7 @@ module.exports = Inspector2 = (function(superClass) {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Promise, PromiseWorkerPool, log;
@@ -7360,38 +7415,6 @@ module.exports = PromiseWorkerPool = (function() {
   };
 
   return PromiseWorkerPool;
-
-})();
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var PushBackTimer, currentSecond, timeout;
-
-currentSecond = __webpack_require__(32).currentSecond;
-
-timeout = __webpack_require__(24).timeout;
-
-module.exports = PushBackTimer = (function() {
-  function PushBackTimer() {
-    this._lastTime = null;
-  }
-
-  PushBackTimer.prototype.timeout = function(ms, action) {
-    var lastTime;
-    this._lastTime = lastTime = currentSecond();
-    return timeout(ms, (function(_this) {
-      return function() {
-        if (_this._lastTime === lastTime) {
-          return action();
-        }
-      };
-    })(this));
-  };
-
-  return PushBackTimer;
 
 })();
 
@@ -7485,7 +7508,11 @@ defineModule(module, RequestError = (function(superClass) {
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(17), __webpack_require__(7), __webpack_require__(27), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(16), __webpack_require__(22), __webpack_require__(45), __webpack_require__(11), __webpack_require__(46), __webpack_require__(47), __webpack_require__(32), __webpack_require__(0), __webpack_require__(8), __webpack_require__(30), __webpack_require__(4), __webpack_require__(36), __webpack_require__(31), __webpack_require__(25), __webpack_require__(37)];
+module.exports = [
+  __webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(17), __webpack_require__(7), __webpack_require__(27), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(16), __webpack_require__(22), __webpack_require__(45), __webpack_require__(11), __webpack_require__(47), __webpack_require__(48), __webpack_require__(32), __webpack_require__(0), __webpack_require__(8), __webpack_require__(30), __webpack_require__(4), __webpack_require__(36), __webpack_require__(31), __webpack_require__(25), __webpack_require__(37), {
+    PushBackTimer: __webpack_require__(46)
+  }
+];
 
 
 /***/ }),
