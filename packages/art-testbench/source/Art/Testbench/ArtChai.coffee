@@ -158,6 +158,8 @@ addTester "isPresent",    (a) -> present a
 addTester "hasKeys",      (a) -> isPlainObject(a) && objectHasKeys(a)
 addTester "hasNoKeys",    (a) -> isPlainObject(a) && !objectHasKeys(a)
 
+addTester "is",           (a, b) -> a.class == b
+
 # Ruby/Caffeine Truth
 addTester "true",         (a) -> a != false && a?
 addTester "false",        (a) -> a == false || !a?
