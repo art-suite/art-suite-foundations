@@ -10,6 +10,10 @@ module.exports =
   dateFormat: dateFormat = require "dateformat"
 
   formatDate: (value, format) ->
+    if isString value
+      format = value
+      value = null
+
     dateFormat (toDate value), format
 
   ###
@@ -21,7 +25,7 @@ module.exports =
     Number of Milliseconds since epoch-start
   ###
   toMilliseconds: toMilliseconds = (v) ->
-    return v unless v?
+    return Date.now() unless v?
     v = v - 0 if isString v
     if isNumber v
       if v < march1973InMilliseconds
@@ -45,11 +49,11 @@ module.exports =
     Number of Seconds since epoch-start
   ###
   toSeconds: (v) ->
-    return v unless v?
+    return Date.now() / 1000 unless v?
     (toMilliseconds(v) / 1000 + .5) | 0
 
   toDate: toDate = (v) ->
-    return v unless v?
+    return new Date unless v?
     if isDate v
       v
     else
