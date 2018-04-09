@@ -1,6 +1,7 @@
 module.exports = class RegExpExtensions
   # http://stackoverflow.com/questions/201323/using-a-regular-expression-to-validate-an-email-address
-  @escapeRegExp: (string) -> string.replace /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"
+  @escapeRegExp: (string) -> (string?.replace? /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") ? ''
+
 
   @findUrlProtocolRegExp: /([\w-]+)(:\/\/)/
   @findDomainRegExp:      /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/
