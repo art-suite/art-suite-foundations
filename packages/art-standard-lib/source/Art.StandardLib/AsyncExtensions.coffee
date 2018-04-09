@@ -1,5 +1,5 @@
 Promise = require './Promise'
-
+{toSeconds} = require './DateExtensions'
 
 module.exports = class AsyncExtensions
 
@@ -10,16 +10,22 @@ module.exports = class AsyncExtensions
     p = new Promise (resolve) -> setTimeout resolve, ms
     if f? then p.then f else p
 
+  # timeout at a specific second - using the Date.now() time
+  @timeoutAt: (second, f) => timeout (second - toSeconds()) * 1000, f
+
   # promise resolves once after first interval (and first invocation of f, if provided)
   # f will be called after ms and ever ms thereafter
   @interval: interval = (ms, f = ->) =>
-    new Promise (resolve) ->
-      setInterval(
+    intervalId = null
+    p = new Promise (resolve) ->
+      intervalId = setInterval(
         ->
           Promise.then f
           .then -> resolve()
         ms
       )
+    p.stop = -> clearInterval intervalId if intervalId?
+    p
 
   @requestAnimationFrame:
     self.requestAnimationFrame       ||
