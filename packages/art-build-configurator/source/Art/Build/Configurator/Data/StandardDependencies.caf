@@ -25,18 +25,18 @@ webpack:                              :^2.6.1
 webpack-dev-server:                   :^2.4.5
 
 # webpack tools
-case-sensitive-paths-webpack-plugin:  :^2.1.1
+case-sensitive-paths-webpack-plugin:  :^2.1.2
 webpack-merge:                        :^4.1.0
 webpack-node-externals:               :^1.6.0
 
 # node baseline
 bluebird:                             :^3.5.0
-colors:                               :^1.1.2
-commander:                            :^2.9.0
-dateformat:                           :^2.0.0
+colors:                               :^1.2.1
+commander:                            :^2.15.1
+dateformat:                           :^3.0.3
 detect-node:                          :^2.0.3
-fs-extra:                             :^3.0.1
-glob-promise:                         :^3.1.0
+fs-extra:                             :^5.0.0
+glob-promise:                         :^3.4.0
 glob:                                 :^7.1.2
 
 # test baseline

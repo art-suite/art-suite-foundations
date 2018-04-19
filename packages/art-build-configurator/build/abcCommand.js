@@ -269,16 +269,16 @@ Caf.defMod(module, () => {
     "style-loader": "^0.18.1",
     webpack: "^2.6.1",
     "webpack-dev-server": "^2.4.5",
-    "case-sensitive-paths-webpack-plugin": "^2.1.1",
+    "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "webpack-merge": "^4.1.0",
     "webpack-node-externals": "^1.6.0",
     bluebird: "^3.5.0",
-    colors: "^1.1.2",
-    commander: "^2.9.0",
-    dateformat: "^2.0.0",
+    colors: "^1.2.1",
+    commander: "^2.15.1",
+    dateformat: "^3.0.3",
     "detect-node": "^2.0.3",
-    "fs-extra": "^3.0.1",
-    "glob-promise": "^3.1.0",
+    "fs-extra": "^5.0.0",
+    "glob-promise": "^3.4.0",
     glob: "^7.1.2",
     mocha: "^3.4.2",
     chai: "^4.0.1"
@@ -545,7 +545,9 @@ Caf.defMod(module, () => {
                   select != null
                     ? isFunction(select)
                       ? select(path)
-                      : isRegExp(select) ? select.test(path) : undefined
+                      : isRegExp(select)
+                        ? select.test(path)
+                        : undefined
                     : true;
                 return selected
                   ? ((exists = fs.existsSync(path)),
