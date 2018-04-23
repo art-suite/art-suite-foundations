@@ -39,8 +39,10 @@ module.exports = class ParseUrl
   @urlJoin: (uri, path) -> "#{uri.replace /\/$/, ''}/#{path.replace /^\//, ''}"
 
   @appendQuery: (uri, o) ->
-    str = generateQuery o
-    "#{uri}#{if uri.match /\?/ then "&" else "?"}#{str}"
+    if o? && (str = generateQuery o).length > 0
+      "#{uri}#{if uri.match /\?/ then "&" else "?"}#{str}"
+    else
+      uri
 
   # returns undefined if not a legal url
   @parseUrl: (url) =>
