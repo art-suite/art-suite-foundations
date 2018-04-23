@@ -835,8 +835,8 @@ module.exports = __webpack_require__(5);
 module.exports.includeInNamespace(__webpack_require__(54)).addModules({
   FormattedInspect: __webpack_require__(40),
   InspectedObjectLiteral: __webpack_require__(20),
-  InspectedObjects: __webpack_require__(28),
-  Inspector: __webpack_require__(29),
+  InspectedObjects: __webpack_require__(29),
+  Inspector: __webpack_require__(30),
   Inspector2: __webpack_require__(59),
   PlainObjects: __webpack_require__(42)
 });
@@ -2191,7 +2191,8 @@ module.exports = RegExpExtensions = (function() {
   function RegExpExtensions() {}
 
   RegExpExtensions.escapeRegExp = function(string) {
-    return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    var ref;
+    return (ref = string != null ? typeof string.replace === "function" ? string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") : void 0 : void 0) != null ? ref : '';
   };
 
   RegExpExtensions.findUrlProtocolRegExp = /([\w-]+)(:\/\/)/;
@@ -2303,14 +2304,14 @@ var StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(35)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+module.exports = (__webpack_require__(36)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
 
   function StandardLib() {
     return StandardLib.__super__.constructor.apply(this, arguments);
   }
 
-  StandardLib.version = __webpack_require__(34).version;
+  StandardLib.version = __webpack_require__(35).version;
 
   return StandardLib;
 
@@ -2642,9 +2643,8 @@ defineModule(module, Environment = (function() {
   function Environment() {}
 
   Environment.getEnv = function() {
-    var ref, ref1, ret;
-    ret = ((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0;
-    return ret || {};
+    var ref, ref1;
+    return global.environment != null ? global.environment : global.environment = (((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0) || {};
   };
 
   Environment.isBrowser = !!(global.window && global.navigator && global.document);
@@ -2671,7 +2671,7 @@ ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach
 
 ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
 
-object = __webpack_require__(30).object;
+object = __webpack_require__(31).object;
 
 module.exports = ObjectExtensions = (function() {
   var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
@@ -3577,7 +3577,7 @@ module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = 
 
 var InspectedObjectLiteral, compare;
 
-compare = __webpack_require__(27).compare;
+compare = __webpack_require__(28).compare;
 
 module.exports = InspectedObjectLiteral = (function() {
   InspectedObjectLiteral.inspectedObjectLiteral = function(literal, isError) {
@@ -3633,7 +3633,7 @@ var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Unique = __webpack_require__(33);
+Unique = __webpack_require__(34);
 
 MinimalBaseObject = __webpack_require__(6);
 
@@ -3874,8 +3874,11 @@ module.exports = ParseUrl = (function() {
 
   ParseUrl.appendQuery = function(uri, o) {
     var str;
-    str = generateQuery(o);
-    return "" + uri + (uri.match(/\?/) ? "&" : "?") + str;
+    if ((o != null) && (str = generateQuery(o)).length > 0) {
+      return "" + uri + (uri.match(/\?/) ? "&" : "?") + str;
+    } else {
+      return uri;
+    }
   };
 
   ParseUrl.parseUrl = function(url) {
@@ -3947,9 +3950,11 @@ module.exports = function(module) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var AsyncExtensions, Promise;
+var AsyncExtensions, Promise, toSeconds;
 
 Promise = __webpack_require__(10);
+
+toSeconds = __webpack_require__(27).toSeconds;
 
 module.exports = AsyncExtensions = (function() {
   var interval, timeout;
@@ -3968,17 +3973,29 @@ module.exports = AsyncExtensions = (function() {
     }
   };
 
+  AsyncExtensions.timeoutAt = function(second, f) {
+    return timeout((second - toSeconds()) * 1000, f);
+  };
+
   AsyncExtensions.interval = interval = function(ms, f) {
+    var intervalId, p;
     if (f == null) {
       f = function() {};
     }
-    return new Promise(function(resolve) {
-      return setInterval(function() {
+    intervalId = null;
+    p = new Promise(function(resolve) {
+      return intervalId = setInterval(function() {
         return Promise.then(f).then(function() {
           return resolve();
         });
       }, ms);
     });
+    p.stop = function() {
+      if (intervalId != null) {
+        return clearInterval(intervalId);
+      }
+    };
+    return p;
   };
 
   AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
@@ -4184,6 +4201,83 @@ module.exports = [__webpack_require__(3), __webpack_require__(14), __webpack_req
 
 /***/ }),
 /* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
+
+ref = __webpack_require__(2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
+
+formattedInspect = __webpack_require__(4).formattedInspect;
+
+march1973InMilliseconds = 100000000000;
+
+module.exports = {
+  dateFormat: dateFormat = __webpack_require__(49),
+  formatDate: function(value, format) {
+    if (isString(value)) {
+      format = value;
+      value = null;
+    }
+    return dateFormat(toDate(value), format);
+  },
+
+  /*
+  IN:
+    Date
+    OR Number of Seconds since epoch-start
+    OR Number of Milliseconds since epoch-start
+  OUT:
+    Number of Milliseconds since epoch-start
+   */
+  toMilliseconds: toMilliseconds = function(v) {
+    if (v == null) {
+      return Date.now();
+    }
+    if (isString(v)) {
+      v = v - 0;
+    }
+    if (isNumber(v)) {
+      if (v < march1973InMilliseconds) {
+        return v * 1000;
+      } else {
+        return v;
+      }
+    } else if (isDate(v)) {
+      return v - 0;
+    } else {
+      throw new Error("invalid timestamp value: " + (formattedInspect(v)));
+    }
+  },
+
+  /*
+  IN:
+    Date
+    OR Number of Seconds since epoch-start
+    OR Number of Milliseconds since epoch-start
+  OUT:
+    Number of Seconds since epoch-start
+   */
+  toSeconds: function(v) {
+    if (v == null) {
+      return Date.now() / 1000;
+    }
+    return (toMilliseconds(v) / 1000 + .5) | 0;
+  },
+  toDate: toDate = function(v) {
+    if (v == null) {
+      return new Date;
+    }
+    if (isDate(v)) {
+      return v;
+    } else {
+      return new Date(toMilliseconds(v));
+    }
+  }
+};
+
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
@@ -4489,7 +4583,7 @@ module.exports = Eq = (function() {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
@@ -4569,7 +4663,7 @@ module.exports = InspectedObjects = (function() {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
@@ -4804,7 +4898,7 @@ module.exports = Inspector = (function() {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1;
@@ -5161,7 +5255,7 @@ module.exports = Iteration = (function() {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, isNode, isString, merge, peek, ref, ref1,
@@ -5449,7 +5543,7 @@ module.exports = Log = (function() {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Time, base, commaize, dateSecondMinusPerformanceSecond, initDateSecond, initPerformanceSecond;
@@ -5577,7 +5671,7 @@ module.exports = Time = (function() {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 var Unique, nextId;
@@ -5641,19 +5735,19 @@ module.exports = Unique = (function() {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.32.5"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.34.0"}
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -5672,7 +5766,7 @@ var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject
 
 Map = __webpack_require__(21);
 
-Unique = __webpack_require__(33);
+Unique = __webpack_require__(34);
 
 inspect = __webpack_require__(4).inspect;
 
@@ -5767,79 +5861,6 @@ module.exports = Clone = (function() {
   return Clone;
 
 })();
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
-
-ref = __webpack_require__(2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
-
-formattedInspect = __webpack_require__(4).formattedInspect;
-
-march1973InMilliseconds = 100000000000;
-
-module.exports = {
-  dateFormat: dateFormat = __webpack_require__(49),
-  formatDate: function(value, format) {
-    return dateFormat(toDate(value), format);
-  },
-
-  /*
-  IN:
-    Date
-    OR Number of Seconds since epoch-start
-    OR Number of Milliseconds since epoch-start
-  OUT:
-    Number of Milliseconds since epoch-start
-   */
-  toMilliseconds: toMilliseconds = function(v) {
-    if (v == null) {
-      return v;
-    }
-    if (isString(v)) {
-      v = v - 0;
-    }
-    if (isNumber(v)) {
-      if (v < march1973InMilliseconds) {
-        return v * 1000;
-      } else {
-        return v;
-      }
-    } else if (isDate(v)) {
-      return v - 0;
-    } else {
-      throw new Error("invalid timestamp value: " + (formattedInspect(v)));
-    }
-  },
-
-  /*
-  IN:
-    Date
-    OR Number of Seconds since epoch-start
-    OR Number of Milliseconds since epoch-start
-  OUT:
-    Number of Seconds since epoch-start
-   */
-  toSeconds: function(v) {
-    if (v == null) {
-      return v;
-    }
-    return (toMilliseconds(v) / 1000 + .5) | 0;
-  },
-  toDate: toDate = function(v) {
-    if (v == null) {
-      return v;
-    }
-    if (isDate(v)) {
-      return v;
-    } else {
-      return new Date(toMilliseconds(v));
-    }
-  }
-};
 
 
 /***/ }),
@@ -5995,11 +6016,11 @@ max = Math.max;
 
 ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.stripTrailingWhitespace, escapeJavascriptString = ref1.escapeJavascriptString;
 
-inspect = __webpack_require__(29).inspect;
+inspect = __webpack_require__(30).inspect;
 
 objectKeyCount = __webpack_require__(17).objectKeyCount;
 
-toInspectedObjects = __webpack_require__(28).toInspectedObjects;
+toInspectedObjects = __webpack_require__(29).toInspectedObjects;
 
 indentString = '  ';
 
@@ -6682,7 +6703,7 @@ module.exports = PromisedFileReader = (function() {
 
 var ReschedulableTimer, currentSecond, timeout;
 
-currentSecond = __webpack_require__(32).currentSecond;
+currentSecond = __webpack_require__(33).currentSecond;
 
 timeout = __webpack_require__(24).timeout;
 
@@ -6868,15 +6889,15 @@ module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   ArrayExtensions: __webpack_require__(18),
   AsyncExtensions: __webpack_require__(24),
   CallStack: __webpack_require__(25),
-  Clone: __webpack_require__(36),
+  Clone: __webpack_require__(37),
   CommonJs: __webpack_require__(8),
-  DateExtensions: __webpack_require__(37),
+  DateExtensions: __webpack_require__(27),
   Environment: __webpack_require__(16),
-  Eq: __webpack_require__(27),
+  Eq: __webpack_require__(28),
   ErrorWithInfo: __webpack_require__(38),
   Function: __webpack_require__(39),
-  Iteration: __webpack_require__(30),
-  Log: __webpack_require__(31),
+  Iteration: __webpack_require__(31),
+  Log: __webpack_require__(32),
   Map: __webpack_require__(21),
   MapExtensions: __webpack_require__(43),
   MathExtensions: __webpack_require__(9),
@@ -6893,9 +6914,9 @@ module.exports.includeInNamespace(__webpack_require__(62)).addModules({
   Ruby: __webpack_require__(47),
   ShallowClone: __webpack_require__(48),
   StringExtensions: __webpack_require__(7),
-  Time: __webpack_require__(32),
+  Time: __webpack_require__(33),
   TypesExtended: __webpack_require__(0),
-  Unique: __webpack_require__(33)
+  Unique: __webpack_require__(34)
 });
 
 __webpack_require__(1);
@@ -6923,7 +6944,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(29), "shallowInspect inspectLean inspect"], __webpack_require__(40), __webpack_require__(28), __webpack_require__(42), __webpack_require__(20)];
+module.exports = [[__webpack_require__(30), "shallowInspect inspectLean inspect"], __webpack_require__(40), __webpack_require__(29), __webpack_require__(42), __webpack_require__(20)];
 
 
 /***/ }),
@@ -7338,7 +7359,7 @@ var Promise, PromiseWorkerPool, log;
 
 Promise = __webpack_require__(10);
 
-log = __webpack_require__(31).log;
+log = __webpack_require__(32).log;
 
 
 /*
@@ -7509,7 +7530,7 @@ defineModule(module, RequestError = (function(superClass) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(17), __webpack_require__(7), __webpack_require__(27), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(16), __webpack_require__(22), __webpack_require__(45), __webpack_require__(11), __webpack_require__(47), __webpack_require__(48), __webpack_require__(32), __webpack_require__(0), __webpack_require__(8), __webpack_require__(30), __webpack_require__(4), __webpack_require__(36), __webpack_require__(31), __webpack_require__(25), __webpack_require__(37), {
+  __webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(17), __webpack_require__(7), __webpack_require__(28), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(16), __webpack_require__(22), __webpack_require__(45), __webpack_require__(11), __webpack_require__(47), __webpack_require__(48), __webpack_require__(33), __webpack_require__(0), __webpack_require__(8), __webpack_require__(31), __webpack_require__(4), __webpack_require__(37), __webpack_require__(32), __webpack_require__(25), __webpack_require__(27), {
     PushBackTimer: __webpack_require__(46)
   }
 ];
