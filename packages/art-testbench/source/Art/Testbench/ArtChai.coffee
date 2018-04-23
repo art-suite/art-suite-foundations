@@ -196,9 +196,10 @@ assert.selectedEq = assert.selectedPropsEq
 # create a version of all tests functions that resolves all inputs first
 assert.resolved = {}
 for k, v of assert when isFunction v
-  assert.resolved[k] = ->
-    Promise.all arguments
-    .then (args) -> v args
+  do (k, v)->
+    assert.resolved[k] = (args1...)->
+      Promise.all args1
+      .then (args2) -> v args2...
 
 # ArtCommunicationStatus tests
 statuses = w "missing clientFailure clientFailureNotAuthorized"
