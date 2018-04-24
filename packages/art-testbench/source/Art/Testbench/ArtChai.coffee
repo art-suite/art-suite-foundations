@@ -153,8 +153,12 @@ addTester "same",         (a, b) -> a == b
 addTester "notSame",      (a, b) -> a != b
 addTester "doesNotExist", (a) -> !a?
 addTester "exists",       (a) -> a?
-addTester "isNotPresent", (a) -> !present a
-addTester "isPresent",    (a) -> present a
+
+addTester "notPresent",   (a) -> !present a
+addTester "present",      (a) -> present a
+addTester "isNotPresent", (a) -> !present a  # DEPRICATED
+addTester "isPresent",    (a) -> present a   # DEPRICATED
+
 addTester "hasKeys",      (a) -> isPlainObject(a) && objectHasKeys(a)
 addTester "hasNoKeys",    (a) -> isPlainObject(a) && !objectHasKeys(a)
 
@@ -163,6 +167,7 @@ addTester "is",           (a, b) -> a.class == b
 # Ruby/Caffeine Truth
 addTester "true",         (a) -> a != false && a?
 addTester "false",        (a) -> a == false || !a?
+
 
 # TODO: selectedPropsEq needs a better error message - I ALSO want to see what the actual selected values look like
 addTester "selectedPropsEq",
