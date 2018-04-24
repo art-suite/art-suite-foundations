@@ -1,6 +1,7 @@
 
 {StandardLib} = Neptune.Art
 {
+  getCodeWords
   eq, clone, inspect, capitalize, upperCamelCase, lowerCamelCase
   snakeCase, pluralize, allIndexes, randomString
   consistentJsonStringify
@@ -66,7 +67,7 @@ testCodeWords "hiFoo123byBar", ["hi", "foo123by", "bar"]
 
 testReflexivity = (string, codeWords) ->
   suite "Art.StandardLib.StandardLib.String.Case.reflexivity", ->
-    test string, ->
+    test string ? 'null', ->
       ucc = upperCamelCase string
       lcc = lowerCamelCase string
       sc  = snakeCase string
@@ -78,3 +79,9 @@ testReflexivity = (string, codeWords) ->
 testReflexivity "foo"
 testReflexivity "iFrame", w "i frame"
 testReflexivity "ISSFrame", w "iss frame"
+
+testReflexivity null, []
+
+test "getCodeWords works with null input", ->
+  assert.eq [], getCodeWords()
+
