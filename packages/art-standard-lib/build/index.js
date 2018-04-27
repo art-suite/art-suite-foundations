@@ -436,12 +436,12 @@ module.exports = Types = (function() {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(15);
+module.exports = __webpack_require__(16);
 
-module.exports.includeInNamespace(__webpack_require__(26)).addModules({
+module.exports.includeInNamespace(__webpack_require__(27)).addModules({
   ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(13),
-  StringCase: __webpack_require__(14),
+  Merge: __webpack_require__(14),
+  StringCase: __webpack_require__(15),
   Types: __webpack_require__(2)
 });
 
@@ -835,8 +835,8 @@ module.exports = __webpack_require__(5);
 module.exports.includeInNamespace(__webpack_require__(54)).addModules({
   FormattedInspect: __webpack_require__(40),
   InspectedObjectLiteral: __webpack_require__(20),
-  InspectedObjects: __webpack_require__(29),
-  Inspector: __webpack_require__(30),
+  InspectedObjects: __webpack_require__(30),
+  Inspector: __webpack_require__(31),
   Inspector2: __webpack_require__(59),
   PlainObjects: __webpack_require__(42)
 });
@@ -1082,7 +1082,7 @@ isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPl
 
 compactFlatten = __webpack_require__(1).compactFlatten;
 
-isBrowser = __webpack_require__(16).isBrowser;
+isBrowser = __webpack_require__(17).isBrowser;
 
 escapedDoubleQuoteRegex = /[\\]["]/g;
 
@@ -1792,7 +1792,7 @@ ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, is
 
 defineModule = __webpack_require__(8).defineModule;
 
-getEnv = __webpack_require__(16).getEnv;
+getEnv = __webpack_require__(17).getEnv;
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -2177,7 +2177,7 @@ defineModule(module, function() {
   return BlueBirdPromise;
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
 
 /***/ }),
 /* 11 */
@@ -2317,638 +2317,13 @@ module.exports = (__webpack_require__(36)).addNamespace('Art.StandardLib', Stand
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(15);
+__webpack_require__(16);
 
 __webpack_require__(5);
 
 
 /***/ }),
 /* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Merge, compactFlatten, isPlainObject;
-
-compactFlatten = __webpack_require__(3).compactFlatten;
-
-isPlainObject = __webpack_require__(2).isPlainObject;
-
-module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, pureMerge;
-
-  function Merge() {}
-
-
-  /*
-  
-  merge "flattens" its arguments and then adds all keys from all objects in
-  the list into a new object which is returned.
-  
-  return: new object
-  
-  The first object's keys are added first. If two or more objects have the same
-  keys, the value set in the result is the last object's in the list with that key.
-   */
-
-  Merge.merge = merge = function() {
-    return mergeInto({}, arguments);
-  };
-
-
-  /*
-  The same as 'merge' with one difference:
-  
-  Instead of a new object, all objects are merged into the first object in the list.
-  
-  return: first object in the flattened list
-  return: null if no source objects
-   */
-
-  Merge.mergeInto = mergeInto = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== result) {
-        for (k in source) {
-          v = source[k];
-          if (v !== void 0) {
-            result[k] = v;
-          }
-        }
-      }
-    }
-    return result;
-  };
-
-
-  /*
-  Just like mergeInfo except only merge into the result object
-  UNLESS 'result' already has that property with a non-undefined value.
-  
-  if
-    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
-  then
-    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
-  
-  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
-   */
-
-  Merge.mergeIntoUnless = function() {
-    var i, j, k, ref, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
-      source = sources[i];
-      for (k in source) {
-        v = source[k];
-        if (result[k] === void 0) {
-          result[k] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  Merge.deepMerge = deepMerge = function() {
-    var k, list, out, v, val;
-    list = compactFlatten(arguments);
-    out = merge(list);
-    for (k in out) {
-      v = out[k];
-      if (isPlainObject(v)) {
-        out[k] = deepMerge((function() {
-          var j, len, results;
-          results = [];
-          for (j = 0, len = list.length; j < len; j++) {
-            val = list[j];
-            results.push(val[k]);
-          }
-          return results;
-        })());
-      }
-    }
-    return out;
-  };
-
-  Merge.hasAllProps = function(o1, o2) {
-    var k, v;
-    for (k in o1) {
-      v = o1[k];
-      if (!o2.hasOwnProperty(k)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  Merge.pureMerge = pureMerge = function() {
-    var j, last, len, source, sources;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    if (sources.length === 1) {
-      return sources[0];
-    }
-    last = sources[sources.length - 1];
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== last) {
-        if (!Merge.hasAllProps(source, last)) {
-          return Merge.merge(sources);
-        }
-      }
-    }
-    return last;
-  };
-
-
-  /*
-  I might consider adding "o" - which works like Object-Tree constructors:
-    First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
-    Last, all remaining items get added to the "children" list
-  The question is, what does it return? Options:
-  
-    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-  
-  Options if both objects and non-object values are present:
-    a. return compactFlatten [plainObject, nonObjectValues]
-    b. return merge plainObject, children: nonObjectValues
-    c. return new MClass plainObject, nonObjectValues
-      class MClass extends BaseObject
-        @properties "props children"
-        constructor: (@props, @children) ->
-   */
-
-  Merge.m = pureMerge;
-
-  return Merge;
-
-})();
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var StringCase, compactFlatten;
-
-compactFlatten = __webpack_require__(3).compactFlatten;
-
-module.exports = StringCase = (function() {
-  var getCodeWords;
-
-  function StringCase() {}
-
-  StringCase.getCodeWords = getCodeWords = function(str) {
-    var _words, word, words;
-    if (!(_words = str != null ? str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g) : void 0)) {
-      return [];
-    }
-    words = (function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = _words.length; i < len; i++) {
-        word = _words[i];
-        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
-      }
-      return results;
-    })();
-    return compactFlatten(words);
-  };
-
-  StringCase.codeWords = getCodeWords;
-
-  StringCase.lowerCase = function(str) {
-    return str != null ? str.toLocaleLowerCase() : void 0;
-  };
-
-  StringCase.upperCase = function(str) {
-    return str != null ? str.toLocaleUpperCase() : void 0;
-  };
-
-  StringCase.capitalize = function(str) {
-    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.decapitalize = function(str) {
-    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.getLowerCaseCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(StringCase.lowerCase(word));
-    }
-    return results;
-  };
-
-  StringCase.getCapitalizedCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
-    }
-    return results;
-  };
-
-  StringCase.upperCamelCase = function(str, joiner) {
-    var word;
-    if (joiner == null) {
-      joiner = "";
-    }
-    return ((function() {
-      var i, len, ref, results;
-      ref = this.getLowerCaseCodeWords(str);
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        word = ref[i];
-        results.push(this.capitalize(word));
-      }
-      return results;
-    }).call(StringCase)).join(joiner);
-  };
-
-  StringCase.lowerCamelCase = function(str, joiner) {
-    if (joiner == null) {
-      joiner = "";
-    }
-    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
-  };
-
-  StringCase.snakeCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("_");
-  };
-
-  StringCase.dashCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("-");
-  };
-
-  StringCase.capitalizedDashCase = function(str) {
-    return (StringCase.getCapitalizedCodeWords(str)).join("-");
-  };
-
-  return StringCase;
-
-})();
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Core,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function(superClass) {
-  extend(Core, superClass);
-
-  function Core() {
-    return Core.__super__.constructor.apply(this, arguments);
-  }
-
-  return Core;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
-
-defineModule = __webpack_require__(8).defineModule;
-
-ParseUrl = __webpack_require__(22);
-
-isNode = __webpack_require__(65);
-
-defineModule(module, Environment = (function() {
-  function Environment() {}
-
-  Environment.getEnv = function() {
-    var ref, ref1;
-    return global.environment != null ? global.environment : global.environment = (((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0) || {};
-  };
-
-  Environment.isBrowser = !!(global.window && global.navigator && global.document);
-
-  Environment.isWebWorker = !!(!Environment.isBrowser && global.importScripts);
-
-  Environment.isNode = !!isNode;
-
-  return Environment;
-
-})());
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
-  slice = [].slice,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
-
-ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
-
-object = __webpack_require__(31).object;
-
-module.exports = ObjectExtensions = (function() {
-  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
-
-  function ObjectExtensions() {}
-
-  ObjectExtensions.countKeys = function(o) {
-    return Object.keys(o).length;
-  };
-
-  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
-    var count, k, v;
-    count = 0;
-    for (k in o) {
-      v = o[k];
-      count++;
-    }
-    return count;
-  };
-
-  ObjectExtensions.objectHasKeys = function(o) {
-    var b, k;
-    for (k in o) {
-      b = o[k];
-      return true;
-    }
-    return false;
-  };
-
-  ObjectExtensions.objectLength = objectKeyCount;
-
-
-  /*
-  NOTE:
-    null and undefined keys are NOT SUPPORTED
-  
-    They should be converted to strings, first,
-    which is what they would become anyway.
-  
-  IN: 0 or more arguments
-    out = {}
-    list = arguments
-  
-    for element in list
-      objects: merge into out
-      arrays or argument lists: recurse using element as the list
-      null or undefined: skip
-      else out[element] = next element (or undefined if none)
-  
-  OUT: plain object
-   */
-
-  toObjectInternal = function(list, out) {
-    var element, j, key, len;
-    key = null;
-    for (j = 0, len = list.length; j < len; j++) {
-      element = list[j];
-      if (key) {
-        out[key] = element;
-        key = null;
-      } else if (isPlainObject(element)) {
-        mergeInto(out, element);
-      } else if (isArrayOrArguments(element)) {
-        toObjectInternal(element, out);
-      } else if (element != null) {
-        key = element;
-      }
-    }
-    if (key) {
-      return out[key] = void 0;
-    }
-  };
-
-  ObjectExtensions.toObject = function() {
-    var out;
-    out = {};
-    toObjectInternal(arguments, out);
-    return out;
-  };
-
-
-  /*
-  IN:
-    inputArray: any array
-    transformFunction: (element) -> [key, value]
-      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
-   */
-
-  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
-    var element, j, key, len, outputMap, ref2, value;
-    if (transformFunction == null) {
-      transformFunction = function(element) {
-        return element;
-      };
-    }
-    outputMap = {};
-    for (j = 0, len = inputArray.length; j < len; j++) {
-      element = inputArray[j];
-      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
-      outputMap[key] = value;
-    }
-    return outputMap;
-  };
-
-
-  /*
-  IN:
-    obj: the object to select fields from
-  
-    2nd argument can be:
-      selectFunction: (value, key) -> true / false
-  
-    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
-   */
-
-  ObjectExtensions.select = function(obj, a) {
-    var j, k, len, prop, properties, result, v;
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    if (isFunction(a)) {
-      if (a.length === 1) {
-        for (k in obj) {
-          v = obj[k];
-          if (a(v)) {
-            result[k] = v;
-          }
-        }
-      } else {
-        for (k in obj) {
-          v = obj[k];
-          if (a(k, v)) {
-            result[k] = v;
-          }
-        }
-      }
-    } else {
-      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
-      for (j = 0, len = properties.length; j < len; j++) {
-        prop = properties[j];
-        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
-          result[prop] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  ObjectExtensions.selectAll = function() {
-    var j, len, obj, prop, properties, ref2, result;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    result = {};
-    ref2 = compactFlatten(properties);
-    for (j = 0, len = ref2.length; j < len; j++) {
-      prop = ref2[j];
-      result[prop] = obj[prop];
-    }
-    return result;
-  };
-
-  ObjectExtensions.objectWithDefinedValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v !== void 0;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithExistingValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return v != null;
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithPresentValues = function(obj) {
-    return object(obj, {
-      when: function(v) {
-        return present(v);
-      }
-    });
-  };
-
-  ObjectExtensions.objectWithout = function() {
-    var anythingToDo, j, len, obj, prop, properties, result, v;
-    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    if (!obj) {
-      return {};
-    }
-    if (properties.length === 1 && !(typeof properties[0] === "string")) {
-      properties = properties[0];
-    }
-    anythingToDo = false;
-    for (j = 0, len = properties.length; j < len; j++) {
-      prop = properties[j];
-      if (obj.hasOwnProperty(prop)) {
-        anythingToDo = true;
-        break;
-      }
-    }
-    if (anythingToDo) {
-      result = {};
-      for (prop in obj) {
-        v = obj[prop];
-        if (indexOf.call(properties, prop) < 0) {
-          result[prop] = v;
-        }
-      }
-      return result;
-    } else {
-      return obj;
-    }
-  };
-
-  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
-    return !!key.match(/[\s\.\/]/);
-  };
-
-  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
-    var i, j, key, len;
-    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
-    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
-      key = propertyPath[i];
-      if (i === propertyPath.length - 1) {
-        action(obj, key);
-      } else {
-        obj = obj[key] || (obj[key] = {});
-      }
-    }
-    return obj;
-  };
-
-  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
-    withPropertyPath(obj, propertyPath, function(o, k) {
-      return o[k] = value;
-    });
-    return obj;
-  };
-
-  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
-    var k, v;
-    if (into == null) {
-      into = {};
-    }
-    if (pathExpansionEnabled == null) {
-      pathExpansionEnabled = true;
-    }
-    for (k in obj) {
-      v = obj[k];
-      if (pathExpansionEnabled && propertyIsPathed(k)) {
-        withPropertyPath(into, k, function(o, finalKey) {
-          if (isPlainObject(v)) {
-            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
-          } else {
-            return o[finalKey] = v;
-          }
-        });
-      } else if (isPlainObject(v)) {
-        expandPathedProperties(v, into[k] || (into[k] = {}), false);
-      } else {
-        into[k] = v;
-      }
-    }
-    return into;
-  };
-
-  return ObjectExtensions;
-
-})();
-
-
-/***/ }),
-/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
@@ -3551,6 +2926,631 @@ module.exports = ArrayExtensions = (function() {
 
 
 /***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Merge, compactFlatten, isPlainObject;
+
+compactFlatten = __webpack_require__(3).compactFlatten;
+
+isPlainObject = __webpack_require__(2).isPlainObject;
+
+module.exports = Merge = (function() {
+  var deepMerge, merge, mergeInto, pureMerge;
+
+  function Merge() {}
+
+
+  /*
+  
+  merge "flattens" its arguments and then adds all keys from all objects in
+  the list into a new object which is returned.
+  
+  return: new object
+  
+  The first object's keys are added first. If two or more objects have the same
+  keys, the value set in the result is the last object's in the list with that key.
+   */
+
+  Merge.merge = merge = function() {
+    return mergeInto({}, arguments);
+  };
+
+
+  /*
+  The same as 'merge' with one difference:
+  
+  Instead of a new object, all objects are merged into the first object in the list.
+  
+  return: first object in the flattened list
+  return: null if no source objects
+   */
+
+  Merge.mergeInto = mergeInto = function() {
+    var j, k, len, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          if (v !== void 0) {
+            result[k] = v;
+          }
+        }
+      }
+    }
+    return result;
+  };
+
+
+  /*
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
+  
+  if
+    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
+  then
+    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
+  
+  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
+   */
+
+  Merge.mergeIntoUnless = function() {
+    var i, j, k, ref, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
+      source = sources[i];
+      for (k in source) {
+        v = source[k];
+        if (result[k] === void 0) {
+          result[k] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  Merge.deepMerge = deepMerge = function() {
+    var k, list, out, v, val;
+    list = compactFlatten(arguments);
+    out = merge(list);
+    for (k in out) {
+      v = out[k];
+      if (isPlainObject(v)) {
+        out[k] = deepMerge((function() {
+          var j, len, results;
+          results = [];
+          for (j = 0, len = list.length; j < len; j++) {
+            val = list[j];
+            results.push(val[k]);
+          }
+          return results;
+        })());
+      }
+    }
+    return out;
+  };
+
+  Merge.hasAllProps = function(o1, o2) {
+    var k, v;
+    for (k in o1) {
+      v = o1[k];
+      if (!o2.hasOwnProperty(k)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  Merge.pureMerge = pureMerge = function() {
+    var j, last, len, source, sources;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    if (sources.length === 1) {
+      return sources[0];
+    }
+    last = sources[sources.length - 1];
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== last) {
+        if (!Merge.hasAllProps(source, last)) {
+          return Merge.merge(sources);
+        }
+      }
+    }
+    return last;
+  };
+
+
+  /*
+  I might consider adding "o" - which works like Object-Tree constructors:
+    First, it compact-flattens args
+    Second, it gathers up and merges all plain-objects in its arguments list
+    Last, all remaining items get added to the "children" list
+  The question is, what does it return? Options:
+  
+    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
+  
+  Options if both objects and non-object values are present:
+    a. return compactFlatten [plainObject, nonObjectValues]
+    b. return merge plainObject, children: nonObjectValues
+    c. return new MClass plainObject, nonObjectValues
+      class MClass extends BaseObject
+        @properties "props children"
+        constructor: (@props, @children) ->
+   */
+
+  Merge.m = pureMerge;
+
+  return Merge;
+
+})();
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var StringCase, compactFlatten;
+
+compactFlatten = __webpack_require__(3).compactFlatten;
+
+module.exports = StringCase = (function() {
+  var getCodeWords;
+
+  function StringCase() {}
+
+  StringCase.getCodeWords = getCodeWords = function(str) {
+    var _words, word, words;
+    if (!(_words = str != null ? str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g) : void 0)) {
+      return [];
+    }
+    words = (function() {
+      var i, len, results;
+      results = [];
+      for (i = 0, len = _words.length; i < len; i++) {
+        word = _words[i];
+        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
+      }
+      return results;
+    })();
+    return compactFlatten(words);
+  };
+
+  StringCase.codeWords = getCodeWords;
+
+  StringCase.lowerCase = function(str) {
+    return str != null ? str.toLocaleLowerCase() : void 0;
+  };
+
+  StringCase.upperCase = function(str) {
+    return str != null ? str.toLocaleUpperCase() : void 0;
+  };
+
+  StringCase.capitalize = function(str) {
+    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.decapitalize = function(str) {
+    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.getLowerCaseCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(StringCase.lowerCase(word));
+    }
+    return results;
+  };
+
+  StringCase.getCapitalizedCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
+    }
+    return results;
+  };
+
+  StringCase.upperCamelCase = function(str, joiner) {
+    var word;
+    if (joiner == null) {
+      joiner = "";
+    }
+    return ((function() {
+      var i, len, ref, results;
+      ref = this.getLowerCaseCodeWords(str);
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        word = ref[i];
+        results.push(this.capitalize(word));
+      }
+      return results;
+    }).call(StringCase)).join(joiner);
+  };
+
+  StringCase.lowerCamelCase = function(str, joiner) {
+    if (joiner == null) {
+      joiner = "";
+    }
+    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
+  };
+
+  StringCase.snakeCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("_");
+  };
+
+  StringCase.dashCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("-");
+  };
+
+  StringCase.capitalizedDashCase = function(str) {
+    return (StringCase.getCapitalizedCodeWords(str)).join("-");
+  };
+
+  return StringCase;
+
+})();
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Core,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function(superClass) {
+  extend(Core, superClass);
+
+  function Core() {
+    return Core.__super__.constructor.apply(this, arguments);
+  }
+
+  return Core;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
+
+defineModule = __webpack_require__(8).defineModule;
+
+ParseUrl = __webpack_require__(23);
+
+isNode = __webpack_require__(65);
+
+defineModule(module, Environment = (function() {
+  function Environment() {}
+
+  Environment.getEnv = function() {
+    var ref, ref1;
+    return global.environment != null ? global.environment : global.environment = (((ref = global.location) != null ? ref.search : void 0) ? ParseUrl.parseQuery() : (ref1 = global.process) != null ? ref1.env : void 0) || {};
+  };
+
+  Environment.isBrowser = !!(global.window && global.navigator && global.document);
+
+  Environment.isWebWorker = !!(!Environment.isBrowser && global.importScripts);
+
+  Environment.isNode = !!isNode;
+
+  return Environment;
+
+})());
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
+  slice = [].slice,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
+
+ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
+
+object = __webpack_require__(21).object;
+
+module.exports = ObjectExtensions = (function() {
+  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
+
+  function ObjectExtensions() {}
+
+  ObjectExtensions.countKeys = function(o) {
+    return Object.keys(o).length;
+  };
+
+  ObjectExtensions.objectKeyCount = objectKeyCount = function(o) {
+    var count, k, v;
+    count = 0;
+    for (k in o) {
+      v = o[k];
+      count++;
+    }
+    return count;
+  };
+
+  ObjectExtensions.objectHasKeys = function(o) {
+    var b, k;
+    for (k in o) {
+      b = o[k];
+      return true;
+    }
+    return false;
+  };
+
+  ObjectExtensions.objectLength = objectKeyCount;
+
+
+  /*
+  NOTE:
+    null and undefined keys are NOT SUPPORTED
+  
+    They should be converted to strings, first,
+    which is what they would become anyway.
+  
+  IN: 0 or more arguments
+    out = {}
+    list = arguments
+  
+    for element in list
+      objects: merge into out
+      arrays or argument lists: recurse using element as the list
+      null or undefined: skip
+      else out[element] = next element (or undefined if none)
+  
+  OUT: plain object
+   */
+
+  toObjectInternal = function(list, out) {
+    var element, j, key, len;
+    key = null;
+    for (j = 0, len = list.length; j < len; j++) {
+      element = list[j];
+      if (key) {
+        out[key] = element;
+        key = null;
+      } else if (isPlainObject(element)) {
+        mergeInto(out, element);
+      } else if (isArrayOrArguments(element)) {
+        toObjectInternal(element, out);
+      } else if (element != null) {
+        key = element;
+      }
+    }
+    if (key) {
+      return out[key] = void 0;
+    }
+  };
+
+  ObjectExtensions.toObject = function() {
+    var out;
+    out = {};
+    toObjectInternal(arguments, out);
+    return out;
+  };
+
+
+  /*
+  IN:
+    inputArray: any array
+    transformFunction: (element) -> [key, value]
+      default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
+   */
+
+  ObjectExtensions.arrayToMap = function(inputArray, transformFunction) {
+    var element, j, key, len, outputMap, ref2, value;
+    if (transformFunction == null) {
+      transformFunction = function(element) {
+        return element;
+      };
+    }
+    outputMap = {};
+    for (j = 0, len = inputArray.length; j < len; j++) {
+      element = inputArray[j];
+      ref2 = transformFunction(element), key = ref2[0], value = ref2[1];
+      outputMap[key] = value;
+    }
+    return outputMap;
+  };
+
+
+  /*
+  IN:
+    obj: the object to select fields from
+  
+    2nd argument can be:
+      selectFunction: (value, key) -> true / false
+  
+    OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
+   */
+
+  ObjectExtensions.select = function(obj, a) {
+    var j, k, len, prop, properties, result, v;
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    if (isFunction(a)) {
+      if (a.length === 1) {
+        for (k in obj) {
+          v = obj[k];
+          if (a(v)) {
+            result[k] = v;
+          }
+        }
+      } else {
+        for (k in obj) {
+          v = obj[k];
+          if (a(k, v)) {
+            result[k] = v;
+          }
+        }
+      }
+    } else {
+      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
+      for (j = 0, len = properties.length; j < len; j++) {
+        prop = properties[j];
+        if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
+          result[prop] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  ObjectExtensions.selectAll = function() {
+    var j, len, obj, prop, properties, ref2, result;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    result = {};
+    ref2 = compactFlatten(properties);
+    for (j = 0, len = ref2.length; j < len; j++) {
+      prop = ref2[j];
+      result[prop] = obj[prop];
+    }
+    return result;
+  };
+
+  ObjectExtensions.objectWithDefinedValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v !== void 0;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithExistingValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return v != null;
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithPresentValues = function(obj) {
+    return object(obj, {
+      when: function(v) {
+        return present(v);
+      }
+    });
+  };
+
+  ObjectExtensions.objectWithout = function() {
+    var anythingToDo, j, len, obj, prop, properties, result, v;
+    obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!obj) {
+      return {};
+    }
+    if (properties.length === 1 && !(typeof properties[0] === "string")) {
+      properties = properties[0];
+    }
+    anythingToDo = false;
+    for (j = 0, len = properties.length; j < len; j++) {
+      prop = properties[j];
+      if (obj.hasOwnProperty(prop)) {
+        anythingToDo = true;
+        break;
+      }
+    }
+    if (anythingToDo) {
+      result = {};
+      for (prop in obj) {
+        v = obj[prop];
+        if (indexOf.call(properties, prop) < 0) {
+          result[prop] = v;
+        }
+      }
+      return result;
+    } else {
+      return obj;
+    }
+  };
+
+  ObjectExtensions.propertyIsPathed = propertyIsPathed = function(key) {
+    return !!key.match(/[\s\.\/]/);
+  };
+
+  ObjectExtensions.withPropertyPath = withPropertyPath = function(obj, propertyPath, action) {
+    var i, j, key, len;
+    propertyPath = propertyPath.match(/[^\s\.\/]+/g);
+    for (i = j = 0, len = propertyPath.length; j < len; i = ++j) {
+      key = propertyPath[i];
+      if (i === propertyPath.length - 1) {
+        action(obj, key);
+      } else {
+        obj = obj[key] || (obj[key] = {});
+      }
+    }
+    return obj;
+  };
+
+  ObjectExtensions.setPathedProperty = setPathedProperty = function(obj, propertyPath, value) {
+    withPropertyPath(obj, propertyPath, function(o, k) {
+      return o[k] = value;
+    });
+    return obj;
+  };
+
+  ObjectExtensions.expandPathedProperties = expandPathedProperties = function(obj, into, pathExpansionEnabled) {
+    var k, v;
+    if (into == null) {
+      into = {};
+    }
+    if (pathExpansionEnabled == null) {
+      pathExpansionEnabled = true;
+    }
+    for (k in obj) {
+      v = obj[k];
+      if (pathExpansionEnabled && propertyIsPathed(k)) {
+        withPropertyPath(into, k, function(o, finalKey) {
+          if (isPlainObject(v)) {
+            return expandPathedProperties(v, o[finalKey] || (o[finalKey] = {}), true);
+          } else {
+            return o[finalKey] = v;
+          }
+        });
+      } else if (isPlainObject(v)) {
+        expandPathedProperties(v, into[k] || (into[k] = {}), false);
+      } else {
+        into[k] = v;
+      }
+    }
+    return into;
+  };
+
+  return ObjectExtensions;
+
+})();
+
+
+/***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3576,7 +3576,7 @@ module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = 
 
 var InspectedObjectLiteral, compare;
 
-compare = __webpack_require__(28).compare;
+compare = __webpack_require__(29).compare;
 
 module.exports = InspectedObjectLiteral = (function() {
   InspectedObjectLiteral.inspectedObjectLiteral = function(literal, isError) {
@@ -3607,1297 +3607,6 @@ module.exports = InspectedObjectLiteral = (function() {
 
 /***/ }),
 /* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/*
-TODO: This is almost identical to ES6's Map: Switch to using a Polyfill like:
-  https://github.com/paulmillr/es6-shim
-
-Map is a Key-Value map which preserves order.
-
-Unlike Javascript objects, you can use any object or value as keys. This includes:
-
-  Strings
-  Numbers
-  null
-  undefined
-  Arrays
-  Objects
-
-Arrays and Objects are assigned a unique id using the StandardLib.Unique library.
-"0", "", null, undefined and 0 are all different unique keys and can each have unique values.
- */
-var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-Unique = __webpack_require__(34);
-
-MinimalBaseObject = __webpack_require__(6);
-
-Node = (function() {
-  function Node(key, value, prev, next) {
-    this.key = key;
-    this.value = value;
-    this.prev = prev || null;
-    this.next = next || null;
-    if (prev) {
-      prev.next = this;
-    }
-    if (next) {
-      next.prev = this;
-    }
-  }
-
-  Node.prototype.remove = function() {
-    var n, p;
-    n = this.next;
-    p = this.prev;
-    if (p) {
-      p.next = n;
-      this.prev = null;
-    }
-    if (n) {
-      n.prev = p;
-      return this.next = null;
-    }
-  };
-
-  return Node;
-
-})();
-
-KeysIterator = (function() {
-  function KeysIterator(node1) {
-    this.node = node1;
-    this.started = false;
-  }
-
-  KeysIterator.prototype.next = function() {
-    var ref, ref1;
-    this.node = this.started ? (ref = this.node) != null ? ref.next : void 0 : (this.started = true, this.node);
-    return {
-      done: !this.node,
-      value: (ref1 = this.node) != null ? ref1.key : void 0
-    };
-  };
-
-  return KeysIterator;
-
-})();
-
-ValuesIterator = (function() {
-  function ValuesIterator(node1) {
-    this.node = node1;
-    this.started = false;
-  }
-
-  ValuesIterator.prototype.next = function() {
-    var ref, ref1;
-    this.node = this.started ? (ref = this.node) != null ? ref.next : void 0 : (this.started = true, this.node);
-    return {
-      done: !this.node,
-      value: (ref1 = this.node) != null ? ref1.value : void 0
-    };
-  };
-
-  return ValuesIterator;
-
-})();
-
-module.exports = (m = new global.Map).set(1, 2) === m ? global.Map : Map = (function(superClass) {
-  extend(Map, superClass);
-
-  function Map() {
-    this._length = 0;
-    this._map = {};
-    this._first = this._last = null;
-  }
-
-  Map.getter({
-    size: function() {
-      return this._length;
-    }
-  });
-
-  Map.prototype._getNodes = function() {
-    var n, result;
-    result = [];
-    n = this._first;
-    while (n) {
-      result.push(n);
-      n = n.next;
-    }
-    return result;
-  };
-
-  Map.prototype.keys = function() {
-    return new KeysIterator(this._first);
-  };
-
-  Map.prototype.values = function() {
-    return new ValuesIterator(this._first);
-  };
-
-  Map.prototype.get = function(key) {
-    var node;
-    node = this._map[Unique.id(key)];
-    return node && node.value;
-  };
-
-  Map.prototype.set = function(key, value) {
-    var id;
-    id = Unique.id(key);
-    if (this._map[id]) {
-      this._map[id].value = value;
-    } else {
-      this._length++;
-      this._last = this._map[id] = new Node(key, value, this._last);
-      if (!this._first) {
-        this._first = this._last;
-      }
-    }
-    return this;
-  };
-
-  Map.prototype._remove = function(key) {
-    var id, n;
-    id = Unique.id(key);
-    if (n = this._map[id]) {
-      this._length--;
-      delete this._map[id];
-      if (this._first === n) {
-        this._first = n.next;
-      }
-      if (this._last === n) {
-        this._last = n.prev;
-      }
-      n.remove();
-      return n;
-    } else {
-      return void 0;
-    }
-  };
-
-  Map.prototype["delete"] = function(key) {
-    return !!this._remove(key);
-  };
-
-  Map.prototype.forEach = function(f) {
-    var i, len, node, ref;
-    ref = this._getNodes();
-    for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[i];
-      f(node.value, node.key, this);
-    }
-    return void 0;
-  };
-
-  Map.prototype.has = function(key) {
-    return !!this._map[Unique.id(key)];
-  };
-
-  return Map;
-
-})(MinimalBaseObject);
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ParseUrl, escapeRegExp, findUrlOrigin, ref;
-
-ref = __webpack_require__(11), escapeRegExp = ref.escapeRegExp, findUrlOrigin = ref.findUrlOrigin;
-
-module.exports = ParseUrl = (function() {
-  var generateQuery, parsedGlobalQuery;
-
-  function ParseUrl() {}
-
-  parsedGlobalQuery = null;
-
-  ParseUrl.sameOrigin = function(url, origin) {
-    var ref1, ref2;
-    if (origin == null) {
-      origin = (ref1 = global.document) != null ? (ref2 = ref1.location) != null ? ref2.origin : void 0 : void 0;
-    }
-    origin = origin.match(findUrlOrigin)[0];
-    return RegExp("^((" + (escapeRegExp(origin)) + ")|(?![a-z]+\\:))", "i").test(url);
-  };
-
-  ParseUrl.parseQuery = function(qs) {
-    var i, isCurrentLocation, j, key, len, obj, pair, ref1, ref2, val;
-    if ((isCurrentLocation = qs == null) && parsedGlobalQuery) {
-      return parsedGlobalQuery;
-    }
-    qs || (qs = ((ref1 = global.location) != null ? ref1.search : void 0) || "");
-    obj = {};
-    ref2 = qs.replace(/^\?/, '').split('&');
-    for (j = 0, len = ref2.length; j < len; j++) {
-      pair = ref2[j];
-      if ((i = pair.indexOf('=')) >= 0) {
-        key = pair.slice(0, i);
-        val = pair.slice(i + 1);
-        if (key.length > 0) {
-          obj[key] = decodeURIComponent(val);
-        }
-      } else {
-        obj[pair] = true;
-      }
-    }
-    if (isCurrentLocation) {
-      parsedGlobalQuery = obj;
-    }
-    return obj;
-  };
-
-  ParseUrl.generateQuery = generateQuery = function(o) {
-    var k, parts, v;
-    parts = (function() {
-      var results;
-      results = [];
-      for (k in o) {
-        v = o[k];
-        results.push((encodeURIComponent(k)) + "=" + (encodeURIComponent(v)));
-      }
-      return results;
-    })();
-    return parts.join("&");
-  };
-
-  ParseUrl.urlJoin = function(uri, path) {
-    return (uri.replace(/\/$/, '')) + "/" + (path.replace(/^\//, ''));
-  };
-
-  ParseUrl.appendQuery = function(uri, o) {
-    var str;
-    if ((o != null) && (str = generateQuery(o)).length > 0) {
-      return "" + uri + (uri.match(/\?/) ? "&" : "?") + str;
-    } else {
-      return uri;
-    }
-  };
-
-  ParseUrl.parseUrl = function(url) {
-    var __, a, anchor, fileName, host, hostWithPort, m, password, path, pathName, port, protocol, query, username;
-    m = url.match(/(([A-Za-z]+):(\/\/)?)?(([\-;&=\+\$,\w]+)(:([\-;:&=\+\$,\w]+))?@)?([A-Za-z0-9\.\-]+)(:([0-9]+))?(\/[\+~%\/\.\w\-]*)?(\?([\-\+=&;%@\.\w,]*))?(\#([\.\!\/\\\w]*))?/);
-    if (!m) {
-      return void 0;
-    }
-    __ = m[0], __ = m[1], protocol = m[2], __ = m[3], __ = m[4], username = m[5], __ = m[6], password = m[7], host = m[8], __ = m[9], port = m[10], pathName = m[11], __ = m[12], query = m[13], __ = m[14], anchor = m[15];
-    if (pathName) {
-      a = pathName.split("/");
-      fileName = a[a.length - 1];
-      path = (a.slice(0, a.length - 1)).join("/");
-    }
-    host = host.toLowerCase();
-    hostWithPort = host;
-    if (port) {
-      hostWithPort += ":" + port;
-    }
-    return {
-      protocol: protocol,
-      username: username,
-      password: password,
-      hostWithPort: hostWithPort,
-      host: host,
-      port: port,
-      pathName: pathName,
-      path: path,
-      fileName: fileName,
-      query: query && ParseUrl.parseQuery(query),
-      anchor: anchor
-    };
-  };
-
-  return ParseUrl;
-
-})();
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AsyncExtensions, Promise, toSeconds;
-
-Promise = __webpack_require__(10);
-
-toSeconds = __webpack_require__(27).toSeconds;
-
-module.exports = AsyncExtensions = (function() {
-  var interval, timeout;
-
-  function AsyncExtensions() {}
-
-  AsyncExtensions.timeout = timeout = function(ms, f) {
-    var p;
-    p = new Promise(function(resolve) {
-      return setTimeout(resolve, ms);
-    });
-    if (f != null) {
-      return p.then(f);
-    } else {
-      return p;
-    }
-  };
-
-  AsyncExtensions.timeoutAt = function(second, f) {
-    return timeout((second - toSeconds()) * 1000, f);
-  };
-
-  AsyncExtensions.interval = interval = function(ms, f) {
-    var intervalId, p;
-    if (f == null) {
-      f = function() {};
-    }
-    intervalId = null;
-    p = new Promise(function(resolve) {
-      return intervalId = setInterval(function() {
-        return Promise.then(f).then(function() {
-          return resolve();
-        });
-      }, ms);
-    });
-    p.stop = function() {
-      if (intervalId != null) {
-        return clearInterval(intervalId);
-      }
-    };
-    return p;
-  };
-
-  AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
-    return setTimeout(f, 1000 / 60);
-  };
-
-  AsyncExtensions.nextTick = function(f) {
-    return Promise.resolve().then(function() {
-      return typeof f === "function" ? f() : void 0;
-    });
-  };
-
-  AsyncExtensions.throwErrorOutOfStack = function(e) {
-    console.log(e);
-    return timeout(0, function() {
-      throw e;
-    });
-  };
-
-  AsyncExtensions.evalAndThrowErrorsOutOfStack = function(f) {
-    var e;
-    try {
-      return f();
-    } catch (error) {
-      e = error;
-      Neptune.Art.StandardLib.log.error("evalAndThrowErrorsOutOfStack", e);
-      return AsyncExtensions.throwErrorOutOfStack(e);
-    }
-  };
-
-  return AsyncExtensions;
-
-})();
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var CallStack, inspect, isString, parseUrl;
-
-isString = __webpack_require__(0).isString;
-
-parseUrl = __webpack_require__(22).parseUrl;
-
-inspect = __webpack_require__(4).inspect;
-
-module.exports = CallStack = (function() {
-  var CallStackLine;
-
-  function CallStack() {}
-
-  CallStack.errorToString = function(error) {
-    return (error != null ? error.error : void 0) || (error != null ? error.message : void 0) || (isString(error) && error) || Neptune.Art.StandardLib.formattedInspect(error);
-  };
-
-  CallStack.CallStackLine = CallStackLine = (function() {
-    CallStackLine.getter = function(map) {
-      var getter, prop, results;
-      results = [];
-      for (prop in map) {
-        getter = map[prop];
-        results.push(Object.defineProperty(this.prototype, prop, {
-          get: getter,
-          configurable: true
-        }));
-      }
-      return results;
-    };
-
-    CallStackLine.setter = function(map) {
-      var prop, results, setter;
-      results = [];
-      for (prop in map) {
-        setter = map[prop];
-        results.push(Object.defineProperty(this.prototype, prop, {
-          set: setter,
-          configurable: true
-        }));
-      }
-      return results;
-    };
-
-    function CallStackLine(line) {
-      this.original = line;
-      this["function"] = null;
-      this.source = null;
-      this["class"] = null;
-      this.classPath = null;
-      this.sourceFileName = null;
-      this.sourcePath = null;
-      this.sourceHostWithPort = null;
-      this.sourceLine = 0;
-      this.sourceColumn = 0;
-      if (this.parseLineWithFunction(line)) {
-
-      } else {
-        this.parseLineWithoutFunction(line);
-      }
-      this.subParseFunction();
-      this.subParseSource();
-    }
-
-    CallStackLine.prototype.toString = function() {
-      return this.original;
-    };
-
-    CallStackLine.getter({
-      fileWithLocation: function() {
-        return this._fileWithLocation || (this._fileWithLocation = this.sourceFileName ? this.sourcePath + "/" + this.sourceFileName + ":" + this.sourceLine + ":" + this.sourceColumn : this.original);
-      }
-    });
-
-    CallStackLine.prototype.parseLineWithFunction = function(line) {
-      var r;
-      if (r = line.match(/\s*at\s((new\s)?[a-zA-Z0-9_.<>]+)\s\(([^)]*):([0-9]+):([0-9]+)\)/)) {
-        this["function"] = r[1];
-        this.source = r[3];
-        this.sourceLine = r[4] | 0;
-        return this.sourceColumn = r[5] | 0;
-      }
-    };
-
-    CallStackLine.prototype.parseLineWithoutFunction = function(line) {
-      var r;
-      if (r = line.match(/\s*at\s([^)]*):([0-9]+):([0-9]+)/)) {
-        this.source = r[1];
-        this.sourceLine = r[2] | 0;
-        return this.sourceColumn = r[3] | 0;
-      }
-    };
-
-    CallStackLine.prototype.subParseSource = function() {
-      var url;
-      if (this.source) {
-        url = parseUrl(this.source);
-        this.sourceFileName = url.fileName;
-        this.sourcePath = url.path;
-        return this.sourceHostWithPort = url.hostWithPort;
-      }
-    };
-
-    CallStackLine.prototype.subParseFunction = function() {
-      var f;
-      if (this["function"]) {
-        f = this["function"].split(".");
-        this["function"] = f[f.length - 1];
-        if (this["function"] === "<anonymous>") {
-          this["function"] = void 0;
-        }
-        this["class"] = f[f.length - 2];
-        return this.classPath = f.slice(0, f.length - 2);
-      }
-    };
-
-    return CallStackLine;
-
-  })();
-
-  CallStack.rawCallStack = (new Error).stack ? function(ignoreTop) {
-    if (ignoreTop == null) {
-      ignoreTop = 0;
-    }
-    return (new Error).stack.split(/\n  */).slice(ignoreTop + 2);
-  } : function(ignoreTop) {
-    var e;
-    if (ignoreTop == null) {
-      ignoreTop = 0;
-    }
-    try {
-      throw new Error;
-    } catch (error1) {
-      e = error1;
-      return e.stack.split(/\n  */).slice(ignoreTop + 2);
-    }
-  };
-
-  CallStack.callStack = function(ignoreTop) {
-    var i, len, line, ref, results;
-    if (ignoreTop == null) {
-      ignoreTop = 0;
-    }
-    ref = CallStack.rawCallStack(ignoreTop + 1);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      line = ref[i];
-      results.push(new CallStackLine(line));
-    }
-    return results;
-  };
-
-  return CallStack;
-
-})();
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = [__webpack_require__(3), __webpack_require__(14), __webpack_require__(13), __webpack_require__(2)];
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
-
-ref = __webpack_require__(2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
-
-formattedInspect = __webpack_require__(4).formattedInspect;
-
-march1973InMilliseconds = 100000000000;
-
-module.exports = {
-  dateFormat: dateFormat = __webpack_require__(49),
-  formatDate: function(value, format) {
-    if (isString(value)) {
-      format = value;
-      value = null;
-    }
-    return dateFormat(toDate(value), format);
-  },
-
-  /*
-  IN:
-    Date
-    OR Number of Seconds since epoch-start
-    OR Number of Milliseconds since epoch-start
-  OUT:
-    Number of Milliseconds since epoch-start
-   */
-  toMilliseconds: toMilliseconds = function(v) {
-    if (v == null) {
-      return Date.now();
-    }
-    if (isString(v)) {
-      v = v - 0;
-    }
-    if (isNumber(v)) {
-      if (v < march1973InMilliseconds) {
-        return v * 1000;
-      } else {
-        return v;
-      }
-    } else if (isDate(v)) {
-      return v - 0;
-    } else {
-      throw new Error("invalid timestamp value: " + (formattedInspect(v)));
-    }
-  },
-
-  /*
-  IN:
-    Date
-    OR Number of Seconds since epoch-start
-    OR Number of Milliseconds since epoch-start
-  OUT:
-    Number of Seconds since epoch-start
-   */
-  toSeconds: function(v) {
-    if (v == null) {
-      return Date.now() / 1000;
-    }
-    return (toMilliseconds(v) / 1000 + .5) | 0;
-  },
-  toDate: toDate = function(v) {
-    if (v == null) {
-      return new Date;
-    }
-    if (isDate(v)) {
-      return v;
-    } else {
-      return new Date(toMilliseconds(v));
-    }
-  }
-};
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-remove = __webpack_require__(18).remove;
-
-objectKeyCount = __webpack_require__(17).objectKeyCount;
-
-floatTrue0 = __webpack_require__(9).floatTrue0;
-
-ref = __webpack_require__(0), isString = ref.isString, isNumber = ref.isNumber;
-
-min = Math.min;
-
-module.exports = Eq = (function() {
-  var plainObjectsDeepDiff, plainObjectsDeepEq;
-
-  function Eq() {}
-
-
-  /*
-  IN: see @compare
-  OUT:
-    true: if a and b are structurally equal
-    false: otherwise
-   */
-
-  Eq.eq = function(a, b) {
-    return 0 === Eq.compare(a, b, true);
-  };
-
-  Eq.neq = function(a, b) {
-    return 0 !== Eq.compare(a, b, true);
-  };
-
-  Eq.fastEq = function(a, b) {
-    return 0 === Eq.compare(a, b, false);
-  };
-
-  Eq.fastNeq = function(a, b) {
-    return 0 !== Eq.compare(a, b, false);
-  };
-
-  Eq._compareArray = function(a, b, recursionBlockArray) {
-    var aLength, av, bLength, bv, i, j, ref1, val;
-    aLength = a.length;
-    bLength = b.length;
-    for (i = j = 0, ref1 = Math.min(aLength, bLength); j < ref1; i = j += 1) {
-      av = a[i];
-      bv = b[i];
-      if (0 !== (val = Eq._compare(av, bv, recursionBlockArray))) {
-        return val;
-      }
-    }
-    return aLength - bLength;
-  };
-
-  Eq._compareObject = function(a, b, recursionBlockArray) {
-    var aLength, av, bv, compared, k, val;
-    aLength = 0;
-    compared = 0;
-    for (k in a) {
-      av = a[k];
-      aLength++;
-      av = a[k];
-      bv = b[k];
-      if (bv !== void 0 || b.hasOwnProperty(k)) {
-        compared++;
-        if (0 !== (val = Eq._compare(av, bv, recursionBlockArray))) {
-          return val;
-        }
-      }
-    }
-    if (aLength === compared && compared === objectKeyCount(b)) {
-      return 0;
-    } else {
-      return 0/0;
-    }
-  };
-
-
-  /*
-  compare is recursive. However, it only recurses for 'plain' objects and arrays.
-  
-  If you want to compare custom objects deeply, you must add an .eq or .compare function to your custom objects.
-    signature: a.eq b, recursionBlockArray => truthy if a equals b
-    signature: a.compare b, recursionBlockArray => NaN / <0 / 0 / >0 for incomparable / a<b / a==b / a>b respectively
-    IN:
-      a: => this/@
-      b: compared with a
-      recursionBlockArray: an array of objects already on the stack being tested, pass this to
-    It is an array of every object recursively currently being tested - don't test an object in this array
-    recursionBlockArray can be altered, but should be returned in its original state. It may be null.
-  
-  IN:
-    a and b: compare a and b
-    recursionBlockEnabled:
-      truthy: recursive structures will be handled correctly
-      falsey: (default) faster, but recursive structures result in infinite recursion
-  OUT:
-    NaN:
-      a and b are different types
-      a and b are otherwise not comparable
-  
-    <0: a < b
-    0:  a == b
-    >0: a > b
-   */
-
-  Eq.compare = function(a, b, recursionBlockEnabled) {
-    return Eq._compare(a, b, recursionBlockEnabled && []);
-  };
-
-  Eq._compare = function(a, b, recursionBlockArray) {
-    var _constructor;
-    if (a === b) {
-      return 0;
-    }
-    if ((a != null) && (b != null) && a.constructor === (_constructor = b.constructor)) {
-      if (isString(a)) {
-        return a.localeCompare(b);
-      }
-      if (isNumber(a)) {
-        return floatTrue0(a - b);
-      }
-      if (recursionBlockArray) {
-        if (indexOf.call(recursionBlockArray, a) >= 0 || indexOf.call(recursionBlockArray, b) >= 0) {
-          return 0;
-        }
-        recursionBlockArray.push(a);
-        recursionBlockArray.push(b);
-      }
-      if (a.compare) {
-        return a.compare(b, recursionBlockArray);
-      }
-      if (_constructor === Array) {
-        return Eq._compareArray(a, b, recursionBlockArray);
-      }
-      if (_constructor === Object) {
-        return Eq._compareObject(a, b, recursionBlockArray);
-      }
-      if (a.eq && a.eq(b, recursionBlockArray)) {
-        return 0;
-      }
-      if (recursionBlockArray) {
-        remove(recursionBlockArray, recursionBlockArray.length - 2, 2);
-      }
-    }
-    return 0/0;
-  };
-
-  Eq.plainObjectsDeepEqArray = function(a, b) {
-    var av, i, j, len1;
-    if (a.length !== b.length) {
-      return false;
-    }
-    for (i = j = 0, len1 = a.length; j < len1; i = ++j) {
-      av = a[i];
-      if (!Eq.plainObjectsDeepEq(av, b[i])) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  Eq.plainObjectsDeepEqObject = function(a, b) {
-    var aLength, av, bv, k;
-    aLength = 0;
-    for (k in a) {
-      av = a[k];
-      aLength++;
-      bv = b[k];
-      if (!((bv !== void 0 || b.hasOwnProperty(k)) && Eq.plainObjectsDeepEq(av, bv))) {
-        return false;
-      }
-    }
-    return aLength === objectKeyCount(b);
-  };
-
-  Eq.plainObjectsDeepEq = plainObjectsDeepEq = function(a, b) {
-    var _constructor;
-    if (a === b) {
-      return true;
-    } else if (a && b && a.constructor === (_constructor = b.constructor)) {
-      if (a.eq) {
-        return a.eq(b);
-      } else if (_constructor === Array) {
-        return Eq.plainObjectsDeepEqArray(a, b);
-      } else if (_constructor === Object) {
-        return Eq.plainObjectsDeepEqObject(a, b);
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  };
-
-  Eq.propsEq = plainObjectsDeepEq;
-
-  Eq.plainObjectsDeepDiffArray = function(before, after) {
-    var diff, i, j, l, len, m, ref1, ref2, ref3, ref4, ref5, res;
-    res = null;
-    len = min(before.length, after.length);
-    for (i = j = 0, ref1 = len; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
-      if (!(diff = plainObjectsDeepDiff(before[i], after[i]))) {
-        continue;
-      }
-      res || (res = {});
-      res[i] = diff;
-    }
-    if (len < before.length) {
-      for (i = l = ref2 = len, ref3 = before.length; ref2 <= ref3 ? l < ref3 : l > ref3; i = ref2 <= ref3 ? ++l : --l) {
-        res || (res = {});
-        res[i] = {
-          removed: before[i]
-        };
-      }
-    }
-    if (len < after.length) {
-      for (i = m = ref4 = len, ref5 = after.length; ref4 <= ref5 ? m < ref5 : m > ref5; i = ref4 <= ref5 ? ++m : --m) {
-        res || (res = {});
-        res[i] = {
-          added: after[i]
-        };
-      }
-    }
-    return res;
-  };
-
-  Eq.plainObjectsDeepDiffObject = function(before, after) {
-    var afterV, beforeV, diff, k, res;
-    res = null;
-    for (k in before) {
-      beforeV = before[k];
-      if (after.hasOwnProperty(k)) {
-        if (diff = plainObjectsDeepDiff(beforeV, after[k])) {
-          res || (res = {});
-          res[k] = diff;
-        }
-      } else {
-        res || (res = {});
-        res[k] = {
-          removed: beforeV
-        };
-      }
-    }
-    for (k in after) {
-      afterV = after[k];
-      if (!(!before.hasOwnProperty(k))) {
-        continue;
-      }
-      res || (res = {});
-      res[k] = {
-        added: afterV
-      };
-    }
-    return res;
-  };
-
-  Eq.plainObjectsDeepDiff = plainObjectsDeepDiff = function(before, after) {
-    var _constructor;
-    if (before === after) {
-      return null;
-    } else if (before && after && before.constructor === (_constructor = after.constructor)) {
-      if (before.eq) {
-        if (before.eq(after)) {
-          return null;
-        } else {
-          return {
-            before: before,
-            after: after
-          };
-        }
-      } else if (_constructor === Array) {
-        return Eq.plainObjectsDeepDiffArray(before, after);
-      } else if (_constructor === Object) {
-        return Eq.plainObjectsDeepDiffObject(before, after);
-      } else {
-        return {
-          before: before,
-          after: after
-        };
-      }
-    } else {
-      return {
-        before: before,
-        after: after
-      };
-    }
-  };
-
-  Eq.diff = plainObjectsDeepDiff;
-
-  Eq.shallowEq = function(a, b) {
-    return a === b || (a && b && a.eq && a.eq(b));
-  };
-
-  return Eq;
-
-})();
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
-
-ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
-
-escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
-
-inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
-
-dateFormat = __webpack_require__(49);
-
-module.exports = InspectedObjects = (function() {
-  var toInspectedObjects;
-
-  function InspectedObjects() {}
-
-  InspectedObjects.toInspectedObjects = toInspectedObjects = function(m) {
-    var functionString, literal, oldm, out, reducedFunctionString;
-    if (m == null) {
-      return m;
-    }
-    oldm = m;
-    if (m === global) {
-      return inspectedObjectLiteral("global");
-    } else if (out = typeof m.getInspectedObjects === "function" ? m.getInspectedObjects() : void 0) {
-      return out;
-    } else if (isPromise(m)) {
-      return inspectedObjectLiteral("Promise");
-    } else if (isPlainObject(m) || isPlainArray(m)) {
-      return deepMap(m, function(v) {
-        return toInspectedObjects(v);
-      });
-    } else if (m instanceof Error) {
-      literal = inspectedObjectLiteral(m.stack || m.toString(), true);
-      if (m.info) {
-        return toInspectedObjects({
-          Error: {
-            info: m.info,
-            stack: literal
-          }
-        });
-      } else {
-        return {
-          Error: {
-            "class": toInspectedObjects(m.constructor),
-            stack: literal
-          }
-        };
-      }
-    } else if (isRegExp(m)) {
-      return inspectedObjectLiteral("" + m);
-    } else if (isDate(m)) {
-      return inspectedObjectLiteral(dateFormat(m, "UTC:yyyy-mm-dd HH:MM:ss Z"));
-    } else if (isClass(m)) {
-      return inspectedObjectLiteral("<" + ((typeof m.getName === "function" ? m.getName() : void 0) || m.name) + ">");
-    } else if (isFunction(m)) {
-      functionString = "" + m;
-      reducedFunctionString = functionString.replace(/\s+/g, ' ').replace(/^function (\([^)]*\))/, "$1 ->").replace(/^\(\)\s*/, '');
-      return inspectedObjectLiteral(reducedFunctionString.length < 80 ? reducedFunctionString : functionString.slice(0, 5 * 80));
-    } else if (m && !isString(m)) {
-      if (isNonNegativeInt(m.length)) {
-        return inspectedObjectLiteral("{" + m.constructor.name + " length: " + m.length + "}");
-      } else if (isNonNegativeInt(m.byteLength)) {
-        return inspectedObjectLiteral("{" + m.constructor.name + " byteLength: " + m.byteLength + "}");
-      } else {
-        return m;
-      }
-    } else {
-      return m;
-    }
-  };
-
-  return InspectedObjects;
-
-})();
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
-  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-Map = __webpack_require__(21);
-
-escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
-
-ref = __webpack_require__(0), objectName = ref.objectName, isString = ref.isString, isArray = ref.isArray, isFunction = ref.isFunction, isObject = ref.isObject, isClass = ref.isClass, isBrowserObject = ref.isBrowserObject, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray;
-
-module.exports = Inspector = (function() {
-  var inspect;
-
-  Inspector.unquotablePropertyRegex = /^([0-9]+|[_a-zA-Z][_0-9a-zA-Z]*)$/;
-
-  Inspector.customInspectable = function(obj) {
-    return obj.inspect && !(typeof obj === "function");
-  };
-
-  Inspector.parentString = function(distance) {
-    switch (distance) {
-      case 0:
-        return "parent";
-      case 1:
-        return "grandparent";
-      case 2:
-        return "great grandparent";
-      default:
-        return "great^" + (distance - 1) + " grandparent";
-    }
-  };
-
-  function Inspector(options) {
-    if (options == null) {
-      options = {};
-    }
-    this.inspect = bind(this.inspect, this);
-    this.inspectInternal = bind(this.inspectInternal, this);
-    this.inspectObject = bind(this.inspectObject, this);
-    this.inspectArray = bind(this.inspectArray, this);
-    this.maxLength = options.maxLength || 10000;
-    this.allowCustomInspectors = !options.noCustomInspectors;
-    this.maxDepth = options.maxDepth != null ? options.maxDepth : 10;
-    this.outArray = [];
-    this.length = 0;
-    this.depth = 0;
-    this.inspectingMap = new Map;
-    this.done = false;
-  }
-
-  Inspector.inspect = inspect = function(obj, options) {
-    var inspector;
-    if (options == null) {
-      options = {};
-    }
-    if (this !== global) {
-      return Neptune.Base.inspect.call(this);
-    }
-    inspector = new Inspector(options);
-    inspector.inspect(obj);
-    return inspector.getResult();
-  };
-
-  Inspector.shallowInspect = function(obj) {
-    if (obj == null) {
-      return "" + obj;
-    } else if (Inspector.customInspectable(obj)) {
-      return Inspector.inspect(obj);
-    } else if (isString(obj)) {
-      return escapeJavascriptString(obj);
-    } else if (isArray(obj)) {
-      return "<<Array length: " + obj.length + ">>";
-    } else if (isFunction(obj) && obj.name === "") {
-      return "<<function args: " + obj.length + ">>";
-    } else {
-      return "<<" + (typeof obj) + ": " + (obj.name || obj) + ">>";
-    }
-  };
-
-  Inspector.inspectLean = function(object, options) {
-    var fullInspect, match;
-    fullInspect = inspect(object, options);
-    if (!isFunction(object != null ? object.inspect : void 0) && (isPlainObject(object) || (isPlainArray(object) && (object.length > 1 || (options != null ? options.forArgs : void 0))))) {
-      match = fullInspect.match(/^\[(.+)\]$|^\{(.+)\}$/);
-      if (match) {
-        return match[1] || match[2] || match[3];
-      } else {
-        return fullInspect;
-      }
-    } else {
-      return fullInspect;
-    }
-  };
-
-  Inspector.prototype.put = function(s) {
-    var remaining;
-    if (this.done) {
-      return;
-    }
-    if (this.length + s.length > this.maxLength) {
-      this.done = true;
-      remaining = this.maxLength - this.length;
-      s = (s.slice(0, remaining)) + "<... first " + remaining + "/" + s.length + ">";
-    }
-    this.length += s.length;
-    this.outArray.push(s);
-    return s;
-  };
-
-  Inspector.prototype.getResult = function() {
-    return this.outArray.join("");
-  };
-
-  Inspector.prototype.maxDepthOutput = function(obj) {
-    var keys, name;
-    switch (typeof obj) {
-      case "string":
-      case "number":
-      case "boolean":
-      case "undefined":
-        return this.inspectInternal(obj);
-      case "function":
-        return this.put(objectName(obj));
-      case "object":
-        return this.put(obj === null ? "null" : isArray(obj) ? "[" + obj.length + " elements]" : (keys = Object.keys(obj), name = objectName(obj), name === "Object" ? "{" + keys.length + " keys}" : keys.length > 0 ? "{" + name + " " + keys.length + " keys}" : name));
-    }
-  };
-
-  Inspector.prototype.inspectArray = function(array) {
-    var first, i, len, obj;
-    this.put("[");
-    first = true;
-    for (i = 0, len = array.length; i < len; i++) {
-      obj = array[i];
-      if (!first) {
-        this.put(", ");
-      }
-      this.inspect(obj);
-      first = false;
-    }
-    return this.put("]");
-  };
-
-  Inspector.prototype.inspectObject = function(obj) {
-    var attributes, first, i, k, keys, len, name, v;
-    attributes = [];
-    keys = Object.keys(obj);
-    name = objectName(obj);
-    if (isFunction(obj) && keys.length === 0) {
-      return this.put(name + "()");
-    } else if (isBrowserObject(obj)) {
-      return this.put("{" + name + "}");
-    } else {
-      this.put("{");
-      if (obj.constructor !== Object) {
-        this.put(name + " ");
-      }
-      first = true;
-      for (i = 0, len = keys.length; i < len; i++) {
-        k = keys[i];
-        if (!(k !== "__uniqueId")) {
-          continue;
-        }
-        if (!first) {
-          this.put(", ");
-        }
-        v = obj[k];
-        if (Inspector.unquotablePropertyRegex.test(k)) {
-          this.put(k);
-        } else {
-          this.inspect(k);
-        }
-        this.put(": ");
-        this.inspect(v);
-        first = false;
-      }
-      return this.put("}");
-    }
-  };
-
-  Inspector.prototype.inspectInternal = function(obj) {
-    if (obj == null) {
-      return this.put("" + obj);
-    } else if (isString(obj)) {
-      return this.put(escapeJavascriptString(obj));
-    } else if (isArray(obj)) {
-      return this.inspectArray(obj);
-    } else if (isClass(obj)) {
-      return this.put(objectName(obj));
-    } else if (this.allowCustomInspectors && Inspector.customInspectable(obj)) {
-      if (obj.inspect.length > 0) {
-        return obj.inspect(this);
-      } else {
-        return this.put(obj.inspect());
-      }
-    } else if (obj instanceof RegExp) {
-      return this.put("" + obj);
-    } else if (isObject(obj) || isFunction(obj)) {
-      return this.inspectObject(obj);
-    } else if (isFunction(obj != null ? obj.toString : void 0)) {
-      return this.put(obj.toString());
-    } else {
-      return this.put("" + obj);
-    }
-  };
-
-  Inspector.prototype.inspect = function(obj) {
-    var objDepth;
-    if (this.done) {
-      return;
-    }
-    if (objDepth = this.inspectingMap.get(obj)) {
-      this.put("<" + (Inspector.parentString(this.depth - objDepth)) + ">");
-      return null;
-    }
-    if (this.depth >= this.maxDepth) {
-      this.maxDepthOutput(obj);
-    } else {
-      this.depth++;
-      this.inspectingMap.set(obj, this.depth);
-      this.inspectInternal(obj);
-      this.inspectingMap["delete"](obj);
-      this.depth--;
-    }
-    return null;
-  };
-
-  return Inspector;
-
-})();
-
-
-/***/ }),
-/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1;
@@ -5254,6 +3963,1297 @@ module.exports = Iteration = (function() {
 
 
 /***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/*
+TODO: This is almost identical to ES6's Map: Switch to using a Polyfill like:
+  https://github.com/paulmillr/es6-shim
+
+Map is a Key-Value map which preserves order.
+
+Unlike Javascript objects, you can use any object or value as keys. This includes:
+
+  Strings
+  Numbers
+  null
+  undefined
+  Arrays
+  Objects
+
+Arrays and Objects are assigned a unique id using the StandardLib.Unique library.
+"0", "", null, undefined and 0 are all different unique keys and can each have unique values.
+ */
+var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Unique = __webpack_require__(34);
+
+MinimalBaseObject = __webpack_require__(6);
+
+Node = (function() {
+  function Node(key, value, prev, next) {
+    this.key = key;
+    this.value = value;
+    this.prev = prev || null;
+    this.next = next || null;
+    if (prev) {
+      prev.next = this;
+    }
+    if (next) {
+      next.prev = this;
+    }
+  }
+
+  Node.prototype.remove = function() {
+    var n, p;
+    n = this.next;
+    p = this.prev;
+    if (p) {
+      p.next = n;
+      this.prev = null;
+    }
+    if (n) {
+      n.prev = p;
+      return this.next = null;
+    }
+  };
+
+  return Node;
+
+})();
+
+KeysIterator = (function() {
+  function KeysIterator(node1) {
+    this.node = node1;
+    this.started = false;
+  }
+
+  KeysIterator.prototype.next = function() {
+    var ref, ref1;
+    this.node = this.started ? (ref = this.node) != null ? ref.next : void 0 : (this.started = true, this.node);
+    return {
+      done: !this.node,
+      value: (ref1 = this.node) != null ? ref1.key : void 0
+    };
+  };
+
+  return KeysIterator;
+
+})();
+
+ValuesIterator = (function() {
+  function ValuesIterator(node1) {
+    this.node = node1;
+    this.started = false;
+  }
+
+  ValuesIterator.prototype.next = function() {
+    var ref, ref1;
+    this.node = this.started ? (ref = this.node) != null ? ref.next : void 0 : (this.started = true, this.node);
+    return {
+      done: !this.node,
+      value: (ref1 = this.node) != null ? ref1.value : void 0
+    };
+  };
+
+  return ValuesIterator;
+
+})();
+
+module.exports = (m = new global.Map).set(1, 2) === m ? global.Map : Map = (function(superClass) {
+  extend(Map, superClass);
+
+  function Map() {
+    this._length = 0;
+    this._map = {};
+    this._first = this._last = null;
+  }
+
+  Map.getter({
+    size: function() {
+      return this._length;
+    }
+  });
+
+  Map.prototype._getNodes = function() {
+    var n, result;
+    result = [];
+    n = this._first;
+    while (n) {
+      result.push(n);
+      n = n.next;
+    }
+    return result;
+  };
+
+  Map.prototype.keys = function() {
+    return new KeysIterator(this._first);
+  };
+
+  Map.prototype.values = function() {
+    return new ValuesIterator(this._first);
+  };
+
+  Map.prototype.get = function(key) {
+    var node;
+    node = this._map[Unique.id(key)];
+    return node && node.value;
+  };
+
+  Map.prototype.set = function(key, value) {
+    var id;
+    id = Unique.id(key);
+    if (this._map[id]) {
+      this._map[id].value = value;
+    } else {
+      this._length++;
+      this._last = this._map[id] = new Node(key, value, this._last);
+      if (!this._first) {
+        this._first = this._last;
+      }
+    }
+    return this;
+  };
+
+  Map.prototype._remove = function(key) {
+    var id, n;
+    id = Unique.id(key);
+    if (n = this._map[id]) {
+      this._length--;
+      delete this._map[id];
+      if (this._first === n) {
+        this._first = n.next;
+      }
+      if (this._last === n) {
+        this._last = n.prev;
+      }
+      n.remove();
+      return n;
+    } else {
+      return void 0;
+    }
+  };
+
+  Map.prototype["delete"] = function(key) {
+    return !!this._remove(key);
+  };
+
+  Map.prototype.forEach = function(f) {
+    var i, len, node, ref;
+    ref = this._getNodes();
+    for (i = 0, len = ref.length; i < len; i++) {
+      node = ref[i];
+      f(node.value, node.key, this);
+    }
+    return void 0;
+  };
+
+  Map.prototype.has = function(key) {
+    return !!this._map[Unique.id(key)];
+  };
+
+  return Map;
+
+})(MinimalBaseObject);
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ParseUrl, escapeRegExp, findUrlOrigin, ref;
+
+ref = __webpack_require__(11), escapeRegExp = ref.escapeRegExp, findUrlOrigin = ref.findUrlOrigin;
+
+module.exports = ParseUrl = (function() {
+  var generateQuery, parsedGlobalQuery;
+
+  function ParseUrl() {}
+
+  parsedGlobalQuery = null;
+
+  ParseUrl.sameOrigin = function(url, origin) {
+    var ref1, ref2;
+    if (origin == null) {
+      origin = (ref1 = global.document) != null ? (ref2 = ref1.location) != null ? ref2.origin : void 0 : void 0;
+    }
+    origin = origin.match(findUrlOrigin)[0];
+    return RegExp("^((" + (escapeRegExp(origin)) + ")|(?![a-z]+\\:))", "i").test(url);
+  };
+
+  ParseUrl.parseQuery = function(qs) {
+    var i, isCurrentLocation, j, key, len, obj, pair, ref1, ref2, val;
+    if ((isCurrentLocation = qs == null) && parsedGlobalQuery) {
+      return parsedGlobalQuery;
+    }
+    qs || (qs = ((ref1 = global.location) != null ? ref1.search : void 0) || "");
+    obj = {};
+    ref2 = qs.replace(/^\?/, '').split('&');
+    for (j = 0, len = ref2.length; j < len; j++) {
+      pair = ref2[j];
+      if ((i = pair.indexOf('=')) >= 0) {
+        key = pair.slice(0, i);
+        val = pair.slice(i + 1);
+        if (key.length > 0) {
+          obj[key] = decodeURIComponent(val);
+        }
+      } else {
+        obj[pair] = true;
+      }
+    }
+    if (isCurrentLocation) {
+      parsedGlobalQuery = obj;
+    }
+    return obj;
+  };
+
+  ParseUrl.generateQuery = generateQuery = function(o) {
+    var k, parts, v;
+    parts = (function() {
+      var results;
+      results = [];
+      for (k in o) {
+        v = o[k];
+        results.push((encodeURIComponent(k)) + "=" + (encodeURIComponent(v)));
+      }
+      return results;
+    })();
+    return parts.join("&");
+  };
+
+  ParseUrl.urlJoin = function(uri, path) {
+    return (uri.replace(/\/$/, '')) + "/" + (path.replace(/^\//, ''));
+  };
+
+  ParseUrl.appendQuery = function(uri, o) {
+    var str;
+    if ((o != null) && (str = generateQuery(o)).length > 0) {
+      return "" + uri + (uri.match(/\?/) ? "&" : "?") + str;
+    } else {
+      return uri;
+    }
+  };
+
+  ParseUrl.parseUrl = function(url) {
+    var __, a, anchor, fileName, host, hostWithPort, m, password, path, pathName, port, protocol, query, username;
+    m = url.match(/(([A-Za-z]+):(\/\/)?)?(([\-;&=\+\$,\w]+)(:([\-;:&=\+\$,\w]+))?@)?([A-Za-z0-9\.\-]+)(:([0-9]+))?(\/[\+~%\/\.\w\-]*)?(\?([\-\+=&;%@\.\w,]*))?(\#([\.\!\/\\\w]*))?/);
+    if (!m) {
+      return void 0;
+    }
+    __ = m[0], __ = m[1], protocol = m[2], __ = m[3], __ = m[4], username = m[5], __ = m[6], password = m[7], host = m[8], __ = m[9], port = m[10], pathName = m[11], __ = m[12], query = m[13], __ = m[14], anchor = m[15];
+    if (pathName) {
+      a = pathName.split("/");
+      fileName = a[a.length - 1];
+      path = (a.slice(0, a.length - 1)).join("/");
+    }
+    host = host.toLowerCase();
+    hostWithPort = host;
+    if (port) {
+      hostWithPort += ":" + port;
+    }
+    return {
+      protocol: protocol,
+      username: username,
+      password: password,
+      hostWithPort: hostWithPort,
+      host: host,
+      port: port,
+      pathName: pathName,
+      path: path,
+      fileName: fileName,
+      query: query && ParseUrl.parseQuery(query),
+      anchor: anchor
+    };
+  };
+
+  return ParseUrl;
+
+})();
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AsyncExtensions, Promise, toSeconds;
+
+Promise = __webpack_require__(10);
+
+toSeconds = __webpack_require__(28).toSeconds;
+
+module.exports = AsyncExtensions = (function() {
+  var interval, timeout;
+
+  function AsyncExtensions() {}
+
+  AsyncExtensions.timeout = timeout = function(ms, f) {
+    var p;
+    p = new Promise(function(resolve) {
+      return setTimeout(resolve, ms);
+    });
+    if (f != null) {
+      return p.then(f);
+    } else {
+      return p;
+    }
+  };
+
+  AsyncExtensions.timeoutAt = function(second, f) {
+    return timeout((second - toSeconds()) * 1000, f);
+  };
+
+  AsyncExtensions.interval = interval = function(ms, f) {
+    var intervalId, p;
+    if (f == null) {
+      f = function() {};
+    }
+    intervalId = null;
+    p = new Promise(function(resolve) {
+      return intervalId = setInterval(function() {
+        return Promise.then(f).then(function() {
+          return resolve();
+        });
+      }, ms);
+    });
+    p.stop = function() {
+      if (intervalId != null) {
+        return clearInterval(intervalId);
+      }
+    };
+    return p;
+  };
+
+  AsyncExtensions.requestAnimationFrame = self.requestAnimationFrame || self.webkitRequestAnimationFrame || self.mozRequestAnimationFrame || self.oRequestAnimationFrame || self.msRequestAnimationFrame || function(f) {
+    return setTimeout(f, 1000 / 60);
+  };
+
+  AsyncExtensions.nextTick = function(f) {
+    return Promise.resolve().then(function() {
+      return typeof f === "function" ? f() : void 0;
+    });
+  };
+
+  AsyncExtensions.throwErrorOutOfStack = function(e) {
+    console.log(e);
+    return timeout(0, function() {
+      throw e;
+    });
+  };
+
+  AsyncExtensions.evalAndThrowErrorsOutOfStack = function(f) {
+    var e;
+    try {
+      return f();
+    } catch (error) {
+      e = error;
+      Neptune.Art.StandardLib.log.error("evalAndThrowErrorsOutOfStack", e);
+      return AsyncExtensions.throwErrorOutOfStack(e);
+    }
+  };
+
+  return AsyncExtensions;
+
+})();
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var CallStack, inspect, isString, parseUrl;
+
+isString = __webpack_require__(0).isString;
+
+parseUrl = __webpack_require__(23).parseUrl;
+
+inspect = __webpack_require__(4).inspect;
+
+module.exports = CallStack = (function() {
+  var CallStackLine;
+
+  function CallStack() {}
+
+  CallStack.errorToString = function(error) {
+    return (error != null ? error.error : void 0) || (error != null ? error.message : void 0) || (isString(error) && error) || Neptune.Art.StandardLib.formattedInspect(error);
+  };
+
+  CallStack.CallStackLine = CallStackLine = (function() {
+    CallStackLine.getter = function(map) {
+      var getter, prop, results;
+      results = [];
+      for (prop in map) {
+        getter = map[prop];
+        results.push(Object.defineProperty(this.prototype, prop, {
+          get: getter,
+          configurable: true
+        }));
+      }
+      return results;
+    };
+
+    CallStackLine.setter = function(map) {
+      var prop, results, setter;
+      results = [];
+      for (prop in map) {
+        setter = map[prop];
+        results.push(Object.defineProperty(this.prototype, prop, {
+          set: setter,
+          configurable: true
+        }));
+      }
+      return results;
+    };
+
+    function CallStackLine(line) {
+      this.original = line;
+      this["function"] = null;
+      this.source = null;
+      this["class"] = null;
+      this.classPath = null;
+      this.sourceFileName = null;
+      this.sourcePath = null;
+      this.sourceHostWithPort = null;
+      this.sourceLine = 0;
+      this.sourceColumn = 0;
+      if (this.parseLineWithFunction(line)) {
+
+      } else {
+        this.parseLineWithoutFunction(line);
+      }
+      this.subParseFunction();
+      this.subParseSource();
+    }
+
+    CallStackLine.prototype.toString = function() {
+      return this.original;
+    };
+
+    CallStackLine.getter({
+      fileWithLocation: function() {
+        return this._fileWithLocation || (this._fileWithLocation = this.sourceFileName ? this.sourcePath + "/" + this.sourceFileName + ":" + this.sourceLine + ":" + this.sourceColumn : this.original);
+      }
+    });
+
+    CallStackLine.prototype.parseLineWithFunction = function(line) {
+      var r;
+      if (r = line.match(/\s*at\s((new\s)?[a-zA-Z0-9_.<>]+)\s\(([^)]*):([0-9]+):([0-9]+)\)/)) {
+        this["function"] = r[1];
+        this.source = r[3];
+        this.sourceLine = r[4] | 0;
+        return this.sourceColumn = r[5] | 0;
+      }
+    };
+
+    CallStackLine.prototype.parseLineWithoutFunction = function(line) {
+      var r;
+      if (r = line.match(/\s*at\s([^)]*):([0-9]+):([0-9]+)/)) {
+        this.source = r[1];
+        this.sourceLine = r[2] | 0;
+        return this.sourceColumn = r[3] | 0;
+      }
+    };
+
+    CallStackLine.prototype.subParseSource = function() {
+      var url;
+      if (this.source) {
+        url = parseUrl(this.source);
+        this.sourceFileName = url.fileName;
+        this.sourcePath = url.path;
+        return this.sourceHostWithPort = url.hostWithPort;
+      }
+    };
+
+    CallStackLine.prototype.subParseFunction = function() {
+      var f;
+      if (this["function"]) {
+        f = this["function"].split(".");
+        this["function"] = f[f.length - 1];
+        if (this["function"] === "<anonymous>") {
+          this["function"] = void 0;
+        }
+        this["class"] = f[f.length - 2];
+        return this.classPath = f.slice(0, f.length - 2);
+      }
+    };
+
+    return CallStackLine;
+
+  })();
+
+  CallStack.rawCallStack = (new Error).stack ? function(ignoreTop) {
+    if (ignoreTop == null) {
+      ignoreTop = 0;
+    }
+    return (new Error).stack.split(/\n  */).slice(ignoreTop + 2);
+  } : function(ignoreTop) {
+    var e;
+    if (ignoreTop == null) {
+      ignoreTop = 0;
+    }
+    try {
+      throw new Error;
+    } catch (error1) {
+      e = error1;
+      return e.stack.split(/\n  */).slice(ignoreTop + 2);
+    }
+  };
+
+  CallStack.callStack = function(ignoreTop) {
+    var i, len, line, ref, results;
+    if (ignoreTop == null) {
+      ignoreTop = 0;
+    }
+    ref = CallStack.rawCallStack(ignoreTop + 1);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      line = ref[i];
+      results.push(new CallStackLine(line));
+    }
+    return results;
+  };
+
+  return CallStack;
+
+})();
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = [__webpack_require__(3), __webpack_require__(15), __webpack_require__(14), __webpack_require__(2)];
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
+
+ref = __webpack_require__(2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
+
+formattedInspect = __webpack_require__(4).formattedInspect;
+
+march1973InMilliseconds = 100000000000;
+
+module.exports = {
+  dateFormat: dateFormat = __webpack_require__(49),
+  formatDate: function(value, format) {
+    if (isString(value)) {
+      format = value;
+      value = null;
+    }
+    return dateFormat(toDate(value), format);
+  },
+
+  /*
+  IN:
+    Date
+    OR Number of Seconds since epoch-start
+    OR Number of Milliseconds since epoch-start
+  OUT:
+    Number of Milliseconds since epoch-start
+   */
+  toMilliseconds: toMilliseconds = function(v) {
+    if (v == null) {
+      return Date.now();
+    }
+    if (isString(v)) {
+      v = v - 0;
+    }
+    if (isNumber(v)) {
+      if (v < march1973InMilliseconds) {
+        return v * 1000;
+      } else {
+        return v;
+      }
+    } else if (isDate(v)) {
+      return v - 0;
+    } else {
+      throw new Error("invalid timestamp value: " + (formattedInspect(v)));
+    }
+  },
+
+  /*
+  IN:
+    Date
+    OR Number of Seconds since epoch-start
+    OR Number of Milliseconds since epoch-start
+  OUT:
+    Number of Seconds since epoch-start
+   */
+  toSeconds: function(v) {
+    if (v == null) {
+      return Date.now() / 1000;
+    }
+    return (toMilliseconds(v) / 1000 + .5) | 0;
+  },
+  toDate: toDate = function(v) {
+    if (v == null) {
+      return new Date;
+    }
+    if (isDate(v)) {
+      return v;
+    } else {
+      return new Date(toMilliseconds(v));
+    }
+  }
+};
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+remove = __webpack_require__(13).remove;
+
+objectKeyCount = __webpack_require__(18).objectKeyCount;
+
+floatTrue0 = __webpack_require__(9).floatTrue0;
+
+ref = __webpack_require__(0), isString = ref.isString, isNumber = ref.isNumber;
+
+min = Math.min;
+
+module.exports = Eq = (function() {
+  var plainObjectsDeepDiff, plainObjectsDeepEq;
+
+  function Eq() {}
+
+
+  /*
+  IN: see @compare
+  OUT:
+    true: if a and b are structurally equal
+    false: otherwise
+   */
+
+  Eq.eq = function(a, b) {
+    return 0 === Eq.compare(a, b, true);
+  };
+
+  Eq.neq = function(a, b) {
+    return 0 !== Eq.compare(a, b, true);
+  };
+
+  Eq.fastEq = function(a, b) {
+    return 0 === Eq.compare(a, b, false);
+  };
+
+  Eq.fastNeq = function(a, b) {
+    return 0 !== Eq.compare(a, b, false);
+  };
+
+  Eq._compareArray = function(a, b, recursionBlockArray) {
+    var aLength, av, bLength, bv, i, j, ref1, val;
+    aLength = a.length;
+    bLength = b.length;
+    for (i = j = 0, ref1 = Math.min(aLength, bLength); j < ref1; i = j += 1) {
+      av = a[i];
+      bv = b[i];
+      if (0 !== (val = Eq._compare(av, bv, recursionBlockArray))) {
+        return val;
+      }
+    }
+    return aLength - bLength;
+  };
+
+  Eq._compareObject = function(a, b, recursionBlockArray) {
+    var aLength, av, bv, compared, k, val;
+    aLength = 0;
+    compared = 0;
+    for (k in a) {
+      av = a[k];
+      aLength++;
+      av = a[k];
+      bv = b[k];
+      if (bv !== void 0 || b.hasOwnProperty(k)) {
+        compared++;
+        if (0 !== (val = Eq._compare(av, bv, recursionBlockArray))) {
+          return val;
+        }
+      }
+    }
+    if (aLength === compared && compared === objectKeyCount(b)) {
+      return 0;
+    } else {
+      return 0/0;
+    }
+  };
+
+
+  /*
+  compare is recursive. However, it only recurses for 'plain' objects and arrays.
+  
+  If you want to compare custom objects deeply, you must add an .eq or .compare function to your custom objects.
+    signature: a.eq b, recursionBlockArray => truthy if a equals b
+    signature: a.compare b, recursionBlockArray => NaN / <0 / 0 / >0 for incomparable / a<b / a==b / a>b respectively
+    IN:
+      a: => this/@
+      b: compared with a
+      recursionBlockArray: an array of objects already on the stack being tested, pass this to
+    It is an array of every object recursively currently being tested - don't test an object in this array
+    recursionBlockArray can be altered, but should be returned in its original state. It may be null.
+  
+  IN:
+    a and b: compare a and b
+    recursionBlockEnabled:
+      truthy: recursive structures will be handled correctly
+      falsey: (default) faster, but recursive structures result in infinite recursion
+  OUT:
+    NaN:
+      a and b are different types
+      a and b are otherwise not comparable
+  
+    <0: a < b
+    0:  a == b
+    >0: a > b
+   */
+
+  Eq.compare = function(a, b, recursionBlockEnabled) {
+    return Eq._compare(a, b, recursionBlockEnabled && []);
+  };
+
+  Eq._compare = function(a, b, recursionBlockArray) {
+    var _constructor;
+    if (a === b) {
+      return 0;
+    }
+    if ((a != null) && (b != null) && a.constructor === (_constructor = b.constructor)) {
+      if (isString(a)) {
+        return a.localeCompare(b);
+      }
+      if (isNumber(a)) {
+        return floatTrue0(a - b);
+      }
+      if (recursionBlockArray) {
+        if (indexOf.call(recursionBlockArray, a) >= 0 || indexOf.call(recursionBlockArray, b) >= 0) {
+          return 0;
+        }
+        recursionBlockArray.push(a);
+        recursionBlockArray.push(b);
+      }
+      if (a.compare) {
+        return a.compare(b, recursionBlockArray);
+      }
+      if (_constructor === Array) {
+        return Eq._compareArray(a, b, recursionBlockArray);
+      }
+      if (_constructor === Object) {
+        return Eq._compareObject(a, b, recursionBlockArray);
+      }
+      if (a.eq && a.eq(b, recursionBlockArray)) {
+        return 0;
+      }
+      if (recursionBlockArray) {
+        remove(recursionBlockArray, recursionBlockArray.length - 2, 2);
+      }
+    }
+    return 0/0;
+  };
+
+  Eq.plainObjectsDeepEqArray = function(a, b) {
+    var av, i, j, len1;
+    if (a.length !== b.length) {
+      return false;
+    }
+    for (i = j = 0, len1 = a.length; j < len1; i = ++j) {
+      av = a[i];
+      if (!Eq.plainObjectsDeepEq(av, b[i])) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  Eq.plainObjectsDeepEqObject = function(a, b) {
+    var aLength, av, bv, k;
+    aLength = 0;
+    for (k in a) {
+      av = a[k];
+      aLength++;
+      bv = b[k];
+      if (!((bv !== void 0 || b.hasOwnProperty(k)) && Eq.plainObjectsDeepEq(av, bv))) {
+        return false;
+      }
+    }
+    return aLength === objectKeyCount(b);
+  };
+
+  Eq.plainObjectsDeepEq = plainObjectsDeepEq = function(a, b) {
+    var _constructor;
+    if (a === b) {
+      return true;
+    } else if (a && b && a.constructor === (_constructor = b.constructor)) {
+      if (a.eq) {
+        return a.eq(b);
+      } else if (_constructor === Array) {
+        return Eq.plainObjectsDeepEqArray(a, b);
+      } else if (_constructor === Object) {
+        return Eq.plainObjectsDeepEqObject(a, b);
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  Eq.propsEq = plainObjectsDeepEq;
+
+  Eq.plainObjectsDeepDiffArray = function(before, after) {
+    var diff, i, j, l, len, m, ref1, ref2, ref3, ref4, ref5, res;
+    res = null;
+    len = min(before.length, after.length);
+    for (i = j = 0, ref1 = len; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
+      if (!(diff = plainObjectsDeepDiff(before[i], after[i]))) {
+        continue;
+      }
+      res || (res = {});
+      res[i] = diff;
+    }
+    if (len < before.length) {
+      for (i = l = ref2 = len, ref3 = before.length; ref2 <= ref3 ? l < ref3 : l > ref3; i = ref2 <= ref3 ? ++l : --l) {
+        res || (res = {});
+        res[i] = {
+          removed: before[i]
+        };
+      }
+    }
+    if (len < after.length) {
+      for (i = m = ref4 = len, ref5 = after.length; ref4 <= ref5 ? m < ref5 : m > ref5; i = ref4 <= ref5 ? ++m : --m) {
+        res || (res = {});
+        res[i] = {
+          added: after[i]
+        };
+      }
+    }
+    return res;
+  };
+
+  Eq.plainObjectsDeepDiffObject = function(before, after) {
+    var afterV, beforeV, diff, k, res;
+    res = null;
+    for (k in before) {
+      beforeV = before[k];
+      if (after.hasOwnProperty(k)) {
+        if (diff = plainObjectsDeepDiff(beforeV, after[k])) {
+          res || (res = {});
+          res[k] = diff;
+        }
+      } else {
+        res || (res = {});
+        res[k] = {
+          removed: beforeV
+        };
+      }
+    }
+    for (k in after) {
+      afterV = after[k];
+      if (!(!before.hasOwnProperty(k))) {
+        continue;
+      }
+      res || (res = {});
+      res[k] = {
+        added: afterV
+      };
+    }
+    return res;
+  };
+
+  Eq.plainObjectsDeepDiff = plainObjectsDeepDiff = function(before, after) {
+    var _constructor;
+    if (before === after) {
+      return null;
+    } else if (before && after && before.constructor === (_constructor = after.constructor)) {
+      if (before.eq) {
+        if (before.eq(after)) {
+          return null;
+        } else {
+          return {
+            before: before,
+            after: after
+          };
+        }
+      } else if (_constructor === Array) {
+        return Eq.plainObjectsDeepDiffArray(before, after);
+      } else if (_constructor === Object) {
+        return Eq.plainObjectsDeepDiffObject(before, after);
+      } else {
+        return {
+          before: before,
+          after: after
+        };
+      }
+    } else {
+      return {
+        before: before,
+        after: after
+      };
+    }
+  };
+
+  Eq.diff = plainObjectsDeepDiff;
+
+  Eq.shallowEq = function(a, b) {
+    return a === b || (a && b && a.eq && a.eq(b));
+  };
+
+  return Eq;
+
+})();
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
+
+ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
+
+escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
+
+inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
+
+dateFormat = __webpack_require__(49);
+
+module.exports = InspectedObjects = (function() {
+  var toInspectedObjects;
+
+  function InspectedObjects() {}
+
+  InspectedObjects.toInspectedObjects = toInspectedObjects = function(m) {
+    var functionString, literal, oldm, out, reducedFunctionString;
+    if (m == null) {
+      return m;
+    }
+    oldm = m;
+    if (m === global) {
+      return inspectedObjectLiteral("global");
+    } else if (out = typeof m.getInspectedObjects === "function" ? m.getInspectedObjects() : void 0) {
+      return out;
+    } else if (isPromise(m)) {
+      return inspectedObjectLiteral("Promise");
+    } else if (isPlainObject(m) || isPlainArray(m)) {
+      return deepMap(m, function(v) {
+        return toInspectedObjects(v);
+      });
+    } else if (m instanceof Error) {
+      literal = inspectedObjectLiteral(m.stack || m.toString(), true);
+      if (m.info) {
+        return toInspectedObjects({
+          Error: {
+            info: m.info,
+            stack: literal
+          }
+        });
+      } else {
+        return {
+          Error: {
+            "class": toInspectedObjects(m.constructor),
+            stack: literal
+          }
+        };
+      }
+    } else if (isRegExp(m)) {
+      return inspectedObjectLiteral("" + m);
+    } else if (isDate(m)) {
+      return inspectedObjectLiteral(dateFormat(m, "UTC:yyyy-mm-dd HH:MM:ss Z"));
+    } else if (isClass(m)) {
+      return inspectedObjectLiteral("<" + ((typeof m.getName === "function" ? m.getName() : void 0) || m.name) + ">");
+    } else if (isFunction(m)) {
+      functionString = "" + m;
+      reducedFunctionString = functionString.replace(/\s+/g, ' ').replace(/^function (\([^)]*\))/, "$1 ->").replace(/^\(\)\s*/, '');
+      return inspectedObjectLiteral(reducedFunctionString.length < 80 ? reducedFunctionString : functionString.slice(0, 5 * 80));
+    } else if (m && !isString(m)) {
+      if (isNonNegativeInt(m.length)) {
+        return inspectedObjectLiteral("{" + m.constructor.name + " length: " + m.length + "}");
+      } else if (isNonNegativeInt(m.byteLength)) {
+        return inspectedObjectLiteral("{" + m.constructor.name + " byteLength: " + m.byteLength + "}");
+      } else {
+        return m;
+      }
+    } else {
+      return m;
+    }
+  };
+
+  return InspectedObjects;
+
+})();
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
+  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Map = __webpack_require__(22);
+
+escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
+
+ref = __webpack_require__(0), objectName = ref.objectName, isString = ref.isString, isArray = ref.isArray, isFunction = ref.isFunction, isObject = ref.isObject, isClass = ref.isClass, isBrowserObject = ref.isBrowserObject, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray;
+
+module.exports = Inspector = (function() {
+  var inspect;
+
+  Inspector.unquotablePropertyRegex = /^([0-9]+|[_a-zA-Z][_0-9a-zA-Z]*)$/;
+
+  Inspector.customInspectable = function(obj) {
+    return obj.inspect && !(typeof obj === "function");
+  };
+
+  Inspector.parentString = function(distance) {
+    switch (distance) {
+      case 0:
+        return "parent";
+      case 1:
+        return "grandparent";
+      case 2:
+        return "great grandparent";
+      default:
+        return "great^" + (distance - 1) + " grandparent";
+    }
+  };
+
+  function Inspector(options) {
+    if (options == null) {
+      options = {};
+    }
+    this.inspect = bind(this.inspect, this);
+    this.inspectInternal = bind(this.inspectInternal, this);
+    this.inspectObject = bind(this.inspectObject, this);
+    this.inspectArray = bind(this.inspectArray, this);
+    this.maxLength = options.maxLength || 10000;
+    this.allowCustomInspectors = !options.noCustomInspectors;
+    this.maxDepth = options.maxDepth != null ? options.maxDepth : 10;
+    this.outArray = [];
+    this.length = 0;
+    this.depth = 0;
+    this.inspectingMap = new Map;
+    this.done = false;
+  }
+
+  Inspector.inspect = inspect = function(obj, options) {
+    var inspector;
+    if (options == null) {
+      options = {};
+    }
+    if (this !== global) {
+      return Neptune.Base.inspect.call(this);
+    }
+    inspector = new Inspector(options);
+    inspector.inspect(obj);
+    return inspector.getResult();
+  };
+
+  Inspector.shallowInspect = function(obj) {
+    if (obj == null) {
+      return "" + obj;
+    } else if (Inspector.customInspectable(obj)) {
+      return Inspector.inspect(obj);
+    } else if (isString(obj)) {
+      return escapeJavascriptString(obj);
+    } else if (isArray(obj)) {
+      return "<<Array length: " + obj.length + ">>";
+    } else if (isFunction(obj) && obj.name === "") {
+      return "<<function args: " + obj.length + ">>";
+    } else {
+      return "<<" + (typeof obj) + ": " + (obj.name || obj) + ">>";
+    }
+  };
+
+  Inspector.inspectLean = function(object, options) {
+    var fullInspect, match;
+    fullInspect = inspect(object, options);
+    if (!isFunction(object != null ? object.inspect : void 0) && (isPlainObject(object) || (isPlainArray(object) && (object.length > 1 || (options != null ? options.forArgs : void 0))))) {
+      match = fullInspect.match(/^\[(.+)\]$|^\{(.+)\}$/);
+      if (match) {
+        return match[1] || match[2] || match[3];
+      } else {
+        return fullInspect;
+      }
+    } else {
+      return fullInspect;
+    }
+  };
+
+  Inspector.prototype.put = function(s) {
+    var remaining;
+    if (this.done) {
+      return;
+    }
+    if (this.length + s.length > this.maxLength) {
+      this.done = true;
+      remaining = this.maxLength - this.length;
+      s = (s.slice(0, remaining)) + "<... first " + remaining + "/" + s.length + ">";
+    }
+    this.length += s.length;
+    this.outArray.push(s);
+    return s;
+  };
+
+  Inspector.prototype.getResult = function() {
+    return this.outArray.join("");
+  };
+
+  Inspector.prototype.maxDepthOutput = function(obj) {
+    var keys, name;
+    switch (typeof obj) {
+      case "string":
+      case "number":
+      case "boolean":
+      case "undefined":
+        return this.inspectInternal(obj);
+      case "function":
+        return this.put(objectName(obj));
+      case "object":
+        return this.put(obj === null ? "null" : isArray(obj) ? "[" + obj.length + " elements]" : (keys = Object.keys(obj), name = objectName(obj), name === "Object" ? "{" + keys.length + " keys}" : keys.length > 0 ? "{" + name + " " + keys.length + " keys}" : name));
+    }
+  };
+
+  Inspector.prototype.inspectArray = function(array) {
+    var first, i, len, obj;
+    this.put("[");
+    first = true;
+    for (i = 0, len = array.length; i < len; i++) {
+      obj = array[i];
+      if (!first) {
+        this.put(", ");
+      }
+      this.inspect(obj);
+      first = false;
+    }
+    return this.put("]");
+  };
+
+  Inspector.prototype.inspectObject = function(obj) {
+    var attributes, first, i, k, keys, len, name, v;
+    attributes = [];
+    keys = Object.keys(obj);
+    name = objectName(obj);
+    if (isFunction(obj) && keys.length === 0) {
+      return this.put(name + "()");
+    } else if (isBrowserObject(obj)) {
+      return this.put("{" + name + "}");
+    } else {
+      this.put("{");
+      if (obj.constructor !== Object) {
+        this.put(name + " ");
+      }
+      first = true;
+      for (i = 0, len = keys.length; i < len; i++) {
+        k = keys[i];
+        if (!(k !== "__uniqueId")) {
+          continue;
+        }
+        if (!first) {
+          this.put(", ");
+        }
+        v = obj[k];
+        if (Inspector.unquotablePropertyRegex.test(k)) {
+          this.put(k);
+        } else {
+          this.inspect(k);
+        }
+        this.put(": ");
+        this.inspect(v);
+        first = false;
+      }
+      return this.put("}");
+    }
+  };
+
+  Inspector.prototype.inspectInternal = function(obj) {
+    if (obj == null) {
+      return this.put("" + obj);
+    } else if (isString(obj)) {
+      return this.put(escapeJavascriptString(obj));
+    } else if (isArray(obj)) {
+      return this.inspectArray(obj);
+    } else if (isClass(obj)) {
+      return this.put(objectName(obj));
+    } else if (this.allowCustomInspectors && Inspector.customInspectable(obj)) {
+      if (obj.inspect.length > 0) {
+        return obj.inspect(this);
+      } else {
+        return this.put(obj.inspect());
+      }
+    } else if (obj instanceof RegExp) {
+      return this.put("" + obj);
+    } else if (isObject(obj) || isFunction(obj)) {
+      return this.inspectObject(obj);
+    } else if (isFunction(obj != null ? obj.toString : void 0)) {
+      return this.put(obj.toString());
+    } else {
+      return this.put("" + obj);
+    }
+  };
+
+  Inspector.prototype.inspect = function(obj) {
+    var objDepth;
+    if (this.done) {
+      return;
+    }
+    if (objDepth = this.inspectingMap.get(obj)) {
+      this.put("<" + (Inspector.parentString(this.depth - objDepth)) + ">");
+      return null;
+    }
+    if (this.depth >= this.maxDepth) {
+      this.maxDepthOutput(obj);
+    } else {
+      this.depth++;
+      this.inspectingMap.set(obj, this.depth);
+      this.inspectInternal(obj);
+      this.inspectingMap["delete"](obj);
+      this.depth--;
+    }
+    return null;
+  };
+
+  return Inspector;
+
+})();
+
+
+/***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5262,17 +5262,17 @@ var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, 
 
 Inspect = __webpack_require__(5);
 
-callStack = __webpack_require__(25).callStack;
+callStack = __webpack_require__(26).callStack;
 
 isString = __webpack_require__(0).isString;
 
-peek = __webpack_require__(18).peek;
+peek = __webpack_require__(13).peek;
 
 merge = __webpack_require__(1).merge;
 
 ref = __webpack_require__(10), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
 
-ref1 = __webpack_require__(16), isNode = ref1.isNode, getEnv = ref1.getEnv;
+ref1 = __webpack_require__(17), isNode = ref1.isNode, getEnv = ref1.getEnv;
 
 disableLog = getEnv().disableLog;
 
@@ -5430,9 +5430,18 @@ module.exports = Log = (function() {
     }
   };
 
-  standardOptions = isNode ? {
-    color: true
-  } : {};
+  standardOptions = (function() {
+    if (isNode) {
+      try {
+        eval("require")("colors");
+      } catch (error) {}
+      return {
+        color: true
+      };
+    } else {
+      return {};
+    }
+  })();
 
   Log.log = function() {
     var args, ref2;
@@ -5737,7 +5746,7 @@ module.exports = Unique = (function() {
 /* 35 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.34.1"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.35.0"}
 
 /***/ }),
 /* 36 */
@@ -5763,7 +5772,7 @@ populateClone would need to take an additional argument - the clone function to 
  */
 var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject, uniquePropertyName;
 
-Map = __webpack_require__(21);
+Map = __webpack_require__(22);
 
 Unique = __webpack_require__(34);
 
@@ -5897,7 +5906,7 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
     return [
       "ErrorWithInfo: " + this.message, formattedInspect({
         info: this.info
-      }, "")
+      })
     ].join("\n\n");
   };
 
@@ -5905,7 +5914,7 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
 
 })(Error));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
 
 /***/ }),
 /* 39 */
@@ -6007,7 +6016,7 @@ in debug mode and the faster(?), non hot-reload options in production mode.
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, objectKeyCount, pad, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects;
+var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, colorNames, colorizeFunctions, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, identity, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, object, objectKeyCount, pad, passThroughColorizeFunctions, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects, w;
 
 ref = __webpack_require__(0), isString = ref.isString, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
 
@@ -6015,11 +6024,15 @@ max = Math.max;
 
 ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.stripTrailingWhitespace, escapeJavascriptString = ref1.escapeJavascriptString;
 
-inspect = __webpack_require__(30).inspect;
+inspect = __webpack_require__(31).inspect;
 
-objectKeyCount = __webpack_require__(17).objectKeyCount;
+objectKeyCount = __webpack_require__(18).objectKeyCount;
 
-toInspectedObjects = __webpack_require__(29).toInspectedObjects;
+toInspectedObjects = __webpack_require__(30).toInspectedObjects;
+
+w = __webpack_require__(13).w;
+
+object = __webpack_require__(21).object;
 
 indentString = '  ';
 
@@ -6028,7 +6041,8 @@ indentLength = indentString.length;
 newLineWithIndentString = "\n" + indentString;
 
 formattedInspectObject = function(m, maxLineLength, options) {
-  var finalInspectedValues, forceMultilineOutput, index, inspected, inspectedLength, inspectedValues, k, key, keyCount, objectStart, shouldBeOnOwnLine, v, value;
+  var colorize, finalInspectedValues, forceMultilineOutput, index, inspected, inspectedLength, inspectedValues, k, key, keyCount, objectStart, shouldBeOnOwnLine, v, value;
+  colorize = options.colorize;
   inspectedLength = 0;
   forceMultilineOutput = false;
   shouldBeOnOwnLine = false;
@@ -6059,9 +6073,7 @@ formattedInspectObject = function(m, maxLineLength, options) {
     return results;
   })();
   objectStart = "{}";
-  if (options.color) {
-    objectStart = objectStart.grey;
-  }
+  objectStart = colorize.grey(objectStart);
   if (keyCount === 0) {
     return objectStart;
   } else {
@@ -6072,9 +6084,7 @@ formattedInspectObject = function(m, maxLineLength, options) {
       for (j = 0, len = inspectedValues.length; j < len; j++) {
         ref2 = inspectedValues[j], k = ref2[0], v = ref2[1], value = ref2[2];
         key = k + ":";
-        if (options.color) {
-          key = key.blue;
-        }
+        key = colorize.blue(key);
         results.push(key + "\t" + v);
       }
       return results;
@@ -6084,7 +6094,8 @@ formattedInspectObject = function(m, maxLineLength, options) {
 };
 
 formattedInspectArray = function(m, maxLineLength, options) {
-  var arrayStart, i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, objectStart, objectsMustBeExplicit, oneLinerOk, value;
+  var arrayStart, colorize, i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, objectStart, objectsMustBeExplicit, oneLinerOk, value;
+  colorize = options.colorize;
   lengthOfInspectedValues = 0;
   lastWasObject = false;
   lastWasArray = false;
@@ -6120,9 +6131,7 @@ formattedInspectArray = function(m, maxLineLength, options) {
       inspectedHasNewlines = /\n/.test(inspected);
       if (objectsMustBeExplicit && isPlainObject(value)) {
         objectStart = "{}";
-        if (options.color) {
-          objectStart = objectStart.grey;
-        }
+        objectStart = colorize.grey(objectStart);
         inspected = inspectedHasNewlines ? "" + objectStart + newLineWithIndentString + (inspected.replace(/\n/g, newLineWithIndentString)) : objectStart + " " + inspected;
       }
       if (inspectedHasNewlines) {
@@ -6140,9 +6149,7 @@ formattedInspectArray = function(m, maxLineLength, options) {
   lengthOfCommas = (inspectedValues.length - 1) * 2;
   lengthOfStartBrackets = 3;
   arrayStart = "[]";
-  if (options.color) {
-    arrayStart = arrayStart.grey;
-  }
+  arrayStart = colorize.grey(arrayStart);
   if (oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues) {
     if (inspectedValues.length === 0) {
       return arrayStart;
@@ -6186,15 +6193,10 @@ escapeForBlockString = (function(_this) {
 formattedInspectString = function(m, options) {
   var out;
   out = m.match(/\n/) && !m.match(/\ (\n|$)/) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
-  if (options != null ? options.color : void 0) {
-    return out.green;
-  } else {
-    return out;
-  }
+  return options.colorize.green(out);
 };
 
 formattedInspectRecursive = function(m, maxLineLength, options) {
-  var out;
   if (isPlainObject(m)) {
     return formattedInspectObject(m, maxLineLength, options);
   } else if (isPlainArray(m)) {
@@ -6202,12 +6204,7 @@ formattedInspectRecursive = function(m, maxLineLength, options) {
   } else if (isString(m)) {
     return formattedInspectString(m, options);
   } else {
-    out = inspect(m);
-    if (options.color) {
-      return out.yellow;
-    } else {
-      return out;
-    }
+    return options.colorize.yellow(inspect(m));
   }
 };
 
@@ -6380,6 +6377,23 @@ postWhitespaceFormatting = function(maxLineLength, string) {
   return outLines.join('\n');
 };
 
+colorNames = w("red yellow green blue grey");
+
+colorizeFunctions = object(colorNames, function(c) {
+  return function(str) {
+    var ref2;
+    return (ref2 = str[c]) != null ? ref2 : str;
+  };
+});
+
+identity = function(s) {
+  return s;
+};
+
+passThroughColorizeFunctions = object(colorNames, function() {
+  return identity;
+});
+
 module.exports = FormattedInspect = (function() {
   function FormattedInspect() {}
 
@@ -6403,11 +6417,21 @@ module.exports = FormattedInspect = (function() {
         options = {
           maxLineLength: options
         };
+      } else {
+        if (!isPlainObject(options)) {
+          console.error({
+            invalid: {
+              options: options
+            }
+          });
+          throw new Error("invalid options object type: " + (typeof options));
+        }
       }
       if (options.maxLineLength == null) {
         options.maxLineLength = ((ref2 = global.process) != null ? (ref3 = ref2.stdout) != null ? ref3.columns : void 0 : void 0) || 80;
       }
       maxLineLength = options.maxLineLength;
+      options.colorize = options.color ? colorizeFunctions : passThroughColorizeFunctions;
       return out = postWhitespaceFormatting(maxLineLength, formattedInspectRecursive(toInspectedObjects(toInspect), maxLineLength, options)).replace(/\n\n$/, "\n");
     } catch (error1) {
       error = error1;
@@ -6704,7 +6728,7 @@ var ReschedulableTimer, currentSecond, timeout;
 
 currentSecond = __webpack_require__(33).currentSecond;
 
-timeout = __webpack_require__(24).timeout;
+timeout = __webpack_require__(25).timeout;
 
 module.exports = ReschedulableTimer = (function() {
   function ReschedulableTimer() {
@@ -6885,25 +6909,25 @@ module.exports = require("dateformat");
 module.exports = __webpack_require__(12);
 
 module.exports.includeInNamespace(__webpack_require__(62)).addModules({
-  ArrayExtensions: __webpack_require__(18),
-  AsyncExtensions: __webpack_require__(24),
-  CallStack: __webpack_require__(25),
+  ArrayExtensions: __webpack_require__(13),
+  AsyncExtensions: __webpack_require__(25),
+  CallStack: __webpack_require__(26),
   Clone: __webpack_require__(37),
   CommonJs: __webpack_require__(8),
-  DateExtensions: __webpack_require__(27),
-  Environment: __webpack_require__(16),
-  Eq: __webpack_require__(28),
+  DateExtensions: __webpack_require__(28),
+  Environment: __webpack_require__(17),
+  Eq: __webpack_require__(29),
   ErrorWithInfo: __webpack_require__(38),
   Function: __webpack_require__(39),
-  Iteration: __webpack_require__(31),
+  Iteration: __webpack_require__(21),
   Log: __webpack_require__(32),
-  Map: __webpack_require__(21),
+  Map: __webpack_require__(22),
   MapExtensions: __webpack_require__(43),
   MathExtensions: __webpack_require__(9),
   MinimalBaseObject: __webpack_require__(6),
   ObjectDiff: __webpack_require__(44),
-  ObjectExtensions: __webpack_require__(17),
-  ParseUrl: __webpack_require__(22),
+  ObjectExtensions: __webpack_require__(18),
+  ParseUrl: __webpack_require__(23),
   Promise: __webpack_require__(10),
   PromisedFileReader: __webpack_require__(45),
   PromiseWorkerPool: __webpack_require__(60),
@@ -6943,7 +6967,7 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(30), "shallowInspect inspectLean inspect"], __webpack_require__(40), __webpack_require__(29), __webpack_require__(42), __webpack_require__(20)];
+module.exports = [[__webpack_require__(31), "shallowInspect inspectLean inspect"], __webpack_require__(40), __webpack_require__(30), __webpack_require__(42), __webpack_require__(20)];
 
 
 /***/ }),
@@ -7138,7 +7162,7 @@ var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArr
 
 MinimalBaseObject = __webpack_require__(6);
 
-Map = __webpack_require__(21);
+Map = __webpack_require__(22);
 
 Inspected = __webpack_require__(41);
 
@@ -7453,7 +7477,7 @@ formattedInspect = __webpack_require__(4).formattedInspect;
 
 ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
 
-objectWithout = __webpack_require__(17).objectWithout;
+objectWithout = __webpack_require__(18).objectWithout;
 
 
 /*
@@ -7522,14 +7546,14 @@ defineModule(module, RequestError = (function(superClass) {
 
 })(Error));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
 
 /***/ }),
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(18), __webpack_require__(24), __webpack_require__(17), __webpack_require__(7), __webpack_require__(28), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(16), __webpack_require__(22), __webpack_require__(45), __webpack_require__(11), __webpack_require__(47), __webpack_require__(48), __webpack_require__(33), __webpack_require__(0), __webpack_require__(8), __webpack_require__(31), __webpack_require__(4), __webpack_require__(37), __webpack_require__(32), __webpack_require__(25), __webpack_require__(27), {
+  __webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(13), __webpack_require__(25), __webpack_require__(18), __webpack_require__(7), __webpack_require__(29), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(17), __webpack_require__(23), __webpack_require__(45), __webpack_require__(11), __webpack_require__(47), __webpack_require__(48), __webpack_require__(33), __webpack_require__(0), __webpack_require__(8), __webpack_require__(21), __webpack_require__(4), __webpack_require__(37), __webpack_require__(32), __webpack_require__(26), __webpack_require__(28), {
     PushBackTimer: __webpack_require__(46)
   }
 ];
