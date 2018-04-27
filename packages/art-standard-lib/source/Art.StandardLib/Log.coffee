@@ -106,6 +106,8 @@ module.exports = class Log
       logger m #, "\n# StandardLib.log called " + @contextString stack, className
 
   standardOptions = if isNode
+    try
+      eval("require") "colors"
     color: true
   else {}
   # always returned the last argument passed in. That way you can:

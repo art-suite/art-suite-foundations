@@ -4,12 +4,15 @@
 {inspect} = require './Inspector'
 {objectKeyCount} = require '../ObjectExtensions'
 {toInspectedObjects} = require './InspectedObjects'
+{w} = require '../ArrayExtensions'
+{object} = require '../Iteration'
 
 indentString = '  '
 indentLength = indentString.length
 newLineWithIndentString = "\n#{indentString}"
 
 formattedInspectObject = (m, maxLineLength, options) ->
+  {colorize} = options
   inspectedLength = 0
 
   forceMultilineOutput = false
@@ -41,7 +44,7 @@ formattedInspectObject = (m, maxLineLength, options) ->
     [key, inspected, value]
 
   objectStart = "{}"
-  objectStart = objectStart.grey if options.color
+  objectStart = colorize.grey objectStart
 
   if keyCount == 0
     objectStart
@@ -50,7 +53,7 @@ formattedInspectObject = (m, maxLineLength, options) ->
     index = 0
     finalInspectedValues = for [k, v, value] in inspectedValues
       key = "#{k}:"
-      key = key.blue if options.color
+      key = colorize.blue key
       # if isPlainObject(value) && objectKeyCount(value) == 1
       #   "#{key} #{v}"
       # else
@@ -62,6 +65,7 @@ formattedInspectObject = (m, maxLineLength, options) ->
       "\n"
 
 formattedInspectArray = (m, maxLineLength, options) ->
+  {colorize} = options
   lengthOfInspectedValues = 0
   lastWasObject = false
   lastWasArray = false
@@ -90,7 +94,7 @@ formattedInspectArray = (m, maxLineLength, options) ->
 
     if objectsMustBeExplicit && isPlainObject value
       objectStart = "{}"
-      objectStart = objectStart.grey if options.color
+      objectStart = colorize.grey objectStart
       inspected = if inspectedHasNewlines
         "#{objectStart}#{newLineWithIndentString}#{inspected.replace(/\n/g, newLineWithIndentString)}"
       else
@@ -108,7 +112,7 @@ formattedInspectArray = (m, maxLineLength, options) ->
   lengthOfStartBrackets = 3
 
   arrayStart = "[]"
-  arrayStart = arrayStart.grey if options.color
+  arrayStart = colorize.grey arrayStart
 
   if oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues
     if inspectedValues.length == 0
@@ -148,21 +152,14 @@ formattedInspectString = (m, options) ->
   else
     escapeJavascriptString m
 
-  if options?.color
-    out.green
-  else
-    out
+  options.colorize.green out
 
 formattedInspectRecursive = (m, maxLineLength, options) ->
   if isPlainObject m      then formattedInspectObject m, maxLineLength, options
   else if isPlainArray m  then formattedInspectArray  m, maxLineLength, options
   else if isString m      then formattedInspectString m, options
   else
-    out = inspect m
-    if options.color
-      out.yellow
-    else
-      out
+    options.colorize.yellow inspect m
 
 ###
 TODO:
@@ -276,9 +273,6 @@ ansiSafeStringLength = (str)->
   throw new Error "not string" unless isString str
   if ansiRegex.test str
     str = str.replace ansiRegex, ''
-    # console.log ansiSafeStringLength:
-    #   str: str
-    #   length: str.length
   str.length
 
 postWhitespaceFormatting = (maxLineLength, string) ->
@@ -290,7 +284,6 @@ postWhitespaceFormatting = (maxLineLength, string) ->
     return unless 0 < sameIndentGroup.length
     str = sameIndentGroup.join "\n"
     sameIndentGroup = []
-    # console.log alignTabsInSameIndentGroup: maxLineLength: maxLineLength, str: str
     outLines.push alignTabs str, maxLineLength
 
   for line in string.split "\n"
@@ -307,6 +300,13 @@ postWhitespaceFormatting = (maxLineLength, string) ->
 
   outLines.join '\n'
 
+colorNames = w("red yellow green blue grey")
+colorizeFunctions = object colorNames, (c) -> (str) -> str[c] ? str
+
+identity = (s) -> s
+passThroughColorizeFunctions = object colorNames, -> identity
+
+
 module.exports = class FormattedInspect
   @ansiRegex: ansiRegex
   @stripAnsi: stripAnsi
@@ -315,9 +315,18 @@ module.exports = class FormattedInspect
   @formattedInspectString: formattedInspectString
   @formattedInspect: (toInspect, options = {}) ->
     try
-      options = maxLineLength: options if isNumber options
+      if isNumber options
+        options = maxLineLength: options
+      else
+        unless isPlainObject options
+          console.error invalid: {options}
+          throw new Error "invalid options object type: #{typeof options}"
       options.maxLineLength ?= global.process?.stdout?.columns || 80
       {maxLineLength} = options
+      options.colorize = if options.color
+        colorizeFunctions
+      else
+        passThroughColorizeFunctions
 
       out = postWhitespaceFormatting maxLineLength,
         formattedInspectRecursive toInspectedObjects(toInspect), maxLineLength, options

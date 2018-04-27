@@ -35,4 +35,4 @@ defineModule module, class ErrorWithInfo extends Error
       @stack = (new Error).stack;
 
   toString: ->
-    ["ErrorWithInfo: #{@message}", formattedInspect info: @info, ""].join "\n\n"
+    ["ErrorWithInfo: #{@message}", formattedInspect info: @info].join "\n\n"
