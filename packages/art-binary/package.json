@@ -39,5 +39,6 @@
     "start": "webpack-dev-server --hot --inline --progress",
     "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
     "testInBrowser": "webpack-dev-server --progress"
-  }
+  },
+  "version": "0.1.0"
 }
