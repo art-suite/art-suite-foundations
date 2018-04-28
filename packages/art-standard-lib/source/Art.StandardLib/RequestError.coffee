@@ -53,5 +53,5 @@ defineModule module, class RequestError extends Error
     @info = @props
 
   toString: ->
-    ["#{@name} #{@message}", formattedInspect {@props}, ""].join "\n\n"
+    ["#{@name} #{@message}", formattedInspect {@props}].join "\n\n"
 
