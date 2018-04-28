@@ -166,9 +166,15 @@ module.exports = BinaryString = (function(superClass) {
     return new BinaryString(uint8Array);
   };
 
-  BinaryString.prototype.toDataUri = function(mimeType) {
+  BinaryString.prototype.toDataUri = function(mimeType, sync) {
+    var v;
     if (isNode) {
-      return "data:" + (mimeType != null ? mimeType : '') + ";base64," + (this.toBase64());
+      v = "data:" + (mimeType != null ? mimeType : '') + ";base64," + (this.toBase64(true));
+      if (sync) {
+        return v;
+      } else {
+        return Promise.resolve(v);
+      }
     } else {
       return readFileAsDataUrl(this.toBlob(mimeType));
     }
@@ -321,9 +327,18 @@ module.exports = BinaryString = (function(superClass) {
     toBase64ToDataUri starts to be faster at longer lengths.
    */
 
-  BinaryString.prototype.toBase64 = function() {
+  BinaryString.prototype.toBase64 = function(sync) {
+    var v;
+    if (sync == null) {
+      sync = false;
+    }
     if (isNode) {
-      return Promise.resolve(new Buffer(this.bytes).toString('base64'));
+      v = new Buffer(this.bytes).toString('base64');
+      if (sync) {
+        return v;
+      } else {
+        return Promise.resolve(v);
+      }
     } else if (this.length > 16 * 1024) {
       return this.toBase64ToDataUri();
     } else {
@@ -1880,7 +1895,7 @@ module.exports = (__webpack_require__(5)).addNamespace('Art.RestClient', RestCli
 /* 25 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"0.1.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"0.2.0"}
 
 /***/ }),
 /* 26 */
