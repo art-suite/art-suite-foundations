@@ -7,7 +7,6 @@ target:
 
 npm:
   description: "" Art.Binary
-  dependencies: {}
 
 webpack:
   # common properties are merged into each target's properties
