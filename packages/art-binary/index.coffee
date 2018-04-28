@@ -1,1 +1,1 @@
-&source/ArtBinary
+module.exports = require './source/Art.Binary'
