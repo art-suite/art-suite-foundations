@@ -66,9 +66,10 @@ module.exports = class BinaryString extends BaseObject
     new BinaryString uint8Array
 
   # OUT: promise.then (dataUri) ->
-  toDataUri: (mimeType)->
+  toDataUri: (mimeType, sync)->
     if isNode
-      "data:#{mimeType ? ''};base64,#{@toBase64()}"
+      v = "data:#{mimeType ? ''};base64,#{@toBase64 true}"
+      if sync then v else Promise.resolve v
     else
       readFileAsDataUrl @toBlob mimeType
 
@@ -154,12 +155,13 @@ module.exports = class BinaryString extends BaseObject
     For shorter lengths, toBase64Custom is by far the fastest, but
     toBase64ToDataUri starts to be faster at longer lengths.
   ###
-  toBase64: ->
+  toBase64: (sync = false)->
     # 2016-2-14 benchmark based results for cut-over-to-toBase64ToDataUri length
     # FF:                 4 * 1024
     # Safari and Chrome:  16 * 1024
     if isNode
-      Promise.resolve new Buffer(@bytes).toString 'base64'
+      v = new Buffer(@bytes).toString 'base64'
+      if sync then v else Promise.resolve v
 
     else if @length > 16 * 1024
       @toBase64ToDataUri()
