@@ -27,6 +27,27 @@ module.exports = class ArrayExtensions
       res[a] = false
     res
 
+  @arrayAfterEach: (array, value) ->
+    out = []
+    for v in array
+      out.push v
+      out.push value
+    out
+
+  @arrayBeforeEach: (array, value) ->
+    out = []
+    for v in array
+      out.push value
+      out.push v
+    out
+
+  @arrayBetweenEach: (array, value) ->
+    out = []
+    for v, i in array
+      out.push value if i > 0
+      out.push v
+    out
+
   @concatInto: (array, b) -> array.push.apply array, b
 
   @uniqueValues: (sortedArray, eqF = ((a, b) -> a == b)) ->
