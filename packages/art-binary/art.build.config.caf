@@ -7,6 +7,9 @@ target:
 
 npm:
   description: "" Art.Binary
+  dependencies:
+    art-rest-client: :*
+    art-communication-status: :*
 
 webpack:
   # common properties are merged into each target's properties

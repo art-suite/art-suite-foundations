@@ -64,30 +64,24 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-standard-lib");
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject, Binary, BinaryString, ClassSystem, InspectedObjectLiteral, Promise, StandardLib, Utf8, compactFlatten, encodings, inspect, isFunction, isNode, isPlainArray, isString, log, merge, min, pad, readFileAsArrayBuffer, readFileAsDataUrl,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Binary = __webpack_require__(4);
+Binary = __webpack_require__(3);
 
-Utf8 = __webpack_require__(9);
+Utf8 = __webpack_require__(8);
 
-StandardLib = __webpack_require__(0);
+StandardLib = __webpack_require__(1);
 
-ClassSystem = __webpack_require__(2);
+ClassSystem = __webpack_require__(4);
 
 merge = StandardLib.merge, isString = StandardLib.isString, isFunction = StandardLib.isFunction, isPlainArray = StandardLib.isPlainArray, log = StandardLib.log, min = StandardLib.min, inspect = StandardLib.inspect, readFileAsDataUrl = StandardLib.readFileAsDataUrl, readFileAsArrayBuffer = StandardLib.readFileAsArrayBuffer, compactFlatten = StandardLib.compactFlatten, pad = StandardLib.pad, InspectedObjectLiteral = StandardLib.InspectedObjectLiteral, Promise = StandardLib.Promise, isNode = StandardLib.isNode;
 
@@ -411,22 +405,22 @@ module.exports = BinaryString = (function(superClass) {
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-class-system");
+module.exports = require("art-standard-lib");
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BinaryString, File, Promise, StandardLib;
 
-StandardLib = __webpack_require__(0);
+StandardLib = __webpack_require__(1);
 
 Promise = StandardLib.Promise;
 
-BinaryString = __webpack_require__(1);
+BinaryString = __webpack_require__(0);
 
 module.exports = File = (function() {
   var readAsArrayBuffer;
@@ -465,21 +459,21 @@ module.exports = File = (function() {
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Binary,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(5)).addNamespace('Art.Binary', Binary = (function(superClass) {
+module.exports = (__webpack_require__(16)).addNamespace('Art.Binary', Binary = (function(superClass) {
   extend(Binary, superClass);
 
   function Binary() {
     return Binary.__super__.constructor.apply(this, arguments);
   }
 
-  Binary.version = __webpack_require__(25).version;
+  Binary.version = __webpack_require__(14).version;
 
   return Binary;
 
@@ -487,22 +481,22 @@ module.exports = (__webpack_require__(5)).addNamespace('Art.Binary', Binary = (f
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces");
+module.exports = require("art-class-system");
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var DataUri, Promise, StandardLib, binary, isString, readAsDataURL;
 
-StandardLib = __webpack_require__(0);
+StandardLib = __webpack_require__(1);
 
-binary = __webpack_require__(1).binary;
+binary = __webpack_require__(0).binary;
 
-readAsDataURL = __webpack_require__(3).readAsDataURL;
+readAsDataURL = __webpack_require__(2).readAsDataURL;
 
 Promise = StandardLib.Promise, isString = StandardLib.isString;
 
@@ -551,20 +545,20 @@ module.exports = DataUri = (function() {
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject, Binary, ClassSystem, Stream, binary,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-ClassSystem = __webpack_require__(2);
+ClassSystem = __webpack_require__(4);
 
-Binary = __webpack_require__(4);
+Binary = __webpack_require__(3);
 
 BaseObject = ClassSystem.BaseObject;
 
-binary = __webpack_require__(1).binary;
+binary = __webpack_require__(0).binary;
 
 module.exports = Stream = (function(superClass) {
   extend(Stream, superClass);
@@ -653,12 +647,12 @@ module.exports = Stream = (function(superClass) {
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var base, base1, base10, base11, base2, base3, base4, base5, base6, base7, base8, base9, bound, genericSlice, ref, ref1;
 
-bound = __webpack_require__(0).bound;
+bound = __webpack_require__(1).bound;
 
 (base = Uint8Array.prototype).slice || (base.slice = genericSlice = function(start, end) {
   var i, j, length, out, outIndex, ref, ref1;
@@ -711,7 +705,7 @@ if ((ref1 = self.CanvasPixelArray) != null) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var Utf8;
@@ -783,80 +777,58 @@ module.exports = Utf8 = (function() {
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(3);
+
+module.exports.includeInNamespace(__webpack_require__(11)).addModules({
+  BinaryString: __webpack_require__(0),
+  DataUri: __webpack_require__(5),
+  EncodedImage: __webpack_require__(12),
+  File: __webpack_require__(2),
+  Stream: __webpack_require__(6),
+  TypedarraySlicePolyfill: __webpack_require__(7),
+  Utf8: __webpack_require__(8),
+  WriteStream: __webpack_require__(13)
+});
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var CommunicationStatus,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(19)).addNamespace('CommunicationStatus', CommunicationStatus = (function(superClass) {
-  extend(CommunicationStatus, superClass);
-
-  function CommunicationStatus() {
-    return CommunicationStatus.__super__.constructor.apply(this, arguments);
-  }
-
-  CommunicationStatus.version = __webpack_require__(26).version;
-
-  return CommunicationStatus;
-
-})(Neptune.PackageNamespace));
+module.exports = __webpack_require__(9);
 
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4);
+__webpack_require__(7);
 
-module.exports.includeInNamespace(__webpack_require__(13)).addModules({
-  BinaryString: __webpack_require__(1),
-  DataUri: __webpack_require__(6),
-  EncodedImage: __webpack_require__(14),
-  File: __webpack_require__(3),
-  Stream: __webpack_require__(7),
-  TypedarraySlicePolyfill: __webpack_require__(8),
-  Utf8: __webpack_require__(9),
-  WriteStream: __webpack_require__(15)
-});
+module.exports = [
+  __webpack_require__(2), {
+    stream: (__webpack_require__(6)).stream
+  }, [__webpack_require__(0), "binary binaryFromBlob downloadBinaryData"]
+];
 
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(11);
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(8);
-
-module.exports = [
-  __webpack_require__(3), {
-    stream: (__webpack_require__(7)).stream
-  }, [__webpack_require__(1), "binary binaryFromBlob downloadBinaryData"]
-];
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var EncodedImage, ErrorWithInfo, HTMLImageElement, Image, Promise, StandardLib, binary, escapeRegExp, isBinary, isNode, isObject, isString, log, readFileAsDataUrl, ref, sameOrigin, toDataUri;
 
-StandardLib = __webpack_require__(0);
+StandardLib = __webpack_require__(1);
 
-toDataUri = __webpack_require__(6).toDataUri;
+toDataUri = __webpack_require__(5).toDataUri;
 
 isNode = StandardLib.isNode, log = StandardLib.log, Promise = StandardLib.Promise, readFileAsDataUrl = StandardLib.readFileAsDataUrl, ErrorWithInfo = StandardLib.ErrorWithInfo, isString = StandardLib.isString, escapeRegExp = StandardLib.escapeRegExp, isObject = StandardLib.isObject, sameOrigin = StandardLib.sameOrigin;
 
-ref = __webpack_require__(1), isBinary = ref.isBinary, binary = ref.binary;
+ref = __webpack_require__(0), isBinary = ref.isBinary, binary = ref.binary;
 
-__webpack_require__(20);
+__webpack_require__(15);
 
 if (!global.Image) {
   try {
@@ -990,18 +962,18 @@ module.exports = EncodedImage = (function() {
 
 
 /***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject, ClassSystem, Promise, StandardLib, WriteStream, binary, bound, bufferSize, log, readFileAsArrayBuffer,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-StandardLib = __webpack_require__(0);
+StandardLib = __webpack_require__(1);
 
-ClassSystem = __webpack_require__(2);
+ClassSystem = __webpack_require__(4);
 
-binary = __webpack_require__(1).binary;
+binary = __webpack_require__(0).binary;
 
 Promise = StandardLib.Promise, readFileAsArrayBuffer = StandardLib.readFileAsArrayBuffer, bound = StandardLib.bound;
 
@@ -1131,783 +1103,22 @@ module.exports = WriteStream = (function(superClass) {
 
 
 /***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-communication-status":"*","art-config":"*","art-rest-client":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"0.2.0"}
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("art-rest-client");
+
+/***/ }),
 /* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ref, ref1;
-
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.CommunicationStatus : void 0 : void 0) != null ? ref : __webpack_require__(18);
-
-
-/***/ }),
-/* 17 */
 /***/ (function(module, exports) {
 
-var CommunicationStatus;
-
-module.exports = CommunicationStatus = (function() {
-  var communicationStatuses, k, ref, v;
-
-  function CommunicationStatus() {}
-
-  CommunicationStatus.communicationStatuses = communicationStatuses = {
-
-    /*
-    status: success
-    
-    * An unqualified success.
-    * I guess it could be qualified, with additional information in another field,
-      but the 'expected' data should be present.
-     */
-    success: {
-      httpStatus: 200
-
-      /*
-      status: missing
-      
-      * The request was properly formatted.
-      * There were no network errors.
-      * There were no server errors.
-      * The only problem is the server could not find the requested resource.
-       */
-    },
-    missing: {
-      httpStatus: 404,
-      failure: true
-
-      /*
-      status: clientFailure
-      
-      * The server rejected the request.
-      * There is something wrong with the client's request.
-      * It's up to the client to fix the problem.
-      * This includes mal-formed requests as well as invalid data.
-      * all 4xx errors except 404
-      NOTE: 404 is not necessarilly a client NOR server error, therefor it's status: missing
-       */
-    },
-    clientFailure: {
-      httpStatus: 400,
-      clientFailure: true,
-      failure: true
-
-      /*
-      status: notAuthorized
-      
-      * The resource exists, but the client is not allowed to access it.
-      
-      This is a form of clientFailure because the client could possibly change
-      something in the request to make it work.
-       */
-    },
-    clientFailureNotAuthorized: {
-      httpStatus: 403,
-      clientFailure: true,
-      failure: true
-
-      /*
-      status: serverFailure
-      
-      * There is something broken on the server.
-      * There is nothing the client can do to solve this problem.
-      
-      SBD: Possble rename to 'internalFailure': Reason: so it also makes sense for local library calls.
-        If something is failing in a local library, serverFailure makes less sense.
-        Then again, local libraries pretty-much don't need communicationStatus at all - they
-        can use 'throw' or 'promise.reject'
-       */
-    },
-    serverFailure: {
-      httpStatus: 500,
-      failure: true,
-      serverFailure: true
-
-      /*
-      status: networkFailure
-      
-      * The remote-server could not be reached.
-      * There is nothing the code running on the Client NOR Server can do to fix this.
-      * There is something wrong with the network between the client computer and the server.
-      * The client can attempt to retry at a later time and it might magically work.
-      * The client-side-humans or server-side-humans can attempt to fix the network.
-      * The failure may be one of the following:
-        a) the local computer has no internet connection OR
-        b) the internet is in a shitstorm ;) OR
-        c) there is an network problem within the Servers' facility.
-       */
-    },
-    networkFailure: {
-      failure: true
-
-      /*
-      status: aborted
-      
-      * the request was aborted, AS REQUESTED BY THE CLIENT
-       */
-    },
-    aborted: {
-      failure: true
-
-      /*
-      status: pending
-      
-      * The request is proceeding.
-      * No errors so far.
-       */
-    },
-    pending: {},
-
-    /*
-    status: failure
-    
-    Use when the same code is used clientSide and serverSide.
-    
-    Server code should convert :failure into :serverFailure when sending
-    a failing reply to a client.
-     */
-    failure: {
-      httpStatus: 500,
-      failure: true
-    }
-  };
-
-  ref = CommunicationStatus.communicationStatuses;
-  for (k in ref) {
-    v = ref[k];
-    CommunicationStatus[k] = k;
-  }
-
-  CommunicationStatus.isClientFailure = function(status) {
-    var ref1;
-    return !!((ref1 = communicationStatuses[status]) != null ? ref1.clientFailure : void 0);
-  };
-
-  CommunicationStatus.isServerFailure = function(status) {
-    var ref1;
-    return !!((ref1 = communicationStatuses[status]) != null ? ref1.serverFailure : void 0);
-  };
-
-  CommunicationStatus.isFailure = function(status) {
-    var ref1;
-    return !!((ref1 = communicationStatuses[status]) != null ? ref1.failure : void 0);
-  };
-
-  CommunicationStatus.isSuccess = function(status) {
-    return status === "success";
-  };
-
-
-  /*
-  OUT: true if status is a valid status-string
-   */
-
-  CommunicationStatus.validStatus = function(status) {
-    return CommunicationStatus[status] === status;
-  };
-
-  CommunicationStatus.decodeHttpStatus = function(httpStatus) {
-    var status;
-    if (httpStatus == null) {
-      return {
-        status: CommunicationStatus.networkFailure,
-        message: "network failure"
-      };
-    }
-    status = (function() {
-      switch (httpStatus / 100 | 0) {
-        case 2:
-          return this.success;
-        case 3:
-          return this.missing;
-        case 4:
-          switch (httpStatus) {
-            case 403:
-              return this.clientFailureNotAuthorized;
-            case 404:
-              return this.missing;
-            default:
-              return this.clientFailure;
-          }
-          break;
-        case 5:
-          switch (httpStatus) {
-            case 502:
-            case 503:
-            case 504:
-              return this.networkFailure;
-            case 501:
-            case 505:
-            case 530:
-              return this.clientFailure;
-            case 500:
-              return this.serverFailure;
-          }
-      }
-    }).call(CommunicationStatus);
-    if (status == null) {
-      throw new Error("unhandled httpStatus: " + httpStatus);
-    }
-    return {
-      status: status,
-      httpStatus: httpStatus,
-      message: status + " (" + httpStatus + ")"
-    };
-  };
-
-  CommunicationStatus.encodeHttpStatus = function(status) {
-    var httpStatus, ref1;
-    if (!(httpStatus = (ref1 = CommunicationStatus.communicationStatuses[status]) != null ? ref1.httpStatus : void 0)) {
-      throw new Error("There is no valid HttpStatus for " + status + ".");
-    }
-    return httpStatus;
-  };
-
-  return CommunicationStatus;
-
-})();
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(10);
-
-module.exports.includeInNamespace(__webpack_require__(17));
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = (__webpack_require__(5)).vivifySubnamespace('Art');
-
-__webpack_require__(10);
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(23);
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var BaseClass, Promise, RequestError, RestClient, StandardLib, aborted, appendQuery, capitalizedDashCase, decodeHttpStatus, each, failureTypes, formattedInspect, isNumber, log, merge, networkFailure, object, objectKeyCount, objectWithout, present, ref, ref1, serverFailure, success, timeout, w,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-StandardLib = __webpack_require__(0);
-
-ref = __webpack_require__(0), objectWithout = ref.objectWithout, formattedInspect = ref.formattedInspect, present = ref.present, Promise = ref.Promise, merge = ref.merge, isNumber = ref.isNumber, timeout = ref.timeout, log = ref.log, objectKeyCount = ref.objectKeyCount, appendQuery = ref.appendQuery, object = ref.object, RequestError = ref.RequestError, object = ref.object, w = ref.w, capitalizedDashCase = ref.capitalizedDashCase, each = ref.each;
-
-ref1 = __webpack_require__(16), networkFailure = ref1.networkFailure, success = ref1.success, serverFailure = ref1.serverFailure, aborted = ref1.aborted, failureTypes = ref1.failureTypes, decodeHttpStatus = ref1.decodeHttpStatus;
-
-BaseClass = __webpack_require__(2).BaseClass;
-
-__webpack_require__(21);
-
-module.exports = RestClient = (function(superClass) {
-  var legalVerbs, normalizeHeaders;
-
-  extend(RestClient, superClass);
-
-  function RestClient() {
-    return RestClient.__super__.constructor.apply(this, arguments);
-  }
-
-  RestClient.singletonClass();
-
-  RestClient.RestClientClass = RestClient;
-
-  RestClient.legalVerbs = legalVerbs = {};
-
-  each(w("get put post delete head"), function(v) {
-    var upper;
-    upper = v.toUpperCase();
-    return legalVerbs[v.toLowerCase()] = legalVerbs[upper] = upper;
-  });
-
-  RestClient.get = function(url, options) {
-    return RestClient.singleton.get(url, options);
-  };
-
-  RestClient.put = function(url, data, options) {
-    return RestClient.singleton.put(url, data, options);
-  };
-
-  RestClient.post = function(url, data, options) {
-    return RestClient.singleton.post(url, data, options);
-  };
-
-  RestClient["delete"] = function(url, options) {
-    return RestClient.singleton["delete"](url, options);
-  };
-
-  RestClient.getArrayBuffer = function(url, options) {
-    return RestClient.singleton.getArrayBuffer(url, options);
-  };
-
-  RestClient.getJson = function(url, options) {
-    return RestClient.singleton.getJson(url, options);
-  };
-
-  RestClient.deleteJson = function(url, options) {
-    return RestClient.singleton.deleteJson(url, options);
-  };
-
-  RestClient.putJson = function(url, data, options) {
-    return RestClient.singleton.putJson(url, data, options);
-  };
-
-  RestClient.postJson = function(url, data, options) {
-    return RestClient.singleton.postJson(url, data, options);
-  };
-
-  RestClient.restRequest = function(options) {
-    return RestClient.singleton.restRequest(options);
-  };
-
-  RestClient.restJsonRequest = function(options) {
-    return RestClient.singleton.restJsonRequest(options);
-  };
-
-
-  /*
-  get/put/post/delete
-  
-  IN:
-    url: valid url string
-  
-    data: (only on PUT/POST requests)
-      data to send
-      NOTE: must be null if using formData
-  
-    options:
-  
-      formData: plain object of key-value pairs to submit as form-data
-        You can even use this for "get" requests.
-        NOTE: "data" must be null if using "formData"
-  
-      headers: plain object of additional HTTP headers to set
-  
-      onProgress: (restRequestStatus) -> null
-        called each time progress is made
-        NOTE: restRequestStatus.progress contains a 0-to-1 number that indicates how much progress has been made.
-          progress indicates DOWNLOAD progress for GET requests and UPLOAD progress for all others.
-  
-      responseType: "arraybuffer", "blob", "document", "json", or "text"
-        default: "text"
-        NOTE: "json" is handled manually since IE11 and iOS7 don't support the "json" option.
-        https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType
-  
-  OUT: Promise:
-    resolved: (responseData) ->
-    rejected: (restRequestStatus) ->
-  
-  responseData:
-    a String, or the type specified by the responseType option
-  
-  restRequestStatus:
-    event:    # the HTML event object
-    request:  # the XMLHttpRequest
-    options:  # the restRequest options: verb, url, data, headers, onProgress, responseType, formData
-    httpStatus:   # the HTML status code, if the request completed
-    response: # responseData
-    status:       a valid CommunicationStatus
-    error:    # Error object or string-explaination of why the request was rejected
-    progress:
-      a value between 0 and 1
-      If the progress is indeterminant, this is 0
-      If this isn't an onProgress event, this is the amount of progress
-      that was made up to the point of the event.
-   */
-
-  RestClient.prototype.get = function(url, options) {
-    return this.restRequest(merge(options, {
-      verb: "GET",
-      url: url
-    }));
-  };
-
-  RestClient.prototype.put = function(url, data, options) {
-    return this.restRequest(merge(options, {
-      verb: "PUT",
-      url: url,
-      data: data
-    }));
-  };
-
-  RestClient.prototype.post = function(url, data, options) {
-    return this.restRequest(merge(options, {
-      verb: "POST",
-      url: url,
-      data: data
-    }));
-  };
-
-  RestClient.prototype["delete"] = function(url, options) {
-    return this.restRequest(merge(options, {
-      verb: "DELETE",
-      url: url
-    }));
-  };
-
-  RestClient.prototype.getArrayBuffer = function(url, options) {
-    return this.restRequest(merge(options, {
-      verb: "GET",
-      url: url,
-      responseType: "arraybuffer"
-    }));
-  };
-
-
-  /*
-  get/put/post/deleteJson
-  
-  same as get/put/post/delete above
-  
-  except:
-    sent data should be plain objects which are JSON.stringified
-    response data is automatically JSON.parsed
-  
-    additional options are set:
-      responseType: "json"
-      headers:      Accept: 'application/json'
-   */
-
-  RestClient.prototype.getJson = function(url, options) {
-    return this.restJsonRequest(merge(options, {
-      verb: "get",
-      url: url
-    }));
-  };
-
-  RestClient.prototype.deleteJson = function(url, options) {
-    return this.restJsonRequest(merge(options, {
-      verb: "delete",
-      url: url
-    }));
-  };
-
-  RestClient.prototype.putJson = function(url, data, options) {
-    return this.restJsonRequest(merge(options, {
-      verb: "put",
-      url: url,
-      data: data
-    }));
-  };
-
-  RestClient.prototype.postJson = function(url, data, options) {
-    return this.restJsonRequest(merge(options, {
-      verb: "post",
-      url: url,
-      data: data
-    }));
-  };
-
-
-  /*
-  IN:
-    options:
-      verb: "GET", "PUT", "POST"
-      method: alias for verb
-  
-      data: data to restRequest - passed to xmlHttpRequest.restRequest
-      body: alias for data
-  
-      plus all the options for get/put/post listed above
-      showProgressAfter: milliseconds (default: 100)
-        only show progress after # milliseconds
-  
-      onProgress: (requestStatus) ->
-        see "All callbacks" below for details about inputs.
-        Note that onProgress is triggered a little differently than
-        the normal XMLHttpRequest progress events:
-          - it will only be called after showProgressAfter ms
-          - it is guaranteed to be called after showProgressAfter ms if the request hasn't completed
-          - if the request completes before showProgressAfter ms, it will never be called
-  
-  OUT: see get/put/post above
-  
-  All callbacks look like this: (requestStatus) ->
-    requestStatus:
-      request:  XMLHttpRequest
-      progress: number # between 0 and 1
-      options:  options # passed-in options object
-      event:    the most recent event
-      response: # the processed response data, if ready
-      error:    # if any
-      httpStatus:   number # HTTP status code, if the request is complete
-  
-  EFFECT:
-   */
-
-  RestClient.prototype.restRequest = function(options) {
-    var body, data, formData, headers, k, method, onProgress, query, responseType, showProgressAfter, specifiedVerb, url, v, verb, verbose;
-    verb = options.verb, verbose = options.verbose, method = options.method, url = options.url, data = options.data, body = options.body, query = options.query, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, formData = options.formData, showProgressAfter = options.showProgressAfter;
-    if (!isNumber(showProgressAfter)) {
-      showProgressAfter = 100;
-    }
-    method || (method = verb);
-    body || (body = data);
-    if (!(method = RestClient.legalVerbs[specifiedVerb = method])) {
-      throw new Error("invalid method: " + specifiedVerb);
-    }
-    if (formData) {
-      if (body) {
-        throw new Error("can't specify both 'body' and 'formData'");
-      }
-      body = new FormData;
-      for (k in formData) {
-        v = formData[k];
-        body.append(k, v);
-      }
-    } else {
-      body = (body != null ? typeof body.toArrayBuffer === "function" ? body.toArrayBuffer() : void 0 : void 0) || body;
-    }
-    if (method === "GET" && body) {
-      log.error({
-        RestClient_restRequest: {
-          info: "can't GET with body",
-          options: options
-        }
-      });
-      throw new Error("With their ultimate wisdom, the gods decree: NO DATA WITH GET");
-    }
-    if (query) {
-      url = appendQuery(url, query);
-    }
-    return this._normalizedRestRequest({
-      verbose: verbose,
-      method: method,
-      url: url,
-      body: body,
-      onProgress: onProgress,
-      responseType: responseType,
-      showProgressAfter: showProgressAfter,
-      headers: normalizeHeaders(headers)
-    });
-  };
-
-  RestClient.normalizeHeaders = normalizeHeaders = function(headers) {
-    return object(headers, {
-      key: function(v, k) {
-        return capitalizedDashCase(k);
-      }
-    });
-  };
-
-  RestClient.prototype.restJsonRequest = function(options) {
-    var data, headers, method, verb;
-    verb = options.verb, method = options.method, data = options.data, headers = options.headers;
-    verb = RestClient.legalVerbs[verb || method];
-    if (data && objectKeyCount(data) === 0) {
-      data = null;
-    }
-    if (verb === "GET" && options.data) {
-      options = merge(options, {
-        url: appendQuery(options.url, object(data, function(v) {
-          return JSON.stringify(v);
-        }))
-      });
-      data = null;
-    } else {
-      data && (data = JSON.stringify(data));
-    }
-    return this.restRequest(merge(options, {
-      responseType: "json",
-      headers: merge({
-        Accept: 'application/json',
-        "Content-Type": 'application/json'
-      }, headers),
-      data: data
-    }));
-  };
-
-  RestClient.prototype._normalizedRestRequest = function(options) {
-    var body, headers, method, onProgress, responseType, showProgressAfter, url, verbose;
-    method = options.method, url = options.url, body = options.body, headers = options.headers, onProgress = options.onProgress, responseType = options.responseType, showProgressAfter = options.showProgressAfter, verbose = options.verbose;
-    return new Promise(function(resolve, reject) {
-      var fail, getErrorResponse, getResponse, initialProgressCalled, k, lastProgressEvent, progressCallbackInternal, request, requestResolved, restRequestStatus, v;
-      fail = function(props) {
-        return reject(new RequestError(merge(props, {
-          sourceLib: "ArtRestClient",
-          body: body,
-          headers: headers,
-          responseType: responseType,
-          key: url,
-          type: method,
-          responseUrl: request.responseURL,
-          progress: restRequestStatus.progress
-        })));
-      };
-      restRequestStatus = {
-        request: request = new XMLHttpRequest,
-        progress: 0,
-        options: options,
-        abort: function() {
-          request.abort();
-          return fail({
-            status: aborted,
-            message: "XMLHttpRequest aborted"
-          });
-        }
-      };
-      getErrorResponse = function() {
-        var error;
-        try {
-          return getResponse();
-        } catch (error1) {
-          error = error1;
-          return {
-            status: serverFailure,
-            rawResponse: request.response,
-            message: "ArtRestClient: Error parsing server's response: " + error + "\nrawResponse: " + request.response
-          };
-        }
-      };
-      getResponse = function() {
-        var response;
-        response = request.response;
-        if (response && responseType === "json") {
-          return JSON.parse(response);
-        } else {
-          return response;
-        }
-      };
-      request.open(method, url, true);
-      if (present(responseType) && responseType !== "json") {
-        request.responseType = responseType;
-      }
-      if (headers) {
-        for (k in headers) {
-          v = headers[k];
-          request.setRequestHeader(k, v);
-        }
-      }
-      requestResolved = false;
-      request.addEventListener("error", function(event) {
-        requestResolved = true;
-        return fail({
-          status: networkFailure,
-          message: "XMLHttpRequest error event triggered",
-          data: {
-            event: event
-          }
-        });
-      });
-      request.addEventListener("load", function(event) {
-        var decodedHttpStatus, httpStatus, message;
-        requestResolved = true;
-        decodedHttpStatus = decodeHttpStatus(httpStatus = request.status);
-        if (!((decodedHttpStatus.status === success) && ((function() {
-          try {
-            resolve(getResponse());
-            return true;
-          } catch (error1) {}
-        })()))) {
-          message = decodedHttpStatus.status === success ? (decodedHttpStatus.status = serverFailure, "error processing successful response") : void 0;
-          return fail(merge(decodedHttpStatus, {
-            message: message,
-            event: event,
-            data: getErrorResponse()
-          }));
-        }
-      });
-      if (onProgress) {
-        initialProgressCalled = showProgressAfter <= 0;
-        lastProgressEvent = null;
-        timeout(showProgressAfter, function() {
-          initialProgressCalled = true;
-          return progressCallbackInternal(lastProgressEvent || {});
-        });
-        progressCallbackInternal = function(event) {
-          var loaded, ref2, total;
-          ref2 = lastProgressEvent = event, total = ref2.total, loaded = ref2.loaded;
-          if (initialProgressCalled && !requestResolved) {
-            return typeof onProgress === "function" ? onProgress(restRequestStatus = merge(restRequestStatus, {
-              event: event,
-              progress: total > 0 ? loaded / total : 0
-            })) : void 0;
-          }
-        };
-        if (method === "GET") {
-          request.addEventListener("progress", progressCallbackInternal);
-        } else {
-          request.upload.addEventListener("progress", progressCallbackInternal);
-        }
-      }
-      if (verbose) {
-        log("ArtRestClient: " + method + " " + url);
-      }
-      return request.send(body);
-    });
-  };
-
-  return RestClient;
-
-})(BaseClass);
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(24);
-
-module.exports.includeInNamespace(__webpack_require__(22));
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var RestClient,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(5)).addNamespace('Art.RestClient', RestClient = (function(superClass) {
-  extend(RestClient, superClass);
-
-  function RestClient() {
-    return RestClient.__super__.constructor.apply(this, arguments);
-  }
-
-  RestClient.version = __webpack_require__(27).version;
-
-  return RestClient;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"0.2.0"}
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Simplified system of statuses for HTTP and any other network protocol","license":"ISC","name":"art-communication-status","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.5.2"}
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-communication-status":"^1.0.0","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.1","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.1.2","commander":"^2.9.0","css-loader":"^0.28.4","dateformat":"^2.0.0","detect-node":"^2.0.3","fs-extra":"^3.0.1","glob":"^7.1.2","glob-promise":"^3.1.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0","xhr2":"^0.1.4"},"description":"Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.","license":"ISC","name":"art-rest-client","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.6.3"}
+module.exports = require("neptune-namespaces");
 
 /***/ })
 /******/ ]);

@@ -3,7 +3,9 @@
   "dependencies": {
     "art-build-configurator": "*",
     "art-class-system": "*",
+    "art-communication-status": "*",
     "art-config": "*",
+    "art-rest-client": "*",
     "art-standard-lib": "*",
     "art-testbench": "*",
     "bluebird": "^3.5.0",
