@@ -92,7 +92,7 @@ formattedInspectArray = (m, maxLineLength, options) ->
 
     inspectedHasNewlines = /\n/.test inspected
 
-    if objectsMustBeExplicit && isPlainObject value
+    if objectsMustBeExplicit && isPlainObject(value) && objectKeyCount(value) > 0
       objectStart = "{}"
       objectStart = colorize.grey objectStart
       inspected = if inspectedHasNewlines

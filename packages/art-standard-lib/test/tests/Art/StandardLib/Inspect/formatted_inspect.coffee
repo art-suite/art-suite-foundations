@@ -446,6 +446,16 @@ module.exports = suite:
         """, 11
 
   regressions: ->
+    testFIMultiLine [
+      {}
+      {}
+    ], """
+      []
+        {}
+        {}
+      """
+
+
     testFIMultiLine
       Neptune:
         version: "1.10.2"
