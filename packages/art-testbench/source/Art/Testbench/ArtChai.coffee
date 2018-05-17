@@ -131,6 +131,10 @@ assert.rejects = (promise, context) ->
       v
   , (v) -> v
 
+assert.rejectsWithStatus = (status, promise, context) ->
+  assert.rejects promise, context
+  .then (error) -> assert.selectedEq {status}, error, context
+
 assert.rejectsWith = (promise, rejectValue, context) ->
   log.error "DEPRICATED: assert.rejectsWith. Use: assert.rejects().then (rejectValue) -> assert.eq rejectValue, expectedRejectValue"
   assert.rejects promise
