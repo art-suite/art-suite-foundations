@@ -466,7 +466,7 @@ var Binary,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(16)).addNamespace('Art.Binary', Binary = (function(superClass) {
+module.exports = (__webpack_require__(15)).addNamespace('Art.Binary', Binary = (function(superClass) {
   extend(Binary, superClass);
 
   function Binary() {
@@ -828,8 +828,6 @@ isNode = StandardLib.isNode, log = StandardLib.log, Promise = StandardLib.Promis
 
 ref = __webpack_require__(0), isBinary = ref.isBinary, binary = ref.binary;
 
-__webpack_require__(15);
-
 if (!global.Image) {
   try {
     global.HTMLImageElement = global.Image = (global.HTMLCanvasElement = eval('require')("canvas")).Image;
@@ -1110,12 +1108,6 @@ module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","depende
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports) {
-
-module.exports = require("art-rest-client");
-
-/***/ }),
-/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = require("neptune-namespaces");

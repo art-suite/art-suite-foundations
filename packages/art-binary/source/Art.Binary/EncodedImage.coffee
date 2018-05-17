@@ -6,7 +6,7 @@ StandardLib = require 'art-standard-lib'
   sameOrigin
 } = StandardLib
 {isBinary, binary} = require './BinaryString'
-require 'art-rest-client'
+# require 'art-rest-client'
 
 # Node.js support - be sure to "npm install canvas"
 unless global.Image
