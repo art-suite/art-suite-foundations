@@ -15,3 +15,4 @@ module.exports = class ReschedulableTimer
     thisScheduleNumber = @_currentScheduleNumber += 1
     timeout ms, => action() if @_currentScheduleNumber == thisScheduleNumber
 
+  cancel: -> @_currentScheduleNumber++
