@@ -38,9 +38,10 @@ findEmailDomain: findEmailDomain = (domain) ->
 
   OUT: valid: t/f, message: reason for failure if valid is false
 validateMailbox: validateMailbox = (options = {}, socket) ->
-  {emailServer, email} = options
+  {smtpFrom, smtpHost, emailServer, email} = options
+  throw new Error "email, emailServer and smtpHost or smtpFrom required" unless email && (smtpHost ? smtpFrom)
   {domain = emailServer, timeout = 5000} = options
-  {smtpFrom = email, smtpHost = smtpFrom.split('@')[1]} = options
+  smtpHost ?= smtpFrom.split('@')[1]
 
   currentCommandIndex = 0
   smtpCommands =
@@ -78,18 +79,21 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     options:
       email: email address to check (string)
       see validateMailbox or other options
+      smtpFrom: "test@art.suite.com"
 
     socket: null or open socket or compatible object for testing
 
   OUT: Promise.then ({valid, message}) ->
 validateEmail: validateEmail = (options = {}, socket) ->
-  {email} = options
+  {email, verbose} = options
+
   if email.length < maxEmailLength && found = emailRegexp.exec email
     findEmailDomain domain = found[2]
     .catch (error) ->
       valid: false, message: "Could not find email server for #{domain}."
 
     .then (emailServer) ->
+      log validateMailbox: {email, domain, emailServer} if verbose
       validateMailbox
         merge options, {domain, emailServer}
         socket
