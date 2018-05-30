@@ -85,6 +85,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           status: success
           message: '#{emailServer} refused #{email}.'
           emailServer
+          refusedWith: data.trim()
 
       if currentCommandIndex < smtpCommands.length
         log smtpCommands[currentCommandIndex] if verbose
