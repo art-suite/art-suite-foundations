@@ -53,26 +53,50 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     socket ?= &net.createConnection 25, emailServer
     socket.setTimeout timeout, ->
       socket.destroy()
-      reject new ErrorWithInfo "#{domain} failed to respond.", {emailServer}
+      resolve {}
+        valid: false
+        status: networkFailure
+        message: "#{emailServer} failed to respond within #{timeout}ms"
+        domain
+        emailServer
 
     socket.on 'error', (socketError) ->
       socket.destroy()
       if socketError.code == 'ECONNRESET'
         resolve valid: false, message: '#{domain} refused #{email}.'
       else
-        reject new ErrorWithInfo "socket socketError #{#err.code}", {emailServer, socketError}
+        resolve {}
+          valid: false
+          status: serverFailure
+          message: "socket socketError #{#err.code} communicating with #{serverFailure}"
+          email
+          domain
+          emailServer
 
     socket.on 'data', (data) ->
       if data.toString()[0] != '2'
         socket.destroy()
 
-        resolve valid: false, message: '#{domain} refused #{email}.'
+        resolve {}
+          status: success
+          valid: false
+          message: '#{serverFailure} refused #{email}.'
+          email
+          domain
+          emailServer
 
       if currentCommandIndex < smtpCommands.length
         socket.write smtpCommands[currentCommandIndex] + "\n", -> currentCommandIndex++
+
       else
         socket.destroy()
-        resolve valid: true
+        resolve {}
+          status: success
+          valid: true
+          message: "mailbox exists"
+          email
+          domain
+          emailServer
 
 ###
   IN:
@@ -101,6 +125,11 @@ validateEmail: validateEmail = (options = {}, socket) ->
   else
     Promise.resolve valid: false, message: "Not a valid email address."
 
-validateEmails: ({emails, smtpHost}) ->
-  Promise.all array email in emails
-    validateEmail {email, smtpHost}
+validateEmails: (options) ->
+  Promise.all array email in options.emails
+    validateEmail merge options, {email}
+    .catch (error) ->
+      if isFailure error.status
+        valid: false
+        message: error.message
+      else
