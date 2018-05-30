@@ -12,7 +12,10 @@ suite: ->
           domain: :gmail.com
         newTestSocket()
       .then (result) ->
-        assert.eq result, valid: true
+        assert.selectedEq
+          valid: true
+          status: success
+          result
 
   each [email, emailServer] in []
       [] "shanebdavis_xyz@gmail.com" :gmail-smtp-in.l.google.com
@@ -24,6 +27,8 @@ suite: ->
           domain: :gmail.com
         newTestSocket()
       .then (result) ->
-        assert.eq result,
+        assert.selectedEq
           valid: false
-          message: "" gmail.com refused shanebdavis_xyz@gmail.com.
+          status: success
+          result
+        assert.match result.message, /// google.com.*refused.*shanebdavis_xyz@gmail.com

@@ -3,6 +3,7 @@ merge
   &ArtStandardLib
   &ArtClassSystem
   &ArtEmailValidator
+  &ArtCommunicationStatus
 
   test: (args...) -> global.test args...
 

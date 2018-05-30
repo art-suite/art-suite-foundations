@@ -63,12 +63,18 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     socket.on 'error', (socketError) ->
       socket.destroy()
       if socketError.code == 'ECONNRESET'
-        resolve valid: false, message: '#{domain} refused #{email}.'
+        resolve
+          valid: false
+          status: success
+          message: '#{emailServer} refused #{email}.'
+          email
+          domain
+          emailServer
       else
         resolve {}
           valid: false
           status: serverFailure
-          message: "socket socketError #{#err.code} communicating with #{serverFailure}"
+          message: "socket socketError #{#err.code} communicating with #{emailServer}"
           email
           domain
           emailServer
@@ -80,7 +86,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         resolve {}
           status: success
           valid: false
-          message: '#{serverFailure} refused #{email}.'
+          message: '#{emailServer} refused #{email}.'
           email
           domain
           emailServer
@@ -128,8 +134,3 @@ validateEmail: validateEmail = (options = {}, socket) ->
 validateEmails: (options) ->
   Promise.all array email in options.emails
     validateEmail merge options, {email}
-    .catch (error) ->
-      if isFailure error.status
-        valid: false
-        message: error.message
-      else
