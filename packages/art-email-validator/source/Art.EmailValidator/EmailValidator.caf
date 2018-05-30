@@ -100,3 +100,7 @@ validateEmail: validateEmail = (options = {}, socket) ->
 
   else
     Promise.resolve valid: false, message: "Not a valid email address."
+
+validateEmails: ({emails, smtpHost}) ->
+  Promise.all array email in emails
+    validateEmail {email, smtpHost}
