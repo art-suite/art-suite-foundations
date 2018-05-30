@@ -9,9 +9,10 @@ import &StandardImport
 maxEmailLength = 320
 
 # OUT: the lowest priority mail server
-findEmailDomain: findEmailDomain = (domain) ->
+findEmailDomain: findEmailDomain = (domain, verbose) ->
   Promise.withCallback (callback) -> &dns.resolveMx domain, callback
   .then (dnsAddresses)->
+    log {domain, dnsAddresses} if verbose
     result = null
     lowestPriority = 0
 
@@ -113,7 +114,9 @@ validateEmail: validateEmail = (options = {}, socket) ->
   {email, verbose} = options
 
   if email.length < maxEmailLength && found = emailRegexp.exec email
-    findEmailDomain domain = found[2]
+    findEmailDomain
+      domain = found[2]
+      verbose
     .catch (error) ->
       valid: false, message: "Could not find email server for #{domain}."
 
