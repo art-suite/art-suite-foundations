@@ -57,7 +57,6 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         valid: false
         status: networkFailure
         message: "#{emailServer} failed to respond within #{timeout}ms"
-        domain
         emailServer
 
     socket.on 'error', (socketError) ->
@@ -67,16 +66,12 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           valid: false
           status: success
           message: '#{emailServer} refused #{email}.'
-          email
-          domain
           emailServer
       else
         resolve {}
           valid: false
           status: serverFailure
           message: "socket socketError #{#err.code} communicating with #{emailServer}"
-          email
-          domain
           emailServer
 
     socket.on 'data', (data) ->
@@ -84,11 +79,9 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         socket.destroy()
 
         resolve {}
-          status: success
           valid: false
+          status: success
           message: '#{emailServer} refused #{email}.'
-          email
-          domain
           emailServer
 
       if currentCommandIndex < smtpCommands.length
@@ -97,11 +90,9 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
       else
         socket.destroy()
         resolve {}
-          status: success
           valid: true
+          status: success
           message: "mailbox exists"
-          email
-          domain
           emailServer
 
 ###
@@ -132,5 +123,5 @@ validateEmail: validateEmail = (options = {}, socket) ->
     Promise.resolve valid: false, message: "Not a valid email address."
 
 validateEmails: (options) ->
-  Promise.all array email in options.emails
+  Promise.deepAll object email in options.emails with-key email
     validateEmail merge options, {email}
