@@ -38,7 +38,7 @@ findEmailDomain: findEmailDomain = (domain) ->
 
   OUT: valid: t/f, message: reason for failure if valid is false
 validateMailbox: validateMailbox = (options = {}, socket) ->
-  {smtpFrom, smtpHost, emailServer, email} = options
+  {smtpFrom, smtpHost, emailServer, email, verbose} = options
   throw new Error "email, emailServer and smtpHost or smtpFrom required" unless email && (smtpHost ? smtpFrom)
   {domain = emailServer, timeout = 5000} = options
   smtpHost ?= smtpFrom.split('@')[1]
@@ -75,7 +75,9 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           emailServer
 
     socket.on 'data', (data) ->
-      if data.toString()[0] != '2'
+      data = data.toString()
+      log {data} if verbose
+      if data[0] != '2'
         socket.destroy()
 
         resolve {}
@@ -85,6 +87,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           emailServer
 
       if currentCommandIndex < smtpCommands.length
+        log smtpCommands[currentCommandIndex] if verbose
         socket.write smtpCommands[currentCommandIndex] + "\n", -> currentCommandIndex++
 
       else
