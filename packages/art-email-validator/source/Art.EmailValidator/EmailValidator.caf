@@ -88,7 +88,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
 
       if currentCommandIndex < smtpCommands.length
         log smtpCommands[currentCommandIndex] if verbose
-        socket.write smtpCommands[currentCommandIndex] + "\n", -> currentCommandIndex++
+        socket.write smtpCommands[currentCommandIndex] + "\r\n", -> currentCommandIndex++
 
       else
         socket.destroy()
