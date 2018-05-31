@@ -57,13 +57,6 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
     otherwise, initialize and return it with init()
   ###
   @getOwnProperty: getOwnProperty = (object, property, init) ->
-    # if property == "_myFlag"
-    #   log
-    #     getOwnProperty:
-    #       property:       property
-    #       hasOwnProperty: object.hasOwnProperty property
-    #       init: init
-
     if object.hasOwnProperty property
       object[property]
     else

@@ -596,18 +596,3 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
   implementsInterface: (methods) -> Function.BaseClass.implementsInterface @, methods
   tap: (f)-> f(@);@
-
-  ######################################################
-  # log
-  ######################################################
-  @rawLog: -> Log.rawLog arguments...
-  @log: ->
-    stack = callStack()
-    toLog = if arguments.length > 1
-      a for a in arguments
-    else arguments[0]
-    Log.logCore toLog, stack, className: @className
-    arguments[arguments.length-1]
-
-  log: @log
-  rawLog: @rawLog
