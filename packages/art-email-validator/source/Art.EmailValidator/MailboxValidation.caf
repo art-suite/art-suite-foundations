@@ -56,6 +56,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
       resolve {}
         valid: false
         status: networkFailure
+        reason: "smtpTimeout"
         message: "#{emailServer} failed to respond within specified timeout, (#{timeout}ms)"
         emailServer
 
@@ -64,13 +65,13 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
       if socketError.code == 'ECONNRESET'
         resolve
           valid: false
-          status: success
+          reason: "smtpConnectionReset"
           message: '#{emailServer} refused #{email} (connection reset).'
           emailServer
       else
         resolve {}
           valid: false
-          status: serverFailure
+          reason: "smtpSocketError"
           message: "socket socketError #{#err.code} communicating with #{emailServer}"
           emailServer
 
@@ -86,7 +87,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         resolve {}
           valid: false
           invalid: mailboxDoesNotExist
-          status: success
+          reason: "smtpMailboxDoesNotExist"
           message: if mailboxDoesNotExist then "#{emailServer} reports mailbox does not exist." else "#{emailServer} refused #{email}. (code: #{code})"
           code
           emailServer
@@ -99,13 +100,16 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
       else
         socket.destroy()
         resolve {}
-          valid: true
-          status: success
-          message: "mailbox exists"
+          valid:    true
+          reason:   "mailboxExists"
+          message:  "mailbox exists"
           emailServer
   .then (result) ->
     if fallbackValidator && !result.valid && !result.invalid
       Promise.then -> fallbackValidator options, result
-      .then (result) -> merge result, usedFallbackValidator: true
+      .then (result) -> merge
+        usedFallbackValidator: true
+        reason: "fallbackValidator"
+        result
     else
       result

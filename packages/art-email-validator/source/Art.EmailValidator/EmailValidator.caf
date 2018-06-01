@@ -42,13 +42,15 @@ validateEmail: validateEmail = (options = {}, socket) ->
 
   Promise.then ->
     if email.length > maxEmailLength
-      valid:   false
-      invalid: true
-      message: "Email address too long. (#{email.length} > #{maxEmailLength})"
+      valid:    false
+      invalid:  true
+      reason:   "tooLong"
+      message:  "Email address too long. (#{email.length} > #{maxEmailLength})"
     else unless domain = getDomain email
-      valid:   false
-      invalid: true
-      message: "Email's domain is invalid. (domain: #{formattedInspect email.split('@')?[1]})"
+      valid:    false
+      invalid:  true
+      reason:   "malformedDomain"
+      message:  "Email's domain is invalid. (domain: #{formattedInspect email.split('@')?[1]})"
     else
       findEmailDomain
         domain
@@ -63,6 +65,7 @@ validateEmail: validateEmail = (options = {}, socket) ->
         (error) ->
           valid:    false
           invalid:  true
+          reason:   "noDnsMx"
           message:  "Could not find email server for #{domain}. (DNS MX-record not found)"
 
   .then (result) ->

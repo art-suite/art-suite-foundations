@@ -16,7 +16,7 @@ suite:
           assert.doesNotExist result.didYouMean
           assert.selectedEq
             valid: true
-            status: success
+            reason: "poop"
             result
 
     each [email, emailServer] in []
@@ -33,7 +33,7 @@ suite:
           assert.selectedEq
             valid: false
             invalid: true
-            status: success
+            reason: "poop"
             result
           assert.match result.message, /// google.com.*mailbox.*does.*not.*exist
 
@@ -45,6 +45,7 @@ suite:
         assert.selectedEq
           valid:      false
           invalid:    true
+          reason: "poop"
           didYouMean: "shanebdavis@gmail.com"
           result
 
@@ -65,6 +66,7 @@ suite:
           valid: true
           usedFallbackValidator: true
           message: "It's cool, man"
+          reason: "poop"
           result
 
     test "without fallbackValidator" ->
@@ -77,6 +79,7 @@ suite:
         assert.selectedEq
           valid:   false
           invalid: false
+          reason: "poop"
           result
 
         assert.match result.message, /// google.com.*refused.*shanebdavis_xyz.*560
