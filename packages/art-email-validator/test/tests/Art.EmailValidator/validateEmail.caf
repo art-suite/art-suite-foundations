@@ -16,7 +16,7 @@ suite:
           assert.doesNotExist result.didYouMean
           assert.selectedEq
             valid: true
-            reason: "poop"
+            reason: "mailboxExists"
             result
 
     each [email, emailServer] in []
@@ -33,7 +33,7 @@ suite:
           assert.selectedEq
             valid: false
             invalid: true
-            reason: "poop"
+            reason: "smtpMailboxDoesNotExist"
             result
           assert.match result.message, /// google.com.*mailbox.*does.*not.*exist
 
@@ -45,7 +45,7 @@ suite:
         assert.selectedEq
           valid:      false
           invalid:    true
-          reason: "poop"
+          reason: "malformedDomain"
           didYouMean: "shanebdavis@gmail.com"
           result
 
@@ -66,7 +66,25 @@ suite:
           valid: true
           usedFallbackValidator: true
           message: "It's cool, man"
-          reason: "poop"
+          reason: "fallbackValidator"
+          result
+
+    test "fallbackValidator with custom reason" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          fallbackValidator: ->
+            valid: true
+            message: "It's cool, man"
+            reason: "superNinja"
+        newTestSocket "560: Confucious say, 'you suck.'"
+      .then (result) ->
+        assert.selectedEq
+          valid: true
+          usedFallbackValidator: true
+          message: "It's cool, man"
+          reason: "superNinja"
           result
 
     test "without fallbackValidator" ->
@@ -79,7 +97,7 @@ suite:
         assert.selectedEq
           valid:   false
           invalid: false
-          reason: "poop"
+          reason: "smtpError560"
           result
 
         assert.match result.message, /// google.com.*refused.*shanebdavis_xyz.*560

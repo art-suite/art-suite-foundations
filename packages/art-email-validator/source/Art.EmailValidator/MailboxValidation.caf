@@ -87,7 +87,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         resolve {}
           valid: false
           invalid: mailboxDoesNotExist
-          reason: "smtpMailboxDoesNotExist"
+          reason: if mailboxDoesNotExist then "smtpMailboxDoesNotExist" else "smtpError#{code}"
           message: if mailboxDoesNotExist then "#{emailServer} reports mailbox does not exist." else "#{emailServer} refused #{email}. (code: #{code})"
           code
           emailServer
