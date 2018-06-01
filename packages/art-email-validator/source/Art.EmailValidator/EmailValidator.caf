@@ -1,133 +1,77 @@
-import &StandardImport
+import &StandardImport, &DomainValidation, &MailboxValidation
 
-# https://tools.ietf.org/html/rfc3696
-# terms: local@domain
-# lengths:
-#   total:  320 max
-#   local:  64 max
-#   domain: 255 max
+##
+  https://tools.ietf.org/html/rfc3696
+  define terms: local@domain
+  lengths:
+    total:  320 max
+    local:  64 max
+    domain: 255 max
 maxEmailLength = 320
 
-# OUT: the lowest priority mail server
-findEmailDomain: findEmailDomain = (domain, verbose) ->
-  Promise.withCallback (callback) -> &dns.resolveMx domain, callback
-  .then (dnsAddresses)->
-    log {domain, dnsAddresses} if verbose
-    result = null
-    lowestPriority = 0
-
-    each {priority, exchange} in dnsAddresses
-      if !result? || priority < lowestPriority
-        lowestPriority = priority
-        result = exchange
-
-    result
-
 ###
   IN:
     options:
-      email:        the email address to check
-      emailServer:  the email server to check with
-      smtpFrom:         the smtpFrom-address to tell the email server [default: email]
-      smtpHost:         the smtpHost to tell the email server [default: the domain of part of: smtpFrom]
-      timeout:      number in miliseconds to wait before timing out when checking mailbox [default: 5000]
-      domain:       server-name used in error messages to make them friendly [default: emailServer]
+      email:        (required) email address to check (string)
+      smtpFrom:     (required OR smtpHost, default: feedback@smtpHost)    for validateMailbox: smtpFrom-address to tell the email server
+      smtpHost:     (required OR smtpFrom, default: parsed from smtpFrom) for validateMailbox: smtpHost to tell the email server
+      timeout:      (default: 1000) number in miliseconds to wait before timing out when checking mailbox
+      fallbackValidator: (options, ambiguousResult) ->
+        IN:
+          options: options object passed into validateMailbox
+          result: validateMailbox's inconclusive result
+        OUT:
+          same signature as validateMailbox's OUTPUT
 
-    socket:
-      an already-open socket, OR, can be used for testing w/o a real SMTP connection
-      (Note: Comcast blocks outgoing port-25 connections in the US - as-of 2018)
+        Called if validateMailbox can't conclusively determine if it is valid.
+        Example: use this to call Mailgun's email validation service.
 
-  OUT: valid: t/f, message: reason for failure if valid is false
-validateMailbox: validateMailbox = (options = {}, socket) ->
-  {smtpFrom, smtpHost, emailServer, email, verbose} = options
-  throw new Error "email, emailServer and smtpHost or smtpFrom required" unless email && (smtpHost ? smtpFrom)
-  {domain = emailServer, timeout = 5000} = options
-  smtpHost ?= smtpFrom.split('@')[1]
+    socket: (optional) open socket or compatible object for testing
+      Primarily used for testing.
 
-  currentCommandIndex = 0
-  smtpCommands =
-    "helo #{smtpHost}"
-    "mail from:<#{smtpFrom}>"
-    "rcpt to:<#{email}>"
+  OUT: Promise.then ({valid, invalid, message, didYouMean}) ->
+    valid:    true - means the email is definitly valid
+    invalid:  true - means email is definitly invalid
+    didYouMean: (optional) suggest a possibly-correct email
+    message:  developer-consumable description of what happened
 
-  new Promise (resolve, reject)->
-    socket ?= &net.createConnection 25, emailServer
-    socket.setTimeout timeout, ->
-      socket.destroy()
-      resolve {}
-        valid: false
-        status: networkFailure
-        message: "#{emailServer} failed to respond within #{timeout}ms"
-        emailServer
+    NOTE: valid and invalid could both be false, in which case the result is ambiguous.
 
-    socket.on 'error', (socketError) ->
-      socket.destroy()
-      if socketError.code == 'ECONNRESET'
-        resolve
-          valid: false
-          status: success
-          message: '#{emailServer} refused #{email}.'
-          emailServer
-      else
-        resolve {}
-          valid: false
-          status: serverFailure
-          message: "socket socketError #{#err.code} communicating with #{emailServer}"
-          emailServer
-
-    socket.on 'data', (data) ->
-      data = data.toString()
-      log {data} if verbose
-      if data[0] != '2'
-        socket.destroy()
-
-        resolve {}
-          valid: false
-          status: success
-          message: '#{emailServer} refused #{email}.'
-          emailServer
-          refusedWith: data.trim()
-
-      if currentCommandIndex < smtpCommands.length
-        log smtpCommands[currentCommandIndex] if verbose
-        socket.write smtpCommands[currentCommandIndex] + "\r\n", -> currentCommandIndex++
-
-      else
-        socket.destroy()
-        resolve {}
-          valid: true
-          status: success
-          message: "mailbox exists"
-          emailServer
-
-###
-  IN:
-    options:
-      email: email address to check (string)
-      see validateMailbox or other options
-      smtpFrom: "test@art.suite.com"
-
-    socket: null or open socket or compatible object for testing
-
-  OUT: Promise.then ({valid, message}) ->
 validateEmail: validateEmail = (options = {}, socket) ->
   {email, verbose} = options
 
-  if email.length < maxEmailLength && found = emailRegexp.exec email
-    findEmailDomain
-      domain = found[2]
-      verbose
-    .catch (error) ->
-      valid: false, message: "Could not find email server for #{domain}."
+  Promise.then ->
+    if email.length > maxEmailLength
+      valid:   false
+      invalid: true
+      message: "Email address too long. (#{email.length} > #{maxEmailLength})"
+    else unless domain = getDomain email
+      valid:   false
+      invalid: true
+      message: "Email's domain is invalid. (domain: #{formattedInspect email.split('@')?[1]})"
+    else
+      findEmailDomain
+        domain
+        verbose
 
-    .then (emailServer) ->
-      log validateMailbox: {email, domain, emailServer} if verbose
-      validateMailbox
-        merge options, {domain, emailServer}
-        socket
+      .then
+        (emailServer) ->
+          validateMailbox
+            merge options, {domain, emailServer}
+            socket
 
-  else
-    Promise.resolve valid: false, message: "Not a valid email address."
+        (error) ->
+          valid:    false
+          invalid:  true
+          message:  "Could not find email server for #{domain}. (DNS MX-record not found)"
+
+  .then (result) ->
+    if result.valid || result.didYouMean
+      result
+    else
+      merge result, didYouMean:
+        &mailcheck.run {} email
+        ?.full
 
 validateEmails: (options) ->
   Promise.deepAll object email in options.emails with-key email

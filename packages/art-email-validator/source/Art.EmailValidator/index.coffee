@@ -5,4 +5,7 @@ module.exports = require './namespace'
 module.exports
 .includeInNamespace require './EmailValidator'
 .addModules
-  StandardImport: require './StandardImport'
+  DomainValidation:  require './DomainValidation' 
+  MailboxValidation: require './MailboxValidation'
+  RegExp:            require './RegExp'           
+  StandardImport:    require './StandardImport'   

@@ -1,34 +1,82 @@
 import &StandardImport
-suite: ->
-  @timeout 10000
+suite:
+  basics: ->
+    @timeout 10000
 
-  each [email, emailServer] in []
-      [] :shanebdavis@gmail.com :gmail-smtp-in.l.google.com
-    test "valid #{email} #{emailServer}" ->
+    each [email, emailServer] in []
+        [] :shanebdavis@gmail.com :gmail-smtp-in.l.google.com
+      test "valid #{email} #{emailServer}" ->
+        validateEmail
+          {}
+            email
+            smtpFrom: "test@art.suite.com"
+            domain: :gmail.com
+          newTestSocket()
+        .then (result) ->
+          assert.doesNotExist result.didYouMean
+          assert.selectedEq
+            valid: true
+            status: success
+            result
+
+    each [email, emailServer] in []
+        [] "shanebdavis_xyz@gmail.com" :gmail-smtp-in.l.google.com
+      test "invalid #{email} #{emailServer}" ->
+        validateEmail
+          {}
+            email
+            smtpFrom: "test@art.suite.com"
+            domain: :gmail.com
+          newTestSocket()
+        .then (result) ->
+          assert.doesNotExist result.didYouMean
+          assert.selectedEq
+            valid: false
+            invalid: true
+            status: success
+            result
+          assert.match result.message, /// google.com.*mailbox.*does.*not.*exist
+
+    test "domain quick fail", ->
+      validateEmail
+        email: :shanebdavis@gmail
+      .then (result) ->
+        assert.match result.message, /domain.*invalid.*gmail/i
+        assert.selectedEq
+          valid:      false
+          invalid:    true
+          didYouMean: "shanebdavis@gmail.com"
+          result
+
+  fallbackValidator: ->
+    @timeout 10000
+
+    test "fallbackValidator" ->
       validateEmail
         {}
-          email
-          smtpFrom: "test@art.suite.com"
-          domain: :gmail.com
-        newTestSocket()
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          fallbackValidator: ->
+            valid: true
+            message: "It's cool, man"
+        newTestSocket "560: Confucious say, 'you suck.'"
       .then (result) ->
         assert.selectedEq
           valid: true
-          status: success
+          usedFallbackValidator: true
+          message: "It's cool, man"
           result
 
-  each [email, emailServer] in []
-      [] "shanebdavis_xyz@gmail.com" :gmail-smtp-in.l.google.com
-    test "invalid #{email} #{emailServer}" ->
+    test "without fallbackValidator" ->
       validateEmail
         {}
-          email
-          smtpFrom: "test@art.suite.com"
-          domain: :gmail.com
-        newTestSocket()
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+        newTestSocket "560: Confucious say, 'you suck.'"
       .then (result) ->
         assert.selectedEq
-          valid: false
-          status: success
+          valid:   false
+          invalid: false
           result
-        assert.match result.message, /// google.com.*refused.*shanebdavis_xyz@gmail.com
+
+        assert.match result.message, /// google.com.*refused.*shanebdavis_xyz.*560

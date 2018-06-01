@@ -7,7 +7,8 @@ target:
 
 npm:
   description: "" Art.Email.Validator
-  dependencies: {}
+  dependencies:
+    mailcheck:    :^1.1.1
 
 webpack:
   # common properties are merged into each target's properties

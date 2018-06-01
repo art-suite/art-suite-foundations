@@ -1,0 +1,111 @@
+import &StandardImport
+
+
+
+###
+  IN:
+    options:
+      email:        (required) the email address to check
+      emailServer:  (required) the email server to check with
+      smtpFrom:     (required OR smtpHost) the smtpFrom-address to tell the email server [default: email]
+      smtpHost:     (required OR smtpFrom) the smtpHost to tell the email server [default: the domain of part of: smtpFrom]
+      timeout:      (default: 1000) number in miliseconds to wait before timing out when checking mailbox
+      fallbackValidator: (options, result) ->
+        IN:
+          options: options object passed into validateMailbox
+          result: validateMailbox's inconclusive result
+        OUT:
+          same signature as validateMailbox's OUTPUT
+
+        Called if validateMailbox can't conclusively determine if it is valid
+        We use this to call Mailgun's email validation service.
+
+    socket:
+      an already-open socket, OR, can be used for testing w/o a real SMTP connection
+      (Note: Comcast blocks outgoing port-25 connections in the US - as-of 2018)
+
+  OUT:
+    valid: true == true-success
+      if valid is true, a mailbox exists for sure
+
+    invalid: true == true-failure
+      if invalid is false, there is definitly no mailbox
+      HOWEVER, if invalid is not true and valid is false, this may be a FALSE NEGATIVE
+      (some smtp servers are known to deny this question based on your IP range - in particular, AWS EC2 instances are sometimes blocked)
+
+    message: reason for failure if valid is false
+
+    didYouMean: [optional] an valid-ish email that the user may have meant
+
+validateMailbox: validateMailbox = (options = {}, socket) ->
+  {smtpFrom, smtpHost, emailServer, email, verbose, fallbackValidator} = options
+  throw new Error "email, emailServer and smtpHost or smtpFrom required" unless email && (smtpHost ? smtpFrom)
+  {timeout = 1000} = options
+  smtpHost ?= smtpFrom.split('@')[1]
+
+  currentCommandIndex = 0
+  smtpCommands =
+    "helo #{smtpHost}"
+    "mail from:<#{smtpFrom}>"
+    "rcpt to:<#{email}>"
+
+  new Promise (resolve, reject)->
+    socket ?= &net.createConnection 25, emailServer
+    socket.setTimeout timeout, ->
+      socket.destroy()
+      resolve {}
+        valid: false
+        status: networkFailure
+        message: "#{emailServer} failed to respond within specified timeout, (#{timeout}ms)"
+        emailServer
+
+    socket.on 'error', (socketError) ->
+      socket.destroy()
+      if socketError.code == 'ECONNRESET'
+        resolve
+          valid: false
+          status: success
+          message: '#{emailServer} refused #{email} (connection reset).'
+          emailServer
+      else
+        resolve {}
+          valid: false
+          status: serverFailure
+          message: "socket socketError #{#err.code} communicating with #{emailServer}"
+          emailServer
+
+    socket.on 'data', (data) ->
+      data = data.toString()
+      log {data} if verbose
+      if data[0] != '2'
+        socket.destroy()
+        code = (data.match /\d+/) | 0
+
+        mailboxDoesNotExist = code == 550
+
+        resolve {}
+          valid: false
+          invalid: mailboxDoesNotExist
+          status: success
+          message: if mailboxDoesNotExist then "#{emailServer} reports mailbox does not exist." else "#{emailServer} refused #{email}. (code: #{code})"
+          code
+          emailServer
+          refusedWith: data.trim()
+
+      if currentCommandIndex < smtpCommands.length
+        log smtpCommands[currentCommandIndex] if verbose
+        socket.write smtpCommands[currentCommandIndex] + "\r\n", -> currentCommandIndex++
+
+      else
+        socket.destroy()
+        resolve {}
+          valid: true
+          status: success
+          message: "mailbox exists"
+          emailServer
+  .then (result) ->
+    if fallbackValidator && !result.valid && !result.invalid
+      Promise.then -> fallbackValidator options, result
+      .then (result) -> merge result, usedFallbackValidator: true
+    else
+      result

@@ -5,5 +5,5 @@ module.exports = require './namespace'
 module.exports
 .addModules
   FindEmailDomain: require './findEmailDomain'
+  GetDomain:       require './getDomain'      
   ValidateEmail:   require './validateEmail'  
-  ValidateMailbox: require './validateMailbox'

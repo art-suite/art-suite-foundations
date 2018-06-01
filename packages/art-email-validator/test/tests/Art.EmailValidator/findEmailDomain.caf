@@ -5,7 +5,7 @@ suite: ->
       :yahoo.com
       :mail.ru
     test domain, ->
-      findEmailDomain domain
+      DomainValidation.findEmailDomain domain
       .then (result) ->
         assert.match result, domainRegExp
 

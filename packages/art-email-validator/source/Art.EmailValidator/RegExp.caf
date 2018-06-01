@@ -1,0 +1,8 @@
+findAllNonDomainCharactersRegexp:
+  ///gi
+    [
+      \ \- \\ \]
+      !"\#$%&'()*+,/:;<=>?@[^_{|}~`
+    ]+
+
+simpleValidDomainRegexp: /^[^.].*\..*[^.]$/

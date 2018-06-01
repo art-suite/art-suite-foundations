@@ -1,0 +1,36 @@
+import &StandardImport, &RegExp
+
+##
+  IN:
+    domain:string - parsed from email
+    verbose:bool - log info if true
+
+  OUT: the lowest priority mail server
+
+findEmailDomain: (domain, verbose) ->
+  Promise.withCallback (callback) -> &dns.resolveMx domain, callback
+  .then (dnsAddresses)->
+    log {domain, dnsAddresses} if verbose
+    result = null
+    lowestPriority = 0
+
+    each {priority, exchange} in dnsAddresses
+      if !result? || priority < lowestPriority
+        lowestPriority = priority
+        result = exchange
+
+    result
+
+
+##
+  IN: email string
+  OUT: domain:string or null/undefined
+    the domain, if it looks valid
+
+getDomain: getDomain = (email) ->
+  [username, domain] = email.split "@"
+
+  !findAllNonDomainCharactersRegexp.test domain
+  && simpleValidDomainRegexp.test domain
+  && domain
+  || null

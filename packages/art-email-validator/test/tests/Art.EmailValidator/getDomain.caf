@@ -1,0 +1,23 @@
+import &StandardImport
+{getDomain} = DomainValidation
+suite:
+  failures: ->
+    each badEmail in []
+        "" shanebdavis@gmail
+        "" shanebdavis@gmail,com
+        "" shanebdavis@gmail.com.
+        "" shanebdavis@gm\ ail.com
+        "" shanebdavis@.gmail.com
+        "" shanebdavis@gma!il.com
+      test "getDomain '#{badEmail}'" ->
+        assert.doesNotExist getDomain badEmail
+
+  successes: ->
+    each goodEmail in []
+        "" shanebdavis@a.b
+        "" shanebdavis@gmail.com
+        "" shanebdavis@ĝɱåỉḻ.com
+        "" shanebdavis@foo.gmailcom
+      test "getDomain '#{goodEmail}'" ->
+        [__, domain] = goodEmail.split '@'
+        assert.eq domain, getDomain goodEmail
