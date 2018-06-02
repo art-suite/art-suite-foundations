@@ -105,8 +105,14 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           message:  "mailbox exists"
           emailServer
   .then (result) ->
+    {valid, invalid, code, reason, message} = result
+    verbose && log formattedInspect {EmailValidatorA: merge({email, valid, invalid, fallback: !!fallbackValidator, code, reason, message})}, 10000
+
     if fallbackValidator && !result.valid && !result.invalid
       Promise.then -> fallbackValidator options, result
+      .tap ({valid, invalid, code, reason, message}) ->
+        verbose && log formattedInspect {EmailValidatorB: merge({email, valid, invalid, code, reason, message})}, 10000
+
       .then (result) -> merge
         usedFallbackValidator: true
         reason: "fallbackValidator"
