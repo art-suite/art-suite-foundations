@@ -49,6 +49,17 @@ suite:
           didYouMean: "shanebdavis@gmail.com"
           result
 
+
+    test "verbose", ->
+      validateEmail
+        email: :shanebdavis@gmail.com
+        smtpFrom: "test@art.suite.com"
+        verbose: true
+      .then (result) ->
+        assert.selectedEq
+          valid:      true
+          result
+
   fallbackValidator: ->
     @timeout 10000
 

@@ -52,6 +52,7 @@ results =
 * `smtpHost<string>`     (required OR smtpFrom) the smtpHost to tell the email server [default: the domain of part of: smtpFrom]
 * `timeout<number-milliseconds>` (default: 1000) number in miliseconds to wait before timing out when checking mailbox
 * `fallbackValidator<(options, results) -> results>` Called as the very last step if validateMailbox can't conclusively determine if it is valid. Example: use this to call Mailgun's email validation service.
+* `verbose<bool/number>` (default: false) verbose: true ==> basic verbos logging, verbose: >= 2 ==> very verbose logging
 
 #### `results<object>`
 

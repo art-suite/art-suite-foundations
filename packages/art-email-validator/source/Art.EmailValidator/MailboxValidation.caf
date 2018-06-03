@@ -77,7 +77,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
 
     socket.on 'data', (data) ->
       data = data.toString()
-      log {data} if verbose
+      log smtpResponse: data if verbose >= 2
       if data[0] != '2'
         socket.destroy()
         code = (data.match /\d+/) | 0
@@ -94,7 +94,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           refusedWith: data.trim()
 
       if currentCommandIndex < smtpCommands.length
-        log smtpCommands[currentCommandIndex] if verbose
+        log smtpCommand: smtpCommands[currentCommandIndex] if verbose >= 2
         socket.write smtpCommands[currentCommandIndex] + "\r\n", -> currentCommandIndex++
 
       else
@@ -106,12 +106,10 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           emailServer
   .then (result) ->
     {valid, invalid, code, reason, message} = result
-    verbose && log formattedInspect {EmailValidatorA: merge({email, valid, invalid, fallback: !!fallbackValidator, code, reason, message})}, 10000
 
     if fallbackValidator && !result.valid && !result.invalid
       Promise.then -> fallbackValidator options, result
       .tap ({valid, invalid, code, reason, message}) ->
-        verbose && log formattedInspect {EmailValidatorB: merge({email, valid, invalid, code, reason, message})}, 10000
 
       .then (result) -> merge
         usedFallbackValidator: true

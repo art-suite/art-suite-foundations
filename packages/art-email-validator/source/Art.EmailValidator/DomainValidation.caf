@@ -10,7 +10,7 @@ import &StandardImport, &RegExp
 findEmailDomain: (domain, verbose) ->
   Promise.withCallback (callback) -> &dns.resolveMx domain, callback
   .then (dnsAddresses)->
-    log {domain, dnsAddresses} if verbose
+    log {domain, dnsAddresses} if verbose >= 2
     result = null
     lowestPriority = 0
 
