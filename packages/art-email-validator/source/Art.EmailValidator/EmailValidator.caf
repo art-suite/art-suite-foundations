@@ -76,7 +76,7 @@ validateEmail: validateEmail = (options = {}, socket) ->
         &mailcheck.run {} email
         ?.full
   .tap (result) ->
-    verbose && log formattedInspect {EmailValidator: merge {email}, result}, 10000
+    verbose && logResult email, result, "done"
 
 validateEmails: (options) ->
   Promise.deepAll object email in options.emails with-key email

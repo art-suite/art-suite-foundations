@@ -109,16 +109,18 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     socket.destroy()
 
   .then (result) ->
-    {valid, invalid, code, reason, message} = result
+    if !result.valid && !result.invalid
+      if fallbackValidator
+        verbose && logResult email, result, :useFallback
+        Promise.then -> fallbackValidator options, result
+        .tap ({valid, invalid, code, reason, message}) ->
 
-    if fallbackValidator && !result.valid && !result.invalid
-      verbose && log formattedInspect {EmailValidator: useFallback: merge {email}, result}, 10000
-      Promise.then -> fallbackValidator options, result
-      .tap ({valid, invalid, code, reason, message}) ->
-
-      .then (result) -> merge
-        usedFallbackValidator: true
-        reason: "fallbackValidator"
+        .then (result) -> merge
+          usedFallbackValidator: true
+          reason: "fallbackValidator"
+          result
+      else
+        verbose && logResult email, result, :noFallback
         result
 
     else

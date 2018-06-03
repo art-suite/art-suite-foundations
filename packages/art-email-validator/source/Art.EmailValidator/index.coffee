@@ -9,3 +9,4 @@ module.exports
   MailboxValidation: require './MailboxValidation'
   RegExp:            require './RegExp'           
   StandardImport:    require './StandardImport'   
+  Verbose:           require './Verbose'          
