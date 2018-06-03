@@ -1,6 +1,5 @@
 import &StandardImport
 
-
 hardInvalidSmtpRejectionCodes =
   550: reason: "mailboxDoesNotExist"  message: "mailbox does not exist"
   452: reason: "mailboxFull"          message: "mailbox is full"
@@ -56,27 +55,25 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
   new Promise (resolve, reject)->
     socket ?= &net.createConnection 25, emailServer
     socket.setTimeout timeout, ->
-      socket.destroy()
       resolve {}
-        valid: false
-        status: networkFailure
-        reason: "smtpTimeout"
-        message: "#{emailServer} failed to respond within specified timeout, (#{timeout}ms)"
+        valid:    false
+        invalid:  false
+        reason:   "smtpTimeout"
+        message:  "#{emailServer} failed to respond within specified timeout, (#{timeout}ms)"
         emailServer
 
     socket.on 'error', (socketError) ->
-      socket.destroy()
       if socketError.code == 'ECONNRESET'
         resolve
-          valid: false
-          reason: "smtpConnectionReset"
-          message: '#{emailServer} refused #{email} (connection reset).'
+          valid:    false
+          reason:   "smtpConnectionReset"
+          message:  '#{emailServer} refused #{email} (connection reset).'
           emailServer
       else
         resolve {}
-          valid: false
-          reason: "smtpSocketError"
-          message: "socket socketError #{#err.code} communicating with #{emailServer}"
+          valid:    false
+          reason:   "smtpSocketError"
+          message:  "socket socketError #{#err.code} communicating with #{emailServer}"
           emailServer
 
 
@@ -84,36 +81,38 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
       data = data.toString()
       log smtpResponse: data if verbose >= 2
       if data[0] != '2'
-        socket.destroy()
-        code = (data.match /\d+/) | 0
+        statusCode = (data.match /\d+/) | 0
 
-        hardInvalid = hardInvalidSmtpRejectionCodes[code]
+        hardInvalid = hardInvalidSmtpRejectionCodes[statusCode]
 
         resolve {}
-          valid: false
-          invalid: !!hardInvalid
-          reason:   hardInvalid?.reason   ? "smtpError#{code}"
-          code
+          valid:    false
+          invalid:  !!hardInvalid
+          reason:   hardInvalid?.reason   ? "smtpError#{statusCode}"
+          statusCode
           emailServer
-          refusedWith: data.trim()
-          message:  hardInvalid?.message  ? "#{emailServer} refused #{email}. (code: #{code})"
+          refusedWith:  data.trim()
+          message:      hardInvalid?.message  ? "#{emailServer} refused #{email}. (statusCode: #{statusCode})"
 
       if currentCommandIndex < smtpCommands.length
         log smtpCommand: smtpCommands[currentCommandIndex] if verbose >= 2
         socket.write smtpCommands[currentCommandIndex] + "\r\n", -> currentCommandIndex++
 
       else
-        socket.destroy()
         resolve {}
           valid:    true
           reason:   "mailboxExists"
           message:  "mailbox exists"
           emailServer
 
+  .finally ->
+    socket.destroy()
+
   .then (result) ->
     {valid, invalid, code, reason, message} = result
 
     if fallbackValidator && !result.valid && !result.invalid
+      verbose && log formattedInspect {EmailValidator: useFallback: merge {email}, result}, 10000
       Promise.then -> fallbackValidator options, result
       .tap ({valid, invalid, code, reason, message}) ->
 
@@ -121,5 +120,6 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         usedFallbackValidator: true
         reason: "fallbackValidator"
         result
+
     else
       result
