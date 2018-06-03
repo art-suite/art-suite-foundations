@@ -1,6 +1,8 @@
 import &StandardImport
+
+unknown560Response = "560: Confucious say, 'you suck.'"
 suite:
-  basics: ->
+  valid: ->
     @timeout 10000
 
     each [email, emailServer] in []
@@ -19,51 +21,104 @@ suite:
             reason: "mailboxExists"
             result
 
-    each [email, emailServer] in []
-        [] "shanebdavis_xyz@gmail.com" :gmail-smtp-in.l.google.com
-      test "invalid #{email} #{emailServer}" ->
-        validateEmail
-          {}
-            email
-            smtpFrom: "test@art.suite.com"
-            domain: :gmail.com
-          newTestSocket()
-        .then (result) ->
-          assert.doesNotExist result.didYouMean
-          assert.selectedEq
-            valid: false
-            invalid: true
-            reason: "smtpMailboxDoesNotExist"
-            result
-          assert.match result.message, /// google.com.*mailbox.*does.*not.*exist
-
-    test "domain quick fail", ->
-      validateEmail
-        email: :shanebdavis@gmail
-      .then (result) ->
-        assert.match result.message, /domain.*invalid.*gmail/i
-        assert.selectedEq
-          valid:      false
-          invalid:    true
-          reason: "malformedDomain"
-          didYouMean: "shanebdavis@gmail.com"
-          result
-
-
     test "verbose", ->
       validateEmail
         email: :shanebdavis@gmail.com
         smtpFrom: "test@art.suite.com"
         verbose: true
+        newTestSocket()
       .then (result) ->
         assert.selectedEq
           valid:      true
           result
 
+  invalid: ->
+    test "mailboxDoesNotExist" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          domain:   :gmail.com
+        newTestSocket
+          rcpt: "550: No findy."
+
+      .then (result) ->
+        assert.doesNotExist result.didYouMean
+        assert.selectedEq
+          valid: false
+          invalid: true
+          reason: "mailboxDoesNotExist"
+          result
+        assert.isString result.message
+
+
+    test "mailboxFull" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          domain:   :gmail.com
+        newTestSocket
+          rcpt: "452: Umph! I ate too much email!"
+
+      .then (result) ->
+        assert.doesNotExist result.didYouMean
+        assert.selectedEq
+          valid: false
+          invalid: true
+          reason: "mailboxFull"
+          result
+        assert.isString result.message
+
+    test "malformedDomain", ->
+      validateEmail
+        email: :shanebdavis@gmail
+        newTestSocket()
+      .then (result) ->
+        assert.isString result.message
+        assert.eq
+          valid:      false
+          invalid:    true
+          reason:     :malformedDomain
+          didYouMean: :shanebdavis@gmail.com
+          objectWithout result, :message, :emailServer
+
+    test "smtpTimeout", ->
+      validateEmail
+        email: :shanebdavis@gmail.com
+        smtpFrom: :test@art.suite.com
+        timeout: 100
+        newTestSocket null, 200
+
+      .then (result) ->
+        assert.eq
+          valid:      false
+          invalid:    false
+          reason:     :smtpTimeout
+          objectWithout result, :message, :emailServer
+
+    test "smtpError560" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          domain:   :gmail.com
+        newTestSocket
+          rcpt:     unknown560Response
+
+      .then (result) ->
+        assert.eq
+          valid:        false
+          invalid:      false
+          reason:       :smtpError560
+          statusCode:   560
+          refusedWith:  unknown560Response
+          objectWithout result, :message, :emailServer
+
   fallbackValidator: ->
     @timeout 10000
 
-    test "fallbackValidator" ->
+    test "smtpError560 with fallbackValidator" ->
       validateEmail
         {}
           email:    :shanebdavis_xyz@gmail.com
@@ -71,16 +126,53 @@ suite:
           fallbackValidator: ->
             valid: true
             message: "It's cool, man"
-        newTestSocket "560: Confucious say, 'you suck.'"
+        newTestSocket rcpt: unknown560Response
+
       .then (result) ->
         assert.selectedEq
           valid: true
           usedFallbackValidator: true
           message: "It's cool, man"
           reason: "fallbackValidator"
-          result
+          objectWithout result, :emailServer
 
-    test "fallbackValidator with custom reason" ->
+    test "verbose fallbackValidator" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          verbose:  true
+          fallbackValidator: ->
+            valid: true
+            message: "It's cool, man"
+        newTestSocket rcpt: unknown560Response
+
+    test "smtpTimeout with fallbackValidator" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          timeout:  100
+          fallbackValidator: (options, ambiguousResult) ->
+            assert.eq
+              valid:    false
+              invalid:  false
+              reason: "smtpTimeout"
+              objectWithout ambiguousResult, :message, :emailServer
+            valid: true
+            message: "It's cool, man"
+            reason: "superNinja"
+        newTestSocket null, 200
+
+      .then (result) ->
+        assert.selectedEq
+          valid: true
+          usedFallbackValidator: true
+          message: "It's cool, man"
+          reason: :superNinja
+          objectWithout result, :emailServer
+
+    test "smtpError560 with fallbackValidator with custom reason" ->
       validateEmail
         {}
           email:    :shanebdavis_xyz@gmail.com
@@ -89,26 +181,31 @@ suite:
             valid: true
             message: "It's cool, man"
             reason: "superNinja"
-        newTestSocket "560: Confucious say, 'you suck.'"
+        newTestSocket rcpt: unknown560Response
+
       .then (result) ->
-        assert.selectedEq
+        assert.eq
           valid: true
           usedFallbackValidator: true
           message: "It's cool, man"
           reason: "superNinja"
-          result
+          objectWithout result, :emailServer
 
-    test "without fallbackValidator" ->
+    test "smtpError560 without fallbackValidator" ->
       validateEmail
         {}
           email:    :shanebdavis_xyz@gmail.com
           smtpFrom: :test@art.suite.com
-        newTestSocket "560: Confucious say, 'you suck.'"
-      .then (result) ->
-        assert.selectedEq
-          valid:   false
-          invalid: false
-          reason: "smtpError560"
-          result
 
-        assert.match result.message, /// google.com.*refused.*shanebdavis_xyz.*560
+        newTestSocket rcpt: unknown560Response
+
+      .then (result) ->
+        assert.eq
+          valid:        false
+          invalid:      false
+          reason:       :smtpError560
+          statusCode:   560
+          refusedWith:  unknown560Response
+          objectWithout result, :emailServer, :message
+
+        assert.isString result.message

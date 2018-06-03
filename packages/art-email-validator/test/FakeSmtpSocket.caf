@@ -1,0 +1,33 @@
+import &ArtStandardLib
+
+class FakeSmtpSocket
+  constructor: (@responses, @delay) ->
+    @responses ?= {}
+    @delay ?= 0
+    throw new Error formattedInspect {@responses} unless @responses is Object
+
+  on: (event, handler) ->
+    (@_handlers ?= {})[event] = handler
+    @_fakeReceive "" 220 mx.google.com ESMTP b2si3142061edh.379 - gsmtp\n
+
+  destroy: ->
+    @_destroyed = true
+
+  setTimeout: (miliseconds, handler) ->
+    assert.isNumber miliseconds
+    timeout miliseconds
+    .then ->
+      unless @_destroyed
+        handler()
+
+  write: (data, callback) ->
+    assert.ok true, present data
+    timeout @delay, ->
+      callback?()
+      nextTick ->
+        [command] = data.split " "
+        @_fakeReceive @responses[command] ? "" 250 2.1.0 OK b2si3142061edh.379 - gsmtp\n
+
+  _fakeReceive: (data) ->
+    throw new Error "no data" unless present data
+    @_handlers?.data? data
