@@ -1,6 +1,9 @@
 import &StandardImport
 
 
+hardInvalidSmtpRejectionCodes =
+  550: reason: "mailboxDoesNotExist"  message: "mailbox does not exist"
+  452: reason: "mailboxFull"          message: "mailbox is full"
 
 ###
   IN:
@@ -42,6 +45,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
   throw new Error "email, emailServer and smtpHost or smtpFrom required" unless email && (smtpHost ? smtpFrom)
   {timeout = 1000} = options
   smtpHost ?= smtpFrom.split('@')[1]
+  throw new Error "Please provide smtpHost or a complete smtpFrom email address" unless present smtpHost
 
   currentCommandIndex = 0
   smtpCommands =
@@ -75,6 +79,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           message: "socket socketError #{#err.code} communicating with #{emailServer}"
           emailServer
 
+
     socket.on 'data', (data) ->
       data = data.toString()
       log smtpResponse: data if verbose >= 2
@@ -82,16 +87,16 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         socket.destroy()
         code = (data.match /\d+/) | 0
 
-        mailboxDoesNotExist = code == 550
+        hardInvalid = hardInvalidSmtpRejectionCodes[code]
 
         resolve {}
           valid: false
-          invalid: mailboxDoesNotExist
-          reason: if mailboxDoesNotExist then "smtpMailboxDoesNotExist" else "smtpError#{code}"
-          message: if mailboxDoesNotExist then "#{emailServer} reports mailbox does not exist." else "#{emailServer} refused #{email}. (code: #{code})"
+          invalid: !!hardInvalid
+          reason:   hardInvalid?.reason   ? "smtpError#{code}"
           code
           emailServer
           refusedWith: data.trim()
+          message:  hardInvalid?.message  ? "#{emailServer} refused #{email}. (code: #{code})"
 
       if currentCommandIndex < smtpCommands.length
         log smtpCommand: smtpCommands[currentCommandIndex] if verbose >= 2
@@ -104,6 +109,7 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           reason:   "mailboxExists"
           message:  "mailbox exists"
           emailServer
+
   .then (result) ->
     {valid, invalid, code, reason, message} = result
 

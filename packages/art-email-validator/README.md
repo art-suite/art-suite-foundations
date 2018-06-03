@@ -62,3 +62,7 @@ results =
 * `message<string>` developer-consumable description of what happened
 
 Note, the result is ambiguous if `valid == false`, but `invalid != true`. This indicates the SMTP server failed to respond in a known way and there was no fallbackValidator.
+
+### Trivia
+
+* Gmail.com ignores dots in email names, and it's a problem. This validator will generally succeed because Gmail.com will report that the mailbox exists. However, if you are using Mailgun, mailgun will refuse to actually send the email if it has extra dots: https://jameshfisher.com/2018/04/07/the-dots-do-matter-how-to-scam-a-gmail-user
