@@ -111,8 +111,8 @@ suite:
           valid:        false
           invalid:      false
           reason:       :smtpError560
-          status:       clientFailure
-          statusCode:   560
+          smtpStatus:       clientFailure
+          smtpStatusCode:   560
           refusedWith:  unknown560Response
           objectWithout result, :message, :emailServer
 
@@ -202,12 +202,12 @@ suite:
 
       .then (result) ->
         assert.eq
-          valid:        false
-          invalid:      false
-          status:       clientFailure
-          reason:       :smtpError560
-          statusCode:   560
-          refusedWith:  unknown560Response
+          valid:            false
+          invalid:          false
+          reason:           :smtpError560
+          smtpStatus:       clientFailure
+          smtpStatusCode:   560
+          refusedWith:      unknown560Response
           objectWithout result, :emailServer, :message
 
         assert.isString result.message
@@ -223,14 +223,14 @@ suite:
 
       .then (result) ->
         assert.eq
-          valid:        false
-          invalid:      false
-          reason:       :smtpError5.7.0
-          status:       clientFailure
-          statusCode:   550
-          enhancedStatusCode: "5.7.0"
-          subject:      :security
-          refusedWith:  realworldSpanhausResponse
+          valid:                  false
+          invalid:                false
+          reason:                 :smtpError5.7.0
+          smtpStatus:             clientFailure
+          smtpStatusCode:         550
+          smtpEnhancedStatusCode: :5.7.0
+          smtpStatusSubject:      :security
+          refusedWith:            realworldSpanhausResponse
           objectWithout result, :emailServer, :message
 
         assert.isString result.message
