@@ -1,6 +1,8 @@
 import &StandardImport
 
 unknown560Response = "560: Confucious say, 'you suck.'"
+realworldSpanhausResponse = "" 550 5.7.0 Your mail from 54.211.106.206 was rejected due to listing in Spamhaus XBL. See https://www.spamhaus.org/query/ip/54.211.106.206
+
 suite:
   valid: ->
     @timeout 10000
@@ -20,17 +22,6 @@ suite:
             valid: true
             reason: "mailboxExists"
             result
-
-    test "verbose", ->
-      validateEmail
-        email: :shanebdavis@gmail.com
-        smtpFrom: "test@art.suite.com"
-        verbose: true
-        newTestSocket()
-      .then (result) ->
-        assert.selectedEq
-          valid:      true
-          result
 
   invalid: ->
     test "mailboxDoesNotExist" ->
@@ -137,17 +128,6 @@ suite:
           reason: "fallbackValidator"
           objectWithout result, :emailServer
 
-    test "verbose fallbackValidator" ->
-      validateEmail
-        {}
-          email:    :shanebdavis_xyz@gmail.com
-          smtpFrom: :test@art.suite.com
-          verbose:  true
-          fallbackValidator: ->
-            valid: true
-            message: "It's cool, man"
-        newTestSocket rcpt: unknown560Response
-
     test "smtpTimeout with fallbackValidator" ->
       validateEmail
         {}
@@ -219,7 +199,7 @@ suite:
           email:    :shanebdavis_xyz@gmail.com
           smtpFrom: :test@art.suite.com
 
-        newTestSocket rcpt: realworldSpanhausResponse = "" 550 5.7.0 Your mail from 54.211.106.206 was rejected due to listing in Spamhaus XBL. See https://www.spamhaus.org/query/ip/54.211.106.206
+        newTestSocket rcpt: realworldSpanhausResponse
 
       .then (result) ->
         assert.eq
@@ -234,3 +214,42 @@ suite:
           objectWithout result, :emailServer, :message
 
         assert.isString result.message
+
+  verbose: ->
+
+    test "verbose: true", ->
+      validateEmail
+        email: :shanebdavis@gmail.com
+        smtpFrom: "test@art.suite.com"
+        verbose: true
+        newTestSocket()
+
+    test "verbose: 2", ->
+      validateEmail
+        email: :shanebdavis@gmail.com
+        smtpFrom: "test@art.suite.com"
+        verbose: 2
+        newTestSocket()
+
+    test "enhancedStatusCodes verbose", ->
+
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          verbose:  true
+
+        newTestSocket rcpt: realworldSpanhausResponse = "" 550 5.7.0 Your mail from 54.211.106.206 was rejected due to listing in Spamhaus XBL. See https://www.spamhaus.org/query/ip/54.211.106.206
+
+
+    test "verbose fallbackValidator" ->
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          verbose:  true
+          fallbackValidator: ->
+            valid: true
+            message: "It's cool, man"
+
+        newTestSocket rcpt: unknown560Response
