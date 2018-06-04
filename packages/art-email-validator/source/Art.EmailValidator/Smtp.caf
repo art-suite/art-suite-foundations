@@ -1,0 +1,123 @@
+import &StandardImport, &ArtCommunicationStatus
+
+##
+  Normal SMTP status codes
+  https://www.greenend.org.uk/rjk/tech/smtpreplies.html
+
+
+## Enahcned SMTP status codes
+  https://tools.ietf.org/html/rfc3463 - the enhanced status codes
+  https://tools.ietf.org/html/rfc2034 - responses with enhanced status codes
+  https://www.iana.org/assignments/smtp-enhanced-status-codes/smtp-enhanced-status-codes.xhtml
+
+enhancedSubjects =
+  0: :other
+  1: :addressing
+  2: :mailbox
+  3: :mailSystem
+  4: :network         # should always be associated with status == networkFailure
+  5: :protocol
+  6: :content
+  7: :security
+
+persistanceToStatusMap =
+  0: serverFailure    # server returned an invalid response
+  1: serverFailure    # server returned an invalid response
+  2: success
+  3: success
+  4: networkFailure   # temporaryFailure: can retry
+  5: clientFailure    # requestRejected:  server functioned correctly and the request was rejected
+
+# NOTE: null-smtpStatusSubject indicates a nonstandard/uncommon response (not in listed in https://www.iana.org/assignments/smtp-enhanced-status-codes/smtp-enhanced-status-codes.xhtml)
+basicStatusCodes =
+  200: smtpStatusSubject: null            reason: null                 message: "" (nonstandard success response, see rfc876)
+  211: smtpStatusSubject: null            reason: null                 message: "" System status, or system help reply
+  214: smtpStatusSubject: null            reason: null                 message: "" Help message
+  220: smtpStatusSubject: :mailSystem     reason: null                 message: "" <domain> Service ready
+  221: smtpStatusSubject: :mailSystem     reason: null                 message: "" <domain> Service closing transmission channel
+  250: smtpStatusSubject: :protocol       reason: null                 message: "" Requested mail action okay, completed
+  251: smtpStatusSubject: :mailSystem     reason: null                 message: "" User not local; will forward to <forward-path>
+  252: smtpStatusSubject: :content        reason: null                 message: "" Cannot VRFY user, but will accept message and attempt delivery
+  354: smtpStatusSubject: null            reason: null                 message: "" Start mail input; end with <CRLF>.<CRLF>
+  421: smtpStatusSubject: :network        reason: null                 message: "" <domain> Service not available, closing transmission channel
+  450: smtpStatusSubject: :mailbox        reason: :mailboxDoesNotExist message: "" Requested mail action not taken: mailbox unavailable
+  451: smtpStatusSubject: :network        reason: null                 message: "" Requested action aborted: local error in processing
+  452: smtpStatusSubject: :mailbox        reason: :mailboxFull         message: "" Requested action not taken: insufficient system storage
+  500: smtpStatusSubject: :protocol       reason: null                 message: "" Syntax error, command unrecognised
+  501: smtpStatusSubject: :protocol       reason: null                 message: "" Syntax error in parameters or arguments
+  502: smtpStatusSubject: :protocol       reason: null                 message: "" Command not implemented
+  503: smtpStatusSubject: :protocol       reason: null                 message: "" Bad sequence of commands
+  504: smtpStatusSubject: :protocol       reason: null                 message: "" Command parameter not implemented
+  521: smtpStatusSubject: :mailSystem     reason: null                 message: "" <domain> does not accept mail (see rfc1846)
+  530: smtpStatusSubject: :security       reason: null                 message: "" Access denied (???a Sendmailism)
+  550: smtpStatusSubject: :mailbox        reason: :mailboxDoesNotExist message: "" Requested action not taken: mailbox unavailable
+  551: smtpStatusSubject: :security       reason: null                 message: "" User not local; please try <forward-path>
+  552: smtpStatusSubject: :mailbox        reason: :mailboxFull         message: "" Requested mail action aborted: exceeded storage allocation
+  553: smtpStatusSubject: :mailbox        reason: :mailboxDoesNotExist message: "" Requested action not taken: mailbox name not allowed
+  554: smtpStatusSubject: :other          reason: null                 message: "" Transaction failed
+
+enhancedStatusCodeDetails =
+  1.1:  reason: :mailboxDoesNotExist  message: "" The mailbox specified in the address does not exist. For Internet mail names, this means the address portion to the left of the "@" sign is invalid. This code is only useful for permanent failures.
+  1.2:  reason: :mailboxDoesNotExist  message: "" The destination system specified in the address does not exist or is incapable of accepting mail. For Internet mail names, this means the address portion to the right of the "@" is invalid for mail. This code is only useful for permanent failures.
+  1.3:  reason: :mailboxDoesNotExist  message: "" The destination address was syntactically invalid. This can apply to any field in the address. This code is only useful for permanent failures.
+  2.1:  reason: :mailboxDoesNotExist  message: "" The mailbox exists, but is not accepting messages. This may be a permanent error if the mailbox will never be re-enabled or a transient error if the mailbox is only temporarily disabled.
+  2.2:  reason: :mailboxFull          message: "" The mailbox is full because the user has exceeded a per-mailbox administrative quota or physical capacity. The general semantics implies that the recipient can delete messages to make more space available. This code should be used as a persistent transient failure.
+  3.1:  reason: :mailboxFull          message: "" Mail system storage has been exceeded. The general semantics imply that the individual recipient may not be able to delete material to make room for additional messages. This is useful only as a persistent transient error.
+
+##
+  OUT:
+    smtpStatus: <string> / legal ArtCommunicationStatus
+      success         -> yay!
+      networkFailure  -> temporaryFailure / can-retry
+      clientFailure   -> requestRejected / retry will always fail
+      serverFailure   -> server had an internal failure / retry with care
+
+    smtpStatusSubject: <string> One of:
+      :other
+      :addressing
+      :mailbox
+      :mailSystem
+      :network
+      :protocol
+      :content
+      :security
+
+    reason: <string/null/undefined> One of:
+      :mailboxFull
+      :mailboxDoesNotExist
+
+    message: <string/null>
+      human-readable explanation
+
+    smtpStatusCode:         <number/null> old-style, 3-diget SMTP code
+    smtpEnhancedStatusCode: <string> new-style, persistance.smtpStatusSubject.details, 3-number SMTP code
+    normalizedResponse: <string> cleaned-up multi-line response
+
+processResponse: (response) ->
+
+  if responseParsed = response.match /^(\d+)([- ]+((\d)\.(\d)\.(\d+)))?/
+    [__, smtpStatusCode, __, smtpEnhancedStatusCode, persistance, smtpStatusSubject, detailedCode] = responseParsed
+    smtpStatusCode |= 0
+
+    if smtpEnhancedStatusCode
+      smtpStatusSubject = enhancedSubjects[smtpStatusSubject]
+      {reason, message} = info if info = enhancedStatusCodeDetails["#{smtpStatusSubject}.#{detailedCode}"]
+
+    else
+      persistance = (smtpStatusCode / 100) | 0
+      {reason, message, smtpStatusSubject} = info if info = basicStatusCodes[smtpStatusCode]
+
+    smtpStatus = persistanceToStatusMap[persistance] ? serverFailure
+
+  else
+    message = "could not parse server's response"
+    smtpStatus = serverFailure
+
+  {}
+    reason
+    message
+    smtpStatus
+    smtpStatusSubject
+    smtpStatusCode
+    smtpEnhancedStatusCode
+    normalizedResponse: response.replace /\ *[\r\n]+[- .\d]*/g, ' '

@@ -80,12 +80,12 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     socket.on 'data', (data) ->
       data = data.toString()
       log smtpResponse: data if verbose >= 2
-      {status, subject, reason, message, statusCode, enhancedStatusCode, normalizedResponse} =
+      {smtpStatus, smtpStatusSubject, reason, message, smtpStatusCode, smtpEnhancedStatusCode, normalizedResponse} =
         processResponse data
 
-      if status != success
-        hardInvalid = if status == clientFailure
-          switch subject
+      if smtpStatus != success
+        hardInvalid = if smtpStatus == clientFailure
+          switch smtpStatusSubject
           when :mailbox     then true
           when :mailSystem  then true
           when :addressing  then true
@@ -94,11 +94,11 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
           when :protocol    then false
           when :content     then false
           else false
-        else if status == networkFailure && subject == :mailbox then !!reason
+        else if smtpStatus == networkFailure && smtpStatusSubject == :mailbox then !!reason
 
         ## DUE to a caffeine-script bug, the trail-comments don't work. So here they are, until we fix it:
-          hardInvalid = if status == clientFailure
-            switch subject
+          hardInvalid = if smtpStatus == clientFailure
+            switch smtpStatusSubject
             when :mailbox     then true   # the mailbox is unavailable
             when :mailSystem  then true   # the mail system is unvailable
             when :addressing  then true   # the address is bad (i.e. there is no mailbox)
@@ -111,14 +111,14 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
         result = {}
           valid:    false
           invalid:  !!hardInvalid
-          reason:   reason ? "smtpError#{enhancedStatusCode ? statusCode}"
-          status
-          subject
-          statusCode
-          enhancedStatusCode
+          reason:   reason ? "smtpError#{smtpEnhancedStatusCode ? smtpStatusCode}"
+          smtpStatus
+          smtpStatusSubject
+          smtpStatusCode
+          smtpEnhancedStatusCode
           emailServer
           refusedWith:  normalizedResponse
-          message:      message ? "#{emailServer} refused #{email}. (#{formattedInspect merge {statusCode, enhancedStatusCode}})"
+          message:      message ? "#{emailServer} refused #{email}. (#{formattedInspect merge {smtpStatusCode, smtpEnhancedStatusCode}})"
 
         resolve object v in result when v?
 

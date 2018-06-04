@@ -1,6 +1,6 @@
 import &ArtStandardLib
 logResult: (email, result, context) ->
-  core = {valid, invalid, reason, statusCode} = result
+  core = {valid, invalid, reason, smtpStatusCode} = result
   log "EmailValidator #{context} #{email}: " + formattedInspect merge(core), 10000
   if !valid
     each value, key in result when !core[key]? && value is String
