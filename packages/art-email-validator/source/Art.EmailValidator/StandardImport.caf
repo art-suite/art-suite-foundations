@@ -1,1 +1,1 @@
-&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, &Verbose
+&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, &Verbose, &ArtCommunicationStatus

@@ -8,5 +8,6 @@ module.exports
   DomainValidation:  require './DomainValidation' 
   MailboxValidation: require './MailboxValidation'
   RegExp:            require './RegExp'           
+  Smtp:              require './Smtp'             
   StandardImport:    require './StandardImport'   
   Verbose:           require './Verbose'          

@@ -111,6 +111,7 @@ suite:
           valid:        false
           invalid:      false
           reason:       :smtpError560
+          status:       clientFailure
           statusCode:   560
           refusedWith:  unknown560Response
           objectWithout result, :message, :emailServer
@@ -203,9 +204,33 @@ suite:
         assert.eq
           valid:        false
           invalid:      false
+          status:       clientFailure
           reason:       :smtpError560
           statusCode:   560
           refusedWith:  unknown560Response
+          objectWithout result, :emailServer, :message
+
+        assert.isString result.message
+
+    test "Spamhaus enhancedStatusCodes", ->
+
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+
+        newTestSocket rcpt: realworldSpanhausResponse = "" 550 5.7.0 Your mail from 54.211.106.206 was rejected due to listing in Spamhaus XBL. See https://www.spamhaus.org/query/ip/54.211.106.206
+
+      .then (result) ->
+        assert.eq
+          valid:        false
+          invalid:      false
+          reason:       :smtpError5.7.0
+          status:       clientFailure
+          statusCode:   550
+          enhancedStatusCode: "5.7.0"
+          subject:      :security
+          refusedWith:  realworldSpanhausResponse
           objectWithout result, :emailServer, :message
 
         assert.isString result.message

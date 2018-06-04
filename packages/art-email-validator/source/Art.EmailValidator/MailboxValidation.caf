@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &Smtp
 
 hardInvalidSmtpRejectionCodes =
   550: reason: "mailboxDoesNotExist"  message: "mailbox does not exist"
@@ -80,19 +80,47 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     socket.on 'data', (data) ->
       data = data.toString()
       log smtpResponse: data if verbose >= 2
-      if data[0] != '2'
-        statusCode = (data.match /\d+/) | 0
+      {status, subject, reason, message, statusCode, enhancedStatusCode, normalizedResponse} =
+        processResponse data
 
-        hardInvalid = hardInvalidSmtpRejectionCodes[statusCode]
+      if status != success
+        hardInvalid = if status == clientFailure
+          switch subject
+          when :mailbox     then true
+          when :mailSystem  then true
+          when :addressing  then true
+          when :security    then false
+          when :network     then false
+          when :protocol    then false
+          when :content     then false
+          else false
+        else if status == networkFailure && subject == :mailbox then !!reason
 
-        resolve {}
+        ## DUE to a caffeine-script bug, the trail-comments don't work. So here they are, until we fix it:
+          hardInvalid = if status == clientFailure
+            switch subject
+            when :mailbox     then true   # the mailbox is unavailable
+            when :mailSystem  then true   # the mail system is unvailable
+            when :addressing  then true   # the address is bad (i.e. there is no mailbox)
+            when :security    then false  # could just be that the server doesn't like our IP
+            when :network     then false  # by definition, temporary failure, probably should never be a clientFailure
+            when :protocol    then false  # means the server thinks WE broke protocol
+            when :content     then false  # means the server doesn't like our content - since we weren't really sending any, something weird happend
+            else false                    # something weird happened
+
+        result = {}
           valid:    false
           invalid:  !!hardInvalid
-          reason:   hardInvalid?.reason   ? "smtpError#{statusCode}"
+          reason:   reason ? "smtpError#{enhancedStatusCode ? statusCode}"
+          status
+          subject
           statusCode
+          enhancedStatusCode
           emailServer
-          refusedWith:  data.trim()
-          message:      hardInvalid?.message  ? "#{emailServer} refused #{email}. (statusCode: #{statusCode})"
+          refusedWith:  normalizedResponse
+          message:      message ? "#{emailServer} refused #{email}. (#{formattedInspect merge {statusCode, enhancedStatusCode}})"
+
+        resolve object v in result when v?
 
       if currentCommandIndex < smtpCommands.length
         log smtpCommand: smtpCommands[currentCommandIndex] if verbose >= 2
