@@ -18,15 +18,31 @@ module.exports =
 
   ###
   IN:
-    Date
-    OR Number of Seconds since epoch-start
-    OR Number of Milliseconds since epoch-start
+    v:
+      Date
+      OR Number of Seconds since epoch-start
+      OR Number of Milliseconds since epoch-start
+      OR String:
+        if contains only digets with optional decimial
+          examples:
+            "123"
+            "123.456"
+
+          toMilliseconds v - 0
+
+        else
+          toMilliseconds Date.parse v
   OUT:
     Number of Milliseconds since epoch-start
   ###
   toMilliseconds: toMilliseconds = (v) ->
     return Date.now() unless v?
-    v = v - 0 if isString v
+    if isString v
+      if /^\d+(\.\d+)?$/.test v
+        v = v - 0
+      else
+        v = Date.parse v
+
     if isNumber v
       if v < march1973InMilliseconds
         # assuming its a Seconds timestamp
