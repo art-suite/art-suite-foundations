@@ -4614,9 +4614,20 @@ module.exports = {
 
   /*
   IN:
-    Date
-    OR Number of Seconds since epoch-start
-    OR Number of Milliseconds since epoch-start
+    v:
+      Date
+      OR Number of Seconds since epoch-start
+      OR Number of Milliseconds since epoch-start
+      OR String:
+        if contains only digets with optional decimial
+          examples:
+            "123"
+            "123.456"
+  
+          toMilliseconds v - 0
+  
+        else
+          toMilliseconds Date.parse v
   OUT:
     Number of Milliseconds since epoch-start
    */
@@ -4625,7 +4636,11 @@ module.exports = {
       return Date.now();
     }
     if (isString(v)) {
-      v = v - 0;
+      if (/^\d+(\.\d+)?$/.test(v)) {
+        v = v - 0;
+      } else {
+        v = Date.parse(v);
+      }
     }
     if (isNumber(v)) {
       if (v < march1973InMilliseconds) {
@@ -5781,13 +5796,13 @@ module.exports = Unique = (function() {
 /* 35 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.37.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.38.1"}
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces");
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 37 */
@@ -6939,7 +6954,7 @@ module.exports = ShallowClone = (function() {
 /* 49 */
 /***/ (function(module, exports) {
 
-module.exports = require("dateformat");
+module.exports = require('dateformat' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 50 */
@@ -7602,19 +7617,19 @@ module.exports = [
 /* 63 */
 /***/ (function(module, exports) {
 
-module.exports = require("bluebird/js/browser/bluebird.core.min");
+module.exports = require('bluebird/js/browser/bluebird.core.min' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 64 */
 /***/ (function(module, exports) {
 
-module.exports = require("crypto");
+module.exports = require('crypto' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 65 */
 /***/ (function(module, exports) {
 
-module.exports = require("detect-node");
+module.exports = require('detect-node' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 /******/ ]);
