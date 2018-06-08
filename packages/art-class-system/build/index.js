@@ -704,7 +704,7 @@ module.exports = BaseClass = (function(superClass) {
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require('art-standard-lib' /*ABC - skip inlining with webpack*/);
+module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 2 */
@@ -1304,13 +1304,13 @@ module.exports = (__webpack_require__(12)).addNamespace('Art.ClassSystem', Class
 /* 11 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.13"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.14"}
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports) {
 
-module.exports = require('neptune-namespaces' /*ABC - skip inlining with webpack*/);
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 /******/ ]);
