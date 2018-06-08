@@ -13,6 +13,7 @@ nodeExternals = null
   compactFlatten
   objectKeyCount
   merge
+  objectWithout
 } = require 'art-standard-lib'
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
@@ -47,10 +48,14 @@ defineModule module, class ConfigureWebpack extends BaseClass
     entriesWithNoOverrides = null
 
     compactFlatten array @normalizeTargets(targets), (targetConfig) =>
+      {includeNpms} = targetConfig
+      if includeNpms
+        targetConfig = objectWithout targetConfig, "includeNpms"
+
       if !entriesWithNoOverrides || keys = 1 < objectKeyCount targetConfig
         webpackEntry = webpackMerge baseConfig, targetConfig
         webpackEntry.target ||= "node" if abcConfig.target?.node
-        config = @normalizeTargetConfig webpackEntry
+        config = @normalizeTargetConfig webpackEntry, includeNpms
         entriesWithNoOverrides = config unless keys
         config
       else
@@ -58,7 +63,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
         null
 
 
-  @normalizeTargetConfig: (targetConfig) ->
+  @normalizeTargetConfig: (targetConfig, includeNpms) ->
     if targetConfig.target == "node"
       targetConfig = webpackMerge
         output: libraryTarget: "commonjs2"
@@ -66,8 +71,8 @@ defineModule module, class ConfigureWebpack extends BaseClass
         # this CAN work, but webpackNodeExternals is actually pretty stupid about what files it searches for
         externals: [
           nodeExternals ||= (context, request, callback) ->
-            if request.match /^[^.]/
-                callback null, "root require('#{request}' /* ABC - not inlining fellow NPM */)"
+            if request.match(/^[^.]/) && !includeNpms?[request]
+              callback null, "root require('#{request}' /* ABC - not inlining fellow NPM */)"
             else
               callback()
         ]
