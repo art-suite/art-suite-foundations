@@ -72,15 +72,15 @@ module.exports =
 /***/ 10:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(13);
+module.exports = __webpack_require__(8);
 
 
 /***/ }),
 
-/***/ 13:
+/***/ 8:
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces-runtime");
+module.exports = require('neptune-namespaces-runtime' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 
