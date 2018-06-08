@@ -665,13 +665,13 @@ defineModule(module, ConfigurePackageJson = (function(superClass) {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigureWebpack, StandardWebpackConfig, array, compactFlatten, deepMerge, defineModule, fs, isPlainObject, log, merge, nodeExternals, object, objectKeyCount, path, ref, webpackMerge,
+/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigureWebpack, StandardWebpackConfig, array, compactFlatten, deepMerge, defineModule, fs, isFunction, isPlainObject, isRegExp, log, merge, nodeExternals, object, objectKeyCount, objectWithout, path, ref, webpackMerge,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 nodeExternals = null;
 
-ref = __webpack_require__(5), defineModule = ref.defineModule, isPlainObject = ref.isPlainObject, array = ref.array, object = ref.object, deepMerge = ref.deepMerge, log = ref.log, compactFlatten = ref.compactFlatten, objectKeyCount = ref.objectKeyCount, merge = ref.merge;
+ref = __webpack_require__(5), defineModule = ref.defineModule, isPlainObject = ref.isPlainObject, array = ref.array, object = ref.object, deepMerge = ref.deepMerge, log = ref.log, compactFlatten = ref.compactFlatten, objectKeyCount = ref.objectKeyCount, merge = ref.merge, objectWithout = ref.objectWithout, isRegExp = ref.isRegExp, isFunction = ref.isFunction;
 
 webpackMerge = __webpack_require__(36);
 
@@ -714,13 +714,17 @@ defineModule(module, ConfigureWebpack = (function(superClass) {
     });
     entriesWithNoOverrides = null;
     return compactFlatten(array(ConfigureWebpack.normalizeTargets(targets), function(targetConfig) {
-      var keys, ref1, webpackEntry;
+      var includeNpms, keys, ref1, webpackEntry;
+      includeNpms = targetConfig.includeNpms;
+      if (includeNpms) {
+        targetConfig = objectWithout(targetConfig, "includeNpms");
+      }
       if (!entriesWithNoOverrides || (keys = 1 < objectKeyCount(targetConfig))) {
         webpackEntry = webpackMerge(baseConfig, targetConfig);
         if ((ref1 = abcConfig.target) != null ? ref1.node : void 0) {
           webpackEntry.target || (webpackEntry.target = "node");
         }
-        config = ConfigureWebpack.normalizeTargetConfig(webpackEntry);
+        config = ConfigureWebpack.normalizeTargetConfig(webpackEntry, includeNpms);
         if (!keys) {
           entriesWithNoOverrides = config;
         }
@@ -732,7 +736,7 @@ defineModule(module, ConfigureWebpack = (function(superClass) {
     }));
   };
 
-  ConfigureWebpack.normalizeTargetConfig = function(targetConfig) {
+  ConfigureWebpack.normalizeTargetConfig = function(targetConfig, includeNpms) {
     if (targetConfig.target === "node") {
       targetConfig = webpackMerge({
         output: {
@@ -740,8 +744,23 @@ defineModule(module, ConfigureWebpack = (function(superClass) {
         },
         externals: [
           nodeExternals || (nodeExternals = function(context, request, callback) {
+            var shouldInclude;
             if (request.match(/^[^.]/)) {
-              return callback(null, "root require('" + request + "' /* ABC - not inlining fellow NPM */)");
+              shouldInclude = (function() {
+                if (includeNpms) {
+                  switch (false) {
+                    case !isRegExp(includeNpms):
+                      return includeNpms.test(request);
+                    case !isFunction(includeNpms):
+                      return includeNpms(request);
+                  }
+                }
+              })();
+              if (shouldInclude) {
+                return callback();
+              } else {
+                return callback(null, "root require('" + request + "' /* ABC - not inlining fellow NPM */)");
+              }
             } else {
               return callback();
             }
@@ -862,7 +881,7 @@ module.exports = require('fs-extra' /* ABC - not inlining fellow NPM */);
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.1","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.1.2","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.0","commander":"^2.15.1","css-loader":"^0.28.11","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.19.1","webpack":"^2.7.0","webpack-dev-server":"^2.9.4","webpack-merge":"^4.1.2","webpack-node-externals":"^1.7.2"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.16.2"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.1","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.1.2","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.0","commander":"^2.15.1","css-loader":"^0.28.11","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.19.1","webpack":"^2.7.0","webpack-dev-server":"^2.9.4","webpack-merge":"^4.1.2","webpack-node-externals":"^1.7.2"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.18.0"}
 
 /***/ }),
 /* 24 */
