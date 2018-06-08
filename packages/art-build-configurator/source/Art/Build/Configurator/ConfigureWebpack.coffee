@@ -14,6 +14,8 @@ nodeExternals = null
   objectKeyCount
   merge
   objectWithout
+  isRegExp
+  isFunction
 } = require 'art-standard-lib'
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
@@ -71,8 +73,17 @@ defineModule module, class ConfigureWebpack extends BaseClass
         # this CAN work, but webpackNodeExternals is actually pretty stupid about what files it searches for
         externals: [
           nodeExternals ||= (context, request, callback) ->
-            if request.match(/^[^.]/) && !includeNpms?[request]
-              callback null, "root require('#{request}' /* ABC - not inlining fellow NPM */)"
+            if request.match(/^[^.]/)
+              shouldInclude = if includeNpms
+                switch
+                  when isRegExp includeNpms
+                    includeNpms.test request
+                  when isFunction includeNpms
+                    includeNpms request
+              if shouldInclude
+                callback()
+              else
+                callback null, "root require('#{request}' /* ABC - not inlining fellow NPM */)"
             else
               callback()
         ]
