@@ -99,13 +99,13 @@ module.exports = function(module) {
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("caffeine-script-runtime");
+module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("path");
+module.exports = require('path' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 3 */
@@ -153,13 +153,13 @@ __webpack_require__(19);
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib");
+module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs");
+module.exports = require('fs' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 7 */
@@ -241,7 +241,7 @@ module.exports.addModules({
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-class-system");
+module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 11 */
@@ -850,19 +850,19 @@ __webpack_require__(4);
 /* 21 */
 /***/ (function(module, exports) {
 
-module.exports = require("art-object-tree-factory");
+module.exports = require('art-object-tree-factory' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 22 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs-extra");
+module.exports = require('fs-extra' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.1","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.1.2","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.0","commander":"^2.15.1","css-loader":"^0.28.11","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.19.1","webpack":"^2.7.0","webpack-dev-server":"^2.9.4","webpack-merge":"^4.1.2","webpack-node-externals":"^1.7.2"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.16.1"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.1","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.1.2","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.0","commander":"^2.15.1","css-loader":"^0.28.11","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.19.1","webpack":"^2.7.0","webpack-dev-server":"^2.9.4","webpack-merge":"^4.1.2","webpack-node-externals":"^1.7.2"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.16.2"}
 
 /***/ }),
 /* 24 */
@@ -1287,31 +1287,31 @@ __webpack_require__(20);
 /* 32 */
 /***/ (function(module, exports) {
 
-module.exports = require("case-sensitive-paths-webpack-plugin");
+module.exports = require('case-sensitive-paths-webpack-plugin' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 33 */
 /***/ (function(module, exports) {
 
-module.exports = require("glob-promise");
+module.exports = require('glob-promise' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 34 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces");
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 35 */
 /***/ (function(module, exports) {
 
-module.exports = require("neptune-namespaces/generator");
+module.exports = require('neptune-namespaces/generator' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports) {
 
-module.exports = require("webpack-merge");
+module.exports = require('webpack-merge' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 /******/ ]);
