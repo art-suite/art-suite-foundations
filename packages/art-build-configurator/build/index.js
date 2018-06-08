@@ -665,7 +665,7 @@ defineModule(module, ConfigurePackageJson = (function(superClass) {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigureWebpack, StandardWebpackConfig, array, compactFlatten, deepMerge, defineModule, fs, isPlainObject, log, merge, nodeExternals, object, objectKeyCount, path, ref, webpackMerge, webpackNodeExternals,
+/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, Configurator, ConfigureWebpack, StandardWebpackConfig, array, compactFlatten, deepMerge, defineModule, fs, isPlainObject, log, merge, nodeExternals, object, objectKeyCount, path, ref, webpackMerge,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -674,8 +674,6 @@ nodeExternals = null;
 ref = __webpack_require__(5), defineModule = ref.defineModule, isPlainObject = ref.isPlainObject, array = ref.array, object = ref.object, deepMerge = ref.deepMerge, log = ref.log, compactFlatten = ref.compactFlatten, objectKeyCount = ref.objectKeyCount, merge = ref.merge;
 
 webpackMerge = __webpack_require__(36);
-
-webpackNodeExternals = __webpack_require__(37);
 
 BaseClass = __webpack_require__(10).BaseClass;
 
@@ -741,9 +739,13 @@ defineModule(module, ConfigureWebpack = (function(superClass) {
           libraryTarget: "commonjs2"
         },
         externals: [
-          nodeExternals || (nodeExternals = webpackNodeExternals({
-            modulesFromFile: true
-          }))
+          nodeExternals || (nodeExternals = function(context, request, callback) {
+            if (request.match(/^[^.]/)) {
+              return callback(null, "root require('" + request + "' /* ABC - not inlining fellow NPM */)");
+            } else {
+              return callback();
+            }
+          })
         ]
       }, targetConfig);
     }
@@ -1310,12 +1312,6 @@ module.exports = require("neptune-namespaces/generator");
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-merge");
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports) {
-
-module.exports = require("webpack-node-externals");
 
 /***/ })
 /******/ ]);

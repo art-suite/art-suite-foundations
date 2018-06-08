@@ -17,7 +17,6 @@ nodeExternals = null
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
 webpackMerge = require 'webpack-merge'
-webpackNodeExternals = require 'webpack-node-externals'
 
 {BaseClass} = require 'art-class-system'
 fs = require 'fs'
@@ -65,7 +64,13 @@ defineModule module, class ConfigureWebpack extends BaseClass
         output: libraryTarget: "commonjs2"
 
         # this CAN work, but webpackNodeExternals is actually pretty stupid about what files it searches for
-        externals: [nodeExternals ||= webpackNodeExternals(modulesFromFile: true)]
+        externals: [
+          nodeExternals ||= (context, request, callback) ->
+            if request.match /^[^.]/
+                callback null, "root require('#{request}' /* ABC - not inlining fellow NPM */)"
+            else
+              callback()
+        ]
         targetConfig
 
     targetConfig
