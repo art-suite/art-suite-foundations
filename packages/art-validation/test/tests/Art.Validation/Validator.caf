@@ -218,7 +218,7 @@ suite:
 
       assert.throws -> v.validate id: 123
       assert.throws -> v.validate foo: "test@test.com"
-      assert.throws -> v.validate foo: "email:me@test"
+      assert.throws -> v.validate foo: "email:metest"
       assert.rejects -> v.validate foo: "email:me"
       .then ({info}) -> assert.eq info.errors, foo: "invalid"
       .then -> assert.rejects -> v.validateUpdate foo: "email:me"
