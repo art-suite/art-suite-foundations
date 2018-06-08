@@ -363,7 +363,7 @@ module.exports = class Validator extends BaseClass
   ####################
   # PREPROCESS CORE
   ####################
-  preprocessFields: (fields, applyDefaults) ->
+  preprocessFields: preprocessFields = (fields, applyDefaults) ->
     processedFields = null
     fields ||= {} if applyDefaults
     fields && for fieldName, props of @_fieldProps
@@ -381,6 +381,8 @@ module.exports = class Validator extends BaseClass
         processedFields[fieldName] = value
 
     processedFields || fields || {}
+
+  preprocess: preprocessFields
 
   ####################
   # VALIDATION INFO CORE
