@@ -4347,7 +4347,7 @@ function clone (obj) {
 /* 37 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"neptune-namespaces":"./nn","nn":"./nn"},"dependencies":{"art-build-configurator":"*","neptune-namespaces-runtime":"*"},"description":"Generate index.coffee and namespace.coffee files from directory structures","license":"ISC","name":"neptune-namespaces","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"3.2.4"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"neptune-namespaces":"./nn","nn":"./nn"},"dependencies":{"art-build-configurator":"*","neptune-namespaces-runtime":"*"},"description":"Generate index.coffee and namespace.coffee files from directory structures","license":"ISC","name":"neptune-namespaces","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"3.2.5"}
 
 /***/ }),
 /* 38 */
