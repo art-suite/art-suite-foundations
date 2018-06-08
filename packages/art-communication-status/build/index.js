@@ -348,13 +348,13 @@ __webpack_require__(0);
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Simplified system of statuses for HTTP and any other network protocol","license":"ISC","name":"art-communication-status","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.5.2"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Simplified system of statuses for HTTP and any other network protocol","license":"ISC","name":"art-communication-status","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.5.3"}
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require('neptune-namespaces' /*ABC - skip inlining with webpack*/);
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 /******/ ]);
