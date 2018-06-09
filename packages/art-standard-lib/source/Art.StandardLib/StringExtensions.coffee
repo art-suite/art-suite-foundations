@@ -238,7 +238,7 @@ module.exports = class StringExtensions
         (consistentJsonStringify v, indentObject for v in object).join(joiner) +
         closeArray
       else
-        Neptine.Art.StandardLib.log.error error = "invalid object type for Json. Expecting: null, false, true, number, string, plain-object or array", object
+        Neptune.Art.StandardLib.log.error error = "invalid object type for Json. Expecting: null, false, true, number, string, plain-object or array", object
         throw new Error error
 
   @splitRuns = (str) ->
