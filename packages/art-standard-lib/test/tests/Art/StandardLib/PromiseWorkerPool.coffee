@@ -58,8 +58,8 @@ module.exports = suite:
         assert.eq workCount, 20
         end = currentSecond()
         delta = (end - start) * 1000 | 0
-        assert.gt delta, 200, info = "20 jobs * 50ms each / 5 workers >> should be between 200 and 300 ms"
-        assert.lt delta, 300, info
+        assert.gte delta, 200, info = "20 jobs * 50ms each / 5 workers >> should be between 200 and 300 ms"
+        assert.lte delta, 300, info
 
     test "queue 20, 10 workers", ->
       workCount = 0
@@ -74,8 +74,8 @@ module.exports = suite:
         assert.eq workCount, 20
         end = currentSecond()
         delta = (end - start) * 1000 | 0
-        assert.gt delta, 100, info = "20 jobs * 50ms each / 10 workers >> should be between 100 and 200 ms"
-        assert.lt delta, 200, info
+        assert.gte delta, 100, info = "20 jobs * 50ms each / 10 workers >> should be between 100 and 200 ms"
+        assert.lte delta, 200, info
 
   errors: ->
 
