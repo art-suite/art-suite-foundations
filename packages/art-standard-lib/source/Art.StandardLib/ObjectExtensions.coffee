@@ -104,6 +104,12 @@ module.exports = class ObjectExtensions
   @objectWithExistingValues:  (obj) -> object obj, when: (v) -> v?
   @objectWithPresentValues:   (obj) -> object obj, when: (v) -> present v
 
+  @objectWith: (obj, k, v) ->
+    o = {}
+    o[_k] = _v for _k, _v of obj
+    o[k] = v
+    o
+
   @objectWithout: (obj, properties...) ->
     return {} unless obj
     properties = properties[0] if properties.length == 1 && !(typeof properties[0] is "string")
