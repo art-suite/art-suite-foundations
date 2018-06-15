@@ -9,12 +9,12 @@ module.exports =
   # DEPRICATED - why did they name it this??? It should be "formatDate" - a correct english sentance fragment
   dateFormat: dateFormat = require "dateformat"
 
-  formatDate: (value, format) ->
+  formatDate: (value, format, utc) ->
     if isString value
       format = value
       value = null
 
-    dateFormat (toDate value), format
+    dateFormat (toDate value), format, utc
 
   ###
   IN:
