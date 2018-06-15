@@ -3497,6 +3497,17 @@ module.exports = ObjectExtensions = (function() {
     });
   };
 
+  ObjectExtensions.objectWith = function(obj, k, v) {
+    var _k, _v, o;
+    o = {};
+    for (_k in obj) {
+      _v = obj[_k];
+      o[_k] = _v;
+    }
+    o[k] = v;
+    return o;
+  };
+
   ObjectExtensions.objectWithout = function() {
     var anythingToDo, j, len, obj, prop, properties, result, v;
     obj = arguments[0], properties = 2 <= arguments.length ? slice.call(arguments, 1) : [];
@@ -4604,12 +4615,12 @@ march1973InMilliseconds = 100000000000;
 
 module.exports = {
   dateFormat: dateFormat = __webpack_require__(49),
-  formatDate: function(value, format) {
+  formatDate: function(value, format, utc) {
     if (isString(value)) {
       format = value;
       value = null;
     }
-    return dateFormat(toDate(value), format);
+    return dateFormat(toDate(value), format, utc);
   },
 
   /*
@@ -5796,7 +5807,7 @@ module.exports = Unique = (function() {
 /* 35 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.38.2"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.39.0"}
 
 /***/ }),
 /* 36 */
