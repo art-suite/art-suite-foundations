@@ -4031,13 +4031,15 @@ Unlike Javascript objects, you can use any object or value as keys. This include
 Arrays and Objects are assigned a unique id using the StandardLib.Unique library.
 "0", "", null, undefined and 0 are all different unique keys and can each have unique values.
  */
-var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, m,
+var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, isFunction, m,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 Unique = __webpack_require__(34);
 
 MinimalBaseObject = __webpack_require__(6);
+
+isFunction = __webpack_require__(1).isFunction;
 
 Node = (function() {
   function Node(key, value, prev, next) {
@@ -4109,7 +4111,7 @@ ValuesIterator = (function() {
 
 })();
 
-module.exports = (m = new global.Map).set(1, 2) === m ? global.Map : Map = (function(superClass) {
+module.exports = isFunction(global.Map) && (m = new global.Map).set(1, 2) === m ? global.Map : Map = (function(superClass) {
   extend(Map, superClass);
 
   function Map() {
@@ -5807,7 +5809,7 @@ module.exports = Unique = (function() {
 /* 35 */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.39.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.39.1"}
 
 /***/ }),
 /* 36 */
