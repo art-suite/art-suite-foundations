@@ -19,6 +19,7 @@ Arrays and Objects are assigned a unique id using the StandardLib.Unique library
 ###
 Unique  = require './Unique'
 MinimalBaseObject = require './MinimalBaseObject'
+{isFunction} = require './Core'
 
 class Node
   constructor: (key, value, prev, next) ->
@@ -72,7 +73,7 @@ class ValuesIterator
 # DEPRICATED - really, we should just use a standard polyfill
 # this class exists because javascript hash keys must be strings
 # this simple and inefficient class allows us to use objects as keys
-module.exports = if (m = new global.Map).set(1, 2) == m then global.Map else
+module.exports = if isFunction(global.Map) && (m = new global.Map).set(1, 2) == m then global.Map else
   class Map extends MinimalBaseObject
 
     constructor: ->
