@@ -313,6 +313,14 @@ module.exports = class FormattedInspect
   @ansiSafeStringLength: ansiSafeStringLength
   @alignTabs: alignTabs
   @formattedInspectString: formattedInspectString
+  @failsafeInspect: failsafeInspect = (toInspect) ->
+    "typeof: #{typeof toInspect}\n" +
+    "constructor: #{toInspect?.constructor && toInspect?.constructor?.name}\n" +
+    switch
+      when isPlainArray toInspect then "length: #{toInspect.length}\njoined: [#{toInspect.join(', ')}]"
+      when toInspect? && typeof toInspect == 'object' then "keys: #{Object.keys(toInspect).join ', '}"
+      else "toString: #{toInspect}"
+
   @formattedInspect: (toInspect, options = {}) ->
     try
       if isNumber options
@@ -332,5 +340,6 @@ module.exports = class FormattedInspect
         formattedInspectRecursive toInspectedObjects(toInspect), maxLineLength, options
       .replace /\n\n$/, "\n"
     catch error
-      console.error out = "Error in formattedInspect", {error, toInspect, options}
+      out = "Error in formattedInspect: #{error}\n#{failsafeInspect toInspect}"
+      console.error out, {error, toInspect, options}
       out

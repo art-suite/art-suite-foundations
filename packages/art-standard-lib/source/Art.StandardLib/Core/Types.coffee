@@ -27,6 +27,8 @@ module.exports = class Types
     ((x | 0) == x) &&
      x >= 0
 
+  @isError: (obj) => obj && obj instanceof Error
+
   @isDate: (obj) => obj && obj.constructor == Date
   @isString: isString = (obj) => typeof obj == "string"
   @isFunction: isFunction = (obj) => typeof obj == "function"
