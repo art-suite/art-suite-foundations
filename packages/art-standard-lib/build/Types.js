@@ -114,6 +114,10 @@ module.exports = Types = (function() {
     return ((x | 0) === x) && x >= 0;
   };
 
+  Types.isError = function(obj) {
+    return obj && obj instanceof Error;
+  };
+
   Types.isDate = function(obj) {
     return obj && obj.constructor === Date;
   };
