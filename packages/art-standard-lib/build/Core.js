@@ -70,55 +70,70 @@ module.exports =
 /******/ ({
 
 /***/ 1:
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/index.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16);
+module.exports = __webpack_require__(/*! ./namespace */ 16);
 
-module.exports.includeInNamespace(__webpack_require__(27)).addModules({
-  ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(14),
-  StringCase: __webpack_require__(15),
-  Types: __webpack_require__(2)
+module.exports.includeInNamespace(__webpack_require__(/*! ./Core */ 27)).addModules({
+  ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 3),
+  Merge: __webpack_require__(/*! ./Merge */ 14),
+  StringCase: __webpack_require__(/*! ./StringCase */ 15),
+  Types: __webpack_require__(/*! ./Types */ 2)
 });
 
 
 /***/ }),
 
 /***/ 12:
+/* no static exports found */
+/* all exports used */
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/namespace.coffee ***!
+  \*************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(36)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 36)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
 
   function StandardLib() {
     return StandardLib.__super__.constructor.apply(this, arguments);
   }
 
-  StandardLib.version = __webpack_require__(35).version;
+  StandardLib.version = __webpack_require__(/*! ../../package.json */ 35).version;
 
   return StandardLib;
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(16);
+__webpack_require__(/*! ./Core/namespace */ 16);
 
-__webpack_require__(5);
+__webpack_require__(/*! ./Inspect/namespace */ 5);
 
 
 /***/ }),
 
 /***/ 14:
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Merge.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
 
-compactFlatten = __webpack_require__(3).compactFlatten;
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 3).compactFlatten;
 
-isPlainObject = __webpack_require__(2).isPlainObject;
+isPlainObject = __webpack_require__(/*! ./Types */ 2).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, pureMerge;
@@ -286,11 +301,16 @@ module.exports = Merge = (function() {
 /***/ }),
 
 /***/ 15:
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/StringCase.coffee ***!
+  \*******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
 
-compactFlatten = __webpack_require__(3).compactFlatten;
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 3).compactFlatten;
 
 module.exports = StringCase = (function() {
   var getCodeWords;
@@ -398,13 +418,18 @@ module.exports = StringCase = (function() {
 /***/ }),
 
 /***/ 16:
+/* no static exports found */
+/* all exports used */
+/*!******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/namespace.coffee ***!
+  \******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Core', Core = (function(superClass) {
   extend(Core, superClass);
 
   function Core() {
@@ -419,13 +444,18 @@ module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function
 /***/ }),
 
 /***/ 19:
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/namespace.coffee ***!
+  \*******************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 5)).addNamespace('Inspected', Inspected = (function(superClass) {
   extend(Inspected, superClass);
 
   function Inspected() {
@@ -440,6 +470,11 @@ module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = 
 /***/ }),
 
 /***/ 2:
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Types.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports) {
 
 
@@ -662,14 +697,24 @@ module.exports = Types = (function() {
 /***/ }),
 
 /***/ 27:
+/* no static exports found */
+/* all exports used */
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Core.coffee ***!
+  \*************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(15), __webpack_require__(14), __webpack_require__(2)];
+module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 3), __webpack_require__(/*! ./StringCase */ 15), __webpack_require__(/*! ./Merge */ 14), __webpack_require__(/*! ./Types */ 2)];
 
 
 /***/ }),
 
 /***/ 3:
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Core/ArrayCompactFlatten.coffee ***!
+  \****************************************************************/
 /***/ (function(module, exports) {
 
 var ArrayCompactFlatten;
@@ -834,13 +879,23 @@ module.exports = ArrayCompactFlatten = (function() {
 /***/ }),
 
 /***/ 35:
+/* no static exports found */
+/* all exports used */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.40.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.41.0"}
 
 /***/ }),
 
 /***/ 36:
+/* no static exports found */
+/* all exports used */
+/*!************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************************/
 /***/ (function(module, exports) {
 
 module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
@@ -848,13 +903,18 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /***/ }),
 
 /***/ 5:
+/* no static exports found */
+/* all exports used */
+/*!*********************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/namespace.coffee ***!
+  \*********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(12)).addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
@@ -865,17 +925,22 @@ module.exports = (__webpack_require__(12)).addNamespace('Inspect', Inspect = (fu
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(19);
+__webpack_require__(/*! ./Inspected/namespace */ 19);
 
 
 /***/ }),
 
 /***/ 51:
+/* no static exports found */
+/* all exports used */
+/*!*********************!*\
+  !*** ./Core.coffee ***!
+  \*********************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;
 
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(1);
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(/*! ./source/Art.StandardLib/Core */ 1);
 
 
 /***/ })

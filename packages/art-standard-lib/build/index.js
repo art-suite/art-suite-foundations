@@ -69,11 +69,16 @@ module.exports =
 /************************************************************************/
 /******/ ([
 /* 0 */
+/* no static exports found */
+/* all exports used */
+/*!*****************************************************!*\
+  !*** ./source/Art.StandardLib/TypesExtended.coffee ***!
+  \*****************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, Types, isFunction, isJsonAtomicType, isObject, isPlainArray, isPlainObject, isString, mergeInto, ref;
 
-ref = Core = __webpack_require__(1), isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, isString = ref.isString, isFunction = ref.isFunction, isObject = ref.isObject, isPlainArray = ref.isPlainArray, isJsonAtomicType = ref.isJsonAtomicType;
+ref = Core = __webpack_require__(/*! ./Core */ 1), isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, isString = ref.isString, isFunction = ref.isFunction, isObject = ref.isObject, isPlainArray = ref.isPlainArray, isJsonAtomicType = ref.isJsonAtomicType;
 
 module.exports = Types = (function() {
   var cloneObjectUpToKey, deepEach, deepEachAll, deepMap, deepMapArray, deepMapObject, functionName, noopMapper, objectName, tEq, throwInequalityError, toJsonStructure, toPostMessageStructure;
@@ -434,20 +439,30 @@ module.exports = Types = (function() {
 
 /***/ }),
 /* 1 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/index.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16);
+module.exports = __webpack_require__(/*! ./namespace */ 16);
 
-module.exports.includeInNamespace(__webpack_require__(27)).addModules({
-  ArrayCompactFlatten: __webpack_require__(3),
-  Merge: __webpack_require__(14),
-  StringCase: __webpack_require__(15),
-  Types: __webpack_require__(2)
+module.exports.includeInNamespace(__webpack_require__(/*! ./Core */ 27)).addModules({
+  ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 3),
+  Merge: __webpack_require__(/*! ./Merge */ 14),
+  StringCase: __webpack_require__(/*! ./StringCase */ 15),
+  Types: __webpack_require__(/*! ./Types */ 2)
 });
 
 
 /***/ }),
 /* 2 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Types.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports) {
 
 
@@ -669,6 +684,11 @@ module.exports = Types = (function() {
 
 /***/ }),
 /* 3 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Core/ArrayCompactFlatten.coffee ***!
+  \****************************************************************/
 /***/ (function(module, exports) {
 
 var ArrayCompactFlatten;
@@ -832,31 +852,41 @@ module.exports = ArrayCompactFlatten = (function() {
 
 /***/ }),
 /* 4 */
+/* no static exports found */
+/* all exports used */
+/*!*****************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/index.coffee ***!
+  \*****************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(5);
+module.exports = __webpack_require__(/*! ./namespace */ 5);
 
-module.exports.includeInNamespace(__webpack_require__(54)).addModules({
-  FormattedInspect: __webpack_require__(40),
-  InspectedObjectLiteral: __webpack_require__(20),
-  InspectedObjects: __webpack_require__(30),
-  Inspector: __webpack_require__(31),
-  Inspector2: __webpack_require__(59),
-  PlainObjects: __webpack_require__(42)
+module.exports.includeInNamespace(__webpack_require__(/*! ./Inspect */ 54)).addModules({
+  FormattedInspect: __webpack_require__(/*! ./FormattedInspect */ 40),
+  InspectedObjectLiteral: __webpack_require__(/*! ./InspectedObjectLiteral */ 20),
+  InspectedObjects: __webpack_require__(/*! ./InspectedObjects */ 30),
+  Inspector: __webpack_require__(/*! ./Inspector */ 31),
+  Inspector2: __webpack_require__(/*! ./Inspector2 */ 59),
+  PlainObjects: __webpack_require__(/*! ./PlainObjects */ 42)
 });
 
-__webpack_require__(41);
+__webpack_require__(/*! ./Inspected */ 41);
 
 
 /***/ }),
 /* 5 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/namespace.coffee ***!
+  \*********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(12)).addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
@@ -867,18 +897,23 @@ module.exports = (__webpack_require__(12)).addNamespace('Inspect', Inspect = (fu
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(19);
+__webpack_require__(/*! ./Inspected/namespace */ 19);
 
 
 /***/ }),
 /* 6 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************************************!*\
+  !*** ./source/Art.StandardLib/MinimalBaseObject.coffee ***!
+  \*********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, capitalize, isFunction, isPlainObject, isString, ref;
 
-capitalize = __webpack_require__(1).capitalize;
+capitalize = __webpack_require__(/*! ./Core */ 1).capitalize;
 
-ref = __webpack_require__(0), isFunction = ref.isFunction, isString = ref.isString, isPlainObject = ref.isPlainObject;
+ref = __webpack_require__(/*! ./TypesExtended */ 0), isFunction = ref.isFunction, isString = ref.isString, isPlainObject = ref.isPlainObject;
 
 module.exports = MinimalBaseObject = (function() {
   var addGetter, addGetters, addProperties, addSetter, addSetters, defProperties, defProperty, propGetterName, propInternalName, propListStringToArray, propSetterName;
@@ -1070,23 +1105,28 @@ module.exports = MinimalBaseObject = (function() {
 
 /***/ }),
 /* 7 */
+/* no static exports found */
+/* all exports used */
+/*!********************************************************!*\
+  !*** ./source/Art.StandardLib/StringExtensions.coffee ***!
+  \********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var FoundationMath, StringExtensions, Types, compactFlatten, escapedDoubleQuoteRegex, floor, intRand, isArray, isBrowser, isNumber, isPlainObject, isString, wordsRegex;
 
-FoundationMath = __webpack_require__(9);
+FoundationMath = __webpack_require__(/*! ./MathExtensions */ 9);
 
-Types = __webpack_require__(0);
+Types = __webpack_require__(/*! ./TypesExtended */ 0);
 
-wordsRegex = __webpack_require__(11).wordsRegex;
+wordsRegex = __webpack_require__(/*! ./RegExpExtensions */ 11).wordsRegex;
 
 intRand = FoundationMath.intRand;
 
 isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPlainObject, isArray = Types.isArray;
 
-compactFlatten = __webpack_require__(1).compactFlatten;
+compactFlatten = __webpack_require__(/*! ./Core */ 1).compactFlatten;
 
-isBrowser = __webpack_require__(17).isBrowser;
+isBrowser = __webpack_require__(/*! ./Environment */ 17).isBrowser;
 
 escapedDoubleQuoteRegex = /[\\]["]/g;
 
@@ -1153,7 +1193,7 @@ module.exports = StringExtensions = (function() {
     return randomString(l, c, crypto.getRandomValues(new Uint8Array(l)));
   } : (console.warn("window.crypto not available, using standard random for cryptoRandomString"), function(l, c) {
     return randomString(l, c);
-  })) : (crypto = __webpack_require__(64), function(l, c) {
+  })) : (crypto = __webpack_require__(/*! crypto */ 64), function(l, c) {
     return randomString(l, c, crypto.randomBytes(l));
   });
 
@@ -1547,11 +1587,16 @@ module.exports = StringExtensions = (function() {
 
 /***/ }),
 /* 8 */
+/* no static exports found */
+/* all exports used */
+/*!************************************************!*\
+  !*** ./source/Art.StandardLib/CommonJs.coffee ***!
+  \************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var CommonJs, isClass, isFunction, ref;
 
-ref = __webpack_require__(0), isClass = ref.isClass, isFunction = ref.isFunction;
+ref = __webpack_require__(/*! ./TypesExtended */ 0), isClass = ref.isClass, isFunction = ref.isFunction;
 
 module.exports = CommonJs = (function() {
   var definingModule;
@@ -1587,11 +1632,16 @@ module.exports = CommonJs = (function() {
 
 /***/ }),
 /* 9 */
+/* no static exports found */
+/* all exports used */
+/*!******************************************************!*\
+  !*** ./source/Art.StandardLib/MathExtensions.coffee ***!
+  \******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
 
-RegExpExtensions = __webpack_require__(11);
+RegExpExtensions = __webpack_require__(/*! ./RegExpExtensions */ 11);
 
 numberRegexp = RegExpExtensions.numberRegexp;
 
@@ -1786,17 +1836,22 @@ module.exports = MathExtensions = (function() {
 
 /***/ }),
 /* 10 */
+/* no static exports found */
+/* all exports used */
+/*!***********************************************!*\
+  !*** ./source/Art.StandardLib/Promise.coffee ***!
+  \***********************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, promiseDebug, ref;
 
-Promise = BlueBirdPromise = __webpack_require__(63);
+Promise = BlueBirdPromise = __webpack_require__(/*! bluebird/js/browser/bluebird.core.min */ 63);
 
-ref = __webpack_require__(0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
+ref = __webpack_require__(/*! ./TypesExtended */ 0), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
-defineModule = __webpack_require__(8).defineModule;
+defineModule = __webpack_require__(/*! ./CommonJs */ 8).defineModule;
 
-getEnv = __webpack_require__(17).getEnv;
+getEnv = __webpack_require__(/*! ./Environment */ 17).getEnv;
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -1809,9 +1864,9 @@ BlueBirdPromise.config({
   monitoring: promiseDebug
 });
 
-isPromise = __webpack_require__(2).isPromise;
+isPromise = __webpack_require__(/*! ./Core/Types */ 2).isPromise;
 
-ErrorWithInfo = __webpack_require__(38);
+ErrorWithInfo = __webpack_require__(/*! ./ErrorWithInfo */ 38);
 
 
 /*
@@ -2181,10 +2236,15 @@ defineModule(module, function() {
   return BlueBirdPromise;
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../~/webpack/buildin/module.js */ 24)(module)))
 
 /***/ }),
 /* 11 */
+/* no static exports found */
+/* all exports used */
+/*!********************************************************!*\
+  !*** ./source/Art.StandardLib/RegExpExtensions.coffee ***!
+  \********************************************************/
 /***/ (function(module, exports) {
 
 var RegExpExtensions;
@@ -2302,42 +2362,52 @@ module.exports = RegExpExtensions = (function() {
 
 /***/ }),
 /* 12 */
+/* no static exports found */
+/* all exports used */
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/namespace.coffee ***!
+  \*************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var StandardLib,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(36)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 36)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
   extend(StandardLib, superClass);
 
   function StandardLib() {
     return StandardLib.__super__.constructor.apply(this, arguments);
   }
 
-  StandardLib.version = __webpack_require__(35).version;
+  StandardLib.version = __webpack_require__(/*! ../../package.json */ 35).version;
 
   return StandardLib;
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(16);
+__webpack_require__(/*! ./Core/namespace */ 16);
 
-__webpack_require__(5);
+__webpack_require__(/*! ./Inspect/namespace */ 5);
 
 
 /***/ }),
 /* 13 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/ArrayExtensions.coffee ***!
+  \*******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-ref = __webpack_require__(9), bound = ref.bound, max = ref.max, intRand = ref.intRand, modulo = ref.modulo;
+ref = __webpack_require__(/*! ./MathExtensions */ 9), bound = ref.bound, max = ref.max, intRand = ref.intRand, modulo = ref.modulo;
 
-ref1 = __webpack_require__(0), isNumber = ref1.isNumber, isString = ref1.isString;
+ref1 = __webpack_require__(/*! ./TypesExtended */ 0), isNumber = ref1.isNumber, isString = ref1.isString;
 
-ref2 = __webpack_require__(11), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
+ref2 = __webpack_require__(/*! ./RegExpExtensions */ 11), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
 module.exports = ArrayExtensions = (function() {
   var _moveArrayElementLargeArray, _moveArrayElementSmallArray, a, arrayWithElementMoved, arrayWithInsertedValue, basicCompareFunction, indexOfOrLength, keepAll, keepIfRubyTrue, leftOfIndex, longestCommonSubsequence, moveArrayElement, randomElement, randomSortInPlace, rightOfIndex, w;
@@ -2966,13 +3036,18 @@ module.exports = ArrayExtensions = (function() {
 
 /***/ }),
 /* 14 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Merge.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
 
-compactFlatten = __webpack_require__(3).compactFlatten;
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 3).compactFlatten;
 
-isPlainObject = __webpack_require__(2).isPlainObject;
+isPlainObject = __webpack_require__(/*! ./Types */ 2).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, pureMerge;
@@ -3139,11 +3214,16 @@ module.exports = Merge = (function() {
 
 /***/ }),
 /* 15 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/StringCase.coffee ***!
+  \*******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var StringCase, compactFlatten;
 
-compactFlatten = __webpack_require__(3).compactFlatten;
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 3).compactFlatten;
 
 module.exports = StringCase = (function() {
   var getCodeWords;
@@ -3250,13 +3330,18 @@ module.exports = StringCase = (function() {
 
 /***/ }),
 /* 16 */
+/* no static exports found */
+/* all exports used */
+/*!******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/namespace.coffee ***!
+  \******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Core', Core = (function(superClass) {
   extend(Core, superClass);
 
   function Core() {
@@ -3270,15 +3355,20 @@ module.exports = (__webpack_require__(12)).addNamespace('Core', Core = (function
 
 /***/ }),
 /* 17 */
+/* no static exports found */
+/* all exports used */
+/*!***************************************************!*\
+  !*** ./source/Art.StandardLib/Environment.coffee ***!
+  \***************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var Environment, ParseUrl, defineModule, isNode;
 
-defineModule = __webpack_require__(8).defineModule;
+defineModule = __webpack_require__(/*! ./CommonJs */ 8).defineModule;
 
-ParseUrl = __webpack_require__(23);
+ParseUrl = __webpack_require__(/*! ./ParseUrl */ 23);
 
-isNode = __webpack_require__(65);
+isNode = __webpack_require__(/*! detect-node */ 65);
 
 defineModule(module, Environment = (function() {
   function Environment() {}
@@ -3298,21 +3388,26 @@ defineModule(module, Environment = (function() {
 
 })());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../~/webpack/buildin/module.js */ 24)(module)))
 
 /***/ }),
 /* 18 */
+/* no static exports found */
+/* all exports used */
+/*!********************************************************!*\
+  !*** ./source/Art.StandardLib/ObjectExtensions.coffee ***!
+  \********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
   slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
+ref = __webpack_require__(/*! ./Core */ 1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
 
-ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
+ref1 = __webpack_require__(/*! ./TypesExtended */ 0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
 
-object = __webpack_require__(21).object;
+object = __webpack_require__(/*! ./Iteration */ 21).object;
 
 module.exports = ObjectExtensions = (function() {
   var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
@@ -3602,13 +3697,18 @@ module.exports = ObjectExtensions = (function() {
 
 /***/ }),
 /* 19 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/namespace.coffee ***!
+  \*******************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 5)).addNamespace('Inspected', Inspected = (function(superClass) {
   extend(Inspected, superClass);
 
   function Inspected() {
@@ -3622,11 +3722,16 @@ module.exports = (__webpack_require__(5)).addNamespace('Inspected', Inspected = 
 
 /***/ }),
 /* 20 */
+/* no static exports found */
+/* all exports used */
+/*!**********************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/InspectedObjectLiteral.coffee ***!
+  \**********************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjectLiteral, compare;
 
-compare = __webpack_require__(29).compare;
+compare = __webpack_require__(/*! ../Eq */ 29).compare;
 
 module.exports = InspectedObjectLiteral = (function() {
   InspectedObjectLiteral.inspectedObjectLiteral = function(literal, isError) {
@@ -3657,13 +3762,18 @@ module.exports = InspectedObjectLiteral = (function() {
 
 /***/ }),
 /* 21 */
+/* no static exports found */
+/* all exports used */
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/Iteration.coffee ***!
+  \*************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1;
 
-ref = __webpack_require__(1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
+ref = __webpack_require__(/*! ./Core */ 1), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
 
-ref1 = __webpack_require__(0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray;
+ref1 = __webpack_require__(/*! ./TypesExtended */ 0), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray;
 
 log = function() {
   var ref2;
@@ -4014,6 +4124,11 @@ module.exports = Iteration = (function() {
 
 /***/ }),
 /* 22 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************!*\
+  !*** ./source/Art.StandardLib/Map.coffee ***!
+  \*******************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -4039,11 +4154,11 @@ var KeysIterator, Map, MinimalBaseObject, Node, Unique, ValuesIterator, isFuncti
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Unique = __webpack_require__(34);
+Unique = __webpack_require__(/*! ./Unique */ 34);
 
-MinimalBaseObject = __webpack_require__(6);
+MinimalBaseObject = __webpack_require__(/*! ./MinimalBaseObject */ 6);
 
-isFunction = __webpack_require__(1).isFunction;
+isFunction = __webpack_require__(/*! ./Core */ 1).isFunction;
 
 Node = (function() {
   function Node(key, value, prev, next) {
@@ -4214,11 +4329,17 @@ module.exports = isFunction(global.Map) && (m = new global.Map).set(1, 2) === m 
 
 /***/ }),
 /* 23 */
+/* no static exports found */
+/* all exports used */
+/*!************************************************!*\
+  !*** ./source/Art.StandardLib/ParseUrl.coffee ***!
+  \************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-var ParseUrl, escapeRegExp, findUrlOrigin, ref;
+var ParseUrl, escapeRegExp, findUrlOrigin, ref,
+  slice = [].slice;
 
-ref = __webpack_require__(11), escapeRegExp = ref.escapeRegExp, findUrlOrigin = ref.findUrlOrigin;
+ref = __webpack_require__(/*! ./RegExpExtensions */ 11), escapeRegExp = ref.escapeRegExp, findUrlOrigin = ref.findUrlOrigin;
 
 module.exports = ParseUrl = (function() {
   var generateQuery, parsedGlobalQuery;
@@ -4276,8 +4397,18 @@ module.exports = ParseUrl = (function() {
     return parts.join("&");
   };
 
-  ParseUrl.urlJoin = function(uri, path) {
-    return (uri.replace(/\/$/, '')) + "/" + (path.replace(/^\//, ''));
+  ParseUrl.urlJoin = function() {
+    var path, paths, uri;
+    uri = arguments[0], paths = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    return (uri.replace(/\/$/, '')) + "/" + (((function() {
+      var j, len, results;
+      results = [];
+      for (j = 0, len = paths.length; j < len; j++) {
+        path = paths[j];
+        results.push(path.replace(/^\/|\/$/g, ''));
+      }
+      return results;
+    })()).join('/'));
   };
 
   ParseUrl.appendQuery = function(uri, o) {
@@ -4328,6 +4459,11 @@ module.exports = ParseUrl = (function() {
 
 /***/ }),
 /* 24 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************!*\
+  !*** ../~/webpack/buildin/module.js ***!
+  \**************************************/
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -4356,13 +4492,18 @@ module.exports = function(module) {
 
 /***/ }),
 /* 25 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/AsyncExtensions.coffee ***!
+  \*******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var AsyncExtensions, Promise, toSeconds;
 
-Promise = __webpack_require__(10);
+Promise = __webpack_require__(/*! ./Promise */ 10);
 
-toSeconds = __webpack_require__(28).toSeconds;
+toSeconds = __webpack_require__(/*! ./DateExtensions */ 28).toSeconds;
 
 module.exports = AsyncExtensions = (function() {
   var interval, timeout;
@@ -4441,15 +4582,20 @@ module.exports = AsyncExtensions = (function() {
 
 /***/ }),
 /* 26 */
+/* no static exports found */
+/* all exports used */
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/CallStack.coffee ***!
+  \*************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var CallStack, inspect, isString, parseUrl;
 
-isString = __webpack_require__(0).isString;
+isString = __webpack_require__(/*! ./TypesExtended */ 0).isString;
 
-parseUrl = __webpack_require__(23).parseUrl;
+parseUrl = __webpack_require__(/*! ./ParseUrl */ 23).parseUrl;
 
-inspect = __webpack_require__(4).inspect;
+inspect = __webpack_require__(/*! ./Inspect */ 4).inspect;
 
 module.exports = CallStack = (function() {
   var CallStackLine;
@@ -4602,25 +4748,35 @@ module.exports = CallStack = (function() {
 
 /***/ }),
 /* 27 */
+/* no static exports found */
+/* all exports used */
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Core.coffee ***!
+  \*************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(3), __webpack_require__(15), __webpack_require__(14), __webpack_require__(2)];
+module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 3), __webpack_require__(/*! ./StringCase */ 15), __webpack_require__(/*! ./Merge */ 14), __webpack_require__(/*! ./Types */ 2)];
 
 
 /***/ }),
 /* 28 */
+/* no static exports found */
+/* all exports used */
+/*!******************************************************!*\
+  !*** ./source/Art.StandardLib/DateExtensions.coffee ***!
+  \******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var dateFormat, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, toDate, toMilliseconds;
 
-ref = __webpack_require__(2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
+ref = __webpack_require__(/*! ./Core/Types */ 2), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
 
-formattedInspect = __webpack_require__(4).formattedInspect;
+formattedInspect = __webpack_require__(/*! ./Inspect */ 4).formattedInspect;
 
 march1973InMilliseconds = 100000000000;
 
 module.exports = {
-  dateFormat: dateFormat = __webpack_require__(49),
+  dateFormat: dateFormat = __webpack_require__(/*! dateformat */ 49),
   formatDate: function(value, format, utc) {
     if (isString(value)) {
       format = value;
@@ -4701,18 +4857,23 @@ module.exports = {
 
 /***/ }),
 /* 29 */
+/* no static exports found */
+/* all exports used */
+/*!******************************************!*\
+  !*** ./source/Art.StandardLib/Eq.coffee ***!
+  \******************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-remove = __webpack_require__(13).remove;
+remove = __webpack_require__(/*! ./ArrayExtensions */ 13).remove;
 
-objectKeyCount = __webpack_require__(18).objectKeyCount;
+objectKeyCount = __webpack_require__(/*! ./ObjectExtensions */ 18).objectKeyCount;
 
-floatTrue0 = __webpack_require__(9).floatTrue0;
+floatTrue0 = __webpack_require__(/*! ./MathExtensions */ 9).floatTrue0;
 
-ref = __webpack_require__(0), isString = ref.isString, isNumber = ref.isNumber;
+ref = __webpack_require__(/*! ./TypesExtended */ 0), isString = ref.isString, isNumber = ref.isNumber;
 
 min = Math.min;
 
@@ -4730,19 +4891,19 @@ module.exports = Eq = (function() {
    */
 
   Eq.eq = function(a, b) {
-    return 0 === Eq.compare(a, b, true);
+    return a === b || 0 === Eq.compare(a, b, true);
   };
 
   Eq.neq = function(a, b) {
-    return 0 !== Eq.compare(a, b, true);
+    return a !== b || 0 !== Eq.compare(a, b, true);
   };
 
   Eq.fastEq = function(a, b) {
-    return 0 === Eq.compare(a, b, false);
+    return a === b || 0 === Eq.compare(a, b, false);
   };
 
   Eq.fastNeq = function(a, b) {
-    return 0 !== Eq.compare(a, b, false);
+    return a !== b || 0 !== Eq.compare(a, b, false);
   };
 
   Eq._compareArray = function(a, b, recursionBlockArray) {
@@ -5007,17 +5168,22 @@ module.exports = Eq = (function() {
 
 /***/ }),
 /* 30 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/InspectedObjects.coffee ***!
+  \****************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
 
-ref = __webpack_require__(0), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
+ref = __webpack_require__(/*! ../TypesExtended */ 0), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
 
-escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
+escapeJavascriptString = __webpack_require__(/*! ../StringExtensions */ 7).escapeJavascriptString;
 
-inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(/*! ./InspectedObjectLiteral */ 20).inspectedObjectLiteral;
 
-dateFormat = __webpack_require__(49);
+dateFormat = __webpack_require__(/*! dateformat */ 49);
 
 module.exports = InspectedObjects = (function() {
   var toInspectedObjects;
@@ -5087,16 +5253,21 @@ module.exports = InspectedObjects = (function() {
 
 /***/ }),
 /* 31 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspector.coffee ***!
+  \*********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspector, Map, escapeJavascriptString, isArray, isBrowserObject, isClass, isFunction, isObject, isPlainArray, isPlainObject, isString, objectName, ref,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-Map = __webpack_require__(22);
+Map = __webpack_require__(/*! ../Map */ 22);
 
-escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
+escapeJavascriptString = __webpack_require__(/*! ../StringExtensions */ 7).escapeJavascriptString;
 
-ref = __webpack_require__(0), objectName = ref.objectName, isString = ref.isString, isArray = ref.isArray, isFunction = ref.isFunction, isObject = ref.isObject, isClass = ref.isClass, isBrowserObject = ref.isBrowserObject, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray;
+ref = __webpack_require__(/*! ../TypesExtended */ 0), objectName = ref.objectName, isString = ref.isString, isArray = ref.isArray, isFunction = ref.isFunction, isObject = ref.isObject, isClass = ref.isClass, isBrowserObject = ref.isBrowserObject, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray;
 
 module.exports = Inspector = (function() {
   var inspect;
@@ -5322,24 +5493,29 @@ module.exports = Inspector = (function() {
 
 /***/ }),
 /* 32 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************!*\
+  !*** ./source/Art.StandardLib/Log.coffee ***!
+  \*******************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, isNode, isString, merge, peek, ref, ref1,
   slice = [].slice;
 
-Inspect = __webpack_require__(5);
+Inspect = __webpack_require__(/*! ./Inspect/namespace */ 5);
 
-callStack = __webpack_require__(26).callStack;
+callStack = __webpack_require__(/*! ./CallStack */ 26).callStack;
 
-isString = __webpack_require__(0).isString;
+isString = __webpack_require__(/*! ./TypesExtended */ 0).isString;
 
-peek = __webpack_require__(13).peek;
+peek = __webpack_require__(/*! ./ArrayExtensions */ 13).peek;
 
-merge = __webpack_require__(1).merge;
+merge = __webpack_require__(/*! ./Core */ 1).merge;
 
-ref = __webpack_require__(10), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
+ref = __webpack_require__(/*! ./Promise */ 10), deepResolve = ref.deepResolve, containsPromises = ref.containsPromises;
 
-ref1 = __webpack_require__(17), isNode = ref1.isNode, getEnv = ref1.getEnv;
+ref1 = __webpack_require__(/*! ./Environment */ 17), isNode = ref1.isNode, getEnv = ref1.getEnv;
 
 disableLog = getEnv().disableLog;
 
@@ -5619,11 +5795,16 @@ module.exports = Log = (function() {
 
 /***/ }),
 /* 33 */
+/* no static exports found */
+/* all exports used */
+/*!********************************************!*\
+  !*** ./source/Art.StandardLib/Time.coffee ***!
+  \********************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Time, base, commaize, dateSecondMinusPerformanceSecond, initDateSecond, initPerformanceSecond;
 
-commaize = __webpack_require__(9).commaize;
+commaize = __webpack_require__(/*! ./MathExtensions */ 9).commaize;
 
 self.performance || (self.performance = {});
 
@@ -5747,6 +5928,11 @@ module.exports = Time = (function() {
 
 /***/ }),
 /* 34 */
+/* no static exports found */
+/* all exports used */
+/*!**********************************************!*\
+  !*** ./source/Art.StandardLib/Unique.coffee ***!
+  \**********************************************/
 /***/ (function(module, exports) {
 
 var Unique, nextId;
@@ -5811,18 +5997,33 @@ module.exports = Unique = (function() {
 
 /***/ }),
 /* 35 */
+/* no static exports found */
+/* all exports used */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.40.0"}
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.41.0"}
 
 /***/ }),
 /* 36 */
+/* no static exports found */
+/* all exports used */
+/*!************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************************/
 /***/ (function(module, exports) {
 
 module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 37 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************************!*\
+  !*** ./source/Art.StandardLib/Clone.coffee ***!
+  \*********************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -5839,11 +6040,11 @@ populateClone would need to take an additional argument - the clone function to 
  */
 var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, topObject, uniquePropertyName;
 
-Map = __webpack_require__(22);
+Map = __webpack_require__(/*! ./Map */ 22);
 
-Unique = __webpack_require__(34);
+Unique = __webpack_require__(/*! ./Unique */ 34);
 
-inspect = __webpack_require__(4).inspect;
+inspect = __webpack_require__(/*! ./Inspect */ 4).inspect;
 
 uniquePropertyName = Unique.PropertyName;
 
@@ -5940,17 +6141,22 @@ module.exports = Clone = (function() {
 
 /***/ }),
 /* 38 */
+/* no static exports found */
+/* all exports used */
+/*!*****************************************************!*\
+  !*** ./source/Art.StandardLib/ErrorWithInfo.coffee ***!
+  \*****************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var ErrorWithInfo, defineModule, formattedInspect, isFunction, mergeInto, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-defineModule = __webpack_require__(8).defineModule;
+defineModule = __webpack_require__(/*! ./CommonJs */ 8).defineModule;
 
-formattedInspect = __webpack_require__(4).formattedInspect;
+formattedInspect = __webpack_require__(/*! ./Inspect */ 4).formattedInspect;
 
-ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction;
+ref = __webpack_require__(/*! ./Core */ 1), mergeInto = ref.mergeInto, isFunction = ref.isFunction;
 
 defineModule(module, ErrorWithInfo = (function(superClass) {
   extend(ErrorWithInfo, superClass);
@@ -5981,10 +6187,15 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
 
 })(Error));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../~/webpack/buildin/module.js */ 24)(module)))
 
 /***/ }),
 /* 39 */
+/* no static exports found */
+/* all exports used */
+/*!************************************************!*\
+  !*** ./source/Art.StandardLib/Function.coffee ***!
+  \************************************************/
 /***/ (function(module, exports) {
 
 var Function;
@@ -6081,25 +6292,30 @@ in debug mode and the faster(?), non hot-reload options in production mode.
 
 /***/ }),
 /* 40 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/FormattedInspect.coffee ***!
+  \****************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, colorNames, colorizeFunctions, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, identity, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, object, objectKeyCount, pad, passThroughColorizeFunctions, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects, w;
 
-ref = __webpack_require__(0), isString = ref.isString, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
+ref = __webpack_require__(/*! ../TypesExtended */ 0), isString = ref.isString, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
 
 max = Math.max;
 
-ref1 = __webpack_require__(7), pad = ref1.pad, stripTrailingWhitespace = ref1.stripTrailingWhitespace, escapeJavascriptString = ref1.escapeJavascriptString;
+ref1 = __webpack_require__(/*! ../StringExtensions */ 7), pad = ref1.pad, stripTrailingWhitespace = ref1.stripTrailingWhitespace, escapeJavascriptString = ref1.escapeJavascriptString;
 
-inspect = __webpack_require__(31).inspect;
+inspect = __webpack_require__(/*! ./Inspector */ 31).inspect;
 
-objectKeyCount = __webpack_require__(18).objectKeyCount;
+objectKeyCount = __webpack_require__(/*! ../ObjectExtensions */ 18).objectKeyCount;
 
-toInspectedObjects = __webpack_require__(30).toInspectedObjects;
+toInspectedObjects = __webpack_require__(/*! ./InspectedObjects */ 30).toInspectedObjects;
 
-w = __webpack_require__(13).w;
+w = __webpack_require__(/*! ../ArrayExtensions */ 13).w;
 
-object = __webpack_require__(21).object;
+object = __webpack_require__(/*! ../Iteration */ 21).object;
 
 indentString = '  ';
 
@@ -6535,27 +6751,37 @@ module.exports = FormattedInspect = (function() {
 
 /***/ }),
 /* 41 */
+/* no static exports found */
+/* all exports used */
+/*!***************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/index.coffee ***!
+  \***************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(19);
+module.exports = __webpack_require__(/*! ./namespace */ 19);
 
 module.exports.addModules({
-  Array: __webpack_require__(55),
-  Core: __webpack_require__(56),
-  Object: __webpack_require__(57),
-  String: __webpack_require__(58)
+  Array: __webpack_require__(/*! ./Array */ 55),
+  Core: __webpack_require__(/*! ./Core */ 56),
+  Object: __webpack_require__(/*! ./Object */ 57),
+  String: __webpack_require__(/*! ./String */ 58)
 });
 
 
 /***/ }),
 /* 42 */
+/* no static exports found */
+/* all exports used */
+/*!************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/PlainObjects.coffee ***!
+  \************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction, isPlainArray, isPlainObject, ref;
 
-ref = __webpack_require__(0), deepMap = ref.deepMap, hasKeys = ref.hasKeys, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction, isClass = ref.isClass;
+ref = __webpack_require__(/*! ../TypesExtended */ 0), deepMap = ref.deepMap, hasKeys = ref.hasKeys, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction, isClass = ref.isClass;
 
-inspectedObjectLiteral = __webpack_require__(20).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(/*! ./InspectedObjectLiteral */ 20).inspectedObjectLiteral;
 
 module.exports = PlainObjects = (function() {
   var toPlainObjects;
@@ -6592,6 +6818,11 @@ module.exports = PlainObjects = (function() {
 
 /***/ }),
 /* 43 */
+/* no static exports found */
+/* all exports used */
+/*!*****************************************************!*\
+  !*** ./source/Art.StandardLib/MapExtensions.coffee ***!
+  \*****************************************************/
 /***/ (function(module, exports) {
 
 var MapExtensions;
@@ -6623,6 +6854,11 @@ module.exports = MapExtensions = (function() {
 
 /***/ }),
 /* 44 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/ObjectDiff.coffee ***!
+  \**************************************************/
 /***/ (function(module, exports) {
 
 var ObjectDiff;
@@ -6754,11 +6990,16 @@ module.exports = ObjectDiff = (function() {
 
 /***/ }),
 /* 45 */
+/* no static exports found */
+/* all exports used */
+/*!**********************************************************!*\
+  !*** ./source/Art.StandardLib/PromisedFileReader.coffee ***!
+  \**********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Promise, PromisedFileReader;
 
-Promise = __webpack_require__(10);
+Promise = __webpack_require__(/*! ./Promise */ 10);
 
 module.exports = PromisedFileReader = (function() {
   function PromisedFileReader() {}
@@ -6806,13 +7047,18 @@ module.exports = PromisedFileReader = (function() {
 
 /***/ }),
 /* 46 */
+/* no static exports found */
+/* all exports used */
+/*!**********************************************************!*\
+  !*** ./source/Art.StandardLib/ReschedulableTimer.coffee ***!
+  \**********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var ReschedulableTimer, currentSecond, timeout;
 
-currentSecond = __webpack_require__(33).currentSecond;
+currentSecond = __webpack_require__(/*! ./Time */ 33).currentSecond;
 
-timeout = __webpack_require__(25).timeout;
+timeout = __webpack_require__(/*! ./AsyncExtensions */ 25).timeout;
 
 module.exports = ReschedulableTimer = (function() {
   function ReschedulableTimer() {
@@ -6850,6 +7096,11 @@ module.exports = ReschedulableTimer = (function() {
 
 /***/ }),
 /* 47 */
+/* no static exports found */
+/* all exports used */
+/*!********************************************!*\
+  !*** ./source/Art.StandardLib/Ruby.coffee ***!
+  \********************************************/
 /***/ (function(module, exports) {
 
 var Ruby,
@@ -6935,6 +7186,11 @@ module.exports = Ruby = (function() {
 
 /***/ }),
 /* 48 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************!*\
+  !*** ./source/Art.StandardLib/ShallowClone.coffee ***!
+  \****************************************************/
 /***/ (function(module, exports) {
 
 
@@ -6986,68 +7242,88 @@ module.exports = ShallowClone = (function() {
 
 /***/ }),
 /* 49 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************************!*\
+  !*** external "require('dateformat' /* ABC - not inlining fellow NPM *_/)" ***!
+  \****************************************************************************/
 /***/ (function(module, exports) {
 
 module.exports = require('dateformat' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 50 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************************!*\
+  !*** ./source/Art.StandardLib/index.coffee ***!
+  \*********************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(12);
+module.exports = __webpack_require__(/*! ./namespace */ 12);
 
-module.exports.includeInNamespace(__webpack_require__(62)).addModules({
-  ArrayExtensions: __webpack_require__(13),
-  AsyncExtensions: __webpack_require__(25),
-  CallStack: __webpack_require__(26),
-  Clone: __webpack_require__(37),
-  CommonJs: __webpack_require__(8),
-  DateExtensions: __webpack_require__(28),
-  Environment: __webpack_require__(17),
-  Eq: __webpack_require__(29),
-  ErrorWithInfo: __webpack_require__(38),
-  Function: __webpack_require__(39),
-  Iteration: __webpack_require__(21),
-  Log: __webpack_require__(32),
-  Map: __webpack_require__(22),
-  MapExtensions: __webpack_require__(43),
-  MathExtensions: __webpack_require__(9),
-  MinimalBaseObject: __webpack_require__(6),
-  ObjectDiff: __webpack_require__(44),
-  ObjectExtensions: __webpack_require__(18),
-  ParseUrl: __webpack_require__(23),
-  Promise: __webpack_require__(10),
-  PromisedFileReader: __webpack_require__(45),
-  PromiseWorkerPool: __webpack_require__(60),
-  RegExpExtensions: __webpack_require__(11),
-  RequestError: __webpack_require__(61),
-  ReschedulableTimer: __webpack_require__(46),
-  Ruby: __webpack_require__(47),
-  ShallowClone: __webpack_require__(48),
-  StringExtensions: __webpack_require__(7),
-  Time: __webpack_require__(33),
-  TypesExtended: __webpack_require__(0),
-  Unique: __webpack_require__(34)
+module.exports.includeInNamespace(__webpack_require__(/*! ./StandardLib */ 62)).addModules({
+  ArrayExtensions: __webpack_require__(/*! ./ArrayExtensions */ 13),
+  AsyncExtensions: __webpack_require__(/*! ./AsyncExtensions */ 25),
+  CallStack: __webpack_require__(/*! ./CallStack */ 26),
+  Clone: __webpack_require__(/*! ./Clone */ 37),
+  CommonJs: __webpack_require__(/*! ./CommonJs */ 8),
+  DateExtensions: __webpack_require__(/*! ./DateExtensions */ 28),
+  Environment: __webpack_require__(/*! ./Environment */ 17),
+  Eq: __webpack_require__(/*! ./Eq */ 29),
+  ErrorWithInfo: __webpack_require__(/*! ./ErrorWithInfo */ 38),
+  Function: __webpack_require__(/*! ./Function */ 39),
+  Iteration: __webpack_require__(/*! ./Iteration */ 21),
+  Log: __webpack_require__(/*! ./Log */ 32),
+  Map: __webpack_require__(/*! ./Map */ 22),
+  MapExtensions: __webpack_require__(/*! ./MapExtensions */ 43),
+  MathExtensions: __webpack_require__(/*! ./MathExtensions */ 9),
+  MinimalBaseObject: __webpack_require__(/*! ./MinimalBaseObject */ 6),
+  ObjectDiff: __webpack_require__(/*! ./ObjectDiff */ 44),
+  ObjectExtensions: __webpack_require__(/*! ./ObjectExtensions */ 18),
+  ParseUrl: __webpack_require__(/*! ./ParseUrl */ 23),
+  Promise: __webpack_require__(/*! ./Promise */ 10),
+  PromisedFileReader: __webpack_require__(/*! ./PromisedFileReader */ 45),
+  PromiseWorkerPool: __webpack_require__(/*! ./PromiseWorkerPool */ 60),
+  RegExpExtensions: __webpack_require__(/*! ./RegExpExtensions */ 11),
+  RequestError: __webpack_require__(/*! ./RequestError */ 61),
+  ReschedulableTimer: __webpack_require__(/*! ./ReschedulableTimer */ 46),
+  Ruby: __webpack_require__(/*! ./Ruby */ 47),
+  ShallowClone: __webpack_require__(/*! ./ShallowClone */ 48),
+  StringExtensions: __webpack_require__(/*! ./StringExtensions */ 7),
+  Time: __webpack_require__(/*! ./Time */ 33),
+  TypesExtended: __webpack_require__(/*! ./TypesExtended */ 0),
+  Unique: __webpack_require__(/*! ./Unique */ 34)
 });
 
-__webpack_require__(1);
+__webpack_require__(/*! ./Core */ 1);
 
-__webpack_require__(4);
+__webpack_require__(/*! ./Inspect */ 4);
 
 
 /***/ }),
 /* 51 */,
 /* 52 */,
 /* 53 */
+/* no static exports found */
+/* all exports used */
+/*!**********************!*\
+  !*** ./index.coffee ***!
+  \**********************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1;
 
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.StandardLib : void 0 : void 0) != null ? ref : __webpack_require__(50);
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? ref1.StandardLib : void 0 : void 0) != null ? ref : __webpack_require__(/*! ./source/Art.StandardLib */ 50);
 
 
 /***/ }),
 /* 54 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspect.coffee ***!
+  \*******************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -7055,18 +7331,23 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(31), "shallowInspect inspectLean inspect"], __webpack_require__(40), __webpack_require__(30), __webpack_require__(42), __webpack_require__(20)];
+module.exports = [[__webpack_require__(/*! ./Inspector */ 31), "shallowInspect inspectLean inspect"], __webpack_require__(/*! ./FormattedInspect */ 40), __webpack_require__(/*! ./InspectedObjects */ 30), __webpack_require__(/*! ./PlainObjects */ 42), __webpack_require__(/*! ./InspectedObjectLiteral */ 20)];
 
 
 /***/ }),
 /* 55 */
+/* no static exports found */
+/* all exports used */
+/*!***************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/Array.coffee ***!
+  \***************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Array, MinimalBaseObject,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-MinimalBaseObject = __webpack_require__(6);
+MinimalBaseObject = __webpack_require__(/*! ../../MinimalBaseObject */ 6);
 
 module.exports = Array = (function(superClass) {
   extend(Array, superClass);
@@ -7110,13 +7391,18 @@ module.exports = Array = (function(superClass) {
 
 /***/ }),
 /* 56 */
+/* no static exports found */
+/* all exports used */
+/*!**************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/Core.coffee ***!
+  \**************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core, MinimalBaseObject,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-MinimalBaseObject = __webpack_require__(6);
+MinimalBaseObject = __webpack_require__(/*! ../../MinimalBaseObject */ 6);
 
 module.exports = Core = (function(superClass) {
   extend(Core, superClass);
@@ -7146,13 +7432,18 @@ module.exports = Core = (function(superClass) {
 
 /***/ }),
 /* 57 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/Object.coffee ***!
+  \****************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, Object,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-MinimalBaseObject = __webpack_require__(6);
+MinimalBaseObject = __webpack_require__(/*! ../../MinimalBaseObject */ 6);
 
 module.exports = Object = (function(superClass) {
   extend(Object, superClass);
@@ -7212,15 +7503,20 @@ module.exports = Object = (function(superClass) {
 
 /***/ }),
 /* 58 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/String.coffee ***!
+  \****************************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var MinimalBaseObject, String, escapeJavascriptString,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-MinimalBaseObject = __webpack_require__(6);
+MinimalBaseObject = __webpack_require__(/*! ../../MinimalBaseObject */ 6);
 
-escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
+escapeJavascriptString = __webpack_require__(/*! ../../StringExtensions */ 7).escapeJavascriptString;
 
 module.exports = String = (function(superClass) {
   extend(String, superClass);
@@ -7241,6 +7537,11 @@ module.exports = String = (function(superClass) {
 
 /***/ }),
 /* 59 */
+/* no static exports found */
+/* all exports used */
+/*!**********************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspector2.coffee ***!
+  \**********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArray, isBrowserObject, isClass, isDate, isFunction, isHTMLImageElement, isObject, isPlainObject, isRegExp, isString, objectName, parentString, ref,
@@ -7248,15 +7549,15 @@ var Inspected, Inspector2, Map, MinimalBaseObject, escapeJavascriptString, isArr
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-MinimalBaseObject = __webpack_require__(6);
+MinimalBaseObject = __webpack_require__(/*! ../MinimalBaseObject */ 6);
 
-Map = __webpack_require__(22);
+Map = __webpack_require__(/*! ../Map */ 22);
 
-Inspected = __webpack_require__(41);
+Inspected = __webpack_require__(/*! ./Inspected */ 41);
 
-escapeJavascriptString = __webpack_require__(7).escapeJavascriptString;
+escapeJavascriptString = __webpack_require__(/*! ../StringExtensions */ 7).escapeJavascriptString;
 
-ref = __webpack_require__(0), isString = ref.isString, isArray = ref.isArray, isFunction = ref.isFunction, isObject = ref.isObject, isPlainObject = ref.isPlainObject, isClass = ref.isClass, isDate = ref.isDate, isRegExp = ref.isRegExp, objectName = ref.objectName, isBrowserObject = ref.isBrowserObject;
+ref = __webpack_require__(/*! ../TypesExtended */ 0), isString = ref.isString, isArray = ref.isArray, isFunction = ref.isFunction, isObject = ref.isObject, isPlainObject = ref.isPlainObject, isClass = ref.isClass, isDate = ref.isDate, isRegExp = ref.isRegExp, objectName = ref.objectName, isBrowserObject = ref.isBrowserObject;
 
 isHTMLImageElement = self.HTMLImageElement ? function(obj) {
   return obj instanceof HTMLImageElement;
@@ -7464,13 +7765,18 @@ module.exports = Inspector2 = (function(superClass) {
 
 /***/ }),
 /* 60 */
+/* no static exports found */
+/* all exports used */
+/*!*********************************************************!*\
+  !*** ./source/Art.StandardLib/PromiseWorkerPool.coffee ***!
+  \*********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var Promise, PromiseWorkerPool, log;
 
-Promise = __webpack_require__(10);
+Promise = __webpack_require__(/*! ./Promise */ 10);
 
-log = __webpack_require__(32).log;
+log = __webpack_require__(/*! ./Log */ 32).log;
 
 
 /*
@@ -7553,19 +7859,24 @@ module.exports = PromiseWorkerPool = (function() {
 
 /***/ }),
 /* 61 */
+/* no static exports found */
+/* all exports used */
+/*!****************************************************!*\
+  !*** ./source/Art.StandardLib/RequestError.coffee ***!
+  \****************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var RequestError, compactFlatten, defineModule, formattedInspect, isFunction, merge, mergeInto, objectWithout, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-defineModule = __webpack_require__(8).defineModule;
+defineModule = __webpack_require__(/*! ./CommonJs */ 8).defineModule;
 
-formattedInspect = __webpack_require__(4).formattedInspect;
+formattedInspect = __webpack_require__(/*! ./Inspect */ 4).formattedInspect;
 
-ref = __webpack_require__(1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
+ref = __webpack_require__(/*! ./Core */ 1), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
 
-objectWithout = __webpack_require__(18).objectWithout;
+objectWithout = __webpack_require__(/*! ./ObjectExtensions */ 18).objectWithout;
 
 
 /*
@@ -7634,33 +7945,53 @@ defineModule(module, RequestError = (function(superClass) {
 
 })(Error));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../~/webpack/buildin/module.js */ 24)(module)))
 
 /***/ }),
 /* 62 */
+/* no static exports found */
+/* all exports used */
+/*!***************************************************!*\
+  !*** ./source/Art.StandardLib/StandardLib.coffee ***!
+  \***************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(1), [__webpack_require__(10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(13), __webpack_require__(25), __webpack_require__(18), __webpack_require__(7), __webpack_require__(29), __webpack_require__(39), __webpack_require__(44), __webpack_require__(43), __webpack_require__(9), __webpack_require__(17), __webpack_require__(23), __webpack_require__(45), __webpack_require__(11), __webpack_require__(47), __webpack_require__(48), __webpack_require__(33), __webpack_require__(0), __webpack_require__(8), __webpack_require__(21), __webpack_require__(4), __webpack_require__(37), __webpack_require__(32), __webpack_require__(26), __webpack_require__(28), {
-    PushBackTimer: __webpack_require__(46)
+  __webpack_require__(/*! ./Core */ 1), [__webpack_require__(/*! ./Promise */ 10), "testPromise", "containsPromises", "deepAll"], __webpack_require__(/*! ./ArrayExtensions */ 13), __webpack_require__(/*! ./AsyncExtensions */ 25), __webpack_require__(/*! ./ObjectExtensions */ 18), __webpack_require__(/*! ./StringExtensions */ 7), __webpack_require__(/*! ./Eq */ 29), __webpack_require__(/*! ./Function */ 39), __webpack_require__(/*! ./ObjectDiff */ 44), __webpack_require__(/*! ./MapExtensions */ 43), __webpack_require__(/*! ./MathExtensions */ 9), __webpack_require__(/*! ./Environment */ 17), __webpack_require__(/*! ./ParseUrl */ 23), __webpack_require__(/*! ./PromisedFileReader */ 45), __webpack_require__(/*! ./RegExpExtensions */ 11), __webpack_require__(/*! ./Ruby */ 47), __webpack_require__(/*! ./ShallowClone */ 48), __webpack_require__(/*! ./Time */ 33), __webpack_require__(/*! ./TypesExtended */ 0), __webpack_require__(/*! ./CommonJs */ 8), __webpack_require__(/*! ./Iteration */ 21), __webpack_require__(/*! ./Inspect */ 4), __webpack_require__(/*! ./Clone */ 37), __webpack_require__(/*! ./Log */ 32), __webpack_require__(/*! ./CallStack */ 26), __webpack_require__(/*! ./DateExtensions */ 28), {
+    PushBackTimer: __webpack_require__(/*! ./ReschedulableTimer */ 46)
   }
 ];
 
 
 /***/ }),
 /* 63 */
+/* no static exports found */
+/* all exports used */
+/*!*******************************************************************************************************!*\
+  !*** external "require('bluebird/js/browser/bluebird.core.min' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*******************************************************************************************************/
 /***/ (function(module, exports) {
 
 module.exports = require('bluebird/js/browser/bluebird.core.min' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 64 */
+/* no static exports found */
+/* all exports used */
+/*!************************************************************************!*\
+  !*** external "require('crypto' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************/
 /***/ (function(module, exports) {
 
 module.exports = require('crypto' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 65 */
+/* no static exports found */
+/* all exports used */
+/*!*****************************************************************************!*\
+  !*** external "require('detect-node' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*****************************************************************************/
 /***/ (function(module, exports) {
 
 module.exports = require('detect-node' /* ABC - not inlining fellow NPM */);
