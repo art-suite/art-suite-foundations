@@ -16,11 +16,11 @@ module.exports = class Eq
     true: if a and b are structurally equal
     false: otherwise
   ###
-  @eq:  (a, b) => 0 == @compare a, b, true
-  @neq: (a, b) => 0 != @compare a, b, true
+  @eq:  (a, b) => a == b || 0 == @compare a, b, true
+  @neq: (a, b) => a != b || 0 != @compare a, b, true
 
-  @fastEq:  (a, b) => 0 == @compare a, b, false
-  @fastNeq: (a, b) => 0 != @compare a, b, false
+  @fastEq:  (a, b) => a == b || 0 == @compare a, b, false
+  @fastNeq: (a, b) => a != b || 0 != @compare a, b, false
 
   # recursively compares all elements with indexs < min a.length, b.length
   # If all are equal, returns a.length - b.length
