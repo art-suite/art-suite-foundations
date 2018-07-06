@@ -67,8 +67,10 @@ defineModule module, class ConfigureWebpack extends BaseClass
 
   @normalizeTargetConfig: (targetConfig, includeNpms) ->
     if targetConfig.target == "node"
-      targetConfig = webpackMerge
-        output: libraryTarget: "commonjs2"
+      webpackMerge
+        output:
+          libraryTarget: "commonjs2"
+          pathinfo: true
 
         # this CAN work, but webpackNodeExternals is actually pretty stupid about what files it searches for
         externals: [
@@ -89,7 +91,12 @@ defineModule module, class ConfigureWebpack extends BaseClass
         ]
         targetConfig
 
-    targetConfig
+    else
+      webpackMerge
+        output:
+          pathinfo: true
+
+        targetConfig
 
   @normalizeTargets: (targets = {}) ->
     throw new Error "targets must be an object" unless isPlainObject targets
