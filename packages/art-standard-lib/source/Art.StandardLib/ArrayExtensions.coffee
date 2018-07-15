@@ -203,7 +203,7 @@ module.exports = class ArrayExtensions
   @withInserted: arrayWithInsertedValue
 
   # returns a new, sorted array
-  @withSort: (array, sortFunction) ->
+  @withSort: (array = [], sortFunction) ->
     array = array.slice()
     array.sort sortFunction
 
