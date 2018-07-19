@@ -23,13 +23,13 @@ module.exports = class StandardWebpackConfig
 
     module:
       rules: [
-        { test: /\.caf(feine)?$/,             loader: "caffeine-mc/webpack-loader"}
-        { test: /\.coffee$/,                  loader: "coffee-loader" }
-        { test: /\.(coffee\.md|litcoffee)$/,  loader: "coffee-loader?literate" }
-        { test: /\.css$/,                     loader: "style-loader!css-loader" }
-        { test: /\.png$/,                     loader: "url-loader?limit=100000" }
-        { test: /\.jpg$/,                     loader: "file-loader" }
-        { test: /\.json$/,                    loader: "json-loader" }
+        { test: /\.caf(feine)?$/,             use: loader: "caffeine-mc/webpack-loader", options: prettier: true}
+        { test: /\.coffee$/,                  use: loader: "coffee-loader" }
+        { test: /\.(coffee\.md|litcoffee)$/,  use: loader: "coffee-loader?literate" }
+        { test: /\.css$/,                     use: [ 'style-loader', 'css-loader' ] }
+        { test: /\.png$/,                     use: loader: "url-loader?limit=100000" }
+        { test: /\.jpg$/,                     use: loader: "file-loader" }
+        # { test: /\.json$/,                    use: loader: "json-loader" }
       ]
 
   @js:

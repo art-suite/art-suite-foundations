@@ -40,8 +40,8 @@
   "license": "ISC",
   "name": "art-build-configurator",
   "scripts": {
-    "build": "webpack --progress",
-    "start": "webpack-dev-server --hot --inline --progress",
+    "build": "webpack --progress --mode=none",
+    "start": "webpack-dev-server --hot --inline --progress --mode=none",
     "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
     "testInBrowser": "webpack-dev-server --progress"
   },
