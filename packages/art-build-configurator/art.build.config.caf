@@ -24,14 +24,14 @@ npm:
 
     # webpack loaders
     coffee-loader:                        :^0.7.3
-    css-loader:                           :^0.28.11
+    css-loader:                           :^1.0.0
     json-loader:                          :^0.5.7
     script-loader:                        :^0.7.2
     style-loader:                         :^0.19.1
 
     # webpack core
-    webpack:                              :^2.7.0
-    webpack-dev-server:                   :^2.9.4
+    webpack:                              :^4.16.1
+    webpack-dev-server:                   :^3.1.4
 
     # webpack tools
     case-sensitive-paths-webpack-plugin:  :^2.1.2
