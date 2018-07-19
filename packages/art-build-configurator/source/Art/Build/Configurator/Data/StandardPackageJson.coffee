@@ -20,13 +20,13 @@ module.exports = class StandardPackageJson
           "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
         else
           'webpack-dev-server --progress'
-      start:    'webpack-dev-server --hot --inline --progress --mode=none'
+      start:    'webpack-dev-server --hot --inline --progress'
 
       testInBrowser:  'webpack-dev-server --progress'
 
       # ArtSuite scripts
       # nodeTest: 'nn -s; mocha -u tdd --compilers coffee:coffee-script/register'
-      build:    'webpack --progress --mode=none'
+      build:    'webpack --progress'
       # dev:      'nn -s; webpack-dev-server -d --progress'
       # hot:      'nn -s; webpack-dev-server --hot --inline --progress'
       # nn:       'nn -s'
