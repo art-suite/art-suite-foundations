@@ -6,6 +6,7 @@ module.exports = class StandardWebpackConfig
     options = abcConfig.webpack
     {outputPath = "build"} = options
 
+    mode: "none"
     resolve:
       # prefer .coffee OVER .js
       # in this way we can have index.js files which NODE priorizes over index.coffee

@@ -211,7 +211,7 @@ module.exports = require('commander' /* ABC - not inlining fellow NPM */);
 /*! exports provided: author, bin, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.1","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.1.2","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.0","commander":"^2.15.1","css-loader":"^0.28.11","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^6.0.1","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.19.1","webpack":"^2.7.0","webpack-dev-server":"^2.9.4","webpack-merge":"^4.1.3","webpack-node-externals":"^1.7.2"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress --mode=none","start":"webpack-dev-server --hot --inline --progress --mode=none","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.18.2"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.1","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.1.2","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.0","commander":"^2.15.1","css-loader":"^1.0.0","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^6.0.1","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.19.1","webpack":"^4.16.1","webpack-dev-server":"^3.1.4","webpack-merge":"^4.1.3","webpack-node-externals":"^1.7.2"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress --mode=none","start":"webpack-dev-server --hot --inline --progress --mode=none","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.18.3"};
 
 /***/ }),
 /* 6 */
@@ -864,6 +864,7 @@ module.exports = StandardWebpackConfig = (function() {
     options = abcConfig.webpack;
     outputPath = (ref = options.outputPath) != null ? ref : "build";
     return {
+      mode: "none",
       resolve: {
         extensions: [".webpack.js", ".web.js", ".coffee", ".caf", ".caffeine", ".js", ".json"]
       },
