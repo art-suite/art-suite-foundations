@@ -17,7 +17,7 @@ module.exports = class StandardPackageJson
       # standard life-cycle scripts
       test:
         if abcConfig?.target?.node
-          "nn -s;mocha -u tdd --compilers coffee:coffee-script/register"
+          "nn -s;mocha -u tdd"
         else
           'webpack-dev-server --progress'
       start:    'webpack-dev-server --hot --inline --progress'
