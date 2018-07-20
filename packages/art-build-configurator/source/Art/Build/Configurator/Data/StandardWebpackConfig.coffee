@@ -1,7 +1,5 @@
 CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 path = require 'path'
-webpack = require 'webpack'
-Stylish = require 'webpack-stylish'
 
 module.exports = class StandardWebpackConfig
   @get: (npmRoot, abcConfig) ->
@@ -22,8 +20,6 @@ module.exports = class StandardWebpackConfig
 
     plugins: [
       new CaseSensitivePathsPlugin
-      new webpack.NamedModulesPlugin
-      new Stylish
     ]
 
     module:
