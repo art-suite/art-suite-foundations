@@ -82,19 +82,95 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./generator.coffee");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./nnCommand.coffee");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./generator.coffee":
+/***/ "./nnCommand.coffee":
 /*!**************************!*\
-  !*** ./generator.coffee ***!
+  !*** ./nnCommand.coffee ***!
   \**************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./source/NeptuneNamespaces/Generator */ "./source/NeptuneNamespaces/Generator.coffee");
+var Commander, Generator, compactFlatten, log, promiseSequence, ref, root, run, standardRoots, version, withoutTrailingSlash;
+
+ref = __webpack_require__(/*! ./source/NeptuneNamespaces/MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee"), log = ref.log, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, compactFlatten = ref.compactFlatten;
+
+Generator = __webpack_require__(/*! ./source/NeptuneNamespaces/Generator */ "./source/NeptuneNamespaces/Generator.coffee");
+
+version = __webpack_require__(/*! ./package.json */ "./package.json").version;
+
+standardRoots = (function() {
+  var i, len, ref1, results;
+  ref1 = Generator.standardRoots;
+  results = [];
+  for (i = 0, len = ref1.length; i < len; i++) {
+    root = ref1[i];
+    results.push(root + "/*");
+  }
+  return results;
+})();
+
+Commander = __webpack_require__(/*! commander */ "commander").version(version).usage('[options] <root ...>').option('-r, --root', 'list one or more --root arguments').option('-w, --watch', 'stay running, watch for changes, and automatically update').option('-v, --verbose', 'enable verbose output').option('-q, --quiet', 'suppress all output').option('-f, --force', 'overwrite all index and namespace files').option('-s, --std', "include the standard roots: " + (standardRoots.join(', '))).on("--help", function() {
+  return console.log("Generates 'namespace.coffee' and 'index.coffee' files to bind each specified root to the global Neptune namespace at runtime. \n\nRun with -v to see everything NN is doing.");
+}).parse(process.argv);
+
+run = function(targetPaths, arg) {
+  var force, quiet, targetPath, todoList, verbose, watch;
+  watch = arg.watch, verbose = arg.verbose, quiet = arg.quiet, force = arg.force;
+  if (verbose) {
+    console.log("neptune-namespaces (" + version + ")\n\nroots: " + (targetPaths.join(', ')));
+    verbose && log({
+      verbose: true
+    });
+    force && log({
+      force: true
+    });
+    quiet && log({
+      quiet: true
+    });
+    watch && log({
+      watch: true
+    });
+  }
+  todoList = (function() {
+    var i, len, results;
+    results = [];
+    for (i = 0, len = targetPaths.length; i < len; i++) {
+      targetPath = targetPaths[i];
+      results.push((function(targetPath) {
+        var doWork;
+        targetPath = withoutTrailingSlash(targetPath);
+        doWork = function() {
+          return Generator.generate(targetPath, {
+            verbose: verbose,
+            force: force,
+            quiet: quiet,
+            watch: watch,
+            persistent: true
+          });
+        };
+        return doWork;
+      })(targetPath));
+    }
+    return results;
+  })();
+  return promiseSequence(todoList);
+};
+
+root = Commander.args || [];
+
+if (Commander.std) {
+  root = root.concat(standardRoots);
+}
+
+if (root.length === 0) {
+  console.error("no roots specified (run with -h for help)");
+} else {
+  run(root, Commander);
+}
 
 
 /***/ }),
@@ -1255,6 +1331,17 @@ module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NP
 /***/ (function(module, exports) {
 
 module.exports = require('colors' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+
+/***/ "commander":
+/*!***************************************************************************!*\
+  !*** external "require('commander' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('commander' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 
