@@ -31,7 +31,9 @@ npm:
 
     # webpack core
     webpack:                              :^4.16.1
+    webpack-command:                      :*
     webpack-dev-server:                   :^3.1.4
+    webpack-stylish:                      :^0.1.8
 
     # webpack tools
     case-sensitive-paths-webpack-plugin:  :^2.1.2
