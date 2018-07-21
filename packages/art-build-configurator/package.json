@@ -44,7 +44,7 @@
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress",
-    "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
+    "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress"
   },
   "version": "1.18.6"
