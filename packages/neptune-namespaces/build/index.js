@@ -82,24 +82,22 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./index.coffee");
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ "./index.coffee":
+/******/ ([
+/* 0 */
 /*!**********************!*\
   !*** ./index.coffee ***!
   \**********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! neptune-namespaces-runtime */ "neptune-namespaces-runtime");
+module.exports = __webpack_require__(/*! neptune-namespaces-runtime */ 1);
 
 
 /***/ }),
-
-/***/ "neptune-namespaces-runtime":
+/* 1 */
 /*!********************************************************************************************!*\
   !*** external "require('neptune-namespaces-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
   \********************************************************************************************/
@@ -109,5 +107,4 @@ module.exports = __webpack_require__(/*! neptune-namespaces-runtime */ "neptune-
 module.exports = require('neptune-namespaces-runtime' /* ABC - not inlining fellow NPM */);
 
 /***/ })
-
-/******/ });
+/******/ ]);

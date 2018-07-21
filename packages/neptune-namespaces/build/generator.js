@@ -82,35 +82,24 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./generator.coffee");
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ "./generator.coffee":
+/******/ ([
+/* 0 */,
+/* 1 */,
+/* 2 */
 /*!**************************!*\
   !*** ./generator.coffee ***!
   \**************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./source/NeptuneNamespaces/Generator */ "./source/NeptuneNamespaces/Generator.coffee");
+module.exports = __webpack_require__(/*! ./source/NeptuneNamespaces/Generator */ 3);
 
 
 /***/ }),
-
-/***/ "./package.json":
-/*!**********************!*\
-  !*** ./package.json ***!
-  \**********************/
-/*! exports provided: author, bin, dependencies, description, license, name, scripts, version, default */
-/***/ (function(module) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"neptune-namespaces":"./nn","nn":"./nn"},"dependencies":{"art-build-configurator":"*","neptune-namespaces-runtime":"*"},"description":"Generate index.coffee and namespace.coffee files from directory structures","license":"ISC","name":"neptune-namespaces","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"3.2.5"};
-
-/***/ }),
-
-/***/ "./source/NeptuneNamespaces/Generator.coffee":
+/* 3 */
 /*!***************************************************!*\
   !*** ./source/NeptuneNamespaces/Generator.coffee ***!
   \***************************************************/
@@ -121,21 +110,21 @@ var Generator, IndexGenerator, NamespaceGenerator, NamespaceStructure, Path, col
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   slice = [].slice;
 
-colors = __webpack_require__(/*! colors */ "colors");
+colors = __webpack_require__(/*! colors */ 4);
 
-glob = __webpack_require__(/*! glob-promise */ "glob-promise");
+glob = __webpack_require__(/*! glob-promise */ 5);
 
-fsp = __webpack_require__(/*! fs-extra */ "fs-extra");
+fsp = __webpack_require__(/*! fs-extra */ 6);
 
-ref = __webpack_require__(/*! ./MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee"), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, indent = ref.indent, pad = ref.pad, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, merge = ref.merge, getRelativePath = ref.getRelativePath, getAbsPath = ref.getAbsPath, getParentPath = ref.getParentPath, log = ref.log, normalizeDirectory = ref.normalizeDirectory;
+ref = __webpack_require__(/*! ./MiniFoundation */ 7), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, indent = ref.indent, pad = ref.pad, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, merge = ref.merge, getRelativePath = ref.getRelativePath, getAbsPath = ref.getAbsPath, getParentPath = ref.getParentPath, log = ref.log, normalizeDirectory = ref.normalizeDirectory;
 
-Path = __webpack_require__(/*! path */ "path");
+Path = __webpack_require__(/*! path */ 8);
 
-NamespaceStructure = __webpack_require__(/*! ./NamespaceStructure */ "./source/NeptuneNamespaces/NamespaceStructure.coffee");
+NamespaceStructure = __webpack_require__(/*! ./NamespaceStructure */ 10);
 
-ref1 = __webpack_require__(/*! ./Generators */ "./source/NeptuneNamespaces/Generators/index.coffee"), IndexGenerator = ref1.IndexGenerator, NamespaceGenerator = ref1.NamespaceGenerator;
+ref1 = __webpack_require__(/*! ./Generators */ 13), IndexGenerator = ref1.IndexGenerator, NamespaceGenerator = ref1.NamespaceGenerator;
 
-getPackageRoot = __webpack_require__(/*! ./PackageRoot */ "./source/NeptuneNamespaces/PackageRoot.coffee").getPackageRoot;
+getPackageRoot = __webpack_require__(/*! ./PackageRoot */ 19).getPackageRoot;
 
 module.exports = Generator = (function() {
   Generator.standardRoots = ["source", "test", "performance", "src", "perf"];
@@ -405,265 +394,37 @@ module.exports = Generator = (function() {
 
 
 /***/ }),
-
-/***/ "./source/NeptuneNamespaces/Generators/IndexGenerator.coffee":
-/*!*******************************************************************!*\
-  !*** ./source/NeptuneNamespaces/Generators/IndexGenerator.coffee ***!
-  \*******************************************************************/
+/* 4 */
+/*!************************************************************************!*\
+  !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var NamespaceGenerator, alignColumns, compactFlatten, generatedByString, getRelativePath, log, max, neptuneBaseClass, pad, ref, ref1, requirePath;
-
-ref = __webpack_require__(/*! ../MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee"), compactFlatten = ref.compactFlatten, log = ref.log, getRelativePath = ref.getRelativePath, pad = ref.pad;
-
-ref1 = __webpack_require__(/*! ../Helper */ "./source/NeptuneNamespaces/Helper.coffee"), generatedByString = ref1.generatedByString, neptuneBaseClass = ref1.neptuneBaseClass, requirePath = ref1.requirePath;
-
-max = Math.max;
-
-alignColumns = function() {
-  var cell, el, i, j, k, l, len, len1, len2, len3, line, listOfLists, m, maxLengths, paddedCells, results;
-  listOfLists = [];
-  for (j = 0, len = arguments.length; j < len; j++) {
-    el = arguments[j];
-    listOfLists = listOfLists.concat(el);
-  }
-  maxLengths = [];
-  for (k = 0, len1 = listOfLists.length; k < len1; k++) {
-    line = listOfLists[k];
-    for (i = l = 0, len2 = line.length; l < len2; i = ++l) {
-      cell = line[i];
-      maxLengths[i] = max(maxLengths[i] || 0, cell.length);
-    }
-  }
-  maxLengths[maxLengths - 1] = 0;
-  results = [];
-  for (m = 0, len3 = listOfLists.length; m < len3; m++) {
-    line = listOfLists[m];
-    paddedCells = (function() {
-      var len4, n, results1;
-      results1 = [];
-      for (i = n = 0, len4 = line.length; n < len4; i = ++n) {
-        cell = line[i];
-        results1.push(pad(cell, maxLengths[i]));
-      }
-      return results1;
-    })();
-    results.push(paddedCells.join(' '));
-  }
-  return results;
-};
-
-module.exports = NamespaceGenerator = (function() {
-  function NamespaceGenerator() {}
-
-  NamespaceGenerator.generate = function(namespace, relativeFilePath) {
-    var contents, generateNamespacedList, includeInNamespace, modules, name, path;
-    path = namespace.path, includeInNamespace = namespace.includeInNamespace;
-    generateNamespacedList = function(set) {
-      var item, items, j, len, namespaceName, ref2, results;
-      items = (function() {
-        var ref2, results;
-        ref2 = set.namespaced;
-        results = [];
-        for (namespaceName in ref2) {
-          path = ref2[namespaceName];
-          results.push({
-            namespaceName: namespaceName,
-            path: path
-          });
-        }
-        return results;
-      })();
-      ref2 = items.sort(function(a, b) {
-        return a.path.localeCompare(b.path);
-      });
-      results = [];
-      for (j = 0, len = ref2.length; j < len; j++) {
-        item = ref2[j];
-        results.push([" ", item.namespaceName + ":", "require '" + (requirePath(item.path)) + "'"]);
-      }
-      return results;
-    };
-    modules = generateNamespacedList(namespace.fileSet);
-    contents = compactFlatten([
-      generatedByString, "# file: " + (relativeFilePath || path) + "/index.coffee", "", (function() {
-        var j, len, ref2, results;
-        ref2 = namespace.getAllNonNamespacedRequires();
-        results = [];
-        for (j = 0, len = ref2.length; j < len; j++) {
-          name = ref2[j];
-          results.push("require '" + (requirePath(name)) + "'");
-        }
-        return results;
-      })(), "module.exports = require './namespace'", "module.exports", includeInNamespace && (".includeInNamespace require '" + (requirePath(includeInNamespace)) + "'"), modules.length > 0 ? ".addModules" : void 0, alignColumns(modules), (function() {
-        var j, len, ref2, results;
-        ref2 = namespace.getAllNamespacedSubdirRequires();
-        results = [];
-        for (j = 0, len = ref2.length; j < len; j++) {
-          name = ref2[j];
-          results.push("require './" + name + "'");
-        }
-        return results;
-      })()
-    ]);
-    return contents.join("\n");
-  };
-
-  return NamespaceGenerator;
-
-})();
-
+module.exports = require('colors' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-
-/***/ "./source/NeptuneNamespaces/Generators/NamespaceGenerator.coffee":
-/*!***********************************************************************!*\
-  !*** ./source/NeptuneNamespaces/Generators/NamespaceGenerator.coffee ***!
-  \***********************************************************************/
+/* 5 */
+/*!******************************************************************************!*\
+  !*** external "require('glob-promise' /* ABC - not inlining fellow NPM *_/)" ***!
+  \******************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var NamespaceGenerator, PackageNamespaceClassName, generatedByString, isPathedNamespace, neptuneBaseClass, peek, ref, requirePath;
-
-ref = __webpack_require__(/*! ../Helper */ "./source/NeptuneNamespaces/Helper.coffee"), generatedByString = ref.generatedByString, neptuneBaseClass = ref.neptuneBaseClass, PackageNamespaceClassName = ref.PackageNamespaceClassName, requirePath = ref.requirePath;
-
-peek = __webpack_require__(/*! ../MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee").peek;
-
-isPathedNamespace = Neptune.isPathedNamespace;
-
-module.exports = NamespaceGenerator = (function() {
-  function NamespaceGenerator() {}
-
-  NamespaceGenerator.generate = function(namespace, relativeFilePath, versionFile) {
-    var a, className, isPathNamespace, meat, name, namespaceName, parent, parentNamespaceName, parentNamespacePath, path, requireParent;
-    parent = namespace.parent, path = namespace.path, namespaceName = namespace.namespaceName, isPathNamespace = namespace.isPathNamespace;
-    className = isPathedNamespace(namespaceName) ? peek(namespaceName.split('.')) : namespaceName;
-    parentNamespaceName = parent.namespaceName;
-    parentNamespacePath = parent.parent ? "../namespace" : parent.path;
-    requireParent = "(require '" + parentNamespacePath + "')";
-    meat = isPathNamespace ? requireParent + ".vivifySubnamespace '" + namespaceName + "'" : versionFile && namespace.getIsRootPackageNamespace() ? requireParent + ".addNamespace '" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + "\n  @version: require('" + versionFile + "').version" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + ")";
-    return generatedByString + "\n# file: " + (relativeFilePath || path) + "/namespace.coffee\n\nmodule.exports = " + meat + "\n" + (a = (function() {
-      var i, len, ref1, results;
-      ref1 = namespace.getAllNamespacedSubdirRequires();
-      results = [];
-      for (i = 0, len = ref1.length; i < len; i++) {
-        name = ref1[i];
-        results.push("require './" + name + "/namespace'");
-      }
-      return results;
-    })(), a.join(";\n"));
-  };
-
-  return NamespaceGenerator;
-
-})();
-
+module.exports = require('glob-promise' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-
-/***/ "./source/NeptuneNamespaces/Generators/index.coffee":
-/*!**********************************************************!*\
-  !*** ./source/NeptuneNamespaces/Generators/index.coffee ***!
-  \**********************************************************/
+/* 6 */
+/*!**************************************************************************!*\
+  !*** external "require('fs-extra' /* ABC - not inlining fellow NPM *_/)" ***!
+  \**************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__(/*! ./namespace */ "./source/NeptuneNamespaces/Generators/namespace.coffee");
-
-module.exports.addModules({
-  IndexGenerator: __webpack_require__(/*! ./IndexGenerator */ "./source/NeptuneNamespaces/Generators/IndexGenerator.coffee"),
-  NamespaceGenerator: __webpack_require__(/*! ./NamespaceGenerator */ "./source/NeptuneNamespaces/Generators/NamespaceGenerator.coffee")
-});
-
+module.exports = require('fs-extra' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-
-/***/ "./source/NeptuneNamespaces/Generators/namespace.coffee":
-/*!**************************************************************!*\
-  !*** ./source/NeptuneNamespaces/Generators/namespace.coffee ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Generators,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(/*! ../namespace */ "./source/NeptuneNamespaces/namespace.coffee")).addNamespace('Generators', Generators = (function(superClass) {
-  extend(Generators, superClass);
-
-  function Generators() {
-    return Generators.__super__.constructor.apply(this, arguments);
-  }
-
-  return Generators;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-
-/***/ "./source/NeptuneNamespaces/Helper.coffee":
-/*!************************************************!*\
-  !*** ./source/NeptuneNamespaces/Helper.coffee ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Helper, Path, arrayWithoutLast, fileWithoutExtension, log, peek, ref, upperCamelCase, version;
-
-version = __webpack_require__(/*! ../../package.json */ "./package.json").version;
-
-ref = __webpack_require__(/*! ./MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee"), log = ref.log, upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast;
-
-Path = __webpack_require__(/*! path */ "path");
-
-module.exports = Helper = (function() {
-  var toModuleName;
-
-  function Helper() {}
-
-  Helper.generatedByString = "# generated by Neptune Namespaces v" + version[0] + ".x.x";
-
-  Helper.globalNamespaceName = "Neptune";
-
-  Helper.neptuneBaseClass = Helper.globalNamespaceName + ".Namespace";
-
-  Helper.PackageNamespaceClassName = Helper.globalNamespaceName + ".PackageNamespace";
-
-  Helper.shouldIgnore = function(itemName) {
-    return !!itemName.match(/^(\..*|index.coffee|namespace.coffee)$/);
-  };
-
-  Helper.shouldNotNamespace = function(itemName) {
-    return !!itemName.match(/^-/);
-  };
-
-  Helper.shouldIncludeInNamespace = function(file, namespaceName) {
-    return toModuleName(file) === peek(namespaceName.split('.'));
-  };
-
-  Helper.toFilename = function(path) {
-    return peek(path.split('/'));
-  };
-
-  Helper.toModuleName = toModuleName = function(itemName) {
-    return upperCamelCase(fileWithoutExtension(itemName));
-  };
-
-  Helper.requirePath = function(filenameWithExtension) {
-    return "./" + Path.parse(filenameWithExtension).name;
-  };
-
-  return Helper;
-
-})();
-
-
-/***/ }),
-
-/***/ "./source/NeptuneNamespaces/MiniFoundation.coffee":
+/* 7 */
 /*!********************************************************!*\
   !*** ./source/NeptuneNamespaces/MiniFoundation.coffee ***!
   \********************************************************/
@@ -673,9 +434,9 @@ module.exports = Helper = (function() {
 var MiniFoundation, Path, colors,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-colors = __webpack_require__(/*! colors */ "colors");
+colors = __webpack_require__(/*! colors */ 4);
 
-Path = __webpack_require__(/*! path */ "path");
+Path = __webpack_require__(/*! path */ 8);
 
 module.exports = MiniFoundation = (function() {
   var compactFlatten, escapeJavascriptString, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, k, log, normalizeDirectory, ref, ref1, v;
@@ -683,7 +444,7 @@ module.exports = MiniFoundation = (function() {
   function MiniFoundation() {}
 
   if (v !== "Core") {
-    ref = __webpack_require__(/*! art-standard-lib/Core */ "art-standard-lib/Core");
+    ref = __webpack_require__(/*! art-standard-lib/Core */ 9);
     for (k in ref) {
       v = ref[k];
       MiniFoundation[k] = v;
@@ -846,8 +607,27 @@ module.exports = MiniFoundation = (function() {
 
 
 /***/ }),
+/* 8 */
+/*!**********************************************************************!*\
+  !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-/***/ "./source/NeptuneNamespaces/NamespaceStructure.coffee":
+module.exports = require('path' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 9 */
+/*!***************************************************************************************!*\
+  !*** external "require('art-standard-lib/Core' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 10 */
 /*!************************************************************!*\
   !*** ./source/NeptuneNamespaces/NamespaceStructure.coffee ***!
   \************************************************************/
@@ -857,11 +637,11 @@ module.exports = MiniFoundation = (function() {
 var Namespace, NamespaceDir, NamespaceSet, NamespaceStructure, arrayWithoutLast, basename, fileWithoutExtension, globalNamespaceName, isPathedNamespace, log, merge, normalizeNamespaceName, peek, pushIfUnique, ref, ref1, shouldIgnore, shouldIncludeInNamespace, shouldNotNamespace, toFilename, toModuleName, upperCamelCase,
   slice = [].slice;
 
-ref = __webpack_require__(/*! ./MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee"), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, log = ref.log, merge = ref.merge, arrayWithoutLast = ref.arrayWithoutLast, fileWithoutExtension = ref.fileWithoutExtension;
+ref = __webpack_require__(/*! ./MiniFoundation */ 7), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, log = ref.log, merge = ref.merge, arrayWithoutLast = ref.arrayWithoutLast, fileWithoutExtension = ref.fileWithoutExtension;
 
-ref1 = __webpack_require__(/*! ./Helper */ "./source/NeptuneNamespaces/Helper.coffee"), globalNamespaceName = ref1.globalNamespaceName, shouldIgnore = ref1.shouldIgnore, shouldNotNamespace = ref1.shouldNotNamespace, shouldIncludeInNamespace = ref1.shouldIncludeInNamespace, toFilename = ref1.toFilename, toModuleName = ref1.toModuleName;
+ref1 = __webpack_require__(/*! ./Helper */ 11), globalNamespaceName = ref1.globalNamespaceName, shouldIgnore = ref1.shouldIgnore, shouldNotNamespace = ref1.shouldNotNamespace, shouldIncludeInNamespace = ref1.shouldIncludeInNamespace, toFilename = ref1.toFilename, toModuleName = ref1.toModuleName;
 
-basename = __webpack_require__(/*! path */ "path").basename;
+basename = __webpack_require__(/*! path */ 8).basename;
 
 isPathedNamespace = Neptune.isPathedNamespace;
 
@@ -1151,8 +931,307 @@ module.exports = NamespaceStructure = (function() {
 
 
 /***/ }),
+/* 11 */
+/*!************************************************!*\
+  !*** ./source/NeptuneNamespaces/Helper.coffee ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-/***/ "./source/NeptuneNamespaces/PackageRoot.coffee":
+var Helper, Path, arrayWithoutLast, fileWithoutExtension, log, peek, ref, upperCamelCase, version;
+
+version = __webpack_require__(/*! ../../package.json */ 12).version;
+
+ref = __webpack_require__(/*! ./MiniFoundation */ 7), log = ref.log, upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast;
+
+Path = __webpack_require__(/*! path */ 8);
+
+module.exports = Helper = (function() {
+  var toModuleName;
+
+  function Helper() {}
+
+  Helper.generatedByString = "# generated by Neptune Namespaces v" + version[0] + ".x.x";
+
+  Helper.globalNamespaceName = "Neptune";
+
+  Helper.neptuneBaseClass = Helper.globalNamespaceName + ".Namespace";
+
+  Helper.PackageNamespaceClassName = Helper.globalNamespaceName + ".PackageNamespace";
+
+  Helper.shouldIgnore = function(itemName) {
+    return !!itemName.match(/^(\..*|index.coffee|namespace.coffee)$/);
+  };
+
+  Helper.shouldNotNamespace = function(itemName) {
+    return !!itemName.match(/^-/);
+  };
+
+  Helper.shouldIncludeInNamespace = function(file, namespaceName) {
+    return toModuleName(file) === peek(namespaceName.split('.'));
+  };
+
+  Helper.toFilename = function(path) {
+    return peek(path.split('/'));
+  };
+
+  Helper.toModuleName = toModuleName = function(itemName) {
+    return upperCamelCase(fileWithoutExtension(itemName));
+  };
+
+  Helper.requirePath = function(filenameWithExtension) {
+    return "./" + Path.parse(filenameWithExtension).name;
+  };
+
+  return Helper;
+
+})();
+
+
+/***/ }),
+/* 12 */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, bin, dependencies, description, license, name, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","bin":{"neptune-namespaces":"./nn","nn":"./nn"},"dependencies":{"art-build-configurator":"*","neptune-namespaces-runtime":"*"},"description":"Generate index.coffee and namespace.coffee files from directory structures","license":"ISC","name":"neptune-namespaces","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"3.2.6"};
+
+/***/ }),
+/* 13 */
+/*!**********************************************************!*\
+  !*** ./source/NeptuneNamespaces/Generators/index.coffee ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./namespace */ 14);
+
+module.exports.addModules({
+  IndexGenerator: __webpack_require__(/*! ./IndexGenerator */ 17),
+  NamespaceGenerator: __webpack_require__(/*! ./NamespaceGenerator */ 18)
+});
+
+
+/***/ }),
+/* 14 */
+/*!**************************************************************!*\
+  !*** ./source/NeptuneNamespaces/Generators/namespace.coffee ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Generators,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! ../namespace */ 15)).addNamespace('Generators', Generators = (function(superClass) {
+  extend(Generators, superClass);
+
+  function Generators() {
+    return Generators.__super__.constructor.apply(this, arguments);
+  }
+
+  return Generators;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+/* 15 */
+/*!***************************************************!*\
+  !*** ./source/NeptuneNamespaces/namespace.coffee ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var NeptuneNamespaces,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 16)).addNamespace('NeptuneNamespaces', NeptuneNamespaces = (function(superClass) {
+  extend(NeptuneNamespaces, superClass);
+
+  function NeptuneNamespaces() {
+    return NeptuneNamespaces.__super__.constructor.apply(this, arguments);
+  }
+
+  NeptuneNamespaces.version = __webpack_require__(/*! ../../package.json */ 12).version;
+
+  return NeptuneNamespaces;
+
+})(Neptune.PackageNamespace));
+
+__webpack_require__(/*! ./Generators/namespace */ 14);
+
+
+/***/ }),
+/* 16 */
+/*!************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 17 */
+/*!*******************************************************************!*\
+  !*** ./source/NeptuneNamespaces/Generators/IndexGenerator.coffee ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var NamespaceGenerator, alignColumns, compactFlatten, generatedByString, getRelativePath, log, max, neptuneBaseClass, pad, ref, ref1, requirePath;
+
+ref = __webpack_require__(/*! ../MiniFoundation */ 7), compactFlatten = ref.compactFlatten, log = ref.log, getRelativePath = ref.getRelativePath, pad = ref.pad;
+
+ref1 = __webpack_require__(/*! ../Helper */ 11), generatedByString = ref1.generatedByString, neptuneBaseClass = ref1.neptuneBaseClass, requirePath = ref1.requirePath;
+
+max = Math.max;
+
+alignColumns = function() {
+  var cell, el, i, j, k, l, len, len1, len2, len3, line, listOfLists, m, maxLengths, paddedCells, results;
+  listOfLists = [];
+  for (j = 0, len = arguments.length; j < len; j++) {
+    el = arguments[j];
+    listOfLists = listOfLists.concat(el);
+  }
+  maxLengths = [];
+  for (k = 0, len1 = listOfLists.length; k < len1; k++) {
+    line = listOfLists[k];
+    for (i = l = 0, len2 = line.length; l < len2; i = ++l) {
+      cell = line[i];
+      maxLengths[i] = max(maxLengths[i] || 0, cell.length);
+    }
+  }
+  maxLengths[maxLengths - 1] = 0;
+  results = [];
+  for (m = 0, len3 = listOfLists.length; m < len3; m++) {
+    line = listOfLists[m];
+    paddedCells = (function() {
+      var len4, n, results1;
+      results1 = [];
+      for (i = n = 0, len4 = line.length; n < len4; i = ++n) {
+        cell = line[i];
+        results1.push(pad(cell, maxLengths[i]));
+      }
+      return results1;
+    })();
+    results.push(paddedCells.join(' '));
+  }
+  return results;
+};
+
+module.exports = NamespaceGenerator = (function() {
+  function NamespaceGenerator() {}
+
+  NamespaceGenerator.generate = function(namespace, relativeFilePath) {
+    var contents, generateNamespacedList, includeInNamespace, modules, name, path;
+    path = namespace.path, includeInNamespace = namespace.includeInNamespace;
+    generateNamespacedList = function(set) {
+      var item, items, j, len, namespaceName, ref2, results;
+      items = (function() {
+        var ref2, results;
+        ref2 = set.namespaced;
+        results = [];
+        for (namespaceName in ref2) {
+          path = ref2[namespaceName];
+          results.push({
+            namespaceName: namespaceName,
+            path: path
+          });
+        }
+        return results;
+      })();
+      ref2 = items.sort(function(a, b) {
+        return a.path.localeCompare(b.path);
+      });
+      results = [];
+      for (j = 0, len = ref2.length; j < len; j++) {
+        item = ref2[j];
+        results.push([" ", item.namespaceName + ":", "require '" + (requirePath(item.path)) + "'"]);
+      }
+      return results;
+    };
+    modules = generateNamespacedList(namespace.fileSet);
+    contents = compactFlatten([
+      generatedByString, "# file: " + (relativeFilePath || path) + "/index.coffee", "", (function() {
+        var j, len, ref2, results;
+        ref2 = namespace.getAllNonNamespacedRequires();
+        results = [];
+        for (j = 0, len = ref2.length; j < len; j++) {
+          name = ref2[j];
+          results.push("require '" + (requirePath(name)) + "'");
+        }
+        return results;
+      })(), "module.exports = require './namespace'", "module.exports", includeInNamespace && (".includeInNamespace require '" + (requirePath(includeInNamespace)) + "'"), modules.length > 0 ? ".addModules" : void 0, alignColumns(modules), (function() {
+        var j, len, ref2, results;
+        ref2 = namespace.getAllNamespacedSubdirRequires();
+        results = [];
+        for (j = 0, len = ref2.length; j < len; j++) {
+          name = ref2[j];
+          results.push("require './" + name + "'");
+        }
+        return results;
+      })()
+    ]);
+    return contents.join("\n");
+  };
+
+  return NamespaceGenerator;
+
+})();
+
+
+/***/ }),
+/* 18 */
+/*!***********************************************************************!*\
+  !*** ./source/NeptuneNamespaces/Generators/NamespaceGenerator.coffee ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var NamespaceGenerator, PackageNamespaceClassName, generatedByString, isPathedNamespace, neptuneBaseClass, peek, ref, requirePath;
+
+ref = __webpack_require__(/*! ../Helper */ 11), generatedByString = ref.generatedByString, neptuneBaseClass = ref.neptuneBaseClass, PackageNamespaceClassName = ref.PackageNamespaceClassName, requirePath = ref.requirePath;
+
+peek = __webpack_require__(/*! ../MiniFoundation */ 7).peek;
+
+isPathedNamespace = Neptune.isPathedNamespace;
+
+module.exports = NamespaceGenerator = (function() {
+  function NamespaceGenerator() {}
+
+  NamespaceGenerator.generate = function(namespace, relativeFilePath, versionFile) {
+    var a, className, isPathNamespace, meat, name, namespaceName, parent, parentNamespaceName, parentNamespacePath, path, requireParent;
+    parent = namespace.parent, path = namespace.path, namespaceName = namespace.namespaceName, isPathNamespace = namespace.isPathNamespace;
+    className = isPathedNamespace(namespaceName) ? peek(namespaceName.split('.')) : namespaceName;
+    parentNamespaceName = parent.namespaceName;
+    parentNamespacePath = parent.parent ? "../namespace" : parent.path;
+    requireParent = "(require '" + parentNamespacePath + "')";
+    meat = isPathNamespace ? requireParent + ".vivifySubnamespace '" + namespaceName + "'" : versionFile && namespace.getIsRootPackageNamespace() ? requireParent + ".addNamespace '" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + "\n  @version: require('" + versionFile + "').version" : requireParent + ".addNamespace('" + namespaceName + "', class " + className + " extends " + PackageNamespaceClassName + ")";
+    return generatedByString + "\n# file: " + (relativeFilePath || path) + "/namespace.coffee\n\nmodule.exports = " + meat + "\n" + (a = (function() {
+      var i, len, ref1, results;
+      ref1 = namespace.getAllNamespacedSubdirRequires();
+      results = [];
+      for (i = 0, len = ref1.length; i < len; i++) {
+        name = ref1[i];
+        results.push("require './" + name + "/namespace'");
+      }
+      return results;
+    })(), a.join(";\n"));
+  };
+
+  return NamespaceGenerator;
+
+})();
+
+
+/***/ }),
+/* 19 */
 /*!*****************************************************!*\
   !*** ./source/NeptuneNamespaces/PackageRoot.coffee ***!
   \*****************************************************/
@@ -1161,11 +1240,11 @@ module.exports = NamespaceStructure = (function() {
 
 var PackageRoot, fs, normalizeDirectory, path;
 
-path = __webpack_require__(/*! path */ "path");
+path = __webpack_require__(/*! path */ 8);
 
-fs = __webpack_require__(/*! fs-extra */ "fs-extra");
+fs = __webpack_require__(/*! fs-extra */ 6);
 
-normalizeDirectory = __webpack_require__(/*! ./MiniFoundation */ "./source/NeptuneNamespaces/MiniFoundation.coffee").normalizeDirectory;
+normalizeDirectory = __webpack_require__(/*! ./MiniFoundation */ 7).normalizeDirectory;
 
 module.exports = PackageRoot = (function() {
   function PackageRoot() {}
@@ -1205,101 +1284,5 @@ module.exports = PackageRoot = (function() {
 })();
 
 
-/***/ }),
-
-/***/ "./source/NeptuneNamespaces/namespace.coffee":
-/*!***************************************************!*\
-  !*** ./source/NeptuneNamespaces/namespace.coffee ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var NeptuneNamespaces,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(/*! neptune-namespaces */ "neptune-namespaces")).addNamespace('NeptuneNamespaces', NeptuneNamespaces = (function(superClass) {
-  extend(NeptuneNamespaces, superClass);
-
-  function NeptuneNamespaces() {
-    return NeptuneNamespaces.__super__.constructor.apply(this, arguments);
-  }
-
-  NeptuneNamespaces.version = __webpack_require__(/*! ../../package.json */ "./package.json").version;
-
-  return NeptuneNamespaces;
-
-})(Neptune.PackageNamespace));
-
-__webpack_require__(/*! ./Generators/namespace */ "./source/NeptuneNamespaces/Generators/namespace.coffee");
-
-
-/***/ }),
-
-/***/ "art-standard-lib/Core":
-/*!***************************************************************************************!*\
-  !*** external "require('art-standard-lib/Core' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-
-/***/ "colors":
-/*!************************************************************************!*\
-  !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('colors' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-
-/***/ "fs-extra":
-/*!**************************************************************************!*\
-  !*** external "require('fs-extra' /* ABC - not inlining fellow NPM *_/)" ***!
-  \**************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('fs-extra' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-
-/***/ "glob-promise":
-/*!******************************************************************************!*\
-  !*** external "require('glob-promise' /* ABC - not inlining fellow NPM *_/)" ***!
-  \******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('glob-promise' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-
-/***/ "neptune-namespaces":
-/*!************************************************************************************!*\
-  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-
-/***/ "path":
-/*!**********************************************************************!*\
-  !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('path' /* ABC - not inlining fellow NPM */);
-
 /***/ })
-
-/******/ });
+/******/ ]);
