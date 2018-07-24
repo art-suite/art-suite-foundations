@@ -64,7 +64,7 @@ module.exports =
   OUT:
     Number of Seconds since epoch-start
   ###
-  toSeconds: (v) ->
+  toSeconds: toSeconds = (v) ->
     return Date.now() / 1000 unless v?
     (toMilliseconds(v) / 1000 + .5) | 0
 
@@ -74,3 +74,11 @@ module.exports =
       v
     else
       new Date toMilliseconds v
+
+  secondsPerHour:  secondsPerHour = 3600
+  secondsPerDay:   secondsPerDay  = secondsPerHour * 24
+
+  firstOfHour:                 (time) ->  ((toSeconds(time)                 / secondsPerHour) | 0) * secondsPerHour
+  firstOfDay:     firstOfDay = (time) ->  ((toSeconds(time)                 / secondsPerDay ) | 0) * secondsPerDay
+  firstOfWeek:                 (time) ->  firstOfDay(time) - ((toDate(time).getUTCDay() - 1) %% 7) * secondsPerDay  # monday is first day
+  firstOfMonth:                (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
