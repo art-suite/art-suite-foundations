@@ -4,7 +4,8 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  ConfigRegistry:   require './ConfigRegistry'  
-  Lib:              require './Lib'             
-  TestConfig:       require './TestConfig'      
-  TestConfigurable: require './TestConfigurable'
+  ConfigRegistry:           require './ConfigRegistry'          
+  ConfigurationInheritance: require './ConfigurationInheritance'
+  Lib:                      require './Lib'                     
+  TestConfig:               require './TestConfig'              
+  TestConfigurable:         require './TestConfigurable'        

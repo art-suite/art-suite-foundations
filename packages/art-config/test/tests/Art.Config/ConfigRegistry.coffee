@@ -81,7 +81,7 @@ module.exports = suite:
 
   configs: ->
     test "TestConfig got registered", ->
-      assert.eq ConfigRegistry.configs,
-        TestConfig:
-          propA: "propAFromTestConfig"
-          MyGrouping: propB: "foo",  propC: "bar"
+      assert.selectedEq
+        propA: "propAFromTestConfig"
+        MyGrouping: propB: "foo",  propC: "bar"
+        ConfigRegistry.configs.TestConfig
