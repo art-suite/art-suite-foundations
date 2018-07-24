@@ -34,18 +34,35 @@ module.exports =
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -63,77 +80,321 @@ module.exports =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 51);
+/******/ 	return __webpack_require__(__webpack_require__.s = 65);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 1:
-/* no static exports found */
-/* all exports used */
-/*!**************************************************!*\
-  !*** ./source/Art.StandardLib/Core/index.coffee ***!
-  \**************************************************/
+/***/ 10:
+/*!*************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Core.coffee ***!
+  \*************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./namespace */ 16);
+module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpack_require__(/*! ./StringCase */ 12), __webpack_require__(/*! ./Merge */ 13), __webpack_require__(/*! ./Types */ 14)];
 
-module.exports.includeInNamespace(__webpack_require__(/*! ./Core */ 27)).addModules({
-  ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 3),
-  Merge: __webpack_require__(/*! ./Merge */ 14),
-  StringCase: __webpack_require__(/*! ./StringCase */ 15),
-  Types: __webpack_require__(/*! ./Types */ 2)
-});
+
+/***/ }),
+
+/***/ 11:
+/*!****************************************************************!*\
+  !*** ./source/Art.StandardLib/Core/ArrayCompactFlatten.coffee ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var ArrayCompactFlatten;
+
+module.exports = ArrayCompactFlatten = (function() {
+  var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
+
+  function ArrayCompactFlatten() {}
+
+  ArrayCompactFlatten.isArguments = isArguments = function(o) {
+    return o.constructor === Object && "number" === typeof o.length && "function" === typeof o.callee;
+  };
+
+  ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
+    return o && (o.constructor === Array || isArguments(o));
+  };
+
+  ArrayCompactFlatten.needsFlatteningOrCompacting = needsFlatteningOrCompacting = function(array, keepTester) {
+    var a, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (isArrayOrArguments(a) || !keepTester(a)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  ArrayCompactFlatten.keepUnlessNullOrUndefined = keepUnlessNullOrUndefined = function(a) {
+    return a !== null && a !== void 0;
+  };
+
+
+  /*
+  IN:
+    array: array or arguments-object
+    keepTester: (value) -> true/false
+      OUT: return true if that element should be in the output
+  
+  OUT: array where all elements test true to keepTester
+  NOTE: NOT recursive - just does a shallow pass
+   */
+
+  ArrayCompactFlatten.compact = compact = function(array, keepTester) {
+    var a, i, len;
+    if (keepTester == null) {
+      keepTester = keepUnlessNullOrUndefined;
+    }
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (!keepTester(a)) {
+        return (function() {
+          var j, len1, results;
+          results = [];
+          for (j = 0, len1 = array.length; j < len1; j++) {
+            a = array[j];
+            if (keepTester(a)) {
+              results.push(a);
+            }
+          }
+          return results;
+        })();
+      }
+    }
+    return array;
+  };
+
+
+  /*
+  IN: accepts any number of arguments
+  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
+    to the top level (flatten)
+   */
+
+  ArrayCompactFlatten.flatten = flatten = function(firstArg) {
+    return compactFlattenIfNeeded(arguments.length === 1 ? firstArg : arguments);
+  };
+
+
+  /*
+  IN: array: any object that has a length
+  
+  EFFECT:
+    itterates over array and recurse over any element which isArrayOrArguments
+    invokes f on every element that is not isArrayOrArguments
+  OUT: array (same as passed in)
+   */
+
+  ArrayCompactFlatten.deepArrayEach = deepArrayEach = function(array, f) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArrayOrArguments(el)) {
+        deepArrayEach(el, f);
+      } else {
+        f(el);
+      }
+    }
+    return array;
+  };
+
+
+  /*
+  IN:
+    array: array or arguments-object
+    keepTester: (value) -> true/false
+      OUT: return true if that element should be in the output
+  
+  OUT: array where all elements test true to keepTester
+  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
+    to the top level (flatten)
+   */
+
+  ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
+    if (keepTester == null) {
+      keepTester = keepUnlessNullOrUndefined;
+    }
+    return compactFlattenIfNeeded(array, keepTester);
+  };
+
+  arraySlice = Array.prototype.slice;
+
+  doFlattenInternal = function(array, keepTester) {
+    var output;
+    output = [];
+    deepArrayEach(array, function(el) {
+      if (keepTester(el)) {
+        return output.push(el);
+      }
+    });
+    return output;
+  };
+
+  keepAll = function() {
+    return true;
+  };
+
+  compactFlattenIfNeeded = function(array, keepTester) {
+    if (keepTester == null) {
+      keepTester = keepAll;
+    }
+    if (array == null) {
+      return array;
+    }
+    if ((array != null) && !isArrayOrArguments(array)) {
+      return [array];
+    }
+    if (needsFlatteningOrCompacting(array, keepTester)) {
+      return doFlattenInternal(array, keepTester);
+    } else if (array.constructor !== Array) {
+      return arraySlice.call(array);
+    } else {
+      return array;
+    }
+  };
+
+  return ArrayCompactFlatten;
+
+})();
 
 
 /***/ }),
 
 /***/ 12:
-/* no static exports found */
-/* all exports used */
-/*!*************************************************!*\
-  !*** ./source/Art.StandardLib/namespace.coffee ***!
-  \*************************************************/
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/StringCase.coffee ***!
+  \*******************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var StandardLib,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+var StringCase, compactFlatten;
 
-module.exports = (__webpack_require__(/*! neptune-namespaces */ 36)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
-  extend(StandardLib, superClass);
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
 
-  function StandardLib() {
-    return StandardLib.__super__.constructor.apply(this, arguments);
-  }
+module.exports = StringCase = (function() {
+  var getCodeWords;
 
-  StandardLib.version = __webpack_require__(/*! ../../package.json */ 35).version;
+  function StringCase() {}
 
-  return StandardLib;
+  StringCase.getCodeWords = getCodeWords = function(str) {
+    var _words, word, words;
+    if (!(_words = str != null ? str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g) : void 0)) {
+      return [];
+    }
+    words = (function() {
+      var i, len, results;
+      results = [];
+      for (i = 0, len = _words.length; i < len; i++) {
+        word = _words[i];
+        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
+      }
+      return results;
+    })();
+    return compactFlatten(words);
+  };
 
-})(Neptune.PackageNamespace));
+  StringCase.codeWords = getCodeWords;
 
-__webpack_require__(/*! ./Core/namespace */ 16);
+  StringCase.lowerCase = function(str) {
+    return str != null ? str.toLocaleLowerCase() : void 0;
+  };
 
-__webpack_require__(/*! ./Inspect/namespace */ 5);
+  StringCase.upperCase = function(str) {
+    return str != null ? str.toLocaleUpperCase() : void 0;
+  };
+
+  StringCase.capitalize = function(str) {
+    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.decapitalize = function(str) {
+    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.getLowerCaseCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(StringCase.lowerCase(word));
+    }
+    return results;
+  };
+
+  StringCase.getCapitalizedCodeWords = function(str) {
+    var i, len, ref, results, word;
+    ref = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      word = ref[i];
+      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
+    }
+    return results;
+  };
+
+  StringCase.upperCamelCase = function(str, joiner) {
+    var word;
+    if (joiner == null) {
+      joiner = "";
+    }
+    return ((function() {
+      var i, len, ref, results;
+      ref = this.getLowerCaseCodeWords(str);
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        word = ref[i];
+        results.push(this.capitalize(word));
+      }
+      return results;
+    }).call(StringCase)).join(joiner);
+  };
+
+  StringCase.lowerCamelCase = function(str, joiner) {
+    if (joiner == null) {
+      joiner = "";
+    }
+    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
+  };
+
+  StringCase.snakeCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("_");
+  };
+
+  StringCase.dashCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("-");
+  };
+
+  StringCase.capitalizedDashCase = function(str) {
+    return (StringCase.getCapitalizedCodeWords(str)).join("-");
+  };
+
+  return StringCase;
+
+})();
 
 
 /***/ }),
 
-/***/ 14:
-/* no static exports found */
-/* all exports used */
+/***/ 13:
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/Core/Merge.coffee ***!
   \**************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Merge, compactFlatten, isPlainObject;
 
-compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 3).compactFlatten;
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
 
-isPlainObject = __webpack_require__(/*! ./Types */ 2).isPlainObject;
+isPlainObject = __webpack_require__(/*! ./Types */ 14).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, pureMerge;
@@ -300,181 +561,11 @@ module.exports = Merge = (function() {
 
 /***/ }),
 
-/***/ 15:
-/* no static exports found */
-/* all exports used */
-/*!*******************************************************!*\
-  !*** ./source/Art.StandardLib/Core/StringCase.coffee ***!
-  \*******************************************************/
-/***/ (function(module, exports, __webpack_require__) {
-
-var StringCase, compactFlatten;
-
-compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 3).compactFlatten;
-
-module.exports = StringCase = (function() {
-  var getCodeWords;
-
-  function StringCase() {}
-
-  StringCase.getCodeWords = getCodeWords = function(str) {
-    var _words, word, words;
-    if (!(_words = str != null ? str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g) : void 0)) {
-      return [];
-    }
-    words = (function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = _words.length; i < len; i++) {
-        word = _words[i];
-        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
-      }
-      return results;
-    })();
-    return compactFlatten(words);
-  };
-
-  StringCase.codeWords = getCodeWords;
-
-  StringCase.lowerCase = function(str) {
-    return str != null ? str.toLocaleLowerCase() : void 0;
-  };
-
-  StringCase.upperCase = function(str) {
-    return str != null ? str.toLocaleUpperCase() : void 0;
-  };
-
-  StringCase.capitalize = function(str) {
-    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.decapitalize = function(str) {
-    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.getLowerCaseCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(StringCase.lowerCase(word));
-    }
-    return results;
-  };
-
-  StringCase.getCapitalizedCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
-      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
-    }
-    return results;
-  };
-
-  StringCase.upperCamelCase = function(str, joiner) {
-    var word;
-    if (joiner == null) {
-      joiner = "";
-    }
-    return ((function() {
-      var i, len, ref, results;
-      ref = this.getLowerCaseCodeWords(str);
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        word = ref[i];
-        results.push(this.capitalize(word));
-      }
-      return results;
-    }).call(StringCase)).join(joiner);
-  };
-
-  StringCase.lowerCamelCase = function(str, joiner) {
-    if (joiner == null) {
-      joiner = "";
-    }
-    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
-  };
-
-  StringCase.snakeCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("_");
-  };
-
-  StringCase.dashCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("-");
-  };
-
-  StringCase.capitalizedDashCase = function(str) {
-    return (StringCase.getCapitalizedCodeWords(str)).join("-");
-  };
-
-  return StringCase;
-
-})();
-
-
-/***/ }),
-
-/***/ 16:
-/* no static exports found */
-/* all exports used */
-/*!******************************************************!*\
-  !*** ./source/Art.StandardLib/Core/namespace.coffee ***!
-  \******************************************************/
-/***/ (function(module, exports, __webpack_require__) {
-
-var Core,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Core', Core = (function(superClass) {
-  extend(Core, superClass);
-
-  function Core() {
-    return Core.__super__.constructor.apply(this, arguments);
-  }
-
-  return Core;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-
-/***/ 19:
-/* no static exports found */
-/* all exports used */
-/*!*******************************************************************!*\
-  !*** ./source/Art.StandardLib/Inspect/Inspected/namespace.coffee ***!
-  \*******************************************************************/
-/***/ (function(module, exports, __webpack_require__) {
-
-var Inspected,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(/*! ../namespace */ 5)).addNamespace('Inspected', Inspected = (function(superClass) {
-  extend(Inspected, superClass);
-
-  function Inspected() {
-    return Inspected.__super__.constructor.apply(this, arguments);
-  }
-
-  return Inspected;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-
-/***/ 2:
-/* no static exports found */
-/* all exports used */
+/***/ 14:
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/Core/Types.coffee ***!
   \**************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 
@@ -497,7 +588,7 @@ var ArtStandardLibMultipleContextTypeSupport, Types;
 ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
-  var _functionsPrototype, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString;
+  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString;
 
   function Types() {}
 
@@ -545,9 +636,13 @@ module.exports = Types = (function() {
 
   _functionsPrototype = Object.getPrototypeOf(function() {});
 
-  Types.isClass = isClass = function(obj) {
+  Types.getSuperclass = getSuperclass = function(klass) {
     var prototype;
-    return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype) || (hasOwnProperties(obj)) || (obj.prototype && hasProperties(obj.prototype))));
+    return (typeof (prototype = Object.getPrototypeOf(klass)) === "function") && (prototype !== _functionsPrototype) && prototype;
+  };
+
+  Types.isClass = isClass = function(obj) {
+    return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || (getSuperclass(obj)) || (hasOwnProperties(obj)) || (obj.prototype && hasProperties(obj.prototype))));
   };
 
   Types.isExtendedClass = isExtendedClass = function(obj) {
@@ -696,225 +791,96 @@ module.exports = Types = (function() {
 
 /***/ }),
 
-/***/ 27:
-/* no static exports found */
-/* all exports used */
+/***/ 2:
 /*!*************************************************!*\
-  !*** ./source/Art.StandardLib/Core/Core.coffee ***!
+  !*** ./source/Art.StandardLib/namespace.coffee ***!
   \*************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 3), __webpack_require__(/*! ./StringCase */ 15), __webpack_require__(/*! ./Merge */ 14), __webpack_require__(/*! ./Types */ 2)];
+var StandardLib,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 3)).addNamespace('Art.StandardLib', StandardLib = (function(superClass) {
+  extend(StandardLib, superClass);
+
+  function StandardLib() {
+    return StandardLib.__super__.constructor.apply(this, arguments);
+  }
+
+  StandardLib.version = __webpack_require__(/*! ../../package.json */ 4).version;
+
+  return StandardLib;
+
+})(Neptune.PackageNamespace));
+
+__webpack_require__(/*! ./Core/namespace */ 5);
+
+__webpack_require__(/*! ./Inspect/namespace */ 6);
 
 
 /***/ }),
 
 /***/ 3:
-/* no static exports found */
-/* all exports used */
-/*!****************************************************************!*\
-  !*** ./source/Art.StandardLib/Core/ArrayCompactFlatten.coffee ***!
-  \****************************************************************/
-/***/ (function(module, exports) {
-
-var ArrayCompactFlatten;
-
-module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
-
-  function ArrayCompactFlatten() {}
-
-  ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return o.constructor === Object && "number" === typeof o.length && "function" === typeof o.callee;
-  };
-
-  ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
-    return o && (o.constructor === Array || isArguments(o));
-  };
-
-  ArrayCompactFlatten.needsFlatteningOrCompacting = needsFlatteningOrCompacting = function(array, keepTester) {
-    var a, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      a = array[i];
-      if (isArrayOrArguments(a) || !keepTester(a)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  ArrayCompactFlatten.keepUnlessNullOrUndefined = keepUnlessNullOrUndefined = function(a) {
-    return a !== null && a !== void 0;
-  };
-
-
-  /*
-  IN:
-    array: array or arguments-object
-    keepTester: (value) -> true/false
-      OUT: return true if that element should be in the output
-  
-  OUT: array where all elements test true to keepTester
-  NOTE: NOT recursive - just does a shallow pass
-   */
-
-  ArrayCompactFlatten.compact = compact = function(array, keepTester) {
-    var a, i, len;
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
-    }
-    for (i = 0, len = array.length; i < len; i++) {
-      a = array[i];
-      if (!keepTester(a)) {
-        return (function() {
-          var j, len1, results;
-          results = [];
-          for (j = 0, len1 = array.length; j < len1; j++) {
-            a = array[j];
-            if (keepTester(a)) {
-              results.push(a);
-            }
-          }
-          return results;
-        })();
-      }
-    }
-    return array;
-  };
-
-
-  /*
-  IN: accepts any number of arguments
-  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
-    to the top level (flatten)
-   */
-
-  ArrayCompactFlatten.flatten = flatten = function(firstArg) {
-    return compactFlattenIfNeeded(arguments.length === 1 ? firstArg : arguments);
-  };
-
-
-  /*
-  IN: array: any object that has a length
-  
-  EFFECT:
-    itterates over array and recurse over any element which isArrayOrArguments
-    invokes f on every element that is not isArrayOrArguments
-  OUT: array (same as passed in)
-   */
-
-  ArrayCompactFlatten.deepArrayEach = deepArrayEach = function(array, f) {
-    var el, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      el = array[i];
-      if (isArrayOrArguments(el)) {
-        deepArrayEach(el, f);
-      } else {
-        f(el);
-      }
-    }
-    return array;
-  };
-
-
-  /*
-  IN:
-    array: array or arguments-object
-    keepTester: (value) -> true/false
-      OUT: return true if that element should be in the output
-  
-  OUT: array where all elements test true to keepTester
-  NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
-    to the top level (flatten)
-   */
-
-  ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
-    }
-    return compactFlattenIfNeeded(array, keepTester);
-  };
-
-  arraySlice = Array.prototype.slice;
-
-  doFlattenInternal = function(array, keepTester) {
-    var output;
-    output = [];
-    deepArrayEach(array, function(el) {
-      if (keepTester(el)) {
-        return output.push(el);
-      }
-    });
-    return output;
-  };
-
-  keepAll = function() {
-    return true;
-  };
-
-  compactFlattenIfNeeded = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepAll;
-    }
-    if (array == null) {
-      return array;
-    }
-    if ((array != null) && !isArrayOrArguments(array)) {
-      return [array];
-    }
-    if (needsFlatteningOrCompacting(array, keepTester)) {
-      return doFlattenInternal(array, keepTester);
-    } else if (array.constructor !== Array) {
-      return arraySlice.call(array);
-    } else {
-      return array;
-    }
-  };
-
-  return ArrayCompactFlatten;
-
-})();
-
-
-/***/ }),
-
-/***/ 35:
-/* no static exports found */
-/* all exports used */
-/*!**********************!*\
-  !*** ./package.json ***!
-  \**********************/
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.41.0"}
-
-/***/ }),
-
-/***/ 36:
-/* no static exports found */
-/* all exports used */
 /*!************************************************************************************!*\
   !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
   \************************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 
+/***/ 4:
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.42.0"};
+
+/***/ }),
+
 /***/ 5:
-/* no static exports found */
-/* all exports used */
+/*!******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/namespace.coffee ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Core,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! ../namespace */ 2)).addNamespace('Core', Core = (function(superClass) {
+  extend(Core, superClass);
+
+  function Core() {
+    return Core.__super__.constructor.apply(this, arguments);
+  }
+
+  return Core;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+
+/***/ 6:
 /*!*********************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/namespace.coffee ***!
   \*********************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Inspect,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Inspect', Inspect = (function(superClass) {
+module.exports = (__webpack_require__(/*! ../namespace */ 2)).addNamespace('Inspect', Inspect = (function(superClass) {
   extend(Inspect, superClass);
 
   function Inspect() {
@@ -925,22 +891,65 @@ module.exports = (__webpack_require__(/*! ../namespace */ 12)).addNamespace('Ins
 
 })(Neptune.PackageNamespace));
 
-__webpack_require__(/*! ./Inspected/namespace */ 19);
+__webpack_require__(/*! ./Inspected/namespace */ 7);
 
 
 /***/ }),
 
-/***/ 51:
-/* no static exports found */
-/* all exports used */
+/***/ 65:
 /*!*********************!*\
   !*** ./Core.coffee ***!
   \*********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ref, ref1, ref2;
 
-module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(/*! ./source/Art.StandardLib/Core */ 1);
+module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (ref1 = Neptune.Art) != null ? (ref2 = ref1.StandardLib) != null ? ref2.Core : void 0 : void 0 : void 0) != null ? ref : __webpack_require__(/*! ./source/Art.StandardLib/Core */ 9);
+
+
+/***/ }),
+
+/***/ 7:
+/*!*******************************************************************!*\
+  !*** ./source/Art.StandardLib/Inspect/Inspected/namespace.coffee ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Inspected,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! ../namespace */ 6)).addNamespace('Inspected', Inspected = (function(superClass) {
+  extend(Inspected, superClass);
+
+  function Inspected() {
+    return Inspected.__super__.constructor.apply(this, arguments);
+  }
+
+  return Inspected;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+
+/***/ 9:
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/index.coffee ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./namespace */ 5);
+
+module.exports.includeInNamespace(__webpack_require__(/*! ./Core */ 10)).addModules({
+  ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 11),
+  Merge: __webpack_require__(/*! ./Merge */ 13),
+  StringCase: __webpack_require__(/*! ./StringCase */ 12),
+  Types: __webpack_require__(/*! ./Types */ 14)
+});
 
 
 /***/ })
