@@ -17,6 +17,7 @@ WebpackHotLoader = require './WebpackHotLoader'
   mergeInto
   isString
   object
+  getSuperclass
 } = StandardLib
 
 {nextUniqueObjectId} = Unique
@@ -522,6 +523,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     @_firstAbstractAncestor = @
 
   @classGetter
+    superclass: -> getSuperclass @
     isAbstractClass: -> !(@prototype instanceof @_firstAbstractAncestor)
     abstractPrototype: -> @_firstAbstractAncestor.prototype
     firstAbstractAncestor: -> @_firstAbstractAncestor
