@@ -35,8 +35,13 @@ module.exports = class Types
   @isEmptyObject: (obj) => Object.keys(obj).length == 0
   @isBoolean: (obj) => obj == true || obj == false
 
-  # NOTE: cannot detect a class which doesn't extend another
   _functionsPrototype = Object.getPrototypeOf ->
+  @getSuperclass: getSuperclass = (klass) ->
+    (typeof (prototype = Object.getPrototypeOf klass) is "function") &&
+    (prototype != _functionsPrototype) &&
+    prototype
+
+  # NOTE: cannot detect a class which doesn't extend another
   @isClass: isClass =
     (obj) =>
       !!(
@@ -44,12 +49,14 @@ module.exports = class Types
           # CoffeeScript extending class
           (typeof obj.__super__ is "object") ||
 
-          # ES6 extending class
-          (
-            (typeof (prototype = Object.getPrototypeOf obj) is "function") &&
-            prototype != _functionsPrototype
-          ) ||
+          # Correctly detects any CaffeineScript class AND
+          # Any ES6/CoffeeScript2 class with an 'extends' clause
+          (getSuperclass obj) ||
 
+          # NOTE! Static/Class methods which are declared INSIDE an ES6 class definition are no enumerable! In other words,
+          # The following 'hasOwnProperties' hack doesn't work with clases declared this way. This includes normla ES6 and CoffeeScript v2 classes!
+          #     Of course, CaffeineScript gets it right - class-methods SHOULD be enumerable.
+          #     But, CaffeineScript doesn't rely on this hack anyway... (See above)
           # We can't easily detect CoffeeScript or ES6 classes which don't extend another since they are just functions
           # HACK: if its a function with own-properties, its not a plain function, probably a class
           (hasOwnProperties obj) ||

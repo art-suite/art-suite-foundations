@@ -1,5 +1,6 @@
 {defineModule} = require './CommonJs'
 ParseUrl = require './ParseUrl'
+{isString} = require './Core'
 isNode = require 'detect-node'
 
 defineModule module, class Environment
@@ -7,7 +8,10 @@ defineModule module, class Environment
     global.environment ?=
       (
         if global.location?.search
-          ParseUrl.parseQuery()
+          out = ParseUrl.parseQuery()
+          for k, v of global.location when k != "search" && isString(v) && v.length > 0
+            out[k] = v
+          out
         else
           global.process?.env
       ) || {}
