@@ -2,11 +2,11 @@ CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 path = require 'path'
 
 module.exports = class StandardWebpackConfig
-  @get: (npmRoot, abcConfig) ->
+  @get: (npmRoot, abcConfig, nodeTarget) ->
     options = abcConfig.webpack
     {outputPath = "build"} = options
 
-    mode: "none"
+    mode: if nodeTarget then "none" else "development"
     resolve:
       # prefer .coffee OVER .js
       # in this way we can have index.js files which NODE priorizes over index.coffee

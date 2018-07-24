@@ -40,7 +40,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
   @get: (npmRoot, abcConfig = {}) =>
     config = abcConfig.webpack ||= {}
     {common, targets} = config
-    standard = StandardWebpackConfig.get npmRoot, abcConfig
+    standard = StandardWebpackConfig.get npmRoot, abcConfig, abcConfig.target?.node
     baseConfig = webpackMerge standard, common
     targets ||= index: {}
 

@@ -19,10 +19,10 @@ module.exports = class StandardPackageJson
         if abcConfig?.target?.node
           "nn -s;mocha -u tdd"
         else
-          'webpack-dev-server --progress'
-      start:    'webpack-dev-server --hot --inline --progress'
+          'webpack-serve'
+      start:    'webpack-serve'
 
-      testInBrowser:  'webpack-dev-server --progress'
+      testInBrowser:  'webpack-serve'
 
       # ArtSuite scripts
       # nodeTest: 'nn -s; mocha -u tdd --compilers coffee:coffee-script/register'
