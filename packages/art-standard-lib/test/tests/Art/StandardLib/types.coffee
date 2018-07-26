@@ -119,7 +119,13 @@ module.exports = suite:
       assert.eq false, isArguments []
 
     test "quacks-like-a-duck-args", ->
-      assert.eq true, isArguments length: 0, callee: ->
+      assert.eq false, isArguments length: 0, callee: ->
+
+    test "null", ->
+      assert.eq false, isArguments null
+
+    test "1", ->
+      assert.eq false, isArguments 1
 
   isClass: ->
     test "isClass empty-class is false - only class we can't detect correctly", ->
