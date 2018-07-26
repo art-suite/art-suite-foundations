@@ -15,7 +15,6 @@ module.exports = class MathExtensions
   @float64Precision: float64Precision
   @modulo: (a, b) -> r = a % b; if r < 0 then r + b else r
 
-
   @stringToNumberArray: (string) ->
     a = string.split ","
     for v, i in a
