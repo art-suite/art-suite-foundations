@@ -104,7 +104,9 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
   !*** ./source/Art.StandardLib/Core/ArrayCompactFlatten.coffee ***!
   \****************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 var ArrayCompactFlatten;
 
@@ -114,7 +116,7 @@ module.exports = ArrayCompactFlatten = (function() {
   function ArrayCompactFlatten() {}
 
   ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return o.constructor === Object && "number" === typeof o.length && "function" === typeof o.callee;
+    return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
   };
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
@@ -840,7 +842,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.42.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.42.3"};
 
 /***/ }),
 
