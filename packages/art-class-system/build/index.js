@@ -159,7 +159,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.17"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.18"};
 
 /***/ }),
 /* 5 */
@@ -901,7 +901,7 @@ module.exports = WebpackHotLoader = (function() {
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-ref = __webpack_require__(/*! art-standard-lib */ 7), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isNumber = ref.isNumber, isBoolean = ref.isBoolean, isFunction = ref.isFunction, isString = ref.isString, cloneStructure = ref.cloneStructure, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect, merge = ref.merge;
+ref = __webpack_require__(/*! art-standard-lib */ 7), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, isNumber = ref.isNumber, isBoolean = ref.isBoolean, cloneStructure = ref.cloneStructure, isString = ref.isString, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect, merge = ref.merge;
 
 
 /*
@@ -963,7 +963,7 @@ defineModule(module, function() {
         if (object.hasOwnProperty(internalName)) {
           return object[internalName];
         } else {
-          return init(object, internalName);
+          return object[internalName] = init(object, internalName);
         }
       };
 
