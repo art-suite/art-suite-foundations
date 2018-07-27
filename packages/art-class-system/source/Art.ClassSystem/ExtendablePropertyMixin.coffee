@@ -2,9 +2,13 @@
   defineModule, log, object, upperCamelCase, lowerCamelCase, each
   isPlainObject
   isPlainArray
+
+  isNumber
+  isBoolean
   isFunction
-  clone
   isString
+
+  cloneStructure
   mergeInto
   concatInto
   formattedInspect
@@ -50,20 +54,25 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       (object) -> returning initial value for object
       OR
         initial value is computed by:
-        clone object[property] || init
+        cloneStructure object[property] || init
 
   EFFECT:
     if object.hasOwnProperty property, return its current value
     otherwise, initialize and return it with init()
   ###
-  @getOwnProperty: getOwnProperty = (object, property, init) ->
-    if object.hasOwnProperty property
-      object[property]
-    else
-      object[property] = if isFunction init
-        init object
+  @getOwnProperty: getOwnProperty = (object, internalName, init) ->
+    if object.hasOwnProperty internalName
+      object[internalName]
+    else init object, internalName
+
+  optimizedInitFunction = (internalName, init) ->
+    switch
+      when isFunction init then init
+      when isString(init) || isNumber(init) || isBoolean init
+        (object) -> object[internalName] ? init
+
       else
-        clone object[property] ? init
+        (object) -> cloneStructure object[internalName] ? init
 
   ###
   objectPropertyExtender
@@ -121,7 +130,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
   Extendable properties work like inheritance:
 
     When any subclass or instance extends an extendable property, they
-    inherit a clone of the property from up the inheritance tree, and then
+    inherit a cloneStructure of the property from up the inheritance tree, and then
     add their own extensions without effecting the parent copy.
 
     With Object property types, this can just be a parallel prototype chain.
@@ -198,7 +207,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
           0-args: nothing happens beyond the standard EFFECT
           1+args: passed to the "extend" function
 
-        EFFECT: creates a extension (clone) of the property for the currnet class, subclass or instance
+        EFFECT: creates a extension (cloneStructure) of the property for the currnet class, subclass or instance
         OUT: the current, extendedPropValue
 
         API 1: IN: 0 args
@@ -249,7 +258,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       # EFFECT: property has been extended for the class-object this was called on (not affecting any parent class)
       # OUT: the extendable property's current value
       @[name] = @[extenderName] = (value) ->
-        extendablePropValue = getOwnProperty @prototype, internalName, defaultValue
+        extendablePropValue = getOwnProperty @prototype, internalName, optimizedInitFunction internalName, defaultValue
         if arguments.length > 0 && value != undefined
           @prototype[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue
@@ -263,7 +272,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
       # EFFECT: property has been extended for the current instance-object this was called on (not affecting it's class or any parent-class)
       # OUT: the extendable property's current value
       instanceExtender = @prototype[extenderName] = (value) ->
-        extendablePropValue = getOwnProperty @, internalName, defaultValue
+        extendablePropValue = getOwnProperty @, internalName, optimizedInitFunction internalName, defaultValue
         if arguments.length > 0 && value != undefined
           @[internalName] = propertyExtender extendablePropValue, arguments...
         extendablePropValue

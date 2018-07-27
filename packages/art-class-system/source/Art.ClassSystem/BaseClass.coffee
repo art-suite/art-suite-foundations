@@ -1,8 +1,9 @@
+"use strict";
 StandardLib = require 'art-standard-lib'
 WebpackHotLoader = require './WebpackHotLoader'
 
 {
-  capitalize, decapitalize, log, extendClone, clone
+  capitalize, decapitalize, log
   isFunction, objectName,
   isPlainObject, functionName, isString
   isPlainArray
@@ -595,6 +596,12 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     classPathNameAndId: -> "#{@classPathName}:#{@objectId}"
     uniqueId: -> @__uniqueId ||= nextUniqueObjectId() # unique across all things
     objectId: -> @__uniqueId ||= nextUniqueObjectId() # number unique across objects
+
+  # freeze this object safely
+  freeze: ->
+    @getUniqueId() # ensure we have the unique id set
+    Object.freeze @
+    @
 
   implementsInterface: (methods) -> Function.BaseClass.implementsInterface @, methods
   tap: (f)-> f(@);@
