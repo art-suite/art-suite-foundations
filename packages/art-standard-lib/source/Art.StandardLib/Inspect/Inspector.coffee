@@ -32,7 +32,7 @@ module.exports = class Inspector
     @done = false
 
   @inspect: inspect = (obj, options = {}) ->
-    return Neptune.Base.inspect.call @ if @ != global
+    return Neptune.Base.inspect.call @ if @ && @ != global
 
     inspector = new Inspector options
     inspector.inspect obj
