@@ -2,13 +2,11 @@
   defineModule, log, object, upperCamelCase, lowerCamelCase, each
   isPlainObject
   isPlainArray
-
+  isFunction
   isNumber
   isBoolean
-  isFunction
-  isString
-
   cloneStructure
+  isString
   mergeInto
   concatInto
   formattedInspect
@@ -63,7 +61,7 @@ defineModule module, -> (superClass) -> class ExtendablePropertyMixin extends su
   @getOwnProperty: getOwnProperty = (object, internalName, init) ->
     if object.hasOwnProperty internalName
       object[internalName]
-    else init object, internalName
+    else object[internalName] = init object, internalName
 
   optimizedInitFunction = (internalName, init) ->
     switch
