@@ -34,18 +34,35 @@ module.exports =
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -63,28 +80,124 @@ module.exports =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/*!**********************!*\
+  !*** ./index.coffee ***!
+  \**********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, clone, concatInto, decapitalize, extendClone, functionName, getModuleBeingDefined, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
+module.exports = __webpack_require__(/*! ./source/Art.ClassSystem */ 1);
+
+
+/***/ }),
+/* 1 */
+/*!*********************************************!*\
+  !*** ./source/Art.ClassSystem/index.coffee ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./namespace */ 2);
+
+module.exports.includeInNamespace(__webpack_require__(/*! ./ClassSystem */ 5)).addModules({
+  BaseClass: __webpack_require__(/*! ./BaseClass */ 6),
+  BaseObject: __webpack_require__(/*! ./BaseObject */ 11),
+  DeclarableMixin: __webpack_require__(/*! ./DeclarableMixin */ 12),
+  ExtendablePropertyMixin: __webpack_require__(/*! ./ExtendablePropertyMixin */ 9),
+  WebpackHotLoader: __webpack_require__(/*! ./WebpackHotLoader */ 8)
+});
+
+
+/***/ }),
+/* 2 */
+/*!*************************************************!*\
+  !*** ./source/Art.ClassSystem/namespace.coffee ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ClassSystem,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 3)).addNamespace('Art.ClassSystem', ClassSystem = (function(superClass) {
+  extend(ClassSystem, superClass);
+
+  function ClassSystem() {
+    return ClassSystem.__super__.constructor.apply(this, arguments);
+  }
+
+  ClassSystem.version = __webpack_require__(/*! ../../package.json */ 4).version;
+
+  return ClassSystem;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+/* 3 */
+/*!************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 4 */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.17"};
+
+/***/ }),
+/* 5 */
+/*!***************************************************!*\
+  !*** ./source/Art.ClassSystem/ClassSystem.coffee ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  createWithPostCreate: __webpack_require__(/*! ./BaseClass */ 6).createWithPostCreate
+};
+
+
+/***/ }),
+/* 6 */
+/*!*************************************************!*\
+  !*** ./source/Art.ClassSystem/BaseClass.coffee ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, concatInto, decapitalize, functionName, getModuleBeingDefined, getSuperclass, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-StandardLib = __webpack_require__(1);
+StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
 
-WebpackHotLoader = __webpack_require__(3);
+WebpackHotLoader = __webpack_require__(/*! ./WebpackHotLoader */ 8);
 
-capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, extendClone = StandardLib.extendClone, clone = StandardLib.clone, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, log = StandardLib.log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, isString = StandardLib.isString, object = StandardLib.object;
+capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, log = StandardLib.log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, isString = StandardLib.isString, object = StandardLib.object, getSuperclass = StandardLib.getSuperclass;
 
 nextUniqueObjectId = Unique.nextUniqueObjectId;
 
-ExtendablePropertyMixin = __webpack_require__(2);
+ExtendablePropertyMixin = __webpack_require__(/*! ./ExtendablePropertyMixin */ 9);
 
 module.exports = BaseClass = (function(superClass) {
   var createWithPostCreate, getSingleton, imprintObject, nonImprintableProps, thoroughDeleteProperty, warnedAboutIncludeOnce;
@@ -573,6 +686,9 @@ module.exports = BaseClass = (function(superClass) {
   };
 
   BaseClass.classGetter({
+    superclass: function() {
+      return getSuperclass(this);
+    },
     isAbstractClass: function() {
       return !(this.prototype instanceof this._firstAbstractAncestor);
     },
@@ -686,6 +802,12 @@ module.exports = BaseClass = (function(superClass) {
     }
   });
 
+  BaseClass.prototype.freeze = function() {
+    this.getUniqueId();
+    Object.freeze(this);
+    return this;
+  };
+
   BaseClass.prototype.implementsInterface = function(methods) {
     return Function.BaseClass.implementsInterface(this, methods);
   };
@@ -701,21 +823,85 @@ module.exports = BaseClass = (function(superClass) {
 
 
 /***/ }),
-/* 1 */
+/* 7 */
+/*!**********************************************************************************!*\
+  !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
+  \**********************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 2 */
+/* 8 */
+/*!********************************************************!*\
+  !*** ./source/Art.ClassSystem/WebpackHotLoader.coffee ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var WebpackHotLoader;
+
+module.exports = WebpackHotLoader = (function() {
+  function WebpackHotLoader() {}
+
+
+  /*
+  IN:
+    _module should be the CommonJS 'module'
+    modulePostLoadAction: (moduleState) -> ignored internally, returned from @runHot
+  
+  OUT: modulePostLoadAction moduleState
+  
+  EFFECT:
+    modulePostLoadAction is run every time the module is loaded.
+  
+    Initially, moduleState is {}.
+  
+    moduleState is the same object every load:
+      modulePostLoadAction can modify moduleState and it will persist through every reload.
+  
+    modulePostLoadAction is responsible for any and all
+    update actions required due to the module load.
+  
+  NOTE:
+    If _module is not hot, modulePostLoadAction will be invoked once with an empty {}.
+   */
+
+  WebpackHotLoader.runHot = function(_module, modulePostLoadAction) {
+    var base, moduleState;
+    if (!(_module != null ? _module.hot : void 0)) {
+      return modulePostLoadAction({});
+    }
+    moduleState = (((base = _module.hot).data || (base.data = {
+      moduleState: {}
+    }))).moduleState;
+    _module.hot.accept();
+    _module.hot.dispose(function(data) {
+      return data.moduleState = moduleState;
+    });
+    return modulePostLoadAction(moduleState);
+  };
+
+  return WebpackHotLoader;
+
+})();
+
+
+/***/ }),
+/* 9 */
+/*!***************************************************************!*\
+  !*** ./source/Art.ClassSystem/ExtendablePropertyMixin.coffee ***!
+  \***************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var clone, concatInto, defineModule, each, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, log, lowerCamelCase, merge, mergeInto, object, ref, upperCamelCase,
+/* WEBPACK VAR INJECTION */(function(module) {var cloneStructure, concatInto, defineModule, each, formattedInspect, isBoolean, isFunction, isNumber, isPlainArray, isPlainObject, isString, log, lowerCamelCase, merge, mergeInto, object, ref, upperCamelCase,
   extend1 = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, clone = ref.clone, isString = ref.isString, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect, merge = ref.merge;
+ref = __webpack_require__(/*! art-standard-lib */ 7), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isNumber = ref.isNumber, isBoolean = ref.isBoolean, isFunction = ref.isFunction, isString = ref.isString, cloneStructure = ref.cloneStructure, mergeInto = ref.mergeInto, concatInto = ref.concatInto, formattedInspect = ref.formattedInspect, merge = ref.merge;
 
 
 /*
@@ -749,7 +935,7 @@ defineModule(module, function() {
   return function(superClass) {
     var ExtendablePropertyMixin;
     return ExtendablePropertyMixin = (function(superClass1) {
-      var arrayPropertyExtender, defaultExtender, getOwnProperty, noOptions, objectPropertyExtender;
+      var arrayPropertyExtender, defaultExtender, getOwnProperty, noOptions, objectPropertyExtender, optimizedInitFunction;
 
       extend1(ExtendablePropertyMixin, superClass1);
 
@@ -766,19 +952,35 @@ defineModule(module, function() {
           (object) -> returning initial value for object
           OR
             initial value is computed by:
-            clone object[property] || init
+            cloneStructure object[property] || init
       
       EFFECT:
         if object.hasOwnProperty property, return its current value
         otherwise, initialize and return it with init()
        */
 
-      ExtendablePropertyMixin.getOwnProperty = getOwnProperty = function(object, property, init) {
-        var ref1;
-        if (object.hasOwnProperty(property)) {
-          return object[property];
+      ExtendablePropertyMixin.getOwnProperty = getOwnProperty = function(object, internalName, init) {
+        if (object.hasOwnProperty(internalName)) {
+          return object[internalName];
         } else {
-          return object[property] = isFunction(init) ? init(object) : clone((ref1 = object[property]) != null ? ref1 : init);
+          return init(object, internalName);
+        }
+      };
+
+      optimizedInitFunction = function(internalName, init) {
+        switch (false) {
+          case !isFunction(init):
+            return init;
+          case !(isString(init) || isNumber(init) || isBoolean(init)):
+            return function(object) {
+              var ref1;
+              return (ref1 = object[internalName]) != null ? ref1 : init;
+            };
+          default:
+            return function(object) {
+              var ref1;
+              return cloneStructure((ref1 = object[internalName]) != null ? ref1 : init);
+            };
         }
       };
 
@@ -856,7 +1058,7 @@ defineModule(module, function() {
       Extendable properties work like inheritance:
       
         When any subclass or instance extends an extendable property, they
-        inherit a clone of the property from up the inheritance tree, and then
+        inherit a cloneStructure of the property from up the inheritance tree, and then
         add their own extensions without effecting the parent copy.
       
         With Object property types, this can just be a parallel prototype chain.
@@ -933,7 +1135,7 @@ defineModule(module, function() {
               0-args: nothing happens beyond the standard EFFECT
               1+args: passed to the "extend" function
       
-            EFFECT: creates a extension (clone) of the property for the currnet class, subclass or instance
+            EFFECT: creates a extension (cloneStructure) of the property for the currnet class, subclass or instance
             OUT: the current, extendedPropValue
       
             API 1: IN: 0 args
@@ -1000,7 +1202,7 @@ defineModule(module, function() {
             };
             _this[name] = _this[extenderName] = function(value) {
               var extendablePropValue;
-              extendablePropValue = getOwnProperty(this.prototype, internalName, defaultValue);
+              extendablePropValue = getOwnProperty(this.prototype, internalName, optimizedInitFunction(internalName, defaultValue));
               if (arguments.length > 0 && value !== void 0) {
                 this.prototype[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
@@ -1012,7 +1214,7 @@ defineModule(module, function() {
             };
             instanceExtender = _this.prototype[extenderName] = function(value) {
               var extendablePropValue;
-              extendablePropValue = getOwnProperty(this, internalName, defaultValue);
+              extendablePropValue = getOwnProperty(this, internalName, optimizedInitFunction(internalName, defaultValue));
               if (arguments.length > 0 && value !== void 0) {
                 this[internalName] = propertyExtender.apply(null, [extendablePropValue].concat(slice.call(arguments)));
               }
@@ -1043,70 +1245,22 @@ defineModule(module, function() {
   };
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-var WebpackHotLoader;
-
-module.exports = WebpackHotLoader = (function() {
-  function WebpackHotLoader() {}
-
-
-  /*
-  IN:
-    _module should be the CommonJS 'module'
-    modulePostLoadAction: (moduleState) -> ignored internally, returned from @runHot
-  
-  OUT: modulePostLoadAction moduleState
-  
-  EFFECT:
-    modulePostLoadAction is run every time the module is loaded.
-  
-    Initially, moduleState is {}.
-  
-    moduleState is the same object every load:
-      modulePostLoadAction can modify moduleState and it will persist through every reload.
-  
-    modulePostLoadAction is responsible for any and all
-    update actions required due to the module load.
-  
-  NOTE:
-    If _module is not hot, modulePostLoadAction will be invoked once with an empty {}.
-   */
-
-  WebpackHotLoader.runHot = function(_module, modulePostLoadAction) {
-    var base, moduleState;
-    if (!(_module != null ? _module.hot : void 0)) {
-      return modulePostLoadAction({});
-    }
-    moduleState = (((base = _module.hot).data || (base.data = {
-      moduleState: {}
-    }))).moduleState;
-    _module.hot.accept();
-    _module.hot.dispose(function(data) {
-      return data.moduleState = moduleState;
-    });
-    return modulePostLoadAction(moduleState);
-  };
-
-  return WebpackHotLoader;
-
-})();
-
-
-/***/ }),
-/* 4 */
+/* 10 */
+/*!*************************************************!*\
+  !*** ../node_modules/webpack/buildin/module.js ***!
+  \*************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
-	if(!module.webpackPolyfill) {
+	if (!module.webpackPolyfill) {
 		module.deprecate = function() {};
 		module.paths = [];
 		// module.parent = undefined by default
-		if(!module.children) module.children = [];
+		if (!module.children) module.children = [];
 		Object.defineProperty(module, "loaded", {
 			enumerable: true,
 			get: function() {
@@ -1126,29 +1280,11 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(10);
-
-module.exports.includeInNamespace(__webpack_require__(8)).addModules({
-  BaseClass: __webpack_require__(0),
-  BaseObject: __webpack_require__(7),
-  DeclarableMixin: __webpack_require__(9),
-  ExtendablePropertyMixin: __webpack_require__(2),
-  WebpackHotLoader: __webpack_require__(3)
-});
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(5);
-
-
-/***/ }),
-/* 7 */
+/* 11 */
+/*!**************************************************!*\
+  !*** ./source/Art.ClassSystem/BaseObject.coffee ***!
+  \**************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject,
@@ -1164,27 +1300,22 @@ module.exports = BaseObject = (function(superClass) {
 
   return BaseObject;
 
-})(__webpack_require__(0));
+})(__webpack_require__(/*! ./BaseClass */ 6));
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = {
-  createWithPostCreate: __webpack_require__(0).createWithPostCreate
-};
-
-
-/***/ }),
-/* 9 */
+/* 12 */
+/*!*******************************************************!*\
+  !*** ./source/Art.ClassSystem/DeclarableMixin.coffee ***!
+  \*******************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var defineModule, each, isPlainObject, log, lowerCamelCase, object, ref, upperCamelCase,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-ref = __webpack_require__(1), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject;
+ref = __webpack_require__(/*! art-standard-lib */ 7), defineModule = ref.defineModule, log = ref.log, object = ref.object, upperCamelCase = ref.upperCamelCase, lowerCamelCase = ref.lowerCamelCase, each = ref.each, isPlainObject = ref.isPlainObject;
 
 defineModule(module, function() {
   return function(superClass) {
@@ -1276,41 +1407,7 @@ defineModule(module, function() {
   };
 });
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ClassSystem,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(12)).addNamespace('Art.ClassSystem', ClassSystem = (function(superClass) {
-  extend(ClassSystem, superClass);
-
-  function ClassSystem() {
-    return ClassSystem.__super__.constructor.apply(this, arguments);
-  }
-
-  ClassSystem.version = __webpack_require__(11).version;
-
-  return ClassSystem;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.14"}
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
 
 /***/ })
 /******/ ]);
