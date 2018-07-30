@@ -1,3 +1,4 @@
+{getEnv} = require 'art-standard-lib'
 CaseSensitivePathsPlugin = require 'case-sensitive-paths-webpack-plugin'
 path = require 'path'
 
@@ -6,7 +7,7 @@ module.exports = class StandardWebpackConfig
     options = abcConfig.webpack
     {outputPath = "build"} = options
 
-    mode: if nodeTarget then "none" else "development"
+    mode: getEnv().webpackMode ? if nodeTarget then "none" else "development"
     resolve:
       # prefer .coffee OVER .js
       # in this way we can have index.js files which NODE priorizes over index.coffee
