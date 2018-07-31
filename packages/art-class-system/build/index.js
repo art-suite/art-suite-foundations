@@ -159,7 +159,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.19"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.20"};
 
 /***/ }),
 /* 5 */
@@ -663,7 +663,7 @@ module.exports = BaseClass = (function(superClass) {
 
   BaseClass.classGetter({
     inspectedObjects: function() {
-      return inspectedObjectLiteral(this.getNamespacePath());
+      return inspectedObjectLiteral("class " + (this.getNamespacePath()));
     }
   });
 
