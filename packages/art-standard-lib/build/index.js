@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.44.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.44.1"};
 
 /***/ }),
 /* 5 */
@@ -1951,19 +1951,19 @@ defineModule(module, Environment = (function() {
   Environment.getEnv = function() {
     var k, out, v;
     return global.environment != null ? global.environment : global.environment = ((function() {
-      var ref, ref1, ref2;
-      if ((ref = global.location) != null ? ref.search : void 0) {
+      var ref, ref1;
+      if (global.location != null) {
         out = ParseUrl.parseQuery();
-        ref1 = global.location;
-        for (k in ref1) {
-          v = ref1[k];
+        ref = global.location;
+        for (k in ref) {
+          v = ref[k];
           if (k !== "search" && isString(v) && v.length > 0) {
             out[k] = v;
           }
         }
         return out;
       } else {
-        return (ref2 = global.process) != null ? ref2.env : void 0;
+        return (ref1 = global.process) != null ? ref1.env : void 0;
       }
     })()) || {};
   };
