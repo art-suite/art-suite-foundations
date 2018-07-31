@@ -114,7 +114,7 @@ var ArtStandardLibMultipleContextTypeSupport, Types;
 ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
-  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString;
+  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
 
   function Types() {}
 
@@ -163,17 +163,81 @@ module.exports = Types = (function() {
   _functionsPrototype = Object.getPrototypeOf(function() {});
 
   Types.getSuperclass = getSuperclass = function(klass) {
-    var prototype;
-    return (typeof (prototype = Object.getPrototypeOf(klass)) === "function") && (prototype !== _functionsPrototype) && prototype;
+    var ref, superclass;
+    if (isFunction(klass)) {
+      if ((superclass = Object.getPrototypeOf(klass)) && superclass !== _functionsPrototype) {
+        return superclass;
+      } else {
+        return (ref = klass.__super__) != null ? ref.constructor : void 0;
+      }
+    }
   };
 
+
+  /*
+  NAME: isClass
+  IN: obj:anything
+  OUT: boolean
+  
+  Classes are Functions in JavaScript, and there is no built-in way to tell
+  the differences even though, as-of ES6, there actually is a difference.
+  
+  WARNING #1: This function cannot reliably detect a class which doesn't extend another.
+  
+  TRUE-POSITIVES:
+    100% true if obj is an extended class
+    probably-true if obj is a function AND
+      obj has enumerable properties or
+      obj's prototype has enumerable properties
+  
+  FALSE-POSITIVES:
+    If you passed in a function with one or more manually set, enumerable properties.
+  
+  FALSE-NEGATIVES:
+    If you passed in a 'class' with no enumerable prototype properties and no enumerable
+    static/class properties.
+  
+  WARNING #2:
+    Static/class methods declared with ES6 class syntax ARE NOT ENUMERABLE (face-palm).
+    Therefor, in this case, FALSE-NEGATIVES are possible even if you have class methods.
+  
+    It's just too costly to check for non-enumerable methods.
+  
+  RECOMENDAION:
+    To make your classes reliabily detectable: ALWAYS extend something.
+    If you aren't extending anything else, extend Object.
+    This is what CaffeineScript does.
+  
+  WHY hasOwnProperties for obj and hasProperties for obj.prototype???
+    hasProperties is faster
+    hasOwnProperties because _functionsPrototype actuall has getName added to it
+    already by NeptuneNamespaces to normalize getting the name of things.
+    I could probably make that a non-enumerable...
+   */
+
   Types.isClass = isClass = function(obj) {
+    if (getSuperclass(obj)) {
+      return true;
+    } else if (isFunction(obj) && ((hasOwnProperties(obj)) || hasProperties(obj.prototype))) {
+
+      /*
+      HACK:
+        If obj is a function and has properties or its prototype has properties
+        it's a non-standard function,
+        and therefor it's -probably- a class
+       */
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  oldIsClass = function(obj) {
     return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || (getSuperclass(obj)) || (hasOwnProperties(obj)) || (obj.prototype && hasProperties(obj.prototype))));
   };
 
   Types.isExtendedClass = isExtendedClass = function(obj) {
-    var prototype;
-    return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || ((typeof (prototype = Object.getPrototypeOf(obj)) === "function") && prototype !== _functionsPrototype)));
+    return !!getSuperclass(obj);
   };
 
   Types.isArrayUniversal = Array.isArray;
