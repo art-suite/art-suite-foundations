@@ -22,6 +22,7 @@
   isArguments
   log
   gt, lt, gte, lte
+  getSuperclass
 } = Neptune.Art.StandardLib
 {BaseClass} = require 'art-class-system'
 
@@ -260,6 +261,40 @@ module.exports = suite:
     testInequality "hi1", "hi2"
     testInequality "hi2", "hi1"
 
+  getSuperclass: ->
+    class MyCoffeeScriptNotExtendClass
+      mySpecialProtoProp: 123
+
+    class MyCoffeeScriptExtendedClass extends Object
+      mySpecialProtoProp: 123
+
+    class MySubCoffeeScriptExtendedClass extends MyCoffeeScriptExtendedClass
+      mySpecialProtoProp: 123
+
+    class MyBaseClassCoffeeScriptExtendedClass extends BaseClass
+      mySpecialProtoProp: 123
+
+    try
+      MyEs6NotExtendedClass = eval "(function(){class MyEs6NotExtendedClass {};return MyEs6NotExtendedClass;})()"
+      global.MyEs6ExtendedClass = eval "(function(){class MyEs6ExtendedClass extends Object {};return MyEs6ExtendedClass;})()"
+      MySubEs6ExtendedClass = eval "(function(){class MySubEs6ExtendedClass extends global.MyEs6ExtendedClass {};return MySubEs6ExtendedClass;})()"
+      MyBaseClassEs6ExtendedClass = eval "(function(){class MyBaseClassEs6ExtendedClass extends Neptune.Art.ClassSystem.BaseClass {};return MyBaseClassEs6ExtendedClass;})()"
+
+    test "CoffeeScript not extended",             -> assert.notPresent getSuperclass MyCoffeeScriptNotExtendClass
+    test "CoffeeScript extend Object",            -> assert.equal Object, getSuperclass MyCoffeeScriptExtendedClass
+    test "CoffeeScript extend Foo extend Object", -> assert.equal MyCoffeeScriptExtendedClass, getSuperclass MySubCoffeeScriptExtendedClass
+    test "CoffeeScript extend BaseClass",         -> assert.equal BaseClass, getSuperclass MyBaseClassCoffeeScriptExtendedClass
+
+    test "Es6 not extended",                      -> assert.notPresent getSuperclass MyEs6NotExtendedClass
+    test "Es6 extended Object",                   -> assert.equal Object, getSuperclass MyEs6ExtendedClass
+    test "Es6 extend Foo extend Object",          -> assert.equal MyEs6ExtendedClass, getSuperclass MySubEs6ExtendedClass
+    test "Es6 extend BaseClass",                  -> assert.equal BaseClass, getSuperclass MyBaseClassEs6ExtendedClass
+
+    test "null",                    -> assert.notPresent getSuperclass null
+    test "undefined",               -> assert.notPresent getSuperclass undefined
+    test "->",                      -> assert.notPresent getSuperclass ->
+    test "{}",                      -> assert.notPresent getSuperclass {}
+
   getSuper: ->
     class MyExtendedClass extends BaseClass
       mySpecialProtoProp: 123
@@ -269,17 +304,12 @@ module.exports = suite:
     try
       MyEs6ExtendedClass = eval "(function(){class MyEs6ExtendedClass extends Neptune.Art.ClassSystem.BaseClass {};return MyEs6ExtendedClass;})()"
 
-    global.MyExtendedClass = MyExtendedClass
-    global.myExtendedInstance = myExtendedInstance
-
-
     test "{}", -> assert.eq null, getSuper {}
     test "[]", -> assert.eq {}, getSuper []
     test "->", -> assert.eq Function.__proto__, getSuper ->
     MyEs6ExtendedClass && test "MyEs6ExtendedClass -> BaseClass", ->
       # evaluating in a funciton so that IE11 doesn't choke
       # only works with ES6 classes - which will be available in CoffeeScript 2 and CaffeineScript
-      Neptune.Art.StandardLib.log {MyEs6ExtendedClass: eval "123"}
       assert.eq BaseClass, getSuper MyEs6ExtendedClass
 
     MyEs6ExtendedClass && test "myExtendedInstance -> BaseClass.prototype", ->

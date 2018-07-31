@@ -36,13 +36,82 @@ module.exports = class Types
   @isBoolean: (obj) => obj == true || obj == false
 
   _functionsPrototype = Object.getPrototypeOf ->
-  @getSuperclass: getSuperclass = (klass) ->
-    (typeof (prototype = Object.getPrototypeOf klass) is "function") &&
-    (prototype != _functionsPrototype) &&
-    prototype
+  # @getSuperclass: getSuperclass = (klass) ->
+  #   (typeof (prototype = Object.getPrototypeOf klass) is "function") &&
+  #   (prototype != _functionsPrototype) &&
+  #   prototype
 
-  # NOTE: cannot detect a class which doesn't extend another
+  @getSuperclass: getSuperclass = (klass) ->
+    if isFunction klass
+      if (superclass = Object.getPrototypeOf klass) && superclass != _functionsPrototype
+        superclass
+      else
+        klass.__super__?.constructor
+
+      # # CoffeeScript 1.x inheritance
+      # superclass = if (s = klass.__super__) && Object.hasOwnProperty("__super__") ?.constructor
+
+      # # ES6 inheritance
+      # superclass ?= Object.getPrototypeOf klass
+
+      # if isFunction(superclass) && superclass != _functionsPrototype
+      #   superclass
+
+  ###
+  NAME: isClass
+  IN: obj:anything
+  OUT: boolean
+
+  Classes are Functions in JavaScript, and there is no built-in way to tell
+  the differences even though, as-of ES6, there actually is a difference.
+
+  WARNING #1: This function cannot reliably detect a class which doesn't extend another.
+
+  TRUE-POSITIVES:
+    100% true if obj is an extended class
+    probably-true if obj is a function AND
+      obj has enumerable properties or
+      obj's prototype has enumerable properties
+
+  FALSE-POSITIVES:
+    If you passed in a function with one or more manually set, enumerable properties.
+
+  FALSE-NEGATIVES:
+    If you passed in a 'class' with no enumerable prototype properties and no enumerable
+    static/class properties.
+
+  WARNING #2:
+    Static/class methods declared with ES6 class syntax ARE NOT ENUMERABLE (face-palm).
+    Therefor, in this case, FALSE-NEGATIVES are possible even if you have class methods.
+
+    It's just too costly to check for non-enumerable methods.
+
+  RECOMENDAION:
+    To make your classes reliabily detectable: ALWAYS extend something.
+    If you aren't extending anything else, extend Object.
+    This is what CaffeineScript does.
+
+  WHY hasOwnProperties for obj and hasProperties for obj.prototype???
+    hasProperties is faster
+    hasOwnProperties because _functionsPrototype actuall has getName added to it
+    already by NeptuneNamespaces to normalize getting the name of things.
+    I could probably make that a non-enumerable...
+  ###
   @isClass: isClass =
+    (obj) =>
+      if getSuperclass obj then true
+      else if isFunction(obj) && ((hasOwnProperties obj) || hasProperties obj.prototype)
+        ###
+        HACK:
+          If obj is a function and has properties or its prototype has properties
+          it's a non-standard function,
+          and therefor it's -probably- a class
+        ###
+        true
+
+      else false
+
+  oldIsClass =
     (obj) =>
       !!(
         typeof obj is "function" && (
@@ -66,16 +135,8 @@ module.exports = class Types
         )
       )
 
-  @isExtendedClass: isExtendedClass = (obj) =>
-    !! (
-      typeof obj is "function" && (
-        # CoffeeScript extending class
-        (typeof obj.__super__ is "object") ||
+  @isExtendedClass: isExtendedClass = (obj) => !!getSuperclass obj
 
-        # ES6 extending class
-        ((typeof (prototype = Object.getPrototypeOf obj) is "function") && prototype != _functionsPrototype)
-      )
-    )
 
   # https://jsperf.com/is-array-sbd
   # correct: Array.isArray

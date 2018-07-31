@@ -107,7 +107,7 @@ module.exports = suite:
 
     testFI 'has:':1, '"has:": 1'
 
-    testFI Foo, Foo.namespacePath
+    testFI Foo, "class #{Foo.namespacePath}"
     testFI (new Foo), "<#{Foo.namespacePath}>"
 
   ansiSafeStringLength: ->
