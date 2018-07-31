@@ -502,7 +502,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
   @classGetter
     inspectedObjects: ->
-      inspectedObjectLiteral @getNamespacePath()
+      inspectedObjectLiteral "class #{@getNamespacePath()}"
 
   ######################################################
   # Abstract Classes
