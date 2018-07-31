@@ -7,7 +7,7 @@ defineModule module, class Environment
   @getEnv: ->
     global.environment ?=
       (
-        if global.location?.search
+        if global.location?
           out = ParseUrl.parseQuery()
           for k, v of global.location when k != "search" && isString(v) && v.length > 0
             out[k] = v
