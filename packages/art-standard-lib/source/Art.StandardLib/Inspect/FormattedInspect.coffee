@@ -306,7 +306,6 @@ colorizeFunctions = object colorNames, (c) -> (str) -> str[c] ? str
 identity = (s) -> s
 passThroughColorizeFunctions = object colorNames, -> identity
 
-
 module.exports = class FormattedInspect
   @ansiRegex: ansiRegex
   @stripAnsi: stripAnsi
