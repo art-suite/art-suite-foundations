@@ -15,6 +15,21 @@ suite:
       assert.eq bar, foo
       assert.eq foo.a, 125
 
+  inheritance: ->
+    test "superclass", ->
+      class Foo extends BaseClass
+        render: ->
+
+      class Bar extends Foo
+        render: ->
+
+      assert.eq BaseClass, Foo.superclass
+      assert.eq BaseClass, Foo.getSuperclass()
+      assert.eq BaseClass, getSuperclass Foo
+      assert.eq Foo, Bar.superclass
+      assert.eq Foo, Bar.getSuperclass()
+      assert.eq Foo, getSuperclass Bar
+
   properties: ->
     test "@getter 'bar' defines propGetter", ->
       class Foo extends BaseClass
