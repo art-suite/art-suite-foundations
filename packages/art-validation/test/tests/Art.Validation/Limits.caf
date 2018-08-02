@@ -8,6 +8,12 @@ suite:
         maxLength: 5
       assert.throws -> v.validateCreate id: "  too long man"
 
+    test "maxLength: 3000" ->
+      v = new Validator caption:
+        fieldType: 'trimmedString'
+        maxLength: 3000
+      v.validateCreate caption: randomString 2999
+
     test "maxLength is after preprocess" ->
       v = new Validator id:
         fieldType: 'trimmedString'

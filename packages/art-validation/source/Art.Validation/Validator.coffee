@@ -149,8 +149,8 @@ module.exports = class Validator extends BaseClass
   normalizeFieldTypeProp = (ft) ->
     {fieldType, fields} = ft
     fieldType ||= "object" if fields
-    if fieldType
-      merge normalizeFieldProps(fieldType), ft
+    if isString fieldType
+      merge FieldTypes[fieldType], ft
     else
       ft
 
