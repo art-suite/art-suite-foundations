@@ -1,7 +1,8 @@
 
 {StandardLib} = Neptune.Art
-{clone, eq, shallowEq, inspect, plainObjectsDeepEq, plainObjectsDeepDiff, compare,
+{neq, clone, eq, shallowEq, inspect, plainObjectsDeepEq, plainObjectsDeepDiff, compare,
   float64Precision,  floatTrue0
+  formattedInspect
 } = StandardLib
 # 'lib/art/atomic'
 # {point} = Atomic
@@ -42,48 +43,50 @@ sameComplexStructure =
   i: {}
   j: foo:1, bar:2
 
-suite "Art.StandardLib.StandardLib.Eq", ->
-  suite "eq", ->
-    test "numbers", ->
-      assert.equal true,  eq 1, 1
-      assert.equal false, eq 1, 2
+module.exports = suite:
+  eqAndNeq: ->
+    assertEq = (truth, a, b) ->
+      assert.equal !!truth, eq a, b
+      assert.equal !truth, neq a, b
 
-    test "null and undefined", ->
-      assert.equal true,  eq null, null
-      assert.equal true,  eq undefined, undefined
-      assert.equal false, eq null, undefined
-      assert.equal false, eq undefined, null
+    testEq = (a, b) ->
+      test "eq #{formattedInspect a}, #{formattedInspect a}", ->
+        assertEq true,  a, b
 
-    test "null, undefined and 0", ->
-      assert.equal false, eq null, 0
-      assert.equal false, eq 0, null
-      assert.equal false, eq undefined, 0
-      assert.equal false, eq 0, undefined
+    testNeq = (a, b) ->
+      test "neq #{formattedInspect a}, #{formattedInspect a}", ->
+        assertEq false,  a, b
 
-    test "strings", ->
-      assert.equal true,  eq "hi", "hi"
-      assert.equal false, eq "hi", "by"
+    testEq 1, 1
+    testNeq 1, 2
+    testEq {a:1}, {a:1}
+    testEq [1], [1]
+    testEq null, null
+    testEq undefined, undefined
+    testNeq undefined, null
+    testNeq null, undefined
+    testNeq 0, null
+    testNeq null, 0
+    testNeq undefined, 0
+    testNeq 0, undefined
+    testEq "hi", "hi"
+    testNeq "hi", "bi"
 
-    test "functions", ->
-      a = -> 1
-      b = -> 1
-      assert.equal true,  eq a, a
-      assert.equal false, eq a, b
+    a = -> 1
+    b = -> 1
+    testEq a, a
+    testNeq a, b
 
-    test "arrays", ->
-      assert.equal true,  eq [1, 2, 3], [1, 2, 3]
-      assert.equal false, eq [1, 2, 3, 4], [1, 2, 3]
-      assert.equal false, eq [1, 2, 3], [1, 2, 3, 4]
-      assert.equal false, eq [1, 2, 3], [1, 3, 3]
+    testEq  [1, 2, 3], [1, 2, 3]
+    testNeq [1, 2, 3, 4], [1, 2, 3]
+    testNeq [1, 2, 3], [1, 2, 3, 4]
+    testNeq [1, 2, 3], [1, 3, 3]
 
-    test "objects", ->
-      assert.equal true,  eq {a:1, b:2}, {a:1, b:2}
-      assert.equal false, eq {a:1, b:2}, {a:1, b:2, c:3}
-      assert.equal false, eq {a:1, b:2, c:3}, {a:1, b:2}
-      assert.equal false, eq {a:1, b:3}, {a:1, b:2}
-
-    test "objects with different order", ->
-      assert.equal true,  eq {a:1, b:2}, {b:2, a:1}
+    testEq  {a:1, b:2}, {a:1, b:2}
+    testNeq {a:1, b:2}, {a:1, b:2, c:3}
+    testNeq {a:1, b:2, c:3}, {a:1, b:2}
+    testNeq {a:1, b:3}, {a:1, b:2}
+    testEq  {a:1, b:2}, {b:2, a:1}
 
     test "!eq instances of different classes", ->
       class AClass
@@ -92,7 +95,7 @@ suite "Art.StandardLib.StandardLib.Eq", ->
       a = new AClass
       b = new BClass
 
-      assert.equal false, eq a, b
+      assertEq false, a, b
 
     test "!eq two otherwise identical instances of same class", ->
       class AClass
@@ -100,7 +103,7 @@ suite "Art.StandardLib.StandardLib.Eq", ->
       a = new AClass
       b = new AClass
 
-      assert.neq a, b
+      assertEq false, a, b
 
     test "two otherwise identical instances of same class with custom eq", ->
       class AClass
@@ -109,39 +112,18 @@ suite "Art.StandardLib.StandardLib.Eq", ->
       a = new AClass
       b = new AClass
 
-      assert.eq a, b
-      assert.neq a, 123
-
-    # test "shallowEq with nulls", ->
-    #   a = null
-    #   b = point 123
-    #   assert.ok shallowEq a, a
-    #   assert.ok !shallowEq a, b
-    #   assert.ok !shallowEq b, a
-
-    # test "shallowEq with self", ->
-    #   a = point 123
-    #   assert.ok shallowEq a, a
-
-    # test "shallowEq with two same objects", ->
-    #   a = point 123
-    #   b = point 123
-    #   assert.ok shallowEq a, b
-
-    # test "shallowEq with two different objects", ->
-    #   a = point 123
-    #   b = point 123.1
-    #   assert.ok !shallowEq a, b
+      assertEq true, a, b
+      assertEq false, a, 123
 
     test "objects with undefined values tricky case", ->
       a = foo: undefined
       b = bar: 123
-      assert.neq a, b
+      assertEq false, a, b
 
     test "recursive", ->
       a = {}
       a.x = a
-      assert.eq a, a
+      assertEq true, a, a
 
     test "neq recursive", ->
       a = {}
@@ -151,9 +133,9 @@ suite "Art.StandardLib.StandardLib.Eq", ->
 
       b.y = a
       b.z = b
-      assert.neq a, b
+      assertEq false, a, b
 
-  suite "compare", ->
+  compare: ->
     test "numbers", ->
       assert.equal 0, compare 1, 1
       assert.ok 0 > compare 1, 2
@@ -211,7 +193,7 @@ suite "Art.StandardLib.StandardLib.Eq", ->
     #   assert.ok 0 > compare p12, p23
     #   assert.ok 0 < compare p23, p12
 
-  suite "plainObjectsDeepEq", ->
+  plainObjectsDeepEq: ->
     test "plainObjectsDeepEq objects with undefined values tricky case", ->
       a = foo: undefined
       b = bar: 123
@@ -287,7 +269,7 @@ suite "Art.StandardLib.StandardLib.Eq", ->
       assert.eq 0, float64Precision / 2
 
 
-  suite "plainObjectsDeepDiff", ->
+  plainObjectsDeepDiff: ->
 
     test "plainObjectsDeepDiff 1, 1", ->
       assert.eq plainObjectsDeepDiff(1, 1), null
@@ -316,3 +298,7 @@ suite "Art.StandardLib.StandardLib.Eq", ->
     test "plainObjectsDeepDiff [1, 2], [1]", -> assert.eq plainObjectsDeepDiff([1, 2], [1]), 1: removed: 2
     test "plainObjectsDeepDiff [1], [1, 2]", -> assert.eq plainObjectsDeepDiff([1], [1, 2]), 1: added: 2
     test "plainObjectsDeepDiff [1, 2], [2, 1]", -> assert.eq plainObjectsDeepDiff([1, 2], [2, 1]), 0: {before: 1, after: 2}, 1: before: 2, after: 1
+
+  # neq: ->
+  #   test "neq same objects", ->
+  #     assert.false neq {a:1}, {a:1}

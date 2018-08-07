@@ -17,10 +17,18 @@ module.exports = class Eq
     false: otherwise
   ###
   @eq:  (a, b) => a == b || 0 == @compare a, b, true
-  @neq: (a, b) => a != b || 0 != @compare a, b, true
+  @neq: (a, b) =>
+    if a == b
+      false
+    else
+      0 != @compare a, b, true
 
   @fastEq:  (a, b) => a == b || 0 == @compare a, b, false
-  @fastNeq: (a, b) => a != b || 0 != @compare a, b, false
+  @fastNeq: (a, b) =>
+    if a == b
+      false
+    else
+      0 != @compare a, b, false
 
   # recursively compares all elements with indexs < min a.length, b.length
   # If all are equal, returns a.length - b.length
@@ -80,6 +88,13 @@ module.exports = class Eq
     <0: a < b
     0:  a == b
     >0: a > b
+
+  TODO:
+    recursionBlockArray could be reused.
+    Further, depth == 1 checks could be safely skipped to make
+    even slow-compare fast for simple objects. Only if we
+    have an object/array inside another object/array do we need
+    to start checking.
   ###
   @compare: (a, b, recursionBlockEnabled) =>
     @_compare a, b, recursionBlockEnabled && []
