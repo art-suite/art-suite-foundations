@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.44.1"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.44.2"};
 
 /***/ }),
 /* 5 */
@@ -5025,7 +5025,11 @@ module.exports = Eq = (function() {
   };
 
   Eq.neq = function(a, b) {
-    return a !== b || 0 !== Eq.compare(a, b, true);
+    if (a === b) {
+      return false;
+    } else {
+      return 0 !== Eq.compare(a, b, true);
+    }
   };
 
   Eq.fastEq = function(a, b) {
@@ -5033,7 +5037,11 @@ module.exports = Eq = (function() {
   };
 
   Eq.fastNeq = function(a, b) {
-    return a !== b || 0 !== Eq.compare(a, b, false);
+    if (a === b) {
+      return false;
+    } else {
+      return 0 !== Eq.compare(a, b, false);
+    }
   };
 
   Eq._compareArray = function(a, b, recursionBlockArray) {
@@ -5100,6 +5108,13 @@ module.exports = Eq = (function() {
     <0: a < b
     0:  a == b
     >0: a > b
+  
+  TODO:
+    recursionBlockArray could be reused.
+    Further, depth == 1 checks could be safely skipped to make
+    even slow-compare fast for simple objects. Only if we
+    have an object/array inside another object/array do we need
+    to start checking.
    */
 
   Eq.compare = function(a, b, recursionBlockEnabled) {
