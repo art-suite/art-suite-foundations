@@ -78,7 +78,7 @@ module.exports =
   secondsPerHour:  secondsPerHour = 3600
   secondsPerDay:   secondsPerDay  = secondsPerHour * 24
 
-  firstOfHour:                 (time) ->  ((toSeconds(time)                 / secondsPerHour) | 0) * secondsPerHour
+  firstOfHour:   firstOfHour = (time) ->  ((toSeconds(time)                 / secondsPerHour) | 0) * secondsPerHour
   firstOfDay:     firstOfDay = (time) ->  ((toSeconds(time)                 / secondsPerDay ) | 0) * secondsPerDay
   firstOfWeek:                 (time) ->  firstOfDay(time) - ((toDate(time).getUTCDay() - 1) %% 7) * secondsPerDay  # monday is first day
   firstOfMonth:                (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
