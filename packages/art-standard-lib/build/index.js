@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.44.2"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.45.0"};
 
 /***/ }),
 /* 5 */
@@ -6552,7 +6552,7 @@ module.exports = AsyncExtensions = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dateFormat, firstOfDay, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, secondsPerDay, secondsPerHour, toDate, toMilliseconds, toSeconds,
+var dateFormat, firstOfDay, firstOfDayLocal, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, secondsPerDay, secondsPerHour, toDate, toMilliseconds, toSeconds,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
 ref = __webpack_require__(/*! ./Core/Types */ 14), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
@@ -6651,6 +6651,15 @@ module.exports = {
   },
   firstOfMonth: function(time) {
     return firstOfDay(time) - (toDate(time).getUTCDate() - 1) * secondsPerDay;
+  },
+  firstOfDayLocale: firstOfDayLocal = function(time) {
+    return firstOfHour(time) - toDate(time).getHours() * secondsPerHour;
+  },
+  firstOfWeekLocale: function(time) {
+    return firstOfDayLocal(time) - (modulo(toDate(time).getDay() - 1, 7)) * secondsPerDay;
+  },
+  firstOfMonthLocale: function(time) {
+    return firstOfDayLocal(time) - (toDate(time).getDate() - 1) * secondsPerDay;
   }
 };
 
