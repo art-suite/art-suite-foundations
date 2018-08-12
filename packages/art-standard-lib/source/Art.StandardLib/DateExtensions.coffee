@@ -82,3 +82,7 @@ module.exports =
   firstOfDay:     firstOfDay = (time) ->  ((toSeconds(time)                 / secondsPerDay ) | 0) * secondsPerDay
   firstOfWeek:                 (time) ->  firstOfDay(time) - ((toDate(time).getUTCDay() - 1) %% 7) * secondsPerDay  # monday is first day
   firstOfMonth:                (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
+
+  firstOfDayLocale: firstOfDayLocal = (time) ->  firstOfHour(time)     - toDate(time).getHours()            * secondsPerHour
+  firstOfWeekLocale:                  (time) ->  firstOfDayLocal(time) - ((toDate(time).getDay() - 1) %% 7) * secondsPerDay  # monday is first day
+  firstOfMonthLocale:                 (time) ->  firstOfDayLocal(time) - (toDate(time).getDate() - 1)       * secondsPerDay

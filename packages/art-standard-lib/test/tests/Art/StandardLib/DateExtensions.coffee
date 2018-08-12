@@ -4,6 +4,10 @@
   firstOfDay
   firstOfWeek
   firstOfMonth
+
+  firstOfDayLocale
+  firstOfWeekLocale
+  firstOfMonthLocale
 } = require '../../../StandardImport'
 
 date = new Date milliseconds = 1497123141167
@@ -40,11 +44,11 @@ suite:
   firstOf: ->
     breakOut = (time) ->
       d = toDate time
-      year: d.getUTCFullYear()
-      month: d.getUTCMonth()
-      day:  d.getUTCDate()
-      hour: d.getUTCHours()
-      min:  d.getUTCMinutes()
+      year:       d.getUTCFullYear()
+      month:      d.getUTCMonth()
+      day:        d.getUTCDate()
+      hour:       d.getUTCHours()
+      min:        d.getUTCMinutes()
       dayOfWeek:  d.getUTCDay()
 
     testFirstOf = (name, f, m) ->
@@ -60,3 +64,27 @@ suite:
     testFirstOf "firstOfDay",    firstOfDay,   hour: 0, min: 0
     testFirstOf "firstOfWeek",   firstOfWeek,  hour: 0, min: 0, dayOfWeek: 1, day: 4
     testFirstOf "firstOfMonth",  firstOfMonth, hour: 0, min: 0, dayOfWeek: 5, day: 1
+
+  firstOfLocale: ->
+    breakOut = (time) ->
+      d = toDate time
+      year:       d.getFullYear()
+      month:      d.getMonth()
+      day:        d.getDate()
+      hour:       d.getHours()
+      min:        d.getMinutes()
+      dayOfWeek:  d.getDay()
+
+    testFirstOfLocale = (name, f, m) ->
+      test name, ->
+        v = f testTime
+        assert.eq (breakOut v),
+          merge
+            breakOut testTime
+            m
+
+    testTime = 1528587452531
+    testFirstOfLocale "firstOfHour",   firstOfHour,  min: 0
+    testFirstOfLocale "firstOfDay",    firstOfDayLocale,   hour: 0, min: 0
+    testFirstOfLocale "firstOfWeek",   firstOfWeekLocale,  hour: 0, min: 0, dayOfWeek: 1, day: 4
+    testFirstOfLocale "firstOfMonth",  firstOfMonthLocale, hour: 0, min: 0, dayOfWeek: 5, day: 1
