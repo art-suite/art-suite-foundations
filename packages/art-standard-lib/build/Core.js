@@ -613,11 +613,11 @@ module.exports = Types = (function() {
   };
 
   Types.isError = function(obj) {
-    return obj && obj instanceof Error;
+    return (obj != null) && obj instanceof Error;
   };
 
   Types.isDate = function(obj) {
-    return obj && obj.constructor === Date;
+    return (obj != null ? obj.constructor : void 0) === Date;
   };
 
   Types.isString = isString = function(obj) {
@@ -641,7 +641,7 @@ module.exports = Types = (function() {
   Types.getSuperclass = getSuperclass = function(klass) {
     var ref, superclass;
     if (isFunction(klass)) {
-      if ((superclass = Object.getPrototypeOf(klass)) && superclass !== _functionsPrototype) {
+      if (((superclass = Object.getPrototypeOf(klass)) != null) && superclass !== _functionsPrototype) {
         return superclass;
       } else {
         return (ref = klass.__super__) != null ? ref.constructor : void 0;
@@ -709,7 +709,7 @@ module.exports = Types = (function() {
   };
 
   oldIsClass = function(obj) {
-    return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || (getSuperclass(obj)) || (hasOwnProperties(obj)) || (obj.prototype && hasProperties(obj.prototype))));
+    return !!(typeof obj === "function" && ((typeof obj.__super__ === "object") || (getSuperclass(obj)) || (hasOwnProperties(obj)) || ((obj.prototype != null) && hasProperties(obj.prototype))));
   };
 
   Types.isExtendedClass = isExtendedClass = function(obj) {
@@ -725,11 +725,11 @@ module.exports = Types = (function() {
   Types.isPlainArray = isArray;
 
   Types.isNonNegativeInt = isNonNegativeInt = function(x) {
-    return (x | 0 === x) && x >= 0;
+    return (x != null) && x >= 0;
   };
 
   Types.isArrayIterable = function(source) {
-    return !!(source && isNonNegativeInt(source.length));
+    return (source != null) && isNonNegativeInt(source.length);
   };
 
   Types.isJsonAtomicType = isJsonAtomicType = function(a) {
@@ -741,7 +741,7 @@ module.exports = Types = (function() {
   };
 
   Types.isObject = isObject = function(obj) {
-    return !!obj && typeof obj === "object" && !isArray(obj);
+    return (obj != null) && typeof obj === "object" && !isArray(obj);
   };
 
   Types.isDirectPrototypeOf = isDirectPrototypeOf = function(o, prototype) {
@@ -906,7 +906,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.45.1"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.45.2"};
 
 /***/ }),
 
