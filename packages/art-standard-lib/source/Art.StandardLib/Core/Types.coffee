@@ -27,13 +27,12 @@ module.exports = class Types
     ((x | 0) == x) &&
      x >= 0
 
-  @isError: (obj) => obj && obj instanceof Error
-
-  @isDate: (obj) => obj && obj.constructor == Date
-  @isString: isString = (obj) => typeof obj == "string"
-  @isFunction: isFunction = (obj) => typeof obj == "function"
-  @isEmptyObject: (obj) => Object.keys(obj).length == 0
-  @isBoolean: (obj) => obj == true || obj == false
+  @isError:                   (obj) => obj? && obj instanceof Error
+  @isDate:                    (obj) => obj?.constructor == Date
+  @isString: isString =       (obj) => typeof obj == "string"
+  @isFunction: isFunction =   (obj) => typeof obj == "function"
+  @isEmptyObject:             (obj) => Object.keys(obj).length == 0
+  @isBoolean:                 (obj) => obj == true || obj == false
 
   _functionsPrototype = Object.getPrototypeOf ->
   # @getSuperclass: getSuperclass = (klass) ->
@@ -43,7 +42,7 @@ module.exports = class Types
 
   @getSuperclass: getSuperclass = (klass) ->
     if isFunction klass
-      if (superclass = Object.getPrototypeOf klass) && superclass != _functionsPrototype
+      if (superclass = Object.getPrototypeOf klass)? && superclass != _functionsPrototype
         superclass
       else
         klass.__super__?.constructor
@@ -131,7 +130,7 @@ module.exports = class Types
           (hasOwnProperties obj) ||
 
           # HACK: if its a function and its prototype as own-properties, its not a plain function, probably a class
-          (obj.prototype && hasProperties obj.prototype)
+          (obj.prototype? && hasProperties obj.prototype)
         )
       )
 
@@ -153,14 +152,14 @@ module.exports = class Types
   # IE9+ supported, so we'll just use it directly.
   @isPlainArray:  isArray
 
-  @isNonNegativeInt: isNonNegativeInt = (x) -> (x | 0 == x) && x >= 0
-  @isArrayIterable: (source) -> !!(source && isNonNegativeInt source.length)
+  @isNonNegativeInt: isNonNegativeInt = (x) -> x? && x >= 0
+  @isArrayIterable: (source) -> source? && isNonNegativeInt source.length
 
   @isJsonAtomicType: isJsonAtomicType = (a) -> isString(a) || isNumber(a) || a == true || a == false || a == null
   @isJsonType: (a) -> isJsonAtomicType(a) || isPlainObject(a) || isArray(a)
 
   @isObject: isObject = (obj) =>
-    !!obj && typeof obj == "object" && !isArray obj
+    obj? && typeof obj == "object" && !isArray obj
 
   @isDirectPrototypeOf:  isDirectPrototypeOf = (o, prototype) -> !isFunction(o) and prototype.constructor == o.constructor
 

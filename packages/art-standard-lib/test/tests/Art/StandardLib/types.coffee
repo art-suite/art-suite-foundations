@@ -2,6 +2,7 @@
   inspect
   isArray
   isString
+  isDate
   isFunction
   isPlainObject
   isPlainArray
@@ -49,6 +50,7 @@ module.exports = suite:
     test "isPromise Promise.resolve()", -> assert.eq true, isPromise Promise.resolve()
     test "isPromise Promise.reject()", -> assert.eq true, isPromise Promise.reject()
     test "isPromise 1 is false", -> assert.eq false, isPromise 1
+    test "isPromise '' is false", -> assert.eq false, isPromise ''
     test "isPromise {} is false", -> assert.eq false, isPromise {}
     test "isPromise Promise is false", -> assert.eq false, isPromise Promise
 
@@ -56,7 +58,10 @@ module.exports = suite:
     test "isArrayIterable [] is true", -> assert.eq true, isArrayIterable []
     test "isArrayIterable Int8Array is true", -> assert.eq true, isArrayIterable new Int8Array(4)
     test "isArrayIterable arguments is true", -> assert.eq true, isArrayIterable arguments
-    test "isArrayIterable string is true", -> assert.eq true, isArrayIterable "hi"
+    test "isArrayIterable string is true", ->
+      assert.eq true, isArrayIterable "hi"
+      assert.eq true, isArrayIterable ''
+
     test "isArrayIterable {length: 10} is true", -> assert.eq true, isArrayIterable length: 10
     test "isArrayIterable - non arrays are false", ->
       assert.eq false, isArrayIterable()
@@ -66,7 +71,10 @@ module.exports = suite:
       assert.eq false, isArrayIterable 123
 
   isString: ->
-    test "isString 'foo' is true", -> assert.eq true, isString "foo"
+    test "isString 'foo' is true", ->
+      assert.eq true, isString "foo"
+      assert.eq true, isString ''
+
     test "isString - non strings are false", ->
       assert.eq false, isString()
       assert.eq false, isString null
@@ -82,6 +90,7 @@ module.exports = suite:
     test "isPlainArray - false values", ->
       assert.eq false, isPlainArray {}
       assert.eq false, isPlainArray 123
+      assert.eq false, isPlainArray ""
       assert.eq false, isPlainArray "abc"
       assert.eq false, isPlainArray new Int8Array 4
       assert.eq false, isPlainArray false
@@ -94,11 +103,17 @@ module.exports = suite:
     test "isFunction - non functions are false", ->
       assert.eq false, isFunction()
       assert.eq false, isFunction null
+      assert.eq false, isFunction ''
       assert.eq false, isFunction undefined
       assert.eq false, isFunction 123
       assert.eq false, isFunction {}
       assert.eq false, isFunction []
       assert.eq false, isFunction "foo"
+
+  isDate: ->
+    test "isDate new Date is true",      -> assert.eq true, isDate new Date
+    test "isDate '' is false",           -> assert.eq false, isDate ""
+    test "isDate '07-04-2018' is false", -> assert.eq false, isDate "07-04-2018"
 
   isPlainObject: ->
     test "isPlainObject {} is true", -> assert.eq true, isPlainObject {}
@@ -109,6 +124,7 @@ module.exports = suite:
       assert.eq false, isPlainObject undefined
       assert.eq false, isPlainObject 123
       assert.eq false, isPlainObject "foo"
+      assert.eq false, isPlainObject ""
       assert.eq false, isPlainObject []
       assert.eq false, isPlainObject ->
 
@@ -176,6 +192,7 @@ module.exports = suite:
       assert.eq false, isObject()
       assert.eq false, isObject undefined
       assert.eq false, isObject 123
+      assert.eq false, isObject ''
       assert.eq false, isObject "foo"
 
   objectName: ->
