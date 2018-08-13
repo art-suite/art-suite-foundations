@@ -70,7 +70,7 @@ module.exports = FieldTypes =
   secondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
     dataType: numberDataType
     validate:   (v) -> isNumber(v) || isDate v
-    preprocess: toSeconds
+    preprocess: (v) -> log toSeconds(v) + .5 | 0
     decode: toDate
 
   color:
