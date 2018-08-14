@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.45.2"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.46.0"};
 
 /***/ }),
 /* 5 */
@@ -3093,6 +3093,30 @@ module.exports = StringExtensions = (function() {
   };
 
   StringExtensions.base62Characters = base62Characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  StringExtensions.fastHash = function(string) {
+    var hash, i, j, ref;
+    hash = 2147483647;
+    if (string.length > 0) {
+      for (i = j = 0, ref = string.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+        hash = ((hash << 5) - hash) + string.charCodeAt(i) & ((1 << 31) - 1);
+      }
+    }
+    return hash;
+  };
+
+
+  /*
+   * CaffeineScript once we have reduce + til support:
+  
+  @fastHash: (string) ->
+     * 22 tokens
+    reduce hash, i til string.length inject 0
+      hash << 5
+      - hash
+      + string.charCodeAt i
+      | 0
+   */
 
   StringExtensions.randomString = randomString = function(length, chars, randomNumbers) {
     var charsLength, i, result;
@@ -6591,7 +6615,7 @@ module.exports = {
     Number of Milliseconds since epoch-start
    */
   toMilliseconds: toMilliseconds = function(v) {
-    if (v == null) {
+    if (!((v != null) && v !== false)) {
       return Date.now();
     }
     if (isString(v)) {
@@ -6623,13 +6647,13 @@ module.exports = {
     Number of Seconds since epoch-start
    */
   toSeconds: toSeconds = function(v) {
-    if (v == null) {
+    if (!((v != null) && v !== false)) {
       return Date.now() / 1000;
     }
     return (toMilliseconds(v) / 1000 + .5) | 0;
   },
   toDate: toDate = function(v) {
-    if (v == null) {
+    if (!((v != null) && v !== false)) {
       return new Date;
     }
     if (isDate(v)) {
