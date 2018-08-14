@@ -36,7 +36,7 @@ module.exports =
     Number of Milliseconds since epoch-start
   ###
   toMilliseconds: toMilliseconds = (v) ->
-    return Date.now() unless v?
+    return Date.now() unless v? && v != false
     if isString v
       if /^\d+(\.\d+)?$/.test v
         v = v - 0
@@ -65,11 +65,11 @@ module.exports =
     Number of Seconds since epoch-start
   ###
   toSeconds: toSeconds = (v) ->
-    return Date.now() / 1000 unless v?
+    return Date.now() / 1000 unless v? && v != false
     (toMilliseconds(v) / 1000 + .5) | 0
 
   toDate: toDate = (v) ->
-    return new Date unless v?
+    return new Date unless v? && v != false
     if isDate v
       v
     else

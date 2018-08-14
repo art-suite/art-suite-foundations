@@ -34,6 +34,27 @@ module.exports = class StringExtensions
 
   @base62Characters: base62Characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+  @fastHash: (string) ->
+    # 39 tokens
+    hash = 2147483647
+    if string.length > 0
+      for i in [0...string.length]
+        hash = ((hash << 5) - hash) + string.charCodeAt(i) & ( (1 << 31) - 1)
+
+    hash
+
+  ###
+  # CaffeineScript once we have reduce + til support:
+
+  @fastHash: (string) ->
+    # 22 tokens
+    reduce hash, i til string.length inject 0
+      hash << 5
+      - hash
+      + string.charCodeAt i
+      | 0
+  ###
+
   @randomString: randomString = (length = 32, chars = base62Characters, randomNumbers) ->
     result = ''
     charsLength = chars.length
