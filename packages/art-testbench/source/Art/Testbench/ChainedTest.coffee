@@ -61,6 +61,7 @@ module.exports = class ChainedTest extends BaseClass
       @previousTestFunction = ->
       @testName
       @testFunction
+      @shouldTap
     ) ->
     test @testName, @testFunction && @setupAndTestOnceFunction if @testName
 
@@ -74,6 +75,8 @@ module.exports = class ChainedTest extends BaseClass
             .then (previousTestResult) =>
               @resolvedSetup.then (setupResult) =>
                 @testFunction previousTestResult, setupResult
+              .then (out) =>
+                if @shouldTap then previousTestResult else out
           else
             @resolvedSetup
 
@@ -91,3 +94,6 @@ module.exports = class ChainedTest extends BaseClass
 
   thenTest: (nextTestName, nextTestFunction)->
     new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction
+
+  tapTest: (nextTestName, nextTestFunction)->
+    new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction, true
