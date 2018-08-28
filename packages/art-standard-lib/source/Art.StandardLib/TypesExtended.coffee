@@ -55,8 +55,18 @@ module.exports = class Types
     "An object is present if it's not blank."
 
   basic:
-    present null, undefined or "" returns false (or whatever returnIfNotPresent is set to)
+    present null, undefined, false or "" returns false (or whatever returnIfNotPresent is set to)
     all other values return something truish - generally themselves
+
+    Yes, in ruby/rails, present(false) == false. Though logically true, I've also found it lead
+    to unexpected results in production code. I had a false-value where I was expecting a string due
+    to a corrupted database value.
+
+    Possible argment for present(false) == false: It's easy to accidentally return false when you
+    meant to return null or undefined. I think this is how my database got the corrupted false-instead-of
+    null-value.
+
+    Another argument: present(x) should always be false if x is false.
 
   custom:
     for bar where isFunction bar.present
@@ -87,7 +97,7 @@ module.exports = class Types
     else if isString obj
       !obj.match /^\s*$/
     else
-      obj != undefined && obj != null
+      obj != undefined && obj != null && obj != false
     if present then obj || true else returnIfNotPresent
 
   @functionName: functionName = (f) ->
