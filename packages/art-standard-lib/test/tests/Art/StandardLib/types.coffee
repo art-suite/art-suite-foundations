@@ -239,8 +239,8 @@ module.exports = suite:
     test "present 0 is true", ->
       assert.eq true, present 0
 
-    test "present false is true", ->
-      assert.eq true, present false
+    test "present false is false", ->
+      assert.eq false, present false
 
     test "present numbers", ->
       assert.eq 0.5, present 0.5
@@ -257,7 +257,7 @@ module.exports = suite:
       assert.eq "hi", present undefined, "hi"
       assert.eq "hi", present null, "hi"
       assert.eq true, present 0, "hi"
-      assert.eq true, present false, "hi"
+      assert.eq "hi", present false, "hi"
       assert.eq "hi", present "", "hi"
 
   inequality: ->
