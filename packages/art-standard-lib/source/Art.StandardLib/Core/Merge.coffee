@@ -15,6 +15,9 @@ module.exports = class Merge
   ###
   @merge: merge = => mergeInto {}, arguments
 
+  @mergeWithSelf: ->
+    mergeInto {}, @, arguments
+
   ###
   The same as 'merge' with one difference:
 
