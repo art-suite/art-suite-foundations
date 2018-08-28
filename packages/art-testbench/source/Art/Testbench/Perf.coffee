@@ -23,6 +23,7 @@ suite 'my suite', ->
   isPromise
   defineModule
   isFunction
+  floatEq
 } = require 'art-standard-lib'
 
 targetCycleDuration = .02
@@ -266,4 +267,8 @@ defineModule module, ->
           "  "
         else
           ""
-        log "#{rightAlign commaize(testsPerSecond),11} (#{rightAlign commaize(testsPerSecondGc),11} #{(100 * testsPerSecond/testsPerSecondGc)|0}%) #{testUnits}/s: #{name}"
+
+        if Math.abs((testsPerSecond / testsPerSecondGc) - 1) < .01
+          log "#{rightAlign commaize(testsPerSecond),11} #{testUnits}/s: #{name}"
+        else
+          log "#{rightAlign commaize(testsPerSecond),11} (#{rightAlign commaize(testsPerSecondGc),11} #{(100 * testsPerSecond/testsPerSecondGc)|0}%) #{testUnits}/s: #{name}"
