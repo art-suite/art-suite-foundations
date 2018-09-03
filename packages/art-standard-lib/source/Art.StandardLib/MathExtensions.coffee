@@ -8,6 +8,8 @@ inverstFlaot32Precision = 1 / float32Precision
 
 {abs, min, max, ceil, floor, round, random, pow} = self.Math
 
+Math.log2 ?= (x) -> Math.log(x) / Math.LOG2E
+
 module.exports = class MathExtensions
   @nearInfinity:        pow 10, 100
   @nearInfinityResult:  pow 10, 50
