@@ -1,4 +1,5 @@
-{compactFlatten, log, upperCamelCase, isFunction, isPlainObject, isClass} = require 'art-standard-lib'
+"use strict"
+{isArray, compactFlatten, log, upperCamelCase, isFunction, isPlainObject, isClass} = require 'art-standard-lib'
 
 mergeIntoBasic = (into, source) ->
   into[k] = v for k, v of source
@@ -39,7 +40,6 @@ module.exports = class ObjectTreeFactory
 
       preprocessElement: (element) -> element
         can do custom preprocssing of each argument to the factory.
-
 
         defualt: preprocessElementBasic (no-op)
 
@@ -85,31 +85,40 @@ module.exports = class ObjectTreeFactory
 
     _children = _props = _oneProps = null
 
-    applyArgs = (args) ->
-      for el in args when el = preprocessElement el
-        switch el.constructor
-          when Object
-            if _oneProps
-              _props = {}
-              mergePropsInto _props, _oneProps
-              _oneProps = null
-            if _props
-              mergePropsInto _props, el
-            else
-              _oneProps = el
+    applyArg = (el) ->
+      if el = preprocessElement el
+        if isPlainObject el
+          unless _oneProps
+            _oneProps = el
+          else
+            unless _props
+              mergePropsInto _props = {}, _oneProps
 
-          when Array then applyArgs el
-          else _children.push el
+            mergePropsInto _props, el
 
+        else if isArray el
+          applyArg el2 for el2 in el
+
+        else
+          _children ?= []
+          _children.push el
+
+      null
+
+    ###
+    PERFORMANCE TODO:
+      ES6 (...args) -> is MUCH faster than 'arguments', even with 'use strict' on.
+
+      AndroidChrome8: 214/130 => 1.6x faster
+      Chrome68:       459/321 => 1.4x faster
+      Safari11:        108/30 => 3.6x faster
+    ###
     Factory = ->
-      _oneProps = null
-      _props = null
-      _children = []
+      _children = _props = _oneProps = null
 
-      applyArgs arguments
+      applyArg el for el in arguments
 
-      nodeFactory _props || _oneProps || {}, _children
-
+      nodeFactory _props || _oneProps, _children
 
     if klass
       Factory.class = klass
