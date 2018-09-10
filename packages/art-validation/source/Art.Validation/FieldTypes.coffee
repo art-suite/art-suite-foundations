@@ -42,26 +42,32 @@ You can add your own, too, but they are ignored by this class.
 #   is the same as: @fields webPage: validate: (v) -> isId v
 #   and this:       @fields webPage: fieldType: "id"
 module.exports = FieldTypes =
-  boolean:  dataType: booleanDataType
-  number:   dataType: numberDataType
+  count:
+    fromString: numberFromString = (v) -> v - 0
+    dataType: numberDataType
+    default: 0
+
+  boolean:  dataType: booleanDataType, fromString: (v) -> !!/^ *t *$|true/i.test v
+  number:   dataType: numberDataType,  fromString: numberFromString
   string:   dataType: stringDataType
   object:   dataType: objectDataType
   array:    dataType: arrayDataType
   any:      dataType: anyDataType
-  json:     dataType: jsonDataType
+  json:     dataType: jsonDataType, fromString: (v) -> JSON.parse v
 
-  count:    dataType: numberDataType, default: 0
 
   id:
     required: true
     validate: (v) -> isId v
 
   date:
+    fromString:  (v) -> Date.parse v
     validate:   (v) -> isString(v) || (v instanceof Date)
     preprocess: (v) -> if isString(v) then new Date v else v
     dataType: dateDataType
 
   timestamp: # milliseconds since 1970; to get the current timestamp: Date.now()
+    fromString:  (v) -> toMilliseconds v
     dataType: numberDataType
     validate:   (v) -> isNumber(v) || isDate v
     preprocess: toMilliseconds
@@ -69,6 +75,7 @@ module.exports = FieldTypes =
 
   secondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
     dataType: numberDataType
+    fromString:  (v) -> toSeconds v
     validate:   (v) -> isNumber(v) || isDate v
     preprocess: (v) -> toSeconds(v) + .5 | 0
     decode: toDate
