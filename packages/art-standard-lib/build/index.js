@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.46.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.1"};
 
 /***/ }),
 /* 5 */
@@ -632,6 +632,10 @@ module.exports = Merge = (function() {
 
   Merge.merge = merge = function() {
     return mergeInto({}, arguments);
+  };
+
+  Merge.mergeWithSelf = function() {
+    return mergeInto({}, this, arguments);
   };
 
 
@@ -1604,8 +1608,18 @@ module.exports = Types = (function() {
     "An object is present if it's not blank."
   
   basic:
-    present null, undefined or "" returns false (or whatever returnIfNotPresent is set to)
+    present null, undefined, false or "" returns false (or whatever returnIfNotPresent is set to)
     all other values return something truish - generally themselves
+  
+    Yes, in ruby/rails, present(false) == false. Though logically true, I've also found it lead
+    to unexpected results in production code. I had a false-value where I was expecting a string due
+    to a corrupted database value.
+  
+    Possible argment for present(false) == false: It's easy to accidentally return false when you
+    meant to return null or undefined. I think this is how my database got the corrupted false-instead-of
+    null-value.
+  
+    Another argument: present(x) should always be false if x is false.
   
   custom:
     for bar where isFunction bar.present
@@ -1634,7 +1648,7 @@ module.exports = Types = (function() {
     if (returnIfNotPresent == null) {
       returnIfNotPresent = false;
     }
-    present = isFunction(obj != null ? obj.getPresent : void 0) ? obj.getPresent() : isFunction(obj != null ? obj.present : void 0) ? obj.present() : isString(obj) ? !obj.match(/^\s*$/) : obj !== void 0 && obj !== null;
+    present = isFunction(obj != null ? obj.getPresent : void 0) ? obj.getPresent() : isFunction(obj != null ? obj.present : void 0) ? obj.present() : isString(obj) ? !obj.match(/^\s*$/) : obj !== void 0 && obj !== null && obj !== false;
     if (present) {
       return obj || true;
     } else {
@@ -3574,6 +3588,12 @@ inverseFloat64Precision = 1 / float64Precision;
 inverstFlaot32Precision = 1 / float32Precision;
 
 ref = self.Math, abs = ref.abs, min = ref.min, max = ref.max, ceil = ref.ceil, floor = ref.floor, round = ref.round, random = ref.random, pow = ref.pow;
+
+if (Math.log2 == null) {
+  Math.log2 = function(x) {
+    return Math.log(x) / Math.LOG2E;
+  };
+}
 
 module.exports = MathExtensions = (function() {
   var bound;

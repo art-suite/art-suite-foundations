@@ -48,7 +48,7 @@ module.exports = suite:
 
   isPromise: ->
     test "isPromise Promise.resolve()", -> assert.eq true, isPromise Promise.resolve()
-    test "isPromise Promise.reject()", -> assert.eq true, isPromise Promise.reject()
+    test "isPromise Promise.reject()", -> (assert.eq true, isPromise p = Promise.reject()); p.catch ->
     test "isPromise 1 is false", -> assert.eq false, isPromise 1
     test "isPromise '' is false", -> assert.eq false, isPromise ''
     test "isPromise {} is false", -> assert.eq false, isPromise {}
