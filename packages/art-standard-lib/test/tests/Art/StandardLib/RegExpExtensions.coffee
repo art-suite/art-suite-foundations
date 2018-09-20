@@ -36,8 +36,10 @@ module.exports = suite: ->
     assert.eq "shanebdavis@gmail.com"       .match(emailRegexp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
     assert.eq "shanebdavis@www.gmail.com"   .match(emailRegexp), ["shanebdavis@www.gmail.com", "shanebdavis", "www.gmail.com"]
 
-  test "findEmailRegExp", ->
+  test "findEmailRegExp success", ->
     assert.eq "<shanebdavis@gmail.com>"     .match(findEmailRegExp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
+  test "findEmailRegExp fail", ->
+    assert.eq "<shanebdavis@@gmail.com>"    .match(findEmailRegExp), null
 
   test "domainRegexp successes", ->
     assert.eq "gmail.com".match(domainRegexp), ["gmail.com"]

@@ -29,14 +29,15 @@ module.exports = class RegExpExtensions
   #   at least something before @
   #   support for quotes (") and escapes (\.)
   #   at least one non-space in domain
+  #   only one '@'
   @findEmailRegExp:       ///
     (
-      (?: [^<>\s\n"\\] | \\. )+
+      (?: [^@<>\s\n"\\] | \\. )+
       |
-      " (?: [^"\\] | \\. )* "
+      " (?: [^@"\\] | \\. )* "
     )
     @
-    ([^\s\n<>]+)
+    ([^@\s\n<>]+)
     ///i
 
   @emailRegExp:           ///^#{@findEmailRegExp.source}$///i
