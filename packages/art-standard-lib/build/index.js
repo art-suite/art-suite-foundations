@@ -6646,6 +6646,9 @@ module.exports = {
       }
     }
     if (isNumber(v)) {
+      if (!isFinite(v)) {
+        throw new Error("toMilliseconds(" + v + ") - number is not finite");
+      }
       if (v < march1973InMilliseconds) {
         return v * 1000;
       } else {
