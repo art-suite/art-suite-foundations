@@ -11,6 +11,8 @@
   firstOfWeekLocale
   firstOfMonthLocale
   formattedInspect
+  formatDate
+  abs
 } = require '../../../StandardImport'
 
 date = new Date milliseconds = 1497123141167
@@ -33,9 +35,9 @@ module.exports = suite:
         assert.isDate v = toDate value
         assert.ok abs(v - milliseconds) < 1000
 
-    test "toSeconds null", -> assert.eq null, toSeconds null
-    test "toMilliseconds null", -> assert.eq null, toMilliseconds null
-    test "toDate null", -> assert.eq null, toDate null
+    test "toSeconds null", -> assert.isNumber toSeconds null
+    test "toMilliseconds null", -> assert.isNumber toMilliseconds null
+    test "toDate null", -> assert.isDate toDate null
 
     # NOTE - the local timezone effects formatDate, so when testing
     # in different timezones, this test would fail if we hardcoded the string
