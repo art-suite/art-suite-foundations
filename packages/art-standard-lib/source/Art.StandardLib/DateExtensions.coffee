@@ -44,6 +44,8 @@ module.exports =
         v = Date.parse v
 
     if isNumber v
+      unless isFinite v
+        throw new Error "toMilliseconds(#{v}) - number is not finite"
       if v < march1973InMilliseconds
         # assuming its a Seconds timestamp
         # range: 1970-01-01 to 5138-11-16
