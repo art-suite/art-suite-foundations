@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.2"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.3"};
 
 /***/ }),
 /* 5 */
@@ -5714,14 +5714,27 @@ module.exports = ArrayExtensions = (function() {
     if (amount == null) {
       amount = 1;
     }
-    if (index == null) {
-      index = array.length - 1;
+    if (array != null) {
+      if (index == null) {
+        index = array.length - 1;
+      }
+      return ArrayExtensions.remove(array.slice(), index, amount);
+    } else {
+      return [];
     }
-    return ArrayExtensions.remove(array.slice(), index, amount);
   };
 
   ArrayExtensions.arrayWithoutValue = function(array, value) {
-    return ArrayExtensions.remove(array.slice(), array.indexOf(value), 1);
+    var index;
+    if (array != null) {
+      if (0 <= (index = array.indexOf(value))) {
+        return ArrayExtensions.remove(array.slice(), index, 1);
+      } else {
+        return array;
+      }
+    } else {
+      return [];
+    }
   };
 
   ArrayExtensions.arrayWithoutLast = function(array, amount) {
@@ -5853,6 +5866,16 @@ module.exports = ArrayExtensions = (function() {
       return [];
     }
   };
+
+
+  /*
+  stableSort is an in-place, stable sort
+  
+  "stable" means that if two elements are 'equal' under the compare test, their order won't
+  change with respect to each other.
+  
+  NOTE: array.sort is not guaranteed to be stable
+   */
 
   ArrayExtensions.stableSort = function(array, compare) {
     var a, b, i, length, notSorted, p, ref3;
