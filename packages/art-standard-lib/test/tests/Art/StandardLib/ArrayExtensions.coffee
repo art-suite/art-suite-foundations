@@ -2,6 +2,8 @@
   arrayBeforeEach
   arrayAfterEach
   arrayBetweenEach
+  arrayWithoutValue
+  arrayWithout
 } = require './StandardImport'
 
 module.exports = suite: ->
@@ -23,3 +25,23 @@ module.exports = suite: ->
       [1,0,2,0,3]
     )
 
+  test "arrayWithoutValue", ->
+    assert.eq(
+      arrayWithoutValue [1,2,3], 2
+      [1,3]
+    )
+    assert.eq(
+      arrayWithoutValue()
+      []
+    )
+
+
+  test "arrayWithout", ->
+    assert.eq(
+      arrayWithout [1,2,3], 2
+      [1,2]
+    )
+    assert.eq(
+      arrayWithout()
+      []
+    )

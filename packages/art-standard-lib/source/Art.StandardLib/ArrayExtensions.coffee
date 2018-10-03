@@ -220,11 +220,15 @@ module.exports = class ArrayExtensions
       array
 
   @arrayWithout: (array, index, amount = 1) =>
-    index = array.length - 1 unless index?
-    @remove array.slice(), index, amount
+    if array?
+      index = array.length - 1 unless index?
+      @remove array.slice(), index, amount
+    else []
 
   @arrayWithoutValue: (array, value) =>
-    @remove array.slice(), (array.indexOf value), 1
+    if array? && 0 <= index = array.indexOf value
+      @remove array.slice(), index, 1
+    else []
 
   @arrayWithoutLast: (array, amount = 1) ->
     if array? && amount < array.length
@@ -326,7 +330,14 @@ module.exports = class ArrayExtensions
     else
       []
 
-  # array.sort is not guaranteed to be stable
+  ###
+  stableSort is an in-place, stable sort
+
+  "stable" means that if two elements are 'equal' under the compare test, their order won't
+  change with respect to each other.
+
+  NOTE: array.sort is not guaranteed to be stable
+  ###
   @stableSort: (array, compare) ->
     compare ||= (a, b) -> a - b
     # FIRST PASS - a BUBBLE SORT
