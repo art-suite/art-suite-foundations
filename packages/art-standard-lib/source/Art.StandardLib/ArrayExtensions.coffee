@@ -225,9 +225,15 @@ module.exports = class ArrayExtensions
       @remove array.slice(), index, amount
     else []
 
+  # OUT: returns the exact same array if value isn't present
+  # else if array is null/undefined, returns []
+  # else, returns the array with the first occurance of value removed.
   @arrayWithoutValue: (array, value) =>
-    if array? && 0 <= index = array.indexOf value
-      @remove array.slice(), index, 1
+    if array?
+      if 0 <= index = array.indexOf value
+        @remove array.slice(), index, 1
+      else
+        array
     else []
 
   @arrayWithoutLast: (array, amount = 1) ->
