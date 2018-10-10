@@ -34,6 +34,11 @@ module.exports = class Types
   @isEmptyObject:             (obj) => Object.keys(obj).length == 0
   @isBoolean:                 (obj) => obj == true || obj == false
 
+  @isArrayBuffer: isArrayBuffer = if global.ArrayBuffer
+      (obj) -> obj? && obj.constructor == ArrayBuffer
+    else -> false
+  @isTypedArray: (obj) -> obj? && obj.length >= 0 &&  obj.length == (obj.length | 0) && isArrayBuffer obj.buffer
+
   _functionsPrototype = Object.getPrototypeOf ->
   # @getSuperclass: getSuperclass = (klass) ->
   #   (typeof (prototype = Object.getPrototypeOf klass) is "function") &&
