@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.4"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.5"};
 
 /***/ }),
 /* 5 */
@@ -3583,7 +3583,7 @@ module.exports = StringExtensions = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFloat32Precision, log10, max, min, numberRegexp, pow, random, ref, round;
+var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFloat32Precision, log10, max, min, numberRegexp, onePlusFloat32Precision, onePlusFloat64Precision, pow, random, ref, round;
 
 RegExpExtensions = __webpack_require__(/*! ./RegExpExtensions */ 22);
 
@@ -3592,6 +3592,10 @@ numberRegexp = RegExpExtensions.numberRegexp;
 float64Precision = 4e-16;
 
 float32Precision = 4e-7;
+
+onePlusFloat64Precision = 1 + float64Precision;
+
+onePlusFloat32Precision = 1 + float32Precision;
 
 inverseFloat64Precision = 1 / float64Precision;
 
@@ -3610,7 +3614,7 @@ log10 = Math.log10 != null ? Math.log10 : Math.log10 = function(x) {
 };
 
 module.exports = MathExtensions = (function() {
-  var bound;
+  var bound, float32Eq0, floatEq0;
 
   function MathExtensions() {}
 
@@ -3735,18 +3739,67 @@ module.exports = MathExtensions = (function() {
   };
 
   MathExtensions.floatEq = function(n1, n2) {
-    return n1 === n2 || float64Precision > abs(n1 - n2);
+    if (n1 === n2 || abs(n1 - n2) < float64Precision) {
+      return true;
+    } else {
+      n1 = abs(n1);
+      n2 = abs(n2);
+      return (n1 * onePlusFloat64Precision > n2) && (n2 * onePlusFloat64Precision > n1);
+    }
   };
+
+
+  /*
+  WARNING: if you are working with very small, near-zero numbers, and
+    don't want them be be considered actually 0, don't use this!
+  
+  OUT:
+    true if two floating point numbers are within
+    'floating-point error' of each other.
+  
+  What does that mean?
+  
+  For exponents > 0
+    They are the same if their exponent is the same and their mantisssas
+    are very close.
+  
+  For exponents < 0
+    HOWEVER, negative-exponent numbers are compared using their
+    full value. That means theit exponents could be very different.
+  
+    return true iff abs(a - b) < float32Precision
+  
+  NOTES
+    The problem is comparing against 0. Since "0" has no magnitude, we
+    have to define how we compare when one of the two numbers is 0 and
+    the other isn't.
+  
+    Option 1: always not-equal
+    Option 2: equal if the mantissa is near-zero
+    Option 3: equal if the value, including exponent, is near-zero
+      i.e. - use float32Eq0
+  
+    I've basically chosen Option #3.
+  
+    To maintain maximum consistency, I've decided ALL numbers with
+    exponents < 0 will be compared without compensating for their magnitudes.
+   */
 
   MathExtensions.float32Eq = function(n1, n2) {
-    return n1 === n2 || float32Precision > abs(n1 - n2);
+    if (n1 === n2 || abs(n1 - n2) < float32Precision) {
+      return true;
+    } else {
+      n1 = Math.abs(n1);
+      n2 = Math.abs(n2);
+      return (n1 * onePlusFloat32Precision > n2) && (n2 * onePlusFloat32Precision > n1);
+    }
   };
 
-  MathExtensions.floatEq0 = function(n) {
+  MathExtensions.floatEq0 = floatEq0 = function(n) {
     return n === 0 || float64Precision > abs(n);
   };
 
-  MathExtensions.float32Eq0 = function(n) {
+  MathExtensions.float32Eq0 = float32Eq0 = function(n) {
     return n === 0 || float32Precision > abs(n);
   };
 
