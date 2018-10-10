@@ -594,7 +594,7 @@ var ArtStandardLibMultipleContextTypeSupport, Types;
 ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
-  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
+  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isArrayBuffer, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
 
   function Types() {}
 
@@ -638,6 +638,16 @@ module.exports = Types = (function() {
 
   Types.isBoolean = function(obj) {
     return obj === true || obj === false;
+  };
+
+  Types.isArrayBuffer = isArrayBuffer = global.ArrayBuffer ? function(obj) {
+    return (obj != null) && obj.constructor === ArrayBuffer;
+  } : function() {
+    return false;
+  };
+
+  Types.isTypedArray = function(obj) {
+    return (obj != null) && obj.length >= 0 && obj.length === (obj.length | 0) && isArrayBuffer(obj.buffer);
   };
 
   _functionsPrototype = Object.getPrototypeOf(function() {});
@@ -910,7 +920,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.3"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.4"};
 
 /***/ }),
 

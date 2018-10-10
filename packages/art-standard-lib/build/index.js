@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.3"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.4"};
 
 /***/ }),
 /* 5 */
@@ -808,7 +808,7 @@ var ArtStandardLibMultipleContextTypeSupport, Types;
 ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
-  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
+  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isArrayBuffer, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
 
   function Types() {}
 
@@ -852,6 +852,16 @@ module.exports = Types = (function() {
 
   Types.isBoolean = function(obj) {
     return obj === true || obj === false;
+  };
+
+  Types.isArrayBuffer = isArrayBuffer = global.ArrayBuffer ? function(obj) {
+    return (obj != null) && obj.constructor === ArrayBuffer;
+  } : function() {
+    return false;
+  };
+
+  Types.isTypedArray = function(obj) {
+    return (obj != null) && obj.length >= 0 && obj.length === (obj.length | 0) && isArrayBuffer(obj.buffer);
   };
 
   _functionsPrototype = Object.getPrototypeOf(function() {});
@@ -3573,19 +3583,19 @@ module.exports = StringExtensions = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFlaot32Precision, max, min, numberRegexp, pow, random, ref, round;
+var MathExtensions, RegExpExtensions, abs, ceil, float32Precision, float64Precision, floor, inverseFloat64Precision, inverstFloat32Precision, log10, max, min, numberRegexp, pow, random, ref, round;
 
 RegExpExtensions = __webpack_require__(/*! ./RegExpExtensions */ 22);
 
 numberRegexp = RegExpExtensions.numberRegexp;
 
-float64Precision = 0.0000000001;
+float64Precision = 4e-16;
 
-float32Precision = 0.0000001;
+float32Precision = 4e-7;
 
 inverseFloat64Precision = 1 / float64Precision;
 
-inverstFlaot32Precision = 1 / float32Precision;
+inverstFloat32Precision = 1 / float32Precision;
 
 ref = self.Math, abs = ref.abs, min = ref.min, max = ref.max, ceil = ref.ceil, floor = ref.floor, round = ref.round, random = ref.random, pow = ref.pow;
 
@@ -3594,6 +3604,10 @@ if (Math.log2 == null) {
     return Math.log(x) / Math.LOG2E;
   };
 }
+
+log10 = Math.log10 != null ? Math.log10 : Math.log10 = function(x) {
+  return Math.log(x) / Math.log(10);
+};
 
 module.exports = MathExtensions = (function() {
   var bound;
@@ -3627,6 +3641,19 @@ module.exports = MathExtensions = (function() {
       a[i] = match != null ? match[0] - 0 : 0;
     }
     return a;
+  };
+
+  MathExtensions.numberToTightString = function(n, decimalPrecision) {
+    var v;
+    if (decimalPrecision == null) {
+      decimalPrecision = 16;
+    }
+    v = n.toPrecision(decimalPrecision);
+    if (/e/.test(v)) {
+      return v.replace(/([0-9]+(\.[0-9]+[1-9])?)\.?0+e/, "$1e");
+    } else {
+      return v.replace(/([0-9]+(\.[0-9]+[1-9])?)\.?0+$/, "$1");
+    }
   };
 
   MathExtensions.minMagnitude = function(a, magnitude) {
@@ -3792,9 +3819,9 @@ module.exports = require('crypto' /* ABC - not inlining fellow NPM */);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, colorNames, colorizeFunctions, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, identity, indentLength, indentString, inspect, isFunction, isNumber, isPlainArray, isPlainObject, isString, max, newLineWithIndentString, object, objectKeyCount, pad, passThroughColorizeFunctions, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects, w;
+var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, colorNames, colorizeFunctions, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, identity, indentLength, indentString, inspect, isFunction, isInspectableArray, isNumber, isPlainArray, isPlainObject, isString, isTypedArray, max, newLineWithIndentString, object, objectKeyCount, objectName, pad, passThroughColorizeFunctions, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects, w;
 
-ref = __webpack_require__(/*! ../TypesExtended */ 18), isString = ref.isString, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
+ref = __webpack_require__(/*! ../TypesExtended */ 18), isString = ref.isString, objectName = ref.objectName, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isTypedArray = ref.isTypedArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
 
 max = Math.max;
 
@@ -3870,11 +3897,12 @@ formattedInspectObject = function(m, maxLineLength, options) {
 };
 
 formattedInspectArray = function(m, maxLineLength, options) {
-  var arrayStart, colorize, i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, objectStart, objectsMustBeExplicit, oneLinerOk, value;
+  var arrayStart, colorize, i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, maxArrayLength, objectStart, objectsMustBeExplicit, oneLinerOk, value;
   colorize = options.colorize;
   lengthOfInspectedValues = 0;
   lastWasObject = false;
   lastWasArray = false;
+  maxArrayLength = options.maxArrayLength || 10;
   objectsMustBeExplicit = false;
   oneLinerOk = true;
   inspectedValuesContainNewlines = false;
@@ -3893,14 +3921,15 @@ formattedInspectArray = function(m, maxLineLength, options) {
     }
   }
   inspectedValues = (function() {
-    var l, len1, results;
+    var l, len1, ref2, results;
+    ref2 = m.slice(0, maxArrayLength);
     results = [];
-    for (l = 0, len1 = m.length; l < len1; l++) {
-      value = m[l];
+    for (l = 0, len1 = ref2.length; l < len1; l++) {
+      value = ref2[l];
       if (lastWasArray) {
         oneLinerOk = false;
       }
-      if (isPlainArray(value)) {
+      if (isInspectableArray(value)) {
         lastWasArray = true;
       }
       inspected = formattedInspectRecursive(value, maxLineLength - indentLength, options);
@@ -3924,7 +3953,10 @@ formattedInspectArray = function(m, maxLineLength, options) {
   })();
   lengthOfCommas = (inspectedValues.length - 1) * 2;
   lengthOfStartBrackets = 3;
-  arrayStart = "[]";
+  arrayStart = isTypedArray(m) ? "{" + (objectName(m)) + "}" : "[]";
+  if (m.length > maxArrayLength) {
+    arrayStart += " <length: " + m.length + ">";
+  }
   arrayStart = colorize.grey(arrayStart);
   if (oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues) {
     if (inspectedValues.length === 0) {
@@ -3972,10 +4004,14 @@ formattedInspectString = function(m, options) {
   return options.colorize.green(out);
 };
 
+isInspectableArray = function(v) {
+  return isPlainArray(v) || isTypedArray(v);
+};
+
 formattedInspectRecursive = function(m, maxLineLength, options) {
   if (isPlainObject(m)) {
     return formattedInspectObject(m, maxLineLength, options);
-  } else if (isPlainArray(m)) {
+  } else if (isInspectableArray(m)) {
     return formattedInspectArray(m, maxLineLength, options);
   } else if (isString(m)) {
     return formattedInspectString(m, options);
@@ -4189,7 +4225,7 @@ module.exports = FormattedInspect = (function() {
     var ref2;
     return ("typeof: " + (typeof toInspect) + "\n") + ("constructor: " + ((toInspect != null ? toInspect.constructor : void 0) && (toInspect != null ? (ref2 = toInspect.constructor) != null ? ref2.name : void 0 : void 0)) + "\n") + (function() {
       switch (false) {
-        case !isPlainArray(toInspect):
+        case !isInspectableArray(toInspect):
           return "length: " + toInspect.length + "\njoined: [" + (toInspect.join(', ')) + "]";
         case !((toInspect != null) && typeof toInspect === 'object'):
           return "keys: " + (Object.keys(toInspect).join(', '));
@@ -4915,9 +4951,9 @@ module.exports = Iteration = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, ref;
+var InspectedObjects, dateFormat, deepMap, escapeJavascriptString, inspectedObjectLiteral, isClass, isDate, isFunction, isNonNegativeInt, isPlainArray, isPlainObject, isPromise, isRegExp, isString, isTypedArray, ref;
 
-ref = __webpack_require__(/*! ../TypesExtended */ 18), isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
+ref = __webpack_require__(/*! ../TypesExtended */ 18), isTypedArray = ref.isTypedArray, isDate = ref.isDate, deepMap = ref.deepMap, isNonNegativeInt = ref.isNonNegativeInt, isClass = ref.isClass, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isString = ref.isString, isFunction = ref.isFunction, isPromise = ref.isPromise, isRegExp = ref.isRegExp;
 
 escapeJavascriptString = __webpack_require__(/*! ../StringExtensions */ 31).escapeJavascriptString;
 
@@ -4946,6 +4982,8 @@ module.exports = InspectedObjects = (function() {
       return deepMap(m, function(v) {
         return toInspectedObjects(v);
       });
+    } else if (isTypedArray(m)) {
+      return m;
     } else if (m instanceof Error) {
       literal = inspectedObjectLiteral(m.stack || m.toString(), true);
       if (m.info) {

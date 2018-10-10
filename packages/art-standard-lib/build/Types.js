@@ -114,7 +114,7 @@ var ArtStandardLibMultipleContextTypeSupport, Types;
 ArtStandardLibMultipleContextTypeSupport = global.ArtStandardLibMultipleContextTypeSupport;
 
 module.exports = Types = (function() {
-  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
+  var _functionsPrototype, getSuperclass, hasOwnProperties, hasProperties, isArray, isArrayBuffer, isClass, isDirectPrototypeOf, isExtendedClass, isFunction, isJsonAtomicType, isNonNegativeInt, isNumber, isObject, isPlainObject, isString, oldIsClass;
 
   function Types() {}
 
@@ -158,6 +158,16 @@ module.exports = Types = (function() {
 
   Types.isBoolean = function(obj) {
     return obj === true || obj === false;
+  };
+
+  Types.isArrayBuffer = isArrayBuffer = global.ArrayBuffer ? function(obj) {
+    return (obj != null) && obj.constructor === ArrayBuffer;
+  } : function() {
+    return false;
+  };
+
+  Types.isTypedArray = function(obj) {
+    return (obj != null) && obj.length >= 0 && obj.length === (obj.length | 0) && isArrayBuffer(obj.buffer);
   };
 
   _functionsPrototype = Object.getPrototypeOf(function() {});
