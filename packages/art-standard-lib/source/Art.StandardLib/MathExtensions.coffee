@@ -1,8 +1,13 @@
 RegExpExtensions     = require './RegExpExtensions'
 {numberRegexp} = RegExpExtensions
 
-float64Precision = 4e-16 # > 52 bits: 1 / 2**52 == 2.220446049250313e-16
-float32Precision = 4e-7  # > 23 bits: 1 / 2**23 == 1.1920928955078125e-7
+# Picked smallest simple number > EPSILON for single an double-precision numbers
+# that passes test suite.
+float64Precision = 4e-16  # > 52 bits: 1 / 2**52 == 2.220446049250313e-16
+float32Precision = 4e-7   # > 23 bits: 1 / 2**23 == 1.1920928955078125e-7
+onePlusFloat64Precision = 1 + float64Precision
+onePlusFloat32Precision = 1 + float32Precision
+
 inverseFloat64Precision = 1 / float64Precision
 inverstFloat32Precision = 1 / float32Precision
 
@@ -65,14 +70,65 @@ module.exports = class MathExtensions
 
   @simplifyNum:   (num) -> round(num  * inverseFloat64Precision) * float64Precision
 
-  @floatEq:       (n1, n2) -> n1 == n2 || float64Precision > abs n1 - n2
-  @float32Eq:     (n1, n2) -> n1 == n2 || float32Precision > abs n1 - n2
-  @floatEq0:      (n)      -> n  == 0  || float64Precision > abs n
-  @float32Eq0:    (n)      -> n  == 0  || float32Precision > abs n
+  # See float32Eq for notes
+  @floatEq:       (n1, n2) ->
+    if n1 == n2 || abs(n1 - n2) < float64Precision
+      true
+    else
+      n1 = abs n1
+      n2 = abs n2
+      (n1 * onePlusFloat64Precision > n2) && (n2 * onePlusFloat64Precision > n1)
 
-  # OUT: 0 if n is floatEq0/float32Eq0, else n
-  @floatTrue0:    (n) -> if n == 0  || float64Precision > abs n then 0 else n
-  @float32True0:  (n) -> if n == 0  || float32Precision > abs n then 0 else n
+  ###
+  WARNING: if you are working with very small, near-zero numbers, and
+    don't want them be be considered actually 0, don't use this!
+
+  OUT:
+    true if two floating point numbers are within
+    'floating-point error' of each other.
+
+  What does that mean?
+
+  For exponents > 0
+    They are the same if their exponent is the same and their mantisssas
+    are very close.
+
+  For exponents < 0
+    HOWEVER, negative-exponent numbers are compared using their
+    full value. That means theit exponents could be very different.
+
+    return true iff abs(a - b) < float32Precision
+
+  NOTES
+    The problem is comparing against 0. Since "0" has no magnitude, we
+    have to define how we compare when one of the two numbers is 0 and
+    the other isn't.
+
+    Option 1: always not-equal
+    Option 2: equal if the mantissa is near-zero
+    Option 3: equal if the value, including exponent, is near-zero
+      i.e. - use float32Eq0
+
+    I've basically chosen Option #3.
+
+    To maintain maximum consistency, I've decided ALL numbers with
+    exponents < 0 will be compared without compensating for their magnitudes.
+  ###
+  @float32Eq:     (n1, n2) ->
+    # handle exact equality fast
+    if n1 == n2 || abs(n1 - n2) < float32Precision
+      true
+    else
+      n1 = Math.abs n1
+      n2 = Math.abs n2
+      (n1 * onePlusFloat32Precision > n2) && (n2 * onePlusFloat32Precision > n1)
+
+  @floatEq0:      floatEq0   = (n) -> n  == 0  || float64Precision > abs n
+  @float32Eq0:    float32Eq0 = (n) -> n  == 0  || float32Precision > abs n
+
+  # Purpose: if n is floatEq0, make it actually 0, otherwise leave it alone.
+  @floatTrue0:    (n) -> if n == 0 || float64Precision > abs n then 0 else n
+  @float32True0:  (n) -> if n == 0 || float32Precision > abs n then 0 else n
 
   # return intenger between [0, max)
   @random:  random

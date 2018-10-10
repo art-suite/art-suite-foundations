@@ -57,23 +57,48 @@ module.exports = suite:
       assert.eq MathExtensions.modulo(-11, 3), 1
 
   floatEq: ->
-    test "floatEq", ->
-      smallestDifferent = 1 + MathExtensions.float64Precision
-      largestSame = 1 + MathExtensions.float64Precision/2
-      assert.ok 1 != largestSame
-      assert.ok 1 != smallestDifferent
 
-      assert.equal true, MathExtensions.floatEq(1, largestSame)
-      assert.equal false, MathExtensions.floatEq(1, smallestDifferent)
+    float64Tests = [
+      [c = 0, float64Precision, float64Precision / 2]
+      [c = 1, c + c * float64Precision, c + c * float64Precision / 2]
+      [c = -1, c + c * float64Precision, c + c * float64Precision / 2]
+      [c = 1e10, c + c * float64Precision, c + c * float64Precision / 2]
+      [c = -1e10, c + c * float64Precision, c + c * float64Precision / 2]
 
-    test "float32Eq", ->
-      smallestDifferent = 1 + MathExtensions.float32Precision
-      largestSame = 1 + MathExtensions.float32Precision/2
-      assert.ok 1 != largestSame
-      assert.ok 1 != smallestDifferent
+      # note, all less-than-zero-magnitudes are not magnitude-compensated for comparison
+      [c = 1e-10, c + 2 * float64Precision, c + c * float64Precision]
+      [c = -1e-10, c - 2 * float64Precision, c + c * float64Precision]
+    ]
 
-      assert.equal true,  MathExtensions.float32Eq(1, largestSame), "should be same"
-      assert.equal false, MathExtensions.float32Eq(1, smallestDifferent), "should be different"
+
+    each float64Tests, ([comparisonNumber, smallestDifferent, largestSame]) ->
+      test "floatEq #{comparisonNumber}, #{largestSame}", ->
+        assert.ok comparisonNumber != largestSame
+        assert.ok comparisonNumber != smallestDifferent
+
+        assert.equal true,  MathExtensions.floatEq(comparisonNumber, largestSame), "should be same: #{comparisonNumber} float== #{largestSame}"
+        assert.equal false, MathExtensions.floatEq(comparisonNumber, smallestDifferent), "should be different: #{comparisonNumber} float== #{smallestDifferent}"
+
+
+    float32Tests = [
+      [c = 0, float32Precision, float32Precision / 2]
+      [c = 1, c + c * float32Precision, c + c * float32Precision / 2]
+      [c = -1, c + c * float32Precision, c + c * float32Precision / 2]
+      [c = 1e10, c + c * float32Precision, c + c * float32Precision / 2]
+      [c = -1e10, c + c * float32Precision, c + c * float32Precision / 2]
+
+      # note, all less-than-zero-magnitudes are not magnitude-compensated for comparison
+      [c = 1e-10, c + float32Precision, c + c * float32Precision]
+      [c = -1e-10, c - float32Precision, c + c * float32Precision]
+    ]
+
+    each float32Tests, ([comparisonNumber, smallestDifferent, largestSame]) ->
+      test "float32Eq #{comparisonNumber}, #{largestSame}", ->
+        assert.ok comparisonNumber != largestSame
+        assert.ok comparisonNumber != smallestDifferent
+
+        assert.equal true,  MathExtensions.float32Eq(comparisonNumber, largestSame), "should be same: #{comparisonNumber} float== #{largestSame}"
+        assert.equal false, MathExtensions.float32Eq(comparisonNumber, smallestDifferent), "should be different: #{comparisonNumber} float== #{smallestDifferent}"
 
     test "floatEq and Infinity", ->
       assert.equal true, MathExtensions.floatEq Infinity, Infinity
