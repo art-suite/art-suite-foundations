@@ -1,4 +1,4 @@
-{isDate, deepMap, isNonNegativeInt, isClass, isPlainArray, isPlainObject, isString, isFunction, isPromise, isRegExp} = require '../TypesExtended'
+{isTypedArray, isDate, deepMap, isNonNegativeInt, isClass, isPlainArray, isPlainObject, isString, isFunction, isPromise, isRegExp} = require '../TypesExtended'
 {escapeJavascriptString} = require '../StringExtensions'
 {inspectedObjectLiteral} = require './InspectedObjectLiteral'
 dateFormat = require 'dateformat'
@@ -15,6 +15,8 @@ module.exports = class InspectedObjects
       inspectedObjectLiteral "Promise"
     else if isPlainObject(m) || isPlainArray(m)
       deepMap m, (v) -> toInspectedObjects v
+    else if isTypedArray m
+      m
     else if m instanceof Error
       literal = inspectedObjectLiteral m.stack || m.toString(), true
       if m.info

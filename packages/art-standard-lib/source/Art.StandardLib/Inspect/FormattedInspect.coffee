@@ -1,4 +1,4 @@
-{isString, isPlainObject, isPlainArray, isFunction, isNumber} = require '../TypesExtended'
+{isString, objectName, isPlainObject, isPlainArray, isTypedArray, isFunction, isNumber} = require '../TypesExtended'
 {max} = Math
 {pad, stripTrailingWhitespace, escapeJavascriptString} = require '../StringExtensions'
 {inspect} = require './Inspector'
@@ -69,6 +69,7 @@ formattedInspectArray = (m, maxLineLength, options) ->
   lengthOfInspectedValues = 0
   lastWasObject = false
   lastWasArray = false
+  maxArrayLength = options.maxArrayLength || 10
   objectsMustBeExplicit = false
   oneLinerOk = true
   inspectedValuesContainNewlines = false
@@ -81,11 +82,11 @@ formattedInspectArray = (m, maxLineLength, options) ->
     else
       lastWasObject = false
 
-  inspectedValues = for value in m
+  inspectedValues = for value in m.slice 0, maxArrayLength
 
     oneLinerOk = false if lastWasArray
 
-    if isPlainArray value
+    if isInspectableArray value
       lastWasArray = true
 
     inspected = formattedInspectRecursive value, maxLineLength - indentLength, options
@@ -111,7 +112,9 @@ formattedInspectArray = (m, maxLineLength, options) ->
   lengthOfCommas = (inspectedValues.length - 1) * 2
   lengthOfStartBrackets = 3
 
-  arrayStart = "[]"
+  arrayStart = if isTypedArray m then "{#{objectName m}}" else "[]"
+  if m.length > maxArrayLength
+    arrayStart += " <length: #{m.length}>"
   arrayStart = colorize.grey arrayStart
 
   if oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues
@@ -154,10 +157,14 @@ formattedInspectString = (m, options) ->
 
   options.colorize.green out
 
+isInspectableArray = (v) ->
+  isPlainArray(v) ||
+  isTypedArray v
+
 formattedInspectRecursive = (m, maxLineLength, options) ->
-  if isPlainObject m      then formattedInspectObject m, maxLineLength, options
-  else if isPlainArray m  then formattedInspectArray  m, maxLineLength, options
-  else if isString m      then formattedInspectString m, options
+  if isPlainObject m            then formattedInspectObject m, maxLineLength, options
+  else if isInspectableArray m  then formattedInspectArray  m, maxLineLength, options
+  else if isString m            then formattedInspectString m, options
   else
     options.colorize.yellow inspect m
 
@@ -316,7 +323,7 @@ module.exports = class FormattedInspect
     "typeof: #{typeof toInspect}\n" +
     "constructor: #{toInspect?.constructor && toInspect?.constructor?.name}\n" +
     switch
-      when isPlainArray toInspect then "length: #{toInspect.length}\njoined: [#{toInspect.join(', ')}]"
+      when isInspectableArray toInspect then "length: #{toInspect.length}\njoined: [#{toInspect.join(', ')}]"
       when toInspect? && typeof toInspect == 'object' then "keys: #{Object.keys(toInspect).join ', '}"
       else "toString: #{toInspect}"
 
