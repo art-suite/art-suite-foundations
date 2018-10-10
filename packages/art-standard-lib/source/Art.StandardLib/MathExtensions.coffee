@@ -1,14 +1,15 @@
 RegExpExtensions     = require './RegExpExtensions'
 {numberRegexp} = RegExpExtensions
 
-float64Precision = 0.0000000001 # 52 bits
-float32Precision = 0.0000001    # 23 bits
+float64Precision = 4e-16 # > 52 bits: 1 / 2**52 == 2.220446049250313e-16
+float32Precision = 4e-7  # > 23 bits: 1 / 2**23 == 1.1920928955078125e-7
 inverseFloat64Precision = 1 / float64Precision
-inverstFlaot32Precision = 1 / float32Precision
+inverstFloat32Precision = 1 / float32Precision
 
 {abs, min, max, ceil, floor, round, random, pow} = self.Math
 
 Math.log2 ?= (x) -> Math.log(x) / Math.LOG2E
+log10 = Math.log10 ?= (x) -> Math.log(x) / Math.log 10
 
 module.exports = class MathExtensions
   @nearInfinity:        pow 10, 100
@@ -23,6 +24,14 @@ module.exports = class MathExtensions
       match = v.match(numberRegexp)
       a[i] = if match? then match[0] - 0 else 0
     a
+
+  @numberToTightString: (n, decimalPrecision = 16) ->
+    v = n.toPrecision decimalPrecision
+    if /e/.test v
+      v.replace /([0-9]+(\.[0-9]+[1-9])?)\.?0+e/, "$1e"
+    else
+      v.replace /([0-9]+(\.[0-9]+[1-9])?)\.?0+$/, "$1"
+    # .replace /\.0+($|e)/, "$1"
 
   @minMagnitude: (a, magnitude) ->
     if a < 0
