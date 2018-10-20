@@ -46,6 +46,7 @@ module.exports = class BinaryString extends BaseObject
     else if isPlainArray arg                  then new Uint8Array arg
     else if arg instanceof ArrayBuffer        then new Uint8Array arg
     else if arg instanceof Uint8Array         then arg
+    else if arg.buffer instanceof ArrayBuffer then new Uint8Array arg.buffer
     else if isString arg                      then Utf8.toBuffer arg
     else if isFunction arg.toString           then Utf8.toBuffer arg.toString()
     else throw new Error "invalid Binary string constructor argument: #{inspect arg}"
@@ -100,11 +101,20 @@ module.exports = class BinaryString extends BaseObject
 
   @getter
     uint8Array: -> @bytes
-    arrayBuffer: -> @bytes.buffer
-    nodeBuffer: -> new Buffer @bytes
-    blob: -> new Blob [@bytes]
-    plainArray: -> b for b in @bytes
-    byteLength: -> @length
+    buffer: ->
+      if @bytes.buffer.byteLength != @bytes.byteLength
+        oldBytes = @bytes
+        @bytes = new Uint8Array new ArrayBuffer oldBytes.byteLength
+        @bytes.set oldBytes
+
+      @bytes.buffer
+
+    arrayBuffer:  -> @buffer
+    nodeBuffer:   -> new Buffer @bytes
+    blob:         -> new Blob [@bytes]
+    plainArray:   -> b for b in @bytes
+    byteLength:   -> @length
+
     inspectedObjects: ->
       lenStr = if @length >= 10 * 1024 * 1024
         "#{Math.floor @length / 1024 * 1024}m"
