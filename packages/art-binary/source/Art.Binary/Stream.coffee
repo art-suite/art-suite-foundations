@@ -54,9 +54,11 @@ module.exports = class Stream extends BaseObject
     @pos >= @byteView.length
 
   @getter
+    buffer: -> @binaryString.buffer
     isDone: -> @pos >= @byteView.length
-    binaryString: -> binary(@byteView)
+    binaryString: -> @_binaryString ?= binary @byteView
     inspectedString: -> @binaryString.inspectedString
+    inspectedObjects: -> @binaryString.inspectedObjects
 
   toString: ->
     @binaryString.toString()
