@@ -64,13 +64,25 @@ module.exports = class WriteStream extends BaseObject
   _compact: ->
     @_commitHead()
     switch @_written.length
-      when 0 then new Promise (resolve) -> resolve new Uint8Array 0
-      when 1 then new Promise (resolve) => resolve @_written[0]
-      else
+      when 0 then Promise.resolve new Uint8Array 0
+      when 1 then Promise.resolve @_written[0]
+      when global.Blob
         readFileAsArrayBuffer new Blob @_written
         .then (ab) =>
           @_written = [new Uint8Array ab]
           @_written[0]
+      else
+        # Node doesn't have Blobs. Buffers may work, but this'll do for now.
+        totalLength = 0
+        for typedArray in @_written
+          totalLength += typedArray.length
+
+        out = new Uint8Array totalLength
+        outI = 0
+        for typedArray in @_written
+          for v in typedArray
+            out[outI++] = v
+        Promise.resolve out
 
   _commitHead: ->
     return unless @_pos > 0
