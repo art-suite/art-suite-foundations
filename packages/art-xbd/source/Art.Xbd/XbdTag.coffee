@@ -1,20 +1,23 @@
-Foundation = require 'art-foundation'
 Xbd = require './namespace'
-XbdDictionary = require './xbd_dictionary'
+XbdDictionary = require './XbdDictionary'
 
 {
   isFunction, log, countKeys, upperCamelCase
   plainObjectsDeepEq
   inspect
+  compactFlatten
+  object
+  isString
+  objectHasKeys
+  defineModule
 } = require 'art-standard-lib'
-{Binary} = require 'art-foundation'
 
 {BaseClass} = require 'art-class-system'
 
 {createObjectTreeFactories} = require 'art-object-tree-factory'
-{binary, stream, WriteStream} = Binary
+{binary, stream, WriteStream} = require 'art-binary'
 
-module.exports = class XbdTag extends BaseClass
+defineModule module, class XbdTag extends BaseClass
 
   ###########################
   # createTagFactories
@@ -116,6 +119,15 @@ module.exports = class XbdTag extends BaseClass
       writeStream.writeAsiString binaryString
       writeStream.binaryStringPromise
 
+  # tagSearch: StringOrRegExp
+  find: (tagSearch, into = []) ->
+    for tag in @tags
+      if tag.name.match tagSearch
+        into.push tag
+      else
+        tag.find tagSearch, into
+    into
+
   ###########################
   # Read data
   ###########################
@@ -130,15 +142,17 @@ module.exports = class XbdTag extends BaseClass
     @toXml "  "
 
   toPlainObjects: ->
-    out = [@name]
-    if 0 < countKeys @attrs
-      attrs = {}
-      attrs[k] = v.toString() for k, v of @attrs
+    if objectHasKeys @attrs
+      plainAttrs = @attrs
+    if @tags?.length > 0
+      plainTags = (tag.toPlainObjects() for tag in @tags)
 
-      out.push attrs
-    if @tags.length > 0
-      out.push tag.toPlainObjects() for tag in @tags
-    out
+    "XbdTag_#{@name}":
+      if plainAttrs
+        if plainTags
+          compactFlatten [plainAttrs, plainTags]
+        else plainAttrs
+      else plainTags ? {}
 
   toXml: (indent = "") ->
     attr_xml = ""
@@ -154,6 +168,7 @@ module.exports = class XbdTag extends BaseClass
     xbdPromise: -> @toXbd()
     xml: -> @toXml()
     plainObjects: -> @toPlainObjects()
+    inspectedObjects: -> @toPlainObjects()
 
     tagNamesDictionary: (dictionary = new XbdDictionary [], 'tag names') ->
       dictionary.add @name

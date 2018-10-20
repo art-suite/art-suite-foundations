@@ -14,7 +14,7 @@ testWriteReadXbd = (testName, tagFactory) ->
       outputTag = fromXbd xbdBinaryString
       assert.eq inputTag.xml, outputTag.xml, "expected input to equal output"
 
-suite "Art.Xbd.toXbd", ->
+module.exports = suite: ->
   {ATag, BTag, MyRootTag} = tf = createTagFactories "A B myRoot"
 
   testWriteReadXbd "MyRootTag", -> new XbdTag "MyRootTag"

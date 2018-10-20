@@ -1,1 +1,1 @@
-module.exports = require "./src/art/xbd"
+module.exports = require "./source/Art.Xbd"

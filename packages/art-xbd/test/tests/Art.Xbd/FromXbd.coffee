@@ -2,11 +2,15 @@ Xbd = require 'art-xbd'
 {Binary, log, RestClient} = require 'art-foundation'
 {XbdTag, indentString, fromXbd, createTagFactories} = Xbd
 {stream} = Binary
+fs = require 'fs-extra'
+path = require 'path'
+
+testAssetRoot = 'test/assets/xbd_test'
 
 suite "Art.Xbd.fromXbd", ->
 
   test "load trival.xbd", ->
-    RestClient.get "#{testAssetRoot}/xbd_test/trivial.xbd"
+    fs.readFile path.join testAssetRoot, 'trivial.xbd'
     .then (test_data) ->
       tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
@@ -17,7 +21,7 @@ suite "Art.Xbd.fromXbd", ->
     decodeAttributeValues t, func for t in tag.tags
 
   test "load simple.xbd - hierarchy and attrs", ->
-    RestClient.get "#{testAssetRoot}/xbd_test/simple.xbd"
+    fs.readFile path.join testAssetRoot, 'simple.xbd'
     .then (test_data) ->
       tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
@@ -41,7 +45,7 @@ suite "Art.Xbd.fromXbd", ->
       assert.deepEqual grand_child_tag.attrs, {"animal":"horse","color":"red"}
 
   test "load 4-1gb.kimi", ->
-    RestClient.get "#{testAssetRoot}/xbd_test/4-1gb.kimi"
+    fs.readFile path.join testAssetRoot, '4-1gb.kimi'
     .then (test_data) ->
       tag = fromXbd test_data
       assert.equal tag.name, "RootTag"
