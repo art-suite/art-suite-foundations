@@ -63,7 +63,7 @@ class DefaultFiles extends BaseClass
 
         webpack:
           # common properties are merged into each target's properties
-          common: {}
+          common: #{if clientApp then "mode: :development" else "{}"}
 
           # each target's individual properties
           targets: #{if clientApp then 'Client' else 'index'}: {}
