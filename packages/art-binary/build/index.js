@@ -34,18 +34,35 @@ module.exports =
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -63,25 +80,250 @@ module.exports =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/*!**********************!*\
+  !*** ./index.coffee ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./source/Art.Binary */ 1);
+
+
+/***/ }),
+/* 1 */
+/*!****************************************!*\
+  !*** ./source/Art.Binary/index.coffee ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./namespace */ 2);
+
+module.exports.includeInNamespace(__webpack_require__(/*! ./Binary */ 5)).addModules({
+  BinaryString: __webpack_require__(/*! ./BinaryString */ 9),
+  DataUri: __webpack_require__(/*! ./DataUri */ 13),
+  EncodedImage: __webpack_require__(/*! ./EncodedImage */ 14),
+  File: __webpack_require__(/*! ./File */ 8),
+  Stream: __webpack_require__(/*! ./Stream */ 12),
+  TypedarraySlicePolyfill: __webpack_require__(/*! ./TypedarraySlicePolyfill */ 6),
+  Utf8: __webpack_require__(/*! ./Utf8 */ 10),
+  WriteStream: __webpack_require__(/*! ./WriteStream */ 15)
+});
+
+
+/***/ }),
+/* 2 */
+/*!********************************************!*\
+  !*** ./source/Art.Binary/namespace.coffee ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Binary,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 3)).addNamespace('Art.Binary', Binary = (function(superClass) {
+  extend(Binary, superClass);
+
+  function Binary() {
+    return Binary.__super__.constructor.apply(this, arguments);
+  }
+
+  Binary.version = __webpack_require__(/*! ../../package.json */ 4).version;
+
+  return Binary;
+
+})(Neptune.PackageNamespace));
+
+
+/***/ }),
+/* 3 */
+/*!************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 4 */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-communication-status":"*","art-rest-client":"*"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.1.0"};
+
+/***/ }),
+/* 5 */
+/*!*****************************************!*\
+  !*** ./source/Art.Binary/Binary.coffee ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ./TypedarraySlicePolyfill */ 6);
+
+module.exports = [
+  __webpack_require__(/*! ./File */ 8), {
+    stream: (__webpack_require__(/*! ./Stream */ 12)).stream
+  }, [__webpack_require__(/*! ./BinaryString */ 9), "binary binaryFromBlob downloadBinaryData isBinary"]
+];
+
+
+/***/ }),
+/* 6 */
+/*!**********************************************************!*\
+  !*** ./source/Art.Binary/TypedarraySlicePolyfill.coffee ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var base, base1, base10, base11, base2, base3, base4, base5, base6, base7, base8, base9, bound, genericSlice, ref, ref1;
+
+bound = __webpack_require__(/*! art-standard-lib */ 7).bound;
+
+(base = Uint8Array.prototype).slice || (base.slice = genericSlice = function(start, end) {
+  var i, j, length, out, outIndex, ref, ref1;
+  if (end == null) {
+    end = this.length;
+  }
+  if (start < 0) {
+    start += this.length;
+  }
+  if (end < 0) {
+    end += this.length;
+  }
+  start = bound(0, start, this.length);
+  end = bound(0, end, this.length);
+  out = new Uint8Array(length = end - start);
+  outIndex = 0;
+  for (i = j = ref = start, ref1 = end; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
+    out[outIndex++] = this[i];
+  }
+  return out;
+});
+
+(base1 = Int8Array.prototype).slice || (base1.slice = genericSlice);
+
+(base2 = Uint8Array.prototype).slice || (base2.slice = genericSlice);
+
+(base3 = Int16Array.prototype).slice || (base3.slice = genericSlice);
+
+(base4 = Uint16Array.prototype).slice || (base4.slice = genericSlice);
+
+(base5 = Int32Array.prototype).slice || (base5.slice = genericSlice);
+
+(base6 = Uint32Array.prototype).slice || (base6.slice = genericSlice);
+
+(base7 = Float32Array.prototype).slice || (base7.slice = genericSlice);
+
+(base8 = Float64Array.prototype).slice || (base8.slice = genericSlice);
+
+if ((ref = self.Uint8ClampedArray) != null) {
+  (base9 = ref.prototype).slice || (base9.slice = genericSlice);
+}
+
+if ((ref1 = self.CanvasPixelArray) != null) {
+  (base10 = ref1.prototype).slice || (base10.slice = genericSlice);
+}
+
+(base11 = ArrayBuffer.prototype).slice || (base11.slice = function(start, end) {
+  return (new Uint8Array(this)).slice(start, end).buffer;
+});
+
+
+/***/ }),
+/* 7 */
+/*!**********************************************************************************!*\
+  !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 8 */
+/*!***************************************!*\
+  !*** ./source/Art.Binary/File.coffee ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var BinaryString, File, Promise, StandardLib;
+
+StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
+
+Promise = StandardLib.Promise;
+
+BinaryString = __webpack_require__(/*! ./BinaryString */ 9);
+
+module.exports = File = (function() {
+  var readAsArrayBuffer;
+
+  function File() {}
+
+  File._readWithPromise = function(readFunction) {
+    return function(file) {
+      return new Promise(function(resolve, reject) {
+        var fr;
+        fr = new FileReader;
+        fr[readFunction](file);
+        fr.onerror = reject;
+        return fr.onload = (function(_this) {
+          return function(event) {
+            return resolve(event.target.result);
+          };
+        })(this);
+      });
+    };
+  };
+
+  File.readAsArrayBuffer = readAsArrayBuffer = File._readWithPromise("readAsArrayBuffer");
+
+  File.readAsDataURL = File._readWithPromise("readAsDataURL");
+
+  File.readAsBinaryString = function(file) {
+    return readAsArrayBuffer(file).then(function(arrayBuffer) {
+      return new BinaryString(arrayBuffer);
+    });
+  };
+
+  return File;
+
+})();
+
+
+/***/ }),
+/* 9 */
+/*!***********************************************!*\
+  !*** ./source/Art.Binary/BinaryString.coffee ***!
+  \***********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject, Binary, BinaryString, ClassSystem, InspectedObjectLiteral, Promise, StandardLib, Utf8, compactFlatten, encodings, inspect, isFunction, isNode, isPlainArray, isString, log, merge, min, pad, readFileAsArrayBuffer, readFileAsDataUrl,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-Binary = __webpack_require__(3);
+Binary = __webpack_require__(/*! ./namespace */ 2);
 
-Utf8 = __webpack_require__(8);
+Utf8 = __webpack_require__(/*! ./Utf8 */ 10);
 
-StandardLib = __webpack_require__(1);
+StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
 
-ClassSystem = __webpack_require__(4);
+ClassSystem = __webpack_require__(/*! art-class-system */ 11);
 
 merge = StandardLib.merge, isString = StandardLib.isString, isFunction = StandardLib.isFunction, isPlainArray = StandardLib.isPlainArray, log = StandardLib.log, min = StandardLib.min, inspect = StandardLib.inspect, readFileAsDataUrl = StandardLib.readFileAsDataUrl, readFileAsArrayBuffer = StandardLib.readFileAsArrayBuffer, compactFlatten = StandardLib.compactFlatten, pad = StandardLib.pad, InspectedObjectLiteral = StandardLib.InspectedObjectLiteral, Promise = StandardLib.Promise, isNode = StandardLib.isNode;
 
@@ -134,6 +376,8 @@ module.exports = BinaryString = (function(superClass) {
         return new Uint8Array(arg);
       } else if (arg instanceof Uint8Array) {
         return arg;
+      } else if (arg.buffer instanceof ArrayBuffer) {
+        return new Uint8Array(arg.buffer);
       } else if (isString(arg)) {
         return Utf8.toBuffer(arg);
       } else if (isFunction(arg.toString)) {
@@ -223,8 +467,17 @@ module.exports = BinaryString = (function(superClass) {
     uint8Array: function() {
       return this.bytes;
     },
-    arrayBuffer: function() {
+    buffer: function() {
+      var oldBytes;
+      if (this.bytes.buffer.byteLength !== this.bytes.byteLength) {
+        oldBytes = this.bytes;
+        this.bytes = new Uint8Array(new ArrayBuffer(oldBytes.byteLength));
+        this.bytes.set(oldBytes);
+      }
       return this.bytes.buffer;
+    },
+    arrayBuffer: function() {
+      return this.buffer;
     },
     nodeBuffer: function() {
       return new Buffer(this.bytes);
@@ -380,185 +633,115 @@ module.exports = BinaryString = (function(superClass) {
     })());
   };
 
-  BinaryString.downloadBinaryData = function(filename, binaryData, mimeType) {
-    var blob;
-    binaryData = binary(binaryData);
-    if (global.navigator.msSaveOrOpenBlob != null) {
-      blob = binaryData.toBlob(mimeType);
-      return window.navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-      return binaryData.toDataUri(mimeType).then(function(uri) {
-        var e;
-        e = document.createElement('a');
-        e.setAttribute('href', uri);
-        e.setAttribute('download', filename);
-        document.body.appendChild(e);
-        e.click();
-        return document.body.removeChild(e);
-      });
-    }
-  };
-
   return BinaryString;
 
 })(BaseObject);
 
 
 /***/ }),
-/* 1 */
+/* 10 */
+/*!***************************************!*\
+  !*** ./source/Art.Binary/Utf8.coffee ***!
+  \***************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib");
+var Utf8;
 
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
+module.exports = Utf8 = (function() {
+  function Utf8() {}
 
-var BinaryString, File, Promise, StandardLib;
-
-StandardLib = __webpack_require__(1);
-
-Promise = StandardLib.Promise;
-
-BinaryString = __webpack_require__(0);
-
-module.exports = File = (function() {
-  var readAsArrayBuffer;
-
-  function File() {}
-
-  File._readWithPromise = function(readFunction) {
-    return function(file) {
-      return new Promise(function(resolve, reject) {
-        var fr;
-        fr = new FileReader;
-        fr[readFunction](file);
-        fr.onerror = reject;
-        return fr.onload = (function(_this) {
-          return function(event) {
-            return resolve(event.target.result);
-          };
-        })(this);
-      });
-    };
+  Utf8.toBuffer = function(string) {
+    return new Uint8Array(this.toArray(string));
   };
 
-  File.readAsArrayBuffer = readAsArrayBuffer = File._readWithPromise("readAsArrayBuffer");
-
-  File.readAsDataURL = File._readWithPromise("readAsDataURL");
-
-  File.readAsBinaryString = function(file) {
-    return readAsArrayBuffer(file).then(function(arrayBuffer) {
-      return new BinaryString(arrayBuffer);
-    });
+  Utf8.toArray = function(string) {
+    var char, i, out, uriEncoded;
+    uriEncoded = encodeURIComponent(string);
+    i = 0;
+    out = (function() {
+      var results;
+      results = [];
+      while (i < uriEncoded.length) {
+        char = uriEncoded.charCodeAt(i++);
+        if (char === 0x25) {
+          i += 2;
+          results.push(parseInt(uriEncoded.substr(i - 2, 2), 16));
+        } else {
+          results.push(char);
+        }
+      }
+      return results;
+    })();
+    return out;
   };
 
-  return File;
+  Utf8.toString = function(a) {
+    var error, x, y;
+    if (a === void 0) {
+      return "<undefined>";
+    }
+    if (a === null) {
+      return "<null>";
+    }
+    try {
+      if (a instanceof ArrayBuffer) {
+        a = new Uint8Array(a);
+      }
+      return decodeURIComponent(((function() {
+        var j, len, results;
+        results = [];
+        for (j = 0, len = a.length; j < len; j++) {
+          x = a[j];
+          y = x.toString(16);
+          if (y.length < 2) {
+            y = "0" + y;
+          }
+          y = "%" + y;
+          results.push(y);
+        }
+        return results;
+      })()).join(''));
+    } catch (error1) {
+      error = error1;
+      return "<" + a.length + " binary bytes>";
+    }
+  };
+
+  return Utf8;
 
 })();
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Binary,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = (__webpack_require__(15)).addNamespace('Art.Binary', Binary = (function(superClass) {
-  extend(Binary, superClass);
-
-  function Binary() {
-    return Binary.__super__.constructor.apply(this, arguments);
-  }
-
-  Binary.version = __webpack_require__(14).version;
-
-  return Binary;
-
-})(Neptune.PackageNamespace));
-
-
-/***/ }),
-/* 4 */
+/* 11 */
+/*!**********************************************************************************!*\
+  !*** external "require('art-class-system' /* ABC - not inlining fellow NPM *_/)" ***!
+  \**********************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("art-class-system");
+module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var DataUri, Promise, StandardLib, binary, isString, readAsDataURL;
-
-StandardLib = __webpack_require__(1);
-
-binary = __webpack_require__(0).binary;
-
-readAsDataURL = __webpack_require__(2).readAsDataURL;
-
-Promise = StandardLib.Promise, isString = StandardLib.isString;
-
-module.exports = DataUri = (function() {
-  var isDataUri;
-
-  function DataUri() {}
-
-  DataUri.isDataUri = isDataUri = function(dataString) {
-    return isString(dataString) && dataString.slice(0, 5) === "data:";
-  };
-
-
-  /*
-  IN: data can be any of
-    File: HTML File object is read as ArrayBuffer
-    DataURI string: if it is already a data-uri string it is just returned as a successful promise
-    any type 'binary' accepts
-  
-  OUT:
-    promise.then (dataUri) ->
-    , (errorEventOrErrorObject) ->
-   */
-
-  DataUri.toDataUri = function(data, mimeType) {
-    if (mimeType == null) {
-      mimeType = 'image/png';
-    }
-    if (!data) {
-      throw new Error("data not set");
-    }
-    if (global.File && data instanceof global.File) {
-      return readAsDataURL(data);
-    }
-    if (isDataUri(data)) {
-      return Promise.resolve(data);
-    }
-    return binary(data).toBase64().then(function(base64) {
-      return "data:" + mimeType + ";base64," + base64;
-    });
-  };
-
-  return DataUri;
-
-})();
-
-
-/***/ }),
-/* 6 */
+/* 12 */
+/*!*****************************************!*\
+  !*** ./source/Art.Binary/Stream.coffee ***!
+  \*****************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject, Binary, ClassSystem, Stream, binary,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-ClassSystem = __webpack_require__(4);
+ClassSystem = __webpack_require__(/*! art-class-system */ 11);
 
-Binary = __webpack_require__(3);
+Binary = __webpack_require__(/*! ./namespace */ 2);
 
 BaseObject = ClassSystem.BaseObject;
 
-binary = __webpack_require__(0).binary;
+binary = __webpack_require__(/*! ./BinaryString */ 9).binary;
 
 module.exports = Stream = (function(superClass) {
   extend(Stream, superClass);
@@ -626,14 +809,20 @@ module.exports = Stream = (function(superClass) {
   };
 
   Stream.getter({
+    buffer: function() {
+      return this.binaryString.buffer;
+    },
     isDone: function() {
       return this.pos >= this.byteView.length;
     },
     binaryString: function() {
-      return binary(this.byteView);
+      return this._binaryString != null ? this._binaryString : this._binaryString = binary(this.byteView);
     },
     inspectedString: function() {
       return this.binaryString.inspectedString;
+    },
+    inspectedObjects: function() {
+      return this.binaryString.inspectedObjects;
     }
   });
 
@@ -647,186 +836,84 @@ module.exports = Stream = (function(superClass) {
 
 
 /***/ }),
-/* 7 */
+/* 13 */
+/*!******************************************!*\
+  !*** ./source/Art.Binary/DataUri.coffee ***!
+  \******************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var base, base1, base10, base11, base2, base3, base4, base5, base6, base7, base8, base9, bound, genericSlice, ref, ref1;
+var DataUri, Promise, StandardLib, binary, isString, readAsDataURL;
 
-bound = __webpack_require__(1).bound;
+StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
 
-(base = Uint8Array.prototype).slice || (base.slice = genericSlice = function(start, end) {
-  var i, j, length, out, outIndex, ref, ref1;
-  if (end == null) {
-    end = this.length;
-  }
-  if (start < 0) {
-    start += this.length;
-  }
-  if (end < 0) {
-    end += this.length;
-  }
-  start = bound(0, start, this.length);
-  end = bound(0, end, this.length);
-  out = new Uint8Array(length = end - start);
-  outIndex = 0;
-  for (i = j = ref = start, ref1 = end; ref <= ref1 ? j < ref1 : j > ref1; i = ref <= ref1 ? ++j : --j) {
-    out[outIndex++] = this[i];
-  }
-  return out;
-});
+binary = __webpack_require__(/*! ./BinaryString */ 9).binary;
 
-(base1 = Int8Array.prototype).slice || (base1.slice = genericSlice);
+readAsDataURL = __webpack_require__(/*! ./File */ 8).readAsDataURL;
 
-(base2 = Uint8Array.prototype).slice || (base2.slice = genericSlice);
+Promise = StandardLib.Promise, isString = StandardLib.isString;
 
-(base3 = Int16Array.prototype).slice || (base3.slice = genericSlice);
+module.exports = DataUri = (function() {
+  var isDataUri;
 
-(base4 = Uint16Array.prototype).slice || (base4.slice = genericSlice);
+  function DataUri() {}
 
-(base5 = Int32Array.prototype).slice || (base5.slice = genericSlice);
-
-(base6 = Uint32Array.prototype).slice || (base6.slice = genericSlice);
-
-(base7 = Float32Array.prototype).slice || (base7.slice = genericSlice);
-
-(base8 = Float64Array.prototype).slice || (base8.slice = genericSlice);
-
-if ((ref = self.Uint8ClampedArray) != null) {
-  (base9 = ref.prototype).slice || (base9.slice = genericSlice);
-}
-
-if ((ref1 = self.CanvasPixelArray) != null) {
-  (base10 = ref1.prototype).slice || (base10.slice = genericSlice);
-}
-
-(base11 = ArrayBuffer.prototype).slice || (base11.slice = function(start, end) {
-  return (new Uint8Array(this)).slice(start, end).buffer;
-});
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var Utf8;
-
-module.exports = Utf8 = (function() {
-  function Utf8() {}
-
-  Utf8.toBuffer = function(string) {
-    return new Uint8Array(this.toArray(string));
+  DataUri.isDataUri = isDataUri = function(dataString) {
+    return isString(dataString) && dataString.slice(0, 5) === "data:";
   };
 
-  Utf8.toArray = function(string) {
-    var char, i, out, uriEncoded;
-    uriEncoded = encodeURIComponent(string);
-    i = 0;
-    out = (function() {
-      var results;
-      results = [];
-      while (i < uriEncoded.length) {
-        char = uriEncoded.charCodeAt(i++);
-        if (char === 0x25) {
-          i += 2;
-          results.push(parseInt(uriEncoded.substr(i - 2, 2), 16));
-        } else {
-          results.push(char);
-        }
-      }
-      return results;
-    })();
-    return out;
+
+  /*
+  IN: data can be any of
+    File: HTML File object is read as ArrayBuffer
+    DataURI string: if it is already a data-uri string it is just returned as a successful promise
+    any type 'binary' accepts
+  
+  OUT:
+    promise.then (dataUri) ->
+    , (errorEventOrErrorObject) ->
+   */
+
+  DataUri.toDataUri = function(data, mimeType) {
+    if (mimeType == null) {
+      mimeType = 'image/png';
+    }
+    if (!data) {
+      throw new Error("data not set");
+    }
+    if (global.File && data instanceof global.File) {
+      return readAsDataURL(data);
+    }
+    if (isDataUri(data)) {
+      return Promise.resolve(data);
+    }
+    return binary(data).toBase64().then(function(base64) {
+      return "data:" + mimeType + ";base64," + base64;
+    });
   };
 
-  Utf8.toString = function(a) {
-    var error, x, y;
-    if (a === void 0) {
-      return "<undefined>";
-    }
-    if (a === null) {
-      return "<null>";
-    }
-    try {
-      if (a instanceof ArrayBuffer) {
-        a = new Uint8Array(a);
-      }
-      return decodeURIComponent(((function() {
-        var j, len, results;
-        results = [];
-        for (j = 0, len = a.length; j < len; j++) {
-          x = a[j];
-          y = x.toString(16);
-          if (y.length < 2) {
-            y = "0" + y;
-          }
-          y = "%" + y;
-          results.push(y);
-        }
-        return results;
-      })()).join(''));
-    } catch (error1) {
-      error = error1;
-      console.warn(error.toString(), error);
-      return "<" + a.length + " binary bytes>";
-    }
-  };
-
-  return Utf8;
+  return DataUri;
 
 })();
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(3);
-
-module.exports.includeInNamespace(__webpack_require__(11)).addModules({
-  BinaryString: __webpack_require__(0),
-  DataUri: __webpack_require__(5),
-  EncodedImage: __webpack_require__(12),
-  File: __webpack_require__(2),
-  Stream: __webpack_require__(6),
-  TypedarraySlicePolyfill: __webpack_require__(7),
-  Utf8: __webpack_require__(8),
-  WriteStream: __webpack_require__(13)
-});
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(9);
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(7);
-
-module.exports = [
-  __webpack_require__(2), {
-    stream: (__webpack_require__(6)).stream
-  }, [__webpack_require__(0), "binary binaryFromBlob downloadBinaryData"]
-];
-
-
-/***/ }),
-/* 12 */
+/* 14 */
+/*!***********************************************!*\
+  !*** ./source/Art.Binary/EncodedImage.coffee ***!
+  \***********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var EncodedImage, ErrorWithInfo, HTMLImageElement, Image, Promise, StandardLib, binary, escapeRegExp, isBinary, isNode, isObject, isString, log, readFileAsDataUrl, ref, sameOrigin, toDataUri;
 
-StandardLib = __webpack_require__(1);
+StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
 
-toDataUri = __webpack_require__(5).toDataUri;
+toDataUri = __webpack_require__(/*! ./DataUri */ 13).toDataUri;
 
 isNode = StandardLib.isNode, log = StandardLib.log, Promise = StandardLib.Promise, readFileAsDataUrl = StandardLib.readFileAsDataUrl, ErrorWithInfo = StandardLib.ErrorWithInfo, isString = StandardLib.isString, escapeRegExp = StandardLib.escapeRegExp, isObject = StandardLib.isObject, sameOrigin = StandardLib.sameOrigin;
 
-ref = __webpack_require__(0), isBinary = ref.isBinary, binary = ref.binary;
+ref = __webpack_require__(/*! ./BinaryString */ 9), isBinary = ref.isBinary, binary = ref.binary;
 
 if (!global.Image) {
   try {
@@ -960,18 +1047,22 @@ module.exports = EncodedImage = (function() {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
+/*!**********************************************!*\
+  !*** ./source/Art.Binary/WriteStream.coffee ***!
+  \**********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var BaseObject, ClassSystem, Promise, StandardLib, WriteStream, binary, bound, bufferSize, log, readFileAsArrayBuffer,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-StandardLib = __webpack_require__(1);
+StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
 
-ClassSystem = __webpack_require__(4);
+ClassSystem = __webpack_require__(/*! art-class-system */ 11);
 
-binary = __webpack_require__(0).binary;
+binary = __webpack_require__(/*! ./BinaryString */ 9).binary;
 
 Promise = StandardLib.Promise, readFileAsArrayBuffer = StandardLib.readFileAsArrayBuffer, bound = StandardLib.bound;
 
@@ -1064,25 +1155,38 @@ module.exports = WriteStream = (function(superClass) {
    */
 
   WriteStream.prototype._compact = function() {
+    var i, j, k, len, len1, len2, out, outI, ref, ref1, totalLength, typedArray, v;
     this._commitHead();
     switch (this._written.length) {
       case 0:
-        return new Promise(function(resolve) {
-          return resolve(new Uint8Array(0));
-        });
+        return Promise.resolve(new Uint8Array(0));
       case 1:
-        return new Promise((function(_this) {
-          return function(resolve) {
-            return resolve(_this._written[0]);
-          };
-        })(this));
-      default:
+        return Promise.resolve(this._written[0]);
+      case global.Blob:
         return readFileAsArrayBuffer(new Blob(this._written)).then((function(_this) {
           return function(ab) {
             _this._written = [new Uint8Array(ab)];
             return _this._written[0];
           };
         })(this));
+      default:
+        totalLength = 0;
+        ref = this._written;
+        for (i = 0, len = ref.length; i < len; i++) {
+          typedArray = ref[i];
+          totalLength += typedArray.length;
+        }
+        out = new Uint8Array(totalLength);
+        outI = 0;
+        ref1 = this._written;
+        for (j = 0, len1 = ref1.length; j < len1; j++) {
+          typedArray = ref1[j];
+          for (k = 0, len2 = typedArray.length; k < len2; k++) {
+            v = typedArray[k];
+            out[outI++] = v;
+          }
+        }
+        return Promise.resolve(out);
     }
   };
 
@@ -1099,18 +1203,6 @@ module.exports = WriteStream = (function(superClass) {
 
 })(BaseObject);
 
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-class-system":"*","art-communication-status":"*","art-config":"*","art-rest-client":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.0","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.0.1","coffee-loader":"^0.7.3","coffee-script":"^1.12.6","colors":"^1.2.1","commander":"^2.15.1","css-loader":"^0.28.4","dateformat":"^3.0.3","detect-node":"^2.0.3","fs-extra":"^5.0.0","glob":"^7.1.2","glob-promise":"^3.4.0","json-loader":"^0.5.4","mocha":"^3.4.2","neptune-namespaces":"*","script-loader":"^0.7.0","style-loader":"^0.18.1","webpack":"^2.6.1","webpack-dev-server":"^2.4.5","webpack-merge":"^4.1.0","webpack-node-externals":"^1.6.0"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"0.2.1"}
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-module.exports = require("neptune-namespaces");
 
 /***/ })
 /******/ ]);
