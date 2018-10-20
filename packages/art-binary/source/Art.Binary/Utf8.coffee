@@ -33,5 +33,4 @@ module.exports = class Utf8
         y
       ).join ''
     catch error
-      console.warn error.toString(), error
       return "<#{a.length} binary bytes>"
