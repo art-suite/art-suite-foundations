@@ -38,7 +38,7 @@ module.exports = class ObjectTreeFactory
         NODE: class must be set
         list of method-names to bind from class onto the factory
 
-      preprocessElement: (element) -> element
+      preprocessElement: (element, Factory) -> element
         can do custom preprocssing of each argument to the factory.
 
         defualt: preprocessElementBasic (no-op)
@@ -86,7 +86,7 @@ module.exports = class ObjectTreeFactory
     _children = _props = _oneProps = null
 
     applyArg = (el) ->
-      if el = preprocessElement el
+      if el = preprocessElement el, Factory
         if isPlainObject el
           unless _oneProps
             _oneProps = el
