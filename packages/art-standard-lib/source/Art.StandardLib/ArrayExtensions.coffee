@@ -1,5 +1,5 @@
 {bound, max, intRand, modulo} = require "./MathExtensions"
-{isNumber, isString} = require './TypesExtended'
+{isFunction, isNumber, isString} = require './TypesExtended'
 {wordsRegex, exactlyOneWordRegex} = require './RegExpExtensions'
 
 module.exports = class ArrayExtensions
@@ -166,9 +166,21 @@ module.exports = class ArrayExtensions
       array.push item
       true
 
-  @randomElement: randomElement = (array, fromFirstN) ->
-    fromFirstN = array.length unless fromFirstN?
-    array[Math.random() * fromFirstN | 0]
+  ###
+  IN:
+    array: []
+    randomizer:               [optional] () -> [0, 1) random number generator
+    selectFromFirstNElements: [optional] int
+  ###
+  @randomElement: randomElement = (array, a, b) ->
+    rand = if isFunction randomizer = a
+      fromFirstN = b
+      randomizer()
+    else
+      fromFirstN = a
+      Math.random()
+
+    array[rand * (fromFirstN ? array.length) | 0]
 
   @randomSortInPlace: randomSortInPlace = (array) ->
     len = array.length
