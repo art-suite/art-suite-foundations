@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.47.5"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.48.0"};
 
 /***/ }),
 /* 5 */
@@ -3849,6 +3849,17 @@ module.exports = MathExtensions = (function() {
     };
   };
 
+  MathExtensions.seededRandomNumberGenerator = function(seed) {
+    var _rngSeed;
+    if (seed == null) {
+      seed = Math.random();
+    }
+    _rngSeed = Math.floor(48271 * 48271 * Math.abs(seed) + 1);
+    return function() {
+      return (_rngSeed = _rngSeed * 48271 % 2147483647) / 2147483648;
+    };
+  };
+
   return MathExtensions;
 
 })();
@@ -3950,7 +3961,7 @@ formattedInspectObject = function(m, maxLineLength, options) {
 };
 
 formattedInspectArray = function(m, maxLineLength, options) {
-  var arrayStart, colorize, i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, maxArrayLength, objectStart, objectsMustBeExplicit, oneLinerOk, value;
+  var arrayStart, colorize, i, inspected, inspectedHasNewlines, inspectedValues, inspectedValuesContainNewlines, j, lastWasArray, lastWasObject, len, lengthOfCommas, lengthOfInspectedValues, lengthOfStartBrackets, maxArrayLength, objectStart, objectsMustBeExplicit, oneLinerOk, suffix, value;
   colorize = options.colorize;
   lengthOfInspectedValues = 0;
   lastWasObject = false;
@@ -4009,16 +4020,17 @@ formattedInspectArray = function(m, maxLineLength, options) {
   arrayStart = isTypedArray(m) ? "{" + (objectName(m)) + "}" : "[]";
   if (m.length > maxArrayLength) {
     arrayStart += " <length: " + m.length + ">";
+    suffix = "...";
   }
   arrayStart = colorize.grey(arrayStart);
   if (oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues) {
     if (inspectedValues.length === 0) {
       return arrayStart;
     } else {
-      return arrayStart + " " + (inspectedValues.join(",\t"));
+      return arrayStart + " " + (inspectedValues.join(",\t")) + (suffix != null ? suffix : "");
     }
   } else {
-    return arrayStart + "\n  " + (inspectedValues.join("\n  "));
+    return arrayStart + "\n  " + (inspectedValues.join("\n  ")) + (suffix ? "\n  " + suffix : '');
   }
 };
 
@@ -5454,12 +5466,12 @@ module.exports = Eq = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
+var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isFunction, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 ref = __webpack_require__(/*! ./MathExtensions */ 32), bound = ref.bound, max = ref.max, intRand = ref.intRand, modulo = ref.modulo;
 
-ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isNumber = ref1.isNumber, isString = ref1.isString;
+ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isFunction = ref1.isFunction, isNumber = ref1.isNumber, isString = ref1.isString;
 
 ref2 = __webpack_require__(/*! ./RegExpExtensions */ 22), wordsRegex = ref2.wordsRegex, exactlyOneWordRegex = ref2.exactlyOneWordRegex;
 
@@ -5729,11 +5741,18 @@ module.exports = ArrayExtensions = (function() {
     }
   };
 
-  ArrayExtensions.randomElement = randomElement = function(array, fromFirstN) {
-    if (fromFirstN == null) {
-      fromFirstN = array.length;
-    }
-    return array[Math.random() * fromFirstN | 0];
+
+  /*
+  IN:
+    array: []
+    randomizer:               [optional] () -> [0, 1) random number generator
+    selectFromFirstNElements: [optional] int
+   */
+
+  ArrayExtensions.randomElement = randomElement = function(array, a, b) {
+    var fromFirstN, rand, randomizer;
+    rand = isFunction(randomizer = a) ? (fromFirstN = b, randomizer()) : (fromFirstN = a, Math.random());
+    return array[rand * (fromFirstN != null ? fromFirstN : array.length) | 0];
   };
 
   ArrayExtensions.randomSortInPlace = randomSortInPlace = function(array) {
