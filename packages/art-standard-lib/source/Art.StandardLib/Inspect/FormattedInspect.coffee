@@ -115,17 +115,18 @@ formattedInspectArray = (m, maxLineLength, options) ->
   arrayStart = if isTypedArray m then "{#{objectName m}}" else "[]"
   if m.length > maxArrayLength
     arrayStart += " <length: #{m.length}>"
+    suffix = "..."
   arrayStart = colorize.grey arrayStart
 
   if oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues
     if inspectedValues.length == 0
       arrayStart
     else
-      "#{arrayStart} #{inspectedValues.join ",\t"}"
+      "#{arrayStart} #{inspectedValues.join ",\t"}#{suffix ? ""}"
   else
     """
     #{arrayStart}
-      #{inspectedValues.join "\n  "}
+      #{inspectedValues.join "\n  "}#{if suffix then "\n  #{suffix}" else ''}
     """
 
 escapeForBlockString = (str) =>
