@@ -24,6 +24,8 @@ suite 'my suite', ->
   defineModule
   isFunction
   floatEq
+  isNode
+  getPadding
 } = require 'art-standard-lib'
 
 targetCycleDuration = .02
@@ -268,7 +270,12 @@ defineModule module, ->
         else
           ""
 
-        if Math.abs((testsPerSecond / testsPerSecondGc) - 1) < .01
-          log "#{rightAlign commaize(testsPerSecond),11} #{testUnits}/s: #{name}"
+        result = if Math.abs((testsPerSecond / testsPerSecondGc) - 1) < .01
+          "#{rightAlign commaize(testsPerSecond),11} #{testUnits}/s"
         else
-          log "#{rightAlign commaize(testsPerSecond),11} (#{rightAlign commaize(testsPerSecondGc),11} #{(100 * testsPerSecond/testsPerSecondGc)|0}%) #{testUnits}/s: #{name}"
+          "#{rightAlign commaize(testsPerSecond),11} (#{rightAlign commaize(testsPerSecondGc),11} #{(100 * testsPerSecond/testsPerSecondGc)|0}%) #{testUnits}/s"
+
+        if isNode
+          log "#{getPadding process.stdout.columns / 2 - name.length | 0}#{name.grey}: #{result.green}"
+        else
+          log "#{result}: #{name}"

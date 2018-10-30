@@ -1,4 +1,4 @@
-{isNode, log, isFunction, isPlainObject, merge, Promise} = require 'art-standard-lib'
+{isArray, isNode, log, isFunction, isPlainObject, merge, Promise} = require 'art-standard-lib'
 {configure} = require 'art-config'
 chai = require './ArtChai'
 global.assert = chai.assert
@@ -89,16 +89,21 @@ EFFECT:
   the module's suite function in that suite.
 ###
 defineSuitesByNamespaces = (namespace, rootNamespacePath) ->
-  {namespacePath, namespaces, modules} = namespace
-  rootNamespacePath ||= namespacePath + "."
-  [..., relativeNamespacePath] = namespacePath.split rootNamespacePath
-  for nsName, ns of namespaces
-    defineSuitesByNamespaces ns, rootNamespacePath
-  for modName, mod of modules when mod
-    if isFunction mod.suite
-      suite "#{relativeNamespacePath}.#{modName}", mod.suite
-    else if isPlainObject mod.suite
-      defineSuitesByObjectStructure mod.suite, "#{relativeNamespacePath}.#{modName}"
+  if isArray namespace
+    for n in namespace
+      defineSuitesByNamespaces n, rootNamespacePath
+
+  else
+    {namespacePath, namespaces, modules} = namespace
+    rootNamespacePath ||= namespacePath + "."
+    [..., relativeNamespacePath] = namespacePath.split rootNamespacePath
+    for nsName, ns of namespaces
+      defineSuitesByNamespaces ns, rootNamespacePath
+    for modName, mod of modules when mod
+      if isFunction mod.suite
+        suite "#{relativeNamespacePath}.#{modName}", mod.suite
+      else if isPlainObject mod.suite
+        defineSuitesByObjectStructure mod.suite, "#{relativeNamespacePath}.#{modName}"
 
 defineSuitesByObjectStructure = (object, namespacePath) ->
   for k, v of object
