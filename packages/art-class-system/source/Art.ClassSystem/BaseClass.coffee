@@ -526,6 +526,7 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   @classGetter
     superclass: -> getSuperclass @
     isAbstractClass: -> !(@prototype instanceof @_firstAbstractAncestor)
+    isConcreteClass: -> !@getIsAbstractClass()
     abstractPrototype: -> @_firstAbstractAncestor.prototype
     firstAbstractAncestor: -> @_firstAbstractAncestor
     isSingletonClass: -> @_singleton?.class == @
