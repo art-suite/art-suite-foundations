@@ -60,6 +60,8 @@ module.exports = class RegExpExtensions
 
   @findColorRegExp:
     ///
+    (#{@hex16GreyColorRegExp.source}) |
+    (#{@hex256GreyColorRegExp.source}) |
     (#{@hex16ColorRegExp.source}) |
     (#{@hex256ColorRegExp.source}) |
     (#{@rgbColorRegExp.source}) |
