@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.48.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.49.2"};
 
 /***/ }),
 /* 5 */
@@ -2167,7 +2167,31 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.findUrlFragmentRegExp = RegExp("(\\#)((?:(?:\\?|" + RegExpExtensions.findLegalUrlCharacterRegExp.source + ")*(?!\\.)" + RegExpExtensions.findLegalUrlCharacterRegExp.source + "|))");
 
-  RegExpExtensions.findEmailRegExp = /((?:[^@<>\s\n"\\]|\\.)+|"(?:[^@"\\]|\\.)*")@([^@\s\n<>]+)/i;
+
+  /*
+  https://tools.ietf.org/html/rfc3696
+  terms: local@domain
+  lengths:
+    total:  320 max
+    local:  64 max
+    domain: 255 max
+  2012 unicode update: https://tools.ietf.org/html/rfc6531
+  Argued here - make a permissive test:
+  https://news.ycombinator.com/item?id=9089129
+  So, here is my permissive test:
+    I want something that can reasonably extract emails from random text.
+    no spaces unless escaped or quoted
+    at least something before @
+    support for quotes (") and escapes (\.)
+    at least one non-space in domain
+    only one '@'
+    Domain must have at least one '.' after a character and before a character
+  
+  Minimum Example:
+    a@a.a
+   */
+
+  RegExpExtensions.findEmailRegExp = /((?:[^@<>\s\n"\\]|\\.)+|"(?:[^@"\\]|\\.)*")@([^@\s\n<>.]+\.[^@\s\n<>.][^@\s\n<>]*)/i;
 
   RegExpExtensions.emailRegExp = RegExp("^" + RegExpExtensions.findEmailRegExp.source + "$", "i");
 
@@ -2195,7 +2219,7 @@ module.exports = RegExpExtensions = (function() {
 
   RegExpExtensions.rgbaColorRegExp = /rgba *\( *(\d+%?) *, *(\d+%?) *, *(\d+%?) *, *(\d*\.?\d*)\)/;
 
-  RegExpExtensions.findColorRegExp = RegExp("(" + RegExpExtensions.hex16ColorRegExp.source + ")|(" + RegExpExtensions.hex256ColorRegExp.source + ")|(" + RegExpExtensions.rgbColorRegExp.source + ")|(" + RegExpExtensions.rgbaColorRegExp.source + ")", "i");
+  RegExpExtensions.findColorRegExp = RegExp("(" + RegExpExtensions.hex16GreyColorRegExp.source + ")|(" + RegExpExtensions.hex256GreyColorRegExp.source + ")|(" + RegExpExtensions.hex16ColorRegExp.source + ")|(" + RegExpExtensions.hex256ColorRegExp.source + ")|(" + RegExpExtensions.rgbColorRegExp.source + ")|(" + RegExpExtensions.rgbaColorRegExp.source + ")", "i");
 
   RegExpExtensions.colorRegExp = RegExp("^" + RegExpExtensions.findColorRegExp.source + "$");
 
