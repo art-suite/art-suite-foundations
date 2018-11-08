@@ -14,22 +14,28 @@ module.exports = class RegExpExtensions
   @findUrlPortRegExp:     /(\:)(\d+)/
   @findUrlFragmentRegExp: /// (\#) ( (?: (?: \? | #{@findLegalUrlCharacterRegExp.source} ) * (?!\.) #{@findLegalUrlCharacterRegExp.source} | ) ) ///
 
-  # https://tools.ietf.org/html/rfc3696
-  # terms: local@domain
-  # lengths:
-  #   total:  320 max
-  #   local:  64 max
-  #   domain: 255 max
-  # 2012 unicode update: https://tools.ietf.org/html/rfc6531
-  # Argued here - make a permissive test:
-  # https://news.ycombinator.com/item?id=9089129
-  # So, here is my permissive test:
-  #   I want something that can reasonably extract emails from random text.
-  #   no spaces unless escaped or quoted
-  #   at least something before @
-  #   support for quotes (") and escapes (\.)
-  #   at least one non-space in domain
-  #   only one '@'
+  ###
+  https://tools.ietf.org/html/rfc3696
+  terms: local@domain
+  lengths:
+    total:  320 max
+    local:  64 max
+    domain: 255 max
+  2012 unicode update: https://tools.ietf.org/html/rfc6531
+  Argued here - make a permissive test:
+  https://news.ycombinator.com/item?id=9089129
+  So, here is my permissive test:
+    I want something that can reasonably extract emails from random text.
+    no spaces unless escaped or quoted
+    at least something before @
+    support for quotes (") and escapes (\.)
+    at least one non-space in domain
+    only one '@'
+    Domain must have at least one '.' after a character and before a character
+
+  Minimum Example:
+    a@a.a
+  ###
   @findEmailRegExp:       ///
     (
       (?: [^@<>\s\n"\\] | \\. )+
@@ -37,7 +43,12 @@ module.exports = class RegExpExtensions
       " (?: [^@"\\] | \\. )* "
     )
     @
-    ([^@\s\n<>]+)
+    (
+      [^@\s\n<>.]+
+      \.
+      [^@\s\n<>.]
+      [^@\s\n<>]*
+    )
     ///i
 
   @emailRegExp:           ///^#{@findEmailRegExp.source}$///i

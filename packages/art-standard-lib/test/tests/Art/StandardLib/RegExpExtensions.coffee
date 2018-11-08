@@ -1,5 +1,6 @@
 {
   log
+  w
   findUrlOrigin, emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast
   findUrlWithOptionalProtocolRegExp
   array
@@ -36,10 +37,20 @@ module.exports = suite: ->
     assert.eq "shanebdavis@gmail.com"       .match(emailRegexp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
     assert.eq "shanebdavis@www.gmail.com"   .match(emailRegexp), ["shanebdavis@www.gmail.com", "shanebdavis", "www.gmail.com"]
 
-  test "findEmailRegExp success", ->
+  test "findEmailRegExp success: <a@b.c>",     -> assert.eq "<a@b.c>"     .match(findEmailRegExp), ["a@b.c", "a", "b.c"]
+  test "findEmailRegExp success: <a@b.c.d.e>", -> assert.eq "<a@b.c.d.e>" .match(findEmailRegExp), ["a@b.c.d.e", "a", "b.c.d.e"]
+  test "findEmailRegExp success: <shanebdavis@gmail.com>", ->
     assert.eq "<shanebdavis@gmail.com>"     .match(findEmailRegExp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
-  test "findEmailRegExp fail", ->
-    assert.eq "<shanebdavis@@gmail.com>"    .match(findEmailRegExp), null
+
+  for badEmail in w "
+      <shanebdavis@@gmail.com>
+      <shanebdavis@.gmail.com>
+      <shanebdavis@gmail>
+      <shanebdavis@.gmail>
+      <shanebdavis@gmail.>
+      "
+    test "findEmailRegExp fail: #{badEmail}", ->
+      assert.eq badEmail.match(findEmailRegExp), null
 
   test "domainRegexp successes", ->
     assert.eq "gmail.com".match(domainRegexp), ["gmail.com"]
