@@ -63,6 +63,13 @@ enhancedStatusCodeDetails =
   2.1:  reason: :mailboxDoesNotExist  message: "" The mailbox exists, but is not accepting messages. This may be a permanent error if the mailbox will never be re-enabled or a transient error if the mailbox is only temporarily disabled.
   2.2:  reason: :mailboxFull          message: "" The mailbox is full because the user has exceeded a per-mailbox administrative quota or physical capacity. The general semantics implies that the recipient can delete messages to make more space available. This code should be used as a persistent transient failure.
   3.1:  reason: :mailboxFull          message: "" Mail system storage has been exceeded. The general semantics imply that the individual recipient may not be able to delete material to make room for additional messages. This is useful only as a persistent transient error.
+  1.0:  softFailure: true reason: :otherFailure   message: "" Something about the address specified in the message caused this response.
+  2.0:  softFailure: true reason: :otherFailure   message: "" The mailbox exists, but something about the destination mailbox has caused the sending of this response.
+  3.0:  softFailure: true reason: :otherFailure   message: "" The destination system exists and normally accepts mail, but something about the system has caused the generation of this response.
+  4.0:  softFailure: true reason: :otherFailure   message: "" Something went wrong with the networking, but it is not clear what the problem is, or the problem cannot be well expressed with any of the other provided detail codes.
+  5.0:  softFailure: true reason: :otherFailure   message: "" Something was wrong with the protocol necessary to deliver the message to the next hop and the problem cannot be well expressed with any of the other provided detail codes.
+  6.0:  softFailure: true reason: :otherFailure   message: "" Something about the content of a message caused it to be considered undeliverable and the problem cannot be well expressed with any of the other provided detail codes.
+  7.0:  softFailure: true reason: :clientFailure  message: "" Something related to security caused the message to be returned, and the problem cannot be well expressed with any of the other provided detail codes. This status code may also be used when the condition cannot be further described because of security policies in force.
 
 ##
   OUT:
@@ -96,12 +103,12 @@ enhancedStatusCodeDetails =
 processResponse: (response) ->
 
   if responseParsed = response.match /^(\d+)([- ]+((\d)\.(\d)\.(\d+)))?/
-    [__, smtpStatusCode, __, smtpEnhancedStatusCode, persistance, smtpStatusSubject, detailedCode] = responseParsed
+    [__, smtpStatusCode, __, smtpEnhancedStatusCode, persistance, smtpStatusSubjectCode, detailedCode] = responseParsed
     smtpStatusCode |= 0
 
     if smtpEnhancedStatusCode
-      smtpStatusSubject = enhancedSubjects[smtpStatusSubject]
-      {reason, message} = info if info = enhancedStatusCodeDetails["#{smtpStatusSubject}.#{detailedCode}"]
+      smtpStatusSubject = enhancedSubjects[smtpStatusSubjectCode]
+      {reason, message, softFailure} = info if info = enhancedStatusCodeDetails["#{smtpStatusSubjectCode}.#{detailedCode}"]
 
     else
       persistance = (smtpStatusCode / 100) | 0
@@ -115,9 +122,11 @@ processResponse: (response) ->
 
   {}
     reason
+    softFailure
     message
     smtpStatus
     smtpStatusSubject
+    smtpStatusSubjectCode
     smtpStatusCode
     smtpEnhancedStatusCode
     normalizedResponse: response.replace /\ *[\r\n]+[- .\d]*/g, ' '

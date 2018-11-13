@@ -80,11 +80,11 @@ validateMailbox: validateMailbox = (options = {}, socket) ->
     socket.on 'data', (data) ->
       data = data.toString()
       log smtpResponse: data if verbose >= 2
-      {smtpStatus, smtpStatusSubject, reason, message, smtpStatusCode, smtpEnhancedStatusCode, normalizedResponse} =
+      {smtpStatus, smtpStatusSubject, softFailure, reason, message, smtpStatusCode, smtpEnhancedStatusCode, normalizedResponse} =
         processResponse data
 
       if smtpStatus != success
-        hardInvalid = if smtpStatus == clientFailure
+        hardInvalid = !softFailure && if smtpStatus == clientFailure
           switch smtpStatusSubject
           when :mailbox     then true
           when :mailSystem  then true

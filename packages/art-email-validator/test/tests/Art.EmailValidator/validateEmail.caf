@@ -192,28 +192,6 @@ suite:
 
         assert.isString result.message
 
-    test "Spamhaus enhancedStatusCodes", ->
-
-      validateEmail
-        {}
-          email:    :shanebdavis_xyz@gmail.com
-          smtpFrom: :test@art.suite.com
-
-        newTestSocket rcpt: realworldSpanhausResponse
-
-      .then (result) ->
-        assert.eq
-          valid:                  false
-          invalid:                false
-          reason:                 :smtpError5.7.0
-          smtpStatus:             clientFailure
-          smtpStatusCode:         550
-          smtpEnhancedStatusCode: :5.7.0
-          smtpStatusSubject:      :security
-          refusedWith:            realworldSpanhausResponse
-          objectWithout result, :emailServer, :message
-
-        assert.isString result.message
 
   verbose: ->
 
@@ -231,17 +209,6 @@ suite:
         verbose: 2
         newTestSocket()
 
-    test "enhancedStatusCodes verbose", ->
-
-      validateEmail
-        {}
-          email:    :shanebdavis_xyz@gmail.com
-          smtpFrom: :test@art.suite.com
-          verbose:  true
-
-        newTestSocket rcpt: realworldSpanhausResponse = "" 550 5.7.0 Your mail from 54.211.106.206 was rejected due to listing in Spamhaus XBL. See https://www.spamhaus.org/query/ip/54.211.106.206
-
-
     test "verbose fallbackValidator" ->
       validateEmail
         {}
@@ -253,3 +220,67 @@ suite:
             message: "It's cool, man"
 
         newTestSocket rcpt: unknown560Response
+
+  regressions: ->
+
+    test "enhancedStatusCodes verbose realworldSpanhausResponse", ->
+
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+          # verbose:  true
+
+        newTestSocket rcpt: realworldSpanhausResponse = "" 550 5.7.0 Your mail from 54.211.106.206 was rejected due to listing in Spamhaus XBL. See https://www.spamhaus.org/query/ip/54.211.106.206
+
+      .then (result) ->
+        assert.selectedEq
+          valid:    false
+          invalid:  false
+          reason:   :clientFailure
+          result
+
+    test "Spamhaus enhancedStatusCodes", ->
+
+      validateEmail
+        {}
+          email:    :shanebdavis_xyz@gmail.com
+          smtpFrom: :test@art.suite.com
+
+        newTestSocket rcpt: realworldSpanhausResponse
+
+      .then (result) ->
+        assert.eq
+          valid:                  false
+          invalid:                false
+          reason:                 clientFailure
+          smtpStatus:             clientFailure
+          smtpStatusCode:         550
+          smtpEnhancedStatusCode: :5.7.0
+          smtpStatusSubject:      :security
+          refusedWith:            realworldSpanhausResponse
+          objectWithout result, :emailServer, :message
+
+        assert.isString result.message
+
+    test "enhancedStatusCodes verbose realworldAbuseAttNetResponse", ->
+      validateEmail
+        {}
+          email:    :moonshine410331@att.net
+          smtpFrom: :test@art.suite.com
+          # verbose:  true
+
+        newTestSocket rcpt: realworldAbuseAttNetResponse = "" 553 5.3.0 alph154 DNSBL:RBL 521< 52.3.253.174 >_is_blocked.For assistance forward this email to abuse_rbl@abuse-att.net\r
+      .then (result) ->
+        assert.eq
+          valid:                  false
+          invalid:                false
+          reason:                 :otherFailure
+          smtpStatus:             clientFailure
+          smtpStatusSubject:      "mailSystem"
+          smtpStatusCode:         553
+          smtpEnhancedStatusCode: "5.3.0"
+          refusedWith:
+            "553 5.3.0 alph154 DNSBL:RBL 521< 52.3.253.174 >_is_blocked.For assistance forward this email to abuse_rbl@abuse-att.net "
+
+          objectWithout result, :emailServer, :message
