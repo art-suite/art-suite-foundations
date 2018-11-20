@@ -54,7 +54,7 @@ getTesterFor = (name, a, b) ->
               inspectedObjectLiteral name
               "to be true for"
               testValue
-    when 2
+    else
       (value1, value2, context) ->
         unless tester value1, value2
           if options?.customFailure
@@ -64,7 +64,9 @@ getTesterFor = (name, a, b) ->
               value1
               name
               value2
-    else throw new Error "unsupported tester - expecting 1 or 2 args. name: #{name}, tester #{tester}"
+    # else
+    #   log tester: "#{tester}"
+    #   throw new Error "unsupported tester - expecting 1 or 2 args. name: #{name}, tester #{tester}"
 
 assert.test = {}
 
