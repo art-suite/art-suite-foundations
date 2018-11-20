@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.49.2"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.49.3"};
 
 /***/ }),
 /* 5 */
@@ -3642,7 +3642,7 @@ log10 = Math.log10 != null ? Math.log10 : Math.log10 = function(x) {
 };
 
 module.exports = MathExtensions = (function() {
-  var bound, float32Eq0, floatEq0;
+  var bound, float32Eq, float32Eq0, floatEq, floatEq0;
 
   function MathExtensions() {}
 
@@ -3766,7 +3766,7 @@ module.exports = MathExtensions = (function() {
     return round(num * inverseFloat64Precision) * float64Precision;
   };
 
-  MathExtensions.floatEq = function(n1, n2) {
+  MathExtensions.floatEq = floatEq = function(n1, n2) {
     if (n1 === n2 || abs(n1 - n2) < float64Precision) {
       return true;
     } else {
@@ -3774,6 +3774,22 @@ module.exports = MathExtensions = (function() {
       n2 = abs(n2);
       return (n1 * onePlusFloat64Precision > n2) && (n2 * onePlusFloat64Precision > n1);
     }
+  };
+
+  MathExtensions.floatGte = function(a, b) {
+    return a >= b || floatEq(a, b);
+  };
+
+  MathExtensions.floatLte = function(a, b) {
+    return a <= b || floatEq(a, b);
+  };
+
+  MathExtensions.floatGt = function(a, b) {
+    return a > b && !floatEq(a, b);
+  };
+
+  MathExtensions.floatLt = function(a, b) {
+    return a < b && !floatEq(a, b);
   };
 
 
@@ -3813,7 +3829,7 @@ module.exports = MathExtensions = (function() {
     exponents < 0 will be compared without compensating for their magnitudes.
    */
 
-  MathExtensions.float32Eq = function(n1, n2) {
+  MathExtensions.float32Eq = float32Eq = function(n1, n2) {
     if (n1 === n2 || abs(n1 - n2) < float32Precision) {
       return true;
     } else {
@@ -3821,6 +3837,22 @@ module.exports = MathExtensions = (function() {
       n2 = Math.abs(n2);
       return (n1 * onePlusFloat32Precision > n2) && (n2 * onePlusFloat32Precision > n1);
     }
+  };
+
+  MathExtensions.float32Gte = function(a, b) {
+    return a >= b || float32Eq(a, b);
+  };
+
+  MathExtensions.float32Lte = function(a, b) {
+    return a <= b || float32Eq(a, b);
+  };
+
+  MathExtensions.float32Gt = function(a, b) {
+    return a > b && !float32Eq(a, b);
+  };
+
+  MathExtensions.float32Lt = function(a, b) {
+    return a < b && !float32Eq(a, b);
   };
 
   MathExtensions.floatEq0 = floatEq0 = function(n) {
@@ -5195,15 +5227,15 @@ module.exports = Eq = (function() {
     false: otherwise
    */
 
-  Eq.eq = function(a, b) {
-    return a === b || 0 === Eq.compare(a, b, true);
+  Eq.eq = function(a, b, compareFunctionsAsStrings) {
+    return a === b || 0 === Eq.compare(a, b, true, compareFunctionsAsStrings);
   };
 
-  Eq.neq = function(a, b) {
+  Eq.neq = function(a, b, compareFunctionsAsStrings) {
     if (a === b) {
       return false;
     } else {
-      return 0 !== Eq.compare(a, b, true);
+      return 0 !== Eq.compare(a, b, true, compareFunctionsAsStrings);
     }
   };
 
@@ -5219,21 +5251,21 @@ module.exports = Eq = (function() {
     }
   };
 
-  Eq._compareArray = function(a, b, recursionBlockArray) {
+  Eq._compareArray = function(a, b, recursionBlockArray, compareFunctionsAsStrings) {
     var aLength, av, bLength, bv, i, j, ref1, val;
     aLength = a.length;
     bLength = b.length;
     for (i = j = 0, ref1 = Math.min(aLength, bLength); j < ref1; i = j += 1) {
       av = a[i];
       bv = b[i];
-      if (0 !== (val = Eq._compare(av, bv, recursionBlockArray))) {
+      if (0 !== (val = Eq._compare(av, bv, recursionBlockArray, compareFunctionsAsStrings))) {
         return val;
       }
     }
     return aLength - bLength;
   };
 
-  Eq._compareObject = function(a, b, recursionBlockArray) {
+  Eq._compareObject = function(a, b, recursionBlockArray, compareFunctionsAsStrings) {
     var aLength, av, bv, compared, k, val;
     aLength = 0;
     compared = 0;
@@ -5244,7 +5276,7 @@ module.exports = Eq = (function() {
       bv = b[k];
       if (bv !== void 0 || b.hasOwnProperty(k)) {
         compared++;
-        if (0 !== (val = Eq._compare(av, bv, recursionBlockArray))) {
+        if (0 !== (val = Eq._compare(av, bv, recursionBlockArray, compareFunctionsAsStrings))) {
           return val;
         }
       }
@@ -5292,11 +5324,11 @@ module.exports = Eq = (function() {
     to start checking.
    */
 
-  Eq.compare = function(a, b, recursionBlockEnabled) {
-    return Eq._compare(a, b, recursionBlockEnabled && []);
+  Eq.compare = function(a, b, recursionBlockEnabled, compareFunctionsAsStrings) {
+    return Eq._compare(a, b, recursionBlockEnabled && [], compareFunctionsAsStrings);
   };
 
-  Eq._compare = function(a, b, recursionBlockArray) {
+  Eq._compare = function(a, b, recursionBlockArray, compareFunctionsAsStrings) {
     var _constructor;
     if (a === b) {
       return 0;
@@ -5319,10 +5351,13 @@ module.exports = Eq = (function() {
         return a.compare(b, recursionBlockArray);
       }
       if (_constructor === Array) {
-        return Eq._compareArray(a, b, recursionBlockArray);
+        return Eq._compareArray(a, b, recursionBlockArray, compareFunctionsAsStrings);
       }
       if (_constructor === Object) {
-        return Eq._compareObject(a, b, recursionBlockArray);
+        return Eq._compareObject(a, b, recursionBlockArray, compareFunctionsAsStrings);
+      }
+      if (compareFunctionsAsStrings && _constructor === Function) {
+        return ("" + a).localeCompare("" + b);
       }
       if (a.eq && a.eq(b, recursionBlockArray)) {
         return 0;
