@@ -71,13 +71,19 @@ module.exports = class MathExtensions
   @simplifyNum:   (num) -> round(num  * inverseFloat64Precision) * float64Precision
 
   # See float32Eq for notes
-  @floatEq:       (n1, n2) ->
+  @floatEq: floatEq = (n1, n2) ->
     if n1 == n2 || abs(n1 - n2) < float64Precision
       true
     else
       n1 = abs n1
       n2 = abs n2
       (n1 * onePlusFloat64Precision > n2) && (n2 * onePlusFloat64Precision > n1)
+
+  @floatGte: (a, b) -> a >= b || floatEq a, b
+  @floatLte: (a, b) -> a <= b || floatEq a, b
+
+  @floatGt: (a, b) -> a > b && !floatEq a, b
+  @floatLt: (a, b) -> a < b && !floatEq a, b
 
   ###
   WARNING: if you are working with very small, near-zero numbers, and
@@ -114,7 +120,7 @@ module.exports = class MathExtensions
     To maintain maximum consistency, I've decided ALL numbers with
     exponents < 0 will be compared without compensating for their magnitudes.
   ###
-  @float32Eq:     (n1, n2) ->
+  @float32Eq: float32Eq = (n1, n2) ->
     # handle exact equality fast
     if n1 == n2 || abs(n1 - n2) < float32Precision
       true
@@ -122,6 +128,14 @@ module.exports = class MathExtensions
       n1 = Math.abs n1
       n2 = Math.abs n2
       (n1 * onePlusFloat32Precision > n2) && (n2 * onePlusFloat32Precision > n1)
+
+  @float32Gte: (a, b) -> a >= b || float32Eq a, b
+  @float32Lte: (a, b) -> a <= b || float32Eq a, b
+
+  @float32Gt:  (a, b) -> a > b && !float32Eq a, b
+  @float32Lt:  (a, b) -> a < b && !float32Eq a, b
+
+
 
   @floatEq0:      floatEq0   = (n) -> n  == 0  || float64Precision > abs n
   @float32Eq0:    float32Eq0 = (n) -> n  == 0  || float32Precision > abs n

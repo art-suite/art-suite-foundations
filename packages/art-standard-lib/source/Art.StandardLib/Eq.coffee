@@ -16,12 +16,12 @@ module.exports = class Eq
     true: if a and b are structurally equal
     false: otherwise
   ###
-  @eq:  (a, b) => a == b || 0 == @compare a, b, true
-  @neq: (a, b) =>
+  @eq:  (a, b, compareFunctionsAsStrings) => a == b || 0 == @compare a, b, true, compareFunctionsAsStrings
+  @neq: (a, b, compareFunctionsAsStrings) =>
     if a == b
       false
     else
-      0 != @compare a, b, true
+      0 != @compare a, b, true, compareFunctionsAsStrings
 
   @fastEq:  (a, b) => a == b || 0 == @compare a, b, false
   @fastNeq: (a, b) =>
@@ -32,20 +32,20 @@ module.exports = class Eq
 
   # recursively compares all elements with indexs < min a.length, b.length
   # If all are equal, returns a.length - b.length
-  @_compareArray: (a, b, recursionBlockArray) =>
+  @_compareArray: (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
     aLength = a.length
     bLength = b.length
 
     for i in [0...Math.min aLength, bLength] by 1
       av = a[i]
       bv = b[i]
-      return val if 0 != val = @_compare av, bv, recursionBlockArray
+      return val if 0 != val = @_compare av, bv, recursionBlockArray, compareFunctionsAsStrings
 
     aLength - bLength
 
   # recursively compares all properties in both a and b
   # If all are equal, returns a.length - b.length
-  @_compareObject: (a, b, recursionBlockArray) =>
+  @_compareObject: (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
     aLength = 0
     compared = 0
 
@@ -55,7 +55,7 @@ module.exports = class Eq
       bv = b[k]
       if bv != undefined || b.hasOwnProperty k
         compared++
-        return val if 0 != val = @_compare av, bv, recursionBlockArray
+        return val if 0 != val = @_compare av, bv, recursionBlockArray, compareFunctionsAsStrings
 
     if aLength == compared && compared == objectKeyCount b
       0
@@ -96,10 +96,10 @@ module.exports = class Eq
     have an object/array inside another object/array do we need
     to start checking.
   ###
-  @compare: (a, b, recursionBlockEnabled) =>
-    @_compare a, b, recursionBlockEnabled && []
+  @compare: (a, b, recursionBlockEnabled, compareFunctionsAsStrings) =>
+    @_compare a, b, recursionBlockEnabled && [], compareFunctionsAsStrings
 
-  @_compare: (a, b, recursionBlockArray) =>
+  @_compare: (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
     return 0 if a == b
 
     if a? && b? && a.constructor == _constructor = b.constructor
@@ -116,8 +116,9 @@ module.exports = class Eq
       return a.compare b, recursionBlockArray if a.compare
 
       # recurse on plain objects and arrays
-      return @_compareArray  a, b, recursionBlockArray if _constructor == Array
-      return @_compareObject a, b, recursionBlockArray if _constructor == Object
+      return @_compareArray  a, b, recursionBlockArray, compareFunctionsAsStrings if _constructor == Array
+      return @_compareObject a, b, recursionBlockArray, compareFunctionsAsStrings if _constructor == Object
+      return ("#{a}").localeCompare("#{b}")            if compareFunctionsAsStrings && _constructor == Function
 
       # fallback to .eq
       return 0 if a.eq && a.eq b, recursionBlockArray

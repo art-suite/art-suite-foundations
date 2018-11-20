@@ -79,6 +79,22 @@ module.exports = suite:
         assert.equal true,  MathExtensions.floatEq(comparisonNumber, largestSame), "should be same: #{comparisonNumber} float== #{largestSame}"
         assert.equal false, MathExtensions.floatEq(comparisonNumber, smallestDifferent), "should be different: #{comparisonNumber} float== #{smallestDifferent}"
 
+        assert.equal true,  MathExtensions.floatGte(comparisonNumber, largestSame), "floatGte - should be true #{comparisonNumber} <> #{largestSame}"
+        assert.equal true,  MathExtensions.floatLte(comparisonNumber, largestSame), "floatLte - should be true #{comparisonNumber} <> #{largestSame}"
+        assert.neq(
+          MathExtensions.floatGte comparisonNumber, smallestDifferent
+          MathExtensions.floatLte comparisonNumber, smallestDifferent
+          "floatGte <> floatLte comparisonNumber, smallestDifferent"
+        )
+
+        assert.equal false, MathExtensions.floatGt(comparisonNumber, largestSame), "floatGt - should be false #{comparisonNumber} <> #{largestSame}"
+        assert.equal false, MathExtensions.floatLt(comparisonNumber, largestSame), "floatLt - should be false #{comparisonNumber} <> #{largestSame}"
+        assert.neq(
+          MathExtensions.floatGt comparisonNumber, smallestDifferent
+          MathExtensions.floatLt comparisonNumber, smallestDifferent
+          "floatGt <> floatLt comparisonNumber, smallestDifferent"
+        )
+
 
     float32Tests = [
       [c = 0, float32Precision, float32Precision / 2]
@@ -99,6 +115,22 @@ module.exports = suite:
 
         assert.equal true,  MathExtensions.float32Eq(comparisonNumber, largestSame), "should be same: #{comparisonNumber} float== #{largestSame}"
         assert.equal false, MathExtensions.float32Eq(comparisonNumber, smallestDifferent), "should be different: #{comparisonNumber} float== #{smallestDifferent}"
+
+        assert.equal true,  MathExtensions.float32Gte(comparisonNumber, largestSame), "float32Gte - should be true #{comparisonNumber} <> #{largestSame}"
+        assert.equal true,  MathExtensions.float32Lte(comparisonNumber, largestSame), "float32Lte - should be true #{comparisonNumber} <> #{largestSame}"
+        assert.neq(
+          MathExtensions.float32Gte comparisonNumber, smallestDifferent
+          MathExtensions.float32Lte comparisonNumber, smallestDifferent
+          "float32Gte <> float32Lte comparisonNumber, smallestDifferent"
+        )
+
+        assert.equal false, MathExtensions.float32Gt(comparisonNumber, largestSame), "float32Gt - should be false #{comparisonNumber} <> #{largestSame}"
+        assert.equal false, MathExtensions.float32Lt(comparisonNumber, largestSame), "float32Lt - should be false #{comparisonNumber} <> #{largestSame}"
+        assert.neq(
+          MathExtensions.float32Gt comparisonNumber, smallestDifferent
+          MathExtensions.float32Lt comparisonNumber, smallestDifferent
+          "float32Gt <> float32Lt comparisonNumber, smallestDifferent"
+        )
 
     test "floatEq and Infinity", ->
       assert.equal true, MathExtensions.floatEq Infinity, Infinity
