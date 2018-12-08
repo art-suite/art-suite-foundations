@@ -16,6 +16,8 @@ WebpackHotLoader = require './WebpackHotLoader'
   getModuleBeingDefined
   concatInto
   mergeInto
+  merge
+  neq
   isString
   object
   getSuperclass
@@ -79,42 +81,46 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
 
   nonImprintableProps = ["__proto__", "prototype"]
 
-  @imprintObject: imprintObject = (targetObject, sourceObject, preserveState = false) ->
+  @imprintObject: imprintObject = (targetObject, sourceObject, preserveState = false, returnActionsTaken) ->
     targetPropertyNames = Object.getOwnPropertyNames targetObject
     sourcePropertyNames = Object.getOwnPropertyNames sourceObject
 
+    if returnActionsTaken
+      addedProps =
+      removedProps =
+      changedProps = undefined
+
     unless preserveState
       for targetPropName in targetPropertyNames when !(targetPropName in sourcePropertyNames)
+        (removedProps?=[]).push targetPropName if returnActionsTaken
         thoroughDeleteProperty targetObject, targetPropName
 
     for sourcePropName in sourcePropertyNames when !(sourcePropName in nonImprintableProps)
       targetPropDescriptor = Object.getOwnPropertyDescriptor targetObject, sourcePropName
       sourcePropDescriptor = Object.getOwnPropertyDescriptor sourceObject, sourcePropName
+
+      sourceValueIsFunction = isFunction sourceValue = sourcePropDescriptor.value
+      targetValueIsFunction = isFunction targetValue = targetPropDescriptor?.value
       if (
-          !preserveState ||
-          !targetPropDescriptor ||
-          isFunction(sourcePropDescriptor.value) ||
-          isFunction(targetPropDescriptor?.value) ||
+          !preserveState || !targetPropDescriptor ||
+          sourceValueIsFunction || targetValueIsFunction ||
           !sourcePropName.match /^_/
         )
+        if returnActionsTaken
+          if !targetPropDescriptor
+            (addedProps?=[]).push sourcePropName if sourcePropName != "_name"
+          else
+            if neqResult = neq sourceValue, targetValue, true
+              (changedProps?=[]).push sourcePropName
+
         Object.defineProperty targetObject, sourcePropName, sourcePropDescriptor
 
-    # OLD
-    # unless preserveState
-    #   for k, v of targetObject when !sourceObject.hasOwnProperty k
-    #     delete targetObject[k]
+    if returnActionsTaken
+      (removedProps || changedProps || addedProps) &&
+      merge {removedProps, changedProps, addedProps}
 
-    # for k, fromValue of sourceObject when sourceObject.hasOwnProperty k
-    #   if (
-    #       !preserveState ||
-    #       isFunction(fromValue) ||
-    #       isFunction(targetObject[k]) ||
-    #       !k.match(/^_/) ||
-    #       !targetObject.hasOwnProperty k
-    #     )
-    #     targetObject[k] = fromValue
-
-    sourceObject
+    else
+      sourceObject
 
   ###
   imprints both the class and its prototype.
@@ -123,20 +129,25 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     @namespace
     @::constructor
   ###
-  @imprintFromClass: (updatedKlass) ->
+  @imprintFromClass: (updatedKlass, returnActionsTaken) ->
     unless updatedKlass == @
       {namespace, namespacePath, _name} = @
       oldConstructor = @::constructor
 
-      imprintObject @, updatedKlass, true
-      imprintObject @::, updatedKlass::, false
+      classUpdates     = imprintObject @,    updatedKlass,   true,  returnActionsTaken
+      prototypeUpdates = imprintObject @::,  updatedKlass::, false, returnActionsTaken
 
       @::constructor = oldConstructor
       @namespace = namespace
       @namespacePath = namespacePath
       @_name = _name
 
-    @
+    if returnActionsTaken
+      merge
+        class: classUpdates
+        prototype: prototypeUpdates
+    else
+      @
 
   @getHotReloadKey: -> @getName()
 
@@ -205,13 +216,12 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
         liveClass.namespace._setChildNamespaceProps liveClass.getName(), klass
 
         klass._name = liveClass._name
-        liveClass.imprintFromClass klass
         liveClass.classModuleState = classModuleState
+        updates = liveClass.imprintFromClass klass, true
 
-        log "Art.ClassSystem.BaseClass: class hot-reload":
-          class: liveClass.getNamespacePath()
+        log "Art.ClassSystem.BaseClass #{liveClass.getName?()} HotReload":
           version: classModuleState.hotReloadVersion
-          hotReloadKey: hotReloadKey
+          updates: updates
       else
         # initial load
         hotReloaded = false
