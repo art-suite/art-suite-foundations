@@ -151,7 +151,7 @@ module.exports = class Iteration
   @object: (source, a, b) -> invokeNormalizedIteration normalizedObject, source, a, b
   normalizedObject = (source, into, withBlock, options) ->
 
-    keyFunction = options.key || if arrayIterableTest source
+    keyFunction = options.key || options.withKey || if arrayIterableTest source
       returnFirst
     else
       returnSecond
