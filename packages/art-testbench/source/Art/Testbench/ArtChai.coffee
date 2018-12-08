@@ -1,6 +1,7 @@
 {assert} = Chai = require 'chai'
 {
   log, eq, inspect, formattedInspect, floatEq, compactFlatten, escapeRegExp, isString
+  compact
   Types
   object
   inspectedObjectLiteral
@@ -92,6 +93,18 @@ format = (val) ->
   formattedInspect val, maxLength
 
 failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
+  log.error ArtTestbenchChaiFailure:
+    context:
+      if isString context
+        context
+      else
+        formattedInspect context
+    expected: compact [
+      a, verb, b
+      verb2 if verb2
+      c if verb2
+    ]
+
   failWithExpectedMessageBase context, a, b, [
     indent format a
     verb
