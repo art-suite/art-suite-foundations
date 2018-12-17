@@ -1,4 +1,4 @@
-module.exports = class Function
+module.exports = class FunctionExtensions
   @fastBind: (fn, _this) ->
     switch fn.length
       when 0  then (                            ) -> fn.call _this

@@ -62,7 +62,7 @@ module.exports = class MathExtensions
   @abs:           abs
   @min:           min #(a, b, c) -> if c? and c <= a and c <= b then c else if a <= b then a else b
   @max:           max #(a, b, c) -> if c? and c >= a and c >= b then c else if a >= b then a else b
-  @round:         round
+  # @round:         round
 
   @ceil:  (v, m = 1) ->  ceil(v / m) * m
   @floor: (v, m = 1) ->  floor(v / m) * m

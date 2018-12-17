@@ -17,7 +17,7 @@
 
 date = new Date milliseconds = 1497123141167
 roundedIntDiv1000 = (v) -> (v / 1000) + .5 | 0
-seconds = roundedIntDiv1000 milliseconds
+seconds = milliseconds/1000
 values = {date, seconds, milliseconds}
 
 module.exports = suite:

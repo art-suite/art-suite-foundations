@@ -64,11 +64,11 @@ module.exports =
     OR Number of Seconds since epoch-start
     OR Number of Milliseconds since epoch-start
   OUT:
-    Number of Seconds since epoch-start
+    (fractional) Number of Seconds since epoch-start
   ###
   toSeconds: toSeconds = (v) ->
     return Date.now() / 1000 unless v? && v != false
-    (toMilliseconds(v) / 1000 + .5) | 0
+    toMilliseconds(v) / 1000
 
   toDate: toDate = (v) ->
     return new Date unless v? && v != false
