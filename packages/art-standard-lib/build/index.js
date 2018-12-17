@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.49.3"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.50.2"};
 
 /***/ }),
 /* 5 */
@@ -3739,8 +3739,6 @@ module.exports = MathExtensions = (function() {
 
   MathExtensions.max = max;
 
-  MathExtensions.round = round;
-
   MathExtensions.ceil = function(v, m) {
     if (m == null) {
       m = 1;
@@ -4956,7 +4954,7 @@ module.exports = Iteration = (function() {
 
   normalizedObject = function(source, into, withBlock, options) {
     var keyFunction;
-    keyFunction = options.key || (arrayIterableTest(source) ? returnFirst : returnSecond);
+    keyFunction = options.key || options.withKey || (arrayIterableTest(source) ? returnFirst : returnSecond);
     return normalizedEach(source, into != null ? into : {}, function(v, k, into, w) {
       return into[keyFunction(v, k, into, w)] = withBlock(v, k, into, w);
     }, options);
@@ -6863,13 +6861,13 @@ module.exports = {
     OR Number of Seconds since epoch-start
     OR Number of Milliseconds since epoch-start
   OUT:
-    Number of Seconds since epoch-start
+    (fractional) Number of Seconds since epoch-start
    */
   toSeconds: toSeconds = function(v) {
     if (!((v != null) && v !== false)) {
       return Date.now() / 1000;
     }
-    return (toMilliseconds(v) / 1000 + .5) | 0;
+    return toMilliseconds(v) / 1000;
   },
   toDate: toDate = function(v) {
     if (!((v != null) && v !== false)) {
@@ -6915,12 +6913,12 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var Function;
+var FunctionExtensions;
 
-module.exports = Function = (function() {
-  function Function() {}
+module.exports = FunctionExtensions = (function() {
+  function FunctionExtensions() {}
 
-  Function.fastBind = function(fn, _this) {
+  FunctionExtensions.fastBind = function(fn, _this) {
     switch (fn.length) {
       case 0:
         return function() {
@@ -6973,7 +6971,7 @@ module.exports = Function = (function() {
     }
   };
 
-  return Function;
+  return FunctionExtensions;
 
 })();
 
