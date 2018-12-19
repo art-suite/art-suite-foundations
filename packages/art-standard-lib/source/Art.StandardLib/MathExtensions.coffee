@@ -147,6 +147,7 @@ module.exports = class MathExtensions
   # return intenger between [0, max)
   @random:  random
   @intRand: (max) -> random() * max | 0
+  @boolRand: -> random() < .5
 
   @iPart: (v) -> v - (v % 1)
   @fPart: (v) -> v % 1
