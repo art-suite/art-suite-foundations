@@ -80,6 +80,13 @@ module.exports = FieldTypes =
     preprocess: (v) -> toSeconds(v) + .5 | 0
     decode: toDate
 
+  fractionalSecondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
+    dataType: numberDataType
+    fromString: (v) -> toSeconds v
+    validate:   (v) -> isNumber(v) || isDate v
+    preprocess: (v) -> toSeconds v
+    decode: toDate
+
   color:
     validate:   (v) -> isHexColor v
     preprocess: (v) -> "#{v}"
