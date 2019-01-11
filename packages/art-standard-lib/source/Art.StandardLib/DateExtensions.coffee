@@ -6,7 +6,7 @@ march1973InMilliseconds = 100000000000
 module.exports =
   # SEE: https://www.npmjs.com/package/dateformat
 
-  # DEPRICATED - why did they name it this??? It should be "formatDate" - a correct english sentance fragment
+  # DEPRICATED - "formatDate" is a better function-name because it is verb-phrase, not a noun-phrase
   dateFormat: dateFormat = require "dateformat"
 
   formatDate: (value, format, utc) ->
