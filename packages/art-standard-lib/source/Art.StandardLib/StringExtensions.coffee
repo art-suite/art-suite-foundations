@@ -115,6 +115,7 @@ module.exports = class StringExtensions
 
   # take a string of anything and produce a javascript legal string
   @escapeDoubleQuoteJavascriptString: escapeDoubleQuoteJavascriptString = (str) =>
+    console.warn "DEPRICATED: escapeDoubleQuoteJavascriptString. USE: escapeJavascriptString"
     s = String(str).replace(/[\\"]/g, "\\$&").replace /[\0\b\f\n\r\t\v\u2028\u2029]/g, (x) ->
       switch x
         when '\0'     then "\\0"
@@ -135,10 +136,12 @@ module.exports = class StringExtensions
 
   Is this going to break anything? I figure if you really need "" only, just use stringify.
   ###
-  @escapeJavascriptString: escapeJavascriptString = (str) =>
+  @escapeJavascriptString: escapeJavascriptString = (str, withoutQuotes) =>
     s = JSON.stringify str
     # s = escapeDoubleQuoteJavascriptString str
-    if s.match escapedDoubleQuoteRegex
+    if withoutQuotes
+      s.slice 1, -1
+    else if s.match escapedDoubleQuoteRegex
       "'#{s.replace(escapedDoubleQuoteRegex, '"').replace(/'/g, "\\'").slice 1, -1}'"
     else
       s

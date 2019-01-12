@@ -1,6 +1,6 @@
 
 {StandardLib} = Neptune.Art
-{log, isNode} = StandardLib
+{log, isNode, object} = StandardLib
 {formattedInspectString, escapeJavascriptString, formattedInspect, stripAnsi, ansiSafeStringLength, alignTabs, isString, inspect, toInspectedObjects, inspectedObjectLiteral, stripTrailingWhitespace} = StandardLib
 {BaseClass} = require 'art-class-system'
 testFIMultiLine = (input, out, maxLineLength = 0) ->
@@ -9,6 +9,14 @@ testFIMultiLine = (input, out, maxLineLength = 0) ->
     assert.eq o, out
 
 require 'colors'
+
+testFormattedInspectString = (map) ->
+  object map, (v, k)->
+    test "#{k} > #{v}", ->
+      assert.eq(
+        formattedInspect k
+        v
+      )
 
 
 testAlignTabs = (str, testStr, maxLineLength = 10000) ->
@@ -35,12 +43,63 @@ module.exports = suite:
           """,
           formattedInspect [{a:1}, "hi"], color: true
 
-  strings: ->
-    test 'with newlines', ->
-      assert.eq escapeJavascriptString('"""\n  a\n  b'  ), escapeJavascriptString formattedInspect "a\nb"
-      assert.eq escapeJavascriptString('"""\n\n  a'     ), escapeJavascriptString formattedInspect "\na"
-      assert.eq escapeJavascriptString('"""\n\n\n  a'   ), escapeJavascriptString formattedInspect "\n\na"
-      assert.eq escapeJavascriptString('"""\n\n\n\n  a' ), escapeJavascriptString formattedInspect "\n\n\na"
+  strings:
+    multiLine: ->
+
+      testFormattedInspectString
+        "\n":     '"\\n"'
+        "\na":    '"\\na"'
+        "a\n":    '"a\\n"'
+        "\na\n":  '"\\na\\n"'
+
+        "a\nb":
+          '''
+          """
+            a
+            b
+          '''
+
+    multiLineStartingWhitespace: ->
+
+      testFormattedInspectString
+        "\na\nb":
+          '''
+          """
+            \\na
+            b
+          '''
+
+        " a\nb":
+          '''
+          """
+            \\sa
+            b
+          '''
+
+    multiLineTrailingWhitespace: ->
+
+      testFormattedInspectString
+        "a\nb\n":
+          '''
+          """
+            a
+            b\\n
+          '''
+
+        "a\nb ":
+          '''
+          """
+            a
+            b\\s
+          '''
+
+        "a \nb":
+          '''
+          """
+            a\\s
+            b
+          '''
+
 
   singleLine: ->
     class Foo extends BaseClass

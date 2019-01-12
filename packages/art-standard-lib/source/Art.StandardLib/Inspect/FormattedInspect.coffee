@@ -130,7 +130,8 @@ formattedInspectArray = (m, maxLineLength, options) ->
     """
 
 escapeForBlockString = (str) =>
-  String(str).replace /[\\\0\b\f\r\t\v\u001b\u2028\u2029]/g, (x) ->
+  String str
+  .replace /[\\\0\b\f\r\t\v\u001b\u2028\u2029]/g, (x) ->
     switch x
       when '\\'     then '\\\\'
       when '\0'     then "\\0"
@@ -144,8 +145,13 @@ escapeForBlockString = (str) =>
       when '\u2029' then "\\u2029"
       when '\u001b' then '\\u001b'
 
+  # escape leading and trailing spaces
+  .replace /^[\n\s]+|[\n\s]+$|\s+(?=\n)/g, (x) ->
+    escapeJavascriptString x, true
+    .replace /\ /g, '\\s'
+
 formattedInspectString = (m, options) ->
-  out = if m.match(/\n/) && !m.match /\ (\n|$)/
+  out = if /[^\n\s].*\n.*[^\n\s]/.test m
     ('"""' + newLineWithIndentString +
     escapeForBlockString(m).replace /\n/g, newLineWithIndentString
     ).replace /\ +\n/g, '\n'
