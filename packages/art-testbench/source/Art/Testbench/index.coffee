@@ -3,6 +3,7 @@
 
 module.exports = require './namespace'
 module.exports
+.includeInNamespace require './Testbench'
 .addModules
   ArtChai:              require './ArtChai'             
   ChainedTest:          require './ChainedTest'         
