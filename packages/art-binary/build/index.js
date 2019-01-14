@@ -162,7 +162,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-communication-status":"*","art-rest-client":"*"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.1.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","art-communication-status":"*","art-rest-client":"*"},"description":"Art.Binary","license":"ISC","name":"art-binary","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.1.1"};
 
 /***/ }),
 /* 5 */
@@ -480,7 +480,7 @@ module.exports = BinaryString = (function(superClass) {
       return this.buffer;
     },
     nodeBuffer: function() {
-      return new Buffer(this.bytes);
+      return Buffer.from(this.bytes);
     },
     blob: function() {
       return new Blob([this.bytes]);
@@ -580,7 +580,7 @@ module.exports = BinaryString = (function(superClass) {
       sync = false;
     }
     if (isNode) {
-      v = new Buffer(this.bytes).toString('base64');
+      v = Buffer.from(this.bytes).toString('base64');
       if (sync) {
         return v;
       } else {
