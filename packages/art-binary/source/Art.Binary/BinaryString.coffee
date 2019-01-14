@@ -110,7 +110,7 @@ module.exports = class BinaryString extends BaseObject
       @bytes.buffer
 
     arrayBuffer:  -> @buffer
-    nodeBuffer:   -> new Buffer @bytes
+    nodeBuffer:   -> Buffer.from @bytes
     blob:         -> new Blob [@bytes]
     plainArray:   -> b for b in @bytes
     byteLength:   -> @length
@@ -170,7 +170,7 @@ module.exports = class BinaryString extends BaseObject
     # FF:                 4 * 1024
     # Safari and Chrome:  16 * 1024
     if isNode
-      v = new Buffer(@bytes).toString 'base64'
+      v = Buffer.from(@bytes).toString 'base64'
       if sync then v else Promise.resolve v
 
     else if @length > 16 * 1024
