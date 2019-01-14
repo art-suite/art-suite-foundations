@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.50.3"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.51.0"};
 
 /***/ }),
 /* 5 */
@@ -3275,6 +3275,7 @@ module.exports = StringExtensions = (function() {
 
   StringExtensions.escapeDoubleQuoteJavascriptString = escapeDoubleQuoteJavascriptString = function(str) {
     var s;
+    console.warn("DEPRICATED: escapeDoubleQuoteJavascriptString. USE: escapeJavascriptString");
     s = String(str).replace(/[\\"]/g, "\\$&").replace(/[\0\b\f\n\r\t\v\u2028\u2029]/g, function(x) {
       switch (x) {
         case '\0':
@@ -3308,10 +3309,12 @@ module.exports = StringExtensions = (function() {
   Is this going to break anything? I figure if you really need "" only, just use stringify.
    */
 
-  StringExtensions.escapeJavascriptString = escapeJavascriptString = function(str) {
+  StringExtensions.escapeJavascriptString = escapeJavascriptString = function(str, withoutQuotes) {
     var s;
     s = JSON.stringify(str);
-    if (s.match(escapedDoubleQuoteRegex)) {
+    if (withoutQuotes) {
+      return s.slice(1, -1);
+    } else if (s.match(escapedDoubleQuoteRegex)) {
       return "'" + (s.replace(escapedDoubleQuoteRegex, '"').replace(/'/g, "\\'").slice(1, -1)) + "'";
     } else {
       return s;
@@ -4121,13 +4124,15 @@ escapeForBlockString = (function(_this) {
         case '\u001b':
           return '\\u001b';
       }
+    }).replace(/^[\n\s]+|[\n\s]+$|\s+(?=\n)/g, function(x) {
+      return escapeJavascriptString(x, true).replace(/\ /g, '\\s');
     });
   };
 })(this);
 
 formattedInspectString = function(m, options) {
   var out;
-  out = m.match(/\n/) && !m.match(/\ (\n|$)/) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
+  out = /[^\n\s].*\n.*[^\n\s]/.test(m) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
   return options.colorize.green(out);
 };
 
