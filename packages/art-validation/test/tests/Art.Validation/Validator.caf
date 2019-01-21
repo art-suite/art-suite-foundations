@@ -139,10 +139,15 @@ suite:
       assert.throws -> v.validateUpdate id: null
       assert.throws -> v.validateUpdate id: undefined
 
-      v.validate id: false
+      # NOTE: present(false) is false
+      # from Rails: https://apidock.com/rails/Object/blank%3F
+      assert.throws -> v.validate id: false
+      assert.throws -> v.validateUpdate id: false
+
       v.validate id: 123
-      v.validateUpdate id: false
+      v.validate id: :abc
       v.validateUpdate id: 123
+      v.validateUpdate id: :abc
 
     test "required: true", ->
       v = new Validator
