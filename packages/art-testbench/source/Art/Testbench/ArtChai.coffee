@@ -230,11 +230,14 @@ statuses = w "missing clientFailure clientFailureNotAuthorized"
 each statuses, (status) ->
   assert[status] =
   assert[name = lowerCamelCase "is #{status}"] = (promise, context) ->
-    assert.rejects -> promise
-    .then (response) ->
-      if response.status != status
-        log "#{name}": expected: status, got: response.status, response: response
-      assert.eq response.status, status, context
-      response
+    if isString promise
+      assert.eq promise, status, context
+    else
+      assert.rejects -> promise
+      .then (response) ->
+        if response.status != status
+          log "#{name}": expected: status, got: response.status, response: response
+        assert.eq response.status, status, context
+        response
 
 module.exports = Chai
