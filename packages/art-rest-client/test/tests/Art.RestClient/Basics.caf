@@ -34,6 +34,12 @@ suite: ->
       assert.eq rejectedWith.status, serverFailure
       assert.eq rejectedWith.props.httpStatus, 200
 
+  test "getJson invalidJsonObject request is rejected", ->
+    invalidJsonObject = {}
+    invalidJsonObject.bar = invalidJsonObject # circular
+
+    assert.rejects RestClient.getJson "#{testAssetRoot}/array_buffer_rest_client_test/test.json", data: invalidJsonObject
+
   test "getArrayBuffer", ->
     RestClient.getArrayBuffer "#{testAssetRoot}/array_buffer_rest_client_test/hello.txt"
     .then (arrayBuffer) ->

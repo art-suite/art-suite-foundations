@@ -209,25 +209,26 @@ module.exports = class RestClient extends BaseClass
     object headers, key: (v, k) -> capitalizedDashCase k
 
   restJsonRequest: (options) ->
-    {verb, method, data, headers} = options
-    verb = RestClient.legalVerbs[verb || method]
-    data = null if data && objectKeyCount(data) == 0
+    Promise.then =>
+      {verb, method, data, headers} = options
+      verb = RestClient.legalVerbs[verb || method]
+      data = null if data && objectKeyCount(data) == 0
 
-    if verb == "GET" && options.data
-      options = merge options,
-        url: appendQuery options.url, object data, (v) -> JSON.stringify v
+      if verb == "GET" && options.data
+        options = merge options,
+          url: appendQuery options.url, object data, (v) -> JSON.stringify v
 
-      data = null
-    else
-      data &&= JSON.stringify data
+        data = null
+      else
+        data &&= JSON.stringify data
 
-    @restRequest merge options,
-      responseType: "json"
-      headers: merge
-        Accept:         'application/json'
-        "Content-Type": 'application/json'
-        headers
-      data:             data
+      @restRequest merge options,
+        responseType: "json"
+        headers: merge
+          Accept:         'application/json'
+          "Content-Type": 'application/json'
+          headers
+        data:             data
 
   # no error checking, only normalized options expected
   _normalizedRestRequest: (options) ->
