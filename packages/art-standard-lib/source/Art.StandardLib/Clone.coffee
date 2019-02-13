@@ -40,7 +40,7 @@ Map = require "./Map"
 
 Unique  = require './Unique'
 {inspect} = require './Inspect'
-{isPlainObject, isArray} = require './Core/Types'
+{isPlainObject, isArray, isFunction} = require './Core/Types'
 
 uniquePropertyName = Unique.PropertyName
 
@@ -98,16 +98,18 @@ module.exports = class Clone
       topObject = obj
       clonedMap = new Map
 
-    clonedObject = if isArray obj then cloneArray obj
-    else                               cloneObject obj
+    cloned = switch
+      when isFunction obj.clone then obj.clone()
+      when isArray obj          then cloneArray obj
+      when isPlainObject obj    then cloneObject obj
 
     if topObject == obj
-      byStructure = false
-      byProperties = false
-      topObject = null
-      clonedMap = null
+      byStructure   = false
+      byProperties  = false
+      topObject     = null
+      clonedMap     = null
 
-    clonedObject
+    cloned
 
   @clone: (obj, mode) ->
     # console.log clone: {obj, mode, where: new Error}
