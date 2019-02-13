@@ -56,6 +56,9 @@ defineModule module, class Main
           artConfig
           externalEnvironment.artConfig
 
+    onConfig: (config) ->
+      gets called as soon as config completes with the final config
+
   EFFECTS:
     callback @artConfig for callback in ConfigRegistry.configurables
 
@@ -87,7 +90,7 @@ defineModule module, class Main
     queryString, and are only there as mocks for testing.
   ###
   @configure: (configureOptions...) =>
-    {artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv} = @configureOptions = deepMerge configureOptions...
+    {artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv, onConfig} = @configureOptions = deepMerge configureOptions...
 
     externalEnvironment = getExternalEnvironment __testEnv
     config = getArtConfig()
@@ -157,6 +160,8 @@ defineModule module, class Main
       log "------------- ConfigRegistry: configured"
       log Art: {configName, config}
       log "------------- ConfigRegistry: done"
+
+    onConfig? config
 
     config
 
