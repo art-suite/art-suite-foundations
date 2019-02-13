@@ -14,7 +14,7 @@ module.exports
   Environment:        require './Environment'       
   Eq:                 require './Eq'                
   ErrorWithInfo:      require './ErrorWithInfo'     
-  Function:           require './Function'          
+  FunctionExtensions: require './FunctionExtensions'
   Iteration:          require './Iteration'         
   Log:                require './Log'               
   Map:                require './Map'               

@@ -6,7 +6,7 @@ module.exports = [
   require "./ObjectExtensions"
   require "./StringExtensions"
   require "./Eq"
-  require "./Function"
+  require "./FunctionExtensions"
   require "./ObjectDiff"
   require "./MapExtensions"
   require "./MathExtensions"
