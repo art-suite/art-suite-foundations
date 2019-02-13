@@ -1,4 +1,4 @@
-{currentSecond} = require 'art-standard-lib'
+{currentSecond, merge} = require 'art-standard-lib'
 {BaseClass} = require 'art-class-system'
 
 emptyProps = {}
@@ -7,3 +7,9 @@ module.exports = class Event extends BaseClass
 
   clone: ->
     new @class @type, @props, @timeStamp
+
+  # This should only be used just after you clone an Event.
+  # In general, don't mutate events.
+  mergeInProps: (props) ->
+    @props = merge @props, props
+    @
