@@ -132,7 +132,7 @@ module.exports = class Eq
 
     return false if a.length != b.length
 
-    for av, i in a when !@plainObjectsDeepEq av, b[i]
+    for av, i in a when !_plainObjectsDeepEq av, b[i]
       return false
 
     true
@@ -144,26 +144,47 @@ module.exports = class Eq
     for k, av of a
       aLength++
       bv = b[k]
-      unless (bv != undefined || b.hasOwnProperty(k)) && @plainObjectsDeepEq av, bv
+      unless (bv != undefined || b.hasOwnProperty(k)) && _plainObjectsDeepEq av, bv
         return false
 
     aLength == objectKeyCount b
 
-  @plainObjectsDeepEq: plainObjectsDeepEq = (a, b) =>
+  compareStack = []
+  @plainObjectsDeepEq: (a, b) ->
+    try
+      _plainObjectsDeepEq a, b
+    finally
+      compareStack = []
+
+  _plainObjectsDeepEq = (a, b) =>
     if a == b
       true
+    else if (a in compareStack) || (b in compareStack)
+      false
     else if a && b && a.constructor == _constructor = b.constructor
-      if a.eq then a.eq b
-      else if _constructor == Array  then @plainObjectsDeepEqArray  a, b
-      else if _constructor == Object then @plainObjectsDeepEqObject a, b
+
+      if a.eq || (_isA = _constructor == Array) || (_isB = _constructor == Object)
+        try
+          compareStack.push a
+          compareStack.push b
+
+          switch
+            when _isA then @plainObjectsDeepEqArray  a, b
+            when _isB then @plainObjectsDeepEqObject a, b
+            else a.eq b
+
+        finally
+          compareStack.pop()
+          compareStack.pop()
       else false
+
     else
       false
 
   # alias - ArtReact, ArtFlux and ArtEry were all making this local alias
   # This standardizes the alias.
   # 2016-09-27 SBd
-  @propsEq: plainObjectsDeepEq
+  @propsEq: @plainObjectsDeepEq
 
   @plainObjectsDeepDiffArray: (before, after) =>
 
