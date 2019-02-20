@@ -118,7 +118,7 @@ module.exports.includeInNamespace(__webpack_require__(/*! ./StandardLib */ 8)).a
   Environment: __webpack_require__(/*! ./Environment */ 20),
   Eq: __webpack_require__(/*! ./Eq */ 39),
   ErrorWithInfo: __webpack_require__(/*! ./ErrorWithInfo */ 24),
-  Function: __webpack_require__(/*! ./Function */ 51),
+  FunctionExtensions: __webpack_require__(/*! ./FunctionExtensions */ 51),
   Iteration: __webpack_require__(/*! ./Iteration */ 36),
   Log: __webpack_require__(/*! ./Log */ 59),
   Map: __webpack_require__(/*! ./Map */ 28),
@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.51.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.51.1"};
 
 /***/ }),
 /* 5 */
@@ -280,7 +280,7 @@ module.exports = (__webpack_require__(/*! ../namespace */ 6)).addNamespace('Insp
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(/*! ./ArrayExtensions */ 40), __webpack_require__(/*! ./AsyncExtensions */ 49), __webpack_require__(/*! ./ObjectExtensions */ 35), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 39), __webpack_require__(/*! ./Function */ 51), __webpack_require__(/*! ./ObjectDiff */ 52), __webpack_require__(/*! ./MapExtensions */ 53), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 54), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 55), __webpack_require__(/*! ./ShallowClone */ 56), __webpack_require__(/*! ./Time */ 57), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 36), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 58), __webpack_require__(/*! ./Log */ 59), __webpack_require__(/*! ./CallStack */ 60), __webpack_require__(/*! ./DateExtensions */ 50), {
+  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(/*! ./ArrayExtensions */ 40), __webpack_require__(/*! ./AsyncExtensions */ 49), __webpack_require__(/*! ./ObjectExtensions */ 35), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 39), __webpack_require__(/*! ./FunctionExtensions */ 51), __webpack_require__(/*! ./ObjectDiff */ 52), __webpack_require__(/*! ./MapExtensions */ 53), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 54), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 55), __webpack_require__(/*! ./ShallowClone */ 56), __webpack_require__(/*! ./Time */ 57), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 36), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 58), __webpack_require__(/*! ./Log */ 59), __webpack_require__(/*! ./CallStack */ 60), __webpack_require__(/*! ./DateExtensions */ 50), {
     PushBackTimer: __webpack_require__(/*! ./ReschedulableTimer */ 61)
   }
 ];
@@ -3770,10 +3770,12 @@ module.exports = MathExtensions = (function() {
   MathExtensions.floatEq = floatEq = function(n1, n2) {
     if (n1 === n2 || abs(n1 - n2) < float64Precision) {
       return true;
-    } else {
+    } else if (n1 * n2 > 0) {
       n1 = abs(n1);
       n2 = abs(n2);
       return (n1 * onePlusFloat64Precision > n2) && (n2 * onePlusFloat64Precision > n1);
+    } else {
+      return false;
     }
   };
 
@@ -5222,7 +5224,7 @@ ref = __webpack_require__(/*! ./TypesExtended */ 18), isString = ref.isString, i
 min = Math.min;
 
 module.exports = Eq = (function() {
-  var plainObjectsDeepDiff, plainObjectsDeepEq;
+  var _plainObjectsDeepEq, compareStack, plainObjectsDeepDiff;
 
   function Eq() {}
 
@@ -5383,7 +5385,7 @@ module.exports = Eq = (function() {
     }
     for (i = j = 0, len1 = a.length; j < len1; i = ++j) {
       av = a[i];
-      if (!Eq.plainObjectsDeepEq(av, b[i])) {
+      if (!_plainObjectsDeepEq(av, b[i])) {
         return false;
       }
     }
@@ -5397,24 +5399,46 @@ module.exports = Eq = (function() {
       av = a[k];
       aLength++;
       bv = b[k];
-      if (!((bv !== void 0 || b.hasOwnProperty(k)) && Eq.plainObjectsDeepEq(av, bv))) {
+      if (!((bv !== void 0 || b.hasOwnProperty(k)) && _plainObjectsDeepEq(av, bv))) {
         return false;
       }
     }
     return aLength === objectKeyCount(b);
   };
 
-  Eq.plainObjectsDeepEq = plainObjectsDeepEq = function(a, b) {
-    var _constructor;
+  compareStack = [];
+
+  Eq.plainObjectsDeepEq = function(a, b) {
+    try {
+      return _plainObjectsDeepEq(a, b);
+    } finally {
+      compareStack = [];
+    }
+  };
+
+  _plainObjectsDeepEq = function(a, b) {
+    var _constructor, _isA, _isB;
     if (a === b) {
       return true;
+    } else if ((indexOf.call(compareStack, a) >= 0) || (indexOf.call(compareStack, b) >= 0)) {
+      return false;
     } else if (a && b && a.constructor === (_constructor = b.constructor)) {
-      if (a.eq) {
-        return a.eq(b);
-      } else if (_constructor === Array) {
-        return Eq.plainObjectsDeepEqArray(a, b);
-      } else if (_constructor === Object) {
-        return Eq.plainObjectsDeepEqObject(a, b);
+      if (a.eq || (_isA = _constructor === Array) || (_isB = _constructor === Object)) {
+        try {
+          compareStack.push(a);
+          compareStack.push(b);
+          switch (false) {
+            case !_isA:
+              return Eq.plainObjectsDeepEqArray(a, b);
+            case !_isB:
+              return Eq.plainObjectsDeepEqObject(a, b);
+            default:
+              return a.eq(b);
+          }
+        } finally {
+          compareStack.pop();
+          compareStack.pop();
+        }
       } else {
         return false;
       }
@@ -5423,7 +5447,7 @@ module.exports = Eq = (function() {
     }
   };
 
-  Eq.propsEq = plainObjectsDeepEq;
+  Eq.propsEq = Eq.plainObjectsDeepEq;
 
   Eq.plainObjectsDeepDiffArray = function(before, after) {
     var diff, i, j, l, len, m, ref1, ref2, ref3, ref4, ref5, res;
@@ -6916,9 +6940,9 @@ module.exports = {
 
 /***/ }),
 /* 51 */
-/*!************************************************!*\
-  !*** ./source/Art.StandardLib/Function.coffee ***!
-  \************************************************/
+/*!**********************************************************!*\
+  !*** ./source/Art.StandardLib/FunctionExtensions.coffee ***!
+  \**********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7563,7 +7587,7 @@ but when recursing, pass in a new function bound to that closure which is differ
 
 populateClone would need to take an additional argument - the clone function to use for recursive cloning.
  */
-var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, isArray, isPlainObject, ref, topObject, uniquePropertyName;
+var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, isArray, isFunction, isPlainObject, ref, topObject, uniquePropertyName;
 
 Map = __webpack_require__(/*! ./Map */ 28);
 
@@ -7571,7 +7595,7 @@ Unique = __webpack_require__(/*! ./Unique */ 29);
 
 inspect = __webpack_require__(/*! ./Inspect */ 25).inspect;
 
-ref = __webpack_require__(/*! ./Core/Types */ 14), isPlainObject = ref.isPlainObject, isArray = ref.isArray;
+ref = __webpack_require__(/*! ./Core/Types */ 14), isPlainObject = ref.isPlainObject, isArray = ref.isArray, isFunction = ref.isFunction;
 
 uniquePropertyName = Unique.PropertyName;
 
@@ -7621,7 +7645,7 @@ module.exports = Clone = (function() {
   };
 
   Clone._clone = _clone = function(obj, mode) {
-    var clonedObject, got;
+    var cloned, got;
     switch (mode) {
       case "byStructure":
         byStructure = true;
@@ -7643,14 +7667,23 @@ module.exports = Clone = (function() {
       topObject = obj;
       clonedMap = new Map;
     }
-    clonedObject = isArray(obj) ? cloneArray(obj) : cloneObject(obj);
+    cloned = (function() {
+      switch (false) {
+        case !isFunction(obj.clone):
+          return obj.clone();
+        case !isArray(obj):
+          return cloneArray(obj);
+        case !isPlainObject(obj):
+          return cloneObject(obj);
+      }
+    })();
     if (topObject === obj) {
       byStructure = false;
       byProperties = false;
       topObject = null;
       clonedMap = null;
     }
-    return clonedObject;
+    return cloned;
   };
 
   Clone.clone = function(obj, mode) {
