@@ -69,6 +69,10 @@ module.exports = suite:
       [c = 1e-10, c + 2 * float64Precision, c + c * float64Precision]
       [c = -1e-10, c - 2 * float64Precision, c + c * float64Precision]
     ]
+    test "!floatEq -1, 1", ->
+      assert.false MathExtensions.floatEq -1, 1
+    test "!floatEq -10, 10", ->
+      assert.false MathExtensions.floatEq -10, 10
 
 
     each float64Tests, ([comparisonNumber, smallestDifferent, largestSame]) ->

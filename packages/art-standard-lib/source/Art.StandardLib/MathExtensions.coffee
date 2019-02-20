@@ -74,10 +74,12 @@ module.exports = class MathExtensions
   @floatEq: floatEq = (n1, n2) ->
     if n1 == n2 || abs(n1 - n2) < float64Precision
       true
-    else
+    else if n1 * n2 > 0
       n1 = abs n1
       n2 = abs n2
       (n1 * onePlusFloat64Precision > n2) && (n2 * onePlusFloat64Precision > n1)
+    else
+      false
 
   @floatGte: (a, b) -> a >= b || floatEq a, b
   @floatLte: (a, b) -> a <= b || floatEq a, b

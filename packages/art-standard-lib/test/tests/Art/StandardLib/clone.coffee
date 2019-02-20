@@ -122,22 +122,6 @@ module.exports = suite:
       bar = clone foo
       assert.neq Unique.id(foo), Unique.id(bar)
 
-    test "custom populateClone", ->
-      class Foo
-        constructor: -> @bar = 1
-
-        populateClone: (clonedObject) ->
-          clonedObject.bar = @bar + 1
-          clonedObject.far = clone @far
-
-      a = new Foo
-      a.far = new Foo
-      b = clone a
-      assert.equal a.bar, 1
-      assert.equal a.far.bar, 1
-      assert.equal b.bar, 2
-      assert.equal b.far.bar, 2
-
     test "clone recursive arrays", ->
       foo = [1, 2]
       foo[2] = foo
