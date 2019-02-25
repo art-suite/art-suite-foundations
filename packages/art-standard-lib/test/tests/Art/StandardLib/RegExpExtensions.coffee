@@ -3,8 +3,10 @@
   w
   findUrlOrigin, emailRegexp, domainRegexp, urlProtocolRegexp, urlPathRegexp, urlQueryRegexp, compactFlatten, urlRegexp, peek, arrayWithoutLast
   findUrlWithOptionalProtocolRegExp
+  findUrlRegExp
   array
   findEmailRegExp
+  findAllUrlsWithOptionalProtocolRegExp
 } = Neptune.Art.StandardLib
 
 popNullish = (a) ->
@@ -41,6 +43,12 @@ module.exports = suite: ->
   test "findEmailRegExp success: <a@b.c.d.e>", -> assert.eq "<a@b.c.d.e>" .match(findEmailRegExp), ["a@b.c.d.e", "a", "b.c.d.e"]
   test "findEmailRegExp success: <shanebdavis@gmail.com>", ->
     assert.eq "<shanebdavis@gmail.com>"     .match(findEmailRegExp), ["shanebdavis@gmail.com", "shanebdavis", "gmail.com"]
+
+  test "findEmailRegExp 'foo@bar.com.'", ->
+    assert.eq(
+      'foo@bar.com.'.match findEmailRegExp
+      ["foo@bar.com", "foo", "bar.com"]
+    )
 
   for badEmail in w "
       <shanebdavis@@gmail.com>
@@ -153,7 +161,17 @@ module.exports = suite: ->
       undefined
     ]
 
+  test "findUrlRegExp", ->
+    assert.eq findUrlRegExp.exec("https://en.wikipedia.org/wiki/Varieties_of_criticism#Constructive_criticism")[0],
+      "https://en.wikipedia.org/wiki/Varieties_of_criticism#Constructive_criticism"
+
+
+
   test "findUrlWithOptionalProtocolRegExp", ->
     assert.eq findUrlWithOptionalProtocolRegExp.exec("hi there.com")[0], 'there.com'
     assert.eq findUrlWithOptionalProtocolRegExp.exec("hi there.com/bar")[0], 'there.com/bar'
     assert.eq findUrlWithOptionalProtocolRegExp.exec("hi http://there.com")[0], 'http://there.com'
+    assert.eq findUrlWithOptionalProtocolRegExp.exec("hi https://en.wikipedia.org/wiki/Varieties_of_criticism#Constructive_criticism")[0], 'https://en.wikipedia.org/wiki/Varieties_of_criticism#Constructive_criticism'
+  test "findAllUrlsWithOptionalProtocolRegExp", ->
+    assert.eq findAllUrlsWithOptionalProtocolRegExp.exec("hi https://en.wikipedia.org/wiki/Varieties_of_criticism#Constructive_criticism")[0], 'https://en.wikipedia.org/wiki/Varieties_of_criticism#Constructive_criticism'
+

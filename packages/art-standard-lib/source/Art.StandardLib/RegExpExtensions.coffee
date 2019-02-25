@@ -36,18 +36,22 @@ module.exports = class RegExpExtensions
   Minimum Example:
     a@a.a
   ###
-  @findEmailRegExp:       ///
+  @findEmailLocalRegExp: ///
     (
-      (?: [^@<>\s\n"\\] | \\. )+
+      (?: [^:@<>\s\n"\\] | \\. )+
       |
       " (?: [^@"\\] | \\. )* "
     )
+    ///
+
+  @findEmailRegExp:       ///
+    #{@findEmailLocalRegExp.source}
     @
     (
-      [^@\s\n<>.]+
+      [^@:?\s\n<>.]+
       \.
-      [^@\s\n<>.]
-      [^@\s\n<>]*
+      [^@:?\s\n<>]*
+      [^@:?\s\n<>.]
     )
     ///i
 
