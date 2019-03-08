@@ -150,60 +150,64 @@ NN uses the CoC design pattern. Instead of config files, your directory structur
   # MyNamespace.Foo? == false
   # global.Foo.name == "DashFoo"
   ```
-* Underscores (_+): First-loaded Modules and Namespaces (after dash-files)
-  * The namespace name for these files and directories does not include the underscore prefix(s).
-  * *Use case: Adding one or more underscores is a handy way to ensure some files or directories are load before others.*
-  * Example: `MyNamespace/_Foo.coffee` will be accessable at runtime as `MyNamespace.Foo`
+* Underscore-prefixed Files and Directories (`/^_.+/`) Are Private
+  * Undrescore-Directories
+    * Are not auto-required when you require their parent folder.
+    * *Use case: Say you have two deploy targes with a lot of shared code, but each target has some specialized code. For example, if you make these sub-directories: _Client and _Server, you can included their parent from either and not automatically require the other's private code.
+    * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
+    * Example: `MyNamespace/_Client/Foo.coffee` is NOT required when you: `require './MyNamespace'`; you can always load it explicitly: `require './MyNamespace/_Client'`
+    * not `required` by parent namespace
+    * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
+    * Example:
 
-* Dot Directories (.): Optional Namespaces
-  * not `required` by parent namespace
-  * If manually `required`, will link itself into the parent namespace as-if it were a normal, non-dot namespace.
-  * *Use case: When you want a sub-part of your library to be optional but you want it in the same namespace if it is `required`.*
-  * Example:
+    ```coffeescript
+    # file: root/MyNamespace/.Foo/Bar.coffee
+    module.exports = class Bar
+    ```
 
-  ```coffeescript
-  # file: root/MyNamespace/.Foo/Bar.coffee
-  module.exports = class Bar
-  ```
-  ```coffeescript
-  # file: root/someOtherFile.coffee
-  MyNamespace = require './MyNamespace'
+    ```coffeescript
+    # file: root/someOtherFile.coffee
+    MyNamespace = require './MyNamespace'
 
-  # MyNamespace.Foo? == false
+    # MyNamespace.Foo? == false
 
-  require './MyNamespace/.Foo'
+    require './MyNamespace/.Foo'
 
-  # MyNamespace.Foo.Bar? == true
-  ```
+    # MyNamespace.Foo.Bar? == true
+    ```
 
-* Dot Files (.): Ignored
-  * not `required` by parent namespace
-  * *Use case: These files are completely ignored by NN. Useful if you need to completely escape the NN system.*
-  * Example:
+  * Underscore-Files: Ignored
+    * not `required` by parent namespace
+    * *Use case: These files are completely ignored by NN. Useful if you need to completely escape the NN system.*
+    * Example:
 
-  ```coffeescript
-  # file: root/MyNamespace/.Foo.coffee
-  module.exports = class DotFoo
-  ```
+    ```coffeescript
+    # file: root/MyNamespace/.Foo.coffee
+    module.exports = class DotFoo
+    ```
 
-  ```coffeescript
-  # file: root/someOtherFile.coffee
+    ```coffeescript
+    # file: root/someOtherFile.coffee
 
-  MyNamespace = require './MyNamespace'
+    MyNamespace = require './MyNamespace'
 
-  # MyNamespace.Foo? == false
+    # MyNamespace.Foo? == false
 
-  Foo = require './MyNamespace/.Foo'
+    Foo = require './MyNamespace/.Foo'
 
-  # MyNamespace.Foo? == false
-  # Foo.name == "DotFoo"
-  ```
+    # MyNamespace.Foo? == false
+    # Foo.name == "DotFoo"
+    ```
+
+  * DEPRICATED: Directories & Files starting with `.` (Dot) have this same behavior, but due to too many semantic conflicts with existing tools, they are now DEPRICATED. Use "_" starts instead.
 
 #### Same-Names Conventions:
 
-Special rules apply when a file-name is the same as a parent or sibling directory-name. File-names and directory-names are the same if they are equal (==)  after normalizing them with `upperCamelCase()`.
+Special rules apply when a file-name is the same as a Parent or Sibling directory-name.
 
-  * `normalizedFileName == normalizedParentDirectoryName`
+> File-names and directory-names are the same if they are equal (==)  after normalizing them with `upperCamelCase()`.
+
+  * Same as Parent: included first; merged into namespace
     * instead of the normal way files are *added* to the namespace, this file is *merged* into the namespace class via: `namespace.includeInNamespace require './normalizedFileName'`
     * See the method `Neptune.Base#includeInNamespace` for more details.
     * *Use case: Handy for adding other things to the namespace class.*
@@ -212,15 +216,18 @@ Special rules apply when a file-name is the same as a parent or sibling director
     # file: root/MyNamespace/Zoo.coffee
     global.loadedLast = "Zoo"
     ```
+
     ```coffeescript
     # file: root/MyNamespace/Animal.coffee
     global.loadedLast = "Animal"
     ```
+
     ```coffeescript
     # file: root/MyNamespace/my_namespace.coffee
     require './Zoo' # load Zoo before Animal
     module.exports = foo: "bar"
     ```
+
     ```coffeescript
     # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
@@ -232,7 +239,7 @@ Special rules apply when a file-name is the same as a parent or sibling director
     # global.loadedLast == "Animal"
     ```
 
-  * `normalizedSiblingFileName == normalizedSiblingSubDirectoryName`
+  * Same as Sibling: shadows sibling
     * In this case the file is `required`, but the directory is not.
     * i.e. The file *shadows* the directory.
     * *Use case: A dot-file with the same name as a non-dot-directory effectively makes the directory optioanal without having to make the directory a dot-directory. This allows you to refactor a directory to be optional without breaking any existing requires by renaming the directory.*
@@ -242,10 +249,12 @@ Special rules apply when a file-name is the same as a parent or sibling director
     # file: root/MyNamespace/Foo/Bar.coffee
     module.exports = class Bar
     ```
+
     ```coffeescript
     # file: root/MyNamespace/.Foo.coffee
     module.exports = class DotFoo
     ```
+
     ```coffeescript
     # file: root/someOtherFile.coffee
     MyNamespace = require './MyNamespace'
