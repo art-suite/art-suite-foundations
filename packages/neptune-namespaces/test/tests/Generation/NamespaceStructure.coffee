@@ -1,11 +1,11 @@
 {NamespaceStructure, MiniFoundation} = Generation
 
 {log, formattedInspect} = MiniFoundation
-{shouldIgnore, shouldNotNamespace} = NamespaceStructure
+{shouldNotAutoload, shouldNotNamespace} = NamespaceStructure
 
 suite "NeptuneNamespaces.NamespaceStructure.MiniFoundation", ->
-  test "shouldIgnore '.foo.coffee'", ->
-    assert.equal true, shouldIgnore '.foo.coffee'
+  test "shouldNotAutoload '.foo.coffee'", ->
+    assert.equal true, shouldNotAutoload '.foo.coffee'
 
 suite "NeptuneNamespaces.NamespaceStructure", ->
   test "one file", ->
@@ -30,7 +30,6 @@ suite "NeptuneNamespaces.NamespaceStructure", ->
   testEquivelentFileNames "MyFileName"
   testEquivelentFileNames "my_file_name"
   testEquivelentFileNames "my file name"
-  testEquivelentFileNames "_my file name"
 
   test "zero files", ->
     ns = new NamespaceStructure root: "art", files: []

@@ -6,7 +6,7 @@
 
 {
   globalNamespaceName
-  shouldIgnore
+  shouldNotAutoload
   shouldNotNamespace
   shouldIncludeInNamespace
   toFilename
@@ -33,7 +33,7 @@ class NamespaceSet
 
   addItem: (item) ->
     itemName =  peek item.split '/'
-    return @ignored.push "#{basename item}" if shouldIgnore itemName
+    return @ignored.push "#{basename item}" if shouldNotAutoload itemName
     @length++
     return @notNamespaced.push "#{basename item}" if shouldNotNamespace itemName
     @namespaced[toModuleName itemName] = item
@@ -116,7 +116,7 @@ class NamespaceDir
 
 module.exports = class NamespaceStructure
 
-  @shouldIgnore: shouldIgnore
+  @shouldNotAutoload: shouldNotAutoload
   @shouldNotNamespace: shouldNotNamespace
 
   constructor: ({@root, @files}) ->

@@ -58,9 +58,6 @@ suite "NeptuneNamespaces.Generation.Basics", ->
         addModules
         (.|\n)*
 
-        File5: .* _file5
-        (.|\n)*
-
         File3: .* 0file3
         (.|\n)*
 
@@ -69,8 +66,8 @@ suite "NeptuneNamespaces.Generation.Basics", ->
 
         \nrequire .* aSubmodule
         ///
-      # file1 not included
-      assert.doesNotMatch generatedFiles["source/Foo/index.coffee"], /file1/
+      # file1 and file5 not included
+      assert.doesNotMatch generatedFiles["source/Foo/index.coffee"], /file1|file5/
       assert.eq Object.keys(generatedFiles).sort(), [
         "source/Foo/aSubmodule/index.coffee"
         "source/Foo/aSubmodule/namespace.coffee"
