@@ -1,0 +1,185 @@
+import &StandardImport, &iPhoneDeviceInformation, &UseragentRegExp
+global extract
+  document, screen, CSS
+  navigator extract? userAgent, vendor
+  opera
+  orientation
+  devicePixelRatio = 1
+
+userRequestedFakeNativeApp = fakeNativeApp = !!(getEnv().fakeNative || getEnv().fakeNativeApp)
+
+
+### smallestTabletDeviceWidth
+  Why 600?
+
+  Tablets
+    >= 600: The Nexus 7 is the smallest 'tablet-like' touch device I've found
+
+  Phones
+    <= 414: iPhones: iPhone8+, iPhoneXSMax are -= 414
+    <= 480: Android: Ex: Samsung Galaxy Note 5
+smallestTabletDeviceWidth = 600
+
+class BrowserDetection
+  @isBrowser:           !!navigator
+  @getAgent:            getAgent = -> userAgent || vendor || opera || ""
+
+  # artBrowserUserAgent DEPRICATED - call getAgent directly
+  artBrowserUserAgent:  artBrowserUserAgent = getAgent()
+
+  @getClientWidth:      -> (document.documentElement ? document.body).clientWidth
+  @getClientHeight:     -> (document.documentElement ? document.body).clientWidth
+  @getOrientationAngle: -> screen?.orientation?.angle ? orientation
+
+  # optionally provide the current viewSize as a fallback if getOrientationAngle is not available.
+  @getOrientationIsPortrait: getOrientationIsPortrait = (viewSize) =>
+    switch
+    when isNumber o = @getOrientationAngle()  then (o % 180) == 0
+    when viewSize?                            then viewSize.x <= viewSize.y
+    else                                           true
+
+  _safeAreaInsetCssKey = null
+  @getSafeAreaInsetCssKey: ->
+    _safeAreaInsetCssKey ?=
+      CSS? && switch
+      when CSS.supports "" padding-bottom: env(safe-area-inset-bottom)
+        :env
+      when CSS.supports "" padding-bottom: constant(safe-area-inset-bottom)
+        :constant
+
+  # SEE: https://webkit.org/blog/7929/designing-websites-for-iphone-x/
+  @getCssSafeAreaInset: =>
+    if fakeNativeApp && iPhoneNotchSizes[simpleBrowserInfo.subDevice] > 0
+      iPhoneNotchSafePadding extract top, bottom
+      if getOrientationIsPortrait()
+        {}
+          left:   0
+          right:  0
+          top, bottom
+      else
+        {}
+          left:   top
+          right:  top
+          top:    0
+          bottom
+
+    else
+      if key = @getSafeAreaInsetCssKey()
+        div = document.createElement :div
+        div.style.paddingTop    = "" #{key}(safe-area-inset-top)
+        div.style.paddingLeft   = "" #{key}(safe-area-inset-left)
+        div.style.paddingRight  = "" #{key}(safe-area-inset-right)
+        div.style.paddingBottom = "" #{key}(safe-area-inset-bottom)
+
+        document.body.appendChild div
+        computedStyle = window.getComputedStyle div
+        result =
+          top:    parseInt(computedStyle.paddingTop)    | 0
+          left:   parseInt(computedStyle.paddingLeft)   | 0
+          right:  parseInt(computedStyle.paddingRight)  | 0
+          bottom: parseInt(computedStyle.paddingBottom) | 0
+
+        document.body.removeChild div
+
+      else
+        result =
+          top:    0
+          left:   0
+          right:  0
+          bottom: 0
+
+      if result.top == 0 &&
+          simpleBrowserInfo.os == :iOS
+          && simpleBrowserInfo.nativeApp
+          && simpleBrowserInfo.device == :iPad || @getOrientationIsPortrait()
+
+        merge result, top: 20
+      else
+        result
+
+  ### getSimpleBrowserInfo
+    regression userAgents:
+      Mozilla/5.0 (Windows Phone 10.0; Android 6.0.1; Microsoft; Lumia 650 Dual SIM) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Mobile Safari/537.36 Edge/15.15254
+
+    Compare with: http://www.whatsmyua.info/
+
+    getSimpleBrowserInfo()  recomputes it every time - useful for testing in Chrome where it can change the userAgent dynamically
+    simpleBrowserInfo:      computed at load
+  @getSimpleBrowserInfo:
+    if !@isBrowser then -> {}
+    else ->
+      artBrowserUserAgent = getAgent()
+
+      {}
+        devicePixelRatio
+        pixelsPerPoint:   devicePixelRatio
+
+        # os: ORDER MATTERS!
+        os: detectedOs = switch
+          when iOS          = /ipad|ipod|iphone/i.test  artBrowserUserAgent then :iOS
+          when windowsPhone = /Windows Phone/i.test     artBrowserUserAgent then :windowsPhone
+          when windows      = /windows/i.test           artBrowserUserAgent then :windows
+          when osx          = /mac os x/i.test          artBrowserUserAgent then :osx
+          when android      = /android/i.test           artBrowserUserAgent then :android
+          when linux        = /linux/.test              artBrowserUserAgent then :linux
+          else :other
+
+        # browser: ORDER MATTERS!
+        browser: switch
+          when webSpider  = isWebSpiderRegExp.test artBrowserUserAgent                        then :webSpider
+          when ie11       = !!window.MSInputMethodContext && !!document.documentMode          then :ie11
+          when firefox    = !!window.InstallTrigger                                           then :firefox
+          when safari     = iOS || /^((?!chrome|android).)*safari/i.test artBrowserUserAgent  then :safari
+          when edge       = /Edge/.test artBrowserUserAgent                                   then :edge
+          when opera      = window.opera? || /\ OPR\//.test artBrowserUserAgent               then :opera
+          when chrome     = /Chrome\/\d/i.test artBrowserUserAgent                            then :chrome
+          else                                                                                     :other
+
+        fakeNativeApp:    fakeNativeApp = userRequestedFakeNativeApp && (detectedOs == :android || detectedOs == :iOS)
+        nativeApp:        nativeApp = !!(fakeNativeApp || global.cordova) # NOTE: 'native' is a javascript reserve-word
+
+        device: device = switch
+          when /iphone|ipod/i.test artBrowserUserAgent then :iPhone
+          when /ipad/i.test        artBrowserUserAgent then :iPad
+          else                                              :other
+
+        touch: touch = document.documentElement.ontouchstart?
+
+        deviceMajorScreenSize: deviceMajorScreenSize = max screen.availWidth, screen.availHeight
+        deviceMinorScreenSize: deviceMinorScreenSize = min screen.availWidth, screen.availHeight
+
+        subDevice:
+          switch device
+          when :iPhone
+            find [w, h], iPhoneName in &iPhoneDeviceInformation.iPhonePointSizes when
+                w == deviceMinorScreenSize &&
+                h == deviceMajorScreenSize
+              iPhoneName
+          ? :other
+
+        deviceType:
+          if touch
+            if deviceMinorScreenSize < smallestTabletDeviceWidth
+                  :phone
+            else  :tablet
+          else    :desktop
+
+  @simpleBrowserInfo: simpleBrowserInfo = @getSimpleBrowserInfo()
+  @getIsMobileBrowser: -> isMobileBrowserRegExp1.test artBrowserUserAgent
+
+  ##############
+    DEPRICATED
+  ##############
+  simpleBrowserInfoDepricationWarning = -> log.warn "DEPRICATED - use simpleBrowserInfo directly"
+  @isSafari:        -> simpleBrowserInfoDepricationWarning(); !!simpleBrowserInfo.safari
+  @isMobileBrowser: => log.warn "DEPRICATED - use getIsMobileBrowser"; @getIsMobileBrowser()
+
+  # these names are consistent with my lowerCamelCase scheme (they parse with codeWords), and make sense
+  @nativeAppDetect: -> simpleBrowserInfoDepricationWarning(); !!simpleBrowserInfo.nativeApp
+  @isTouchDevice:   -> simpleBrowserInfoDepricationWarning(); !!simpleBrowserInfo.touch
+  @iOSDetect:       -> simpleBrowserInfoDepricationWarning(); simpleBrowserInfo.os       == :iOS
+  @androidDetect:   -> simpleBrowserInfoDepricationWarning(); simpleBrowserInfo.os       == :android
+  @iPhoneDetect:    -> simpleBrowserInfoDepricationWarning(); simpleBrowserInfo.device   == :iPhone
+  @iPadDetect:      -> simpleBrowserInfoDepricationWarning(); simpleBrowserInfo.device   == :iPad
+  @isIe11:          -> simpleBrowserInfoDepricationWarning(); simpleBrowserInfo.browser  == :ie11
+  # https://stackoverflow.com/questions/21825157/internet-explorer-11-detection
