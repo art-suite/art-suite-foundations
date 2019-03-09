@@ -76,8 +76,16 @@ module.exports = class ArrayCompactFlatten
   NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
     to the top level (flatten)
   ###
-  @compactFlatten: (array, keepTester = keepUnlessNullOrUndefined)->
-    compactFlattenIfNeeded array, keepTester
+  @compactFlatten: (array, keepTester )->
+    if keepTester
+      log.warn "DEPRICATED ArtStandardLib.ArrayCompactFlatten.compactFlatten: keepTester param; use customCompactFlatten"
+    compactFlattenIfNeeded array, keepTester ? keepUnlessNullOrUndefined
+
+  @customCompactFlatten: (array, customKeepTester) ->
+    compactFlattenIfNeeded array, customKeepTester
+
+  @compactFlattenAll: (all...) =>
+    compactFlattenIfNeeded all, keepUnlessNullOrUndefined
 
   ####################
   # PRIVATE
