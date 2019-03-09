@@ -35,7 +35,7 @@ class File
       @hiddenDivForFileInput.appendChild fileInput
       body.appendChild @hiddenDivForFileInput
       fileInput.onchange = (e) ->
-        fileList = array fileInput.files
+        fileList = array from-array fileInput.files # NOTE: fileInput.files is not really an array, but if we force it with "from-array", it works
         # fileTypes = (file.type for file in fileList)
         # fileSizes = (file.size for file in fileList)
 
