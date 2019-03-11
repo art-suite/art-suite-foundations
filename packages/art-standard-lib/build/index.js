@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.52.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.0"};
 
 /***/ }),
 /* 5 */
@@ -325,7 +325,8 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
 
 "use strict";
 
-var ArrayCompactFlatten;
+var ArrayCompactFlatten,
+  slice = [].slice;
 
 module.exports = ArrayCompactFlatten = (function() {
   var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
@@ -437,10 +438,20 @@ module.exports = ArrayCompactFlatten = (function() {
    */
 
   ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
+    if (keepTester) {
+      log.warn("DEPRICATED ArtStandardLib.ArrayCompactFlatten.compactFlatten: keepTester param; use customCompactFlatten");
     }
-    return compactFlattenIfNeeded(array, keepTester);
+    return compactFlattenIfNeeded(array, keepTester != null ? keepTester : keepUnlessNullOrUndefined);
+  };
+
+  ArrayCompactFlatten.customCompactFlatten = function(array, customKeepTester) {
+    return compactFlattenIfNeeded(array, customKeepTester);
+  };
+
+  ArrayCompactFlatten.compactFlattenAll = function() {
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return compactFlattenIfNeeded(all, keepUnlessNullOrUndefined);
   };
 
   arraySlice = Array.prototype.slice;
@@ -6835,6 +6846,42 @@ formattedInspect = __webpack_require__(/*! ./Inspect */ 25).formattedInspect;
 march1973InMilliseconds = 100000000000;
 
 module.exports = {
+
+  /*
+    Mask              | Description
+    ----              | -----------
+    `d`               | Day of the month as digits; no leading zero for single-digit days.
+    `dd`              | Day of the month as digits; leading zero for single-digit days.
+    `ddd`             | Day of the week as a three-letter abbreviation.
+    `dddd`            | Day of the week as its full name.
+    `m`               | Month as digits; no leading zero for single-digit months.
+    `mm`              | Month as digits; leading zero for single-digit months.
+    `mmm`             | Month as a three-letter abbreviation.
+    `mmmm`            | Month as its full name.
+    `yy`              | Year as last two digits; leading zero for years less than 10.
+    `yyyy`            | Year represented by four digits.
+    `h`               | Hours; no leading zero for single-digit hours (12-hour clock).
+    `hh`              | Hours; leading zero for single-digit hours (12-hour clock).
+    `H`               | Hours; no leading zero for single-digit hours (24-hour clock).
+    `HH`              | Hours; leading zero for single-digit hours (24-hour clock).
+    `M`               | Minutes; no leading zero for single-digit minutes.
+    `MM`              | Minutes; leading zero for single-digit minutes.
+    `N`               | ISO 8601 numeric representation of the day of the week.
+    `o`               | GMT/UTC timezone offset, e.g. -0500 or +0230.
+    `s`               | Seconds; no leading zero for single-digit seconds.
+    `ss`              | Seconds; leading zero for single-digit seconds.
+    `S`               | The date's ordinal suffix (st, nd, rd, or th). Works well with `d`.
+    `l`               |  Milliseconds; gives 3 digits.
+    `L`               | Milliseconds; gives 2 digits.
+    `t`               | Lowercase, single-character time marker string: a or p.
+    `tt`              | Lowercase, two-character time marker string: am or pm.
+    `T`               | Uppercase, single-character time marker string: A or P.
+    `TT`              | Uppercase, two-character time marker string: AM or PM.
+    `W`               | ISO 8601 week number of the year, e.g. 42
+    `Z`               | US timezone abbreviation, e.g. EST or MDT. With non-US timezones or in the
+    `'...'`, `"..."`  | Literal character sequence. Surrounding quotes are removed.
+    `UTC:`            |  Must be the first four characters of the mask. Converts the date from local time to UTC/GMT/Zulu time before applying the mask. The "UTC:" prefix is removed.
+   */
   dateFormat: dateFormat = __webpack_require__(/*! dateformat */ 41),
   formatDate: function(value, format, utc) {
     if (isString(value)) {

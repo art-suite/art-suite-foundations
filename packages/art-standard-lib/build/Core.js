@@ -108,7 +108,8 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
 
 "use strict";
 
-var ArrayCompactFlatten;
+var ArrayCompactFlatten,
+  slice = [].slice;
 
 module.exports = ArrayCompactFlatten = (function() {
   var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
@@ -220,10 +221,20 @@ module.exports = ArrayCompactFlatten = (function() {
    */
 
   ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
+    if (keepTester) {
+      log.warn("DEPRICATED ArtStandardLib.ArrayCompactFlatten.compactFlatten: keepTester param; use customCompactFlatten");
     }
-    return compactFlattenIfNeeded(array, keepTester);
+    return compactFlattenIfNeeded(array, keepTester != null ? keepTester : keepUnlessNullOrUndefined);
+  };
+
+  ArrayCompactFlatten.customCompactFlatten = function(array, customKeepTester) {
+    return compactFlattenIfNeeded(array, customKeepTester);
+  };
+
+  ArrayCompactFlatten.compactFlattenAll = function() {
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return compactFlattenIfNeeded(all, keepUnlessNullOrUndefined);
   };
 
   arraySlice = Array.prototype.slice;
@@ -920,7 +931,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.52.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.0"};
 
 /***/ }),
 
