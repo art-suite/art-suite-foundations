@@ -76,19 +76,102 @@ module.exports = class StringExtensions
 
   @randomBase62Character: -> base62Characters[intRand 62]
 
+  ### pluralize
+    Examples:
+      # just, always, pluralize:
+      pluralize "food" >> "foods"
+
+      # pluralize and output number
+      pluralize -1, "food" -> "-1 foods"
+      pluralize 0, "food" -> "0 foods"
+      pluralize 1, "food" -> "1 food"
+      pluralize 2, "food" -> "2 foods"
+
+      # order of the first 2 params doesn't matter
+      pluralize 1, "food" -> "1 food"
+      pluralize "food", 1 -> "1 food"
+
+      # custom pluralForms
+      pluralize 1, "dragon", "frogs" -> "1 dragon"
+      pluralize 3, "dragon", "frogs" -> "2 frogs"
+
+    IN:
+      various signatures:
+        pluralize singleForm
+        pluralize singleForm, number
+        pluralize number, singleForm
+        pluralize singleForm, number, pluralForm
+        pluralize number, singleForm, pluralForm
+
+      number:     <Number>
+      singleForm: <String> singular noun
+        NOTE: if pluralForm is not provided, it's ok
+          if this is a plural nown, it'll still
+          'do the right thing'
+
+      pluralForm: <String> plural noun
+
+    OUT:
+
+      unless number == 0
+        pluralForm ?=
+
+      if a number was provided
+        "#{number} #{correct singleForm or pluralForm}"
+      else
+        pluralForm
+
+    NOTE:
+      Now using: https://www.npmjs.com/package/pluralize
+      It provides nice functionality and knows about all the odd
+      english words.
+
+      Compatibility:
+        ArtStandardLib's pluralize always outputs the number
+        if the number is given, unlike npm-pluralize, which
+        requires a 'true' in the 3rd argument to enable outputting
+        the number.
+
+        ArtStandardLib let's you provide your own, custom pluralForm.
+        npm-pluralize requires you to 'register' it first via addIrregularRule.
+        You can still do that, if you wish, but it's renamed 'addPluralizeRule'
+        in ArtStandardLib since it's expected you'll import it 'bare' and
+        'addIrregularRule' could mean anything out-of-context.
+
+      It's an extra 2.1k payload minimized and brotli-zipped for client-side.
+
+      It also allows us to provide:
+        {@plural, @singular, @isSingular, @isPlural, @addPluralizeRule}
   ###
-  should really use: https://www.npmjs.org/package/pluralize
-    pluralize "food" >> "foods"
-    pluralize 1, "food" -> "1 food"
-    pluralize 0, "food" -> "0 foods"
-    pluralize 2, "food" -> "2 foods"
-    pluralize 3, "person", people" -> "2 people"
-  ###
+  {
+    @plural, @singular, @isSingular, @isPlural
+    addIrregularRule: @addPluralizeRule
+  } = npmPluralize = require 'pluralize'
   @pluralize: pluralize = (a, b, pluralForm) ->
-    if isNumber a
-      "#{a} #{if a == 1 then b else pluralForm || pluralize b}"
-    else if isString a ||= b
-      a + "s" # dumb, english solution
+    # normalize inputs
+    number = if b? && isNumber b
+      singleForm = a
+      b
+    else if isNumber a
+      singleForm = b
+      a
+    else
+      singleForm = a
+      null
+
+    # validate
+    throw new Error "expecting string for singleForm" unless isString singleForm
+    throw new Error "expecting string for pluralForm" if pluralForm? && !isString pluralForm
+
+    switch
+      when pluralForm?
+        "#{number} #{if number == 1 then singleForm else pluralForm}"
+
+      when number?
+        npmPluralize singleForm, number, true
+
+      else
+        npmPluralize singleForm
 
   @replaceLast: (str, find, replaceWith) ->
     index = str.lastIndexOf find
