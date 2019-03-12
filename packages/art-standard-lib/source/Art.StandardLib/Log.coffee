@@ -119,6 +119,11 @@ module.exports = class Log
     else
       @log.withOptions standardOptions, args...
 
+  @log.full = (args...) =>
+    @log.withOptions
+      maxArrayLength: 100000
+      args...
+
   # IN: logger: (toLog, label, wasResolvedOrRejected: true/false)
   @log.resolvePromiseWrapper = (m, logger) ->
     if containsPromises m
