@@ -109,35 +109,35 @@ module.exports = (ref = typeof Neptune !== "undefined" && Neptune !== null ? (re
 module.exports = __webpack_require__(/*! ./namespace */ 2);
 
 module.exports.includeInNamespace(__webpack_require__(/*! ./StandardLib */ 8)).addModules({
-  ArrayExtensions: __webpack_require__(/*! ./ArrayExtensions */ 40),
-  AsyncExtensions: __webpack_require__(/*! ./AsyncExtensions */ 49),
-  CallStack: __webpack_require__(/*! ./CallStack */ 60),
-  Clone: __webpack_require__(/*! ./Clone */ 58),
+  ArrayExtensions: __webpack_require__(/*! ./ArrayExtensions */ 41),
+  AsyncExtensions: __webpack_require__(/*! ./AsyncExtensions */ 50),
+  CallStack: __webpack_require__(/*! ./CallStack */ 61),
+  Clone: __webpack_require__(/*! ./Clone */ 59),
   CommonJs: __webpack_require__(/*! ./CommonJs */ 19),
-  DateExtensions: __webpack_require__(/*! ./DateExtensions */ 50),
+  DateExtensions: __webpack_require__(/*! ./DateExtensions */ 51),
   Environment: __webpack_require__(/*! ./Environment */ 20),
-  Eq: __webpack_require__(/*! ./Eq */ 39),
+  Eq: __webpack_require__(/*! ./Eq */ 40),
   ErrorWithInfo: __webpack_require__(/*! ./ErrorWithInfo */ 24),
-  FunctionExtensions: __webpack_require__(/*! ./FunctionExtensions */ 51),
-  Iteration: __webpack_require__(/*! ./Iteration */ 36),
-  Log: __webpack_require__(/*! ./Log */ 59),
+  FunctionExtensions: __webpack_require__(/*! ./FunctionExtensions */ 52),
+  Iteration: __webpack_require__(/*! ./Iteration */ 37),
+  Log: __webpack_require__(/*! ./Log */ 60),
   Map: __webpack_require__(/*! ./Map */ 28),
-  MapExtensions: __webpack_require__(/*! ./MapExtensions */ 53),
+  MapExtensions: __webpack_require__(/*! ./MapExtensions */ 54),
   MathExtensions: __webpack_require__(/*! ./MathExtensions */ 32),
   MinimalBaseObject: __webpack_require__(/*! ./MinimalBaseObject */ 30),
-  ObjectDiff: __webpack_require__(/*! ./ObjectDiff */ 52),
-  ObjectExtensions: __webpack_require__(/*! ./ObjectExtensions */ 35),
+  ObjectDiff: __webpack_require__(/*! ./ObjectDiff */ 53),
+  ObjectExtensions: __webpack_require__(/*! ./ObjectExtensions */ 36),
   ParseUrl: __webpack_require__(/*! ./ParseUrl */ 21),
   Promise: __webpack_require__(/*! ./Promise */ 15),
-  PromisedFileReader: __webpack_require__(/*! ./PromisedFileReader */ 54),
-  PromiseWorkerPool: __webpack_require__(/*! ./PromiseWorkerPool */ 62),
+  PromisedFileReader: __webpack_require__(/*! ./PromisedFileReader */ 55),
+  PromiseWorkerPool: __webpack_require__(/*! ./PromiseWorkerPool */ 63),
   RegExpExtensions: __webpack_require__(/*! ./RegExpExtensions */ 22),
-  RequestError: __webpack_require__(/*! ./RequestError */ 63),
-  ReschedulableTimer: __webpack_require__(/*! ./ReschedulableTimer */ 61),
-  Ruby: __webpack_require__(/*! ./Ruby */ 55),
-  ShallowClone: __webpack_require__(/*! ./ShallowClone */ 56),
+  RequestError: __webpack_require__(/*! ./RequestError */ 64),
+  ReschedulableTimer: __webpack_require__(/*! ./ReschedulableTimer */ 62),
+  Ruby: __webpack_require__(/*! ./Ruby */ 56),
+  ShallowClone: __webpack_require__(/*! ./ShallowClone */ 57),
   StringExtensions: __webpack_require__(/*! ./StringExtensions */ 31),
-  Time: __webpack_require__(/*! ./Time */ 57),
+  Time: __webpack_require__(/*! ./Time */ 58),
   TypesExtended: __webpack_require__(/*! ./TypesExtended */ 18),
   Unique: __webpack_require__(/*! ./Unique */ 29)
 });
@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.1"};
 
 /***/ }),
 /* 5 */
@@ -280,8 +280,8 @@ module.exports = (__webpack_require__(/*! ../namespace */ 6)).addNamespace('Insp
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(/*! ./ArrayExtensions */ 40), __webpack_require__(/*! ./AsyncExtensions */ 49), __webpack_require__(/*! ./ObjectExtensions */ 35), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 39), __webpack_require__(/*! ./FunctionExtensions */ 51), __webpack_require__(/*! ./ObjectDiff */ 52), __webpack_require__(/*! ./MapExtensions */ 53), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 54), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 55), __webpack_require__(/*! ./ShallowClone */ 56), __webpack_require__(/*! ./Time */ 57), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 36), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 58), __webpack_require__(/*! ./Log */ 59), __webpack_require__(/*! ./CallStack */ 60), __webpack_require__(/*! ./DateExtensions */ 50), {
-    PushBackTimer: __webpack_require__(/*! ./ReschedulableTimer */ 61)
+  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(/*! ./ArrayExtensions */ 41), __webpack_require__(/*! ./AsyncExtensions */ 50), __webpack_require__(/*! ./ObjectExtensions */ 36), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 40), __webpack_require__(/*! ./FunctionExtensions */ 52), __webpack_require__(/*! ./ObjectDiff */ 53), __webpack_require__(/*! ./MapExtensions */ 54), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 55), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 56), __webpack_require__(/*! ./ShallowClone */ 57), __webpack_require__(/*! ./Time */ 58), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 37), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 59), __webpack_require__(/*! ./Log */ 60), __webpack_require__(/*! ./CallStack */ 61), __webpack_require__(/*! ./DateExtensions */ 51), {
+    PushBackTimer: __webpack_require__(/*! ./ReschedulableTimer */ 62)
   }
 ];
 
@@ -2365,15 +2365,15 @@ defineModule(module, ErrorWithInfo = (function(superClass) {
 module.exports = __webpack_require__(/*! ./namespace */ 6);
 
 module.exports.includeInNamespace(__webpack_require__(/*! ./Inspect */ 26)).addModules({
-  FormattedInspect: __webpack_require__(/*! ./FormattedInspect */ 34),
-  InspectedObjectLiteral: __webpack_require__(/*! ./InspectedObjectLiteral */ 38),
-  InspectedObjects: __webpack_require__(/*! ./InspectedObjects */ 37),
+  FormattedInspect: __webpack_require__(/*! ./FormattedInspect */ 35),
+  InspectedObjectLiteral: __webpack_require__(/*! ./InspectedObjectLiteral */ 39),
+  InspectedObjects: __webpack_require__(/*! ./InspectedObjects */ 38),
   Inspector: __webpack_require__(/*! ./Inspector */ 27),
-  Inspector2: __webpack_require__(/*! ./Inspector2 */ 43),
-  PlainObjects: __webpack_require__(/*! ./PlainObjects */ 42)
+  Inspector2: __webpack_require__(/*! ./Inspector2 */ 44),
+  PlainObjects: __webpack_require__(/*! ./PlainObjects */ 43)
 });
 
-__webpack_require__(/*! ./Inspected */ 44);
+__webpack_require__(/*! ./Inspected */ 45);
 
 
 /***/ }),
@@ -2389,7 +2389,7 @@ __webpack_require__(/*! ./Inspected */ 44);
 TODO: refactor so nothing in inspect/* uses BaseObject
 Then, move into StandardLib.
  */
-module.exports = [[__webpack_require__(/*! ./Inspector */ 27), "shallowInspect inspectLean inspect"], __webpack_require__(/*! ./FormattedInspect */ 34), __webpack_require__(/*! ./InspectedObjects */ 37), __webpack_require__(/*! ./PlainObjects */ 42), __webpack_require__(/*! ./InspectedObjectLiteral */ 38)];
+module.exports = [[__webpack_require__(/*! ./Inspector */ 27), "shallowInspect inspectLean inspect"], __webpack_require__(/*! ./FormattedInspect */ 35), __webpack_require__(/*! ./InspectedObjects */ 38), __webpack_require__(/*! ./PlainObjects */ 43), __webpack_require__(/*! ./InspectedObjectLiteral */ 39)];
 
 
 /***/ }),
@@ -3134,7 +3134,7 @@ escapedDoubleQuoteRegex = /[\\]["]/g;
 floor = Math.floor;
 
 module.exports = StringExtensions = (function() {
-  var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, pluralize, randomString, repeat, standardIndent;
+  var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, npmPluralize, pluralize, randomString, ref, repeat, standardIndent;
 
   function StringExtensions() {}
 
@@ -3233,20 +3233,92 @@ module.exports = StringExtensions = (function() {
   };
 
 
-  /*
-  should really use: https://www.npmjs.org/package/pluralize
-    pluralize "food" >> "foods"
-    pluralize 1, "food" -> "1 food"
-    pluralize 0, "food" -> "0 foods"
-    pluralize 2, "food" -> "2 foods"
-    pluralize 3, "person", people" -> "2 people"
+  /* pluralize
+    Examples:
+       * just, always, pluralize:
+      pluralize "food" >> "foods"
+  
+       * pluralize and output number
+      pluralize -1, "food" -> "-1 foods"
+      pluralize 0, "food" -> "0 foods"
+      pluralize 1, "food" -> "1 food"
+      pluralize 2, "food" -> "2 foods"
+  
+       * order of the first 2 params doesn't matter
+      pluralize 1, "food" -> "1 food"
+      pluralize "food", 1 -> "1 food"
+  
+       * custom pluralForms
+      pluralize 1, "dragon", "frogs" -> "1 dragon"
+      pluralize 3, "dragon", "frogs" -> "2 frogs"
+  
+    IN:
+      various signatures:
+        pluralize singleForm
+        pluralize singleForm, number
+        pluralize number, singleForm
+        pluralize singleForm, number, pluralForm
+        pluralize number, singleForm, pluralForm
+  
+      number:     <Number>
+      singleForm: <String> singular noun
+        NOTE: if pluralForm is not provided, it's ok
+          if this is a plural nown, it'll still
+          'do the right thing'
+  
+      pluralForm: <String> plural noun
+  
+    OUT:
+  
+      unless number == 0
+        pluralForm ?=
+  
+      if a number was provided
+        "#{number} #{correct singleForm or pluralForm}"
+      else
+        pluralForm
+  
+    NOTE:
+      Now using: https://www.npmjs.com/package/pluralize
+      It provides nice functionality and knows about all the odd
+      english words.
+  
+      Compatibility:
+        ArtStandardLib's pluralize always outputs the number
+        if the number is given, unlike npm-pluralize, which
+        requires a 'true' in the 3rd argument to enable outputting
+        the number.
+  
+        ArtStandardLib let's you provide your own, custom pluralForm.
+        npm-pluralize requires you to 'register' it first via addIrregularRule.
+        You can still do that, if you wish, but it's renamed 'addPluralizeRule'
+        in ArtStandardLib since it's expected you'll import it 'bare' and
+        'addIrregularRule' could mean anything out-of-context.
+  
+      It's an extra 2.1k payload minimized and brotli-zipped for client-side.
+  
+      It also allows us to provide:
+        {@plural, @singular, @isSingular, @isPlural, @addPluralizeRule}
    */
 
+  ref = npmPluralize = __webpack_require__(/*! pluralize */ 34), StringExtensions.plural = ref.plural, StringExtensions.singular = ref.singular, StringExtensions.isSingular = ref.isSingular, StringExtensions.isPlural = ref.isPlural, StringExtensions.addPluralizeRule = ref.addIrregularRule;
+
   StringExtensions.pluralize = pluralize = function(a, b, pluralForm) {
-    if (isNumber(a)) {
-      return a + " " + (a === 1 ? b : pluralForm || pluralize(b));
-    } else if (isString(a || (a = b))) {
-      return a + "s";
+    var number, singleForm;
+    number = (b != null) && isNumber(b) ? (singleForm = a, b) : isNumber(a) ? (singleForm = b, a) : (singleForm = a, null);
+    if (!isString(singleForm)) {
+      throw new Error("expecting string for singleForm");
+    }
+    if ((pluralForm != null) && !isString(pluralForm)) {
+      throw new Error("expecting string for pluralForm");
+    }
+    switch (false) {
+      case pluralForm == null:
+        return number + " " + (number === 1 ? singleForm : pluralForm);
+      case number == null:
+        return npmPluralize(singleForm, number, true);
+      default:
+        return npmPluralize(singleForm);
     }
   };
 
@@ -3261,12 +3333,12 @@ module.exports = StringExtensions = (function() {
   };
 
   StringExtensions.getPadding = getPadding = function(length, padding) {
-    var i, j, out, ref;
+    var i, j, out, ref1;
     if (padding == null) {
       padding = " ";
     }
     out = "";
-    for (i = j = 0, ref = length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+    for (i = j = 0, ref1 = length; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
       out += padding;
     }
     return out;
@@ -3440,7 +3512,7 @@ module.exports = StringExtensions = (function() {
   StringExtensions.consistentJsonStringify = consistentJsonStringify = function(object, indent) {
     var closeArray, closeObject, error, indentObject, joiner, k, lastTotalIndent, openArray, openObject, out, totalIndent, v;
     return out = (function() {
-      var ref;
+      var ref1;
       if (object === false || object === true || object === null || isNumber(object)) {
         return "" + object;
       } else if (isString(object)) {
@@ -3463,14 +3535,14 @@ module.exports = StringExtensions = (function() {
           closeArray: "\n" + lastTotalIndent + "]",
           indent: indent.indent
         } : void 0;
-        ref = indentObject || standardIndent, joiner = ref.joiner, openObject = ref.openObject, openArray = ref.openArray, closeObject = ref.closeObject, closeArray = ref.closeArray;
+        ref1 = indentObject || standardIndent, joiner = ref1.joiner, openObject = ref1.openObject, openArray = ref1.openArray, closeObject = ref1.closeObject, closeArray = ref1.closeArray;
         if (isPlainObject(object)) {
           return openObject + ((function() {
-            var j, len, ref1, results;
-            ref1 = (Object.keys(object)).sort();
+            var j, len, ref2, results;
+            ref2 = (Object.keys(object)).sort();
             results = [];
-            for (j = 0, len = ref1.length; j < len; j++) {
-              k = ref1[j];
+            for (j = 0, len = ref2.length; j < len; j++) {
+              k = ref2[j];
               if (object[k] !== void 0) {
                 results.push(JSON.stringify(k) + ": " + consistentJsonStringify(object[k], indentObject));
               }
@@ -3496,14 +3568,14 @@ module.exports = StringExtensions = (function() {
   };
 
   StringExtensions.splitRuns = function(str) {
-    var ch, chCount, i, j, lastCh, ref, result;
+    var ch, chCount, i, j, lastCh, ref1, result;
     if (str.length === 0) {
       return [];
     }
     lastCh = str[0];
     chCount = 1;
     result = [];
-    for (i = j = 1, ref = str.length; j < ref; i = j += 1) {
+    for (i = j = 1, ref1 = str.length; j < ref1; i = j += 1) {
       ch = str[i];
       if (ch === lastCh) {
         chCount++;
@@ -3518,10 +3590,10 @@ module.exports = StringExtensions = (function() {
   };
 
   StringExtensions.eachRunAsCharCodes = function(str, f) {
-    var ch, chCount, i, j, lastCh, ref;
+    var ch, chCount, i, j, lastCh, ref1;
     lastCh = str.charCodeAt(0);
     chCount = 1;
-    for (i = j = 1, ref = str.length; j < ref; i = j += 1) {
+    for (i = j = 1, ref1 = str.length; j < ref1; i = j += 1) {
       ch = str.charCodeAt(i);
       if (ch === lastCh) {
         chCount++;
@@ -3957,6 +4029,16 @@ module.exports = require('crypto' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 34 */
+/*!***************************************************************************!*\
+  !*** external "require('pluralize' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('pluralize' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 35 */
 /*!****************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/FormattedInspect.coffee ***!
   \****************************************************************/
@@ -3973,13 +4055,13 @@ ref1 = __webpack_require__(/*! ../StringExtensions */ 31), pad = ref1.pad, strip
 
 inspect = __webpack_require__(/*! ./Inspector */ 27).inspect;
 
-objectKeyCount = __webpack_require__(/*! ../ObjectExtensions */ 35).objectKeyCount;
+objectKeyCount = __webpack_require__(/*! ../ObjectExtensions */ 36).objectKeyCount;
 
-toInspectedObjects = __webpack_require__(/*! ./InspectedObjects */ 37).toInspectedObjects;
+toInspectedObjects = __webpack_require__(/*! ./InspectedObjects */ 38).toInspectedObjects;
 
-w = __webpack_require__(/*! ../ArrayExtensions */ 40).w;
+w = __webpack_require__(/*! ../ArrayExtensions */ 41).w;
 
-object = __webpack_require__(/*! ../Iteration */ 36).object;
+object = __webpack_require__(/*! ../Iteration */ 37).object;
 
 indentString = '  ';
 
@@ -4426,7 +4508,7 @@ module.exports = FormattedInspect = (function() {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /*!********************************************************!*\
   !*** ./source/Art.StandardLib/ObjectExtensions.coffee ***!
   \********************************************************/
@@ -4441,7 +4523,7 @@ ref = __webpack_require__(/*! ./Core */ 9), compactFlatten = ref.compactFlatten,
 
 ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
 
-object = __webpack_require__(/*! ./Iteration */ 36).object;
+object = __webpack_require__(/*! ./Iteration */ 37).object;
 
 module.exports = ObjectExtensions = (function() {
   var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
@@ -4730,7 +4812,7 @@ module.exports = ObjectExtensions = (function() {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /*!*************************************************!*\
   !*** ./source/Art.StandardLib/Iteration.coffee ***!
   \*************************************************/
@@ -5091,7 +5173,7 @@ module.exports = Iteration = (function() {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /*!****************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/InspectedObjects.coffee ***!
   \****************************************************************/
@@ -5104,9 +5186,9 @@ ref = __webpack_require__(/*! ../TypesExtended */ 18), isTypedArray = ref.isType
 
 escapeJavascriptString = __webpack_require__(/*! ../StringExtensions */ 31).escapeJavascriptString;
 
-inspectedObjectLiteral = __webpack_require__(/*! ./InspectedObjectLiteral */ 38).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(/*! ./InspectedObjectLiteral */ 39).inspectedObjectLiteral;
 
-dateFormat = __webpack_require__(/*! dateformat */ 41);
+dateFormat = __webpack_require__(/*! dateformat */ 42);
 
 module.exports = InspectedObjects = (function() {
   var toInspectedObjects;
@@ -5177,7 +5259,7 @@ module.exports = InspectedObjects = (function() {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /*!**********************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/InspectedObjectLiteral.coffee ***!
   \**********************************************************************/
@@ -5186,7 +5268,7 @@ module.exports = InspectedObjects = (function() {
 
 var InspectedObjectLiteral, compare;
 
-compare = __webpack_require__(/*! ../Eq */ 39).compare;
+compare = __webpack_require__(/*! ../Eq */ 40).compare;
 
 module.exports = InspectedObjectLiteral = (function() {
   InspectedObjectLiteral.inspectedObjectLiteral = function(literal, isError) {
@@ -5216,7 +5298,7 @@ module.exports = InspectedObjectLiteral = (function() {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /*!******************************************!*\
   !*** ./source/Art.StandardLib/Eq.coffee ***!
   \******************************************/
@@ -5226,9 +5308,9 @@ module.exports = InspectedObjectLiteral = (function() {
 var Eq, floatTrue0, isNumber, isString, min, objectKeyCount, ref, remove,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-remove = __webpack_require__(/*! ./ArrayExtensions */ 40).remove;
+remove = __webpack_require__(/*! ./ArrayExtensions */ 41).remove;
 
-objectKeyCount = __webpack_require__(/*! ./ObjectExtensions */ 35).objectKeyCount;
+objectKeyCount = __webpack_require__(/*! ./ObjectExtensions */ 36).objectKeyCount;
 
 floatTrue0 = __webpack_require__(/*! ./MathExtensions */ 32).floatTrue0;
 
@@ -5566,7 +5648,7 @@ module.exports = Eq = (function() {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /*!*******************************************************!*\
   !*** ./source/Art.StandardLib/ArrayExtensions.coffee ***!
   \*******************************************************/
@@ -6241,7 +6323,7 @@ module.exports = ArrayExtensions = (function() {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /*!****************************************************************************!*\
   !*** external "require('dateformat' /* ABC - not inlining fellow NPM *_/)" ***!
   \****************************************************************************/
@@ -6251,7 +6333,7 @@ module.exports = ArrayExtensions = (function() {
 module.exports = require('dateformat' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 42 */
+/* 43 */
 /*!************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/PlainObjects.coffee ***!
   \************************************************************/
@@ -6262,7 +6344,7 @@ var PlainObjects, deepMap, hasKeys, inspectedObjectLiteral, isClass, isFunction,
 
 ref = __webpack_require__(/*! ../TypesExtended */ 18), deepMap = ref.deepMap, hasKeys = ref.hasKeys, isPlainArray = ref.isPlainArray, isPlainObject = ref.isPlainObject, isFunction = ref.isFunction, isClass = ref.isClass;
 
-inspectedObjectLiteral = __webpack_require__(/*! ./InspectedObjectLiteral */ 38).inspectedObjectLiteral;
+inspectedObjectLiteral = __webpack_require__(/*! ./InspectedObjectLiteral */ 39).inspectedObjectLiteral;
 
 module.exports = PlainObjects = (function() {
   var toPlainObjects;
@@ -6298,7 +6380,7 @@ module.exports = PlainObjects = (function() {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /*!**********************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/Inspector2.coffee ***!
   \**********************************************************/
@@ -6314,7 +6396,7 @@ MinimalBaseObject = __webpack_require__(/*! ../MinimalBaseObject */ 30);
 
 Map = __webpack_require__(/*! ../Map */ 28);
 
-Inspected = __webpack_require__(/*! ./Inspected */ 44);
+Inspected = __webpack_require__(/*! ./Inspected */ 45);
 
 escapeJavascriptString = __webpack_require__(/*! ../StringExtensions */ 31).escapeJavascriptString;
 
@@ -6525,7 +6607,7 @@ module.exports = Inspector2 = (function(superClass) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /*!***************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/Inspected/index.coffee ***!
   \***************************************************************/
@@ -6535,15 +6617,15 @@ module.exports = Inspector2 = (function(superClass) {
 module.exports = __webpack_require__(/*! ./namespace */ 7);
 
 module.exports.addModules({
-  Array: __webpack_require__(/*! ./Array */ 45),
-  Core: __webpack_require__(/*! ./Core */ 46),
-  Object: __webpack_require__(/*! ./Object */ 47),
-  String: __webpack_require__(/*! ./String */ 48)
+  Array: __webpack_require__(/*! ./Array */ 46),
+  Core: __webpack_require__(/*! ./Core */ 47),
+  Object: __webpack_require__(/*! ./Object */ 48),
+  String: __webpack_require__(/*! ./String */ 49)
 });
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /*!***************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/Inspected/Array.coffee ***!
   \***************************************************************/
@@ -6597,7 +6679,7 @@ module.exports = Array = (function(superClass) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /*!**************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/Inspected/Core.coffee ***!
   \**************************************************************/
@@ -6637,7 +6719,7 @@ module.exports = Core = (function(superClass) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /*!****************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/Inspected/Object.coffee ***!
   \****************************************************************/
@@ -6707,7 +6789,7 @@ module.exports = Object = (function(superClass) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /*!****************************************************************!*\
   !*** ./source/Art.StandardLib/Inspect/Inspected/String.coffee ***!
   \****************************************************************/
@@ -6740,7 +6822,7 @@ module.exports = String = (function(superClass) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /*!*******************************************************!*\
   !*** ./source/Art.StandardLib/AsyncExtensions.coffee ***!
   \*******************************************************/
@@ -6751,7 +6833,7 @@ var AsyncExtensions, Promise, toSeconds;
 
 Promise = __webpack_require__(/*! ./Promise */ 15);
 
-toSeconds = __webpack_require__(/*! ./DateExtensions */ 50).toSeconds;
+toSeconds = __webpack_require__(/*! ./DateExtensions */ 51).toSeconds;
 
 module.exports = AsyncExtensions = (function() {
   var interval, timeout;
@@ -6829,7 +6911,7 @@ module.exports = AsyncExtensions = (function() {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /*!******************************************************!*\
   !*** ./source/Art.StandardLib/DateExtensions.coffee ***!
   \******************************************************/
@@ -6882,7 +6964,7 @@ module.exports = {
     `'...'`, `"..."`  | Literal character sequence. Surrounding quotes are removed.
     `UTC:`            |  Must be the first four characters of the mask. Converts the date from local time to UTC/GMT/Zulu time before applying the mask. The "UTC:" prefix is removed.
    */
-  dateFormat: dateFormat = __webpack_require__(/*! dateformat */ 41),
+  dateFormat: dateFormat = __webpack_require__(/*! dateformat */ 42),
   formatDate: function(value, format, utc) {
     if (isString(value)) {
       format = value;
@@ -6988,7 +7070,7 @@ module.exports = {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /*!**********************************************************!*\
   !*** ./source/Art.StandardLib/FunctionExtensions.coffee ***!
   \**********************************************************/
@@ -7088,7 +7170,7 @@ in debug mode and the faster(?), non hot-reload options in production mode.
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/ObjectDiff.coffee ***!
   \**************************************************/
@@ -7223,7 +7305,7 @@ module.exports = ObjectDiff = (function() {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /*!*****************************************************!*\
   !*** ./source/Art.StandardLib/MapExtensions.coffee ***!
   \*****************************************************/
@@ -7258,7 +7340,7 @@ module.exports = MapExtensions = (function() {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /*!**********************************************************!*\
   !*** ./source/Art.StandardLib/PromisedFileReader.coffee ***!
   \**********************************************************/
@@ -7314,7 +7396,7 @@ module.exports = PromisedFileReader = (function() {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /*!********************************************!*\
   !*** ./source/Art.StandardLib/Ruby.coffee ***!
   \********************************************/
@@ -7403,7 +7485,7 @@ module.exports = Ruby = (function() {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /*!****************************************************!*\
   !*** ./source/Art.StandardLib/ShallowClone.coffee ***!
   \****************************************************/
@@ -7458,7 +7540,7 @@ module.exports = ShallowClone = (function() {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /*!********************************************!*\
   !*** ./source/Art.StandardLib/Time.coffee ***!
   \********************************************/
@@ -7590,7 +7672,7 @@ module.exports = Time = (function() {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /*!*********************************************!*\
   !*** ./source/Art.StandardLib/Clone.coffee ***!
   \*********************************************/
@@ -7838,7 +7920,7 @@ module.exports = Clone = (function() {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /*!*******************************************!*\
   !*** ./source/Art.StandardLib/Log.coffee ***!
   \*******************************************/
@@ -7850,11 +7932,11 @@ var Inspect, Log, callStack, containsPromises, deepResolve, disableLog, getEnv, 
 
 Inspect = __webpack_require__(/*! ./Inspect/namespace */ 6);
 
-callStack = __webpack_require__(/*! ./CallStack */ 60).callStack;
+callStack = __webpack_require__(/*! ./CallStack */ 61).callStack;
 
 isString = __webpack_require__(/*! ./TypesExtended */ 18).isString;
 
-peek = __webpack_require__(/*! ./ArrayExtensions */ 40).peek;
+peek = __webpack_require__(/*! ./ArrayExtensions */ 41).peek;
 
 merge = __webpack_require__(/*! ./Core */ 9).merge;
 
@@ -8041,6 +8123,14 @@ module.exports = Log = (function() {
     }
   };
 
+  Log.log.full = function() {
+    var args, ref2;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return (ref2 = Log.log).withOptions.apply(ref2, [{
+      maxArrayLength: 100000
+    }].concat(slice.call(args)));
+  };
+
   Log.log.resolvePromiseWrapper = function(m, logger) {
     var logId, toResolve;
     if (containsPromises(m)) {
@@ -8139,7 +8229,7 @@ module.exports = Log = (function() {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /*!*************************************************!*\
   !*** ./source/Art.StandardLib/CallStack.coffee ***!
   \*************************************************/
@@ -8304,7 +8394,7 @@ module.exports = CallStack = (function() {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /*!**********************************************************!*\
   !*** ./source/Art.StandardLib/ReschedulableTimer.coffee ***!
   \**********************************************************/
@@ -8313,9 +8403,9 @@ module.exports = CallStack = (function() {
 
 var ReschedulableTimer, currentSecond, timeout;
 
-currentSecond = __webpack_require__(/*! ./Time */ 57).currentSecond;
+currentSecond = __webpack_require__(/*! ./Time */ 58).currentSecond;
 
-timeout = __webpack_require__(/*! ./AsyncExtensions */ 49).timeout;
+timeout = __webpack_require__(/*! ./AsyncExtensions */ 50).timeout;
 
 module.exports = ReschedulableTimer = (function() {
   function ReschedulableTimer() {
@@ -8352,7 +8442,7 @@ module.exports = ReschedulableTimer = (function() {
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /*!*********************************************************!*\
   !*** ./source/Art.StandardLib/PromiseWorkerPool.coffee ***!
   \*********************************************************/
@@ -8363,7 +8453,7 @@ var Promise, PromiseWorkerPool, log;
 
 Promise = __webpack_require__(/*! ./Promise */ 15);
 
-log = __webpack_require__(/*! ./Log */ 59).log;
+log = __webpack_require__(/*! ./Log */ 60).log;
 
 
 /*
@@ -8445,7 +8535,7 @@ module.exports = PromiseWorkerPool = (function() {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /*!****************************************************!*\
   !*** ./source/Art.StandardLib/RequestError.coffee ***!
   \****************************************************/
@@ -8462,7 +8552,7 @@ formattedInspect = __webpack_require__(/*! ./Inspect */ 25).formattedInspect;
 
 ref = __webpack_require__(/*! ./Core */ 9), mergeInto = ref.mergeInto, isFunction = ref.isFunction, upperCamelCase = ref.upperCamelCase, compactFlatten = ref.compactFlatten, merge = ref.merge;
 
-objectWithout = __webpack_require__(/*! ./ObjectExtensions */ 35).objectWithout;
+objectWithout = __webpack_require__(/*! ./ObjectExtensions */ 36).objectWithout;
 
 
 /*

@@ -82,7 +82,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 64);
+/******/ 	return __webpack_require__(__webpack_require__.s = 65);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -391,7 +391,7 @@ module.exports = Types = (function() {
 
 /***/ }),
 
-/***/ 64:
+/***/ 65:
 /*!**********************!*\
   !*** ./Types.coffee ***!
   \**********************/
