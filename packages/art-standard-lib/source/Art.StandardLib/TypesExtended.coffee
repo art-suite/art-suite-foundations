@@ -95,10 +95,14 @@ module.exports = class Types
     else if isFunction obj?.present
       obj.present()
     else if isString obj
-      !obj.match /^\s*$/
+      stringIsPresent obj
     else
-      obj != undefined && obj != null && obj != false
+      (obj != undefined && obj != null && obj != false)
+
     if present then obj || true else returnIfNotPresent
+
+  @stringIsPresent: stringIsPresent = (str) ->
+    isString(str) && !/^(\s+|)$/.test str
 
   @functionName: functionName = (f) ->
     (f.name || ((matched = "#{f}".match(/function ([a-zA-Z]+)\(/)) && matched[1]) || "function")

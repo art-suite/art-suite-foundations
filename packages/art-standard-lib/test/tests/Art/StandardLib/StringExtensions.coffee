@@ -40,25 +40,32 @@ module.exports = suite:
     test "compactFlattenJoin", ->
       assert.eq "a messy mess", compactFlattenJoin " ", [["a"], null, undefined, [], "messy", [[["mess"]]]]
 
-  pluralize: ->
+  pluralize:
+    basic: ->
 
-    test "pluralize 'user'",      -> assert.eq "users", pluralize "user"
-    test "pluralize 'users'",     -> assert.eq "users", pluralize "users"
-    test "pluralize 'person'",    -> assert.eq "people", pluralize "person"
-    test "pluralize 'person_'",   -> assert.eq "people_", pluralize "person_"
-    test "pluralize 'people'",    -> assert.eq "people", pluralize "people"
-    test "pluralize 0, 'user'",   -> assert.eq "0 users",   pluralize 0, "user"
-    test "pluralize 1, 'user'",   -> assert.eq "1 user",    pluralize 1, "user"
-    test "pluralize -1, 'user'",  -> assert.eq "-1 users",    pluralize -1, "user"
-    test "pluralize 2, 'user'",   -> assert.eq "2 users",   pluralize 2, "user"
-    test "pluralize 1, 'people'", -> assert.eq "1 person",  pluralize 1, "person"
-    test "pluralize 3, 'people'", -> assert.eq "3 people",  pluralize 3, "people"
+      test "pluralize 'user'",      -> assert.eq "users", pluralize "user"
+      test "pluralize 'users'",     -> assert.eq "users", pluralize "users"
+      test "pluralize 'person'",    -> assert.eq "people", pluralize "person"
+      test "pluralize 'person_'",   -> assert.eq "people_", pluralize "person_"
+      test "pluralize 'people'",    -> assert.eq "people", pluralize "people"
+      test "pluralize 0, 'user'",   -> assert.eq "0 users",   pluralize 0, "user"
+      test "pluralize 1, 'user'",   -> assert.eq "1 user",    pluralize 1, "user"
+      test "pluralize -1, 'user'",  -> assert.eq "-1 users",    pluralize -1, "user"
+      test "pluralize 2, 'user'",   -> assert.eq "2 users",   pluralize 2, "user"
+      test "pluralize 1, 'people'", -> assert.eq "1 person",  pluralize 1, "person"
+      test "pluralize 3, 'people'", -> assert.eq "3 people",  pluralize 3, "people"
 
-    test "pluralize 3, 'dragon', 'toads'", ->
-      assert.eq "3 toads",  pluralize 3, 'dragon', 'toads'
 
-    test "pluralize 1, 'dragon', 'toads'", ->
-      assert.eq "1 dragon",  pluralize 1, 'dragon', 'toads'
+      test "pluralize 3, 'dragon', 'toads'", ->
+        assert.eq "3 toads",  pluralize 3, 'dragon', 'toads'
+
+      test "pluralize 1, 'dragon', 'toads'", ->
+        assert.eq "1 dragon",  pluralize 1, 'dragon', 'toads'
+
+    regressions: ->
+      test "pluralize null, 'user'",      -> assert.eq "users",    pluralize null, "user"
+      test "pluralize undefined, 'user'", -> assert.eq "users",    pluralize undefined, "user"
+      test "pluralize '', 'user'", ->       assert.eq "users",    pluralize '', "user"
 
   jsStringify: ->
     list = [

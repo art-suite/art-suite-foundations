@@ -2,7 +2,7 @@ FoundationMath = require './MathExtensions'
 Types          = require './TypesExtended'
 {wordsRegex} = require './RegExpExtensions'
 {intRand} = FoundationMath
-{isString, isNumber, isPlainObject, isArray} = Types
+{isString, isNumber, isPlainObject, isArray, stringIsPresent} = Types
 {compactFlatten} = require './Core'
 {isBrowser} = require './Environment'
 
@@ -167,12 +167,14 @@ module.exports = class StringExtensions
       singleForm = b
       a
     else
-      singleForm = a
+      singleForm = if stringIsPresent a then a else if stringIsPresent b then b
       null
 
     # validate
-    throw new Error "expecting string for singleForm" unless isString singleForm
-    throw new Error "expecting string for pluralForm" if pluralForm? && !isString pluralForm
+    if !isString(singleForm) || (pluralForm && !isString pluralForm)
+      throw new Error "
+        singleForm and pluralForm(optional) should be non-empty strings
+        (inputs: #{Neptune.Art.StandardLib.formattedInspect {a,b,pluralForm}})"
 
     newPluralize = switch
       when pluralForm?
