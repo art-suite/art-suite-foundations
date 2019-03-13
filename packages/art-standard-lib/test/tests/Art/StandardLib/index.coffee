@@ -29,7 +29,7 @@ module.exports
   Ruby:                         require './ruby'                        
   StandardImport:               require './StandardImport'              
   StringCase:                   require './string_case'                 
-  String:                       require './string'                      
+  StringExtensions:             require './StringExtensions'            
   Time:                         require './time'                        
   Types:                        require './types'                       
   Unique:                       require './unique'                      

@@ -147,8 +147,19 @@ module.exports = class StringExtensions
     @plural, @singular, @isSingular, @isPlural
     addIrregularRule: @addPluralizeRule
   } = npmPluralize = require 'pluralize'
+
+  patchedNpmPluralize = (noun, a, b) ->
+    if match = /^(.*)(_|[^\w])+$/.exec noun
+      [__, noun, append] = match
+    out = npmPluralize noun, a, b
+    if append
+      out + append
+    else
+      out
+
   @pluralize: pluralize = (a, b, pluralForm) ->
     # normalize inputs
+
     number = if b? && isNumber b
       singleForm = a
       b
@@ -163,15 +174,15 @@ module.exports = class StringExtensions
     throw new Error "expecting string for singleForm" unless isString singleForm
     throw new Error "expecting string for pluralForm" if pluralForm? && !isString pluralForm
 
-    switch
+    newPluralize = switch
       when pluralForm?
         "#{number} #{if number == 1 then singleForm else pluralForm}"
 
       when number?
-        npmPluralize singleForm, number, true
+        patchedNpmPluralize singleForm, number, true
 
       else
-        npmPluralize singleForm
+        patchedNpmPluralize singleForm
 
   @replaceLast: (str, find, replaceWith) ->
     index = str.lastIndexOf find

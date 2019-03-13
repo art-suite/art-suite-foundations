@@ -45,6 +45,7 @@ module.exports = suite:
     test "pluralize 'user'",      -> assert.eq "users", pluralize "user"
     test "pluralize 'users'",     -> assert.eq "users", pluralize "users"
     test "pluralize 'person'",    -> assert.eq "people", pluralize "person"
+    test "pluralize 'person_'",   -> assert.eq "people_", pluralize "person_"
     test "pluralize 'people'",    -> assert.eq "people", pluralize "people"
     test "pluralize 0, 'user'",   -> assert.eq "0 users",   pluralize 0, "user"
     test "pluralize 1, 'user'",   -> assert.eq "1 user",    pluralize 1, "user"
