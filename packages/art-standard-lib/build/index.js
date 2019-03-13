@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.1"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.3"};
 
 /***/ }),
 /* 5 */
@@ -1552,7 +1552,7 @@ var Core, Types, isFunction, isJsonAtomicType, isObject, isPlainArray, isPlainOb
 ref = Core = __webpack_require__(/*! ./Core */ 9), isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, isString = ref.isString, isFunction = ref.isFunction, isObject = ref.isObject, isPlainArray = ref.isPlainArray, isJsonAtomicType = ref.isJsonAtomicType;
 
 module.exports = Types = (function() {
-  var cloneObjectUpToKey, deepEach, deepEachAll, deepMap, deepMapArray, deepMapObject, functionName, noopMapper, objectName, tEq, throwInequalityError, toJsonStructure, toPostMessageStructure;
+  var cloneObjectUpToKey, deepEach, deepEachAll, deepMap, deepMapArray, deepMapObject, functionName, noopMapper, objectName, stringIsPresent, tEq, throwInequalityError, toJsonStructure, toPostMessageStructure;
 
   function Types() {}
 
@@ -1669,12 +1669,16 @@ module.exports = Types = (function() {
     if (returnIfNotPresent == null) {
       returnIfNotPresent = false;
     }
-    present = isFunction(obj != null ? obj.getPresent : void 0) ? obj.getPresent() : isFunction(obj != null ? obj.present : void 0) ? obj.present() : isString(obj) ? !obj.match(/^\s*$/) : obj !== void 0 && obj !== null && obj !== false;
+    present = isFunction(obj != null ? obj.getPresent : void 0) ? obj.getPresent() : isFunction(obj != null ? obj.present : void 0) ? obj.present() : isString(obj) ? stringIsPresent(obj) : obj !== void 0 && obj !== null && obj !== false;
     if (present) {
       return obj || true;
     } else {
       return returnIfNotPresent;
     }
+  };
+
+  Types.stringIsPresent = stringIsPresent = function(str) {
+    return isString(str) && !/^(\s+|)$/.test(str);
   };
 
   Types.functionName = functionName = function(f) {
@@ -3113,7 +3117,7 @@ module.exports = MinimalBaseObject = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var FoundationMath, StringExtensions, Types, compactFlatten, escapedDoubleQuoteRegex, floor, intRand, isArray, isBrowser, isNumber, isPlainObject, isString, wordsRegex;
+var FoundationMath, StringExtensions, Types, compactFlatten, escapedDoubleQuoteRegex, floor, intRand, isArray, isBrowser, isNumber, isPlainObject, isString, stringIsPresent, wordsRegex;
 
 FoundationMath = __webpack_require__(/*! ./MathExtensions */ 32);
 
@@ -3123,7 +3127,7 @@ wordsRegex = __webpack_require__(/*! ./RegExpExtensions */ 22).wordsRegex;
 
 intRand = FoundationMath.intRand;
 
-isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPlainObject, isArray = Types.isArray;
+isString = Types.isString, isNumber = Types.isNumber, isPlainObject = Types.isPlainObject, isArray = Types.isArray, stringIsPresent = Types.stringIsPresent;
 
 compactFlatten = __webpack_require__(/*! ./Core */ 9).compactFlatten;
 
@@ -3134,7 +3138,7 @@ escapedDoubleQuoteRegex = /[\\]["]/g;
 floor = Math.floor;
 
 module.exports = StringExtensions = (function() {
-  var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, npmPluralize, pluralize, randomString, ref, repeat, standardIndent;
+  var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, npmPluralize, patchedNpmPluralize, pluralize, randomString, ref, repeat, standardIndent;
 
   function StringExtensions() {}
 
@@ -3303,23 +3307,39 @@ module.exports = StringExtensions = (function() {
 
   ref = npmPluralize = __webpack_require__(/*! pluralize */ 34), StringExtensions.plural = ref.plural, StringExtensions.singular = ref.singular, StringExtensions.isSingular = ref.isSingular, StringExtensions.isPlural = ref.isPlural, StringExtensions.addPluralizeRule = ref.addIrregularRule;
 
+  patchedNpmPluralize = function(noun, a, b) {
+    var __, append, match, out;
+    if (match = /^(.*)(_|[^\w])+$/.exec(noun)) {
+      __ = match[0], noun = match[1], append = match[2];
+    }
+    out = npmPluralize(noun, a, b);
+    if (append) {
+      return out + append;
+    } else {
+      return out;
+    }
+  };
+
   StringExtensions.pluralize = pluralize = function(a, b, pluralForm) {
-    var number, singleForm;
-    number = (b != null) && isNumber(b) ? (singleForm = a, b) : isNumber(a) ? (singleForm = b, a) : (singleForm = a, null);
-    if (!isString(singleForm)) {
-      throw new Error("expecting string for singleForm");
+    var newPluralize, number, singleForm;
+    number = (b != null) && isNumber(b) ? (singleForm = a, b) : isNumber(a) ? (singleForm = b, a) : (singleForm = stringIsPresent(a) ? a : stringIsPresent(b) ? b : void 0, null);
+    if (!isString(singleForm) || (pluralForm && !isString(pluralForm))) {
+      throw new Error("singleForm and pluralForm(optional) should be non-empty strings (inputs: " + (Neptune.Art.StandardLib.formattedInspect({
+        a: a,
+        b: b,
+        pluralForm: pluralForm
+      })) + ")");
     }
-    if ((pluralForm != null) && !isString(pluralForm)) {
-      throw new Error("expecting string for pluralForm");
-    }
-    switch (false) {
-      case pluralForm == null:
-        return number + " " + (number === 1 ? singleForm : pluralForm);
-      case number == null:
-        return npmPluralize(singleForm, number, true);
-      default:
-        return npmPluralize(singleForm);
-    }
+    return newPluralize = (function() {
+      switch (false) {
+        case pluralForm == null:
+          return number + " " + (number === 1 ? singleForm : pluralForm);
+        case number == null:
+          return patchedNpmPluralize(singleForm, number, true);
+        default:
+          return patchedNpmPluralize(singleForm);
+      }
+    })();
   };
 
   StringExtensions.replaceLast = function(str, find, replaceWith) {
