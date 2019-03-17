@@ -20,80 +20,57 @@
   expandPathedProperties
   log
   mergeIntoUnless
-  objectVivify
-  objectVivifyAndSet
+  vivifyObjectPath
+  vivifyObjectPathAndSet
 } = StandardLib
 
 module.exports = suite:
-  objectVivify: ->
-    test "objectVivify null", ->
-      assert.eq(
-        objectVivify null
-        {}
-      )
+  vivifyObjectPath: ->
+    test "vivifyObjectPath {}", ->
+      assert.eq {}, vivifyObjectPath {}
 
-    test "objectVivify null, 'a'", ->
-      assert.eq(
-        objectVivify null, 'a'
-        a: {}
-      )
+    test "vivifyObjectPath {}, 'a'", ->
+      assert.eq {}, vivifyObjectPath input = {}, 'a'
+      assert.eq input, a: {}
 
-    test "objectVivify null, 'a', 'b'", ->
-      assert.eq(
-        objectVivify null, 'a', 'b'
+    test "vivifyObjectPath null, 'a', 'b'", ->
+      assert.eq {}, vivifyObjectPath input = {}, 'a', 'b'
+      assert.eq input,
         a: b: {}
-      )
 
-    # TODO/DEBUG
-    # test "objectVivify null, ['a', 'b'], 'c'", ->
-    #   assert.eq(
-    #     objectVivify null, ['a', 'b'], 'c'
-    #     a: b: c: {}
-    #   )
-
-    test "objectVivify {c: 123}, 'a', 'b'", ->
-      assert.eq(
-        objectVivify {c: 123}, 'a', 'b'
+    test "vivifyObjectPath {c: 123}, 'a', 'b'", ->
+      assert.eq {}, vivifyObjectPath input = {c: 123}, 'a', 'b'
+      assert.eq input,
         a: b: {}
         c: 123
-      )
 
-    test "objectVivify {a: c: 123}, 'a', 'b'", ->
-      assert.eq(
-        out = objectVivify origRoot = {a: origA = c: 123}, 'a', 'b'
+    test "vivifyObjectPath {a: c: 123}, 'a', 'b'", ->
+      assert.eq {}, vivifyObjectPath input = {a: origA = c: 123}, 'a', 'b'
+      assert.eq input,
         a:
           b: {}
           c: 123
-      )
-      assert.equal out, origRoot
-      assert.equal out.a, origA
 
-  objectVivifyAndSet: ->
-    test "objectVivifyAndSet null, 'a', 'b'", ->
-      assert.eq(
-        objectVivifyAndSet null, 'a', 'b'
-        a: 'b'
-      )
+      assert.equal input.a, origA
 
-    test "objectVivifyAndSet null, 'a', 'b', 'c'", ->
-      assert.eq(
-        objectVivifyAndSet null, 'a', 'b', 'c'
-        a: b: 'c'
-      )
+  vivifyObjectPathAndSet: ->
+    test "vivifyObjectPathAndSet {}, 'a', 'b'", ->
+      assert.eq 'b', vivifyObjectPathAndSet input = {}, 'a', 'b'
+      assert.eq input, a: 'b'
 
-    test "objectVivifyAndSet {c: 123}, 'a', 'b'", ->
-      assert.eq(
-        objectVivifyAndSet {c: 123}, 'a', 'b'
+    test "vivifyObjectPathAndSet {}, 'a', 'b', 'c'", ->
+      assert.eq 'c', vivifyObjectPathAndSet input = {}, 'a', 'b', 'c'
+      assert.eq input, a: b: 'c'
+
+    test "vivifyObjectPathAndSet {c: 123}, 'a', 'b'", ->
+      assert.eq 'b', vivifyObjectPathAndSet input = {c: 123}, 'a', 'b'
+      assert.eq input,
         a: 'b'
         c: 123
-      )
 
-    test "objectVivifyAndSet {a: c: 123}, 'a', 'b'", ->
-      assert.eq(
-        out = objectVivifyAndSet origRoot = {a: origA = c: 123}, 'a', 'b'
-        a: 'b'
-      )
-      assert.equal out, origRoot
+    test "vivifyObjectPathAndSet {a: c: 123}, 'a', 'b'", ->
+      assert.eq 'b', vivifyObjectPathAndSet input = {a: origA = c: 123}, 'a', 'b'
+      assert.eq input, a: 'b'
 
   merge: ->
 

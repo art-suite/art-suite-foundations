@@ -19,24 +19,25 @@ module.exports = class ObjectExtensions
 
   @objectLength: objectKeyCount
 
-  _objectVivifyList = (obj, path, setValue) ->
+  _vivifyObjectPathList = (obj, path, setValue) ->
     for field, i in path when field?
-      last = setValue? && i == path.length - 1
       obj = switch
-        # TODO - DEBUG: when isPlainArray field then _objectVivifyList obj, field, last && setValue
-        when last               then obj[field] = setValue
-        when isString field     then obj[field] ?= {}
+        when setValue? && i == path.length - 1  then obj[field] = setValue
+        when isString field                     then obj[field] ?= {}
         else throw new Error "Expecting string or array or null/undefined"
     obj
 
-  @objectVivify: objectVivify = (obj, path...) ->
-    _objectVivifyList obj ?= {}, path
-    obj
+  # OUT: obj
+  @vivifyObjectPath: vivifyObjectPath = (obj, path...) ->
+    throw new Error "obj must be an object" unless isPlainObject obj
+    _vivifyObjectPathList obj, path
 
-  @objectVivifyAndSet: (obj, path...) ->
+  # OUT: the last parameter passed in
+  @vivifyObjectPathAndSet: (obj, path...) ->
+    throw new Error "obj must be an object" unless isPlainObject obj
     [path..., value] = path
-    _objectVivifyList obj ?= {}, path, value
-    obj
+    _vivifyObjectPathList obj, path, value
+    value
 
 
   ###
