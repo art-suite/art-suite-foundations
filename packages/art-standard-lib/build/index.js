@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.54.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.55.0"};
 
 /***/ }),
 /* 5 */
@@ -4546,7 +4546,7 @@ ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isPlainObject = ref1.isPl
 object = __webpack_require__(/*! ./Iteration */ 37).object;
 
 module.exports = ObjectExtensions = (function() {
-  var _objectVivifyList, expandPathedProperties, objectKeyCount, objectVivify, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
+  var _vivifyObjectPathList, expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, vivifyObjectPath, withPropertyPath;
 
   function ObjectExtensions() {}
 
@@ -4575,41 +4575,44 @@ module.exports = ObjectExtensions = (function() {
 
   ObjectExtensions.objectLength = objectKeyCount;
 
-  _objectVivifyList = function(obj, path, setValue) {
-    var field, i, j, last, len;
+  _vivifyObjectPathList = function(obj, path, setValue) {
+    var field, i, j, len;
     for (i = j = 0, len = path.length; j < len; i = ++j) {
       field = path[i];
-      if (!(field != null)) {
-        continue;
+      if (field != null) {
+        obj = (function() {
+          switch (false) {
+            case !((setValue != null) && i === path.length - 1):
+              return obj[field] = setValue;
+            case !isString(field):
+              return obj[field] != null ? obj[field] : obj[field] = {};
+            default:
+              throw new Error("Expecting string or array or null/undefined");
+          }
+        })();
       }
-      last = (setValue != null) && i === path.length - 1;
-      obj = (function() {
-        switch (false) {
-          case !last:
-            return obj[field] = setValue;
-          case !isString(field):
-            return obj[field] != null ? obj[field] : obj[field] = {};
-          default:
-            throw new Error("Expecting string or array or null/undefined");
-        }
-      })();
     }
     return obj;
   };
 
-  ObjectExtensions.objectVivify = objectVivify = function() {
+  ObjectExtensions.vivifyObjectPath = vivifyObjectPath = function() {
     var obj, path;
     obj = arguments[0], path = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-    _objectVivifyList(obj != null ? obj : obj = {}, path);
-    return obj;
+    if (!isPlainObject(obj)) {
+      throw new Error("obj must be an object");
+    }
+    return _vivifyObjectPathList(obj, path);
   };
 
-  ObjectExtensions.objectVivifyAndSet = function() {
+  ObjectExtensions.vivifyObjectPathAndSet = function() {
     var j, obj, path, ref2, value;
     obj = arguments[0], path = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    if (!isPlainObject(obj)) {
+      throw new Error("obj must be an object");
+    }
     ref2 = path, path = 2 <= ref2.length ? slice.call(ref2, 0, j = ref2.length - 1) : (j = 0, []), value = ref2[j++];
-    _objectVivifyList(obj != null ? obj : obj = {}, path, value);
-    return obj;
+    _vivifyObjectPathList(obj, path, value);
+    return value;
   };
 
 
