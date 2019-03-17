@@ -20,9 +20,81 @@
   expandPathedProperties
   log
   mergeIntoUnless
+  objectVivify
+  objectVivifyAndSet
 } = StandardLib
 
 module.exports = suite:
+  objectVivify: ->
+    test "objectVivify null", ->
+      assert.eq(
+        objectVivify null
+        {}
+      )
+
+    test "objectVivify null, 'a'", ->
+      assert.eq(
+        objectVivify null, 'a'
+        a: {}
+      )
+
+    test "objectVivify null, 'a', 'b'", ->
+      assert.eq(
+        objectVivify null, 'a', 'b'
+        a: b: {}
+      )
+
+    # TODO/DEBUG
+    # test "objectVivify null, ['a', 'b'], 'c'", ->
+    #   assert.eq(
+    #     objectVivify null, ['a', 'b'], 'c'
+    #     a: b: c: {}
+    #   )
+
+    test "objectVivify {c: 123}, 'a', 'b'", ->
+      assert.eq(
+        objectVivify {c: 123}, 'a', 'b'
+        a: b: {}
+        c: 123
+      )
+
+    test "objectVivify {a: c: 123}, 'a', 'b'", ->
+      assert.eq(
+        out = objectVivify origRoot = {a: origA = c: 123}, 'a', 'b'
+        a:
+          b: {}
+          c: 123
+      )
+      assert.equal out, origRoot
+      assert.equal out.a, origA
+
+  objectVivifyAndSet: ->
+    test "objectVivifyAndSet null, 'a', 'b'", ->
+      assert.eq(
+        objectVivifyAndSet null, 'a', 'b'
+        a: 'b'
+      )
+
+    test "objectVivifyAndSet null, 'a', 'b', 'c'", ->
+      assert.eq(
+        objectVivifyAndSet null, 'a', 'b', 'c'
+        a: b: 'c'
+      )
+
+    test "objectVivifyAndSet {c: 123}, 'a', 'b'", ->
+      assert.eq(
+        objectVivifyAndSet {c: 123}, 'a', 'b'
+        a: 'b'
+        c: 123
+      )
+
+    test "objectVivifyAndSet {a: c: 123}, 'a', 'b'", ->
+      assert.eq(
+        out = objectVivifyAndSet origRoot = {a: origA = c: 123}, 'a', 'b'
+        a: 'b'
+      )
+      assert.equal out, origRoot
+
   merge: ->
 
     test "merge a, b", ->

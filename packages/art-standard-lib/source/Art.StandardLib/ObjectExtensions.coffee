@@ -1,5 +1,5 @@
 {compactFlatten, deepArrayEach, isArrayOrArguments, mergeInto} = require './Core'
-{isPlainObject, isObject, isFunction, isPlainArray, present} = require './TypesExtended'
+{isPlainObject, isString, isObject, isFunction, isPlainArray, present} = require './TypesExtended'
 {object} = require './Iteration'
 
 module.exports = class ObjectExtensions
@@ -18,6 +18,26 @@ module.exports = class ObjectExtensions
     # Caf: find o with true
 
   @objectLength: objectKeyCount
+
+  _objectVivifyList = (obj, path, setValue) ->
+    for field, i in path when field?
+      last = setValue? && i == path.length - 1
+      obj = switch
+        # TODO - DEBUG: when isPlainArray field then _objectVivifyList obj, field, last && setValue
+        when last               then obj[field] = setValue
+        when isString field     then obj[field] ?= {}
+        else throw new Error "Expecting string or array or null/undefined"
+    obj
+
+  @objectVivify: objectVivify = (obj, path...) ->
+    _objectVivifyList obj ?= {}, path
+    obj
+
+  @objectVivifyAndSet: (obj, path...) ->
+    [path..., value] = path
+    _objectVivifyList obj ?= {}, path, value
+    obj
+
 
   ###
   NOTE:
