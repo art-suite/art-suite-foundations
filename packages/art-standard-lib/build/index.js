@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.53.3"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.54.0"};
 
 /***/ }),
 /* 5 */
@@ -4535,18 +4535,18 @@ module.exports = FormattedInspect = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, mergeInto, object, present, ref, ref1,
+var ObjectExtensions, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, isString, mergeInto, object, present, ref, ref1,
   slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 ref = __webpack_require__(/*! ./Core */ 9), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
 
-ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
+ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isPlainObject = ref1.isPlainObject, isString = ref1.isString, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray, present = ref1.present;
 
 object = __webpack_require__(/*! ./Iteration */ 37).object;
 
 module.exports = ObjectExtensions = (function() {
-  var expandPathedProperties, objectKeyCount, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
+  var _objectVivifyList, expandPathedProperties, objectKeyCount, objectVivify, propertyIsPathed, setPathedProperty, toObjectInternal, withPropertyPath;
 
   function ObjectExtensions() {}
 
@@ -4574,6 +4574,43 @@ module.exports = ObjectExtensions = (function() {
   };
 
   ObjectExtensions.objectLength = objectKeyCount;
+
+  _objectVivifyList = function(obj, path, setValue) {
+    var field, i, j, last, len;
+    for (i = j = 0, len = path.length; j < len; i = ++j) {
+      field = path[i];
+      if (!(field != null)) {
+        continue;
+      }
+      last = (setValue != null) && i === path.length - 1;
+      obj = (function() {
+        switch (false) {
+          case !last:
+            return obj[field] = setValue;
+          case !isString(field):
+            return obj[field] != null ? obj[field] : obj[field] = {};
+          default:
+            throw new Error("Expecting string or array or null/undefined");
+        }
+      })();
+    }
+    return obj;
+  };
+
+  ObjectExtensions.objectVivify = objectVivify = function() {
+    var obj, path;
+    obj = arguments[0], path = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    _objectVivifyList(obj != null ? obj : obj = {}, path);
+    return obj;
+  };
+
+  ObjectExtensions.objectVivifyAndSet = function() {
+    var j, obj, path, ref2, value;
+    obj = arguments[0], path = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    ref2 = path, path = 2 <= ref2.length ? slice.call(ref2, 0, j = ref2.length - 1) : (j = 0, []), value = ref2[j++];
+    _objectVivifyList(obj != null ? obj : obj = {}, path, value);
+    return obj;
+  };
 
 
   /*
