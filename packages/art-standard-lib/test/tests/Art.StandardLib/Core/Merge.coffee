@@ -1,17 +1,17 @@
 {
   merge
-  mergeWithNullDeletes
+  mergeWithoutNulls
   mergeInto
   mergeIntoUnless
   pureMerge
   deepMerge
 } = require './StandardImport'
 module.exports = suite:
-  mergeWithNullDeletes: ->
+  mergeWithoutNulls: ->
     test "vs normal merge", ->
       assert.eq
         a: 1, c: 3
-        mergeWithNullDeletes
+        mergeWithoutNulls
           a: 1
           b: 2
           {

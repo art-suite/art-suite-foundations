@@ -15,7 +15,7 @@ module.exports = class Merge
   ###
   @merge: merge = => mergeInto {}, arguments
 
-  @mergeWithNullDeletes: => mergeIntoWithNullDeletes {}, arguments
+  @mergeWithoutNulls: => mergeIntoWithNullDeletes {}, arguments
 
   @mergeWithSelf: ->
     mergeInto {}, @, arguments
