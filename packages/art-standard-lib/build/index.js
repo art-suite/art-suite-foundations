@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.55.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.56.0"};
 
 /***/ }),
 /* 5 */
@@ -625,7 +625,7 @@ compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFla
 isPlainObject = __webpack_require__(/*! ./Types */ 14).isPlainObject;
 
 module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, pureMerge;
+  var deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
 
   function Merge() {}
 
@@ -643,6 +643,10 @@ module.exports = Merge = (function() {
 
   Merge.merge = merge = function() {
     return mergeInto({}, arguments);
+  };
+
+  Merge.mergeWithNullDeletes = function() {
+    return mergeIntoWithNullDeletes({}, arguments);
   };
 
   Merge.mergeWithSelf = function() {
@@ -673,6 +677,31 @@ module.exports = Merge = (function() {
           v = source[k];
           if (v !== void 0) {
             result[k] = v;
+          }
+        }
+      }
+    }
+    return result;
+  };
+
+  Merge.mergeIntoWithNullDeletes = mergeIntoWithNullDeletes = function() {
+    var j, k, len, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          switch (false) {
+            case v == null:
+              result[k] = v;
+              break;
+            case v !== null:
+              delete result[k];
           }
         }
       }
