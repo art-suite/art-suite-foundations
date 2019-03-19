@@ -1,4 +1,4 @@
-{compactFlatten, compact, flatten} = require '../../../StandardImport'
+{compactFlatten, compact, flatten} = require './StandardImport'
 
 suite: ->
   list = # CaffeineScript bug - 'list =' shouldn't be required

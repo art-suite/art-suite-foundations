@@ -15,6 +15,8 @@ module.exports = class Merge
   ###
   @merge: merge = => mergeInto {}, arguments
 
+  @mergeWithNullDeletes: => mergeIntoWithNullDeletes {}, arguments
+
   @mergeWithSelf: ->
     mergeInto {}, @, arguments
 
@@ -32,6 +34,17 @@ module.exports = class Merge
     result = sources[0] || {}
     for source in sources when source != result
       result[k] = v for k, v of source when v != undefined
+    result
+
+  @mergeIntoWithNullDeletes: mergeIntoWithNullDeletes = ->
+    sources = compactFlatten arguments
+    return null if sources.length == 0
+    result = sources[0] || {}
+    for source in sources when source != result
+      for k, v of source
+        switch
+          when v?         then result[k] = v
+          when v == null  then delete result[k]
     result
 
   ###

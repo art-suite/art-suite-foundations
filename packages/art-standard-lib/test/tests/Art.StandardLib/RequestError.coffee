@@ -1,4 +1,4 @@
-{compactFlatten, compact, flatten} = require '../../../StandardImport'
+{compactFlatten, compact, flatten} = require './StandardImport'
 
 suite: ->
   test "new RequestError with no params is ok", ->

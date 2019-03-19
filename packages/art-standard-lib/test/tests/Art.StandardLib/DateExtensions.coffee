@@ -13,7 +13,7 @@
   formattedInspect
   formatDate
   abs
-} = require '../../../StandardImport'
+} = require './StandardImport'
 
 date = new Date milliseconds = 1497123141167
 roundedIntDiv1000 = (v) -> (v / 1000) + .5 | 0

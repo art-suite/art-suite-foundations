@@ -1,4 +1,4 @@
-{compactFlatten, compact, flatten} = require '../../../StandardImport'
+{compactFlatten, compact, flatten} = require './StandardImport'
 
 suite: ->
   test "compactFlatten with only compacting needed", ->
