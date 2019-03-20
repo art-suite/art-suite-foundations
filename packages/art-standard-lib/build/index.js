@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.56.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.56.1"};
 
 /***/ }),
 /* 5 */
@@ -645,7 +645,7 @@ module.exports = Merge = (function() {
     return mergeInto({}, arguments);
   };
 
-  Merge.mergeWithNullDeletes = function() {
+  Merge.mergeWithoutNulls = function() {
     return mergeIntoWithNullDeletes({}, arguments);
   };
 
