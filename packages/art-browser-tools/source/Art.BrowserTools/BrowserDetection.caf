@@ -1,7 +1,8 @@
 import &StandardImport, &iPhoneDeviceInformation, &UseragentRegExp
 global extract
+  window
   document, screen, CSS
-  navigator extract? userAgent, vendor
+  navigator
   opera
   orientation
   devicePixelRatio = 1
@@ -22,17 +23,40 @@ smallestTabletDeviceWidth = 600
 
 class BrowserDetection
   @isBrowser:           !!navigator
-  @getAgent:            getAgent = -> userAgent || vendor || opera || ""
+  @getAgent:            getAgent = -> navigator?.userAgent || navigator?.vendor || opera || ""
 
-  # artBrowserUserAgent DEPRICATED - call getAgent directly
-  artBrowserUserAgent:  artBrowserUserAgent = getAgent()
+  @getHasIPhoneXNotch: ->
+    iPhoneNotchSizes[simpleBrowserInfo.subDevice] > 0
+
+  @getNotchInfo: =>
+    if @getHasIPhoneXNotch()
+      {}
+        #                     iPhoneX* values: How can we get this programatically for Android devices?
+        notchHeight:          iPhoneNotchSizes[simpleBrowserInfo.subDevice] ? 30
+        notchWidth:           notchWidth = 209
+        roundedCornerRadius:  40
+        antiNotchWidth:
+          min screen.availWidth, screen.availHeight
+          - notchWidth
+          / 2
+
+        notchLocation:
+          if @getOrientationIsPortrait()
+            :top
+          else if @getOrientationAngle() == 90
+            :left
+          else :right
+
+
+  artBrowserUserAgent = getAgent()
+  getIsMobileBrowser = -> isMobileBrowserRegExp1.test artBrowserUserAgent
 
   @getClientWidth:      -> (document.documentElement ? document.body).clientWidth
   @getClientHeight:     -> (document.documentElement ? document.body).clientWidth
   @getOrientationAngle: -> screen?.orientation?.angle ? orientation
 
   # optionally provide the current viewSize as a fallback if getOrientationAngle is not available.
-  @getOrientationIsPortrait: getOrientationIsPortrait = (viewSize) =>
+  @getOrientationIsPortrait: (viewSize) =>
     switch
     when isNumber o = @getOrientationAngle()  then (o % 180) == 0
     when viewSize?                            then viewSize.x <= viewSize.y
@@ -49,9 +73,9 @@ class BrowserDetection
 
   # SEE: https://webkit.org/blog/7929/designing-websites-for-iphone-x/
   @getCssSafeAreaInset: =>
-    if fakeNativeApp && iPhoneNotchSizes[simpleBrowserInfo.subDevice] > 0
+    if fakeNativeApp && @getHasIPhoneXNotch()
       iPhoneNotchSafePadding extract top, bottom
-      if getOrientationIsPortrait()
+      if @getOrientationIsPortrait()
         {}
           left:   0
           right:  0
@@ -105,12 +129,17 @@ class BrowserDetection
 
     getSimpleBrowserInfo()  recomputes it every time - useful for testing in Chrome where it can change the userAgent dynamically
     simpleBrowserInfo:      computed at load
+
+  simpleBrowserInfo = null
+  @getCachedSimpleBrowserInfo: =>
+    @simpleBrowserInfo = simpleBrowserInfo ?= @getSimpleBrowserInfo()
+
   @getSimpleBrowserInfo:
     if !@isBrowser then -> {}
-    else ->
+    else =>
       artBrowserUserAgent = getAgent()
 
-      {}
+      @simpleBrowserInfo = simpleBrowserInfo = {}
         devicePixelRatio
         pixelsPerPoint:   devicePixelRatio
 
@@ -143,7 +172,7 @@ class BrowserDetection
           when /ipad/i.test        artBrowserUserAgent then :iPad
           else                                              :other
 
-        touch: touch = document.documentElement.ontouchstart?
+        touch:  touch = document.documentElement.ontouchstart? || getIsMobileBrowser()
 
         deviceMajorScreenSize: deviceMajorScreenSize = max screen.availWidth, screen.availHeight
         deviceMinorScreenSize: deviceMinorScreenSize = min screen.availWidth, screen.availHeight
@@ -164,8 +193,8 @@ class BrowserDetection
             else  :tablet
           else    :desktop
 
-  @simpleBrowserInfo: simpleBrowserInfo = @getSimpleBrowserInfo()
-  @getIsMobileBrowser: -> isMobileBrowserRegExp1.test artBrowserUserAgent
+  @simpleBrowserInfo: @getSimpleBrowserInfo()
+  @getIsMobileBrowser: getIsMobileBrowser
 
   ##############
     DEPRICATED
