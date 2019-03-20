@@ -1,4 +1,5 @@
 import &StandardImport
+global extract window, document
 
 class Download
 
