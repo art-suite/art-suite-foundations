@@ -1,4 +1,5 @@
 import &StandardImport
+global extract Node, document
 ###
   DomElementFactories allows for Art.React-style creation of DOM elements.
 

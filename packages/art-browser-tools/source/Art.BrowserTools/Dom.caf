@@ -1,7 +1,7 @@
 import &StandardImport
 # https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input
 
-global extract document
+global extract document, HTMLElement, window
 
 class Dom
   @createElementFromHtml: (html) ->
