@@ -1,13 +1,23 @@
 {compactFlatten} = require './ArrayCompactFlatten'
+{isArray, isString} = require './Types'
 module.exports = class StringCase
 
+  findWordsRegExp = /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g
+  findCapStartWordsRegExp = /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g
+  ### getCodeWords
+    INv1: <String>
+    INv2: <Array* <String>>
+    OUT: <Array <String>>
+  ###
   @getCodeWords: getCodeWords = (str) ->
-    return [] unless _words = str?.match /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g
-
-    words = for word in _words
-      word.match /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g #/[A-Z]+[a-z0-9]*|[a-z0-9]+/g
-
-    compactFlatten words
+    compactFlatten(
+      if isArray str
+        str
+      else if isString(str) && findWordsRegExp.test str
+        for word in str.match findWordsRegExp
+          word.match findCapStartWordsRegExp
+      else []
+    )
 
   @codeWords: getCodeWords
 
