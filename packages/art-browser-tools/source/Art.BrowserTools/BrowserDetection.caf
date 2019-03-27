@@ -4,7 +4,6 @@ global extract
   document, screen, CSS
   navigator
   opera
-  orientation
   devicePixelRatio = 1
 
 userRequestedFakeNativeApp = fakeNativeApp = !!(getEnv().fakeNative || getEnv().fakeNativeApp)
@@ -53,7 +52,7 @@ class BrowserDetection
 
   @getClientWidth:      -> (document.documentElement ? document.body).clientWidth
   @getClientHeight:     -> (document.documentElement ? document.body).clientWidth
-  @getOrientationAngle: -> screen?.orientation?.angle ? orientation
+  @getOrientationAngle: -> screen?.orientation?.angle ? global.orientation
 
   # optionally provide the current viewSize as a fallback if getOrientationAngle is not available.
   @getOrientationIsPortrait: (viewSize) =>
