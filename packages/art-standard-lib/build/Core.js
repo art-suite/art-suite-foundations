@@ -94,7 +94,7 @@ module.exports =
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpack_require__(/*! ./StringCase */ 12), __webpack_require__(/*! ./Merge */ 13), __webpack_require__(/*! ./Types */ 14)];
+module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpack_require__(/*! ./StringCase */ 12), __webpack_require__(/*! ./Merge */ 14), __webpack_require__(/*! ./Types */ 13)];
 
 
 /***/ }),
@@ -287,30 +287,46 @@ module.exports = ArrayCompactFlatten = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var StringCase, compactFlatten;
+var StringCase, compactFlatten, isArray, isString, ref;
 
 compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
 
+ref = __webpack_require__(/*! ./Types */ 13), isArray = ref.isArray, isString = ref.isString;
+
 module.exports = StringCase = (function() {
-  var getCodeWords;
+  var findCapStartWordsRegExp, findWordsRegExp, getCodeWords;
 
   function StringCase() {}
 
+  findWordsRegExp = /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g;
+
+  findCapStartWordsRegExp = /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g;
+
+
+  /* getCodeWords
+    INv1: <String>
+    INv2: <Array* <String>>
+    OUT: <Array <String>>
+   */
+
   StringCase.getCodeWords = getCodeWords = function(str) {
-    var _words, word, words;
-    if (!(_words = str != null ? str.match(/[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g) : void 0)) {
-      return [];
-    }
-    words = (function() {
-      var i, len, results;
-      results = [];
-      for (i = 0, len = _words.length; i < len; i++) {
-        word = _words[i];
-        results.push(word.match(/(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g));
+    var word;
+    return compactFlatten((function() {
+      var i, len, ref1, results;
+      if (isArray(str)) {
+        return str;
+      } else if (isString(str) && findWordsRegExp.test(str)) {
+        ref1 = str.match(findWordsRegExp);
+        results = [];
+        for (i = 0, len = ref1.length; i < len; i++) {
+          word = ref1[i];
+          results.push(word.match(findCapStartWordsRegExp));
+        }
+        return results;
+      } else {
+        return [];
       }
-      return results;
-    })();
-    return compactFlatten(words);
+    })());
   };
 
   StringCase.codeWords = getCodeWords;
@@ -332,22 +348,22 @@ module.exports = StringCase = (function() {
   };
 
   StringCase.getLowerCaseCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
+    var i, len, ref1, results, word;
+    ref1 = StringCase.getCodeWords(str);
     results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
+    for (i = 0, len = ref1.length; i < len; i++) {
+      word = ref1[i];
       results.push(StringCase.lowerCase(word));
     }
     return results;
   };
 
   StringCase.getCapitalizedCodeWords = function(str) {
-    var i, len, ref, results, word;
-    ref = StringCase.getCodeWords(str);
+    var i, len, ref1, results, word;
+    ref1 = StringCase.getCodeWords(str);
     results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      word = ref[i];
+    for (i = 0, len = ref1.length; i < len; i++) {
+      word = ref1[i];
       results.push(StringCase.capitalize(StringCase.lowerCase(word)));
     }
     return results;
@@ -359,11 +375,11 @@ module.exports = StringCase = (function() {
       joiner = "";
     }
     return ((function() {
-      var i, len, ref, results;
-      ref = this.getLowerCaseCodeWords(str);
+      var i, len, ref1, results;
+      ref1 = this.getLowerCaseCodeWords(str);
       results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        word = ref[i];
+      for (i = 0, len = ref1.length; i < len; i++) {
+        word = ref1[i];
         results.push(this.capitalize(word));
       }
       return results;
@@ -397,217 +413,6 @@ module.exports = StringCase = (function() {
 /***/ }),
 
 /***/ 13:
-/*!**************************************************!*\
-  !*** ./source/Art.StandardLib/Core/Merge.coffee ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Merge, compactFlatten, isPlainObject;
-
-compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
-
-isPlainObject = __webpack_require__(/*! ./Types */ 14).isPlainObject;
-
-module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
-
-  function Merge() {}
-
-
-  /*
-  
-  merge "flattens" its arguments and then adds all keys from all objects in
-  the list into a new object which is returned.
-  
-  return: new object
-  
-  The first object's keys are added first. If two or more objects have the same
-  keys, the value set in the result is the last object's in the list with that key.
-   */
-
-  Merge.merge = merge = function() {
-    return mergeInto({}, arguments);
-  };
-
-  Merge.mergeWithoutNulls = function() {
-    return mergeIntoWithNullDeletes({}, arguments);
-  };
-
-  Merge.mergeWithSelf = function() {
-    return mergeInto({}, this, arguments);
-  };
-
-
-  /*
-  The same as 'merge' with one difference:
-  
-  Instead of a new object, all objects are merged into the first object in the list.
-  
-  return: first object in the flattened list
-  return: null if no source objects
-   */
-
-  Merge.mergeInto = mergeInto = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== result) {
-        for (k in source) {
-          v = source[k];
-          if (v !== void 0) {
-            result[k] = v;
-          }
-        }
-      }
-    }
-    return result;
-  };
-
-  Merge.mergeIntoWithNullDeletes = mergeIntoWithNullDeletes = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== result) {
-        for (k in source) {
-          v = source[k];
-          switch (false) {
-            case v == null:
-              result[k] = v;
-              break;
-            case v !== null:
-              delete result[k];
-          }
-        }
-      }
-    }
-    return result;
-  };
-
-
-  /*
-  Just like mergeInfo except only merge into the result object
-  UNLESS 'result' already has that property with a non-undefined value.
-  
-  if
-    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
-  then
-    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
-  
-  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
-   */
-
-  Merge.mergeIntoUnless = function() {
-    var i, j, k, ref, result, source, sources, v;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    result = sources[0] || {};
-    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
-      source = sources[i];
-      for (k in source) {
-        v = source[k];
-        if (result[k] === void 0) {
-          result[k] = v;
-        }
-      }
-    }
-    return result;
-  };
-
-  Merge.deepMerge = deepMerge = function() {
-    var k, list, out, v, val;
-    list = compactFlatten(arguments);
-    out = merge(list);
-    for (k in out) {
-      v = out[k];
-      if (isPlainObject(v)) {
-        out[k] = deepMerge((function() {
-          var j, len, results;
-          results = [];
-          for (j = 0, len = list.length; j < len; j++) {
-            val = list[j];
-            results.push(val[k]);
-          }
-          return results;
-        })());
-      }
-    }
-    return out;
-  };
-
-  Merge.hasAllProps = function(o1, o2) {
-    var k, v;
-    for (k in o1) {
-      v = o1[k];
-      if (!o2.hasOwnProperty(k)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  Merge.pureMerge = pureMerge = function() {
-    var j, last, len, source, sources;
-    sources = compactFlatten(arguments);
-    if (sources.length === 0) {
-      return null;
-    }
-    if (sources.length === 1) {
-      return sources[0];
-    }
-    last = sources[sources.length - 1];
-    for (j = 0, len = sources.length; j < len; j++) {
-      source = sources[j];
-      if (source !== last) {
-        if (!Merge.hasAllProps(source, last)) {
-          return Merge.merge(sources);
-        }
-      }
-    }
-    return last;
-  };
-
-
-  /*
-  I might consider adding "o" - which works like Object-Tree constructors:
-    First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
-    Last, all remaining items get added to the "children" list
-  The question is, what does it return? Options:
-  
-    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-  
-  Options if both objects and non-object values are present:
-    a. return compactFlatten [plainObject, nonObjectValues]
-    b. return merge plainObject, children: nonObjectValues
-    c. return new MClass plainObject, nonObjectValues
-      class MClass extends BaseObject
-        @properties "props children"
-        constructor: (@props, @children) ->
-   */
-
-  Merge.m = pureMerge;
-
-  return Merge;
-
-})();
-
-
-/***/ }),
-
-/***/ 14:
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/Core/Types.coffee ***!
   \**************************************************/
@@ -911,6 +716,217 @@ module.exports = Types = (function() {
 
 /***/ }),
 
+/***/ 14:
+/*!**************************************************!*\
+  !*** ./source/Art.StandardLib/Core/Merge.coffee ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Merge, compactFlatten, isPlainObject;
+
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
+
+isPlainObject = __webpack_require__(/*! ./Types */ 13).isPlainObject;
+
+module.exports = Merge = (function() {
+  var deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
+
+  function Merge() {}
+
+
+  /*
+  
+  merge "flattens" its arguments and then adds all keys from all objects in
+  the list into a new object which is returned.
+  
+  return: new object
+  
+  The first object's keys are added first. If two or more objects have the same
+  keys, the value set in the result is the last object's in the list with that key.
+   */
+
+  Merge.merge = merge = function() {
+    return mergeInto({}, arguments);
+  };
+
+  Merge.mergeWithoutNulls = function() {
+    return mergeIntoWithNullDeletes({}, arguments);
+  };
+
+  Merge.mergeWithSelf = function() {
+    return mergeInto({}, this, arguments);
+  };
+
+
+  /*
+  The same as 'merge' with one difference:
+  
+  Instead of a new object, all objects are merged into the first object in the list.
+  
+  return: first object in the flattened list
+  return: null if no source objects
+   */
+
+  Merge.mergeInto = mergeInto = function() {
+    var j, k, len, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          if (v !== void 0) {
+            result[k] = v;
+          }
+        }
+      }
+    }
+    return result;
+  };
+
+  Merge.mergeIntoWithNullDeletes = mergeIntoWithNullDeletes = function() {
+    var j, k, len, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== result) {
+        for (k in source) {
+          v = source[k];
+          switch (false) {
+            case v == null:
+              result[k] = v;
+              break;
+            case v !== null:
+              delete result[k];
+          }
+        }
+      }
+    }
+    return result;
+  };
+
+
+  /*
+  Just like mergeInfo except only merge into the result object
+  UNLESS 'result' already has that property with a non-undefined value.
+  
+  if
+    mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
+  then
+    mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
+  
+  Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
+   */
+
+  Merge.mergeIntoUnless = function() {
+    var i, j, k, ref, result, source, sources, v;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    result = sources[0] || {};
+    for (i = j = 1, ref = sources.length; j < ref; i = j += 1) {
+      source = sources[i];
+      for (k in source) {
+        v = source[k];
+        if (result[k] === void 0) {
+          result[k] = v;
+        }
+      }
+    }
+    return result;
+  };
+
+  Merge.deepMerge = deepMerge = function() {
+    var k, list, out, v, val;
+    list = compactFlatten(arguments);
+    out = merge(list);
+    for (k in out) {
+      v = out[k];
+      if (isPlainObject(v)) {
+        out[k] = deepMerge((function() {
+          var j, len, results;
+          results = [];
+          for (j = 0, len = list.length; j < len; j++) {
+            val = list[j];
+            results.push(val[k]);
+          }
+          return results;
+        })());
+      }
+    }
+    return out;
+  };
+
+  Merge.hasAllProps = function(o1, o2) {
+    var k, v;
+    for (k in o1) {
+      v = o1[k];
+      if (!o2.hasOwnProperty(k)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  Merge.pureMerge = pureMerge = function() {
+    var j, last, len, source, sources;
+    sources = compactFlatten(arguments);
+    if (sources.length === 0) {
+      return null;
+    }
+    if (sources.length === 1) {
+      return sources[0];
+    }
+    last = sources[sources.length - 1];
+    for (j = 0, len = sources.length; j < len; j++) {
+      source = sources[j];
+      if (source !== last) {
+        if (!Merge.hasAllProps(source, last)) {
+          return Merge.merge(sources);
+        }
+      }
+    }
+    return last;
+  };
+
+
+  /*
+  I might consider adding "o" - which works like Object-Tree constructors:
+    First, it compact-flattens args
+    Second, it gathers up and merges all plain-objects in its arguments list
+    Last, all remaining items get added to the "children" list
+  The question is, what does it return? Options:
+  
+    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
+  
+  Options if both objects and non-object values are present:
+    a. return compactFlatten [plainObject, nonObjectValues]
+    b. return merge plainObject, children: nonObjectValues
+    c. return new MClass plainObject, nonObjectValues
+      class MClass extends BaseObject
+        @properties "props children"
+        constructor: (@props, @children) ->
+   */
+
+  Merge.m = pureMerge;
+
+  return Merge;
+
+})();
+
+
+/***/ }),
+
 /***/ 2:
 /*!*************************************************!*\
   !*** ./source/Art.StandardLib/namespace.coffee ***!
@@ -960,7 +976,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.56.1"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.57.0"};
 
 /***/ }),
 
@@ -1066,9 +1082,9 @@ module.exports = __webpack_require__(/*! ./namespace */ 5);
 
 module.exports.includeInNamespace(__webpack_require__(/*! ./Core */ 10)).addModules({
   ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 11),
-  Merge: __webpack_require__(/*! ./Merge */ 13),
+  Merge: __webpack_require__(/*! ./Merge */ 14),
   StringCase: __webpack_require__(/*! ./StringCase */ 12),
-  Types: __webpack_require__(/*! ./Types */ 14)
+  Types: __webpack_require__(/*! ./Types */ 13)
 });
 
 
