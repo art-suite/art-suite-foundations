@@ -146,12 +146,12 @@ escapeForBlockString = (str) =>
       when '\u001b' then '\\u001b'
 
   # escape leading and trailing spaces
-  .replace /^[\n\s]+|[\n\s]+$|\s+(?=\n)/g, (x) ->
+  .replace /^[\n ]+|[\n ]+$|[ ]+(?=\n)/g, (x) ->
     escapeJavascriptString x, true
     .replace /\ /g, '\\s'
 
 formattedInspectString = (m, options) ->
-  out = if /[^\n\s].*\n.*[^\n\s]/.test m
+  out = if /[^\n\s].*\n(.|\n)*[^\n\s]/.test m
     ('"""' + newLineWithIndentString +
     escapeForBlockString(m).replace /\n/g, newLineWithIndentString
     ).replace /\ +\n/g, '\n'
@@ -162,7 +162,9 @@ formattedInspectString = (m, options) ->
   else
     escapeJavascriptString m
 
-  options.colorize.green out
+  if options.colorize
+    options.colorize.green out
+  else out
 
 isInspectableArray = (v) ->
   isPlainArray(v) ||
@@ -325,6 +327,7 @@ module.exports = class FormattedInspect
   @stripAnsi: stripAnsi
   @ansiSafeStringLength: ansiSafeStringLength
   @alignTabs: alignTabs
+  @_escapeForBlockString: escapeForBlockString
   @formattedInspectString: formattedInspectString
   @failsafeInspect: failsafeInspect = (toInspect) ->
     "typeof: #{typeof toInspect}\n" +
