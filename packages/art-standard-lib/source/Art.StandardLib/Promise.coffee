@@ -5,6 +5,7 @@ Promise = BlueBirdPromise = require 'bluebird/js/browser/bluebird.core.min'
 {deepMap, deepEach, isFunction, isPlainObject} = require './TypesExtended'
 {defineModule} = require './CommonJs'
 {getEnv} = require './Environment'
+namespace = require './namespace'
 
 if promiseDebug = getEnv().artPromiseDebug
   console.log "Art.StandardLib.Promise: BlueBirdPromise debug ENABLED"
@@ -14,7 +15,6 @@ BlueBirdPromise.config
   longStackTraces:  promiseDebug
   cancellation:     promiseDebug
   monitoring:       promiseDebug
-
 
 {isPromise} = require './Core/Types'
 
@@ -276,6 +276,28 @@ defineModule module, ->
 
     ###
     @serialize: (f) -> new ArtPromise.Serializer().serialize f
+
+    @logPromise: (message, p) ->
+      {log, currentSecond} = namespace
+      log logPromise_start: message
+      startTime = currentSecond()
+      Promise.then ->
+        if isFunction p
+          p()
+        else
+          p
+      .tap (result)     -> log logPromise_success: {message, result, seconds: currentSecond() - startTime }
+      .tapCatch (error) -> log.error logPromise_error: {message, error, seconds: currentSecond() - startTime}
+
+    @logPromiseProblems: (message, p) ->
+      {log, currentSecond} = namespace
+      startTime = currentSecond()
+      Promise.then ->
+        if isFunction p
+          p()
+        else
+          p
+      .tapCatch (error) -> log.error logPromiseProblems: {message, error, seconds: currentSecond() - startTime}
 
     @invert: (promise) ->
       promise.then (e) ->

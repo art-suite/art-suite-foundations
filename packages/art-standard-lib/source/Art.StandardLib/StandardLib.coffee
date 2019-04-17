@@ -1,6 +1,6 @@
 module.exports = [
   require './Core'
-  [require("./Promise"), "testPromise", "containsPromises", "deepAll"]
+  [require("./Promise"), "testPromise", "containsPromises", "deepAll", "logPromise", "logPromiseProblems"]
   require "./ArrayExtensions"
   require "./AsyncExtensions"
   require "./ObjectExtensions"
