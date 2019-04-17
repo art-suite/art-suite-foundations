@@ -179,9 +179,9 @@ __webpack_require__(/*! ./Inspect/namespace */ 6);
 
 /***/ }),
 /* 3 */
-/*!************************************************************************************!*\
+/*!*************************************************************************************!*\
   !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
-  \************************************************************************************/
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.57.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.58.0"};
 
 /***/ }),
 /* 5 */
@@ -280,7 +280,7 @@ module.exports = (__webpack_require__(/*! ../namespace */ 6)).addNamespace('Insp
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll"], __webpack_require__(/*! ./ArrayExtensions */ 41), __webpack_require__(/*! ./AsyncExtensions */ 50), __webpack_require__(/*! ./ObjectExtensions */ 36), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 40), __webpack_require__(/*! ./FunctionExtensions */ 52), __webpack_require__(/*! ./ObjectDiff */ 53), __webpack_require__(/*! ./MapExtensions */ 54), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 55), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 56), __webpack_require__(/*! ./ShallowClone */ 57), __webpack_require__(/*! ./Time */ 58), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 37), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 59), __webpack_require__(/*! ./Log */ 60), __webpack_require__(/*! ./CallStack */ 61), __webpack_require__(/*! ./DateExtensions */ 51), {
+  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll", "logPromise", "logPromiseProblems"], __webpack_require__(/*! ./ArrayExtensions */ 41), __webpack_require__(/*! ./AsyncExtensions */ 50), __webpack_require__(/*! ./ObjectExtensions */ 36), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 40), __webpack_require__(/*! ./FunctionExtensions */ 52), __webpack_require__(/*! ./ObjectDiff */ 53), __webpack_require__(/*! ./MapExtensions */ 54), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 55), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 56), __webpack_require__(/*! ./ShallowClone */ 57), __webpack_require__(/*! ./Time */ 58), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 37), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 59), __webpack_require__(/*! ./Log */ 60), __webpack_require__(/*! ./CallStack */ 61), __webpack_require__(/*! ./DateExtensions */ 51), {
     PushBackTimer: __webpack_require__(/*! ./ReschedulableTimer */ 62)
   }
 ];
@@ -1147,7 +1147,7 @@ module.exports = Merge = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, promiseDebug, ref;
+/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, namespace, promiseDebug, ref;
 
 Promise = BlueBirdPromise = __webpack_require__(/*! bluebird/js/browser/bluebird.core.min */ 17);
 
@@ -1156,6 +1156,8 @@ ref = __webpack_require__(/*! ./TypesExtended */ 18), deepMap = ref.deepMap, dee
 defineModule = __webpack_require__(/*! ./CommonJs */ 19).defineModule;
 
 getEnv = __webpack_require__(/*! ./Environment */ 20).getEnv;
+
+namespace = __webpack_require__(/*! ./namespace */ 2);
 
 if (promiseDebug = getEnv().artPromiseDebug) {
   console.log("Art.StandardLib.Promise: BlueBirdPromise debug ENABLED");
@@ -1516,6 +1518,59 @@ defineModule(module, function() {
       return new ArtPromise.Serializer().serialize(f);
     };
 
+    ArtPromise.logPromise = function(message, p) {
+      var currentSecond, log, startTime;
+      log = namespace.log, currentSecond = namespace.currentSecond;
+      log({
+        logPromise_start: message
+      });
+      startTime = currentSecond();
+      return Promise.then(function() {
+        if (isFunction(p)) {
+          return p();
+        } else {
+          return p;
+        }
+      }).tap(function(result) {
+        return log({
+          logPromise_success: {
+            message: message,
+            result: result,
+            seconds: currentSecond() - startTime
+          }
+        });
+      }).tapCatch(function(error) {
+        return log.error({
+          logPromise_error: {
+            message: message,
+            error: error,
+            seconds: currentSecond() - startTime
+          }
+        });
+      });
+    };
+
+    ArtPromise.logPromiseProblems = function(message, p) {
+      var currentSecond, log, startTime;
+      log = namespace.log, currentSecond = namespace.currentSecond;
+      startTime = currentSecond();
+      return Promise.then(function() {
+        if (isFunction(p)) {
+          return p();
+        } else {
+          return p;
+        }
+      }).tapCatch(function(error) {
+        return log.error({
+          logPromiseProblems: {
+            message: message,
+            error: error,
+            seconds: currentSecond() - startTime
+          }
+        });
+      });
+    };
+
     ArtPromise.invert = function(promise) {
       return promise.then(function(e) {
         throw new ErrorWithInfo("" + e, e);
@@ -1576,9 +1631,9 @@ module.exports = function(module) {
 
 /***/ }),
 /* 17 */
-/*!*******************************************************************************************************!*\
+/*!********************************************************************************************************!*\
   !*** external "require('bluebird/js/browser/bluebird.core.min' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*******************************************************************************************************/
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2346,9 +2401,9 @@ module.exports = RegExpExtensions = (function() {
 
 /***/ }),
 /* 23 */
-/*!*****************************************************************************!*\
+/*!******************************************************************************!*\
   !*** external "require('detect-node' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*****************************************************************************/
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -4084,9 +4139,9 @@ module.exports = MathExtensions = (function() {
 
 /***/ }),
 /* 33 */
-/*!************************************************************************!*\
+/*!*************************************************************************!*\
   !*** external "require('crypto' /* ABC - not inlining fellow NPM *_/)" ***!
-  \************************************************************************/
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -4094,9 +4149,9 @@ module.exports = require('crypto' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 34 */
-/*!***************************************************************************!*\
+/*!****************************************************************************!*\
   !*** external "require('pluralize' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***************************************************************************/
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -4286,7 +4341,7 @@ escapeForBlockString = (function(_this) {
         case '\u001b':
           return '\\u001b';
       }
-    }).replace(/^[\n\s]+|[\n\s]+$|\s+(?=\n)/g, function(x) {
+    }).replace(/^[\n ]+|[\n ]+$|[ ]+(?=\n)/g, function(x) {
       return escapeJavascriptString(x, true).replace(/\ /g, '\\s');
     });
   };
@@ -4294,8 +4349,12 @@ escapeForBlockString = (function(_this) {
 
 formattedInspectString = function(m, options) {
   var out;
-  out = /[^\n\s].*\n.*[^\n\s]/.test(m) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
-  return options.colorize.green(out);
+  out = /[^\n\s].*\n(.|\n)*[^\n\s]/.test(m) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
+  if (options.colorize) {
+    return options.colorize.green(out);
+  } else {
+    return out;
+  }
 };
 
 isInspectableArray = function(v) {
@@ -4512,6 +4571,8 @@ module.exports = FormattedInspect = (function() {
   FormattedInspect.ansiSafeStringLength = ansiSafeStringLength;
 
   FormattedInspect.alignTabs = alignTabs;
+
+  FormattedInspect._escapeForBlockString = escapeForBlockString;
 
   FormattedInspect.formattedInspectString = formattedInspectString;
 
@@ -6429,9 +6490,9 @@ module.exports = ArrayExtensions = (function() {
 
 /***/ }),
 /* 42 */
-/*!****************************************************************************!*\
+/*!*****************************************************************************!*\
   !*** external "require('dateformat' /* ABC - not inlining fellow NPM *_/)" ***!
-  \****************************************************************************/
+  \*****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
