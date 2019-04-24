@@ -22,6 +22,8 @@ module.exports = class CommunicationStatus
     ###
     status: clientFailure
 
+    should-retry: No
+
     * The server rejected the request.
     * There is something wrong with the client's request.
     * It's up to the client to fix the problem.
@@ -34,6 +36,8 @@ module.exports = class CommunicationStatus
     ###
     status: notAuthorized
 
+    should-retry: No
+
     * The resource exists, but the client is not allowed to access it.
 
     This is a form of clientFailure because the client could possibly change
@@ -43,6 +47,8 @@ module.exports = class CommunicationStatus
 
     ###
     status: serverFailure
+
+    should-retry: No
 
     * There is something broken on the server.
     * There is nothing the client can do to solve this problem.
@@ -57,6 +63,8 @@ module.exports = class CommunicationStatus
     ###
     status: networkFailure
 
+    should-retry: Yes
+
     * The remote-server could not be reached.
     * There is nothing the code running on the Client NOR Server can do to fix this.
     * There is something wrong with the network between the client computer and the server.
@@ -66,6 +74,7 @@ module.exports = class CommunicationStatus
       a) the local computer has no internet connection OR
       b) the internet is in a shitstorm ;) OR
       c) there is an network problem within the Servers' facility.
+      c) race condition detected and successfully aborted (can safely retry)
     ###
     networkFailure:             failure: true
 
