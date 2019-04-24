@@ -25,13 +25,13 @@ defineModule module, class RequestError extends Error
     super
     {sourceLib, message, @requestData, @type, @key, @status, @data, responseData} = @props = merge props
     @responseData = @data ||= responseData
-    @name = upperCamelCase "#{sourceLib || ""} RequestError"
+    @name = "#{sourceLib || ""} RequestError #{@status}"
     if @props.data
       delete @props.data
       @props.data = @responseData
 
     responseDataString = @data && formattedInspect {@data}
-    @message = message ||compactFlatten([
+    @message = message || compactFlatten([
       (@status || "failure") + ":"
       if responseDataString?.length < 80 && !@requestData
         [@type, @key, responseDataString]
@@ -53,5 +53,5 @@ defineModule module, class RequestError extends Error
     @info = @props
 
   toString: ->
-    ["#{@name} #{@message}", formattedInspect {@props}].join "\n\n"
+    ["#{@name}: #{@message}", formattedInspect {@props}].join "\n\n"
 
