@@ -31,10 +31,10 @@
     "recursive-copy": "^2.0.6",
     "script-loader": "^0.7.2",
     "style-loader": "^0.23.1",
-    "webpack": "^4.28.2",
+    "webpack": "^4.30.0",
     "webpack-cli": "*",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-merge": "^4.1.3",
+    "webpack-dev-server": "^3.3.1",
+    "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2",
     "webpack-stylish": "^0.1.8"
   },
