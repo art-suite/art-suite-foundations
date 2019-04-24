@@ -11,6 +11,10 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
           array value, name from @style
             "#{name}: #{value}"
           .join '; '
+
+      if @name == :img && !present(@props.alt) && present @props extract src
+        @props.alt = peek(src.split '/').split('?')[0]
+
     else
       @props = null
 
@@ -57,13 +61,15 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
         @_getCompiledChildren()
         "" </#{@name}>
       .join ''
+    when :barehtml
+      @_getCompiledChildren indent
     else
       if compiledChildren = @_getCompiledChildren indent
         []
           applyIndent indent, "" <#{@name}#{@propsString}>
           compiledChildren
           applyIndent indent, "" </#{@name}>
-      else if @name == "link" || @name == "meta"
+      else if @name == "link" || @name == "meta" || @name == "img"
         applyIndent indent, "" <#{@name}#{@propsString}>
       else
         applyIndent indent, "" <#{@name}#{@propsString}></#{@name}>
@@ -71,10 +77,10 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
   _getCompiledChildren: (indent) ->
     if @children?.length > 0
-      indent = indent + '  ' if indent?
+      indent = indent + '  ' if indent? && @name != :barehtml
       array child from @children
         if isString child
-          if indent?
+          if indent? && @name != :pre
             "#{indent}#{child.replace /\n/g, "\n#{indent}"}"
           else
             child
