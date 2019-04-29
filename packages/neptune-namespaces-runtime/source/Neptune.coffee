@@ -12,6 +12,7 @@ module.exports = global.Neptune = class Neptune extends Namespace = require './N
   @namespacePath:     "Neptune"
   @namespace:         null
   @version:           version
+  @verbose:           false # todo: getEnv() or something to let this be configurable
 
   # DEPRICATED
   @Base: Namespace

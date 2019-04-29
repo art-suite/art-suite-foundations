@@ -234,7 +234,7 @@ module.exports = class Namespace
     return unless value?
 
     if @[propName]
-      if @[propName] != value
+      if @[propName] != value && global.Neptune.verbose
         addingFromString = addingFrom.namespacePath || addingFrom.propName || (Object.keys addingFrom).join(', ')
         console.log {@namespacePath, addingFromString, propName, oldValue: @[propName], newValue: value}
         console.error "NeptuneNamespaces: #{@namespacePath} already has key '#{propName}' with a different value. Replacing with value from: #{addingFromString}"
