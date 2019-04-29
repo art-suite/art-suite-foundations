@@ -1,5 +1,6 @@
 {
   urlJoin, parseUrl, parseQuery, sameOrigin
+  generateQuery
 } = Neptune.Art.StandardLib
 
 module.exports = suite:
@@ -13,6 +14,16 @@ module.exports = suite:
     testParseQuery "foo=hi", foo: 'hi'
     testParseQuery "?foo=hi&bar=bye", foo: 'hi', bar: 'bye'
     testParseQuery "?foo=hi%20there", foo: 'hi there'
+
+  generateQuery: ->
+    test "generateQuery", ->
+      assert.eq generateQuery({
+          isNull: null, isUndefined: undefined,
+          isFalse: false,
+          isTrue: true, isEmpty: '',
+          isNotEmpty: 'abc'
+        }),
+        "isFalse=false&isTrue=true&isEmpty=&isNotEmpty=abc"
 
   urlJoin: ->
     tests = [

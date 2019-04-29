@@ -31,8 +31,8 @@ module.exports = class ParseUrl
       parsedGlobalQuery = obj
     obj
 
-  @generateQuery: generateQuery= (o) ->
-    parts = for k, v of o
+  @generateQuery: generateQuery = (o) ->
+    parts = for k, v of o when v?
       "#{encodeURIComponent k}=#{encodeURIComponent v}"
     parts.join "&"
 
