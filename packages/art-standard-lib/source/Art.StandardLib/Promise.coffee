@@ -289,7 +289,7 @@ defineModule module, ->
       .tap (result)     -> log logPromise_success: {message, result, seconds: currentSecond() - startTime }
       .tapCatch (error) -> log.error logPromise_error: {message, error, seconds: currentSecond() - startTime}
 
-    @logPromiseProblems: (message, p) ->
+    @logPromiseProblems: logPromiseProblems = (message, p) ->
       {log, currentSecond} = namespace
       startTime = currentSecond()
       Promise.then ->
@@ -298,6 +298,9 @@ defineModule module, ->
         else
           p
       .tapCatch (error) -> log.error logPromiseProblems: {message, error, seconds: currentSecond() - startTime}
+
+    @logPromiseErrors:    logPromiseProblems
+    @logRejectedPromises: logPromiseProblems
 
     @invert: (promise) ->
       promise.then (e) ->
