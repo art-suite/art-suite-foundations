@@ -82,7 +82,7 @@ class BrowserDetection
       else
         {}
           left:   top
-          right:  top
+          right:  bottom
           top:    0
           bottom
 
