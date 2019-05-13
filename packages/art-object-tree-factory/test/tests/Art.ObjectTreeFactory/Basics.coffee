@@ -66,6 +66,8 @@ module.exports = suite:
 
     test "Alice age:12", ->
       assert.eq Alice(age: 12).plainObjects, ["alice", age: 12]
+    test "Alice age:25", ->
+      assert.eq Alice(age: 25, {name: 'alice'}).plainObjects, ["alice", age: 25, name: 'alice']
 
     test "Alice age:12, Bill(), gender:'female'", ->
       tree = Alice
