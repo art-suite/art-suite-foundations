@@ -1,5 +1,7 @@
 "use strict"
 
+{isArray} = require './Types'
+
 module.exports = class ArrayCompactFlatten
 
   ######################
@@ -11,7 +13,9 @@ module.exports = class ArrayCompactFlatten
     o.toString() == '[object Arguments]'
 
   @isArrayOrArguments: isArrayOrArguments = (o) ->
-    o && (o.constructor == Array || isArguments o)
+    o? &&
+    typeof o.length == "number" &&
+    (o.constructor == Array || o.toString() == '[object Arguments]')
 
   @needsFlatteningOrCompacting: needsFlatteningOrCompacting = (array, keepTester) ->
     for a in array when isArrayOrArguments(a) || !keepTester a
@@ -51,22 +55,6 @@ module.exports = class ArrayCompactFlatten
       arguments
 
   ###
-  IN: array: any object that has a length
-
-  EFFECT:
-    itterates over array and recurse over any element which isArrayOrArguments
-    invokes f on every element that is not isArrayOrArguments
-  OUT: array (same as passed in)
-  ###
-  @deepArrayEach: deepArrayEach = (array, f) ->
-    for el in array
-      if isArrayOrArguments el
-        deepArrayEach el, f
-      else
-        f el
-    array
-
-  ###
   IN:
     array: array or arguments-object
     keepTester: (value) -> true/false
@@ -86,6 +74,52 @@ module.exports = class ArrayCompactFlatten
 
   @compactFlattenAll: (all...) =>
     compactFlattenIfNeeded all, keepUnlessNullOrUndefined
+
+
+  ####################
+  # vFast: Arrays only for performance
+  ####################
+  @compactFlattenFast: (array )->
+    compactFlattenIfNeededFast array, keepUnlessNullOrUndefined
+
+  @compactFlattenIntoFast: (into, array) ->
+    doFlattenInternalFast array, into, keepUnlessNullOrUndefined
+
+  @customCompactFlattenFast: (array, customKeepTester) ->
+    compactFlattenIfNeededFast array, customKeepTester
+
+  @customCompactFlattenIntoFast: (into, array, customKeepTester) ->
+    doFlattenInternalFast array, into, customKeepTester
+
+  @compactFlattenAllFast: (all...) =>
+    compactFlattenIfNeededFast all, keepUnlessNullOrUndefined
+
+  @deepArrayEachFast: deepArrayEachFast = (array, f) ->
+    for el in array
+      if isArray el
+        deepArrayEachFast el, f
+      else
+        f el
+    array
+
+  ####################
+  # EXTRA
+  ####################
+  ###
+  IN: array: any object that has a length
+
+  EFFECT:
+    itterates over array and recurse over any element which isArrayOrArguments
+    invokes f on every element that is not isArrayOrArguments
+  OUT: array (same as passed in)
+  ###
+  @deepArrayEach: deepArrayEach = (array, f) ->
+    for el in array
+      if isArrayOrArguments el
+        deepArrayEach el, f
+      else
+        f el
+    array
 
   ####################
   # PRIVATE
@@ -109,3 +143,20 @@ module.exports = class ArrayCompactFlatten
     else
       array
 
+  doFlattenInternalFast = (array, output, keepTester) ->
+    for el in array
+      if isArray el then  doFlattenInternalFast el, output, keepTester
+      else                output.push el if keepTester el
+    output
+
+  needsFlatteningOrCompactingFast = (array, keepTester) ->
+    for a in array when isArray(a) || !keepTester a
+      return true
+    false
+
+  compactFlattenIfNeededFast = (array, keepTester)->
+    if needsFlatteningOrCompactingFast array, keepTester
+      doFlattenInternalFast array, [], keepTester
+
+    else
+      array
