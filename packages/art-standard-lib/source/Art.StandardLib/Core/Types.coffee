@@ -146,10 +146,10 @@ module.exports = class Types
   # correct: Array.isArray
   # 3x-8x faster: (o) => o.constructor == Array
   @isArrayUniversal: Array.isArray
-  @isArray: isArray = if ArtStandardLibMultipleContextTypeSupport
+  @isArray: isArray = # if ArtStandardLibMultipleContextTypeSupport
     @isArrayUniversal
-  else
-    (o) => o? && o.constructor == Array
+  # else
+  #   (o) => o? && isNumber(o.length) && o.constructor == Array
 
 
   # cross-iFrame friendly
