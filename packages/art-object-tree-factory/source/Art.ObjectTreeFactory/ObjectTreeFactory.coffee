@@ -8,12 +8,12 @@ mergeIntoBasic = (into, source) ->
 {isFunction, fastBind} = require 'art-standard-lib'
 
 module.exports = class ObjectTreeFactory
-  deepArgsProcessing = (array, children) ->
-    for el in array when el
-      if el.constructor == Array
-        deepArgsProcessing el, children
-      else children.push el
-    null
+  # deepArgsProcessing = (array, children) ->
+  #   for el in array when el
+  #     if el.constructor == Array
+  #       deepArgsProcessing el, children
+  #     else children.push el
+  #   null
 
   ###
   IN: any order of args which are:
