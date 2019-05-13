@@ -94,7 +94,7 @@ module.exports =
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpack_require__(/*! ./StringCase */ 12), __webpack_require__(/*! ./Merge */ 14), __webpack_require__(/*! ./Types */ 13)];
+module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpack_require__(/*! ./StringCase */ 13), __webpack_require__(/*! ./Merge */ 14), __webpack_require__(/*! ./Types */ 12)];
 
 
 /***/ }),
@@ -108,11 +108,13 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
 
 "use strict";
 
-var ArrayCompactFlatten,
+var ArrayCompactFlatten, isArray,
   slice = [].slice;
 
+isArray = __webpack_require__(/*! ./Types */ 12).isArray;
+
 module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, deepArrayEach, doFlattenInternal, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting;
+  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast;
 
   function ArrayCompactFlatten() {}
 
@@ -121,7 +123,7 @@ module.exports = ArrayCompactFlatten = (function() {
   };
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
-    return o && (o.constructor === Array || isArguments(o));
+    return (o != null) && typeof o.length === "number" && (o.constructor === Array || o.toString() === '[object Arguments]');
   };
 
   ArrayCompactFlatten.needsFlatteningOrCompacting = needsFlatteningOrCompacting = function(array, keepTester) {
@@ -187,29 +189,6 @@ module.exports = ArrayCompactFlatten = (function() {
 
 
   /*
-  IN: array: any object that has a length
-  
-  EFFECT:
-    itterates over array and recurse over any element which isArrayOrArguments
-    invokes f on every element that is not isArrayOrArguments
-  OUT: array (same as passed in)
-   */
-
-  ArrayCompactFlatten.deepArrayEach = deepArrayEach = function(array, f) {
-    var el, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      el = array[i];
-      if (isArrayOrArguments(el)) {
-        deepArrayEach(el, f);
-      } else {
-        f(el);
-      }
-    }
-    return array;
-  };
-
-
-  /*
   IN:
     array: array or arguments-object
     keepTester: (value) -> true/false
@@ -235,6 +214,64 @@ module.exports = ArrayCompactFlatten = (function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     return compactFlattenIfNeeded(all, keepUnlessNullOrUndefined);
+  };
+
+  ArrayCompactFlatten.compactFlattenFast = function(array) {
+    return compactFlattenIfNeededFast(array, keepUnlessNullOrUndefined);
+  };
+
+  ArrayCompactFlatten.compactFlattenIntoFast = function(into, array) {
+    return doFlattenInternalFast(array, into, keepUnlessNullOrUndefined);
+  };
+
+  ArrayCompactFlatten.customCompactFlattenFast = function(array, customKeepTester) {
+    return compactFlattenIfNeededFast(array, customKeepTester);
+  };
+
+  ArrayCompactFlatten.customCompactFlattenIntoFast = function(into, array, customKeepTester) {
+    return doFlattenInternalFast(array, into, customKeepTester);
+  };
+
+  ArrayCompactFlatten.compactFlattenAllFast = function() {
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return compactFlattenIfNeededFast(all, keepUnlessNullOrUndefined);
+  };
+
+  ArrayCompactFlatten.deepArrayEachFast = deepArrayEachFast = function(array, f) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArray(el)) {
+        deepArrayEachFast(el, f);
+      } else {
+        f(el);
+      }
+    }
+    return array;
+  };
+
+
+  /*
+  IN: array: any object that has a length
+  
+  EFFECT:
+    itterates over array and recurse over any element which isArrayOrArguments
+    invokes f on every element that is not isArrayOrArguments
+  OUT: array (same as passed in)
+   */
+
+  ArrayCompactFlatten.deepArrayEach = deepArrayEach = function(array, f) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArrayOrArguments(el)) {
+        deepArrayEach(el, f);
+      } else {
+        f(el);
+      }
+    }
+    return array;
   };
 
   arraySlice = Array.prototype.slice;
@@ -273,6 +310,40 @@ module.exports = ArrayCompactFlatten = (function() {
     }
   };
 
+  doFlattenInternalFast = function(array, output, keepTester) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArray(el)) {
+        doFlattenInternalFast(el, output, keepTester);
+      } else {
+        if (keepTester(el)) {
+          output.push(el);
+        }
+      }
+    }
+    return output;
+  };
+
+  needsFlatteningOrCompactingFast = function(array, keepTester) {
+    var a, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (isArray(a) || !keepTester(a)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  compactFlattenIfNeededFast = function(array, keepTester) {
+    if (needsFlatteningOrCompactingFast(array, keepTester)) {
+      return doFlattenInternalFast(array, [], keepTester);
+    } else {
+      return array;
+    }
+  };
+
   return ArrayCompactFlatten;
 
 })();
@@ -281,138 +352,6 @@ module.exports = ArrayCompactFlatten = (function() {
 /***/ }),
 
 /***/ 12:
-/*!*******************************************************!*\
-  !*** ./source/Art.StandardLib/Core/StringCase.coffee ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var StringCase, compactFlatten, isArray, isString, ref;
-
-compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
-
-ref = __webpack_require__(/*! ./Types */ 13), isArray = ref.isArray, isString = ref.isString;
-
-module.exports = StringCase = (function() {
-  var findCapStartWordsRegExp, findWordsRegExp, getCodeWords;
-
-  function StringCase() {}
-
-  findWordsRegExp = /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g;
-
-  findCapStartWordsRegExp = /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g;
-
-
-  /* getCodeWords
-    INv1: <String>
-    INv2: <Array* <String>>
-    OUT: <Array <String>>
-   */
-
-  StringCase.getCodeWords = getCodeWords = function(str) {
-    var word;
-    return compactFlatten((function() {
-      var i, len, ref1, results;
-      if (isArray(str)) {
-        return str;
-      } else if (isString(str) && findWordsRegExp.test(str)) {
-        ref1 = str.match(findWordsRegExp);
-        results = [];
-        for (i = 0, len = ref1.length; i < len; i++) {
-          word = ref1[i];
-          results.push(word.match(findCapStartWordsRegExp));
-        }
-        return results;
-      } else {
-        return [];
-      }
-    })());
-  };
-
-  StringCase.codeWords = getCodeWords;
-
-  StringCase.lowerCase = function(str) {
-    return str != null ? str.toLocaleLowerCase() : void 0;
-  };
-
-  StringCase.upperCase = function(str) {
-    return str != null ? str.toLocaleUpperCase() : void 0;
-  };
-
-  StringCase.capitalize = function(str) {
-    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.decapitalize = function(str) {
-    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
-  };
-
-  StringCase.getLowerCaseCodeWords = function(str) {
-    var i, len, ref1, results, word;
-    ref1 = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref1.length; i < len; i++) {
-      word = ref1[i];
-      results.push(StringCase.lowerCase(word));
-    }
-    return results;
-  };
-
-  StringCase.getCapitalizedCodeWords = function(str) {
-    var i, len, ref1, results, word;
-    ref1 = StringCase.getCodeWords(str);
-    results = [];
-    for (i = 0, len = ref1.length; i < len; i++) {
-      word = ref1[i];
-      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
-    }
-    return results;
-  };
-
-  StringCase.upperCamelCase = function(str, joiner) {
-    var word;
-    if (joiner == null) {
-      joiner = "";
-    }
-    return ((function() {
-      var i, len, ref1, results;
-      ref1 = this.getLowerCaseCodeWords(str);
-      results = [];
-      for (i = 0, len = ref1.length; i < len; i++) {
-        word = ref1[i];
-        results.push(this.capitalize(word));
-      }
-      return results;
-    }).call(StringCase)).join(joiner);
-  };
-
-  StringCase.lowerCamelCase = function(str, joiner) {
-    if (joiner == null) {
-      joiner = "";
-    }
-    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
-  };
-
-  StringCase.snakeCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("_");
-  };
-
-  StringCase.dashCase = function(str) {
-    return (StringCase.getLowerCaseCodeWords(str)).join("-");
-  };
-
-  StringCase.capitalizedDashCase = function(str) {
-    return (StringCase.getCapitalizedCodeWords(str)).join("-");
-  };
-
-  return StringCase;
-
-})();
-
-
-/***/ }),
-
-/***/ 13:
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/Core/Types.coffee ***!
   \**************************************************/
@@ -577,9 +516,7 @@ module.exports = Types = (function() {
 
   Types.isArrayUniversal = Array.isArray;
 
-  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? Types.isArrayUniversal : function(o) {
-    return (o != null) && o.constructor === Array;
-  };
+  Types.isArray = isArray = Types.isArrayUniversal;
 
   Types.isPlainArray = isArray;
 
@@ -716,6 +653,138 @@ module.exports = Types = (function() {
 
 /***/ }),
 
+/***/ 13:
+/*!*******************************************************!*\
+  !*** ./source/Art.StandardLib/Core/StringCase.coffee ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var StringCase, compactFlatten, isArray, isString, ref;
+
+compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
+
+ref = __webpack_require__(/*! ./Types */ 12), isArray = ref.isArray, isString = ref.isString;
+
+module.exports = StringCase = (function() {
+  var findCapStartWordsRegExp, findWordsRegExp, getCodeWords;
+
+  function StringCase() {}
+
+  findWordsRegExp = /[a-zA-Z][a-zA-Z0-9]*|[0-9]+/g;
+
+  findCapStartWordsRegExp = /(?:[A-Z]{2,}(?![a-z]))|[A-Z][a-z0-9]*|[a-z0-9]+/g;
+
+
+  /* getCodeWords
+    INv1: <String>
+    INv2: <Array* <String>>
+    OUT: <Array <String>>
+   */
+
+  StringCase.getCodeWords = getCodeWords = function(str) {
+    var word;
+    return compactFlatten((function() {
+      var i, len, ref1, results;
+      if (isArray(str)) {
+        return str;
+      } else if (isString(str) && findWordsRegExp.test(str)) {
+        ref1 = str.match(findWordsRegExp);
+        results = [];
+        for (i = 0, len = ref1.length; i < len; i++) {
+          word = ref1[i];
+          results.push(word.match(findCapStartWordsRegExp));
+        }
+        return results;
+      } else {
+        return [];
+      }
+    })());
+  };
+
+  StringCase.codeWords = getCodeWords;
+
+  StringCase.lowerCase = function(str) {
+    return str != null ? str.toLocaleLowerCase() : void 0;
+  };
+
+  StringCase.upperCase = function(str) {
+    return str != null ? str.toLocaleUpperCase() : void 0;
+  };
+
+  StringCase.capitalize = function(str) {
+    return StringCase.upperCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.decapitalize = function(str) {
+    return StringCase.lowerCase(str.charAt(0)) + str.slice(1);
+  };
+
+  StringCase.getLowerCaseCodeWords = function(str) {
+    var i, len, ref1, results, word;
+    ref1 = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref1.length; i < len; i++) {
+      word = ref1[i];
+      results.push(StringCase.lowerCase(word));
+    }
+    return results;
+  };
+
+  StringCase.getCapitalizedCodeWords = function(str) {
+    var i, len, ref1, results, word;
+    ref1 = StringCase.getCodeWords(str);
+    results = [];
+    for (i = 0, len = ref1.length; i < len; i++) {
+      word = ref1[i];
+      results.push(StringCase.capitalize(StringCase.lowerCase(word)));
+    }
+    return results;
+  };
+
+  StringCase.upperCamelCase = function(str, joiner) {
+    var word;
+    if (joiner == null) {
+      joiner = "";
+    }
+    return ((function() {
+      var i, len, ref1, results;
+      ref1 = this.getLowerCaseCodeWords(str);
+      results = [];
+      for (i = 0, len = ref1.length; i < len; i++) {
+        word = ref1[i];
+        results.push(this.capitalize(word));
+      }
+      return results;
+    }).call(StringCase)).join(joiner);
+  };
+
+  StringCase.lowerCamelCase = function(str, joiner) {
+    if (joiner == null) {
+      joiner = "";
+    }
+    return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
+  };
+
+  StringCase.snakeCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("_");
+  };
+
+  StringCase.dashCase = function(str) {
+    return (StringCase.getLowerCaseCodeWords(str)).join("-");
+  };
+
+  StringCase.capitalizedDashCase = function(str) {
+    return (StringCase.getCapitalizedCodeWords(str)).join("-");
+  };
+
+  return StringCase;
+
+})();
+
+
+/***/ }),
+
 /***/ 14:
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/Core/Merge.coffee ***!
@@ -727,7 +796,7 @@ var Merge, compactFlatten, isPlainObject;
 
 compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
 
-isPlainObject = __webpack_require__(/*! ./Types */ 13).isPlainObject;
+isPlainObject = __webpack_require__(/*! ./Types */ 12).isPlainObject;
 
 module.exports = Merge = (function() {
   var deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
@@ -976,7 +1045,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.58.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.60.0"};
 
 /***/ }),
 
@@ -1083,8 +1152,8 @@ module.exports = __webpack_require__(/*! ./namespace */ 5);
 module.exports.includeInNamespace(__webpack_require__(/*! ./Core */ 10)).addModules({
   ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 11),
   Merge: __webpack_require__(/*! ./Merge */ 14),
-  StringCase: __webpack_require__(/*! ./StringCase */ 12),
-  Types: __webpack_require__(/*! ./Types */ 13)
+  StringCase: __webpack_require__(/*! ./StringCase */ 13),
+  Types: __webpack_require__(/*! ./Types */ 12)
 });
 
 

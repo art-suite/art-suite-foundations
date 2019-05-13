@@ -87,7 +87,7 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ 13:
+/***/ 12:
 /*!**************************************************!*\
   !*** ./source/Art.StandardLib/Core/Types.coffee ***!
   \**************************************************/
@@ -252,9 +252,7 @@ module.exports = Types = (function() {
 
   Types.isArrayUniversal = Array.isArray;
 
-  Types.isArray = isArray = ArtStandardLibMultipleContextTypeSupport ? Types.isArrayUniversal : function(o) {
-    return (o != null) && o.constructor === Array;
-  };
+  Types.isArray = isArray = Types.isArrayUniversal;
 
   Types.isPlainArray = isArray;
 
@@ -398,7 +396,7 @@ module.exports = Types = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ./source/Art.StandardLib/Core/Types */ 13);
+module.exports = __webpack_require__(/*! ./source/Art.StandardLib/Core/Types */ 12);
 
 
 /***/ })
