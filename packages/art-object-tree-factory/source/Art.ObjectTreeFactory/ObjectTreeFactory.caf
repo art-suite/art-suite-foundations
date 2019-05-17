@@ -59,8 +59,8 @@ class ObjectTreeFactory
       when isFunction a     then nodeFactory = a
       when isPlainObject a  then options = a
 
-    options ?= {}
-    klass   ?= options.class
+    options     ?= {}
+    klass       ?= options.class
     nodeFactory ?= if true
       klass ?= class TreeFactoryNode extends BaseObject
         constructor: (@props, @children) ->
@@ -68,13 +68,13 @@ class ObjectTreeFactory
       (props, children) -> new klass props, children
 
     {mergePropsInto, inspectedName, preprocessElement} = options
-    mergePropsInto ?= mergeIntoBasic
+    mergePropsInto    ?= mergeIntoBasic
     preprocessElement ?= preprocessElementBasic
 
     _children = _props = _oneProps = null
 
     applyArg = (el) ->
-      if el = preprocessElement el, Factory
+      if (el = preprocessElement el, Factory)?
         if isPlainObject el
           unless _oneProps
             _oneProps = el
@@ -93,7 +93,7 @@ class ObjectTreeFactory
 
         else
           _children ?= []
-          _children.push el
+          .push el
 
       null
 
@@ -110,12 +110,12 @@ class ObjectTreeFactory
       klass.Factory = Factory
 
       abstractClass = klass.getAbstractClass?() || Object
-      bindList = compactFlatten []
+      bindList = compactFlattenFast []
         array v, k from-object klass when !abstractClass[k] && isFunction v
           k
         options.bind
 
-      inspectedName ?= klass.getName() + "Factory"
+      inspectedName ?= klass.getName() + :Factory
 
       each k in bindList
         Factory[k] = fastBind klass[k], klass
@@ -123,7 +123,7 @@ class ObjectTreeFactory
     Factory._name = inspectedName if inspectedName
 
     # show nice output when inspected
-    Factory.inspect = -> "<#{inspectedName || 'ObjectTreeFactory'}>"
+    Factory.inspect = -> "" <#{inspectedName || 'ObjectTreeFactory'}>
     Factory
 
   ###
@@ -173,7 +173,7 @@ class ObjectTreeFactory
     return list.match nodeNameRegexp if isString list
 
     out = []
-    each str in compactFlatten list
+    each str in compactFlattenFast list
       out = out.concat str.match nodeNameRegexp
     out
 
