@@ -67,7 +67,7 @@ class ObjectTreeFactory
 
       (props, children) -> new klass props, children
 
-    {mergePropsInto, inspectedName, preprocessElement} = options
+    {mergePropsInto, name, inspectedName = name, preprocessElement} = options
     mergePropsInto    ?= mergeIntoBasic
     preprocessElement ?= preprocessElementBasic
 
