@@ -59,7 +59,7 @@ module.exports = suite:
   "using factories": ->
 
     {Alice, Bill, John, SallyMae} = createObjectTreeFactories testNamesLowerCamelCased, (name, props, children) ->
-      new MyObject name, props ? {}, children ? []
+      new MyObject name, props, children
 
     test "Alice()", ->
       assert.eq Alice().plainObjects, ["alice"]
@@ -87,7 +87,58 @@ module.exports = suite:
       tree = Alice info:{a:123}, Bill(), info:{b:456}
       assert.eq tree.plainObjects, ["alice", info:{b:456}, ["bill"]]
 
+  "using factories with incomplete parts": ->
+    {Alice, Bill, John, SallyMae} = createObjectTreeFactories {}, testNamesLowerCamelCased,
+      (name, props, children) -> {name, props, children}
+
+    test "Alice()", ->
+      assert.eq
+        name:     "alice"
+        props:    null
+        children: null
+        Alice()
+
+    test "Alice false", ->
+      assert.selectedEq
+        props:    null
+        children: null
+        Alice false
+
+    test "Alice {}", ->
+      assert.selectedEq
+        props:    {}
+        children: null
+        Alice {}
+
+    test "Alice []", ->
+      assert.eq
+        name:     "alice"
+        props:    null
+        children: null
+        Alice []
+
+    test "Alice [{}]", ->
+      assert.eq
+        name:     "alice"
+        props:    {}
+        children: null
+        Alice [{}]
+
+    test "Alice '' 0 true", ->
+      assert.selectedEq
+        props:    null
+        children: ['', 0, true]
+        Alice '', 0, true
+
+    test "Alice [null, undefined, false, [], [false, [undefined, null]]]", ->
+      assert.selectedEq
+        props:    null
+        children: null
+        Alice [null, undefined, false, [], [false, [undefined, null]]]
+
   "using factories with custom mergePropsInto and preprocessElement": ->
+    class MyBaseObject extends BaseObject
+      constructor: (@name, p, c) -> @props = p || {}; @children = c || []
 
     {Alice, Bill, John, SallyMae} = createObjectTreeFactories
       mergePropsInto: (into, source) ->

@@ -74,7 +74,7 @@ class ObjectTreeFactory
     _children = _props = _oneProps = null
 
     applyArg = (el) ->
-      if (el = preprocessElement el, Factory)?
+      if rubyTrue el = preprocessElement el, Factory
         if isPlainObject el
           unless _oneProps
             _oneProps = el
