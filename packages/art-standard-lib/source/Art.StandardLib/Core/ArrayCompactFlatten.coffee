@@ -80,10 +80,10 @@ module.exports = class ArrayCompactFlatten
   # vFast: Arrays only for performance
   ####################
   @compactFlattenFast: (array )->
-    compactFlattenIfNeededFast array, keepUnlessNullOrUndefined
+    compactFlattenIfNeededFastBasic array
 
   @compactFlattenIntoFast: (into, array) ->
-    doFlattenInternalFast array, into, keepUnlessNullOrUndefined
+    doFlattenInternalFastBasic array, into
 
   @customCompactFlattenFast: (array, customKeepTester) ->
     compactFlattenIfNeededFast array, customKeepTester
@@ -92,7 +92,7 @@ module.exports = class ArrayCompactFlatten
     doFlattenInternalFast array, into, customKeepTester
 
   @compactFlattenAllFast: (all...) =>
-    compactFlattenIfNeededFast all, keepUnlessNullOrUndefined
+    compactFlattenIfNeededFastBasic all
 
   @deepArrayEachFast: deepArrayEachFast = (array, f) ->
     for el in array
@@ -126,10 +126,10 @@ module.exports = class ArrayCompactFlatten
   ####################
   arraySlice = Array.prototype.slice
 
-  doFlattenInternal = (array, keepTester) ->
-    output = []
-    deepArrayEach array, (el) ->
-      output.push el if keepTester el
+  doFlattenInternal = (array, output, keepTester) ->
+    for el in array
+      if isArrayOrArguments el then doFlattenInternal el, output, keepTester
+      else                          output.push el if keepTester el
     output
 
   keepAll = -> true
@@ -137,11 +137,10 @@ module.exports = class ArrayCompactFlatten
     return array unless array?
     return [array] if array? && !isArrayOrArguments array
     if needsFlatteningOrCompacting array, keepTester
-      doFlattenInternal array, keepTester
+      doFlattenInternal array, [], keepTester
     else if array.constructor != Array
       arraySlice.call array
-    else
-      array
+    else array
 
   doFlattenInternalFast = (array, output, keepTester) ->
     for el in array
@@ -158,5 +157,21 @@ module.exports = class ArrayCompactFlatten
     if needsFlatteningOrCompactingFast array, keepTester
       doFlattenInternalFast array, [], keepTester
 
-    else
-      array
+    else array
+
+  doFlattenInternalFastBasic = (array, output) ->
+    for el in array
+      if isArray el then doFlattenInternalFastBasic el, output
+      else if el?   then output.push el
+    output
+
+  needsFlatteningOrCompactingFastBasic = (array) ->
+    for el in array when !el? || isArray el
+      return true
+    false
+
+  compactFlattenIfNeededFastBasic = (array)->
+    if needsFlatteningOrCompactingFastBasic array
+      doFlattenInternalFastBasic array, []
+
+    else array
