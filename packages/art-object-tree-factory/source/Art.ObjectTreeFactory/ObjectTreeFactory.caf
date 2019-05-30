@@ -83,20 +83,17 @@ class ObjectTreeFactory
       bindList
 
   ### createObjectTreeFactories
-    IN:
-      options: (optional; omit if not used)
-      list: a string or abitrary structure of arrays, nulls and strings
-        each string is split into tokens and each token is used as the nodeTypeName to create a Tree-factory
+    IN: <in any order, any arbitrary array nesting - i.e. it uses a TreeFactory itself!>
+      options: all plain-objects are merged into 'options'
+        passed to createObjectTreeFactory (see above)
 
-      nodeFactory:
-        (nodeTypeName, props, children) -> node
-          IN:
-            nodeTypeName: node-type name
-            props:    plain object mapping props to prop-values
-            children: flat, compacted array of children nodes
-          OUT:
-            node
-      OR nodeFactoryFactory: (nodeTypeName) -> (props, children) -> node
+      strings: all strings are parsed into words and concatinated into the factory-names list
+        used as the nodeTypeName to create a Tree-factory
+
+      function: zero or one function
+        nodeFactory: (nodeTypeName, props, children) -> node
+        OR
+        nodeFactoryFactory: (nodeTypeName) -> (props, children) -> node
 
     OUT:
       map from nodeNames (upperCamelCased) to the factories returned from createObjectTreeFactory
@@ -108,15 +105,7 @@ class ObjectTreeFactory
         createObjectTreeFactoriesFromFactoryFactories
 
         The latter is probably faster. It is also more powerful and generally cleaner.
-  @createObjectTreeFactories: (options, list, nodeFactory) =>
-    unless nodeFactory
-      [list, nodeFactory] = [options, list]
-      options = {}
-
-    if nodeFactory.length == 1
-      @_createObjectTreeFactoriesFromFactoryFactories options, list, nodeFactory
-    else
-      @_createObjectTreeFactoriesFromFactories options, list, nodeFactory
+  @createObjectTreeFactories: null # defined below
 
   ########################
   # PRIVATE
@@ -215,3 +204,24 @@ class ObjectTreeFactory
     Factory.inspect = -> "<#{name}>"
 
     Factory
+
+  ###############################
+   DOGFOOD
+  ###############################
+  @createObjectTreeFactories: @createObjectTreeFactory
+    mergePropsInto: (a, b) ->
+      a.names = compactFlattenAllFast a.names, b.names
+      object v, k from b into a when k != :names
+
+    preprocessElement: (element) ->
+      if isString element then names: w element
+      else element
+
+    (props, children) =>
+      [nodeFactory] = children if children
+
+      if nodeFactory.length == 1
+        @_createObjectTreeFactoriesFromFactoryFactories props, props.names, nodeFactory
+      else
+        @_createObjectTreeFactoriesFromFactories props, props.names, nodeFactory
+
