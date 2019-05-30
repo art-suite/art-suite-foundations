@@ -4,5 +4,6 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Basics:                  require './Basics'                 
-  CreateObjectTreeFactory: require './createObjectTreeFactory'
+  CreateObjectTreeFactory: require './CreateObjectTreeFactory'
+  TestClass:               require './TestClass'              
+  UsingFactories:          require './UsingFactories'         

@@ -1,0 +1,100 @@
+import &StandardImport, {} &TestClass
+
+testNames = :Alice :Bill :John :SallyMae
+testNamesLowerCamelCased = array name in testNames with lowerCamelCase name
+
+suite:
+  createCorrectFactories: ->
+    test "createObjectTreeFactories testNamesString", ->
+      keys = Object.keys createObjectTreeFactories testNames.join(' '), ->
+      assert.eq keys, testNames
+
+    test "createObjectTreeFactories testNames", ->
+      keys = Object.keys createObjectTreeFactories testNames, ->
+      assert.eq keys, testNames
+
+    test "createObjectTreeFactories testNamesLowerCamelCased", ->
+      keys = Object.keys createObjectTreeFactories testNamesLowerCamelCased, ->
+      assert.eq keys, testNames
+
+    test 'createObjectTreeFactories ["Alice", "Bill John", ["SallyMae"]]', ->
+      keys = Object.keys createObjectTreeFactories ["Alice", "Bill John", ["SallyMae"]], ->
+      assert.eq keys, testNames
+
+  fullTests: ->
+    class TestClass extends BaseObject
+      constructor: (@name, @props, @children) ->
+      @getter inspectedObjects: ->
+        merge {} @name, @props, children: @children && toInspectedObjects @children
+
+    test 'createObjectTreeFactories :Alice', ->
+      {Alice} = createObjectTreeFactories :Alice,
+        (nodeName, props, children) -> new TestClass nodeName, props, children
+
+      assert.eq
+        Alice
+          myProp: :myPropValue
+          Alice()
+
+        .inspectedObjects
+
+        name: :Alice
+        props: myProp: :myPropValue
+        children: [] name: :Alice
+
+    test 'createObjectTreeFactoriesFromFactoryFactories :Alice', ->
+
+      {Alice} = createObjectTreeFactories :Alice,
+        (nodeName) -> (props, children) -> new TestClass nodeName, props, children
+
+      assert.eq
+        Alice
+          myProp: :myPropValue
+          Alice()
+
+        .inspectedObjects
+
+        name: :Alice
+        props: myProp: :myPropValue
+        children: [] name: :Alice
+
+  more: ->
+    test "function", ->
+      f = createObjectTreeFactory (props, children) -> merge {props, children}
+      assert.eq (f foo: 123), props: {foo: 123}
+      assert.eq
+        f
+          foo: 123
+          f bar: 456 # NOTE: this returns a plain object, so it becomes props, not a child
+
+        props:
+          foo:        123
+          props: bar: 456
+
+    test "class basic", ->
+      f = createObjectTreeFactory class MyTestClass extends BaseClass
+        constructor: (@props, @children) ->
+
+        @getter
+          inspectedObjects: ->
+            merge {} @props, children: if @children then toInspectedObjects @children
+
+      assert.eq (f foo: 123).inspectedObjects, props: {foo: 123}
+      assert.eq
+        f
+          foo: 123
+          f bar: 456
+        .inspectedObjects
+
+        props:              foo: 123
+        children: [] props: bar: 456
+
+    test "auto bind class methods to factory", ->
+      class MyTestClass extends TestClass
+        @myClassFunction: -> @getName()
+
+      assert.eq
+        createObjectTreeFactory class: MyTestClass
+        .myClassFunction()
+
+        :MyTestClass
