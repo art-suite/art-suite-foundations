@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtClassSystem
+import &ArtStandardLib
 
 mergeIntoBasic = (_into, source) ->
   object from-object source into _into
@@ -62,7 +62,8 @@ class ObjectTreeFactory
     options     ?= {}
     klass       ?= options.class
     nodeFactory ?= if true
-      klass ?= class TreeFactoryNode extends BaseObject
+      log.warn "DEPRICATED: one of nodeFactory or class is now required" unless klass?
+      klass ?= class TreeFactoryNode extends &ArtClassSystem.BaseClass
         constructor: (@props, @children) ->
 
       (props, children) -> new klass props, children
@@ -71,11 +72,12 @@ class ObjectTreeFactory
     mergePropsInto    ?= mergeIntoBasic
     preprocessElement ?= preprocessElementBasic
 
-    _children = _props = _oneProps = null
+    _children = _props = _oneProps = undefined
 
     applyArg = (el) ->
-      if rubyTrue el = preprocessElement el, Factory
-        if isPlainObject el
+      if rubyTrue preprocessElement el, Factory
+        switch el.constructor
+        when Object
           unless _oneProps
             _oneProps = el
 
@@ -87,7 +89,7 @@ class ObjectTreeFactory
 
             mergePropsInto _props, el
 
-        else if isArray el
+        when Array
           each el2 from-array el
             applyArg el2
 
@@ -98,7 +100,7 @@ class ObjectTreeFactory
       null
 
     Factory = (args...)->
-      _children = _props = _oneProps = null
+      _children = _props = _oneProps = undefined
 
       each el from-array args
         applyArg el
@@ -128,6 +130,7 @@ class ObjectTreeFactory
 
   ###
     IN:
+      options: (optional; omit if not used)
       list: a string or abitrary structure of arrays, nulls and strings
         each string is split into tokens and each token is used as the nodeTypeName to create a Tree-factory
       nodeFactory: (nodeTypeName, props, children) -> node
