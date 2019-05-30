@@ -173,13 +173,15 @@ Caf.defMod(module, () => {
       "isClass",
       "isFunction",
       "isPlainObject",
-      "upperCamelCase",
       "isString",
       "compactFlattenFast",
+      "upperCamelCase",
       "rubyTrue",
       "Object",
       "Array",
-      "fastBind"
+      "fastBind",
+      "compactFlattenAllFast",
+      "w"
     ],
     [global, __webpack_require__(/*! art-standard-lib */ 8)],
     (
@@ -187,15 +189,17 @@ Caf.defMod(module, () => {
       isClass,
       isFunction,
       isPlainObject,
-      upperCamelCase,
       isString,
       compactFlattenFast,
+      upperCamelCase,
       rubyTrue,
       Object,
       Array,
-      fastBind
+      fastBind,
+      compactFlattenAllFast,
+      w
     ) => {
-      let mergeIntoBasic, ObjectTreeFactory;
+      let mergeIntoBasic, preprocessElementBasic, ObjectTreeFactory;
       mergeIntoBasic = function(_into, source) {
         let from, into, temp;
         return (
@@ -214,25 +218,22 @@ Caf.defMod(module, () => {
           into
         );
       };
+      preprocessElementBasic = function(a) {
+        return a;
+      };
       return (ObjectTreeFactory = Caf.defClass(
         class ObjectTreeFactory extends Object {},
         function(ObjectTreeFactory, classSuper, instanceSuper) {
-          let preprocessElementBasic,
-            nodeNameRegexp,
-            compactFlattenObjectTreeNodeNames,
-            _createFactory,
-            _bindFactoryInfo;
-          preprocessElementBasic = function(a) {
-            return a;
-          };
+          let nodeNameRegexp;
           this.createObjectTreeFactory = (...args) => {
             let options,
               klass,
               nodeFactory,
               mergePropsInto,
+              preprocessElement,
               name,
               inspectedName,
-              preprocessElement,
+              bindList,
               TreeFactoryNode,
               temp;
             options = klass = nodeFactory = null;
@@ -253,10 +254,11 @@ Caf.defMod(module, () => {
             );
             if (Caf.exists(options)) {
               mergePropsInto = options.mergePropsInto;
+              preprocessElement = options.preprocessElement;
               name = options.name;
               inspectedName =
                 undefined !== (temp = options.inspectedName) ? temp : name;
-              preprocessElement = options.preprocessElement;
+              bindList = options.bind;
               klass = options.class;
             }
             nodeFactory != null
@@ -281,54 +283,20 @@ Caf.defMod(module, () => {
                         )),
                     (props, children) => new klass(props, children))
                   : undefined);
-            return _bindFactoryInfo(
-              _createFactory(nodeFactory, preprocessElement, mergePropsInto),
+            return this._bindFactoryInfo(
+              this._createFactory(
+                nodeFactory,
+                preprocessElement,
+                mergePropsInto
+              ),
               inspectedName,
               klass,
-              Caf.exists(options) && options.bind
+              bindList
             );
           };
-          this.createObjectTreeFactories = (options, list, nodeFactory) => {
-            if (!nodeFactory) {
-              [list, nodeFactory] = [options, list];
-              options = {};
-            }
-            return nodeFactory.length === 1
-              ? this._createObjectTreeFactoriesFromFactoryFactories(
-                  options,
-                  list,
-                  nodeFactory
-                )
-              : this._createObjectTreeFactoriesFromFactories(
-                  options,
-                  list,
-                  nodeFactory
-                );
-          };
-          this._createObjectTreeFactoriesFromFactories = (
-            options,
-            list,
-            nodeFactory
-          ) => {
-            let suffix, out;
-            suffix = options.suffix || "";
-            out = {};
-            Caf.each2(compactFlattenObjectTreeNodeNames(list), nodeTypeName =>
-              (nodeTypeName => {
-                options.inspectedName = nodeTypeName;
-                return (out[
-                  upperCamelCase(nodeTypeName) + suffix
-                ] = this.createObjectTreeFactory(options, (props, children) =>
-                  nodeFactory(nodeTypeName, props, children)
-                ));
-              })(nodeTypeName)
-            );
-            return out;
-          };
+          this.createObjectTreeFactories = null;
           nodeNameRegexp = /[a-z0-9_]+/gi;
-          this._compactFlattenObjectTreeNodeNames = compactFlattenObjectTreeNodeNames = function(
-            list
-          ) {
+          this._compactFlattenObjectTreeNodeNames = function(list) {
             let out;
             if (isString(list)) {
               return list.match(nodeNameRegexp);
@@ -340,6 +308,28 @@ Caf.defMod(module, () => {
             );
             return out;
           };
+          this._createObjectTreeFactoriesFromFactories = (
+            options,
+            list,
+            nodeFactory
+          ) => {
+            let suffix, out;
+            suffix = options.suffix || "";
+            out = {};
+            Caf.each2(
+              this._compactFlattenObjectTreeNodeNames(list),
+              nodeTypeName =>
+                (nodeTypeName => {
+                  options.inspectedName = nodeTypeName;
+                  return (out[
+                    upperCamelCase(nodeTypeName) + suffix
+                  ] = this.createObjectTreeFactory(options, (props, children) =>
+                    nodeFactory(nodeTypeName, props, children)
+                  ));
+                })(nodeTypeName)
+            );
+            return out;
+          };
           this._createObjectTreeFactoriesFromFactoryFactories = (
             options,
             list,
@@ -348,19 +338,22 @@ Caf.defMod(module, () => {
             let suffix, out;
             suffix = options.suffix || "";
             out = {};
-            Caf.each2(compactFlattenObjectTreeNodeNames(list), nodeTypeName => {
-              let nodeFactory, name;
-              nodeFactory = nodeFactoryFactory(nodeTypeName);
-              name = upperCamelCase(nodeTypeName) + suffix;
-              options.inspectedName = name;
-              return (out[name] = this.createObjectTreeFactory(
-                options,
-                nodeFactory
-              ));
-            });
+            Caf.each2(
+              this._compactFlattenObjectTreeNodeNames(list),
+              nodeTypeName => {
+                let nodeFactory, name;
+                nodeFactory = nodeFactoryFactory(nodeTypeName);
+                name = upperCamelCase(nodeTypeName) + suffix;
+                options.inspectedName = name;
+                return (out[name] = this.createObjectTreeFactory(
+                  options,
+                  nodeFactory
+                ));
+              }
+            );
             return out;
           };
-          _createFactory = function(
+          this._createFactory = function(
             nodeFactory,
             preprocessElement,
             mergePropsInto
@@ -429,7 +422,7 @@ Caf.defMod(module, () => {
               return nodeFactory(_props || _oneProps, _children);
             });
           };
-          _bindFactoryInfo = function(Factory, name, klass, bindList) {
+          this._bindFactoryInfo = function(Factory, name, klass, bindList) {
             let abstractClass, from, into, temp;
             if (klass) {
               name != null
@@ -470,6 +463,34 @@ Caf.defMod(module, () => {
             Factory.inspect = () => `<${Caf.toString(name)}>`;
             return Factory;
           };
+          this.createObjectTreeFactories = this.createObjectTreeFactory(
+            {
+              mergePropsInto: function(a, b) {
+                a.names = compactFlattenAllFast(a.names, b.names);
+                return Caf.object(b, null, (v, k) => k !== "names", a);
+              },
+              preprocessElement: function(element) {
+                return isString(element) ? { names: w(element) } : element;
+              }
+            },
+            (props, children) => {
+              let nodeFactory;
+              if (children) {
+                [nodeFactory] = children;
+              }
+              return nodeFactory.length === 1
+                ? this._createObjectTreeFactoriesFromFactoryFactories(
+                    props,
+                    props.names,
+                    nodeFactory
+                  )
+                : this._createObjectTreeFactoriesFromFactories(
+                    props,
+                    props.names,
+                    nodeFactory
+                  );
+            }
+          );
         }
       ));
     }
