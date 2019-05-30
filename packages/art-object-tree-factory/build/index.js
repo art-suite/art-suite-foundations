@@ -34,18 +34,35 @@ module.exports =
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -63,338 +80,55 @@ module.exports =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/*!**********************!*\
+  !*** ./index.coffee ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! ./source/Art.ObjectTreeFactory */ 1);
+
 
 /***/ }),
 /* 1 */
+/*!***************************************************!*\
+  !*** ./source/Art.ObjectTreeFactory/index.coffee ***!
+  \***************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4);
+module.exports = __webpack_require__(/*! ./namespace */ 2);
 
-module.exports.includeInNamespace(__webpack_require__(3));
+module.exports.includeInNamespace(__webpack_require__(/*! ./ObjectTreeFactory */ 5));
 
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(1);
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ObjectTreeFactory, compactFlatten, fastBind, isClass, isFunction, isPlainObject, log, mergeIntoBasic, ref, ref1, upperCamelCase,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-ref = __webpack_require__(0), compactFlatten = ref.compactFlatten, log = ref.log, upperCamelCase = ref.upperCamelCase, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject, isClass = ref.isClass;
-
-mergeIntoBasic = function(into, source) {
-  var k, v;
-  for (k in source) {
-    v = source[k];
-    into[k] = v;
-  }
-  return into;
-};
-
-ref1 = __webpack_require__(0), isFunction = ref1.isFunction, fastBind = ref1.fastBind;
-
-module.exports = ObjectTreeFactory = (function() {
-  var compactFlattenObjectTreeNodeNames, deepArgsProcessing, nodeNameRegexp, preprocessElementBasic;
-
-  function ObjectTreeFactory() {}
-
-  deepArgsProcessing = function(array, children) {
-    var el, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      el = array[i];
-      if (el) {
-        if (el.constructor === Array) {
-          deepArgsProcessing(el, children);
-        } else {
-          children.push(el);
-        }
-      }
-    }
-    return null;
-  };
-
-
-  /*
-  IN: any order of args which are:
-    plainObject-options: (optional)
-      mergePropsInto: (intoProps, fromProps) ->
-        function to merge arguments 1 on into props
-        default: mergeIntoBasic
-  
-      inspectedName: string
-        for introspection:
-          Factory.getName() == inspectedName
-  
-      class: a class
-        if specified, additioanl properties will be set on the Factory function:
-          Factory.class = class
-          Factory._name = class.getName() + "Factory"
-  
-          all concrete class-methods are made available in the Factory
-          (see BaseObject.abstractClass)
-  
-      bind: string or array of strings
-        NODE: class must be set
-        list of method-names to bind from class onto the factory
-  
-      preprocessElement: (element) -> element
-        can do custom preprocssing of each argument to the factory.
-  
-  
-        defualt: preprocessElementBasic (no-op)
-  
-    function-nodeFactory: (optional) ->
-      IN:
-        props:    plain object mapping props to prop-values
-        children: flat, compacted array of children nodes
-      OUT:
-        node
-  
-    class-nodeClass: class Foo extends BaseObject
-  
-  OUT: objectTreeFactory = ->
-    IN:
-      Arguments are compacted and flattened
-      The resulting list of arguments can be any combination of:
-        plainObjects for props (merged in the order they appear)
-        other objects which become the 'children'
-  
-    OUT:
-      object-tree-node generated by the nodeFactory
-   */
-
-  preprocessElementBasic = function(a) {
-    return a;
-  };
-
-  ObjectTreeFactory.createObjectTreeFactory = function() {
-    var Factory, TreeFactoryNode, _children, _oneProps, _props, a, abstractClass, applyArgs, bindList, i, inspectedName, j, k, klass, len, len1, mergePropsInto, nodeFactory, options, preprocessElement, v;
-    for (i = 0, len = arguments.length; i < len; i++) {
-      a = arguments[i];
-      if (a != null) {
-        switch (false) {
-          case !isClass(a):
-            klass = a;
-            break;
-          case !isFunction(a):
-            nodeFactory = a;
-            break;
-          case !isPlainObject(a):
-            options = a;
-        }
-      }
-    }
-    options || (options = {});
-    klass || (klass = options["class"]);
-    nodeFactory || (nodeFactory = true ? (klass || (klass = TreeFactoryNode = (function(superClass) {
-      extend(TreeFactoryNode, superClass);
-
-      function TreeFactoryNode(props1, children1) {
-        this.props = props1;
-        this.children = children1;
-      }
-
-      return TreeFactoryNode;
-
-    })(BaseObject)), function(props, children) {
-      return new klass(props, children);
-    }) : void 0);
-    mergePropsInto = options.mergePropsInto, inspectedName = options.inspectedName, preprocessElement = options.preprocessElement;
-    mergePropsInto || (mergePropsInto = mergeIntoBasic);
-    preprocessElement || (preprocessElement = preprocessElementBasic);
-    _children = _props = _oneProps = null;
-    applyArgs = function(args) {
-      var el, j, len1, results;
-      results = [];
-      for (j = 0, len1 = args.length; j < len1; j++) {
-        el = args[j];
-        if (el = preprocessElement(el)) {
-          switch (el.constructor) {
-            case Object:
-              if (_oneProps) {
-                _props = {};
-                mergePropsInto(_props, _oneProps);
-                _oneProps = null;
-              }
-              if (_props) {
-                results.push(mergePropsInto(_props, el));
-              } else {
-                results.push(_oneProps = el);
-              }
-              break;
-            case Array:
-              results.push(applyArgs(el));
-              break;
-            default:
-              results.push(_children.push(el));
-          }
-        }
-      }
-      return results;
-    };
-    Factory = function() {
-      _oneProps = null;
-      _props = null;
-      _children = [];
-      applyArgs(arguments);
-      return nodeFactory(_props || _oneProps || {}, _children);
-    };
-    if (klass) {
-      Factory["class"] = klass;
-      klass.Factory = Factory;
-      abstractClass = (typeof klass.getAbstractClass === "function" ? klass.getAbstractClass() : void 0) || Object;
-      bindList = compactFlatten([
-        (function() {
-          var results;
-          results = [];
-          for (k in klass) {
-            v = klass[k];
-            if (!abstractClass[k] && isFunction(v)) {
-              results.push(k);
-            }
-          }
-          return results;
-        })(), options.bind
-      ]);
-      inspectedName || (inspectedName = klass.getName() + "Factory");
-      for (j = 0, len1 = bindList.length; j < len1; j++) {
-        k = bindList[j];
-        Factory[k] = fastBind(klass[k], klass);
-      }
-    }
-    if (inspectedName) {
-      Factory._name = inspectedName;
-    }
-    Factory.inspect = function() {
-      return "<" + (inspectedName || 'ObjectTreeFactory') + ">";
-    };
-    return Factory;
-  };
-
-
-  /*
-  IN:
-    list: a string or abitrary structure of arrays, nulls and strings
-      each string is split into tokens and each token is used as the nodeTypeName to create a Tree-factory
-    nodeFactory: (nodeTypeName, props, children) -> node
-      IN:
-        nodeTypeName: node-type name
-        props:    plain object mapping props to prop-values
-        children: flat, compacted array of children nodes
-      OUT:
-        node
-  OUT:
-    map from nodeNames (upperCamelCased) to the factories returned from createObjectTreeFactory
-  
-  TODO:
-    PERFORMANCE TEST:
-      createObjectTreeFactoriesFromFactories
-      vs
-      createObjectTreeFactoriesFromFactoryFactories
-  
-      The latter is probably faster. It is also more powerful and generally cleaner.
-   */
-
-  ObjectTreeFactory.createObjectTreeFactories = function(options, list, nodeFactory) {
-    var ref2;
-    if (!nodeFactory) {
-      ref2 = [options, list], list = ref2[0], nodeFactory = ref2[1];
-      options = {};
-    }
-    if (nodeFactory.length === 1) {
-      return ObjectTreeFactory._createObjectTreeFactoriesFromFactoryFactories(options, list, nodeFactory);
-    } else {
-      return ObjectTreeFactory._createObjectTreeFactoriesFromFactories(options, list, nodeFactory);
-    }
-  };
-
-  ObjectTreeFactory._createObjectTreeFactoriesFromFactories = function(options, list, nodeFactory) {
-    var fn, i, len, nodeTypeName, out, ref2, suffix;
-    suffix = options.suffix || '';
-    out = {};
-    ref2 = compactFlattenObjectTreeNodeNames(list);
-    fn = function(nodeTypeName) {
-      options.inspectedName = nodeTypeName;
-      return out[upperCamelCase(nodeTypeName) + suffix] = ObjectTreeFactory.createObjectTreeFactory(options, function(props, children) {
-        return nodeFactory(nodeTypeName, props, children);
-      });
-    };
-    for (i = 0, len = ref2.length; i < len; i++) {
-      nodeTypeName = ref2[i];
-      fn(nodeTypeName);
-    }
-    return out;
-  };
-
-  nodeNameRegexp = /[a-z0-9_]+/ig;
-
-  ObjectTreeFactory._compactFlattenObjectTreeNodeNames = compactFlattenObjectTreeNodeNames = function(list) {
-    var i, len, out, ref2, str;
-    if (typeof list === "string") {
-      return list.match(nodeNameRegexp);
-    }
-    out = [];
-    ref2 = compactFlatten(list);
-    for (i = 0, len = ref2.length; i < len; i++) {
-      str = ref2[i];
-      out = out.concat(str.match(nodeNameRegexp));
-    }
-    return out;
-  };
-
-  ObjectTreeFactory._createObjectTreeFactoriesFromFactoryFactories = function(options, list, nodeFactoryFactory) {
-    var i, len, name, nodeFactory, nodeTypeName, out, ref2, suffix;
-    suffix = options.suffix || '';
-    out = {};
-    ref2 = compactFlattenObjectTreeNodeNames(list);
-    for (i = 0, len = ref2.length; i < len; i++) {
-      nodeTypeName = ref2[i];
-      nodeFactory = nodeFactoryFactory(nodeTypeName);
-      name = upperCamelCase(nodeTypeName) + suffix;
-      options.inspectedName = name;
-      out[name] = ObjectTreeFactory.createObjectTreeFactory(options, nodeFactory);
-    }
-    return out;
-  };
-
-  return ObjectTreeFactory;
-
-})();
-
-
-/***/ }),
-/* 4 */
+/*!*******************************************************!*\
+  !*** ./source/Art.ObjectTreeFactory/namespace.coffee ***!
+  \*******************************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ObjectTreeFactory,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
-module.exports = (__webpack_require__(6)).addNamespace('Art.ObjectTreeFactory', ObjectTreeFactory = (function(superClass) {
+module.exports = (__webpack_require__(/*! neptune-namespaces */ 3)).addNamespace('Art.ObjectTreeFactory', ObjectTreeFactory = (function(superClass) {
   extend(ObjectTreeFactory, superClass);
 
   function ObjectTreeFactory() {
     return ObjectTreeFactory.__super__.constructor.apply(this, arguments);
   }
 
-  ObjectTreeFactory.version = __webpack_require__(5).version;
+  ObjectTreeFactory.version = __webpack_require__(/*! ../../package.json */ 4).version;
 
   return ObjectTreeFactory;
 
@@ -402,16 +136,399 @@ module.exports = (__webpack_require__(6)).addNamespace('Art.ObjectTreeFactory', 
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)","license":"ISC","name":"art-object-tree-factory","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"1.2.1"}
-
-/***/ }),
-/* 6 */
+/* 3 */
+/*!*************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*************************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
 module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 4 */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)","license":"ISC","name":"art-object-tree-factory","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"2.1.3"};
+
+/***/ }),
+/* 5 */
+/*!************************************************************!*\
+  !*** ./source/Art.ObjectTreeFactory/ObjectTreeFactory.caf ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 7);
+Caf.defMod(module, () => {
+  return Caf.importInvoke(
+    [
+      "log",
+      "Object",
+      "compactFlattenFast",
+      "isClass",
+      "isFunction",
+      "isPlainObject",
+      "rubyTrue",
+      "Array",
+      "fastBind",
+      "upperCamelCase",
+      "isString"
+    ],
+    [global, __webpack_require__(/*! art-standard-lib */ 8)],
+    (
+      log,
+      Object,
+      compactFlattenFast,
+      isClass,
+      isFunction,
+      isPlainObject,
+      rubyTrue,
+      Array,
+      fastBind,
+      upperCamelCase,
+      isString
+    ) => {
+      let mergeIntoBasic, ObjectTreeFactory;
+      mergeIntoBasic = function(_into, source) {
+        let from, into, temp;
+        return (
+          (from = source),
+          (into = _into),
+          from != null
+            ? (() => {
+                for (let k in from) {
+                  let v;
+                  v = from[k];
+                  temp = into[k] = v;
+                }
+                return temp;
+              })()
+            : undefined,
+          into
+        );
+      };
+      return (ObjectTreeFactory = Caf.defClass(
+        class ObjectTreeFactory extends Object {},
+        function(ObjectTreeFactory, classSuper, instanceSuper) {
+          let preprocessElementBasic,
+            nodeNameRegexp,
+            compactFlattenObjectTreeNodeNames;
+          preprocessElementBasic = function(a) {
+            return a;
+          };
+          this.createObjectTreeFactory = (...args) => {
+            let options,
+              klass,
+              nodeFactory,
+              TreeFactoryNode,
+              mergePropsInto,
+              name,
+              inspectedName,
+              preprocessElement,
+              _children,
+              _props,
+              _oneProps,
+              applyArg,
+              Factory,
+              abstractClass,
+              bindList,
+              from,
+              into,
+              temp;
+            Caf.each2(
+              args,
+              a =>
+                (() => {
+                  switch (false) {
+                    case !isClass(a):
+                      return (klass = a);
+                    case !isFunction(a):
+                      return (nodeFactory = a);
+                    case !isPlainObject(a):
+                      return (options = a);
+                  }
+                })(),
+              a => a != null
+            );
+            options != null ? options : (options = {});
+            klass != null ? klass : (klass = options.class);
+            nodeFactory != null
+              ? nodeFactory
+              : (nodeFactory = true
+                  ? (!(klass != null)
+                      ? log.warn(
+                          "DEPRICATED: one of nodeFactory or class is now required"
+                        )
+                      : undefined,
+                    klass != null
+                      ? klass
+                      : (klass = TreeFactoryNode = Caf.defClass(
+                          class TreeFactoryNode extends __webpack_require__(/*! art-class-system */ 9)
+                            .BaseClass {
+                            constructor(props, children) {
+                              super(...arguments);
+                              this.props = props;
+                              this.children = children;
+                            }
+                          }
+                        )),
+                    (props, children) => new klass(props, children))
+                  : undefined);
+            ({
+              mergePropsInto,
+              name,
+              inspectedName = name,
+              preprocessElement
+            } = options);
+            mergePropsInto != null
+              ? mergePropsInto
+              : (mergePropsInto = mergeIntoBasic);
+            preprocessElement != null
+              ? preprocessElement
+              : (preprocessElement = preprocessElementBasic);
+            _children = _props = _oneProps = undefined;
+            applyArg = el => {
+              let from1, into1, to, i;
+              if (rubyTrue(preprocessElement(el, Factory))) {
+                switch (el.constructor) {
+                  case Object:
+                    if (!_oneProps) {
+                      _oneProps = el;
+                    } else {
+                      if (!_props) {
+                        mergePropsInto((_props = {}), _oneProps);
+                      }
+                      mergePropsInto(_props, el);
+                    }
+                    break;
+                  case Array:
+                    from1 = el;
+                    into1 = from1;
+                    if (from1 != null) {
+                      to = from1.length;
+                      i = 0;
+                      while (i < to) {
+                        let el2;
+                        el2 = from1[i];
+                        applyArg(el2);
+                        i++;
+                      }
+                    }
+                    into1;
+                    break;
+                  default:
+                    (_children != null ? _children : (_children = [])).push(el);
+                }
+              }
+              return null;
+            };
+            Factory = (...args) => {
+              let from1, into1, to, i;
+              _children = _props = _oneProps = undefined;
+              from1 = args;
+              into1 = from1;
+              if (from1 != null) {
+                to = from1.length;
+                i = 0;
+                while (i < to) {
+                  let el;
+                  el = from1[i];
+                  applyArg(el);
+                  i++;
+                }
+              }
+              into1;
+              return nodeFactory(_props || _oneProps, _children);
+            };
+            if (klass) {
+              Factory.class = klass;
+              klass.Factory = Factory;
+              abstractClass =
+                (Caf.isF(klass.getAbstractClass) && klass.getAbstractClass()) ||
+                Object;
+              bindList = compactFlattenFast([
+                ((from = klass),
+                (into = []),
+                from != null
+                  ? (() => {
+                      for (let k1 in from) {
+                        let v, k;
+                        v = from[k1];
+                        k = k1;
+                        temp =
+                          !abstractClass[k] && isFunction(v)
+                            ? into.push(k)
+                            : undefined;
+                      }
+                      return temp;
+                    })()
+                  : undefined,
+                into),
+                options.bind
+              ]);
+              inspectedName != null
+                ? inspectedName
+                : (inspectedName = klass.getName() + "Factory");
+              Caf.each2(
+                bindList,
+                k => (Factory[k] = fastBind(klass[k], klass))
+              );
+            }
+            if (inspectedName) {
+              Factory._name = inspectedName;
+            }
+            Factory.inspect = () =>
+              `<${Caf.toString(inspectedName || "ObjectTreeFactory")}>`;
+            return Factory;
+          };
+          this.createObjectTreeFactories = (options, list, nodeFactory) => {
+            if (!nodeFactory) {
+              [list, nodeFactory] = [options, list];
+              options = {};
+            }
+            return nodeFactory.length === 1
+              ? this._createObjectTreeFactoriesFromFactoryFactories(
+                  options,
+                  list,
+                  nodeFactory
+                )
+              : this._createObjectTreeFactoriesFromFactories(
+                  options,
+                  list,
+                  nodeFactory
+                );
+          };
+          this._createObjectTreeFactoriesFromFactories = (
+            options,
+            list,
+            nodeFactory
+          ) => {
+            let suffix, out;
+            suffix = options.suffix || "";
+            out = {};
+            Caf.each2(compactFlattenObjectTreeNodeNames(list), nodeTypeName =>
+              (nodeTypeName => {
+                options.inspectedName = nodeTypeName;
+                return (out[
+                  upperCamelCase(nodeTypeName) + suffix
+                ] = this.createObjectTreeFactory(options, (props, children) =>
+                  nodeFactory(nodeTypeName, props, children)
+                ));
+              })(nodeTypeName)
+            );
+            return out;
+          };
+          nodeNameRegexp = /[a-z0-9_]+/gi;
+          this._compactFlattenObjectTreeNodeNames = compactFlattenObjectTreeNodeNames = function(
+            list
+          ) {
+            let out;
+            if (isString(list)) {
+              return list.match(nodeNameRegexp);
+            }
+            out = [];
+            Caf.each2(
+              compactFlattenFast(list),
+              str => (out = out.concat(str.match(nodeNameRegexp)))
+            );
+            return out;
+          };
+          this._createObjectTreeFactoriesFromFactoryFactories = (
+            options,
+            list,
+            nodeFactoryFactory
+          ) => {
+            let suffix, out;
+            suffix = options.suffix || "";
+            out = {};
+            Caf.each2(compactFlattenObjectTreeNodeNames(list), nodeTypeName => {
+              let nodeFactory, name;
+              nodeFactory = nodeFactoryFactory(nodeTypeName);
+              name = upperCamelCase(nodeTypeName) + suffix;
+              options.inspectedName = name;
+              return (out[name] = this.createObjectTreeFactory(
+                options,
+                nodeFactory
+              ));
+            });
+            return out;
+          };
+        }
+      ));
+    }
+  );
+});
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 6)(module)))
+
+/***/ }),
+/* 6 */
+/*!*************************************************!*\
+  !*** ../node_modules/webpack/buildin/module.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 7 */
+/*!******************************************************************************************!*\
+  !*** external "require('caffeine-script-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 8 */
+/*!***********************************************************************************!*\
+  !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 9 */
+/*!***********************************************************************************!*\
+  !*** external "require('art-class-system' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 /******/ ]);
