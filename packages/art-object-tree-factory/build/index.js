@@ -153,7 +153,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)","license":"ISC","name":"art-object-tree-factory","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"2.1.4"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)","license":"ISC","name":"art-object-tree-factory","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"2.1.5"};
 
 /***/ }),
 /* 5 */
@@ -170,30 +170,30 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
       "log",
-      "Object",
-      "compactFlattenFast",
       "isClass",
       "isFunction",
       "isPlainObject",
-      "rubyTrue",
-      "Array",
-      "fastBind",
       "upperCamelCase",
-      "isString"
+      "isString",
+      "compactFlattenFast",
+      "rubyTrue",
+      "Object",
+      "Array",
+      "fastBind"
     ],
     [global, __webpack_require__(/*! art-standard-lib */ 8)],
     (
       log,
-      Object,
-      compactFlattenFast,
       isClass,
       isFunction,
       isPlainObject,
-      rubyTrue,
-      Array,
-      fastBind,
       upperCamelCase,
-      isString
+      isString,
+      compactFlattenFast,
+      rubyTrue,
+      Object,
+      Array,
+      fastBind
     ) => {
       let mergeIntoBasic, ObjectTreeFactory;
       mergeIntoBasic = function(_into, source) {
@@ -219,7 +219,9 @@ Caf.defMod(module, () => {
         function(ObjectTreeFactory, classSuper, instanceSuper) {
           let preprocessElementBasic,
             nodeNameRegexp,
-            compactFlattenObjectTreeNodeNames;
+            compactFlattenObjectTreeNodeNames,
+            _createFactory,
+            _bindFactoryInfo;
           preprocessElementBasic = function(a) {
             return a;
           };
@@ -227,21 +229,13 @@ Caf.defMod(module, () => {
             let options,
               klass,
               nodeFactory,
-              TreeFactoryNode,
               mergePropsInto,
               name,
               inspectedName,
               preprocessElement,
-              _children,
-              _props,
-              _oneProps,
-              applyArg,
-              Factory,
-              abstractClass,
-              bindList,
-              from,
-              into,
+              TreeFactoryNode,
               temp;
+            options = klass = nodeFactory = null;
             Caf.each2(
               args,
               a =>
@@ -257,14 +251,20 @@ Caf.defMod(module, () => {
                 })(),
               a => a != null
             );
-            options != null ? options : (options = {});
-            klass != null ? klass : (klass = options.class);
+            if (Caf.exists(options)) {
+              mergePropsInto = options.mergePropsInto;
+              name = options.name;
+              inspectedName =
+                undefined !== (temp = options.inspectedName) ? temp : name;
+              preprocessElement = options.preprocessElement;
+              klass = options.class;
+            }
             nodeFactory != null
               ? nodeFactory
               : (nodeFactory = true
                   ? (!(klass != null)
                       ? log.warn(
-                          "DEPRICATED: one of nodeFactory or class is now required"
+                          "DEPRICATED: either 'nodeFactory' or 'class' is now required"
                         )
                       : undefined,
                     klass != null
@@ -281,112 +281,12 @@ Caf.defMod(module, () => {
                         )),
                     (props, children) => new klass(props, children))
                   : undefined);
-            ({
-              mergePropsInto,
-              name,
-              inspectedName = name,
-              preprocessElement
-            } = options);
-            mergePropsInto != null
-              ? mergePropsInto
-              : (mergePropsInto = mergeIntoBasic);
-            preprocessElement != null
-              ? preprocessElement
-              : (preprocessElement = preprocessElementBasic);
-            _children = _props = _oneProps = undefined;
-            applyArg = el => {
-              let from1, into1, to, i;
-              if (rubyTrue(preprocessElement(el, Factory))) {
-                switch (el.constructor) {
-                  case Object:
-                    if (!_oneProps) {
-                      _oneProps = el;
-                    } else {
-                      if (!_props) {
-                        mergePropsInto((_props = {}), _oneProps);
-                      }
-                      mergePropsInto(_props, el);
-                    }
-                    break;
-                  case Array:
-                    from1 = el;
-                    into1 = from1;
-                    if (from1 != null) {
-                      to = from1.length;
-                      i = 0;
-                      while (i < to) {
-                        let el2;
-                        el2 = from1[i];
-                        applyArg(el2);
-                        i++;
-                      }
-                    }
-                    into1;
-                    break;
-                  default:
-                    (_children != null ? _children : (_children = [])).push(el);
-                }
-              }
-              return null;
-            };
-            Factory = (...args) => {
-              let from1, into1, to, i;
-              _children = _props = _oneProps = undefined;
-              from1 = args;
-              into1 = from1;
-              if (from1 != null) {
-                to = from1.length;
-                i = 0;
-                while (i < to) {
-                  let el;
-                  el = from1[i];
-                  applyArg(el);
-                  i++;
-                }
-              }
-              into1;
-              return nodeFactory(_props || _oneProps, _children);
-            };
-            if (klass) {
-              Factory.class = klass;
-              klass.Factory = Factory;
-              abstractClass =
-                (Caf.isF(klass.getAbstractClass) && klass.getAbstractClass()) ||
-                Object;
-              bindList = compactFlattenFast([
-                ((from = klass),
-                (into = []),
-                from != null
-                  ? (() => {
-                      for (let k1 in from) {
-                        let v, k;
-                        v = from[k1];
-                        k = k1;
-                        temp =
-                          !abstractClass[k] && isFunction(v)
-                            ? into.push(k)
-                            : undefined;
-                      }
-                      return temp;
-                    })()
-                  : undefined,
-                into),
-                options.bind
-              ]);
-              inspectedName != null
-                ? inspectedName
-                : (inspectedName = klass.getName() + "Factory");
-              Caf.each2(
-                bindList,
-                k => (Factory[k] = fastBind(klass[k], klass))
-              );
-            }
-            if (inspectedName) {
-              Factory._name = inspectedName;
-            }
-            Factory.inspect = () =>
-              `<${Caf.toString(inspectedName || "ObjectTreeFactory")}>`;
-            return Factory;
+            return _bindFactoryInfo(
+              _createFactory(nodeFactory, preprocessElement, mergePropsInto),
+              inspectedName,
+              klass,
+              Caf.exists(options) && options.bind
+            );
           };
           this.createObjectTreeFactories = (options, list, nodeFactory) => {
             if (!nodeFactory) {
@@ -459,6 +359,116 @@ Caf.defMod(module, () => {
               ));
             });
             return out;
+          };
+          _createFactory = function(
+            nodeFactory,
+            preprocessElement,
+            mergePropsInto
+          ) {
+            let _children, _props, _oneProps, applyArg, Factory;
+            mergePropsInto != null
+              ? mergePropsInto
+              : (mergePropsInto = mergeIntoBasic);
+            preprocessElement != null
+              ? preprocessElement
+              : (preprocessElement = preprocessElementBasic);
+            _children = _props = _oneProps = undefined;
+            applyArg = element => {
+              let from, into, to, i;
+              if (rubyTrue((element = preprocessElement(element, Factory)))) {
+                switch (element.constructor) {
+                  case Object:
+                    if (!_oneProps) {
+                      _oneProps = element;
+                    } else {
+                      if (!_props) {
+                        mergePropsInto((_props = {}), _oneProps);
+                      }
+                      mergePropsInto(_props, element);
+                    }
+                    break;
+                  case Array:
+                    from = element;
+                    into = from;
+                    if (from != null) {
+                      to = from.length;
+                      i = 0;
+                      while (i < to) {
+                        let el2;
+                        el2 = from[i];
+                        applyArg(el2);
+                        i++;
+                      }
+                    }
+                    into;
+                    break;
+                  default:
+                    (_children != null ? _children : (_children = [])).push(
+                      element
+                    );
+                }
+              }
+              return null;
+            };
+            return (Factory = (...elements) => {
+              let from, into, to, i;
+              _children = _props = _oneProps = undefined;
+              from = elements;
+              into = from;
+              if (from != null) {
+                to = from.length;
+                i = 0;
+                while (i < to) {
+                  let element;
+                  element = from[i];
+                  applyArg(element);
+                  i++;
+                }
+              }
+              into;
+              return nodeFactory(_props || _oneProps, _children);
+            });
+          };
+          _bindFactoryInfo = function(Factory, name, klass, bindList) {
+            let abstractClass, from, into, temp;
+            if (klass) {
+              name != null
+                ? name
+                : (name = Caf.isF(klass.getName) && klass.getName());
+              Factory.class = klass;
+              klass.Factory = Factory;
+              abstractClass =
+                (Caf.isF(klass.getAbstractClass) && klass.getAbstractClass()) ||
+                Object;
+              bindList = compactFlattenFast([
+                ((from = klass),
+                (into = []),
+                from != null
+                  ? (() => {
+                      for (let k1 in from) {
+                        let v, k;
+                        v = from[k1];
+                        k = k1;
+                        temp =
+                          !abstractClass[k] && isFunction(v)
+                            ? into.push(k)
+                            : undefined;
+                      }
+                      return temp;
+                    })()
+                  : undefined,
+                into),
+                bindList
+              ]);
+              name != null ? name : (name = klass.getName() + "Factory");
+              Caf.each2(
+                bindList,
+                k => (Factory[k] = fastBind(klass[k], klass))
+              );
+            }
+            Factory._name = name != null ? name : (name = "ObjectTreeFactory");
+            Factory.inspect = () => `<${Caf.toString(name)}>`;
+            return Factory;
           };
         }
       ));
