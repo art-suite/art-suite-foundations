@@ -67,7 +67,9 @@ class ObjectTreeFactory
       name
       inspectedName = name
       bind as bindList
-      class as klass
+      # class = klass as klass
+
+    klass ?= options?.class
 
     nodeFactory ?= if true
       log.warn "DEPRICATED: either 'nodeFactory' or 'class' is now required" unless klass?
@@ -110,20 +112,12 @@ class ObjectTreeFactory
   ########################
   # PRIVATE
   ########################
-  nodeNameRegexp = /[a-z0-9_]+/ig
-  @_compactFlattenObjectTreeNodeNames: (list) ->
-    return list.match nodeNameRegexp if isString list
-
-    out = []
-    each str in compactFlattenFast list
-      out = out.concat str.match nodeNameRegexp
-    out
 
   @_createObjectTreeFactoriesFromFactories: (options, list, nodeFactory) =>
     suffix = options.suffix || ''
 
     out = {}
-    each nodeTypeName in @_compactFlattenObjectTreeNodeNames list
+    each nodeTypeName in list
       do (nodeTypeName) =>
         options.inspectedName = nodeTypeName
         out[upperCamelCase(nodeTypeName) + suffix] = @createObjectTreeFactory options,
@@ -134,7 +128,7 @@ class ObjectTreeFactory
     suffix = options.suffix || ''
 
     out = {}
-    each nodeTypeName in @_compactFlattenObjectTreeNodeNames list
+    each nodeTypeName in list
       nodeFactory = nodeFactoryFactory nodeTypeName
       name = upperCamelCase(nodeTypeName) + suffix
       options.inspectedName = name
@@ -221,7 +215,6 @@ class ObjectTreeFactory
       [nodeFactory] = children if children
 
       if nodeFactory.length == 1
-        @_createObjectTreeFactoriesFromFactoryFactories props, props.names, nodeFactory
-      else
-        @_createObjectTreeFactoriesFromFactories props, props.names, nodeFactory
+            @_createObjectTreeFactoriesFromFactoryFactories props, props.names, nodeFactory
+      else  @_createObjectTreeFactoriesFromFactories        props, props.names, nodeFactory
 
