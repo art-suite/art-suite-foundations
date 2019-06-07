@@ -67,7 +67,6 @@ class ObjectTreeFactory
       name
       inspectedName = name
       bind as bindList
-      # class = klass as klass
 
     klass ?= options?.class
 

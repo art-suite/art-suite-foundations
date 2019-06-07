@@ -79,6 +79,7 @@ suite:
           inspectedObjects: ->
             merge {} @props, children: if @children then toInspectedObjects @children
 
+      assert.eq f.class, MyTestClass
       assert.eq (f foo: 123).inspectedObjects, props: {foo: 123}
       assert.eq
         f
@@ -93,8 +94,11 @@ suite:
       class MyTestClass extends TestClass
         @myClassFunction: -> @getName()
 
+      f = createObjectTreeFactory class: MyTestClass
+
+      assert.eq f.class, MyTestClass
       assert.eq
-        createObjectTreeFactory class: MyTestClass
+        f
         .myClassFunction()
 
         :MyTestClass
