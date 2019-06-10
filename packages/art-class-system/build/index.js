@@ -143,9 +143,9 @@ module.exports = (__webpack_require__(/*! neptune-namespaces */ 3)).addNamespace
 
 /***/ }),
 /* 3 */
-/*!************************************************************************************!*\
+/*!*************************************************************************************!*\
   !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
-  \************************************************************************************/
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -159,7 +159,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.10.20"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.","license":"ISC","name":"art-class-system","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.11.1"};
 
 /***/ }),
 /* 5 */
@@ -184,7 +184,7 @@ module.exports = {
 
 "use strict";
 
-var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, concatInto, decapitalize, functionName, getModuleBeingDefined, getSuperclass, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, mergeInto, nextUniqueObjectId, object, objectName,
+var BaseClass, ExtendablePropertyMixin, Log, MinimalBaseObject, StandardLib, Unique, WebpackHotLoader, callStack, capitalize, concatInto, decapitalize, functionName, getModuleBeingDefined, getSuperclass, inspectedObjectLiteral, isFunction, isPlainArray, isPlainObject, isString, log, merge, mergeInto, neq, nextUniqueObjectId, object, objectName,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -193,7 +193,7 @@ StandardLib = __webpack_require__(/*! art-standard-lib */ 7);
 
 WebpackHotLoader = __webpack_require__(/*! ./WebpackHotLoader */ 8);
 
-capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, log = StandardLib.log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, isString = StandardLib.isString, object = StandardLib.object, getSuperclass = StandardLib.getSuperclass;
+capitalize = StandardLib.capitalize, decapitalize = StandardLib.decapitalize, log = StandardLib.log, isFunction = StandardLib.isFunction, objectName = StandardLib.objectName, isPlainObject = StandardLib.isPlainObject, functionName = StandardLib.functionName, isString = StandardLib.isString, isPlainArray = StandardLib.isPlainArray, Unique = StandardLib.Unique, callStack = StandardLib.callStack, Log = StandardLib.Log, log = StandardLib.log, inspectedObjectLiteral = StandardLib.inspectedObjectLiteral, MinimalBaseObject = StandardLib.MinimalBaseObject, getModuleBeingDefined = StandardLib.getModuleBeingDefined, concatInto = StandardLib.concatInto, mergeInto = StandardLib.mergeInto, merge = StandardLib.merge, neq = StandardLib.neq, isString = StandardLib.isString, object = StandardLib.object, getSuperclass = StandardLib.getSuperclass;
 
 nextUniqueObjectId = Unique.nextUniqueObjectId;
 
@@ -260,19 +260,26 @@ module.exports = BaseClass = (function(superClass) {
 
   nonImprintableProps = ["__proto__", "prototype"];
 
-  BaseClass.imprintObject = imprintObject = function(targetObject, sourceObject, preserveState) {
-    var i, j, len, len1, sourcePropDescriptor, sourcePropName, sourcePropertyNames, targetPropDescriptor, targetPropName, targetPropertyNames;
+  BaseClass.imprintObject = imprintObject = function(targetObject, sourceObject, preserveState, returnActionsTaken) {
+    var addedProps, changedProps, i, j, len, len1, neqResult, removedProps, sourcePropDescriptor, sourcePropName, sourcePropertyNames, sourceValue, sourceValueIsFunction, targetPropDescriptor, targetPropName, targetPropertyNames, targetValue, targetValueIsFunction;
     if (preserveState == null) {
       preserveState = false;
     }
     targetPropertyNames = Object.getOwnPropertyNames(targetObject);
     sourcePropertyNames = Object.getOwnPropertyNames(sourceObject);
+    if (returnActionsTaken) {
+      addedProps = removedProps = changedProps = void 0;
+    }
     if (!preserveState) {
       for (i = 0, len = targetPropertyNames.length; i < len; i++) {
         targetPropName = targetPropertyNames[i];
-        if (!(indexOf.call(sourcePropertyNames, targetPropName) >= 0)) {
-          thoroughDeleteProperty(targetObject, targetPropName);
+        if (!(!(indexOf.call(sourcePropertyNames, targetPropName) >= 0))) {
+          continue;
         }
+        if (returnActionsTaken) {
+          (removedProps != null ? removedProps : removedProps = []).push(targetPropName);
+        }
+        thoroughDeleteProperty(targetObject, targetPropName);
       }
     }
     for (j = 0, len1 = sourcePropertyNames.length; j < len1; j++) {
@@ -282,11 +289,32 @@ module.exports = BaseClass = (function(superClass) {
       }
       targetPropDescriptor = Object.getOwnPropertyDescriptor(targetObject, sourcePropName);
       sourcePropDescriptor = Object.getOwnPropertyDescriptor(sourceObject, sourcePropName);
-      if (!preserveState || !targetPropDescriptor || isFunction(sourcePropDescriptor.value) || isFunction(targetPropDescriptor != null ? targetPropDescriptor.value : void 0) || !sourcePropName.match(/^_/)) {
+      sourceValueIsFunction = isFunction(sourceValue = sourcePropDescriptor.value);
+      targetValueIsFunction = isFunction(targetValue = targetPropDescriptor != null ? targetPropDescriptor.value : void 0);
+      if (!preserveState || !targetPropDescriptor || sourceValueIsFunction || targetValueIsFunction || !sourcePropName.match(/^_/)) {
+        if (returnActionsTaken) {
+          if (!targetPropDescriptor) {
+            if (sourcePropName !== "_name") {
+              (addedProps != null ? addedProps : addedProps = []).push(sourcePropName);
+            }
+          } else {
+            if (neqResult = neq(sourceValue, targetValue, true)) {
+              (changedProps != null ? changedProps : changedProps = []).push(sourcePropName);
+            }
+          }
+        }
         Object.defineProperty(targetObject, sourcePropName, sourcePropDescriptor);
       }
     }
-    return sourceObject;
+    if (returnActionsTaken) {
+      return (removedProps || changedProps || addedProps) && merge({
+        removedProps: removedProps,
+        changedProps: changedProps,
+        addedProps: addedProps
+      });
+    } else {
+      return sourceObject;
+    }
   };
 
 
@@ -298,19 +326,26 @@ module.exports = BaseClass = (function(superClass) {
     @::constructor
    */
 
-  BaseClass.imprintFromClass = function(updatedKlass) {
-    var _name, namespace, namespacePath, oldConstructor, ref;
+  BaseClass.imprintFromClass = function(updatedKlass, returnActionsTaken) {
+    var _name, classUpdates, namespace, namespacePath, oldConstructor, prototypeUpdates, ref;
     if (updatedKlass !== this) {
       ref = this, namespace = ref.namespace, namespacePath = ref.namespacePath, _name = ref._name;
       oldConstructor = this.prototype.constructor;
-      imprintObject(this, updatedKlass, true);
-      imprintObject(this.prototype, updatedKlass.prototype, false);
+      classUpdates = imprintObject(this, updatedKlass, true, returnActionsTaken);
+      prototypeUpdates = imprintObject(this.prototype, updatedKlass.prototype, false, returnActionsTaken);
       this.prototype.constructor = oldConstructor;
       this.namespace = namespace;
       this.namespacePath = namespacePath;
       this._name = _name;
     }
-    return this;
+    if (returnActionsTaken) {
+      return merge({
+        "class": classUpdates,
+        prototype: prototypeUpdates
+      });
+    } else {
+      return this;
+    }
   };
 
   BaseClass.getHotReloadKey = function() {
@@ -364,7 +399,7 @@ module.exports = BaseClass = (function(superClass) {
       }) || klass;
     }
     return WebpackHotLoader.runHot(_module, function(moduleState) {
-      var classModuleState, hotReloadKey, hotReloaded, liveClass;
+      var classModuleState, hotReloadKey, hotReloaded, liveClass, obj1, updates;
       hotReloadKey = klass.getHotReloadKey();
       if (classModuleState = moduleState[hotReloadKey]) {
         liveClass = classModuleState.liveClass;
@@ -373,15 +408,16 @@ module.exports = BaseClass = (function(superClass) {
         classModuleState.hotUpdatedFromClass = klass;
         liveClass.namespace._setChildNamespaceProps(liveClass.getName(), klass);
         klass._name = liveClass._name;
-        liveClass.imprintFromClass(klass);
         liveClass.classModuleState = classModuleState;
-        log({
-          "Art.ClassSystem.BaseClass: class hot-reload": {
-            "class": liveClass.getNamespacePath(),
+        updates = liveClass.imprintFromClass(klass, true);
+        log((
+          obj1 = {},
+          obj1["Art.ClassSystem.BaseClass " + (typeof liveClass.getName === "function" ? liveClass.getName() : void 0) + " HotReload"] = {
             version: classModuleState.hotReloadVersion,
-            hotReloadKey: hotReloadKey
-          }
-        });
+            updates: updates
+          },
+          obj1
+        ));
       } else {
         hotReloaded = false;
         klass._hotClassModuleState = moduleState[hotReloadKey] = klass.classModuleState = classModuleState = {
@@ -541,20 +577,15 @@ module.exports = BaseClass = (function(superClass) {
 
   BaseClass.getNamespacePath = function() {
     var ref;
-    if (!((ref = this.namespacePath) != null ? ref.match(this.getName()) : void 0)) {
-      return "namespacePathNotSet." + (this.getName());
-    } else {
+    if ((ref = this.namespacePath) != null ? ref.match(this.getName()) : void 0) {
       return this.namespacePath;
+    } else {
+      return this.namespacePath = "(no parent namespace)." + (this.getName());
     }
   };
 
   BaseClass.getNamespacePathWithExtendsInfo = function() {
-    var ref, ref1, ref2, ref3;
-    if (!this.namespacePath || ((ref = this.__super__) != null ? (ref1 = ref["class"]) != null ? ref1.namespacePath : void 0 : void 0) === this.namespacePath) {
-      return this.namespacePath = ((ref2 = (ref3 = this.namespace) != null ? ref3.namespacePath : void 0) != null ? ref2 : '(no parent namespace)') + "." + (this.getName()) + " extends " + (this.__super__["class"].getNamespacePath());
-    } else {
-      return this.namespacePath;
-    }
+    return (this.getNamespacePath()) + " extends " + (getSuperclass(this).getNamespacePath());
   };
 
   BaseClass.getClassName = function(klass) {
@@ -693,6 +724,9 @@ module.exports = BaseClass = (function(superClass) {
     isAbstractClass: function() {
       return !(this.prototype instanceof this._firstAbstractAncestor);
     },
+    isConcreteClass: function() {
+      return !this.getIsAbstractClass();
+    },
     abstractPrototype: function() {
       return this._firstAbstractAncestor.prototype;
     },
@@ -825,9 +859,9 @@ module.exports = BaseClass = (function(superClass) {
 
 /***/ }),
 /* 7 */
-/*!**********************************************************************************!*\
+/*!***********************************************************************************!*\
   !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
-  \**********************************************************************************/
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
