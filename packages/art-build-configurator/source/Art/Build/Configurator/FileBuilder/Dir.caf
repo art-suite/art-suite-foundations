@@ -3,7 +3,7 @@ Path = &Path
 
 createObjectTreeFactory
   class DirClass extends BaseClass
-    constructor: (@props, @children) ->
+    constructor: (@props = {}, @children = []) ->
       super
       [dirname, children...] = @children
       @props.dirname = dirname

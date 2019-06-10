@@ -3,20 +3,7 @@
 
 nodeExternals = null
 
-{
-  defineModule
-  isPlainObject
-  array
-  object
-  deepMerge
-  log
-  compactFlatten
-  objectKeyCount
-  merge
-  objectWithout
-  isRegExp
-  isFunction
-} = require 'art-standard-lib'
+import &ArtStandardLib
 
 # webpack-merge tries to be "smart" - I prefer deepMerge
 webpackMerge = require 'webpack-merge'
@@ -32,31 +19,44 @@ Configurator = require './namespace'
 defineModule module, class ConfigureWebpack extends BaseClass
 
   ###
-  IN:
-    common: webpack config shared
-    targets:
-      myEntry: my target's overrides
-  ###
-  @get: (npmRoot, abcConfig = {}) =>
-    config = abcConfig.webpack ||= {}
-    {common, targets} = config
-    standard = StandardWebpackConfig.get npmRoot, abcConfig, abcConfig.target?.node
+    IN:
+      common: webpack config shared
+      targets:
+        myEntry: my target's overrides
+
+      webpackConfigOptions: {env, argv}
+        More info:
+        https://webpack.js.org/configuration/configuration-types/
+        https://stackoverflow.com/questions/34887347/how-to-detect-if-webpack-dev-server-is-running
+
+  @get: (npmRoot, abcConfig = {}, webpackConfigOptions) =>
+    webpackConfigOptions extract?
+      env extract? devServer
+      argv
+
+    (config = abcConfig.webpack ||= {}) extract common, targets
+
+    targetNode = !devServer && !!abcConfig.target?.node
+
+    log {targetNode, env, argv, devServer}
+    standard = StandardWebpackConfig.get npmRoot, abcConfig, targetNode
     baseConfig = webpackMerge standard, common
     targets ||= index: {}
+
 
     # entries with the same config should be clustered together, otherwise weppack
     # will duplicate work - benchmark: 5 highly related entries took 12+ seconds clustered and 56+ seconds unclusered
     # FIRST PASS: cluster the ones that only use the common config.
     entriesWithNoOverrides = null
 
-    compactFlatten array @normalizeTargets(targets), (targetConfig) =>
+    compactFlatten array targetConfig in @normalizeTargets targets
       {includeNpms} = targetConfig
       if includeNpms
         targetConfig = objectWithout targetConfig, "includeNpms"
 
       if !entriesWithNoOverrides || keys = 1 < objectKeyCount targetConfig
         webpackEntry = webpackMerge baseConfig, targetConfig
-        webpackEntry.target ||= "node" if abcConfig.target?.node
+        webpackEntry.target ||= "node" if targetNode
         config = @normalizeTargetConfig webpackEntry, includeNpms
         entriesWithNoOverrides = config unless keys
         config
@@ -73,7 +73,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
           pathinfo: true
 
         # this CAN work, but webpackNodeExternals is actually pretty stupid about what files it searches for
-        externals: [
+        externals: []
           nodeExternals ||= (context, request, callback) ->
             if request.match(/^[^.]/)
               shouldInclude = if includeNpms
@@ -88,7 +88,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
                 callback null, "root require('#{request}' /* ABC - not inlining fellow NPM */)"
             else
               callback()
-        ]
+
         targetConfig
 
     else
@@ -100,12 +100,12 @@ defineModule module, class ConfigureWebpack extends BaseClass
 
   @normalizeTargets: (targets = {}) ->
     throw new Error "targets must be an object" unless isPlainObject targets
-    object targets, (targetConfig, targetName) ->
+    object targetConfig, targetName in-object targets
       webpackMerge
-        entry: "#{targetName}": "./#{targetName}"
+        entry: [targetName]: "" ./#{targetName}
         targetConfig
 
-  @outFileName: "webpack.config.js"
+  @outFileName: :webpack.config.js
 
   @standardWebpackConfigJs: StandardWebpackConfig.js
 

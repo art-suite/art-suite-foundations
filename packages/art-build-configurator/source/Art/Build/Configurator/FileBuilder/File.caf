@@ -3,7 +3,7 @@ Path = &Path
 
 createObjectTreeFactory
   class FileClass extends BaseClass
-    constructor: (@props, @children) ->
+    constructor: (@props = {}, @children = []) ->
       super
       @props.filename = @children[0]
       @props.contents = @children[1]

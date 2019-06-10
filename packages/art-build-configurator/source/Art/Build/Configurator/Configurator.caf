@@ -20,7 +20,7 @@ class Configurator
       @init npmRoot, options if init
 
       @runNeptuneNamespaces npmRoot
-    .then =>
+    .then ->
       @loadAndWriteConfig npmRoot, options
 
   @registerLoaders: (npmRoot, vivify = false) =>
@@ -99,14 +99,14 @@ class Configurator
     ConfigureWebpack.writeConfig npmRoot, abcConfig
 
   # called by webpack to get config
-  @getWebpackConfig: (npmRoot) =>
+  @getWebpackConfig: (npmRoot, env, argv) =>
 
-    @loadConfig(npmRoot)
+    @loadConfig npmRoot
     .then (abcConfig) =>
       @writeConfig npmRoot, abcConfig
       @runNeptuneNamespaces npmRoot
       .then ->
-        ConfigureWebpack.get npmRoot, abcConfig
+        ConfigureWebpack.get npmRoot, abcConfig, {} env, argv
 
   # DEPRICATED
   @updateFile: (fileName, contents) ->

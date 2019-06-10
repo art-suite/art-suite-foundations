@@ -30,9 +30,9 @@ npm:
     style-loader:                         :^0.23.1
 
     # webpack core
-    webpack:                              :^4.30.0
+    webpack:                              :^4.32.2
     webpack-cli:                          :*
-    webpack-dev-server:                   :^3.3.1
+    webpack-dev-server:                   :^3.4.1
     # webpack-serve:                        :^2.0.0
     webpack-stylish:                      :^0.1.8
 
@@ -49,7 +49,8 @@ npm:
     detect-node:                          :^2.0.4
     fs-extra:                             :^7.0.1
     glob-promise:                         :^3.4.0
-    glob:                                 :^7.1.3
+    glob:                                 :^7.1.4
+    pluralize:                            :^7.0.0
 
     # test baseline
     mocha:                                :^5.2.0
