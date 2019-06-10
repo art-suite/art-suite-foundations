@@ -1,5 +1,5 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
   "bin": {
     "abc": "./abc"
   },
@@ -44,9 +44,9 @@
   "name": "art-build-configurator",
   "scripts": {
     "build": "webpack --progress",
-    "start": "webpack-dev-server --hot --inline --progress",
+    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
     "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress"
+    "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
   "version": "1.19.5"
 }
