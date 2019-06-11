@@ -153,7 +153,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*"},"description":"Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)","license":"ISC","name":"art-object-tree-factory","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"2.1.6"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*"},"description":"Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)","license":"ISC","name":"art-object-tree-factory","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"2.1.7"};
 
 /***/ }),
 /* 5 */
@@ -173,15 +173,13 @@ Caf.defMod(module, () => {
       "isClass",
       "isFunction",
       "isPlainObject",
-      "upperCamelCase",
-      "rubyTrue",
       "Object",
-      "Array",
       "compactFlattenFast",
       "fastBind",
       "compactFlattenAllFast",
       "isString",
-      "w"
+      "w",
+      "upperCamelCase"
     ],
     [global, __webpack_require__(/*! art-standard-lib */ 8)],
     (
@@ -189,15 +187,13 @@ Caf.defMod(module, () => {
       isClass,
       isFunction,
       isPlainObject,
-      upperCamelCase,
-      rubyTrue,
       Object,
-      Array,
       compactFlattenFast,
       fastBind,
       compactFlattenAllFast,
       isString,
-      w
+      w,
+      upperCamelCase
     ) => {
       let mergeIntoBasic, preprocessElementBasic, ObjectTreeFactory;
       mergeIntoBasic = function(_into, source) {
@@ -224,6 +220,7 @@ Caf.defMod(module, () => {
       return (ObjectTreeFactory = Caf.defClass(
         class ObjectTreeFactory extends Object {},
         function(ObjectTreeFactory, classSuper, instanceSuper) {
+          let _makeCreateFactory;
           this.createObjectTreeFactory = (...args) => {
             let options,
               klass,
@@ -234,6 +231,7 @@ Caf.defMod(module, () => {
               inspectedName,
               bindList,
               TreeFactoryNode,
+              _createFactory,
               temp;
             options = klass = nodeFactory = null;
             Caf.each2(
@@ -284,11 +282,14 @@ Caf.defMod(module, () => {
                         )),
                     (props, children) => new klass(props, children))
                   : undefined);
+            _createFactory = _makeCreateFactory();
             return this._bindFactoryInfo(
-              this._createFactory(
+              _createFactory(
                 nodeFactory,
-                preprocessElement,
-                mergePropsInto
+                preprocessElement != null
+                  ? preprocessElement
+                  : preprocessElementBasic,
+                mergePropsInto != null ? mergePropsInto : mergeIntoBasic
               ),
               inspectedName,
               klass,
@@ -296,114 +297,10 @@ Caf.defMod(module, () => {
             );
           };
           this.createObjectTreeFactories = null;
-          this._createObjectTreeFactoriesFromFactories = (
-            options,
-            list,
-            nodeFactory
-          ) => {
-            let suffix, out;
-            suffix = options.suffix || "";
-            out = {};
-            Caf.each2(list, nodeTypeName =>
-              (nodeTypeName => {
-                options.inspectedName = nodeTypeName;
-                return (out[
-                  upperCamelCase(nodeTypeName) + suffix
-                ] = this.createObjectTreeFactory(options, (props, children) =>
-                  nodeFactory(nodeTypeName, props, children)
-                ));
-              })(nodeTypeName)
+          _makeCreateFactory = function() {
+            return eval(
+              "(function(e,l,n){let f,u,r,t,i=(e=>{let a,c,s,h;e=l(e,f);if(e!=null&&e!==false){switch(e.constructor){case Object:if(r==null){r=e}else{if(u==null){n(u={},r)}n(u,e)}break;case Array:a=e;c=a;if(a!=null){s=a.length;h=0;while(h<s){let e;e=a[h];i(e);h++}}c;break;default:(t!=null?t:t=[]).push(e)}}return null});return f=((...l)=>{let n,f,a,c;t=u=r=undefined;n=l;f=n;if(n!=null){a=n.length;c=0;while(c<a){let e;e=n[c];i(e);c++}}f;return e(u||r,t)})});"
             );
-            return out;
-          };
-          this._createObjectTreeFactoriesFromFactoryFactories = (
-            options,
-            list,
-            nodeFactoryFactory
-          ) => {
-            let suffix, out;
-            suffix = options.suffix || "";
-            out = {};
-            Caf.each2(list, nodeTypeName => {
-              let nodeFactory, name;
-              nodeFactory = nodeFactoryFactory(nodeTypeName);
-              name = upperCamelCase(nodeTypeName) + suffix;
-              options.inspectedName = name;
-              return (out[name] = this.createObjectTreeFactory(
-                options,
-                nodeFactory
-              ));
-            });
-            return out;
-          };
-          this._createFactory = function(
-            nodeFactory,
-            preprocessElement,
-            mergePropsInto
-          ) {
-            let _children, _props, _oneProps, applyArg, Factory;
-            mergePropsInto != null
-              ? mergePropsInto
-              : (mergePropsInto = mergeIntoBasic);
-            preprocessElement != null
-              ? preprocessElement
-              : (preprocessElement = preprocessElementBasic);
-            _children = _props = _oneProps = undefined;
-            applyArg = element => {
-              let from, into, to, i;
-              if (rubyTrue((element = preprocessElement(element, Factory)))) {
-                switch (element.constructor) {
-                  case Object:
-                    if (!_oneProps) {
-                      _oneProps = element;
-                    } else {
-                      if (!_props) {
-                        mergePropsInto((_props = {}), _oneProps);
-                      }
-                      mergePropsInto(_props, element);
-                    }
-                    break;
-                  case Array:
-                    from = element;
-                    into = from;
-                    if (from != null) {
-                      to = from.length;
-                      i = 0;
-                      while (i < to) {
-                        let el2;
-                        el2 = from[i];
-                        applyArg(el2);
-                        i++;
-                      }
-                    }
-                    into;
-                    break;
-                  default:
-                    (_children != null ? _children : (_children = [])).push(
-                      element
-                    );
-                }
-              }
-              return null;
-            };
-            return (Factory = (...elements) => {
-              let from, into, to, i;
-              _children = _props = _oneProps = undefined;
-              from = elements;
-              into = from;
-              if (from != null) {
-                to = from.length;
-                i = 0;
-                while (i < to) {
-                  let element;
-                  element = from[i];
-                  applyArg(element);
-                  i++;
-                }
-              }
-              into;
-              return nodeFactory(_props || _oneProps, _children);
-            });
           };
           this._bindFactoryInfo = function(Factory, name, klass, bindList) {
             let abstractClass, from, into, temp;
@@ -474,6 +371,46 @@ Caf.defMod(module, () => {
                   );
             }
           );
+          this._createObjectTreeFactoriesFromFactories = (
+            options,
+            list,
+            nodeFactory
+          ) => {
+            let suffix, out;
+            suffix = options.suffix || "";
+            out = {};
+            Caf.each2(list, nodeTypeName =>
+              (nodeTypeName => {
+                options.inspectedName = nodeTypeName;
+                return (out[
+                  upperCamelCase(nodeTypeName) + suffix
+                ] = this.createObjectTreeFactory(options, (props, children) =>
+                  nodeFactory(nodeTypeName, props, children)
+                ));
+              })(nodeTypeName)
+            );
+            return out;
+          };
+          this._createObjectTreeFactoriesFromFactoryFactories = (
+            options,
+            list,
+            nodeFactoryFactory
+          ) => {
+            let suffix, out;
+            suffix = options.suffix || "";
+            out = {};
+            Caf.each2(list, nodeTypeName => {
+              let nodeFactory, name;
+              nodeFactory = nodeFactoryFactory(nodeTypeName);
+              name = upperCamelCase(nodeTypeName) + suffix;
+              options.inspectedName = name;
+              return (out[name] = this.createObjectTreeFactory(
+                options,
+                nodeFactory
+              ));
+            });
+            return out;
+          };
         }
       ));
     }
