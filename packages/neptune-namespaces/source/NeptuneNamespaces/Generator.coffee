@@ -1,6 +1,7 @@
 colors = require "colors"
 glob = require "glob-promise"
 fsp = require "fs-extra"
+CoffeeScript = require 'coffee-script'
 {
   upperCamelCase, peek, pushIfUnique, indent, pad, withoutTrailingSlash, promiseSequence, merge
   getRelativePath
@@ -10,6 +11,7 @@ fsp = require "fs-extra"
   normalizeDirectory
 } = require "./MiniFoundation"
 Path = require "path"
+{generatedByStringJs} = require './Helper'
 NamespaceStructure = require './NamespaceStructure'
 
 {IndexGenerator, NamespaceGenerator} = require './Generators'
@@ -70,7 +72,7 @@ module.exports = class Generator
 
   constructor: (@root, options = {}) ->
     throw new Error "root required" unless typeof @root == "string"
-    {@pretend, @verbose, @lastGenerator, @force, @quiet} = options
+    {@pretend, @verbose, @lastGenerator, @force, @quiet, @js} = options
     @versionFile = Generator.findVersionFile @root
 
     @rootPrefix = getParentPath @root
@@ -79,6 +81,16 @@ module.exports = class Generator
     if @pretend
       @log "\ngenerated: #{@getLogFileString(name).yellow}"
       @log indent code.green
+
+    if @js
+      name = name.replace /\.coffee$/, ".js"
+      code = """
+        #{generatedByStringJs}
+        // file: #{name}
+
+        #{CoffeeScript.compile code, bare: true}
+      """
+
     @generatedFiles[name] = code
 
   getRelativePath: (path = @root) ->

@@ -1,0 +1,8 @@
+global.assert = &Chai.assert
+global.Generation = &source/NeptuneNamespaces
+&NeptuneNamespaces
+
+&ArtTestbench/Testing
+.init
+  synchronous: true
+  defineTests: -> &tests

@@ -8,24 +8,9 @@
   generatedByString
   neptuneBaseClass
   requirePath
+  alignColumns
 } = require '../Helper'
 {max} = Math
-
-alignColumns = ->
-  listOfLists = []
-  listOfLists = listOfLists.concat el for el in arguments
-
-  maxLengths = []
-  for line in listOfLists
-    for cell, i in line
-      maxLengths[i] = max (maxLengths[i] || 0), cell.length
-
-  maxLengths[maxLengths - 1] = 0 # don't pad last column
-
-  for line in listOfLists
-    paddedCells = for cell, i in line
-      pad cell, maxLengths[i]
-    paddedCells.join ' '
 
 module.exports = class NamespaceGenerator
   @generate: (namespace, relativeFilePath) ->

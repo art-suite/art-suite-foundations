@@ -11,12 +11,13 @@ standardRoots = for root in Generator.standardRoots
 Commander = require "commander"
 .version version
 .usage  '[options] <root ...>'
-.option '-r, --root',     'list one or more --root arguments'
-.option '-w, --watch',    'stay running, watch for changes, and automatically update'
-.option '-v, --verbose',  'enable verbose output'
-.option '-q, --quiet',    'suppress all output'
-.option '-f, --force',    'overwrite all index and namespace files'
-.option '-s, --std',      "include the standard roots: #{standardRoots.join ', '}"
+.option '-r, --root',       'list one or more --root arguments'
+.option '-w, --watch',      'stay running, watch for changes, and automatically update'
+.option '-v, --verbose',    'enable verbose output'
+.option '-q, --quiet',      'suppress all output'
+.option '-j, --javascript', 'output js files (experimental)'
+.option '-f, --force',      'overwrite all index and namespace files'
+.option '-s, --std',        "include the standard roots: #{standardRoots.join ', '}"
 .on "--help", ->
   console.log "
     Generates 'namespace.coffee' and 'index.coffee' files to bind each specified root
@@ -25,7 +26,7 @@ Commander = require "commander"
     "
 .parse process.argv
 
-run = (targetPaths, {watch, verbose, quiet, force}) ->
+run = (targetPaths, {watch, verbose, quiet, force, javascript}) ->
   if verbose
     console.log """
       neptune-namespaces (#{version})
@@ -42,12 +43,14 @@ run = (targetPaths, {watch, verbose, quiet, force}) ->
       targetPath = withoutTrailingSlash targetPath
 
       doWork = ->
-        Generator.generate targetPath,
-          verbose: verbose
-          force: force
-          quiet: quiet
-          watch: watch
+        Generator.generate targetPath, {
+          verbose
+          force
+          quiet
+          watch
+          javascript
           persistent: true
+        }
 
       doWork
 

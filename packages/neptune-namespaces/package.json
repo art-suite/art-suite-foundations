@@ -1,5 +1,5 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
   "bin": {
     "neptune-namespaces": "./nn",
     "nn": "./nn"
@@ -13,9 +13,9 @@
   "name": "neptune-namespaces",
   "scripts": {
     "build": "webpack --progress",
-    "start": "webpack-dev-server --hot --inline --progress",
-    "test": "nn -s;mocha -u tdd --compilers coffee:coffee-script/register",
-    "testInBrowser": "webpack-dev-server --progress"
+    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "test": "nn -s;mocha -u tdd",
+    "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
   "version": "3.2.7"
 }
