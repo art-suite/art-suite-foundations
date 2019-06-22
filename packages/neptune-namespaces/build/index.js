@@ -82,31 +82,29 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./index.coffee");
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ "./index.coffee":
+/******/ ([
+/* 0 */
 /*!**********************!*\
   !*** ./index.coffee ***!
   \**********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("module.exports = __webpack_require__(/*! neptune-namespaces-runtime */ \"neptune-namespaces-runtime\");\n\n\n//# sourceURL=webpack:///./index.coffee?");
+module.exports = __webpack_require__(/*! neptune-namespaces-runtime */ 1);
+
 
 /***/ }),
-
-/***/ "neptune-namespaces-runtime":
-/*!********************************************************************************************!*\
+/* 1 */
+/*!*********************************************************************************************!*\
   !*** external "require('neptune-namespaces-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
-  \********************************************************************************************/
+  \*********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = require('neptune-namespaces-runtime' /* ABC - not inlining fellow NPM */);\n\n//# sourceURL=webpack:///external_%22require('neptune-namespaces-runtime'_/*_ABC_-_not_inlining_fellow_NPM_*/)%22?");
+module.exports = require('neptune-namespaces-runtime' /* ABC - not inlining fellow NPM */);
 
 /***/ })
-
-/******/ });
+/******/ ]);
