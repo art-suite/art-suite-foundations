@@ -15,28 +15,26 @@ Commander = require "commander"
 .option '-w, --watch',      'stay running, watch for changes, and automatically update'
 .option '-v, --verbose',    'enable verbose output'
 .option '-q, --quiet',      'suppress all output'
-.option '-j, --javascript', 'output js files (experimental)'
+.option '-j, --javascript', 'output .js files instead of .coffee (experimental)'
+.option '--cleanup',        'cleanup .coffee files if generating .js or visa-versa'
 .option '-f, --force',      'overwrite all index and namespace files'
 .option '-s, --std',        "include the standard roots: #{standardRoots.join ', '}"
 .on "--help", ->
   console.log "
-    Generates 'namespace.coffee' and 'index.coffee' files to bind each specified root
+    Generates 'namespace.(js|coffee)' and 'index.(js|coffee)' files to bind each specified root
     to the global Neptune namespace at runtime.
     \n\nRun with -v to see everything NN is doing.
     "
 .parse process.argv
 
-run = (targetPaths, {watch, verbose, quiet, force, javascript}) ->
+run = (targetPaths, {watch, verbose, quiet, force, javascript, cleanup}) ->
   if verbose
     console.log """
       neptune-namespaces (#{version})
 
       roots: #{targetPaths.join ', '}
       """
-    verbose && log verbose: true
-    force   && log force:   true
-    quiet   && log quiet:   true
-    watch   && log watch:   true
+    log {watch, verbose, quiet, force, javascript, cleanup}
 
   todoList = for targetPath in targetPaths
     do (targetPath) ->
@@ -48,7 +46,8 @@ run = (targetPaths, {watch, verbose, quiet, force, javascript}) ->
           force
           quiet
           watch
-          javascript
+          cleanup
+          js: javascript
           persistent: true
         }
 

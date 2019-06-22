@@ -27,9 +27,6 @@ module.exports = class NamespaceGenerator
     modules = generateNamespacedList namespace.fileSet
 
     contents = compactFlatten [
-      generatedByString
-      "# file: #{relativeFilePath || path}/index.coffee"
-      ""
       "require '#{requirePath name}'" for name in namespace.getAllNonNamespacedRequires()
       "module.exports = require './namespace'"
       "module.exports"

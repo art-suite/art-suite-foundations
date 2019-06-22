@@ -37,9 +37,6 @@ module.exports = class NamespaceGenerator
       """
 
     """
-    #{generatedByString}
-    # file: #{relativeFilePath || path}/namespace.coffee
-
     module.exports = #{meat}
     #{
       a = for name in namespace.getAllNamespacedSubdirRequires()
