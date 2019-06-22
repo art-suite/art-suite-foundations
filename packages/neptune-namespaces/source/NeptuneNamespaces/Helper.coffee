@@ -9,7 +9,7 @@ module.exports = class Helper
   @globalNamespaceName:       "Neptune"
   @neptuneBaseClass:          "#{@globalNamespaceName}.Namespace"
   @PackageNamespaceClassName: "#{@globalNamespaceName}.PackageNamespace"
-  @shouldNotAutoload:         (itemName) -> !!itemName.match /^([\._].*|index.coffee|namespace.coffee)$/
+  @shouldNotAutoload:         (itemName) -> !!itemName.match /^([\._].*|(index|namespace)\.(coffee|js))$/
   @shouldNotNamespace:        (itemName) -> !!itemName.match /^-/
   @shouldIncludeInNamespace:  (file, namespaceName) -> toModuleName(file) == peek namespaceName.split '.'
   @toFilename:                (path) -> peek path.split('/')
