@@ -51,7 +51,7 @@ module.exports = class Generator
     @log root, "watching...".green
     generator = null
     fsp.watch root, {persistent: options.persistent, recursive: true}, (event, filename) =>
-      if event != "change" && !filename.match /(^|\/)(namespace|index)\.coffee$/
+      if event != "change" && !filename.match /(^|\/)(namespace|index)\.(coffee|js)$/
         @log root, "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
 
         options.lastGenerator = generator if generator
