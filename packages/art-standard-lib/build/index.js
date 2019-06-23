@@ -195,7 +195,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.60.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.60.2"};
 
 /***/ }),
 /* 5 */
@@ -280,7 +280,7 @@ module.exports = (__webpack_require__(/*! ../namespace */ 6)).addNamespace('Insp
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
-  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll", "logPromise", "logPromiseProblems", "logPromiseErrors"], __webpack_require__(/*! ./ArrayExtensions */ 41), __webpack_require__(/*! ./AsyncExtensions */ 50), __webpack_require__(/*! ./ObjectExtensions */ 36), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 40), __webpack_require__(/*! ./FunctionExtensions */ 52), __webpack_require__(/*! ./ObjectDiff */ 53), __webpack_require__(/*! ./MapExtensions */ 54), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 55), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 56), __webpack_require__(/*! ./ShallowClone */ 57), __webpack_require__(/*! ./Time */ 58), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 37), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 59), __webpack_require__(/*! ./Log */ 60), __webpack_require__(/*! ./CallStack */ 61), __webpack_require__(/*! ./DateExtensions */ 51), {
+  __webpack_require__(/*! ./Core */ 9), [__webpack_require__(/*! ./Promise */ 15), "testPromise", "containsPromises", "deepAll", "logPromise", "logPromiseProblems", "logPromiseErrors", "logRejectedPromises"], __webpack_require__(/*! ./ArrayExtensions */ 41), __webpack_require__(/*! ./AsyncExtensions */ 50), __webpack_require__(/*! ./ObjectExtensions */ 36), __webpack_require__(/*! ./StringExtensions */ 31), __webpack_require__(/*! ./Eq */ 40), __webpack_require__(/*! ./FunctionExtensions */ 52), __webpack_require__(/*! ./ObjectDiff */ 53), __webpack_require__(/*! ./MapExtensions */ 54), __webpack_require__(/*! ./MathExtensions */ 32), __webpack_require__(/*! ./Environment */ 20), __webpack_require__(/*! ./ParseUrl */ 21), __webpack_require__(/*! ./PromisedFileReader */ 55), __webpack_require__(/*! ./RegExpExtensions */ 22), __webpack_require__(/*! ./Ruby */ 56), __webpack_require__(/*! ./ShallowClone */ 57), __webpack_require__(/*! ./Time */ 58), __webpack_require__(/*! ./TypesExtended */ 18), __webpack_require__(/*! ./CommonJs */ 19), __webpack_require__(/*! ./Iteration */ 37), __webpack_require__(/*! ./Inspect */ 25), __webpack_require__(/*! ./Clone */ 59), __webpack_require__(/*! ./Log */ 60), __webpack_require__(/*! ./CallStack */ 61), __webpack_require__(/*! ./DateExtensions */ 51), {
     PushBackTimer: __webpack_require__(/*! ./ReschedulableTimer */ 62)
   }
 ];
@@ -331,7 +331,7 @@ var ArrayCompactFlatten, isArray,
 isArray = __webpack_require__(/*! ./Types */ 12).isArray;
 
 module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast;
+  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
 
   function ArrayCompactFlatten() {}
 
@@ -434,11 +434,11 @@ module.exports = ArrayCompactFlatten = (function() {
   };
 
   ArrayCompactFlatten.compactFlattenFast = function(array) {
-    return compactFlattenIfNeededFast(array, keepUnlessNullOrUndefined);
+    return compactFlattenIfNeededFastBasic(array);
   };
 
   ArrayCompactFlatten.compactFlattenIntoFast = function(into, array) {
-    return doFlattenInternalFast(array, into, keepUnlessNullOrUndefined);
+    return doFlattenInternalFastBasic(array, into);
   };
 
   ArrayCompactFlatten.customCompactFlattenFast = function(array, customKeepTester) {
@@ -452,7 +452,7 @@ module.exports = ArrayCompactFlatten = (function() {
   ArrayCompactFlatten.compactFlattenAllFast = function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return compactFlattenIfNeededFast(all, keepUnlessNullOrUndefined);
+    return compactFlattenIfNeededFastBasic(all);
   };
 
   ArrayCompactFlatten.deepArrayEachFast = deepArrayEachFast = function(array, f) {
@@ -493,14 +493,18 @@ module.exports = ArrayCompactFlatten = (function() {
 
   arraySlice = Array.prototype.slice;
 
-  doFlattenInternal = function(array, keepTester) {
-    var output;
-    output = [];
-    deepArrayEach(array, function(el) {
-      if (keepTester(el)) {
-        return output.push(el);
+  doFlattenInternal = function(array, output, keepTester) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArrayOrArguments(el)) {
+        doFlattenInternal(el, output, keepTester);
+      } else {
+        if (keepTester(el)) {
+          output.push(el);
+        }
       }
-    });
+    }
     return output;
   };
 
@@ -519,7 +523,7 @@ module.exports = ArrayCompactFlatten = (function() {
       return [array];
     }
     if (needsFlatteningOrCompacting(array, keepTester)) {
-      return doFlattenInternal(array, keepTester);
+      return doFlattenInternal(array, [], keepTester);
     } else if (array.constructor !== Array) {
       return arraySlice.call(array);
     } else {
@@ -556,6 +560,38 @@ module.exports = ArrayCompactFlatten = (function() {
   compactFlattenIfNeededFast = function(array, keepTester) {
     if (needsFlatteningOrCompactingFast(array, keepTester)) {
       return doFlattenInternalFast(array, [], keepTester);
+    } else {
+      return array;
+    }
+  };
+
+  doFlattenInternalFastBasic = function(array, output) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArray(el)) {
+        doFlattenInternalFastBasic(el, output);
+      } else if (el != null) {
+        output.push(el);
+      }
+    }
+    return output;
+  };
+
+  needsFlatteningOrCompactingFastBasic = function(array) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if ((el == null) || isArray(el)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  compactFlattenIfNeededFastBasic = function(array) {
+    if (needsFlatteningOrCompactingFastBasic(array)) {
+      return doFlattenInternalFastBasic(array, []);
     } else {
       return array;
     }
@@ -1587,11 +1623,15 @@ defineModule(module, function() {
       return new ArtPromise.Serializer().serialize(f);
     };
 
-    ArtPromise.logPromise = function(message, p) {
+    ArtPromise.logPromise = function(context, p) {
       var currentSecond, log, startTime;
+      if (p == null) {
+        p = context;
+        context = "(context not specified)";
+      }
       log = namespace.log, currentSecond = namespace.currentSecond;
       log({
-        logPromise_start: message
+        logPromise_start: context
       });
       startTime = currentSecond();
       return Promise.then(function() {
@@ -1603,7 +1643,7 @@ defineModule(module, function() {
       }).tap(function(result) {
         return log({
           logPromise_success: {
-            message: message,
+            context: context,
             result: result,
             seconds: currentSecond() - startTime
           }
@@ -1611,7 +1651,7 @@ defineModule(module, function() {
       }).tapCatch(function(error) {
         return log.error({
           logPromise_error: {
-            message: message,
+            context: context,
             error: error,
             seconds: currentSecond() - startTime
           }
@@ -1619,7 +1659,7 @@ defineModule(module, function() {
       });
     };
 
-    ArtPromise.logPromiseProblems = logPromiseProblems = function(message, p) {
+    ArtPromise.logPromiseProblems = logPromiseProblems = function(context, p) {
       var currentSecond, log, startTime;
       log = namespace.log, currentSecond = namespace.currentSecond;
       startTime = currentSecond();
@@ -1631,8 +1671,8 @@ defineModule(module, function() {
         }
       }).tapCatch(function(error) {
         return log.error({
-          logPromiseProblems: {
-            message: message,
+          logRejectedPromises: {
+            context: context,
             error: error,
             seconds: currentSecond() - startTime
           }

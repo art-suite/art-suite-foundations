@@ -114,7 +114,7 @@ var ArrayCompactFlatten, isArray,
 isArray = __webpack_require__(/*! ./Types */ 12).isArray;
 
 module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast;
+  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
 
   function ArrayCompactFlatten() {}
 
@@ -217,11 +217,11 @@ module.exports = ArrayCompactFlatten = (function() {
   };
 
   ArrayCompactFlatten.compactFlattenFast = function(array) {
-    return compactFlattenIfNeededFast(array, keepUnlessNullOrUndefined);
+    return compactFlattenIfNeededFastBasic(array);
   };
 
   ArrayCompactFlatten.compactFlattenIntoFast = function(into, array) {
-    return doFlattenInternalFast(array, into, keepUnlessNullOrUndefined);
+    return doFlattenInternalFastBasic(array, into);
   };
 
   ArrayCompactFlatten.customCompactFlattenFast = function(array, customKeepTester) {
@@ -235,7 +235,7 @@ module.exports = ArrayCompactFlatten = (function() {
   ArrayCompactFlatten.compactFlattenAllFast = function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return compactFlattenIfNeededFast(all, keepUnlessNullOrUndefined);
+    return compactFlattenIfNeededFastBasic(all);
   };
 
   ArrayCompactFlatten.deepArrayEachFast = deepArrayEachFast = function(array, f) {
@@ -276,14 +276,18 @@ module.exports = ArrayCompactFlatten = (function() {
 
   arraySlice = Array.prototype.slice;
 
-  doFlattenInternal = function(array, keepTester) {
-    var output;
-    output = [];
-    deepArrayEach(array, function(el) {
-      if (keepTester(el)) {
-        return output.push(el);
+  doFlattenInternal = function(array, output, keepTester) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArrayOrArguments(el)) {
+        doFlattenInternal(el, output, keepTester);
+      } else {
+        if (keepTester(el)) {
+          output.push(el);
+        }
       }
-    });
+    }
     return output;
   };
 
@@ -302,7 +306,7 @@ module.exports = ArrayCompactFlatten = (function() {
       return [array];
     }
     if (needsFlatteningOrCompacting(array, keepTester)) {
-      return doFlattenInternal(array, keepTester);
+      return doFlattenInternal(array, [], keepTester);
     } else if (array.constructor !== Array) {
       return arraySlice.call(array);
     } else {
@@ -339,6 +343,38 @@ module.exports = ArrayCompactFlatten = (function() {
   compactFlattenIfNeededFast = function(array, keepTester) {
     if (needsFlatteningOrCompactingFast(array, keepTester)) {
       return doFlattenInternalFast(array, [], keepTester);
+    } else {
+      return array;
+    }
+  };
+
+  doFlattenInternalFastBasic = function(array, output) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArray(el)) {
+        doFlattenInternalFastBasic(el, output);
+      } else if (el != null) {
+        output.push(el);
+      }
+    }
+    return output;
+  };
+
+  needsFlatteningOrCompactingFastBasic = function(array) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if ((el == null) || isArray(el)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  compactFlattenIfNeededFastBasic = function(array) {
+    if (needsFlatteningOrCompactingFastBasic(array)) {
+      return doFlattenInternalFastBasic(array, []);
     } else {
       return array;
     }
@@ -1045,7 +1081,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress"},"version":"1.60.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.60.2"};
 
 /***/ }),
 
