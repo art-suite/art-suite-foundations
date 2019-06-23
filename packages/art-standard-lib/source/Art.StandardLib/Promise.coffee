@@ -277,19 +277,22 @@ defineModule module, ->
     ###
     @serialize: (f) -> new ArtPromise.Serializer().serialize f
 
-    @logPromise: (message, p) ->
+    @logPromise: (context, p) ->
+      unless p?
+        p = context
+        context = "(context not specified)"
       {log, currentSecond} = namespace
-      log logPromise_start: message
+      log logPromise_start: context
       startTime = currentSecond()
       Promise.then ->
         if isFunction p
           p()
         else
           p
-      .tap (result)     -> log logPromise_success: {message, result, seconds: currentSecond() - startTime }
-      .tapCatch (error) -> log.error logPromise_error: {message, error, seconds: currentSecond() - startTime}
+      .tap (result)     -> log logPromise_success: {context, result, seconds: currentSecond() - startTime }
+      .tapCatch (error) -> log.error logPromise_error: {context, error, seconds: currentSecond() - startTime}
 
-    @logPromiseProblems: logPromiseProblems = (message, p) ->
+    @logPromiseProblems: logPromiseProblems = (context, p) ->
       {log, currentSecond} = namespace
       startTime = currentSecond()
       Promise.then ->
@@ -297,10 +300,10 @@ defineModule module, ->
           p()
         else
           p
-      .tapCatch (error) -> log.error logPromiseProblems: {message, error, seconds: currentSecond() - startTime}
+      .tapCatch (error) -> log.error logRejectedPromises: {context, error, seconds: currentSecond() - startTime}
 
     @logPromiseErrors:    logPromiseProblems
-    @logRejectedPromises: logPromiseProblems
+    @logRejectedPromises: logPromiseProblems # June 2019 - I think I like this alias
 
     @invert: (promise) ->
       promise.then (e) ->
