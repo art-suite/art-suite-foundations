@@ -23,7 +23,10 @@ module.exports = class Helper
     maxLengths = []
     for line in listOfLists
       for cell, i in line
-        maxLengths[i] = max (maxLengths[i] || 0), cell.length
+        maxLengths[i] = if i == line.length - 1
+          cell
+        else
+          max (maxLengths[i] || 0), cell.length
 
     maxLengths[maxLengths - 1] = 0 # don't pad last column
 

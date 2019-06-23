@@ -1,4 +1,4 @@
-import &MiniFoundation, &Helper, Math
+import &StandardImport
 
 class IndexGenerator
   @generate: (namespace) ->

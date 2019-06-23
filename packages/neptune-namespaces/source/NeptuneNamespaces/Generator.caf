@@ -1,4 +1,4 @@
-import &StandardImport, &Generators, &PackageRoot, {} &NamespaceStructure, &CoffeeScript
+import &StandardImport, &Generators, &PackageRoot, {} &NamespaceStructure
 
 class Generator
 
@@ -112,14 +112,17 @@ class Generator
       @_generateHelper
         relativePath: relativePath
         path: path
-        name: :namespace.coffee
-        code: NamespaceGenerator.generate namespace, relativeVersionFile
+        name: :namespace
+        code: @getNamespaceGenerator().generate namespace, relativeVersionFile
 
       @_generateHelper
         relativePath: relativePath
         path: path
-        name: :index.coffee
-        code: IndexGenerator.generate namespace
+        name: :index
+        code: @getIndexGenerator().generate namespace
+
+  getIndexGenerator:      -> if @js then IndexJsGenerator else IndexGenerator
+  getNamespaceGenerator:  -> if @js then NamespaceJsGenerator else NamespaceGenerator
 
   ### generateFromFiles
     IN:
@@ -187,25 +190,20 @@ class Generator
     getRelativePath process.cwd(), file
 
   _generateHelper: ({path, relativePath, name, code}) ->
+    name += if @js
+          :.js
+    else  :.coffee
+
     if @pretend
       @infoLog "\ngenerated: #{@_getLogFileString(name).yellow}"
       @infoLog indent code.green
 
-    if @js
-      name = name.replace /\.coffee$/, ".js"
-      code =
-        """
-          // #{generatedByStringBare}
-          // file: #{relativePath}/#{name}
+    commentStart = if @js then "//" else "#"
+    code =
+      """
+        #{commentStart} #{generatedByStringBare}
+        #{commentStart} file: #{relativePath}/#{name}
 
-          #{CoffeeScript.compile code, bare: true}
-
-    else
-      code =
-        """
-          # #{generatedByStringBare}
-          # file: #{relativePath}/#{name}
-
-          #{code}
+        #{code}
 
     @generatedFiles["#{path}/#{name}"] = code

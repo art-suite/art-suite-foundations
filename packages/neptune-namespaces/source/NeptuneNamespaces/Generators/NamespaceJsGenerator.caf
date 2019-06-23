@@ -1,0 +1,38 @@
+import &StandardImport
+
+class NamespaceJsGenerator extends &NamespaceGenerator
+
+  @generate: (namespace, versionFile) ->
+    namespace extract namespaceName, isPathNamespace
+
+    className = @getClassName namespace
+    parentNamespacePath = @getParentNamespacePath namespace
+
+    requireParent = "" (require('#{parentNamespacePath}'))
+
+    """
+      module.exports = #{ switch
+        when isPathNamespace
+          "#{requireParent}.vivifySubnamespace('#{namespaceName}');"
+
+        when versionFile && namespace.getIsRootPackageNamespace()
+          """
+            #{requireParent}.addNamespace(
+              '#{namespaceName}',
+              class #{className} extends #{PackageNamespaceClassName} {}
+            );
+
+            #{className}.version = require('#{versionFile}').version;
+
+        else
+          """
+            #{requireParent}.addNamespace(
+              '#{namespaceName}',
+              class #{className} extends #{PackageNamespaceClassName} {}
+            );
+      }
+      #{
+        array name in namespace.getAllNamespacedSubdirRequires()
+          "require('./#{name}/namespace');"
+        .join "\n"
+      }
