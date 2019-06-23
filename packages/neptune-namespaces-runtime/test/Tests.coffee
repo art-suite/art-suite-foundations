@@ -68,3 +68,19 @@ suite "NeptuneNamespacesRuntime", ->
         assert.equal FakeNeptune.Foo, Foo1
         assert.equal FakeNeptune.versionedNamespaces.Foo[1], Foo1
         assert.equal FakeNeptune.versionedNamespaces.Foo[2], Foo2
+
+      test "add PathedNamespace after PackageNamespace", ->
+        FakeNeptune = BuildFakeNeptune()
+        FakeNeptune.addNamespace "Foo",
+          class Foo extends PackageNamespace
+          .configure version: 1
+
+        FakeNeptune.addNamespace "Foo.Bar",
+          class Bar extends PackageNamespace
+          .configure version: 2
+
+        assert.equal FakeNeptune.Foo, Foo
+        assert.equal FakeNeptune.Foo.Bar, Bar
+
+        assert.equal FakeNeptune.Foo.version, 1
+        assert.equal FakeNeptune.Foo.Bar.version, 2
