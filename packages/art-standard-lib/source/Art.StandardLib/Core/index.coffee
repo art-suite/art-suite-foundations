@@ -6,6 +6,6 @@ module.exports
 .includeInNamespace require './Core'
 .addModules
   ArrayCompactFlatten: require './ArrayCompactFlatten'
-  Merge:               require './Merge'              
-  StringCase:          require './StringCase'         
-  Types:               require './Types'              
+  Merge:               require './Merge'
+  StringCase:          require './StringCase'
+  Types:               require './Types'

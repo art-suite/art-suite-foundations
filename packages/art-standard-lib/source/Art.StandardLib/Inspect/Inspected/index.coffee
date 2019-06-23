@@ -4,7 +4,7 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Array:  require './Array' 
-  Core:   require './Core'  
+  Array:  require './Array'
+  Core:   require './Core'
   Object: require './Object'
   String: require './String'

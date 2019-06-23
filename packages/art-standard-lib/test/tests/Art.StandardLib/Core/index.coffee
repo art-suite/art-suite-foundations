@@ -4,5 +4,5 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Merge:          require './Merge'         
+  Merge:          require './Merge'
   StandardImport: require './StandardImport'
