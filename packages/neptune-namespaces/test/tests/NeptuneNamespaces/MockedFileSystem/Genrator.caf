@@ -13,8 +13,7 @@ suite:
     teardown -> mockFs.restore()
 
     test :basic ->
-      generator = new Generator "source/Foo", quiet: true, js: true
-      generator.generate()
+      Generator.generate :source/Foo quiet: true js: true
       .then ->
         tree = mockFs.getTree()
         assert.exists tree.source.Foo[:index.js]

@@ -1,8 +1,71 @@
-import &StandardImport, &Generators, {} &NamespaceStructure, &CoffeeScript
+import &StandardImport, &Generators, &PackageRoot, {} &NamespaceStructure, &CoffeeScript
 
-class Generator extends &GeneratorOld
+class Generator
 
-  @extensions = :js :coffee :caffeine :caf
+  ############################
+  ############################
+    CLASS
+  ############################
+  ############################
+
+  @standardRoots:
+    :source
+    :test
+    :performance
+    :src
+    :perf
+
+  @generatedFilenameRegexp: /(^|\/)(namespace|index)\.(coffee|js)$/
+
+  @extensions: :js :coffee :caffeine :caf
+
+  @findVersionFile: (path) ->
+    if packageRoot = getPackageRoot path
+      Path.join packageRoot, "package.json"
+
+  @infoLog: (root, args...) ->
+    root = Path.basename root
+    args = args.join()
+    args = args.split "\n"
+    each arg in args
+      console.log if arg == ""
+        ""
+      else
+        "Neptune.#{upperCamelCase root}: ".grey + arg
+
+  @watch: (root, options = {}) ->
+    @infoLog root, "watching...".green
+    generator = null
+    fsp.watch
+      root
+      {} options.persistent, recursive: true
+      (event, filename) ->
+        if event != :change && !filename.match @generatedFilenameRegexp
+          @infoLog
+            root
+            "" watch event: ".bold.yellow + "#{event} #{filename.yellow}
+
+          options.lastGenerator = generator if generator
+          generator = new Generator root, options
+          generator.generate()
+
+  @generate: (globRoot, options = {}) ->
+    Klass = @
+    glob globRoot
+    .then (roots) ->
+      promiseSequence array root in roots when fsp.statSync(root).isDirectory()
+        ->
+          generator = new Klass root, options
+
+          generator.generate()
+          .then -> Generator.watch root, merge options, lastGenerator: generator if options.watch
+          .catch (error) -> log error.stack
+
+  ############################
+  ############################
+    INSTANCE
+  ############################
+  ############################
 
   constructor: (@root, options) ->
     throw new Error "root required" unless @root is String
@@ -11,7 +74,7 @@ class Generator extends &GeneratorOld
       each option in :pretend :verbose :lastGenerator :force :quiet :js :cleanup
         @[option] = options[option]
 
-    @versionFile = Generator.findVersionFile @root
+    @versionFile = @constructor.findVersionFile @root
     @rootPrefix = getParentPath @root
 
   infoLog:    (args...) -> @constructor.infoLog @_getRelativePath(), args.join() unless @quiet
