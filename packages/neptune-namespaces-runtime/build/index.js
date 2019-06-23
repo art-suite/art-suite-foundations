@@ -34,18 +34,35 @@ module.exports =
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -63,12 +80,170 @@ module.exports =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/*!**********************!*\
+  !*** ./index.coffee ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./source/Neptune */ 1);
+
+
+/***/ }),
+/* 1 */
+/*!*******************************!*\
+  !*** ./source/Neptune.coffee ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Namespace, Neptune, version,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+__webpack_require__(/*! ./global */ 2);
+
+__webpack_require__(/*! ./function */ 3);
+
+version = (__webpack_require__(/*! ../package.json */ 4)).version;
+
+if (global.Neptune) {
+  throw new Error("Load NeptuneNamespaces(" + version + ") FAILED. Another version already loaded: " + global.Neptune.version);
+}
+
+module.exports = global.Neptune = Neptune = (function(superClass) {
+  extend(Neptune, superClass);
+
+  function Neptune() {
+    return Neptune.__super__.constructor.apply(this, arguments);
+  }
+
+  Namespace.namespace = Namespace.Neptune = Neptune;
+
+  Neptune.Namespace = Namespace;
+
+  Neptune.PackageNamespace = __webpack_require__(/*! ./PackageNamespace */ 5);
+
+  Neptune.namespacePath = "Neptune";
+
+  Neptune.namespace = null;
+
+  Neptune.version = version;
+
+  Neptune.verbose = false;
+
+  Neptune.Base = Namespace;
+
+  Neptune.isNode = __webpack_require__(/*! detect-node */ 9);
+
+  return Neptune;
+
+})(Namespace = __webpack_require__(/*! ./NamespaceClass */ 6));
+
+
+/***/ }),
+/* 2 */
+/*!******************************!*\
+  !*** ./source/global.coffee ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+g = typeof window !== "undefined" && window !== null ? window : typeof self !== "undefined" && self !== null ? self : global;
+
+g.self || (g.self = g);
+
+g.global || (g.global = g);
+
+
+/***/ }),
+/* 3 */
+/*!********************************!*\
+  !*** ./source/function.coffee ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+if ((function() {}).name == null) {
+  Object.defineProperty(global.Function.prototype, 'name', {
+    get: function() {
+      var matches, name;
+      name = (matches = this.toString().match(/^\s*function\s*([^\s(]+)/)) ? matches[1] : "";
+      Object.defineProperty(this, 'name', {
+        value: name
+      });
+      return name;
+    }
+  });
+}
+
+global.Function.prototype.getName = function() {
+  if (this._name && this.hasOwnProperty("_name")) {
+    return this._name;
+  } else {
+    return this.name || "anonymousFunction";
+  }
+};
+
+global.Function.prototype.hasName = function() {
+  return !!((this._name && this.hasOwnProperty("_name")) || this.name);
+};
+
+
+/***/ }),
+/* 4 */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-standard-lib":"*","coffee-script":"*"},"description":"Neptune.Namespaces.Runtime","license":"ISC","name":"neptune-namespaces-runtime","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"3.0.8"};
+
+/***/ }),
+/* 5 */
+/*!****************************************!*\
+  !*** ./source/PackageNamespace.coffee ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var PackageNamespace,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = PackageNamespace = (function(superClass) {
+  extend(PackageNamespace, superClass);
+
+  function PackageNamespace() {
+    return PackageNamespace.__super__.constructor.apply(this, arguments);
+  }
+
+  PackageNamespace.configure = function(arg) {
+    this.version = arg.version;
+    return this;
+  };
+
+  return PackageNamespace;
+
+})(__webpack_require__(/*! ./NamespaceClass */ 6));
+
+
+/***/ }),
+/* 6 */
+/*!**************************************!*\
+  !*** ./source/NamespaceClass.coffee ***!
+  \**************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -90,7 +265,7 @@ var ArtStandardLibCore, Namespace, isClass, isExtendedClass, isFunction, isPlain
   slice = [].slice,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-ref = __webpack_require__(9), isClass = ref.isClass, isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
+ref = __webpack_require__(/*! art-standard-lib/Types */ 7), isClass = ref.isClass, isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
 ArtStandardLibCore = null;
 
@@ -138,7 +313,7 @@ module.exports = Namespace = (function() {
   };
 
   Namespace.getNeptuneLib = function() {
-    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(8));
+    return ArtStandardLibCore || (ArtStandardLibCore = __webpack_require__(/*! art-standard-lib/Core */ 8));
   };
 
   Namespace.getInspectedObjects = function(includeModules) {
@@ -232,15 +407,16 @@ module.exports = Namespace = (function() {
       versions = this.versionedNamespaces[name] = {};
       this.addVersionedNamespace(name, this.namespaces[name]);
     }
-    version = namespace.version;
-    console.warn(("NN: adding " + this.namespacePath + ".versionedNamespaces." + name + "['" + version + "']") + (namespace === this.namespaces[name] ? " (default)" : ""));
-    if (version == null) {
-      throw new Error("expecting namespace '" + name + "' in '" + this.namespacePath + "'' to have a version");
-    }
-    if (versions[version]) {
-      console.warn("NN: versionedNamespace " + name + " already added for version " + version + ". Not added again.");
-    } else {
-      versions[version] = namespace;
+    if (version = namespace.version) {
+      console.warn(("NN: adding " + this.namespacePath + ".versionedNamespaces." + name + "['" + version + "']") + (namespace === this.namespaces[name] ? " (default)" : ""));
+      if (version == null) {
+        throw new Error("expecting namespace '" + name + "' in '" + this.namespacePath + "'' to have a version");
+      }
+      if (versions[version]) {
+        console.warn("NN: versionedNamespace " + name + " already added for version " + version + ". Not added again.");
+      } else {
+        versions[version] = namespace;
+      }
     }
     return namespace;
   };
@@ -251,8 +427,8 @@ module.exports = Namespace = (function() {
       ref1 = name.split("."), path = 2 <= ref1.length ? slice.call(ref1, 0, j = ref1.length - 1) : (j = 0, []), name = ref1[j++];
       this.vivifySubnamespace(path).addNamespace(name, namespace);
     } else if (existingNamespace = this.namespaces[name]) {
-      if (!((namespace.prototype instanceof Neptune.PackageNamespace) && (existingNamespace.prototype instanceof Neptune.PackageNamespace))) {
-        throw new Error("PathedNamespace vs PackageNamespaces conflict for: " + this.namespacePath + "." + name + "'.");
+      if (!(namespace.prototype instanceof Neptune.PackageNamespace)) {
+        throw new Error("Attempting to replace a PackageNamespace with a Pathnamespace. Define your PackageNamespace first. Namespace: " + this.namespacePath + "." + name + "'");
       }
       this.addVersionedNamespace(name, namespace);
     } else {
@@ -390,9 +566,16 @@ module.exports = Namespace = (function() {
       return;
     }
     if (this[propName]) {
-      if (this[propName] !== value) {
+      if (this[propName] !== value && global.Neptune.verbose) {
         addingFromString = addingFrom.namespacePath || addingFrom.propName || (Object.keys(addingFrom)).join(', ');
-        console.error(this.namespacePath + " already has key: " + propName + ". Adding from: " + addingFromString);
+        console.log({
+          namespacePath: this.namespacePath,
+          addingFromString: addingFromString,
+          propName: propName,
+          oldValue: this[propName],
+          newValue: value
+        });
+        console.error("NeptuneNamespaces: " + this.namespacePath + " already has key '" + propName + "' with a different value. Replacing with value from: " + addingFromString);
       }
       this[propName];
     } else {
@@ -409,150 +592,34 @@ module.exports = Namespace = (function() {
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Namespace, Neptune, version,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-__webpack_require__(5);
-
-__webpack_require__(4);
-
-version = (__webpack_require__(7)).version;
-
-if (global.Neptune) {
-  throw new Error("Load NeptuneNamespaces(" + version + ") FAILED. Another version already loaded: " + global.Neptune.version);
-}
-
-module.exports = global.Neptune = Neptune = (function(superClass) {
-  extend(Neptune, superClass);
-
-  function Neptune() {
-    return Neptune.__super__.constructor.apply(this, arguments);
-  }
-
-  Namespace.namespace = Namespace.Neptune = Neptune;
-
-  Neptune.Namespace = Namespace;
-
-  Neptune.PackageNamespace = __webpack_require__(3);
-
-  Neptune.namespacePath = "Neptune";
-
-  Neptune.namespace = null;
-
-  Neptune.version = version;
-
-  Neptune.Base = Namespace;
-
-  Neptune.isNode = __webpack_require__(6);
-
-  return Neptune;
-
-})(Namespace = __webpack_require__(0));
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(1);
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var PackageNamespace,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-module.exports = PackageNamespace = (function(superClass) {
-  extend(PackageNamespace, superClass);
-
-  function PackageNamespace() {
-    return PackageNamespace.__super__.constructor.apply(this, arguments);
-  }
-
-  return PackageNamespace;
-
-})(__webpack_require__(0));
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-if ((function() {}).name == null) {
-  Object.defineProperty(global.Function.prototype, 'name', {
-    get: function() {
-      var matches, name;
-      name = (matches = this.toString().match(/^\s*function\s*([^\s(]+)/)) ? matches[1] : "";
-      Object.defineProperty(this, 'name', {
-        value: name
-      });
-      return name;
-    }
-  });
-}
-
-global.Function.prototype.getName = function() {
-  if (this._name && this.hasOwnProperty("_name")) {
-    return this._name;
-  } else {
-    return this.name || "anonymousFunction";
-  }
-};
-
-global.Function.prototype.hasName = function() {
-  return !!((this._name && this.hasOwnProperty("_name")) || this.name);
-};
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-var g;
-
-g = typeof window !== "undefined" && window !== null ? window : typeof self !== "undefined" && self !== null ? self : global;
-
-g.self || (g.self = g);
-
-g.global || (g.global = g);
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = false;
-
-// Only Node.JS has a process variable that is of [[Class]] process
-try {
- module.exports = Object.prototype.toString.call(global.process) === '[object process]' 
-} catch(e) {}
-
-
-/***/ }),
 /* 7 */
+/*!*****************************************************************************************!*\
+  !*** external "require('art-standard-lib/Types' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*****************************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC","dependencies":{"art-standard-lib":"*","coffee-script":"*"},"description":"Neptune.Namespaces.Runtime","license":"ISC","name":"neptune-namespaces-runtime","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress","test":"nn -s;mocha -u tdd --compilers coffee:coffee-script/register","testInBrowser":"webpack-dev-server --progress"},"version":"3.0.7"}
+module.exports = require('art-standard-lib/Types' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 8 */
+/*!****************************************************************************************!*\
+  !*** external "require('art-standard-lib/Core' /* ABC - not inlining fellow NPM *_/)" ***!
+  \****************************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib/Core");
+module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 9 */
+/*!******************************************************************************!*\
+  !*** external "require('detect-node' /* ABC - not inlining fellow NPM *_/)" ***!
+  \******************************************************************************/
+/*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("art-standard-lib/Types");
+module.exports = require('detect-node' /* ABC - not inlining fellow NPM */);
 
 /***/ })
 /******/ ]);

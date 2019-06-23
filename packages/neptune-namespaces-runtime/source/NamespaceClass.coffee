@@ -100,33 +100,32 @@ module.exports = class Namespace
       # initialized versions for this namespace, add the existing one
       @addVersionedNamespace name, @namespaces[name]
 
+    if version = namespace.version
+      console.warn "NN: adding #{@namespacePath}.versionedNamespaces.#{name}['#{version}']" + if namespace == @namespaces[name]
+        " (default)"
+      else ""
 
-    {version} = namespace
-    console.warn "NN: adding #{@namespacePath}.versionedNamespaces.#{name}['#{version}']" + if namespace == @namespaces[name]
-      " (default)"
-    else ""
+      throw new Error "expecting namespace '#{name}' in '#{@namespacePath}'' to have a version" unless version?
+      if versions[version]
+        console.warn "NN: versionedNamespace #{name} already added for version #{version}. Not added again."
+      else
+        versions[version] = namespace
 
-    throw new Error "expecting namespace '#{name}' in '#{@namespacePath}'' to have a version" unless version?
-    if versions[version]
-      console.warn "NN: versionedNamespace #{name} already added for version #{version}. Not added again."
-    else
-      versions[version] = namespace
     namespace
 
   # OUT: namespace
   @addNamespace: (name, namespace) ->
     if isPathedNamespace name
-      [path..., name] = name.split(".")
+      [path..., name] = name.split "."
       @vivifySubnamespace(path).addNamespace name, namespace
 
     else if existingNamespace = @namespaces[name]
-      unless (
-            (namespace.prototype instanceof Neptune.PackageNamespace) &&
-            (existingNamespace.prototype instanceof Neptune.PackageNamespace)
-          )
+      unless namespace.prototype instanceof Neptune.PackageNamespace
         throw new Error "
-          PathedNamespace vs PackageNamespaces conflict for: #{@namespacePath}.#{name}'.
+          Attempting to replace a PackageNamespace with a Pathnamespace.
+          Define your PackageNamespace first. Namespace: #{@namespacePath}.#{name}'
           "
+
       @addVersionedNamespace name, namespace
 
     else

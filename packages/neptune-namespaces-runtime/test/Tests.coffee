@@ -58,10 +58,12 @@ suite "NeptuneNamespacesRuntime", ->
 
       test "versioned", ->
         FakeNeptune = BuildFakeNeptune()
-        FakeNeptune.addNamespace "Foo", class Foo1 extends PackageNamespace
-          @version: 1
-        FakeNeptune.addNamespace "Foo", class Foo2 extends PackageNamespace
-          @version: 2
+        FakeNeptune.addNamespace "Foo",
+          class Foo1 extends PackageNamespace
+          .configure version: 1
+        FakeNeptune.addNamespace "Foo",
+          class Foo2 extends PackageNamespace
+          .configure version: 2
 
         assert.equal FakeNeptune.Foo, Foo1
         assert.equal FakeNeptune.versionedNamespaces.Foo[1], Foo1
