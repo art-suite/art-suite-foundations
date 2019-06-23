@@ -15,7 +15,7 @@ Commander = require "commander"
 .option '-w, --watch',      'stay running, watch for changes, and automatically update'
 .option '-v, --verbose',    'enable verbose output'
 .option '-q, --quiet',      'suppress all output'
-.option '-j, --javascript', 'output .js files instead of .coffee (experimental)'
+.option '-j, --js',         'output .js files instead of .coffee (experimental)'
 .option '--cleanup',        'cleanup .coffee files if generating .js or visa-versa'
 .option '-f, --force',      'overwrite all index and namespace files'
 .option '-s, --std',        "include the standard roots: #{standardRoots.join ', '}"
@@ -27,14 +27,14 @@ Commander = require "commander"
     "
 .parse process.argv
 
-run = (targetPaths, {watch, verbose, quiet, force, javascript, cleanup}) ->
+run = (targetPaths, {watch, verbose, quiet, force, js, cleanup}) ->
   if verbose
     console.log """
       neptune-namespaces (#{version})
 
       roots: #{targetPaths.join ', '}
       """
-    log {watch, verbose, quiet, force, javascript, cleanup}
+    log {watch, verbose, quiet, force, js, cleanup}
 
   todoList = for targetPath in targetPaths
     do (targetPath) ->
@@ -47,7 +47,7 @@ run = (targetPaths, {watch, verbose, quiet, force, javascript, cleanup}) ->
           quiet
           watch
           cleanup
-          js: javascript
+          js
           persistent: true
         }
 

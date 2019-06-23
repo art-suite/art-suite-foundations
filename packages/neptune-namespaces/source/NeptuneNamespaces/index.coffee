@@ -6,8 +6,10 @@ module.exports
 .addModules
   ArrayCompactFlatten: require './ArrayCompactFlatten'
   Generator:           require './Generator'          
+  GeneratorOld:        require './GeneratorOld'       
   Helper:              require './Helper'             
   MiniFoundation:      require './MiniFoundation'     
   NamespaceStructure:  require './NamespaceStructure' 
   PackageRoot:         require './PackageRoot'        
+  StandardImport:      require './StandardImport'     
 require './Generators'

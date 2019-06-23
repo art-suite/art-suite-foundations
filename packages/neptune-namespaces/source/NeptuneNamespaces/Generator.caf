@@ -1,0 +1,19 @@
+import &StandardImport
+
+class Generator extends &GeneratorOld
+
+  @extensions = :js :coffee :caffeine :caf
+
+  infoLog:    (args...) -> @constructor.infoLog @getRelativePath(), args.join() unless @quiet
+  verboseLog: (args...) -> @infoLog args... if @verbose
+  warningLog: (args...) -> @infoLog args... if @verbose # toString().yellow.bold
+
+  generate: ->
+    Generator extract extensions
+    @verboseLog "\nscanning root: #{@root.yellow}"
+    glob "#{@root}/**/*.{#{extensions.join ','}}", dot: true
+    .then (files) ->
+      if files.length == 0
+        @warningLog "" no .#{extensions.join ', .'} files found
+      else
+        @generateFromFiles files

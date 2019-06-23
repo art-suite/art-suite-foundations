@@ -1,0 +1,21 @@
+import &StandardImport
+
+Path = &Path
+mockFs = &ExtendedMockFs
+
+suite:
+  basic: ->
+    setup -> mockFs
+      source:
+        Foo:
+          file.js: "" // js file
+
+    teardown -> mockFs.restore()
+
+    test :basic ->
+      generator = new Generator "source/Foo", quiet: true, js: true
+      generator.generate()
+      .then ->
+        tree = mockFs.getTree()
+        assert.exists tree.source.Foo[:index.js]
+        assert.exists tree.source.Foo[:namespace.js]

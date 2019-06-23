@@ -31,13 +31,14 @@ module.exports = class Generator
     if packageRoot = getPackageRoot path
       Path.join packageRoot, "package.json"
 
-  @generate: (globRoot, options = {}) =>
+  @generate: (globRoot, options = {}) ->
+    Klass = @
     glob globRoot
     .then (roots) ->
       filePromiseGenerators = for root in roots when fsp.statSync(root).isDirectory()
         do (root) ->
           ->
-            generator = new Generator root, options
+            generator = new Klass root, options
 
             generator.generate()
             .then ->
@@ -48,17 +49,17 @@ module.exports = class Generator
       promiseSequence filePromiseGenerators
 
   @watch: (root, options = {}) ->
-    @log root, "watching...".green
+    @infoLog root, "watching...".green
     generator = null
     fsp.watch root, {persistent: options.persistent, recursive: true}, (event, filename) =>
       if event != "change" && !filename.match /(^|\/)(namespace|index)\.(coffee|js)$/
-        @log root, "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
+        @infoLog root, "watch event: ".bold.yellow + "#{event} #{filename.yellow}"
 
         options.lastGenerator = generator if generator
         generator = new Generator root, options
         generator.generate()
 
-  @log: (root, args...) ->
+  @infoLog: (root, args...) ->
     root = Path.basename root
     args = args.join()
     args = args.split "\n"
@@ -67,8 +68,6 @@ module.exports = class Generator
         ""
       else
         "Neptune.#{upperCamelCase root}: ".grey + arg
-
-  log: (args...) -> Generator.log @getRelativePath(), args.join() unless @quiet
 
   constructor: (@root, options = {}) ->
     throw new Error "root required" unless typeof @root == "string"
@@ -79,8 +78,8 @@ module.exports = class Generator
 
   generateHelper: ({path, relativePath, name, code}) ->
     if @pretend
-      @log "\ngenerated: #{@getLogFileString(name).yellow}"
-      @log indent code.green
+      @infoLog "\ngenerated: #{@getLogFileString(name).yellow}"
+      @infoLog indent code.green
 
     if @js
       name = name.replace /\.coffee$/, ".js"
@@ -114,7 +113,7 @@ module.exports = class Generator
       do (name, code) =>
         filesTotal++
         if @lastGenerator?.generatedFiles[name] == code
-          @log "no change: #{@getLogFileString(name)}".grey if @verbose
+          @infoLog "no change: #{@getLogFileString(name)}".grey if @verbose
         else
           p = if fsp.existsSync name
             fsp.readFile name, 'utf8'
@@ -123,15 +122,15 @@ module.exports = class Generator
           p.then (currentContents) =>
             if @force || currentContents != code
               filesWritten++
-              @log "writing: #{@getLogFileString(name).yellow}"
+              @infoLog "writing: #{@getLogFileString(name).yellow}"
               fsp.writeFile name, code
           , (error) =>
-            @log "error reading #{@getLogFileString(name)}".red, error
+            @infoLog "error reading #{@getLogFileString(name)}".red, error
 
     Promise.all promises
     .then =>
-      @log "#{filesTotal - filesWritten}/#{filesTotal} files current" if filesWritten < filesTotal
-      @log "#{filesWritten}/#{filesTotal} files #{if @lastGenerator then 'changed' else 'written'}" if filesWritten > 0
+      @infoLog "#{filesTotal - filesWritten}/#{filesTotal} files current" if filesWritten < filesTotal
+      @infoLog "#{filesWritten}/#{filesTotal} files #{if @lastGenerator then 'changed' else 'written'}" if filesWritten > 0
 
   generateFiles: (namespaces) ->
     @generatedFiles = {}
@@ -147,26 +146,26 @@ module.exports = class Generator
         relativePath: relativePath
         path: path
         name: "namespace.coffee"
-        code: NamespaceGenerator.generate namespace, relativePath, relativeVersionFile
+        code: NamespaceGenerator.generate namespace, relativeVersionFile
 
       @generateHelper
         relativePath: relativePath
         path: path
         name: "index.coffee"
-        code: IndexGenerator.generate namespace, relativePath
+        code: IndexGenerator.generate namespace
 
   showNamespaceStructure: (namespaces) ->
-    @log "generating namespace structure:"
-    @log "  Neptune".yellow
+    @infoLog "generating namespace structure:"
+    @infoLog "  Neptune".yellow
     for namespacePath in Object.keys(namespaces).sort()
-      @log "  #{namespacePath}".yellow
+      @infoLog "  #{namespacePath}".yellow
       for moduleName in namespaces[namespacePath].getModuleNames()
-        @log "    #{moduleName}".grey
+        @infoLog "    #{moduleName}".grey
 
   ###
-  Input is a list of files with fill paths
+    Input is a list of files with fill paths
   ###
-  generateFromFiles: (files) =>
+  generateFromFiles: (files) ->
     if @cleanup
       regex = ///($|\/)(index|namespace).#{if @js then "coffee" else "js"}$///
       for file in files when regex.test file
@@ -187,14 +186,3 @@ module.exports = class Generator
         namespaces: namespaces
     else
       @writeFiles()
-
-  generate: ->
-    extensions = "js,coffee,caffeine,caf"
-    @log "\nscanning root: #{@root.yellow}" if @verbose
-    glob "#{@root}/**/*.{#{extensions}}", dot: true
-    .then (files) =>
-      if files.length == 0
-        error = "no .#{extensions.replace ',', ', .'} files found"
-        @log error.yellow.bold
-      else
-        @generateFromFiles files

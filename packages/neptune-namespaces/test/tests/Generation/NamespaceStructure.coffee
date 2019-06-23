@@ -1,4 +1,4 @@
-{NamespaceStructure, MiniFoundation} = Generation
+{NamespaceStructure, MiniFoundation} = require '../StandardImport'
 
 {log, formattedInspect} = MiniFoundation
 {shouldNotAutoload, shouldNotNamespace} = NamespaceStructure

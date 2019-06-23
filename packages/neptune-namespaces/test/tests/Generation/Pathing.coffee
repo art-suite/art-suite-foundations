@@ -1,4 +1,4 @@
-{Generator, MiniFoundation} = Generation
+{Generator, MiniFoundation} = require '../StandardImport'
 
 {log} = MiniFoundation
 

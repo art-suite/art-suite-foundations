@@ -1,0 +1,31 @@
+import &MiniFoundation, &Helper, Math
+
+class IndexGenerator
+  @generate: (namespace) ->
+    {includeInNamespace} = namespace
+
+    generateNamespacedList = (set) ->
+      array item in
+          array path, namespaceName in set.namespaced
+            {} namespaceName, path
+          .sort((a, b) -> a.path.localeCompare b.path)
+
+        []
+          " "
+          item.namespaceName + ":"
+          "require '#{requirePath item.path}'"
+
+    modules = generateNamespacedList namespace.fileSet
+
+    compactFlatten []
+      array name in namespace.getAllNonNamespacedRequires()
+        "require '#{requirePath name}'"
+      "module.exports = require './namespace'"
+      "module.exports" if includeInNamespace || modules.length > 0
+      includeInNamespace && ".includeInNamespace require '#{requirePath includeInNamespace}'"
+      ".addModules" if modules.length > 0
+      alignColumns modules
+      array name in namespace.getAllNamespacedSubdirRequires()
+        "require './#{name}'"
+
+    .join "\n"

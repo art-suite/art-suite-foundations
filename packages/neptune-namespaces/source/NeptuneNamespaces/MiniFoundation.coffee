@@ -94,4 +94,3 @@ module.exports = class MiniFoundation
       Path.join absPath, relativePath
     else
       relativePath
-
