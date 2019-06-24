@@ -1,2 +1,2 @@
 module.exports = class PackageNamespace extends require './NamespaceClass'
-  @configure: ({@version}) -> @
+  @_configureNamespace: ({@version}) -> @

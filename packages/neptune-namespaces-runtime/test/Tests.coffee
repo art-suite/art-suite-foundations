@@ -59,10 +59,10 @@ suite "NeptuneNamespacesRuntime", ->
         FakeNeptune = BuildFakeNeptune()
         FakeNeptune.addNamespace "Foo",
           class Foo1 extends PackageNamespace
-          .configure version: 1
+          ._configureNamespace version: 1
         FakeNeptune.addNamespace "Foo",
           class Foo2 extends PackageNamespace
-          .configure version: 2
+          ._configureNamespace version: 2
 
         assert.equal FakeNeptune.Foo, Foo1
         assert.equal FakeNeptune.versionedNamespaces.Foo[1], Foo1
@@ -72,11 +72,11 @@ suite "NeptuneNamespacesRuntime", ->
         FakeNeptune = BuildFakeNeptune()
         FakeNeptune.addNamespace "Foo",
           class Foo extends PackageNamespace
-          .configure version: 1
+          ._configureNamespace version: 1
 
         FakeNeptune.addNamespace "Foo.Bar",
           class Bar extends PackageNamespace
-          .configure version: 2
+          ._configureNamespace version: 2
 
         assert.equal FakeNeptune.Foo, Foo
         assert.equal FakeNeptune.Foo.Bar, Bar
@@ -88,9 +88,9 @@ suite "NeptuneNamespacesRuntime", ->
         FakeNeptune = BuildFakeNeptune()
         FakeNeptune.addNamespace "Foo.Bar",
           class Bar extends PackageNamespace
-          .configure version: 2
+          ._configureNamespace version: 2
 
         assert.throws ->
           FakeNeptune.addNamespace "Foo",
             class Foo extends PackageNamespace
-            .configure version: 1
+            ._configureNamespace version: 1
