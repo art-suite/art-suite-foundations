@@ -1,5 +1,6 @@
-{encodeUriQuery, stripLeadingSlash, stripTrailingSlash, uriPathJoin, encodeUri, encodeMailto} = Neptune.Art.Foundation.Browser
-module.exports = suite:
+import &StandardImport
+
+suite:
   encodeUriQuery: ->
     test "a: 1", -> assert.eq "a=1", encodeUriQuery a: 1
     test "a: 'hi'", -> assert.eq "a=hi", encodeUriQuery a: 'hi'

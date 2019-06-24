@@ -1,6 +1,7 @@
-{Foundation} = Neptune.Art
+import &StandardImport
+import Neptune.Art.BrowserTools.DomElementFactories
 
-{Div, Span, B, Em} = Foundation.Browser.DomElementFactories
+global extract HTMLDivElement
 
 if self.document
   suite "Art.Foundation.Browser.DomElementFactories", ->

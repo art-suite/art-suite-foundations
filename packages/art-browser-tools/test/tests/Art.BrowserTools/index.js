@@ -4,7 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  DomElementFactories: require('./dom_element_factories'),
+  DomElementFactories: require('./DomElementFactories'),
   Test:                require('./Test'),
   Uri:                 require('./Uri')
 });
