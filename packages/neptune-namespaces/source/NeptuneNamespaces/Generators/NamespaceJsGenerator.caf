@@ -1,6 +1,15 @@
 import &StandardImport
 
-class NamespaceJsGenerator extends &NamespaceGenerator
+class NamespaceJsGenerator
+
+  @getClassName: ({namespaceName}) ->
+    if isPathedNamespace namespaceName
+          peek namespaceName.split '.'
+    else  namespaceName
+
+  @getParentNamespacePath: ({parent}) ->
+    parent.parent && "../namespace"
+    ? parent.path
 
   @generate: (namespace, versionFile) ->
     namespace extract namespaceName, isPathNamespace

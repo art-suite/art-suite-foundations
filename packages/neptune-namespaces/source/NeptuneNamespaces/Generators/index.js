@@ -4,8 +4,6 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  IndexGenerator:       require('./IndexGenerator'),
   IndexJsGenerator:     require('./IndexJsGenerator'),
-  NamespaceGenerator:   require('./NamespaceGenerator'),
   NamespaceJsGenerator: require('./NamespaceJsGenerator')
 });
