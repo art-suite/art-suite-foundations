@@ -40,6 +40,9 @@
     "webpack-stylish": "^0.1.8"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
+  "devDependencies": {
+    "mock-fs": "^4.10.0"
+  },
   "license": "ISC",
   "name": "art-build-configurator",
   "scripts": {
