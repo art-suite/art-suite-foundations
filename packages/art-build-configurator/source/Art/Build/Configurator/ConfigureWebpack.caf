@@ -38,7 +38,6 @@ defineModule module, class ConfigureWebpack extends BaseClass
 
     targetNode = !devServer && !!abcConfig.target?.node
 
-    log {targetNode, env, argv, devServer}
     standard = StandardWebpackConfig.get npmRoot, abcConfig, targetNode
     baseConfig = webpackMerge standard, common
     targets ||= index: {}
