@@ -74,6 +74,10 @@ class Generator
       each option in :pretend :verbose :lastGenerator :force :quiet :js :cleanup
         @[option] = options[option]
 
+    @js =
+    @cleanup = true
+    console.log "Using @js=#{!!@js} and @cleanup=#{!!@cleanup}!!!"
+
     @versionFile = @constructor.findVersionFile @root
     @rootPrefix = getParentPath @root
 

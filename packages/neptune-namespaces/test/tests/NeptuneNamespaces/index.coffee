@@ -2,5 +2,4 @@
 # file: tests/NeptuneNamespaces/index.coffee
 
 module.exports = require './namespace'
-module.exports
 require './MockedFileSystem'

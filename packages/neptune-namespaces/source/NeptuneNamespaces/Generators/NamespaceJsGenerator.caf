@@ -8,21 +8,20 @@ class NamespaceJsGenerator extends &NamespaceGenerator
     className = @getClassName namespace
     parentNamespacePath = @getParentNamespacePath namespace
 
-    requireParent = "" (require('#{parentNamespacePath}'))
+    requireParent = "" require('#{parentNamespacePath}')
 
     """
       module.exports = #{ switch
         when isPathNamespace
-          "#{requireParent}.vivifySubnamespace('#{namespaceName}');"
+          "" module.exports =  #{requireParent}.vivifySubnamespace('#{namespaceName}');
 
         when versionFile && namespace.getIsRootPackageNamespace()
           """
             #{requireParent}.addNamespace(
               '#{namespaceName}',
-              class #{className} extends #{PackageNamespaceClassName} {}
+              (class #{className} extends #{PackageNamespaceClassName} {})
+              ._configureNamespace(require('#{versionFile}'))
             );
-
-            #{className}.version = require('#{versionFile}').version;
 
         else
           """

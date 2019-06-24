@@ -4,6 +4,6 @@
 module.exports = require './namespace'
 module.exports
 .addModules
-  Generator:          require './Generator'         
+  Generator:          require './Generator'
   NamespaceStructure: require './NamespaceStructure'
-  Pathing:            require './Pathing'           
+  Pathing:            require './Pathing'
