@@ -207,7 +207,7 @@ global.Function.prototype.hasName = function() {
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-standard-lib":"*","coffee-script":"*"},"description":"Neptune.Namespaces.Runtime","license":"ISC","name":"neptune-namespaces-runtime","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"3.0.8"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-standard-lib":"*","coffee-script":"*"},"description":"Neptune.Namespaces.Runtime","license":"ISC","name":"neptune-namespaces-runtime","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"3.1.0"};
 
 /***/ }),
 /* 5 */
