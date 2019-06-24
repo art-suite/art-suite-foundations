@@ -51,14 +51,6 @@ suite:
           .sort()
           :file.js :index.js :namespace.js
 
-    test :basic_coffee ->
-      Generator.generate :source/Foo quiet: true
-      .then ->
-        assert.eq
-          Object.keys mockFs.getTree().source.Foo
-          .sort()
-          :file.js :index.coffee :namespace.coffee
-
   all: ->
     setup ->
       mockFs
