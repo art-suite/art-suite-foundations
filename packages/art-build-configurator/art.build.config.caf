@@ -56,6 +56,8 @@ npm:
     mocha:                                :^5.2.0
     chai:                                 :^4.2.0
 
+  devDependencies:
+    mock-fs:                              :^4.10.0
 
   description: "" Tools for configuring npm (package.json) and webpack (webpack.config.js)
 
