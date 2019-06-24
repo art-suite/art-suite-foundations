@@ -427,10 +427,12 @@ module.exports = Namespace = (function() {
       ref1 = name.split("."), path = 2 <= ref1.length ? slice.call(ref1, 0, j = ref1.length - 1) : (j = 0, []), name = ref1[j++];
       this.vivifySubnamespace(path).addNamespace(name, namespace);
     } else if (existingNamespace = this.namespaces[name]) {
-      if (!(namespace.prototype instanceof Neptune.PackageNamespace)) {
-        throw new Error("Attempting to replace a PackageNamespace with a Pathnamespace. Define your PackageNamespace first. Namespace: " + this.namespacePath + "." + name + "'");
+      if (namespace.prototype instanceof Neptune.PackageNamespace) {
+        if (!(existingNamespace.prototype instanceof Neptune.PackageNamespace)) {
+          throw new Error("Attempting to replace a PathNamespace with a PackageNamespace. Define your PackageNamespace first. Namespace: " + this.namespacePath + "." + name + "'");
+        }
+        this.addVersionedNamespace(name, namespace);
       }
-      this.addVersionedNamespace(name, namespace);
     } else {
       this.allNamespaces[namespace.namespacePath] = this.namespaces[name] = this[name] = namespace._init(name, this);
     }

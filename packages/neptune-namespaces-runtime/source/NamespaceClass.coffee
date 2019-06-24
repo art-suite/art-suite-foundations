@@ -120,13 +120,14 @@ module.exports = class Namespace
       @vivifySubnamespace(path).addNamespace name, namespace
 
     else if existingNamespace = @namespaces[name]
-      unless namespace.prototype instanceof Neptune.PackageNamespace
-        throw new Error "
-          Attempting to replace a PackageNamespace with a Pathnamespace.
-          Define your PackageNamespace first. Namespace: #{@namespacePath}.#{name}'
-          "
+      if namespace.prototype instanceof Neptune.PackageNamespace
+        unless existingNamespace.prototype instanceof Neptune.PackageNamespace
+          throw new Error "
+            Attempting to replace a PathNamespace with a PackageNamespace.
+            Define your PackageNamespace first. Namespace: #{@namespacePath}.#{name}'
+            "
 
-      @addVersionedNamespace name, namespace
+        @addVersionedNamespace name, namespace
 
     else
       @allNamespaces[namespace.namespacePath] =

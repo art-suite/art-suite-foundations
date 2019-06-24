@@ -1,7 +1,6 @@
-require '..'
+require '../source/Neptune'
 {Namespace, PackageNamespace} = Neptune
 {assert} = require 'chai'
-console.log {Namespace, PackageNamespace}
 
 BuildFakeNeptune = ->
   class FakeNeptune extends Namespace
@@ -84,3 +83,14 @@ suite "NeptuneNamespacesRuntime", ->
 
         assert.equal FakeNeptune.Foo.version, 1
         assert.equal FakeNeptune.Foo.Bar.version, 2
+
+      test "can't add PathedNamespace after PackageNamespace", ->
+        FakeNeptune = BuildFakeNeptune()
+        FakeNeptune.addNamespace "Foo.Bar",
+          class Bar extends PackageNamespace
+          .configure version: 2
+
+        assert.throws ->
+          FakeNeptune.addNamespace "Foo",
+            class Foo extends PackageNamespace
+            .configure version: 1
