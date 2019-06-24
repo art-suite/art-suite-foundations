@@ -200,7 +200,7 @@ class BrowserDetection
   ##############
   simpleBrowserInfoDepricationWarning = -> log.warn "DEPRICATED - use simpleBrowserInfo directly"
   @isSafari:        -> simpleBrowserInfoDepricationWarning(); !!simpleBrowserInfo.safari
-  @isMobileBrowser: => log.warn "DEPRICATED - use getIsMobileBrowser"; @getIsMobileBrowser()
+  @isMobileBrowser: => log.warn "isMobileBrowser DEPRICATED - use getIsMobileBrowser"; @getIsMobileBrowser()
 
   # these names are consistent with my lowerCamelCase scheme (they parse with codeWords), and make sense
   @nativeAppDetect: -> simpleBrowserInfoDepricationWarning(); !!simpleBrowserInfo.nativeApp
