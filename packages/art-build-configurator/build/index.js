@@ -138,7 +138,7 @@ module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow 
 /*! exports provided: author, bin, dependencies, description, devDependencies, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.3","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.2.0","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.2","commander":"^2.19.0","css-loader":"^1.0.1","dateformat":"^3.0.3","detect-node":"^2.0.4","fs-extra":"^7.0.1","glob":"^7.1.4","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","pluralize":"^7.0.0","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.23.1","webpack":"^4.32.2","webpack-cli":"*","webpack-dev-server":"^3.4.1","webpack-merge":"^4.2.1","webpack-node-externals":"^1.7.2","webpack-stylish":"^0.1.8"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","devDependencies":{"mock-fs":"^4.10.0"},"license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.19.7"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","bin":{"abc":"./abc"},"dependencies":{"art-build-configurator":"*","art-class-system":"*","art-config":"*","art-object-tree-factory":"*","art-standard-lib":"*","art-testbench":"*","bluebird":"^3.5.3","caffeine-script":"*","caffeine-script-runtime":"*","case-sensitive-paths-webpack-plugin":"^2.1.2","chai":"^4.2.0","coffee-loader":"^0.7.3","coffee-script":"^1.12.7","colors":"^1.3.2","commander":"^2.19.0","css-loader":"^1.0.1","dateformat":"^3.0.3","detect-node":"^2.0.4","fs-extra":"^7.0.1","glob":"^7.1.4","glob-promise":"^3.4.0","json-loader":"^0.5.7","mocha":"^5.2.0","neptune-namespaces":"*","pluralize":"^7.0.0","recursive-copy":"^2.0.6","script-loader":"^0.7.2","style-loader":"^0.23.1","webpack":"^4.32.2","webpack-cli":"*","webpack-dev-server":"^3.4.1","webpack-merge":"^4.2.1","webpack-node-externals":"^1.7.2","webpack-stylish":"^0.1.8"},"description":"Tools for configuring npm (package.json) and webpack (webpack.config.js)","devDependencies":{"mock-fs":"^4.10.0"},"license":"ISC","name":"art-build-configurator","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.19.8"};
 
 /***/ }),
 /* 6 */
@@ -641,13 +641,18 @@ Caf.defMod(module, () => {
                 from != null
                   ? (() => {
                       for (let k in from) {
-                        let targetConfig, targetName;
+                        let targetConfig, targetName, temp1;
                         targetConfig = from[k];
                         targetName = k;
                         temp = into[k] = webpackMerge(
                           {
                             entry: {
-                              [targetName]: `./${Caf.toString(targetName)}`
+                              [targetName]:
+                                (temp1 =
+                                  Caf.exists(targetConfig) &&
+                                  targetConfig.entry) != null
+                                  ? temp1
+                                  : `./${Caf.toString(targetName)}`
                             }
                           },
                           targetConfig
@@ -1091,7 +1096,7 @@ Caf.defMod(module, () => {
                         cafRequireFriendlyNamespaceDirPath
                       )}/Client`,
                       "index.html":
-                        '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>'
+                        '<html><body>\n  <h1>Development</h1>\n  <ul>\n    <li><a href="/Client?dev=true">Client</a></li>\n  </ul>\n  <h1>Production</h1>\n  <ul>\n    <li><a href="/Client">Client</a></li>\n  </ul>\n</body></html>'
                     }
                   : {
                       "index.js":
@@ -1107,6 +1112,8 @@ Caf.defMod(module, () => {
                     dashCase(npmName)
                   )}\n\`\`\``,
                   test: {
+                    "index.html":
+                      '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8"/>\n  </head>\n  <body>\n    <script type="text/javascript" charset="utf-8" src="/test.js">\n  </body>\n</html>',
                     "index.js":
                       "require('../register');\nrequire('./index.caf');",
                     "index.caf":
