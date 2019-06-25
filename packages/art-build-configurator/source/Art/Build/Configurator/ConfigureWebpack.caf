@@ -101,7 +101,7 @@ defineModule module, class ConfigureWebpack extends BaseClass
     throw new Error "targets must be an object" unless isPlainObject targets
     object targetConfig, targetName in-object targets
       webpackMerge
-        entry: [targetName]: "" ./#{targetName}
+        entry: [targetName]: targetConfig?.entry ? "" ./#{targetName}
         targetConfig
 
   @outFileName: :webpack.config.js
