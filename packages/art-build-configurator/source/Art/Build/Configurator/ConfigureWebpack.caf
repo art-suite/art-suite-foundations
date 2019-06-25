@@ -99,9 +99,11 @@ defineModule module, class ConfigureWebpack extends BaseClass
 
   @normalizeTargets: (targets = {}) ->
     throw new Error "targets must be an object" unless isPlainObject targets
-    object targetConfig, targetName in-object targets
+    object targetConfig, targetName in-object targets when targetConfig
+      if targetConfig extract entry is String
+        targetConfig = objectWithout targetConfig, :entry
       webpackMerge
-        entry: [targetName]: targetConfig?.entry ? "" ./#{targetName}
+        entry: [targetName]: entry ? "" ./#{targetName}
         targetConfig
 
   @outFileName: :webpack.config.js
