@@ -1,0 +1,18 @@
+import &StandardImport
+
+class ConfigurePackageJson extends &ConfigureBase
+  @outFileName: :package.json
+
+  @get: (npmRoot, abcConfig) =>
+    if isFunction npmConfig = abcConfig.npm
+      npmConfig StandardPackageJson.get abcConfig
+    else
+      deepMerge StandardPackageJson.get(abcConfig), npmConfig
+
+  ## getFileContents
+    NOTE: consistentJsonStringify is there to guarantee a consistently formatted output for git.
+  @getFileContents: (npmRoot, abcConfig) =>
+    consistentJsonStringify
+      @get npmRoot, abcConfig
+      "  "
+    + "\n"

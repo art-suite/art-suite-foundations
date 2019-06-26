@@ -1,24 +1,16 @@
-# https://webpack.js.org/concepts/configuration/
+import &StandardImport, &Data, {}
+  &webpackMerge   # webpack-merge tries to be "smart" - I prefer deepMerge
 
+# https://webpack.js.org/concepts/configuration/
 
 nodeExternals = null
 
-import &ArtStandardLib
+Configurator = &namespace
 
-# webpack-merge tries to be "smart" - I prefer deepMerge
-webpackMerge = require 'webpack-merge'
+class ConfigureWebpack extends &ConfigureBase
+  @outFileName: :webpack.config.js
 
-{BaseClass} = require 'art-class-system'
-fs = require 'fs'
-path = require 'path'
-
-Configurator = require './namespace'
-
-{StandardWebpackConfig} = require './Data'
-
-defineModule module, class ConfigureWebpack extends BaseClass
-
-  ###
+  ### get
     IN:
       common: webpack config shared
       targets:
@@ -28,8 +20,9 @@ defineModule module, class ConfigureWebpack extends BaseClass
         More info:
         https://webpack.js.org/configuration/configuration-types/
         https://stackoverflow.com/questions/34887347/how-to-detect-if-webpack-dev-server-is-running
+  @get: (npmRoot, abcConfig, webpackConfigOptions) =>
+    abcConfig ?= {}
 
-  @get: (npmRoot, abcConfig = {}, webpackConfigOptions) =>
     webpackConfigOptions extract?
       env extract? devServer
       argv
@@ -62,6 +55,8 @@ defineModule module, class ConfigureWebpack extends BaseClass
       else
         entriesWithNoOverrides.entry = merge entriesWithNoOverrides.entry, targetConfig.entry
         null
+
+  @getTargets: ->
 
 
   @normalizeTargetConfig: (targetConfig, includeNpms) ->
@@ -106,9 +101,4 @@ defineModule module, class ConfigureWebpack extends BaseClass
         entry: [targetName]: entry ? "" ./#{targetName}
         targetConfig
 
-  @outFileName: :webpack.config.js
-
-  @standardWebpackConfigJs: StandardWebpackConfig.js
-
-  @writeConfig: (npmRoot) =>
-    Configurator.updateFile path.join(npmRoot, @outFileName), @standardWebpackConfigJs
+  @getFileContents: -> StandardWebpackConfig.js

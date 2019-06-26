@@ -4,13 +4,11 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./Configurator'))
 .addModules({
-  ConfigurePackageJson: require('./ConfigurePackageJson'),
-  ConfigureWebpack:     require('./ConfigureWebpack'),
   DefaultFiles:         require('./DefaultFiles'),
   Publish:              require('./Publish'),
   RunNeptuneNamespaces: require('./RunNeptuneNamespaces'),
   StandardImport:       require('./StandardImport'),
   Versioning:           require('./Versioning')
 });
+require('./Configurators');
 require('./Data');
-require('./FileBuilder');

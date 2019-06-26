@@ -6,5 +6,5 @@ module.exports = require('../namespace').addNamespace(
   (class Configurator extends Neptune.PackageNamespace {})
   ._configureNamespace(require('../../../../package.json'))
 );
+require('./Configurators/namespace');
 require('./Data/namespace');
-require('./FileBuilder/namespace');

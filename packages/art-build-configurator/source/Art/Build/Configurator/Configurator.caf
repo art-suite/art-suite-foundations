@@ -1,11 +1,6 @@
-fs = &fs-extra
-path = &path
+import &StandardImport, &Configurators
 
 realRequire = eval 'require'
-
-ConfigureWebpack = &ConfigureWebpack
-ConfigurePackageJson = &ConfigurePackageJson
-import &ArtStandardLib
 
 class Configurator
 
@@ -15,7 +10,7 @@ class Configurator
 
   @go: (npmRoot, options) =>
     {pretend, configure, init, force} = options
-    log "PRETEND".green if pretend
+    log :PRETEND.green if pretend
     Promise.then =>
       @init npmRoot, options if init
 
@@ -26,7 +21,7 @@ class Configurator
   @registerLoaders: (npmRoot, vivify = false) =>
     file = path.join npmRoot, @registerLoadersFilename
     fs.exists file
-    .then (exists) =>
+    .then (exists) ->
       if exists
         realRequire file
       else
@@ -68,12 +63,19 @@ class Configurator
 
   @pretendWriteConfig: (npmRoot, abcConfig) ->
     log formattedInspect
-      npm:
-        out: "package.json": ConfigurePackageJson.get npmRoot, abcConfig
+      merge {}
+        abcConfig
+        npm:
+          out: "package.json": ConfigurePackageJson.get npmRoot, abcConfig
 
-      webpack:
-        configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
-        out: "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
+        indexHtml: if abcConfig.indexHtml
+          """
+            <html>
+            </html>
+
+        webpack:
+          configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
+          out: "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
 
       {} color: true
 
@@ -97,6 +99,9 @@ class Configurator
   @writeConfig: (npmRoot, abcConfig) ->
     ConfigurePackageJson.writeConfig npmRoot, abcConfig
     ConfigureWebpack.writeConfig npmRoot, abcConfig
+    console.log "indexHtml?"
+    if abcConfig.indexHtml
+      console.log "indexHtml!"
 
   # called by webpack to get config
   @getWebpackConfig: (npmRoot, env, argv) =>

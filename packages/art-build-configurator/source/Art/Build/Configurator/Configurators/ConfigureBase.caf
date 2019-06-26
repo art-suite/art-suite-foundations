@@ -1,0 +1,14 @@
+import &StandardImport
+
+class ConfigureBase extends BaseClass
+  @outFileName: :index.html
+
+  @getFileContents: (npmRoot, abcConfig)->
+    @get npmRoot, abcConfig
+    + "\n"
+
+  ## writeConfig
+  @writeConfig: (npmRoot, abcConfig) ->
+    Configurator.updateFile
+      path.join npmRoot, @outFileName
+      @getFileContents npmRoot, abcConfig
