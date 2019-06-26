@@ -199,7 +199,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, dependencies, description, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*"},"description":"Art.FileBuilder","license":"ISC","name":"art-file-builder","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.0.0"};
+module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*"},"description":"Art.FileBuilder","license":"ISC","name":"art-filebuilder","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.0.1"};
 
 /***/ }),
 /* 7 */
