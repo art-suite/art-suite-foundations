@@ -11,6 +11,7 @@
     "art-object-tree-factory": "*",
     "art-standard-lib": "*",
     "art-testbench": "*",
+    "art-browser-tools": "*",
     "bluebird": "^3.5.3",
     "caffeine-script": "*",
     "caffeine-script-runtime": "*",

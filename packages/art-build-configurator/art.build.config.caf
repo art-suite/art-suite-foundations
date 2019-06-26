@@ -15,6 +15,7 @@ npm:
     art-standard-lib:                     :*
     art-testbench:                        :*
     art-filebuilder:                      :*
+    art-browser-tools:                    :*
 
     # Caffeine.Suite
     caffeine-script:                      :*
