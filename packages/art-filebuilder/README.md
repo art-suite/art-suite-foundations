@@ -1,6 +1,6 @@
-# Art.FileBuilder
+# Art.Filebuilder
 
-> Initialized by Art.Build.Configurator
+Build files and data-structure from code fast and easy with an embeded DSL!
 
 ### Install
 
