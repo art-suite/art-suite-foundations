@@ -1,4 +1,4 @@
-import &StandardImport, &ArtObjectTreeFactory
+import &StandardImport
 Path = &Path
 
 createObjectTreeFactory

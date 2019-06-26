@@ -7,11 +7,11 @@ target:
 
 npm:
   description: "" Art.FileBuilder
-  dependencies: {}
+  dependencies: art-build-configurator: :*
 
 webpack:
   # common properties are merged into each target's properties
-  common: {}
+  common: mode: :none
 
   # each target's individual properties
   targets: index: {}

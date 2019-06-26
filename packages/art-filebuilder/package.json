@@ -5,7 +5,7 @@
   },
   "description": "Art.FileBuilder",
   "license": "ISC",
-  "name": "art-filebuilder",
+  "name": "art-file-builder",
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
