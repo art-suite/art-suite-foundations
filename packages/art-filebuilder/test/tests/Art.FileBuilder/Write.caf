@@ -1,0 +1,130 @@
+import &StandardImport
+
+class FakeFs extends Object
+  constructor: (@options = {})->
+    super
+    @actions = []
+
+  addAction: (name, v) -> @actions.push [name]: v
+
+  each action from [:writeFileSync, :ensureDirSync]
+    @prototype[action] = (v) ~> @addAction action, v
+
+  existsSync: (v) -> @options.exists?[v] || false
+
+  readFileSync: -> ''
+
+suite: ->
+  test 'FakeFs' ->
+    fs = new FakeFs
+    assert.eq false, fs.existsSync "hi"
+    fs.writeFileSync :foo
+    fs.ensureDirSync :bar
+    assert.eq fs.actions, []
+      {} writeFileSync: "foo"
+      {} ensureDirSync: "bar"
+
+  test "File" ->
+    File :hi, :bye
+    .write fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+        {} ensureDirSync: "."
+        {} writeFileSync: "hi"
+
+
+  test "File select all" ->
+    Dir
+      :.
+      File :hi    :hi-hi
+      File :bye   :bye-bye
+    .write
+      select: (file) -> true
+      fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+        {} ensureDirSync: "."
+        {} writeFileSync: "hi"
+        {} ensureDirSync: "."
+        {} writeFileSync: "bye"
+
+  test "File select none" ->
+    Dir
+      :.
+      File :hi    :hi-hi
+      File :bye   :bye-bye
+    .write
+      select: (file) -> false
+      fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+
+  test "File select function" ->
+    Dir
+      :.
+      File :hi    :hi-hi
+      File :bye   :bye-bye
+    .write
+      select: (file) -> /bye/.test file
+      fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+        {} ensureDirSync: "."
+        {} writeFileSync: "bye"
+
+
+  test "File select regexp" ->
+    Dir
+      :.
+      File :hi    :hi-hi
+      File :bye   :bye-bye
+    .write
+      select: /hi/
+      fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+        {} ensureDirSync: "."
+        {} writeFileSync: "hi"
+
+  test "File exists" ->
+    File :hi, :bye
+    .write
+      exists: hi: true
+      fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+        {} ensureDirSync: "."
+        {} writeFileSync: "hi"
+
+  test "File exists force" ->
+    File :hi, :bye
+    .write
+      force: true
+      exists: hi: true
+      fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []
+        {} ensureDirSync: "."
+        {} writeFileSync: "hi"
+
+  test "pretend File" ->
+    File :hi, :bye
+    .write pretend: true, fs: fs = new FakeFs
+
+    assert.eq
+      fs.actions
+      []

@@ -1,0 +1,14 @@
+import &StandardImport
+
+suite: ->
+  test "File" ->
+    assert.eq
+      File :hi, :bye
+      .plainObjects
+      hi: :bye
+
+  test "Dir" ->
+    assert.eq
+      Dir :hi
+      .plainObjects
+      hi: {}
