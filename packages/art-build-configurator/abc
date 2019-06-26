@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-if (false) { // use build
+if (true) { // use build
   require('./build/abcCommand');
 } else {
   require('./register');
