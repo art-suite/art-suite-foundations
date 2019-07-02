@@ -9,6 +9,6 @@ class ConfigureBase extends BaseClass
 
   ## writeConfig
   @writeConfig: (npmRoot, abcConfig) ->
-    Configurator.updateFile
+    &Main.updateFile
       path.join npmRoot, @outFileName
       @getFileContents npmRoot, abcConfig

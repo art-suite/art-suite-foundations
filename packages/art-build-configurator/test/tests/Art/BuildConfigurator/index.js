@@ -2,4 +2,4 @@
 // file: tests/Art/BuildConfigurator/index.js
 
 module.exports = require('./namespace');
-require('./FileBuilder');
+require('./Command');

@@ -5,6 +5,7 @@
 .includeInNamespace(require('./Configurator'))
 .addModules({
   DefaultFiles:         require('./DefaultFiles'),
+  Main:                 require('./Main'),
   Publish:              require('./Publish'),
   RunNeptuneNamespaces: require('./RunNeptuneNamespaces'),
   StandardImport:       require('./StandardImport'),

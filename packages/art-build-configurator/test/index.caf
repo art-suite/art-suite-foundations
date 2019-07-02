@@ -1,5 +1,5 @@
 require '../index.coffee'
-&ArtTestbench/Testing
-.init
+&ArtTestbench/Node
+.initTesting
   synchronous: true
   defineTests: -> &tests

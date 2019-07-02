@@ -1,4 +1,4 @@
-import &StandardImport, &ArtFilebuilder
+import &StandardImport, &ArtFilebuilder, &Main
 path = &path
 
 class DefaultFiles extends BaseClass

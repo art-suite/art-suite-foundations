@@ -2,4 +2,4 @@
 // file: tests/Art/BuildConfigurator/namespace.js
 
 module.exports = module.exports =  require('../namespace').vivifySubnamespace('BuildConfigurator');
-require('./FileBuilder/namespace');
+require('./Command/namespace');
