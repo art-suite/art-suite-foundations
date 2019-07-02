@@ -1,29 +1,32 @@
 &colors
 
-{pv, pretend, configure, init} = commander =
-
+{pv, pretend, configure, init, force, verbose, app} = commander =
   &commander
+  .option '-c, --configure'         "" configure and update all
+  .option '-v, --verbose'           "" verbose
+  .option '-p, --pretend'           "" show the configs that will be generated without writing them
+  .option '-f, --force'             "" when initialize, force overwrite all
+  .option '--init'                  "" initialize a new Art-style project
+  .option '--app [basic|demo]'      "" use with --init to initialize a working ArtSuite App [default: basic]
+  .option '--pv'                    "" show YOUR package's current version
   .version &package.version
-  .option '-p, --pretend',    "show the configs that will be generated without writing them"
-  .option '-c, --configure',  "configure and update all"
-  .option '--pv',             "show your package's current version"
-  .option '--init',           'initialize a new Art-style project'
-  .option '-f, --force',      'when initialize, force overwrite all'
-  .option '-v, --verbose',    'verbose'
-  .option '--app [basic|demo]',     'use with --init to initialize a working ArtSuite App [default: basic]'
-  .on "--help", ->
+  .on     :--help ->
     console.log
       """
-        looks for #{&ArtBuildConfigurator.configFileName} and configs as instructed
+        looks for '#{&source/Art/Build/Configurator.configFilename}' and configs as instructed
+
   .parse process.argv
 
-if pv
+switch
+when pv
   console.log &ArtBuildConfigurator.Versioning.current
 
-else if pretend || configure || init
-  &ArtBuildConfigurator.go process.cwd(), commander
-  .catch (e) ->
-    console.error e.stack
+when pretend || configure || init
+  &ArtBuildConfigurator.go
+    process.cwd()
+    {} pretend, configure, init, force, verbose, app
+
+  .catch (e) -> &ArtStandardLib.log.error e.stack
 
 else
   commander.outputHelp()
