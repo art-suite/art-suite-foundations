@@ -167,7 +167,8 @@ addTester "instanceof",
 
   (klass, obj) -> obj instanceof klass
 addTester "match",        (a, b) -> a.match  if isString b then escapeRegExp b else b
-addTester "notMatch",     (a, b) -> !a.match if isString b then escapeRegExp b else b
+addTester "notMatch",     notMatch = (a, b) -> !a.match if isString b then escapeRegExp b else b
+addTester "doesNotMatch", notMatch
 addTester "same",         (a, b) -> a == b
 addTester "notSame",      (a, b) -> a != b
 addTester "doesNotExist", (a) -> !a?
@@ -182,6 +183,7 @@ addTester "hasKeys",      (a) -> isPlainObject(a) && objectHasKeys(a)
 addTester "hasNoKeys",    (a) -> isPlainObject(a) && !objectHasKeys(a)
 
 addTester "is",           (a, b) -> a.class == b
+
 
 # Ruby/Caffeine Truth
 addTester "true",         (a) -> a != false && a?
