@@ -1,9 +1,8 @@
 import &StandardImport, &Configurators
 
-
 class Main
 
-  @realRequire: eval 'require'
+  @realRequire:             eval 'require'
 
   @configFilename:          :art.build.config.caf
   @configBasename:          :art.build.config
