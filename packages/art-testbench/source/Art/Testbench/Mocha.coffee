@@ -119,6 +119,12 @@ module.exports = class MyMocha
     {defineTests, synchronous} = options
     throw new Error "defineTests required" unless isFunction defineTests
 
+    global.mocha.setup timeout: 10000
+
+    options = merge
+      artConfigName: "Test"
+      options
+
     @defineGlobals()
     DomConsole?.enable()
 
