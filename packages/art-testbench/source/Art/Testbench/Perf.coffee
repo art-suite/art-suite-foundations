@@ -35,7 +35,23 @@ defaultWarmUpRatio = .1
 defineModule module, ->
   class Perf
 
+    ###
+    IN:
+      options:
+        testDuration:     [1]   seconds
+        warmUpDuration:   [.1]  seconds
+        loopUnrolling:    [1]   number of times to run the test in the body of the test-loop
+        setup:
+        postProcessesResults:
+        queueNextCycle:
+        logTestOutput:
+
+    ###
     @benchmark: global.benchmark ||= (name, benchmarkF, options) =>
+      if isNode
+        name = name.replace(/[\n\s]+/g, ' ')
+        name = name.slice 0, 70
+
       test name, (mochaDone) =>
         doneCalled = false
         done = ->
@@ -91,7 +107,7 @@ defineModule module, ->
         if logTestOutput
           log benchmarkF(), benchmark:name
 
-        loopUnrolling = 1
+        loopUnrolling = 16
         setup?()
 
         runTest = (targetEndTime, runDone) ->
@@ -116,27 +132,30 @@ defineModule module, ->
                 benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
                 testsThisCycle += 16
             else
+              subUnrolling = loopUnrolling / 64
               while (latestTime = currentSecond()) < targetCycleEndTime
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                i = 0
+                while i++ < subUnrolling
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
 
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
 
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
 
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
-                testsThisCycle += 64
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  benchmarkF(); benchmarkF(); benchmarkF(); benchmarkF();
+                  testsThisCycle += 64
 
           totalTests += testsThisCycle
 
@@ -157,17 +176,17 @@ defineModule module, ->
           totalTests = 0
           cycles = 0
           startTime = currentSecond()
-          log "#{name}: warmup #{warmUpDuration} seconds" if warmUpDuration >= 1
+          # log "#{name}: warmup #{warmUpDuration} seconds" if warmUpDuration >= 1
 
           runTest startTime + warmUpDuration, =>
-            if warmUpDuration >= 1
-              @_showResults
-                name: "#{name}-warmup"
-                totalTests: totalTests
-                duration: duration
-                startTime: startTime
-                postProcessesResults: postProcessesResults
-                warmUpDuration: warmUpDuration
+            # if warmUpDuration >= 1
+            #   @_showResults
+            #     name: "#{name}-warmup"
+            #     totalTests: totalTests
+            #     duration: duration
+            #     startTime: startTime
+            #     postProcessesResults: postProcessesResults
+            #     warmUpDuration: warmUpDuration
 
             duration = 0
             totalTests = 0
@@ -176,7 +195,7 @@ defineModule module, ->
 
             setup?()
 
-            log "#{name}: test #{testDuration} seconds" if warmUpDuration > 1
+            # log "#{name}: test #{testDuration} seconds" if warmUpDuration > 1
             runTest startTime + testDuration, =>
               @_showResults
                 name: name
@@ -262,8 +281,8 @@ defineModule module, ->
           shouldShowResults = false
 
       if shouldShowResults
-        testsPerSecond = totalTests / duration | 0
-        testsPerSecondGc = totalTests / gcIncludedDuration | 0
+        testsPerSecond = Math.floor totalTests / duration
+        testsPerSecondGc = Math.floor totalTests / gcIncludedDuration
 
         pre = if warmUpDuration > 1
           "  "
