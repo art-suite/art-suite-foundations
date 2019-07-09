@@ -28,11 +28,11 @@ WebpackHotLoader = require './WebpackHotLoader'
 ExtendablePropertyMixin = require './ExtendablePropertyMixin'
 
 module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObject
-  @objectsCreated: 0
-  @objectsCreatedByType: {}
   @resetStats: =>
     @objectsCreated = 0
     @objectsCreatedByType = {}
+
+  @resetStats()
 
   # override to dynamically set a class's name (useful for programmatically generated classes)
   # NOTE: must use klass.getName() and not klass.name if you want to "see" dynamically assigned class-names
@@ -306,8 +306,9 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
     #   enumerable: false
     #   value: null
     # Neptune.Lib.Art.DevTools.Profiler.sample && Neptune.Lib.Art.DevTools.Profiler.sample()
-    # type = @classPathName
-    # BaseClass.objectsCreatedByType[type] = (BaseClass.objectsCreatedByType[type]||0) + 1
+
+    # BaseClass.objectsCreatedByType[type = @namespacePath] ?= 0
+    # BaseClass.objectsCreatedByType[type]++
     # BaseClass.objectsCreated++
 
   # True if object implementsInterface all methods (an array of strings)
@@ -593,13 +594,14 @@ module.exports = class BaseClass extends ExtendablePropertyMixin MinimalBaseObje
   ######################################################
 
   @getter
-    className: -> @class.getClassName()
-    class: -> @constructor
-    keys: -> Object.keys @
-    namespacePath:  -> @class.getNamespacePath()
+    className:  -> @class.getClassName()
+    class:      -> @constructor
+    keys:       -> Object.keys @
+    namespacePath:      -> @class.getNamespacePath()
+    classPathName:      -> @namespacePath
     classPathNameAndId: -> "#{@classPathName}:#{@objectId}"
-    uniqueId: -> @__uniqueId ||= nextUniqueObjectId() # unique across all things
-    objectId: -> @__uniqueId ||= nextUniqueObjectId() # number unique across objects
+    uniqueId:   -> @__uniqueId ||= nextUniqueObjectId() # unique across all things
+    objectId:   -> @__uniqueId ||= nextUniqueObjectId() # number unique across objects
 
   # freeze this object safely
   freeze: ->
