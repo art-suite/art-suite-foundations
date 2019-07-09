@@ -1,4 +1,4 @@
-{defineModule, inspect, Promise, requestAnimationFrame, evalAndThrowErrorsOutOfStack} = require 'art-standard-lib'
+{defineModule, isFunction, inspect, Promise, requestAnimationFrame, evalAndThrowErrorsOutOfStack} = require 'art-standard-lib'
 {BaseClass} = require 'art-class-system'
 
 # The basic Epoch assumes each item is a function. The function is invoked when the epoch cycles.
@@ -42,11 +42,12 @@ defineModule module, class EpochClass extends BaseClass
   onNextReady: (f, forceNextEpoch = true, passThroughArgument) ->
     @queueNextEpoch() if forceNextEpoch && !@_processingEpoch
 
-    new Promise (resolve) => @_nextReadyQueue.push ->
-      resolve if f
-        f passThroughArgument
-      else
-        passThroughArgument
+    new Promise (resolve, reject) => @_nextReadyQueue.push ->
+      Promise.then ->
+        if f then   f passThroughArgument
+        else        passThroughArgument
+      .then   resolve
+      .catch  reject
 
   _ready: ->
     return unless (nrq = @_nextReadyQueue).length > 0
@@ -100,5 +101,8 @@ defineModule module, class EpochClass extends BaseClass
 
   # each time the epoch is processed, this is called with all the queued items
   processEpochItems: (items)->
-    item() for item in items
-
+    for item in items
+      if isFunction item
+        item()
+      else
+        item.processEpoch()
