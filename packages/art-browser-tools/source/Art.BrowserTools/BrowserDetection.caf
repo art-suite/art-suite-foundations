@@ -6,7 +6,10 @@ global extract
   opera
   devicePixelRatio = 1
 
-userRequestedFakeNativeApp = fakeNativeApp = !!(getEnv().fakeNative || getEnv().fakeNativeApp)
+userRequestedFakeNativeApp = fakeNativeApp =
+  !!(getEnv().fakeNative ||
+  getEnv().fakeNativeApp ||
+  getEnv().nativePreview)
 
 
 ### smallestTabletDeviceWidth
@@ -24,14 +27,20 @@ class BrowserDetection
   @isBrowser:           !!navigator
   @getAgent:            getAgent = -> navigator?.userAgent || navigator?.vendor || opera || ""
 
-  @getHasIPhoneXNotch: ->
-    iPhoneNotchSizes[simpleBrowserInfo.subDevice] > 0
+  # https://github.com/jhildenbiddle/canvas-size#test-results
+  @getMaxCanvasPixels: =>
+    if @simpleBrowserInfo.os == :iOS
+      16777216
+    else 64 * 1024**2
 
-  @getNotchInfo: =>
-    if @getHasIPhoneXNotch()
+  @getHasIPhoneXNotch: (subDevice = simpleBrowserInfo.subDevice) ->
+    iPhoneNotchSizes[subDevice] > 0
+
+  @getNotchInfo: (subDevice = simpleBrowserInfo.subDevice) =>
+    if @getHasIPhoneXNotch subDevice
       {}
         #                     iPhoneX* values: How can we get this programatically for Android devices?
-        notchHeight:          iPhoneNotchSizes[simpleBrowserInfo.subDevice] ? 30
+        notchHeight:          iPhoneNotchSizes[subDevice] ? 30
         notchWidth:           notchWidth = 209
         roundedCornerRadius:  40
         antiNotchWidth:
@@ -60,6 +69,16 @@ class BrowserDetection
     when isNumber o = @getOrientationAngle()  then (o % 180) == 0
     when viewSize?                            then viewSize.x <= viewSize.y
     else                                           true
+
+  # provide known viewSize as a fallback in case orientation cannot be determined
+  @getScreenSize: (viewSize) =>
+    orientationIsLandscape  = !@getOrientationIsPortrait viewSize
+    global.screen extract availWidth, availHeight
+
+    # ensure availHeight and availWidth reflect the current rotation
+    if (orientationIsLandscape && availHeight > availWidth) || (!orientationIsLandscape && availHeight < availWidth)
+          x: availHeight, y: availWidth
+    else  x: availWidth,  y: availHeight
 
   _safeAreaInsetCssKey = null
   @getSafeAreaInsetCssKey: ->
