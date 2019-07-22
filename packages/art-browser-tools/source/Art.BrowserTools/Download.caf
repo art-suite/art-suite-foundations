@@ -19,7 +19,7 @@ class Download
     e = document.createElement :a
     e.setAttribute :href      url
     e.setAttribute :download  filename
-    # e.setAttribute 'target', '_blank'
+    e.setAttribute :target    :_blank
     document.body.appendChild e
     e.click()
     document.body.removeChild e
@@ -35,7 +35,7 @@ class Download
 
   @startHtmlFileDownload: (filename, url) ->
     element = document.createElement :a
-    element.setAttribute :target :_blank
+    element.setAttribute :target    :_blank
     element.setAttribute :href      url
     element.setAttribute :download  filename
 
