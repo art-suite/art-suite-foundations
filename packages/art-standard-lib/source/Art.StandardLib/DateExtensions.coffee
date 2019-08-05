@@ -46,7 +46,7 @@ module.exports =
   dateFormat: dateFormat = require "dateformat"
 
   formatDate: (value, format, utc) ->
-    if isString value
+    if isString(value) && !isString format
       format = value
       value = null
 
@@ -74,10 +74,16 @@ module.exports =
   toMilliseconds: toMilliseconds = (v) ->
     return Date.now() unless v? && v != false
     if isString v
-      if /^\d+(\.\d+)?$/.test v
-        v = v - 0
-      else
-        v = Date.parse v
+      v = switch
+        when match = v.match /^(\d\d\d\d)-(\d\d)(?:-(\d\d))?$/
+          [__, year, month, day = 1] = match
+          new Date year - 0, month - 1, day - 0
+
+        when /^\d+(\.\d+)?$/.test v
+          v - 0
+
+        else
+          Date.parse v
 
     if isNumber v
       unless isFinite v
@@ -121,6 +127,6 @@ module.exports =
   firstOfWeek:                 (time) ->  firstOfDay(time) - ((toDate(time).getUTCDay() - 1) %% 7) * secondsPerDay  # monday is first day
   firstOfMonth:                (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
 
-  firstOfDayLocale: firstOfDayLocal = (time) ->  firstOfHour(time)     - toDate(time).getHours()            * secondsPerHour
-  firstOfWeekLocale:                  (time) ->  firstOfDayLocal(time) - ((toDate(time).getDay() - 1) %% 7) * secondsPerDay  # monday is first day
-  firstOfMonthLocale:                 (time) ->  firstOfDayLocal(time) - (toDate(time).getDate() - 1)       * secondsPerDay
+  firstOfDayLocale: firstOfDayLocale =  (time) ->  firstOfHour(time)     - toDate(time).getHours()            * secondsPerHour
+  firstOfWeekLocale:                    (time) ->  firstOfDayLocale(time) - ((toDate(time).getDay() - 1) %% 7) * secondsPerDay  # monday is first day
+  firstOfMonthLocale:                   (time) ->  firstOfDayLocale(time) - (toDate(time).getDate() - 1)       * secondsPerDay
