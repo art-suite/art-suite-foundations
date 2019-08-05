@@ -1,4 +1,4 @@
-import &StandardImport, {} &path
+import &StandardImport, &ArtFilebuilder, {} &path
 
 class Recipe extends BaseClass
 
@@ -7,7 +7,7 @@ class Recipe extends BaseClass
     .files
 
   @writeFiles: (packageRoot, options) ->
-    &ArtFilebuilder.fileBuilder @getFiles packageRoot, options
+    fileBuilder @getFiles packageRoot, options
     .write options
 
   constructor: (packageRoot, options)->
