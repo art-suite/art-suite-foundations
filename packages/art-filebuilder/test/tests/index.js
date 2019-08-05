@@ -2,4 +2,4 @@
 // file: tests/index.js
 
 module.exports = require('./namespace');
-require('./Art.Filebuilder');
+require('./Art.FileBuilder');
