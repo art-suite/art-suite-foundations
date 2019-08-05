@@ -32,11 +32,16 @@ module.exports = class MinimalBaseObject
   @classSetter: -> defProperties @, arguments, false, true
   @classProperty: -> defProperties @, arguments, true, true
 
+  @getPropGetterName: propGetterName = (prop) -> "get" + capitalize prop
+  @getPropSetterName: propSetterName = (prop) -> "set" + capitalize prop
+
+  # DEPRICATED
+  @_propGetterName: (v) -> console.warn "DEPRICATED - use getPropGetterName"; propGetterName v
+  @_propSetterName: (v) -> console.warn "DEPRICATED - use getPropSetterName"; propSetterName v
+
   #####################################
   # PRIVATE
   #####################################
-  @_propGetterName: propGetterName = (prop) -> "get" + capitalize prop
-  @_propSetterName: propSetterName = (prop) -> "set" + capitalize prop
 
   # defines "o.getFoo() as well as "o.foo" since getFoo is 100x faster on Safari 7 (OSX & iOS)
   # use o.getFoo() wherever speed is a concern
