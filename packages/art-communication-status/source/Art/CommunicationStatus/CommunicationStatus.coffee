@@ -12,6 +12,8 @@ module.exports = class CommunicationStatus
     ###
     status: missing
 
+    should-retry: No
+
     * The request was properly formatted.
     * There were no network errors.
     * There were no server errors.
@@ -29,7 +31,7 @@ module.exports = class CommunicationStatus
     * It's up to the client to fix the problem.
     * This includes mal-formed requests as well as invalid data.
     * all 4xx errors except 404
-    NOTE: 404 is not necessarilly a client NOR server error, therefor it's status: missing
+    NOTE: 404 is not necessarilly a client NOR server error, therefor its status is: missing
     ###
     clientFailure:              httpStatus: 400, clientFailure: true, failure: true
 
@@ -73,8 +75,8 @@ module.exports = class CommunicationStatus
     * The failure may be one of the following:
       a) the local computer has no internet connection OR
       b) the internet is in a shitstorm ;) OR
-      c) there is an network problem within the Servers' facility.
-      c) race condition detected and successfully aborted (can safely retry)
+      c) there is a network problem within the Servers' facility.
+      d) race condition detected and successfully aborted (can safely retry)
     ###
     networkFailure:             failure: true
 
