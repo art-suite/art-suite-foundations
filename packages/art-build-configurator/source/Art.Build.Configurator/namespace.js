@@ -8,3 +8,4 @@ module.exports = require('neptune-namespaces').addNamespace(
 );
 require('./Configurators/namespace');
 require('./Data/namespace');
+require('./Recipes/namespace');

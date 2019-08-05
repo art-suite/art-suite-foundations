@@ -17,15 +17,18 @@ class Main
 
     @quiet ?= quiet
 
-    @log :PRETEND.green if pretend
+    @log "PRETEND".green if pretend
 
     Promise.then ->
-      @init npmRoot, options if init
+      @init init, npmRoot, options if init
 
+    .then -> unless pretend && init
       @runNeptuneNamespaces npmRoot
 
-    .then ->
+    .then -> unless pretend && init
       @loadAndWriteConfig npmRoot, options
+
+    .catch (error) -> log.error error
 
   @registerLoaders: (npmRoot, vivify = false) =>
     file = path.join npmRoot, @registerLoadersFilename
@@ -35,7 +38,7 @@ class Main
         Main.realRequire file
       else
         if vivify
-          @init npmRoot, verbose: true, select: /register.js/
+          @init :core, npmRoot, verbose: true, select: /register.js/
           Main.realRequire file
         {}
 
@@ -49,8 +52,9 @@ class Main
           Main.realRequire configFilepath
         else
           if vivifyConfigFile
-            @init npmRoot, verbose: true, select: /art.build.config/
+            @init :core, npmRoot, verbose: true, select: /art.build.config/
           {}
+
       .then (config) =>
         config.npm ||= config.package
         p = if config.npm
@@ -65,10 +69,37 @@ class Main
         p.then (finalNpm) =>
           merge config, npm: finalNpm
 
-  @init: (npmRoot, options) ->
-    @log "\nINIT: #{npmRoot}"
-    wrote = compactFlatten &DefaultFiles.getDefaultFiles(npmRoot, options).write options
-    @log "INIT: wrote #{wrote.length} files"
+  @init: (recipeName, npmRoot, options) ->
+    options extract pretend, verbose
+    if pretend && !verbose
+      options = merge options, verbose: true
+
+    recipeName = null if recipeName == true
+    recipeName = upperCamelCase recipeName ? :core
+
+    if recipeName == :Help
+      log
+        """
+          Please select a valid recipe name:
+
+            #{&Recipes.getModuleNames().join '\n  '}
+
+          Ex: abc -i node
+
+      Promise.reject "exiting"
+
+    else
+      @log "\n#{if pretend then :PRETEND-}INIT-#{recipeName}: #{npmRoot}"
+      unless recipe = &Recipes[recipeName]
+        Promise.reject
+          ""
+            Please provide a valid recipe name.
+            `#{recipeName}` not found in. Valid recipes: #{&Recipes.getModuleNames().join ', '}.
+
+      else
+        recipe.writeFiles npmRoot, options
+
+        @log "#{if pretend then :PRETEND-}INIT-#{recipeName}: done"
 
   @pretendWriteConfig: (npmRoot, abcConfig) ->
     @log formattedInspect
@@ -91,11 +122,11 @@ class Main
   @runNeptuneNamespaces: (npmRoot, options) ->
     [executable, firstArg] = process.argv
     isWebpackDevServer = !!(executable.match(/\/node$/) && firstArg?.match /webpack-dev-server/)
-    @log "" \nNN: #{npmRoot}
+    @log "" \nNeptuneNamespaces: #{npmRoot}
     &RunNeptuneNamespaces npmRoot, isWebpackDevServer
 
   @loadAndWriteConfig: (npmRoot, options) ->
-    {pretend, configure} = options
+    {pretend, configure, init} = options
     @log "" \nCONFIGURE: #{npmRoot}
 
     @loadConfig npmRoot, configure
@@ -108,9 +139,6 @@ class Main
   @writeConfig: (npmRoot, abcConfig) ->
     ConfigurePackageJson.writeConfig npmRoot, abcConfig
     ConfigureWebpack.writeConfig npmRoot, abcConfig
-    console.log "indexHtml?"
-    if abcConfig.indexHtml
-      console.log "indexHtml!"
 
   # called by webpack to get config
   @getWebpackConfig: (npmRoot, env, argv) =>

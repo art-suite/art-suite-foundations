@@ -1,0 +1,38 @@
+import &StandardImport, {} &path
+
+class Recipe extends BaseClass
+
+  @getFiles: (packageRoot, options) ->
+    new @ packageRoot, options
+    .files
+
+  @writeFiles: (packageRoot, options) ->
+    &ArtFilebuilder.fileBuilder @getFiles packageRoot, options
+    .write options
+
+  constructor: (packageRoot, options)->
+    @_packageRoot   = packageRoot ? process.cwd()
+    @_options       = options ? {}
+    @_namespacePath = @_options.namespacePath
+
+  recipe: (recipeClass, moreOptions) ->
+    recipeClass.getFiles @packageRoot, merge @options, moreOptions
+
+  @getter
+    :options
+    :packageRoot
+    packageName:          -> path.basename @packageRoot
+    packageUppercaseName: -> upperCamelCase @npmName
+    packageDotName:       -> @namespacePath.join '.'
+    packageDashName:      -> dashCase @packageName
+
+    namespacePath:    -> @_namespacePath ?= getCapitalizedCodeWords @npmName
+    namespaceDirPath: -> @namespacePath.join '.'
+    mostSpecificName: -> peek @namespacePath
+
+    # DEPRICATED
+    npmRoot:          -> @packageRoot
+    npmName:          -> path.basename @packageRoot
+
+    cafRequireFriendlyNamespaceDirPath: -> @namespacePath.join('').replace ".", ""
+

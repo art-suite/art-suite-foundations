@@ -1,0 +1,19 @@
+import &StandardImport
+
+class Node extends &Recipe
+  @getter files: ->
+    merge
+      @recipe &Core, node: true
+
+      index.js:
+        """
+          if (false) { // use build? - true == fast, false == good for development
+            module.exports = require('./build');
+          } else {
+            require('./register');
+            module.exports = require('./index.caf');
+          };
+
+      index.caf:
+        """
+          &source/#{@cafRequireFriendlyNamespaceDirPath}

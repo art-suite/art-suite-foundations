@@ -6,8 +6,7 @@
   .option '-v, --verbose'           "" verbose
   .option '-p, --pretend'           "" show the configs that will be generated without writing them
   .option '-f, --force'             "" when initialize, force overwrite all
-  .option '--init'                  "" initialize a new Art-style project
-  .option '--app [basic|demo]'      "" use with --init to initialize a working ArtSuite App [default: basic]
+  .option '-i, --init [recipe]'     "" initialize a new Art-style project
   .option '--pv'                    "" show YOUR package's current version
   .version &package.version
   .on     :--help ->
