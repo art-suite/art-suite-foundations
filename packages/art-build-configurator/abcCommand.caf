@@ -13,6 +13,7 @@
     console.log
       """
         looks for '#{&source/ArtBuildConfigurator.configFilename}' and configs as instructed
+        (using build: #{&useBuild})
 
   .parse process.argv
 

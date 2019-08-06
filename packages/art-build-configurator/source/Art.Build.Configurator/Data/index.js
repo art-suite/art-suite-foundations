@@ -4,7 +4,8 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  StandardDependencies:  require('./StandardDependencies'),
-  StandardPackageJson:   require('./StandardPackageJson'),
-  StandardWebpackConfig: require('./StandardWebpackConfig')
+  StandardDependencies:    require('./StandardDependencies'),
+  StandardDevDependencies: require('./StandardDevDependencies'),
+  StandardPackageJson:     require('./StandardPackageJson'),
+  StandardWebpackConfig:   require('./StandardWebpackConfig')
 });

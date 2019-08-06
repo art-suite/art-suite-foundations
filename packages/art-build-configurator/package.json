@@ -11,7 +11,6 @@
     "art-filebuilder": "*",
     "art-object-tree-factory": "*",
     "art-standard-lib": "*",
-    "art-testbench": "*",
     "bluebird": "^3.5.3",
     "caffeine-script": "*",
     "caffeine-script-runtime": "*",
@@ -33,6 +32,7 @@
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
+    "art-testbench": "*",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
