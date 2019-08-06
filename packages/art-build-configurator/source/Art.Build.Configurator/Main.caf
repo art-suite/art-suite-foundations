@@ -75,7 +75,7 @@ class Main
       options = merge options, verbose: true
 
     recipeName = null if recipeName == true
-    recipeName = upperCamelCase recipeName ? :core
+    recipeName = dashCase recipeName ? :core
 
     if recipeName == :Help
       log
@@ -90,11 +90,11 @@ class Main
 
     else
       @log "\n#{if pretend then :PRETEND-}INIT-#{recipeName}: #{npmRoot}"
-      unless recipe = &Recipes[recipeName]
+      unless recipe = &RecipeRegistry.recipes[recipeName]
         Promise.reject
           ""
             Please provide a valid recipe name.
-            `#{recipeName}` not found in. Valid recipes: #{&Recipes.getModuleNames().join ', '}.
+            `#{recipeName}` not found in. Valid recipes: #{&RecipeRegistry.recipeNames.join ', '}.
 
       else
         recipe.writeFiles npmRoot, options

@@ -7,6 +7,7 @@
   Main:                 require('./Main'),
   Publish:              require('./Publish'),
   Recipe:               require('./Recipe'),
+  RecipeRegistry:       require('./RecipeRegistry'),
   RunNeptuneNamespaces: require('./RunNeptuneNamespaces'),
   StandardImport:       require('./StandardImport'),
   Versioning:           require('./Versioning')

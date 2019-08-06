@@ -1,6 +1,7 @@
 import &StandardImport, &ArtFilebuilder, {} &path
 
 class Recipe extends BaseClass
+  @abstractClass()
 
   @getFiles: (packageRoot, options) ->
     new @ packageRoot, options
@@ -9,6 +10,10 @@ class Recipe extends BaseClass
   @writeFiles: (packageRoot, options) ->
     fileBuilder @getFiles packageRoot, options
     .write options
+
+  @postCreateConcreteClass: ->
+    &RecipeRegistry.register @
+    super
 
   constructor: (packageRoot, options)->
     @_packageRoot   = packageRoot ? process.cwd()

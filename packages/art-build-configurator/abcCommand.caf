@@ -1,9 +1,10 @@
 &colors
 
-{pv, pretend, configure, init, force, verbose, app} = commander =
+{pv, pretend, configure, init, force, verbose, app, require: requireOption} = commander =
   &commander
   .option '-c, --configure'         "" configure and update all
   .option '-v, --verbose'           "" verbose
+  .option '-r, --require [source]'  "" require(source) - use to register recipes
   .option '-p, --pretend'           "" show the configs that will be generated without writing them
   .option '-f, --force'             "" when initialize, force overwrite all
   .option '-i, --init [recipe]'     "" initialize a new Art-style project
@@ -22,6 +23,10 @@ when pv
   console.log &ArtBuildConfigurator.Versioning.current
 
 when pretend || configure || init
+  if requireOption is String
+    console.log "loading: require ".blue + "'#{requireOption}'".green
+    require requireOption
+  &ArtStandardLib.log {} requireOption
   &ArtBuildConfigurator.go
     process.cwd()
     {} pretend, configure, init, force, verbose, app
