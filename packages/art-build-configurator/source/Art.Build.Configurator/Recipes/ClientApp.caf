@@ -9,6 +9,10 @@ class ClientApp extends &Recipe
         """
           &source/#{@cafRequireFriendlyNamespaceDirPath}/Client
 
+      index.caf:
+        """
+          &source
+
       index.html:
         """
           <html><body>

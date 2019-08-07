@@ -17,9 +17,14 @@ class Core extends &Recipe
         node_js:
           - "8"
 
-      register.js: ""
-        require('coffee-script/register');
-        require('caffeine-mc/register');
+      register.js:
+        """
+          /*
+            REGISTER CoffeeScript (.coffee) and CaffeineScript (.caf) loaders & compilers.
+            NOTE: for Node; ultimately a NOOP for Webpack.
+          */
+          require('coffee-script/register');
+          require('caffeine-mc/register');
 
       art.build.config.caf: """
         #{} if @options.node then """
