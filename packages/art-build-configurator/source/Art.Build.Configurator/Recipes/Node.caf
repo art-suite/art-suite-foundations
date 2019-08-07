@@ -14,7 +14,7 @@ class Node extends &Recipe
             use-build == true:  fast (no need to compile non-js files; all one file)
             use-build == false: good for development of this package; don't have to re-build it to use it
           */
-          if (require('./use-build') {
+          if (require('./use-build')) {
             module.exports = require('./build');
           } else {
             require('./register');

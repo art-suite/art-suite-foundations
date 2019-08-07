@@ -1,5 +1,7 @@
 &colors
 
+realRequire = eval :require
+
 {pv, pretend, configure, init, force, verbose, app, require: requireOption} = commander =
   &commander
   .option '-c, --configure'         "" configure and update all
@@ -25,7 +27,7 @@ when pv
 when pretend || configure || init
   if requireOption is String
     console.log "loading: require ".blue + "'#{requireOption}'".green
-    require requireOption
+    realRequire requireOption
   &ArtStandardLib.log {} requireOption
   &ArtBuildConfigurator.go
     process.cwd()
