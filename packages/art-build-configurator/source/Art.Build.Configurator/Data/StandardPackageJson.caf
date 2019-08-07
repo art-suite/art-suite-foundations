@@ -5,16 +5,14 @@ class StandardPackageJson
     license:      :ISC
     name:         peek process.cwd().split :/
     version:
-      if &fs.existsSync :package.json
-        JSON.parse
+      &fs.existsSync :package.json
+      && JSON.parse
           &fs.readFileSync :package.json
           .toString()
         .version
+      ? :0.0.1
 
-      else
-        :0.0.1
-
-    author:           "" Shane Brinkman-Davis Delamore, Imikimi LLC"
+    author:           "" Shane Brinkman-Davis Delamore, Imikimi LLC
     dependencies:     &StandardDependencies
     devDependencies:  &StandardDevDependencies
     scripts: merge
