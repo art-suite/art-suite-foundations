@@ -28,7 +28,6 @@ when pretend || configure || init
   if requireOption is String
     console.log "loading: require ".blue + "'#{requireOption}'".green
     realRequire requireOption
-  &ArtStandardLib.log {} requireOption
   &ArtBuildConfigurator.go
     process.cwd()
     {} pretend, configure, init, force, verbose, app
