@@ -4,7 +4,7 @@ class Core extends &Recipe
 
   @getter
     files: ->
-      @options extract targets
+      @options extract targets, dependencies
       if targets is String
         targets = [] targets
       else targets ?= [] :index
@@ -35,10 +35,15 @@ class Core extends &Recipe
                 They just can't be used *directly* in the browser
             node: true
 
-        npm:
-          description: "" #{@packageDotName}
-          dependencies:
-            art-build-configurator: :*
+
+        #{}
+          formattedInspect
+            npm:
+              description: @packageDotName
+
+            dependencies: merge
+              art-build-configurator: :*
+              dependencies
 
         webpack:
           # common properties are merged into each target's properties

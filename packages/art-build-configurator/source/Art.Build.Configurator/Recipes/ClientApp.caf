@@ -3,7 +3,10 @@ import &StandardImport
 class ClientApp extends &Recipe
   @getter files: ->
     deepMerge
-      @recipe &Core, targets: :Client
+      @recipe
+        &Core
+        targets: :Client
+        dependencies: art-suite-app: :*
 
       Client.caf:
         """
