@@ -56,15 +56,19 @@ module.exports = class BinaryString extends BaseObject
     new BinaryString @bytes.slice a, b
 
   @fromBase64: (base64encoding)->
-    byteString = atob base64encoding
+    if isNode
+      new BinaryString Buffer.from base64encoding, "base64"
 
-    len = byteString.length
-    uint8Array = new Uint8Array new ArrayBuffer len
+    else
+      byteString = atob base64encoding
 
-    for i in [0...len] by 1
-      uint8Array[i] = byteString.charCodeAt i
+      len = byteString.length
+      uint8Array = new Uint8Array new ArrayBuffer len
 
-    new BinaryString uint8Array
+      for i in [0...len] by 1
+        uint8Array[i] = byteString.charCodeAt i
+
+      new BinaryString uint8Array
 
   # OUT: promise.then (dataUri) ->
   toDataUri: (mimeType, sync)->
