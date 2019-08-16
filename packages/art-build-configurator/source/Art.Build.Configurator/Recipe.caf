@@ -1,4 +1,4 @@
-import &StandardImport, &ArtFileBuilder, {} &path
+import &StandardImport, &ArtFilebuilder, {} &path
 
 class Recipe extends BaseClass
   @abstractClass()
