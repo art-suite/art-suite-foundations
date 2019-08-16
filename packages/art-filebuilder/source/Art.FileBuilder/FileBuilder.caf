@@ -1,4 +1,5 @@
 import &StandardImport
+
 fileBuilder: fileBuilder = (name, contents) ->
   switch
   when isPlainObject name

@@ -158,8 +158,8 @@ module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow 
 (module.exports = __webpack_require__(/*! ./namespace */ 4))
 .includeInNamespace(__webpack_require__(/*! ./FileBuilder */ 7))
 .addModules({
-  Dir:            __webpack_require__(/*! ./Dir */ 13),
-  File:           __webpack_require__(/*! ./File */ 14),
+  Dir:            __webpack_require__(/*! ./Dir */ 14),
+  File:           __webpack_require__(/*! ./File */ 15),
   StandardImport: __webpack_require__(/*! ./StandardImport */ 8)
 });
 
@@ -196,10 +196,10 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
-/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/*! exports provided: author, dependencies, description, devDependencies, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*"},"description":"Art.FileBuilder","license":"ISC","name":"art-filebuilder","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.0.1"};
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"dependencies\":{\"art-binary\":\"*\",\"art-build-configurator\":\"*\"},\"description\":\"Art.FileBuilder\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-file-builder\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"2.1.0\"}");
 
 /***/ }),
 /* 7 */
@@ -214,23 +214,25 @@ module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","depen
 let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["isPlainObject", "isString", "Error", "formattedInspect"],
+    ["isPlainObject", "isString", "isBinary", "Error", "formattedInspect"],
     [global, __webpack_require__(/*! ./StandardImport */ 8)],
-    (isPlainObject, isString, Error, formattedInspect) => {
+    (isPlainObject, isString, isBinary, Error, formattedInspect) => {
       let fileBuilder;
       return {
         fileBuilder: (fileBuilder = function(name, contents) {
           return (() => {
             switch (false) {
               case !isPlainObject(name):
-                return __webpack_require__(/*! ./Dir */ 13)(
+                return __webpack_require__(/*! ./Dir */ 14)(
                   ".",
                   Caf.array(name, (contents, n) => fileBuilder(n, contents))
                 );
               case !isString(contents):
-                return __webpack_require__(/*! ./File */ 14)(name, contents);
+                return __webpack_require__(/*! ./File */ 15)(name, contents);
+              case !isBinary(contents):
+                return __webpack_require__(/*! ./File */ 15)(name, contents);
               case !isPlainObject(contents):
-                return __webpack_require__(/*! ./Dir */ 13)(name, fileBuilder(contents));
+                return __webpack_require__(/*! ./Dir */ 14)(name, fileBuilder(contents));
               case !(
                 contents === null ||
                 contents === undefined ||
@@ -240,7 +242,7 @@ Caf.defMod(module, () => {
               default:
                 return (() => {
                   throw new Error(
-                    `expecting string or plain object. got: ${Caf.toString(
+                    `expecting string, Art.Binary string, or plain object. got: ${Caf.toString(
                       formattedInspect({ name, contents })
                     )}`
                   );
@@ -270,7 +272,8 @@ Caf.defMod(module, () => {
   return __webpack_require__(/*! art-standard-lib */ 9).mergeWithSelf(
     __webpack_require__(/*! art-class-system */ 10),
     __webpack_require__(/*! art-object-tree-factory */ 11),
-    { Path: __webpack_require__(/*! path */ 12) }
+    __webpack_require__(/*! art-binary */ 12),
+    { Path: __webpack_require__(/*! path */ 13) }
   );
 });
 
@@ -308,6 +311,16 @@ module.exports = require('art-object-tree-factory' /* ABC - not inlining fellow 
 
 /***/ }),
 /* 12 */
+/*!*****************************************************************************!*\
+  !*** external "require('art-binary' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-binary' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 13 */
 /*!***********************************************************************!*\
   !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
   \***********************************************************************/
@@ -317,7 +330,7 @@ module.exports = require('art-object-tree-factory' /* ABC - not inlining fellow 
 module.exports = require('path' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 13 */
+/* 14 */
 /*!****************************************!*\
   !*** ./source/Art.FileBuilder/Dir.caf ***!
   \****************************************/
@@ -333,7 +346,7 @@ Caf.defMod(module, () => {
     [global, __webpack_require__(/*! ./StandardImport */ 8)],
     (createObjectTreeFactory, BaseClass, merge) => {
       let Path, DirClass;
-      Path = __webpack_require__(/*! path */ 12);
+      Path = __webpack_require__(/*! path */ 13);
       return createObjectTreeFactory(
         (DirClass = Caf.defClass(
           class DirClass extends BaseClass {
@@ -377,7 +390,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 14 */
+/* 15 */
 /*!*****************************************!*\
   !*** ./source/Art.FileBuilder/File.caf ***!
   \*****************************************/
@@ -393,7 +406,7 @@ Caf.defMod(module, () => {
     [global, __webpack_require__(/*! ./StandardImport */ 8), __webpack_require__(/*! art-object-tree-factory */ 11)],
     (createObjectTreeFactory, BaseClass, isFunction, isRegExp, log) => {
       let Path, FileClass;
-      Path = __webpack_require__(/*! path */ 12);
+      Path = __webpack_require__(/*! path */ 13);
       return createObjectTreeFactory(
         (FileClass = Caf.defClass(
           class FileClass extends BaseClass {
@@ -422,7 +435,8 @@ Caf.defMod(module, () => {
                 fs,
                 selected,
                 exists,
-                logContents;
+                logContents,
+                temp;
               ({ filename, contents } = this.props);
               ({
                 path,
@@ -430,7 +444,7 @@ Caf.defMod(module, () => {
                 force,
                 verbose,
                 select,
-                fs = __webpack_require__(/*! fs-extra */ 15)
+                fs = __webpack_require__(/*! fs-extra */ 16)
               } = options);
               path = Path.join(path || ".", filename);
               selected =
@@ -459,7 +473,13 @@ Caf.defMod(module, () => {
                     : undefined,
                   !pretend && (!exists || force)
                     ? (fs.ensureDirSync(Path.dirname(path)),
-                      fs.writeFileSync(path, contents),
+                      fs.writeFileSync(
+                        path,
+                        (temp = Caf.exists(contents) && contents.nodeBuffer) !=
+                          null
+                          ? temp
+                          : contents
+                      ),
                       path)
                     : undefined)
                 : undefined;
@@ -474,7 +494,7 @@ Caf.defMod(module, () => {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /*!***************************************************************************!*\
   !*** external "require('fs-extra' /* ABC - not inlining fellow NPM *_/)" ***!
   \***************************************************************************/
