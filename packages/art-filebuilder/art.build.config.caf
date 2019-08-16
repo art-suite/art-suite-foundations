@@ -7,7 +7,9 @@ target:
 
 npm:
   description: "" Art.FileBuilder
-  dependencies: art-build-configurator: :*
+  dependencies:
+    art-build-configurator: :*
+    art-binary: :*
 
 webpack:
   # common properties are merged into each target's properties

@@ -43,5 +43,5 @@ createObjectTreeFactory
 
         if !pretend && (!exists || force)
           fs.ensureDirSync Path.dirname path
-          fs.writeFileSync path, contents
+          fs.writeFileSync path, contents?.nodeBuffer ? contents
           path
