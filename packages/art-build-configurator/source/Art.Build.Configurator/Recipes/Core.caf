@@ -1,6 +1,7 @@
 import &StandardImport
 
 class Core extends &Recipe
+  @description: "" The package basics for buliding any app with the art-suite.
 
   @getter
     files: ->
@@ -40,10 +41,9 @@ class Core extends &Recipe
           formattedInspect
             npm:
               description: @packageDotName
-
-            dependencies: merge
-              art-build-configurator: :*
-              dependencies
+              dependencies: merge
+                art-build-configurator: :*
+                dependencies
 
         webpack:
           # common properties are merged into each target's properties

@@ -1,12 +1,16 @@
 import &StandardImport
 
 class ClientApp extends &Recipe
+  @description: "" A minimal art-suite client app.
   @getter files: ->
+    @options extract clientFiles
     deepMerge
       @recipe
         &Core
-        targets: :Client
-        dependencies: art-suite-app: :*
+        deepMerge
+          targets: :Client
+          dependencies: art-suite-app: :*
+          @options
 
       Client.caf:
         """
@@ -29,7 +33,7 @@ class ClientApp extends &Recipe
             </ul>
           </body></html>
 
-      source: [@namespaceDirPath]: _Client:
+      source: [@namespaceDirPath]: _Client: merge
         StandardImport.caf:
           """
             &ArtSuite
@@ -50,3 +54,5 @@ class ClientApp extends &Recipe
                       TextElement
                         padding:  10
                         text:     "" 'Hello world!' - #{@packageDotName}
+
+        clientFiles

@@ -1,6 +1,8 @@
 import &StandardImport
 
 class DemoApp extends &Recipe
+  @description: "" A demo art-suite app
+
   @getter files: ->
     deepMerge
       @recipe &ClientApp
