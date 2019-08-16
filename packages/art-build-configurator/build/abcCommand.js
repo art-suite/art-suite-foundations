@@ -157,7 +157,6 @@ Caf.defMod(module, () => {
           );
           realRequire(requireOption);
         }
-        __webpack_require__(/*! art-standard-lib */ 15).log({ requireOption });
         return __webpack_require__(/*! ./ */ 47)
           .go(process.cwd(), { pretend, configure, init, force, verbose, app })
           .catch(function(e) {
@@ -241,7 +240,7 @@ module.exports = require('commander' /* ABC - not inlining fellow NPM */);
 /*! exports provided: author, bin, dependencies, description, devDependencies, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\\\"\",\"bin\":{\"abc\":\"./abc\"},\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-loader\":\"^0.7.3\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"css-loader\":\"^3.0.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"json-loader\":\"^0.5.7\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.1.2\",\"chai\":\"^4.2.0\",\"mocha\":\"^5.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.32.2\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.4.1\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.21.1\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\"},\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-loader\":\"^0.7.3\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"css-loader\":\"^3.0.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"json-loader\":\"^0.5.7\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.1.2\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.4.1\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.22.0\"}");
 
 /***/ }),
 /* 6 */
@@ -702,9 +701,9 @@ Caf.defMod(module, () => {
   return {
     webpack: "^4.39.1",
     "webpack-cli": "*",
-    "webpack-dev-server": "^3.4.1",
+    "webpack-dev-server": "^3.7.2",
     "webpack-stylish": "^0.1.8",
-    "case-sensitive-paths-webpack-plugin": "^2.1.2",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2",
     mocha: "^6.2.0",
@@ -1326,7 +1325,10 @@ Caf.defMod(module, () => {
           this.getter({
             files: function() {
               return deepMerge(
-                this.recipe(__webpack_require__(/*! ./Core */ 39), { targets: "Client" }),
+                this.recipe(__webpack_require__(/*! ./Core */ 39), {
+                  targets: "Client",
+                  dependencies: { "art-suite-app": "*" }
+                }),
                 {
                   "Client.caf": `&source/${Caf.toString(
                     this.cafRequireFriendlyNamespaceDirPath
@@ -1533,17 +1535,19 @@ Caf.defMod(module, () => {
 let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["String"],
+    ["String", "formattedInspect", "merge"],
     [global, __webpack_require__(/*! ../StandardImport */ 14)],
-    String => {
+    (String, formattedInspect, merge) => {
       let Core;
       return (Core = Caf.defClass(
         class Core extends __webpack_require__(/*! ../Recipe */ 36) {},
         function(Core, classSuper, instanceSuper) {
           this.getter({
             files: function() {
-              let targets;
-              targets = this.options.targets;
+              let targets, dependencies, temp;
+              temp = this.options;
+              targets = temp.targets;
+              dependencies = temp.dependencies;
               if (Caf.is(targets, String)) {
                 targets = [targets];
               } else {
@@ -1558,9 +1562,15 @@ Caf.defMod(module, () => {
                   this.options.node
                     ? "target:\n  ##\n    configures for standard node-targeted library\n    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.\n      They just can't be used *directly* in the browser\n  node: true"
                     : undefined
-                )}\n\nnpm:\n  description: "" ${Caf.toString(
-                  this.packageDotName
-                )}\n  dependencies:\n    art-build-configurator: :*\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: ${Caf.toString(
+                )}\n\n\n${Caf.toString(
+                  formattedInspect({
+                    npm: { description: this.packageDotName },
+                    dependencies: merge(
+                      { "art-build-configurator": "*" },
+                      dependencies
+                    )
+                  })
+                )}\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: ${Caf.toString(
                   Caf.array(
                     targets,
                     target => `${Caf.toString(target)}: {}`
