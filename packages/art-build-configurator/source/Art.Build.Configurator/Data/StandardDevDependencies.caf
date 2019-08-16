@@ -1,11 +1,11 @@
 # webpack core
 webpack:                              :^4.39.1
 webpack-cli:                          :*
-webpack-dev-server:                   :^3.4.1
+webpack-dev-server:                   :^3.7.2
 webpack-stylish:                      :^0.1.8
 
 # webpack tools
-case-sensitive-paths-webpack-plugin:  :^2.1.2
+case-sensitive-paths-webpack-plugin:  :^2.2.0
 webpack-merge:                        :^4.2.1
 webpack-node-externals:               :^1.7.2
 

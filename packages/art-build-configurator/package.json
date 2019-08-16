@@ -1,5 +1,5 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bin": {
     "abc": "./abc"
   },
@@ -35,9 +35,9 @@
     "art-testbench": "*",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.0",
     "mock-fs": "^4.10.0",
-    "webpack": "^4.32.2",
+    "webpack": "^4.39.1",
     "webpack-cli": "*",
     "webpack-dev-server": "^3.4.1",
     "webpack-merge": "^4.2.1",
