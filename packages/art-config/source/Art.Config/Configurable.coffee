@@ -7,6 +7,7 @@
   deepMerge
   isPlainObject
   ErrorWithInfo
+  neq
 } = require 'art-standard-lib'
 {BaseClass} = require 'art-class-system'
 
@@ -71,6 +72,17 @@ defineModule module, class Configurable extends EventedMixin BaseClass
   @configure: (globalConfig) ->
     globalConfig.verbose && log Configurable: "#{@getConfigurationPathString()}": @getConfigurationFromPath globalConfig
     mergeInto @reset(), @getConfigurationFromPath globalConfig
+
+  @getConfigSave: ->
+    out = {}
+    defaults = @getDefaults()
+    count = 0
+    for k, v of @config ? {} when  neq v, defaults[k]
+      count++
+      out[k] = v
+
+    if count > 0
+      "#{@getConfigurationPathString()}": out
 
   #####################################
   # OVERRIDES

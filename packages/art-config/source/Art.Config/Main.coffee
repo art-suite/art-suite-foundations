@@ -25,6 +25,17 @@ defineModule module, class Main
   @getArtConfig           : getArtConfig            = -> Neptune.Art.Config.config
   @getDefaultArtConfigName: getDefaultArtConfigName = -> Neptune.Art.Config.defaultArtConfigName
 
+  ### getArtConfigSave
+    OUT: artConfig, but only the non-default values
+  ###
+  @getArtConfigSave: ->
+    out = {}
+    for configurable in ConfigRegistry.configurables
+      if saveConfig = configurable.getConfigSave()
+        mergeInto out, saveConfig
+
+    out
+
   setArtConfigName        = (name) -> Neptune.Art.Config.configName = name
   ###
   IN: configureOptions:
