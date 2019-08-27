@@ -150,10 +150,10 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
-/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/*! exports provided: author, dependencies, description, devDependencies, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*","art-events":"*"},"description":"A powerful yet simple tool for configuring all your libraries consistently.","license":"ISC","name":"art-config","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.11.0"};
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"dependencies\":{\"art-build-configurator\":\"*\",\"art-events\":\"*\"},\"description\":\"A powerful yet simple tool for configuring all your libraries consistently.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-config\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.12.0\"}");
 
 /***/ }),
 /* 5 */
@@ -538,6 +538,8 @@ defineModule(module, Main = (function() {
     if (typeof onConfig === "function") {
       onConfig(config);
     }
+    global.artConfig = config;
+    global.artConfigName = configName;
     return config;
   };
 
