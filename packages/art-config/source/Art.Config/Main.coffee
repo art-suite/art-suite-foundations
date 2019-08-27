@@ -163,6 +163,9 @@ defineModule module, class Main
 
     onConfig? config
 
+    global.artConfig      = config
+    global.artConfigName  = configName
+
     config
 
   @resetCurrentConfig: => config = getArtConfig(); delete config[k] for k, v of config
