@@ -26,6 +26,7 @@
   PromiseWorkerPool:            require('./PromiseWorkerPool'),
   RegExpExtensions:             require('./RegExpExtensions'),
   RequestError:                 require('./RequestError'),
+  ReschedulableTimer:           require('./ReschedulableTimer'),
   Ruby:                         require('./ruby'),
   StandardImport:               require('./StandardImport'),
   StringCase:                   require('./string_case'),
