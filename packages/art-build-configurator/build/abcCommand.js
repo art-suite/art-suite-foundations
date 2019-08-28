@@ -103,6 +103,7 @@ Caf.defMod(module, () => {
     String = global.String,
     ArtBuildConfigurator,
     realRequire,
+    git,
     pv,
     pretend,
     configure,
@@ -116,6 +117,7 @@ Caf.defMod(module, () => {
   ArtBuildConfigurator = Neptune.Art.Build.Configurator;
   realRequire = eval("require");
   ({
+    git,
     pv,
     pretend,
     configure,
@@ -137,6 +139,7 @@ Caf.defMod(module, () => {
     )
     .option("-f, --force", "when initialize, force overwrite all")
     .option("-i, --init [recipe]", "initialize a new Art-style project")
+    .option("--git", "init git (unless .git is already present)")
     .option("--pv", "show YOUR package's current version")
     .version(__webpack_require__(/*! ./package */ 5).version)
     .on("--help", function() {
@@ -153,7 +156,7 @@ Caf.defMod(module, () => {
     switch (false) {
       case !pv:
         return console.log(ArtBuildConfigurator.Versioning.current);
-      case !(pretend || configure || init):
+      case !(pretend || configure || init || git):
         if (Caf.is(requireOption, String)) {
           console.log(
             "loading: require ".blue + `'${Caf.toString(requireOption)}'`.green
@@ -166,7 +169,8 @@ Caf.defMod(module, () => {
           init,
           force,
           verbose,
-          app
+          app,
+          git
         }).catch(function(e) {
           return __webpack_require__(/*! art-standard-lib */ 7).log.error(e.stack);
         });
