@@ -1,5 +1,7 @@
 &colors
 
+ArtBuildConfigurator = Neptune.Art.Build.Configurator
+
 realRequire = eval :require
 
 {pv, pretend, configure, init, force, verbose, app, require: requireOption} = commander =
@@ -15,20 +17,20 @@ realRequire = eval :require
   .on     :--help ->
     console.log
       """
-        looks for '#{&source/ArtBuildConfigurator.configFilename}' and configs as instructed
+        looks for '#{ArtBuildConfigurator.configFilename}' and configs as instructed
         (using build: #{&useBuild})
 
   .parse process.argv
 
 switch
 when pv
-  console.log &ArtBuildConfigurator.Versioning.current
+  console.log ArtBuildConfigurator.Versioning.current
 
 when pretend || configure || init
   if requireOption is String
     console.log "loading: require ".blue + "'#{requireOption}'".green
     realRequire requireOption
-  &ArtBuildConfigurator.go
+  ArtBuildConfigurator.go
     process.cwd()
     {} pretend, configure, init, force, verbose, app
 
