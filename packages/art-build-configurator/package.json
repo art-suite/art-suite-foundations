@@ -28,6 +28,7 @@
     "neptune-namespaces": "*",
     "pluralize": "^8.0.0",
     "script-loader": "^0.7.2",
+    "shell-exec": "^1.0.2",
     "style-loader": "^1.0.0"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
