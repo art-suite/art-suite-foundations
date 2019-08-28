@@ -1,0 +1,20 @@
+import &StandardImport
+
+(command, options) ->
+  options extract? quiet
+  log "> #{command}".green unless quiet
+
+  &shellExec command
+  .then (result) ->
+    if present result.stderr
+      log.error result.stderr
+      Promise.reject result.stderr
+    else
+      out = result.stdout.trim()
+      unless quiet
+        if out.length > 0
+          log out.blue
+        else
+          log "<success; no output>".grey
+
+      out

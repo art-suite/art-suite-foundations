@@ -13,7 +13,7 @@ class Main
 
 
   @go: (npmRoot, options) =>
-    options extract pretend, configure, init, force, quiet
+    options extract pretend, configure, init, force, quiet, git
 
     @quiet ?= quiet
 
@@ -23,12 +23,28 @@ class Main
       @init init, npmRoot, options if init
 
     .then -> unless pretend && init
-      @runNeptuneNamespaces npmRoot
-
-    .then -> unless pretend && init
+      log "loadAndWriteConfig init: #{init}"
       @loadAndWriteConfig npmRoot, options
 
+    .then -> unless pretend && init
+      log "runNeptuneNamespaces init: #{init}"
+      @runNeptuneNamespaces npmRoot
+
+    .then -> if git
+      if &fs.existsSync :.git
+        @log "git already initialized. Not touching it. Cheers!".yellow
+
+      else
+        @log "initializing git...".yellow
+        &shellExecSimple 'git init'
+        .then -> &shellExecSimple 'git add .'
+        .then -> &shellExecSimple 'git commit -m "initial checkin by art-build-configurator#{if init then " --init #{init}" else ''}"'
+        .then -> @log "git initialized".yellow
+
     .catch (error) -> log.error error
+
+  @shellExec: (command) ->
+    &shellExecSimple command, {} @quiet
 
   @registerLoaders: (npmRoot, vivify = false) =>
     file = path.join npmRoot, @registerLoadersFilename

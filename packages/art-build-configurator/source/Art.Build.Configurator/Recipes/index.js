@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  App:       require('./App'),
   ClientApp: require('./ClientApp'),
   Core:      require('./Core'),
   DemoApp:   require('./DemoApp'),

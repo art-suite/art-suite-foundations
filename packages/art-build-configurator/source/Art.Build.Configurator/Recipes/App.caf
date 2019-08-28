@@ -1,0 +1,4 @@
+import &StandardImport
+
+class App extends &ClientApp
+  @description: "" <alias:client-app> #{} &ClientApp.description

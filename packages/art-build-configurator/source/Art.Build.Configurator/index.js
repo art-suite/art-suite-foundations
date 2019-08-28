@@ -9,6 +9,7 @@
   Recipe:               require('./Recipe'),
   RecipeRegistry:       require('./RecipeRegistry'),
   RunNeptuneNamespaces: require('./RunNeptuneNamespaces'),
+  ShellExecSimple:      require('./ShellExecSimple'),
   StandardImport:       require('./StandardImport'),
   Versioning:           require('./Versioning')
 });
