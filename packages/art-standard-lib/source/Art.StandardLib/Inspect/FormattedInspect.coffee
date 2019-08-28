@@ -150,17 +150,22 @@ escapeForBlockString = (str) =>
     escapeJavascriptString x, true
     .replace /\ /g, '\\s'
 
-formattedInspectString = (m, options) ->
-  out = if /[^\n\s].*\n(.|\n)*[^\n\s]/.test m
-    ('"""' + newLineWithIndentString +
-    escapeForBlockString(m).replace /\n/g, newLineWithIndentString
-    ).replace /\ +\n/g, '\n'
+cafScriptWordStringRegExp = /^(?=[^'":])[^\n\s,)\]\}]+$/
 
-  # else if m.length > 10 && m.match / /
-  #   TODO: support ""-block output using a word-wrap strategy if we can do-so isomorphically.
-  #   i.e. the output string would generate exactly the input string in Caffeine-Script
-  else
-    escapeJavascriptString m
+formattedInspectString = (m, options) ->
+  out = switch
+    when cafScriptWordStringRegExp.test m
+      ":#{m}"
+    when /[^\n\s].*\n(.|\n)*[^\n\s]/.test m
+      ('"""' + newLineWithIndentString +
+      escapeForBlockString(m).replace /\n/g, newLineWithIndentString
+      ).replace /\ +\n/g, '\n'
+
+    # else if m.length > 10 && m.match / /
+    #   TODO: support ""-block output using a word-wrap strategy if we can do-so isomorphically.
+    #   i.e. the output string would generate exactly the input string in Caffeine-Script
+    else
+      escapeJavascriptString m
 
   if options.colorize
     options.colorize.green out
