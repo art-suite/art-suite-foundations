@@ -2,7 +2,7 @@ import &StandardImport
 
 shellExec = (cmd, opts) ->
   Promise.then ->
-    child = &childProcess.spawn
+    child = require(:child_process).spawn
       if isWin = process.platform == :win32 then :cmd else :sh
 
       []
