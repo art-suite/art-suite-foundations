@@ -15,4 +15,3 @@ chai:                                 :^4.2.0
 mock-fs:                              :^4.10.0
 
 art-testbench:                        :*
-shell-exec:                           :^1.0.2

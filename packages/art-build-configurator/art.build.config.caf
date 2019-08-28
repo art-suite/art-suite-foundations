@@ -37,6 +37,7 @@ npm:
     glob-promise:                         :^3.4.0
     glob:                                 :^7.1.4
     pluralize:                            :^8.0.0
+    shell-exec:                           :^1.0.2
 
   # devDependencies:
 
