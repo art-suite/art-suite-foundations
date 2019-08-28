@@ -27,7 +27,7 @@ module.exports = suite:
   color: ->
     if isNode
       test 'colored string', ->
-        assert.eq '\u001b[32m"hi"\u001b[39m', formattedInspect "hi", color: true
+        assert.eq '\u001b[32m"hi there"\u001b[39m', formattedInspect "hi there", color: true
 
       test 'colored []', ->
         assert.eq "\u001b[90m[]\u001b[39m", formattedInspect [], color: true
@@ -39,7 +39,7 @@ module.exports = suite:
         assert.eq """
           \u001b[90m[]\u001b[39m
             \u001b[34ma:\u001b[39m \u001b[33m1\u001b[39m
-            \u001b[32m"hi"\u001b[39m
+            \u001b[32m:hi\u001b[39m
           """,
           formattedInspect [{a:1}, "hi"], color: true
 
@@ -117,8 +117,12 @@ module.exports = suite:
         else
           assert.match o, out
 
+    testFI '"hi there"', "'\"hi there\"'"
+    testFI "'hi there'", '"\'hi there\'"'
+
     testFI '"hi"', "'\"hi\"'"
     testFI "'hi'", '"\'hi\'"'
+    testFI "hi", ":hi"
     testFI ((a)->123), '(a) -> { return 123; }', 'function(a) { return 123; }'
     testFI a:1, "a: 1"
     testFI /hi/, "/hi/"
@@ -127,7 +131,12 @@ module.exports = suite:
       myInspectOutput
       ///
     testFI [], "[]"
-    testFI ['string', foo: 'bar'], '[] "string", foo: "bar"'
+    testFI ['string', foo: 'bar'], '[] :string, foo: :bar'
+    testFI [{foo: 'bar'}, 'string'], """
+      []
+        foo: :bar
+        :string
+    """
     testFI [1], "[] 1"
     testFI [1,2], "[] 1, 2"
     testFI [a:1, 2],
@@ -317,7 +326,7 @@ module.exports = suite:
           name: "Amy Mae"
           address: "home on the range"
         """
-        userA: name: "John Groovy Handcock", address: "home"
+        userA: name: "John Groovy Handcock", address: :home
         userB: name: "Amy Mae",              address: "home on the range"
         """
         65
@@ -330,7 +339,7 @@ module.exports = suite:
           name: "Amy Mae"
           address: "home on the range"
         """
-        userA: name: "John Groovy Handcock", address: "home"
+        userA: name: "John Groovy Handcock", address: :home
         userB: name: "Amy Mae", address: "home on the range"
         """
         64
@@ -456,15 +465,15 @@ module.exports = suite:
     mixed: ->
       testFIMultiLine ['string', foo: 'bar'], """
         []
-          "string"
-          foo: "bar"
+          :string
+          foo: :bar
         """,
         12
 
       testFIMultiLine [inspectedObjectLiteral('myInspectedObjectLiteral'), foo: 'bar'], """
         []
           myInspectedObjectLiteral
-          foo: "bar"
+          foo: :bar
         """,
         12
 
@@ -483,9 +492,9 @@ module.exports = suite:
           bar: "C"
         ]), """
         []
-          "A"
-          foo: "B"
-          bar: "C"
+          :A
+          foo: :B
+          bar: :C
         """, 11
 
       testFIMultiLine [
@@ -496,15 +505,37 @@ module.exports = suite:
           baz: "E"
         ], """
         []
-          foo: "A"
-          bar: "B"
+          foo: :A
+          bar: :B
 
-          "C"
-          fad: "D"
-          baz: "E"
+          :C
+          fad: :D
+          baz: :E
         """, 11
 
+  wordStrings: ->
+    testFIMultiLine [
+      "abc"
+    ],
+      """
+        []
+          :abc
+      """
+
+
   regressions: ->
+    testFIMultiLine
+      a: [1, 2]
+      b: 3
+      """
+      a: []
+        1
+        2
+
+      b:
+        3
+      """
+
     testFIMultiLine [
       {}
       {}
@@ -538,9 +569,9 @@ module.exports = suite:
       # This is actually correct, even though it seems like nothing aligns nice. We need a better algorithm :).
       """
       Neptune:
-        version: "1.10.2"
+        version: :1.10.2
         Neptune.CaffeineMc:
-          Neptune.CaffeineMc.Compilers: modules: "JavaScript"
+          Neptune.CaffeineMc.Compilers: modules: :JavaScript
           modules:                      "CafRepl, CaffeineMcParser, FileCompiler, Metacompiler, ModuleResolver, SourceRoots"
 
         Neptune.Art:
