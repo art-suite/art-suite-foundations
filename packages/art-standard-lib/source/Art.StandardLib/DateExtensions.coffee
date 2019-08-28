@@ -128,5 +128,9 @@ module.exports =
   firstOfMonth:                (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
 
   firstOfDayLocale: firstOfDayLocale =  (time) ->  firstOfHour(time)     - toDate(time).getHours()            * secondsPerHour
-  firstOfWeekLocale:                    (time) ->  firstOfDayLocale(time) - ((toDate(time).getDay() - 1) %% 7) * secondsPerDay  # monday is first day
+  firstOfWeekLocale: (time, sundayIsFirst) ->
+    day = toDate(time).getDay()
+    day-- unless sundayIsFirst
+    firstOfDayLocale(time) - secondsPerDay * (day %% 7)
+
   firstOfMonthLocale:                   (time) ->  firstOfDayLocale(time) - (toDate(time).getDate() - 1)       * secondsPerDay
