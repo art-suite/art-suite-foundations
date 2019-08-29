@@ -138,7 +138,7 @@ module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow 
 /*! exports provided: author, bin, dependencies, description, devDependencies, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\"},\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-loader\":\"^0.7.3\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"css-loader\":\"^3.0.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"json-loader\":\"^0.5.7\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\",\"script-loader\":\"^0.7.2\",\"shell-exec\":\"^1.0.2\",\"style-loader\":\"^1.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"shell-exec\":\"^1.0.2\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.25.1\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\"},\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-loader\":\"^0.7.3\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"css-loader\":\"^3.0.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"json-loader\":\"^0.5.7\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.25.2\"}");
 
 /***/ }),
 /* 6 */,
@@ -1234,9 +1234,32 @@ module.exports = require('webpack-merge' /* ABC - not inlining fellow NPM */);
 let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["log", "present", "Promise"],
+    ["Promise", "process", "merge", "log", "present"],
     [global, __webpack_require__(/*! ./StandardImport */ 17)],
-    (log, present, Promise) => {
+    (Promise, process, merge, log, present) => {
+      let shellExec;
+      shellExec = function(cmd, opts) {
+        return Promise.then(() => {
+          let child, isWin;
+          child = __webpack_require__(/*! child_process */ 36).spawn(
+            (isWin = process.platform === "win32") ? "cmd" : "sh",
+            [isWin ? "/C" : "-c", cmd],
+            merge({ stdio: "pipe", cwd: process.cwd() }, opts)
+          );
+          return new Promise(resolve => {
+            let stdout, stderr, base, base1;
+            stdout = stderr = "";
+            Caf.exists((base = child.stdout)) &&
+              base.on("data", data => (stdout += data));
+            Caf.exists((base1 = child.stderr)) &&
+              base1.on("data", data => (stderr += data));
+            child.on("error", error => resolve({ stdout, stderr, cmd, error }));
+            return child.on("close", code =>
+              resolve({ stdout, stderr, cmd, code })
+            );
+          });
+        });
+      };
       return function(command, options) {
         let quiet;
         if (Caf.exists(options)) {
@@ -1245,7 +1268,7 @@ Caf.defMod(module, () => {
         if (!quiet) {
           log(`> ${Caf.toString(command)}`.green);
         }
-        return __webpack_require__(/*! shell-exec */ 36)(command).then(result => {
+        return shellExec(command).then(result => {
           let out;
           return present(result.stderr)
             ? (log.error(result.stderr), Promise.reject(result.stderr))
@@ -1266,13 +1289,13 @@ Caf.defMod(module, () => {
 
 /***/ }),
 /* 36 */
-/*!*****************************************************************************!*\
-  !*** external "require('shell-exec' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*****************************************************************************/
+/*!********************************************************************************!*\
+  !*** external "require('child_process' /* ABC - not inlining fellow NPM *_/)" ***!
+  \********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('shell-exec' /* ABC - not inlining fellow NPM */);
+module.exports = require('child_process' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 37 */
