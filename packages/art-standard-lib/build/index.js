@@ -181,10 +181,10 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
-/*! exports provided: author, dependencies, description, license, name, scripts, version, default */
+/*! exports provided: author, dependencies, description, devDependencies, license, name, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","dependencies":{"art-build-configurator":"*","pluralize":"*"},"description":"The Standard Library for JavaScript that aught to be.","license":"ISC","name":"art-standard-lib","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"1.60.3"};
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.62.0\"}");
 
 /***/ }),
 /* 5 */
@@ -3168,12 +3168,22 @@ module.exports = MinimalBaseObject = (function() {
     return defProperties(this, arguments, true, true);
   };
 
-  MinimalBaseObject._propGetterName = propGetterName = function(prop) {
+  MinimalBaseObject.getPropGetterName = propGetterName = function(prop) {
     return "get" + capitalize(prop);
   };
 
-  MinimalBaseObject._propSetterName = propSetterName = function(prop) {
+  MinimalBaseObject.getPropSetterName = propSetterName = function(prop) {
     return "set" + capitalize(prop);
+  };
+
+  MinimalBaseObject._propGetterName = function(v) {
+    console.warn("DEPRICATED - use getPropGetterName");
+    return propGetterName(v);
+  };
+
+  MinimalBaseObject._propSetterName = function(v) {
+    console.warn("DEPRICATED - use getPropSetterName");
+    return propSetterName(v);
   };
 
   MinimalBaseObject._addGetter = addGetter = function(obj, prop, getter) {
@@ -4249,7 +4259,7 @@ module.exports = require('pluralize' /* ABC - not inlining fellow NPM */);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, colorNames, colorizeFunctions, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, identity, indentLength, indentString, inspect, isFunction, isInspectableArray, isNumber, isPlainArray, isPlainObject, isString, isTypedArray, max, newLineWithIndentString, object, objectKeyCount, objectName, pad, passThroughColorizeFunctions, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects, w;
+var FormattedInspect, alignTabs, ansiRegex, ansiSafeStringLength, cafScriptWordStringRegExp, colorNames, colorizeFunctions, escapeForBlockString, escapeJavascriptString, formattedInspectArray, formattedInspectObject, formattedInspectRecursive, formattedInspectString, identity, indentLength, indentString, inspect, isFunction, isInspectableArray, isNumber, isPlainArray, isPlainObject, isString, isTypedArray, max, newLineWithIndentString, object, objectKeyCount, objectName, pad, passThroughColorizeFunctions, postWhitespaceFormatting, ref, ref1, stripAnsi, stripTrailingWhitespace, toInspectedObjects, w;
 
 ref = __webpack_require__(/*! ../TypesExtended */ 18), isString = ref.isString, objectName = ref.objectName, isPlainObject = ref.isPlainObject, isPlainArray = ref.isPlainArray, isTypedArray = ref.isTypedArray, isFunction = ref.isFunction, isNumber = ref.isNumber;
 
@@ -4431,9 +4441,20 @@ escapeForBlockString = (function(_this) {
   };
 })(this);
 
+cafScriptWordStringRegExp = /^(?=[^'":])[^\n\s,)\]\}]+$/;
+
 formattedInspectString = function(m, options) {
   var out;
-  out = /[^\n\s].*\n(.|\n)*[^\n\s]/.test(m) ? ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n') : escapeJavascriptString(m);
+  out = (function() {
+    switch (false) {
+      case !cafScriptWordStringRegExp.test(m):
+        return ":" + m;
+      case !/[^\n\s].*\n(.|\n)*[^\n\s]/.test(m):
+        return ('"""' + newLineWithIndentString + escapeForBlockString(m).replace(/\n/g, newLineWithIndentString)).replace(/\ +\n/g, '\n');
+      default:
+        return escapeJavascriptString(m);
+    }
+  })();
   if (options.colorize) {
     return options.colorize.green(out);
   } else {
@@ -7170,7 +7191,7 @@ module.exports = AsyncExtensions = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dateFormat, firstOfDay, firstOfDayLocal, firstOfHour, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, secondsPerDay, secondsPerHour, toDate, toMilliseconds, toSeconds,
+var dateFormat, firstOfDay, firstOfDayLocale, firstOfHour, formattedInspect, isDate, isNumber, isString, march1973InMilliseconds, ref, secondsPerDay, secondsPerHour, toDate, toMilliseconds, toSeconds,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
 ref = __webpack_require__(/*! ./Core/Types */ 12), isString = ref.isString, isNumber = ref.isNumber, isDate = ref.isDate;
@@ -7218,7 +7239,7 @@ module.exports = {
    */
   dateFormat: dateFormat = __webpack_require__(/*! dateformat */ 42),
   formatDate: function(value, format, utc) {
-    if (isString(value)) {
+    if (isString(value) && !isString(format)) {
       format = value;
       value = null;
     }
@@ -7245,15 +7266,23 @@ module.exports = {
     Number of Milliseconds since epoch-start
    */
   toMilliseconds: toMilliseconds = function(v) {
+    var __, day, match, month, year;
     if (!((v != null) && v !== false)) {
       return Date.now();
     }
     if (isString(v)) {
-      if (/^\d+(\.\d+)?$/.test(v)) {
-        v = v - 0;
-      } else {
-        v = Date.parse(v);
-      }
+      v = (function() {
+        var ref1;
+        switch (false) {
+          case !(match = v.match(/^(\d\d\d\d)-(\d\d)(?:-(\d\d))?$/)):
+            __ = match[0], year = match[1], month = match[2], day = (ref1 = match[3]) != null ? ref1 : 1;
+            return new Date(year - 0, month - 1, day - 0);
+          case !/^\d+(\.\d+)?$/.test(v):
+            return v - 0;
+          default:
+            return Date.parse(v);
+        }
+      })();
     }
     if (isNumber(v)) {
       if (!isFinite(v)) {
@@ -7309,14 +7338,19 @@ module.exports = {
   firstOfMonth: function(time) {
     return firstOfDay(time) - (toDate(time).getUTCDate() - 1) * secondsPerDay;
   },
-  firstOfDayLocale: firstOfDayLocal = function(time) {
+  firstOfDayLocale: firstOfDayLocale = function(time) {
     return firstOfHour(time) - toDate(time).getHours() * secondsPerHour;
   },
-  firstOfWeekLocale: function(time) {
-    return firstOfDayLocal(time) - (modulo(toDate(time).getDay() - 1, 7)) * secondsPerDay;
+  firstOfWeekLocale: function(time, sundayIsFirst) {
+    var day;
+    day = toDate(time).getDay();
+    if (!sundayIsFirst) {
+      day--;
+    }
+    return firstOfDayLocale(time) - secondsPerDay * (modulo(day, 7));
   },
   firstOfMonthLocale: function(time) {
-    return firstOfDayLocal(time) - (toDate(time).getDate() - 1) * secondsPerDay;
+    return firstOfDayLocale(time) - (toDate(time).getDate() - 1) * secondsPerDay;
   }
 };
 
@@ -8653,7 +8687,9 @@ module.exports = CallStack = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ReschedulableTimer, currentSecond, timeout;
+var Promise, ReschedulableTimer, currentSecond, timeout;
+
+Promise = __webpack_require__(/*! ./Promise */ 15).Promise;
 
 currentSecond = __webpack_require__(/*! ./Time */ 58).currentSecond;
 
@@ -8661,7 +8697,8 @@ timeout = __webpack_require__(/*! ./AsyncExtensions */ 50).timeout;
 
 module.exports = ReschedulableTimer = (function() {
   function ReschedulableTimer() {
-    this._currentScheduleNumber = 0;
+    this._actionCount = 0;
+    this.cancel();
   }
 
 
@@ -8670,22 +8707,49 @@ module.exports = ReschedulableTimer = (function() {
   leaving only this, new timeout active.
   
   In actuality, the repvious timeouts complete at some point, but their 'actions' are skipped.
+  
+  OUT:
+    Promise.then ->
+      The result of the next-completed timeout.
+  
+      Note:
+        If no additional calls to timeout are made within your ms, then
+        this will be the result of your action.
+  
+        However, if another timeout is triggered before ms expires, the result
+        will be the result of the action passed in then.
    */
 
   ReschedulableTimer.prototype.timeout = function(ms, action) {
-    var thisScheduleNumber;
-    thisScheduleNumber = this._currentScheduleNumber += 1;
-    return timeout(ms, (function(_this) {
+    var actionCount;
+    actionCount = this._actionCount += 1;
+    timeout(ms, (function(_this) {
       return function() {
-        if (_this._currentScheduleNumber === thisScheduleNumber) {
-          return action();
+        var ref, reject, resolve;
+        if (_this._actionCount === actionCount) {
+          ref = _this, reject = ref.reject, resolve = ref.resolve;
+          _this.cancel();
+          return Promise.then(function() {
+            return action();
+          })["catch"](reject).then(resolve);
         }
       };
     })(this));
+    return this._getPendingPromise();
   };
 
   ReschedulableTimer.prototype.cancel = function() {
-    return this._currentScheduleNumber++;
+    this.resolve = this.reject = this._pendingTimeoutPromise = null;
+    return this._actionCount++;
+  };
+
+  ReschedulableTimer.prototype._getPendingPromise = function() {
+    return this._pendingTimeoutPromise != null ? this._pendingTimeoutPromise : this._pendingTimeoutPromise = new Promise((function(_this) {
+      return function(resolve1, reject1) {
+        _this.resolve = resolve1;
+        _this.reject = reject1;
+      };
+    })(this));
   };
 
   return ReschedulableTimer;
