@@ -3,12 +3,16 @@ import &StandardImport
 class ConfigureBase extends BaseClass
   @outFileName: :index.html
 
-  @getFileContents: (npmRoot, abcConfig)->
-    @get npmRoot, abcConfig
-    + "\n"
+  @getFileContents: (npmRoot, abcConfig) ->
+    Promise.then ->
+      @get npmRoot, abcConfig
+    .then (v) ->
+      v + "\n"
 
   ## writeConfig
   @writeConfig: (npmRoot, abcConfig) ->
-    &Main.updateFile
-      path.join npmRoot, @outFileName
-      @getFileContents npmRoot, abcConfig
+    @getFileContents npmRoot, abcConfig
+    .then (contents) ->
+      &Main.updateFile
+        path.join npmRoot, @outFileName
+        contents

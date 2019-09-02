@@ -101,4 +101,4 @@ class ConfigureWebpack extends &ConfigureBase
         entry: [targetName]: entry ? "" ./#{targetName}
         targetConfig
 
-  @getFileContents: -> StandardWebpackConfig.js
+  @getFileContents: -> Promise.then -> StandardWebpackConfig.js

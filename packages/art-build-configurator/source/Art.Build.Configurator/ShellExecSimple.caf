@@ -24,8 +24,7 @@ shellExec = (cmd, opts) ->
       child.on :close (code)  -> resolve {} stdout, stderr, cmd, code
 
 (command, options) ->
-  options extract? quiet
-  log "> #{command}".green unless quiet
+  log "> #{command}".green if options extract? verbose
 
   shellExec command
   .then (result) ->
@@ -34,7 +33,7 @@ shellExec = (cmd, opts) ->
       Promise.reject result.stderr
     else
       out = result.stdout.trim()
-      unless quiet
+      if verbose
         if out.length > 0
           log out.blue
         else

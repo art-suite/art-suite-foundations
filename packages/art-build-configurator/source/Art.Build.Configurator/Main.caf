@@ -118,22 +118,21 @@ class Main
         @log "#{if pretend then :PRETEND-}INIT-#{recipeName}: done"
 
   @pretendWriteConfig: (npmRoot, abcConfig) ->
-    @log formattedInspect
-      merge {}
-        abcConfig
-        npm:
-          out: "package.json": ConfigurePackageJson.get npmRoot, abcConfig
+    Promise.deepAll merge {}
+      abcConfig
+      npm:
+        out: "package.json": ConfigurePackageJson.get npmRoot, abcConfig
 
-        indexHtml: if abcConfig.indexHtml
-          """
-            <html>
-            </html>
+      indexHtml: if abcConfig.indexHtml
+        """
+          <html>
+          </html>
 
-        webpack:
-          configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
-          out: "webpack.config.js": ConfigureWebpack.standardWebpackConfigJs
+      webpack:
+        configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
+        out: "webpack.config.js": ConfigureWebpack.getFileContents()
 
-      {} color: true
+    .then @log
 
   @runNeptuneNamespaces: (npmRoot, options) ->
     [executable, firstArg] = process.argv
@@ -153,18 +152,19 @@ class Main
         @writeConfig npmRoot, abcConfig
 
   @writeConfig: (npmRoot, abcConfig) ->
-    ConfigurePackageJson.writeConfig npmRoot, abcConfig
-    ConfigureWebpack.writeConfig npmRoot, abcConfig
+    Promise.all []
+      ConfigurePackageJson.writeConfig npmRoot, abcConfig
+      ConfigureWebpack.writeConfig npmRoot, abcConfig
 
   # called by webpack to get config
   @getWebpackConfig: (npmRoot, env, argv) =>
-
     @loadConfig npmRoot
-    .then (abcConfig) =>
-      @writeConfig npmRoot, abcConfig
-      @runNeptuneNamespaces npmRoot
-      .then ->
-        ConfigureWebpack.get npmRoot, abcConfig, {} env, argv
+    .then (abcConfig) ->
+      Promise.all []
+        @writeConfig npmRoot, abcConfig
+        @runNeptuneNamespaces npmRoot
+        .then ->
+          ConfigureWebpack.get npmRoot, abcConfig, {} env, argv
 
   # DEPRICATED
   @updateFile: (fileName, contents) ->
