@@ -118,6 +118,7 @@ class Main
         @log "#{if pretend then :PRETEND-}INIT-#{recipeName}: done"
 
   @pretendWriteConfig: (npmRoot, abcConfig) ->
+
     Promise.deepAll merge {}
       abcConfig
       npm:
@@ -160,8 +161,8 @@ class Main
   @getWebpackConfig: (npmRoot, env, argv) =>
     @loadConfig npmRoot
     .then (abcConfig) ->
-      Promise.all []
-        @writeConfig npmRoot, abcConfig
+      @writeConfig npmRoot, abcConfig
+      .then ->
         @runNeptuneNamespaces npmRoot
         .then ->
           ConfigureWebpack.get npmRoot, abcConfig, {} env, argv
