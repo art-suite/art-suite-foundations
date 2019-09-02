@@ -3,7 +3,6 @@
   "bin": {
     "abc": "./abc"
   },
-  "bugs": "https:/github.com/art-suite/art-build-configurator/issues",
   "dependencies": {
     "art-browser-tools": "*",
     "art-build-configurator": "*",
@@ -45,13 +44,8 @@
     "webpack-node-externals": "^1.7.2",
     "webpack-stylish": "^0.1.8"
   },
-  "homepage": "https://github.com/art-suite/art-build-configurator",
   "license": "ISC",
   "name": "art-build-configurator",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/art-suite/art-build-configurator.git"
-  },
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
