@@ -1,5 +1,6 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https:/github.com/imikimi/art-standard-lib/issues",
   "dependencies": {
     "art-build-configurator": "*",
     "pluralize": "*"
@@ -23,8 +24,13 @@
     "webpack-node-externals": "^1.7.2",
     "webpack-stylish": "^0.1.8"
   },
+  "homepage": "https://github.com/imikimi/art-standard-lib",
   "license": "ISC",
   "name": "art-standard-lib",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imikimi/art-standard-lib.git"
+  },
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
