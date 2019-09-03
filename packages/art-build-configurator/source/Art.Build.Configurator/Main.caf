@@ -23,11 +23,9 @@ class Main
       @init init, npmRoot, options if init
 
     .then -> unless pretend && init
-      log "loadAndWriteConfig init: #{init}"
       @loadAndWriteConfig npmRoot, options
 
     .then -> unless pretend && init
-      log "runNeptuneNamespaces init: #{init}"
       @runNeptuneNamespaces npmRoot
 
     .then -> if git
