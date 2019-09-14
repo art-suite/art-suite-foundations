@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &Dom
 global extract Node, document
 ###
   DomElementFactories allows for Art.React-style creation of DOM elements.
@@ -59,43 +59,6 @@ global extract Node, document
 
 class DomElementFactories
 
-  @setDomElementProp: (element, prop, value, oldValue) =>
-    switch prop
-    when :class       then element.className = value || ""
-    when :id          then element.id        = value || ""
-    when :innerHTML   then element.innerHTML = value || ""
-    when :on
-      throw new Error "object expected for 'on' property" unless isPlainObject value
-      setStyle    = (eventType, newEventListener) -> element.addEventListener eventType, newEventListener
-      clearStyle  = (eventType, oldEventListener) -> element.removeEventListner eventType, oldEventListener
-      objectDiff value, oldValue, setStyle, clearStyle, setStyle
-
-    when :style
-      throw new Error "object expected for 'style' property" unless isPlainObject value
-      {style} = element
-      setStyle    = (k, v) -> style[k] = v
-      clearStyle  = (k)    -> style[k] = ""
-      objectDiff value, oldValue, setStyle, clearStyle, setStyle
-
-    else element.setAttribute prop, value
-
-  @setDomElementProps: (element, props) ->
-    each v, k in props
-      @setDomElementProp element, k, v
-
-  @setDomElementChildren: (element, children) ->
-    each child in children
-      if isString child
-        each text, i in child.split "\n"
-          element.appendChild document.createElement :br if i > 0
-          element.appendChild document.createTextNode text
-      else
-        unless child instanceof Node
-          message = "" DomElementFactory.setDomElementChildren: Child is not a string or instance of Node. Child: #{child}
-          log.error message, child
-          throw new Error message
-        element.appendChild child
-
   ### createDomElementFactories
     IN: any combination of arrays and strings
     OUT: All element-names found in all strings are used to generate dom-element-factory-functions
@@ -114,8 +77,8 @@ class DomElementFactories
 
       (nodeName, props, children) ->
         element = document.createElement nodeName
-        @setDomElementProps element, props if props?
-        @setDomElementChildren element, children if children?
+        setDomElementProps element, props if props?
+        setDomElementChildren element, children if children?
 
         element
 

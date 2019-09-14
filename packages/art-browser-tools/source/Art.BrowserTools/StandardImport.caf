@@ -1,1 +1,1 @@
-&ArtStandardLib.merge &ArtStandardLib, &ArtClassSystem, &ArtBinary, &ArtObjectTreeFactory
+&ArtStandardLib.mergeWithSelf &ArtClassSystem, &ArtBinary, &ArtObjectTreeFactory

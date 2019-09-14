@@ -27,7 +27,7 @@ class Cookie
 
   @get: (cookieName) ->
     name = cookieName + :=
-    ca = document.cookie.split :;
+    ca = document.cookie.split ";"
     value = null
     each c in ca when !value
       c = c.substring 1 while ' ' == c.charAt 0
