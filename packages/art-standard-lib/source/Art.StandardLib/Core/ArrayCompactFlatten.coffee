@@ -10,7 +10,7 @@ module.exports = class ArrayCompactFlatten
   @isArrayOrArguments: isArrayOrArguments = (o) ->
     isArray(o) ||
     if typeof o?.length == "number" && o.toString() == '[object Arguments]'
-      console.warn "DEPRICATED compactFlatten* no longer supports Arguments objects"
+      console.error "DEPRICATED compactFlatten* no longer supports Arguments objects"
       true
     else false
 
