@@ -184,7 +184,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.62.1\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.62.2\"}");
 
 /***/ }),
 /* 5 */
@@ -293,19 +293,15 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
 
 "use strict";
 
-var ArrayCompactFlatten, isArray,
+var ArrayCompactFlatten, isArguments, isArray, ref,
   slice = [].slice;
 
-isArray = __webpack_require__(/*! ./Types */ 12).isArray;
+ref = __webpack_require__(/*! ./Types */ 12), isArray = ref.isArray, isArguments = ref.isArguments;
 
 module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
+  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
 
   function ArrayCompactFlatten() {}
-
-  ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
-  };
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
     return (o != null) && typeof o.length === "number" && (o.constructor === Array || o.toString() === '[object Arguments]');
@@ -398,7 +394,7 @@ module.exports = ArrayCompactFlatten = (function() {
   ArrayCompactFlatten.compactFlattenAll = function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return compactFlattenIfNeeded(all, keepUnlessNullOrUndefined);
+    return compactFlattenIfNeededFastBasic(all);
   };
 
   ArrayCompactFlatten.compactFlattenFast = function(array) {
@@ -738,6 +734,10 @@ module.exports = Types = (function() {
 
   Types.isArray = isArray = Types.isArrayUniversal;
 
+  Types.isArguments = function(o) {
+    return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
+  };
+
   Types.isPlainArray = isArray;
 
   Types.isNonNegativeInt = isNonNegativeInt = function(x) {
@@ -1010,21 +1010,22 @@ module.exports = StringCase = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Merge, compactFlatten, isPlainObject;
+var Merge, compactFlatten, isPlainObject,
+  slice = [].slice;
 
 compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
 
 isPlainObject = __webpack_require__(/*! ./Types */ 12).isPlainObject;
 
 module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
+  var _deepMerge, deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
 
   function Merge() {}
 
 
   /*
   
-  merge "flattens" its arguments and then adds all keys from all objects in
+  merge "flattens" its args and then adds all keys from all objects in
   the list into a new object which is returned.
   
   return: new object
@@ -1034,15 +1035,21 @@ module.exports = Merge = (function() {
    */
 
   Merge.merge = merge = function() {
-    return mergeInto({}, arguments);
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return mergeInto({}, all);
   };
 
   Merge.mergeWithoutNulls = function() {
-    return mergeIntoWithNullDeletes({}, arguments);
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return mergeIntoWithNullDeletes({}, all);
   };
 
   Merge.mergeWithSelf = function() {
-    return mergeInto({}, this, arguments);
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return mergeInto({}, this, all);
   };
 
 
@@ -1056,8 +1063,9 @@ module.exports = Merge = (function() {
    */
 
   Merge.mergeInto = mergeInto = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
+    var all, j, k, len, result, source, sources, v;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -1077,8 +1085,9 @@ module.exports = Merge = (function() {
   };
 
   Merge.mergeIntoWithNullDeletes = mergeIntoWithNullDeletes = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
+    var all, j, k, len, result, source, sources, v;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -1115,8 +1124,9 @@ module.exports = Merge = (function() {
    */
 
   Merge.mergeIntoUnless = function() {
-    var i, j, k, ref, result, source, sources, v;
-    sources = compactFlatten(arguments);
+    var all, i, j, k, ref, result, source, sources, v;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -1134,17 +1144,37 @@ module.exports = Merge = (function() {
   };
 
   Merge.deepMerge = deepMerge = function() {
-    var k, list, out, v, val;
-    list = compactFlatten(arguments);
-    out = merge(list);
-    for (k in out) {
-      v = out[k];
+    var all, array, k, out, ref, v, val;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    ref = out = merge(array = compactFlatten(all));
+    for (k in ref) {
+      v = ref[k];
       if (isPlainObject(v)) {
-        out[k] = deepMerge((function() {
+        out[k] = _deepMerge((function() {
           var j, len, results;
           results = [];
-          for (j = 0, len = list.length; j < len; j++) {
-            val = list[j];
+          for (j = 0, len = array.length; j < len; j++) {
+            val = array[j];
+            results.push(val[k]);
+          }
+          return results;
+        })());
+      }
+    }
+    return out;
+  };
+
+  _deepMerge = function(array) {
+    var k, out, ref, v, val;
+    ref = out = merge(array = compactFlatten(array));
+    for (k in ref) {
+      v = ref[k];
+      if (isPlainObject(v)) {
+        out[k] = _deepMerge((function() {
+          var j, len, results;
+          results = [];
+          for (j = 0, len = array.length; j < len; j++) {
+            val = array[j];
             results.push(val[k]);
           }
           return results;
@@ -1166,8 +1196,9 @@ module.exports = Merge = (function() {
   };
 
   Merge.pureMerge = pureMerge = function() {
-    var j, last, len, source, sources;
-    sources = compactFlatten(arguments);
+    var all, j, last, len, source, sources;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -1190,7 +1221,7 @@ module.exports = Merge = (function() {
   /*
   I might consider adding "o" - which works like Object-Tree constructors:
     First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
+    Second, it gathers up and merges all plain-objects in its args list
     Last, all remaining items get added to the "children" list
   The question is, what does it return? Options:
   
@@ -1220,7 +1251,8 @@ module.exports = Merge = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, namespace, promiseDebug, ref;
+/* WEBPACK VAR INJECTION */(function(module) {var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, namespace, promiseDebug, ref,
+  slice = [].slice;
 
 Promise = BlueBirdPromise = __webpack_require__(/*! bluebird/js/browser/bluebird.core.min */ 17);
 
@@ -1496,7 +1528,7 @@ defineModule(module, function() {
         return (function(_this) {
           return function() {
             var args;
-            args = arguments;
+            args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
             return _this.then(function() {
               return f.apply(null, args);
             });
@@ -1563,9 +1595,9 @@ defineModule(module, function() {
 
 
     /*
-    OUT: serializedF = -> Promise.resolve f arguments...
-      IN: any arguments
-      EFFECT: f is invoked with arguments passed in AFTER the last invocation of serializedF completes.
+    OUT: serializedF = -> Promise.resolve f args...
+      IN: any args
+      EFFECT: f is invoked with args passed in AFTER the last invocation of serializedF completes.
       OUT: promise.then -> results from f
     
     NOTE: 'f' can return a promise, but it doesn't have to. If it does return a promise, the next
@@ -4441,7 +4473,7 @@ escapeForBlockString = (function(_this) {
   };
 })(this);
 
-cafScriptWordStringRegExp = /^(?=[^'":])[^\n\s,)\]\}]+$/;
+cafScriptWordStringRegExp = /^(?=[^'":])([^\#\s\0-\x20\x7f;,()[\]{}\\]|\#([^{]|$))+$/;
 
 formattedInspectString = function(m, options) {
   var out;
@@ -4834,13 +4866,13 @@ module.exports = ObjectExtensions = (function() {
     They should be converted to strings, first,
     which is what they would become anyway.
   
-  IN: 0 or more arguments
+  IN: 0 or more args
     out = {}
-    list = arguments
+    list = args
   
     for element in list
       objects: merge into out
-      arrays or argument lists: recurse using element as the list
+      arrays or args lists: recurse using element as the list
       null or undefined: skip
       else out[element] = next element (or undefined if none)
   
@@ -4869,9 +4901,10 @@ module.exports = ObjectExtensions = (function() {
   };
 
   ObjectExtensions.toObject = function() {
-    var out;
+    var all, out;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     out = {};
-    toObjectInternal(arguments, out);
+    toObjectInternal(all, out);
     return out;
   };
 
@@ -4910,13 +4943,14 @@ module.exports = ObjectExtensions = (function() {
     OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
    */
 
-  ObjectExtensions.select = function(obj, a) {
-    var j, k, len, prop, properties, result, v;
+  ObjectExtensions.select = function() {
+    var a, args, j, k, len, obj, prop, properties, result, v;
+    obj = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     if (!obj) {
       return {};
     }
     result = {};
-    if (isFunction(a)) {
+    if (isFunction(a = args[0])) {
       if (a.length === 1) {
         for (k in obj) {
           v = obj[k];
@@ -4933,7 +4967,7 @@ module.exports = ObjectExtensions = (function() {
         }
       }
     } else {
-      properties = compactFlatten(Array.prototype.slice.call(arguments, 1));
+      properties = compactFlatten(args);
       for (j = 0, len = properties.length; j < len; j++) {
         prop = properties[j];
         if (((v = obj[prop]) != null) || obj.hasOwnProperty(prop)) {
@@ -5090,15 +5124,17 @@ module.exports = ObjectExtensions = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1;
+var Iteration, compactFlatten, deepArrayEach, isArrayOrArguments, isFunction, isObject, isPlainArray, isPlainObject, log, mergeInto, ref, ref1,
+  slice = [].slice;
 
 ref = __webpack_require__(/*! ./Core */ 9), compactFlatten = ref.compactFlatten, deepArrayEach = ref.deepArrayEach, isArrayOrArguments = ref.isArrayOrArguments, mergeInto = ref.mergeInto;
 
 ref1 = __webpack_require__(/*! ./TypesExtended */ 18), isPlainObject = ref1.isPlainObject, isObject = ref1.isObject, isFunction = ref1.isFunction, isPlainArray = ref1.isPlainArray;
 
 log = function() {
-  var ref2;
-  return (ref2 = Neptune.Art.StandardLib).log.apply(ref2, arguments);
+  var args, ref2;
+  args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+  return (ref2 = Neptune.Art.StandardLib).log.apply(ref2, args);
 };
 
 module.exports = Iteration = (function() {
@@ -5277,7 +5313,7 @@ module.exports = Iteration = (function() {
   
   1) The with-block has a different argument order. Into is passed first instead of last:
     with: (into, value, key, whenReturnValue) ->
-    This allows you to drop-in functions that take two arguments and reduce them to one like:
+    This allows you to drop-in functions that take two args and reduce them to one like:
       Math.max
       add = (a, b) -> a + b
   
@@ -5927,7 +5963,8 @@ module.exports = Eq = (function() {
 /***/ (function(module, exports, __webpack_require__) {
 
 var ArrayExtensions, bound, exactlyOneWordRegex, intRand, isFunction, isNumber, isString, max, modulo, ref, ref1, ref2, wordsRegex,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+  slice = [].slice;
 
 ref = __webpack_require__(/*! ./MathExtensions */ 32), bound = ref.bound, max = ref.max, intRand = ref.intRand, modulo = ref.modulo;
 
@@ -6561,10 +6598,11 @@ module.exports = ArrayExtensions = (function() {
   };
 
   ArrayExtensions.wordsArray = w = function() {
-    var arg, len1, out, p;
+    var arg, args, len1, out, p;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     out = [];
-    for (p = 0, len1 = arguments.length; p < len1; p++) {
-      arg = arguments[p];
+    for (p = 0, len1 = args.length; p < len1; p++) {
+      arg = args[p];
       if (isString(arg) && !arg.match(exactlyOneWordRegex)) {
         out = out.concat(arg.match(wordsRegex));
       } else {
@@ -6579,13 +6617,9 @@ module.exports = ArrayExtensions = (function() {
   ArrayExtensions.w = ArrayExtensions.wordsArray;
 
   ArrayExtensions.a = a = function() {
-    var arg, len1, out, p;
-    out = [];
-    for (p = 0, len1 = arguments.length; p < len1; p++) {
-      arg = arguments[p];
-      out.push(arg);
-    }
-    return out;
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return args;
   };
 
   return ArrayExtensions;
@@ -7363,7 +7397,8 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var FunctionExtensions;
+var FunctionExtensions,
+  slice = [].slice;
 
 module.exports = FunctionExtensions = (function() {
   function FunctionExtensions() {}
@@ -7416,7 +7451,9 @@ module.exports = FunctionExtensions = (function() {
         };
       default:
         return function() {
-          return fn.apply(_this, arguments);
+          var all;
+          all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          return fn.apply(_this, all);
         };
     }
   };
@@ -7448,7 +7485,7 @@ TODO:
 The above options are not hot-reload compatible. However, this alternative would be:
 
   name = fn.name
-  -> _this[name].apply _this, arguments
+  (args...) -> _this[name].apply _this, args
 
 I need to perf-test this. Or, I need to finally start using a global "debug" mode that could use this
 in debug mode and the faster(?), non hot-reload options in production mode.
@@ -8289,50 +8326,38 @@ module.exports = Log = (function() {
   };
 
   Log.rawLog = function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (!Log.loggingHidden) {
-      return console.log.apply(console, arguments);
+      return console.log.apply(console, args);
     }
   };
 
   Log.rawErrorLog = function() {
-    var a, out, str;
+    var args, str;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (Log.loggingHidden) {
       return;
     }
     if (isNode && "".red) {
-      str = arguments.length > 1 ? (out = (function() {
-        var i, len, results;
-        results = [];
-        for (i = 0, len = arguments.length; i < len; i++) {
-          a = arguments[i];
-          results.push(a);
-        }
-        return results;
-      }).apply(Log, arguments), out.join(' ')) : arguments[0];
+      str = args.join(' ');
       return console.error(str.red);
     } else {
-      return console.error.apply(console, arguments);
+      return console.error.apply(console, args);
     }
   };
 
   Log.rawWarningLog = function() {
-    var a, out, str;
+    var args, str;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (Log.loggingHidden) {
       return;
     }
     if (isNode && "".red) {
-      str = arguments.length > 1 ? (out = (function() {
-        var i, len, results;
-        results = [];
-        for (i = 0, len = arguments.length; i < len; i++) {
-          a = arguments[i];
-          results.push(a);
-        }
-        return results;
-      }).apply(Log, arguments), out.join(' ')) : arguments[0];
+      str = args.join(' ');
       return console.warn(str.yellow);
     } else {
-      return console.warn.apply(console, arguments);
+      return console.warn.apply(console, args);
     }
   };
 

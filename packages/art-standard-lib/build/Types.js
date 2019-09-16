@@ -254,6 +254,10 @@ module.exports = Types = (function() {
 
   Types.isArray = isArray = Types.isArrayUniversal;
 
+  Types.isArguments = function(o) {
+    return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
+  };
+
   Types.isPlainArray = isArray;
 
   Types.isNonNegativeInt = isNonNegativeInt = function(x) {

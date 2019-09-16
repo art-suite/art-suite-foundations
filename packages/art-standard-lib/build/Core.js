@@ -108,19 +108,15 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
 
 "use strict";
 
-var ArrayCompactFlatten, isArray,
+var ArrayCompactFlatten, isArguments, isArray, ref,
   slice = [].slice;
 
-isArray = __webpack_require__(/*! ./Types */ 12).isArray;
+ref = __webpack_require__(/*! ./Types */ 12), isArray = ref.isArray, isArguments = ref.isArguments;
 
 module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArguments, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
+  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
 
   function ArrayCompactFlatten() {}
-
-  ArrayCompactFlatten.isArguments = isArguments = function(o) {
-    return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
-  };
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
     return (o != null) && typeof o.length === "number" && (o.constructor === Array || o.toString() === '[object Arguments]');
@@ -213,7 +209,7 @@ module.exports = ArrayCompactFlatten = (function() {
   ArrayCompactFlatten.compactFlattenAll = function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return compactFlattenIfNeeded(all, keepUnlessNullOrUndefined);
+    return compactFlattenIfNeededFastBasic(all);
   };
 
   ArrayCompactFlatten.compactFlattenFast = function(array) {
@@ -554,6 +550,10 @@ module.exports = Types = (function() {
 
   Types.isArray = isArray = Types.isArrayUniversal;
 
+  Types.isArguments = function(o) {
+    return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
+  };
+
   Types.isPlainArray = isArray;
 
   Types.isNonNegativeInt = isNonNegativeInt = function(x) {
@@ -828,21 +828,22 @@ module.exports = StringCase = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Merge, compactFlatten, isPlainObject;
+var Merge, compactFlatten, isPlainObject,
+  slice = [].slice;
 
 compactFlatten = __webpack_require__(/*! ./ArrayCompactFlatten */ 11).compactFlatten;
 
 isPlainObject = __webpack_require__(/*! ./Types */ 12).isPlainObject;
 
 module.exports = Merge = (function() {
-  var deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
+  var _deepMerge, deepMerge, merge, mergeInto, mergeIntoWithNullDeletes, pureMerge;
 
   function Merge() {}
 
 
   /*
   
-  merge "flattens" its arguments and then adds all keys from all objects in
+  merge "flattens" its args and then adds all keys from all objects in
   the list into a new object which is returned.
   
   return: new object
@@ -852,15 +853,21 @@ module.exports = Merge = (function() {
    */
 
   Merge.merge = merge = function() {
-    return mergeInto({}, arguments);
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return mergeInto({}, all);
   };
 
   Merge.mergeWithoutNulls = function() {
-    return mergeIntoWithNullDeletes({}, arguments);
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return mergeIntoWithNullDeletes({}, all);
   };
 
   Merge.mergeWithSelf = function() {
-    return mergeInto({}, this, arguments);
+    var all;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return mergeInto({}, this, all);
   };
 
 
@@ -874,8 +881,9 @@ module.exports = Merge = (function() {
    */
 
   Merge.mergeInto = mergeInto = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
+    var all, j, k, len, result, source, sources, v;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -895,8 +903,9 @@ module.exports = Merge = (function() {
   };
 
   Merge.mergeIntoWithNullDeletes = mergeIntoWithNullDeletes = function() {
-    var j, k, len, result, source, sources, v;
-    sources = compactFlatten(arguments);
+    var all, j, k, len, result, source, sources, v;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -933,8 +942,9 @@ module.exports = Merge = (function() {
    */
 
   Merge.mergeIntoUnless = function() {
-    var i, j, k, ref, result, source, sources, v;
-    sources = compactFlatten(arguments);
+    var all, i, j, k, ref, result, source, sources, v;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -952,17 +962,37 @@ module.exports = Merge = (function() {
   };
 
   Merge.deepMerge = deepMerge = function() {
-    var k, list, out, v, val;
-    list = compactFlatten(arguments);
-    out = merge(list);
-    for (k in out) {
-      v = out[k];
+    var all, array, k, out, ref, v, val;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    ref = out = merge(array = compactFlatten(all));
+    for (k in ref) {
+      v = ref[k];
       if (isPlainObject(v)) {
-        out[k] = deepMerge((function() {
+        out[k] = _deepMerge((function() {
           var j, len, results;
           results = [];
-          for (j = 0, len = list.length; j < len; j++) {
-            val = list[j];
+          for (j = 0, len = array.length; j < len; j++) {
+            val = array[j];
+            results.push(val[k]);
+          }
+          return results;
+        })());
+      }
+    }
+    return out;
+  };
+
+  _deepMerge = function(array) {
+    var k, out, ref, v, val;
+    ref = out = merge(array = compactFlatten(array));
+    for (k in ref) {
+      v = ref[k];
+      if (isPlainObject(v)) {
+        out[k] = _deepMerge((function() {
+          var j, len, results;
+          results = [];
+          for (j = 0, len = array.length; j < len; j++) {
+            val = array[j];
             results.push(val[k]);
           }
           return results;
@@ -984,8 +1014,9 @@ module.exports = Merge = (function() {
   };
 
   Merge.pureMerge = pureMerge = function() {
-    var j, last, len, source, sources;
-    sources = compactFlatten(arguments);
+    var all, j, last, len, source, sources;
+    all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    sources = compactFlatten(all);
     if (sources.length === 0) {
       return null;
     }
@@ -1008,7 +1039,7 @@ module.exports = Merge = (function() {
   /*
   I might consider adding "o" - which works like Object-Tree constructors:
     First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
+    Second, it gathers up and merges all plain-objects in its args list
     Last, all remaining items get added to the "children" list
   The question is, what does it return? Options:
   
@@ -1070,7 +1101,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.62.1\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.62.2\"}");
 
 /***/ }),
 
