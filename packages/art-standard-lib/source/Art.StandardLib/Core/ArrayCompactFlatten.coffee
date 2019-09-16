@@ -1,17 +1,12 @@
 "use strict"
 
-{isArray} = require './Types'
+{isArray, isArguments} = require './Types'
 
 module.exports = class ArrayCompactFlatten
 
   ######################
   # PUBLIC
   ######################
-  @isArguments: isArguments = (o) ->
-    o? &&
-    typeof o.length == "number" &&
-    o.toString() == '[object Arguments]'
-
   @isArrayOrArguments: isArrayOrArguments = (o) ->
     o? &&
     typeof o.length == "number" &&
@@ -73,8 +68,7 @@ module.exports = class ArrayCompactFlatten
     compactFlattenIfNeeded array, customKeepTester
 
   @compactFlattenAll: (all...) =>
-    compactFlattenIfNeeded all, keepUnlessNullOrUndefined
-
+    compactFlattenIfNeededFastBasic all
 
   ####################
   # vFast: Arrays only for performance
@@ -91,6 +85,7 @@ module.exports = class ArrayCompactFlatten
   @customCompactFlattenIntoFast: (into, array, customKeepTester) ->
     doFlattenInternalFast array, into, customKeepTester
 
+  # DEPRICATED - can just use compactFlattenAll
   @compactFlattenAllFast: (all...) =>
     compactFlattenIfNeededFastBasic all
 

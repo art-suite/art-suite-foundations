@@ -4,7 +4,7 @@
 module.exports = class Merge
   ###
 
-  merge "flattens" its arguments and then adds all keys from all objects in
+  merge "flattens" its args and then adds all keys from all objects in
   the list into a new object which is returned.
 
   return: new object
@@ -13,12 +13,12 @@ module.exports = class Merge
   keys, the value set in the result is the last object's in the list with that key.
 
   ###
-  @merge: merge = => mergeInto {}, arguments
+  @merge: merge = (all...) -> mergeInto {}, all
 
-  @mergeWithoutNulls: => mergeIntoWithNullDeletes {}, arguments
+  @mergeWithoutNulls: (all...) -> mergeIntoWithNullDeletes {}, all
 
-  @mergeWithSelf: ->
-    mergeInto {}, @, arguments
+  @mergeWithSelf: (all...) ->
+    mergeInto {}, @, all
 
   ###
   The same as 'merge' with one difference:
@@ -28,16 +28,16 @@ module.exports = class Merge
   return: first object in the flattened list
   return: null if no source objects
   ###
-  @mergeInto: mergeInto = ->
-    sources = compactFlatten arguments
+  @mergeInto: mergeInto = (all...) ->
+    sources = compactFlatten all
     return null if sources.length == 0
     result = sources[0] || {}
     for source in sources when source != result
       result[k] = v for k, v of source when v != undefined
     result
 
-  @mergeIntoWithNullDeletes: mergeIntoWithNullDeletes = ->
-    sources = compactFlatten arguments
+  @mergeIntoWithNullDeletes: mergeIntoWithNullDeletes = (all...)->
+    sources = compactFlatten all
     return null if sources.length == 0
     result = sources[0] || {}
     for source in sources when source != result
@@ -58,8 +58,8 @@ module.exports = class Merge
 
   Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
   ###
-  @mergeIntoUnless: ->
-    sources = compactFlatten arguments
+  @mergeIntoUnless: (all...)->
+    sources = compactFlatten all
     return null if sources.length == 0
     result = sources[0] || {}
     for i in [1...sources.length] by 1
@@ -68,13 +68,16 @@ module.exports = class Merge
         result[k] = v
     result
 
-
-  @deepMerge: deepMerge = ->
-    list = compactFlatten arguments
-    out = merge list
-    for k, v of out
+  @deepMerge: deepMerge = (all...) ->
+    for k, v of out = merge array = compactFlatten all
       if isPlainObject v
-        out[k] = deepMerge (val[k] for val in list)
+        out[k] = _deepMerge (val[k] for val in array)
+    out
+
+  _deepMerge = (array) ->
+    for k, v of out = merge array = compactFlatten array
+      if isPlainObject v
+        out[k] = _deepMerge (val[k] for val in array)
     out
 
   # true if o2 has all the properties of o1 (possibly more, and possibly with different values including undefined or nul)
@@ -90,8 +93,8 @@ module.exports = class Merge
   # the name "pureMerge" comes from pure-functional-merge - as in this is how you'd implement
   # merge if you were asuming o1, o2 and the result of pureMerge were never modified.
   # TODO: a better name may be leanMerge - since it is ligher weight than "merge".
-  @pureMerge: pureMerge = =>
-    sources = compactFlatten arguments
+  @pureMerge: pureMerge = (all...)=>
+    sources = compactFlatten all
     return null if sources.length == 0
     return sources[0] if sources.length == 1
 
@@ -104,7 +107,7 @@ module.exports = class Merge
   ###
   I might consider adding "o" - which works like Object-Tree constructors:
     First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its arguments list
+    Second, it gathers up and merges all plain-objects in its args list
     Last, all remaining items get added to the "children" list
   The question is, what does it return? Options:
 

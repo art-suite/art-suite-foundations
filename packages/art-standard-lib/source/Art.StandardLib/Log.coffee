@@ -46,34 +46,24 @@ module.exports = class Log
   @hideLogging: => @loggingHidden = true
   @showLogging: => @loggingHidden = false
 
-  @rawLog: =>
-    console.log arguments... unless @loggingHidden
+  @rawLog: (args...)=>
+    console.log args... unless @loggingHidden
 
-  @rawErrorLog: =>
+  @rawErrorLog: (args...)=>
     return if @loggingHidden
     if isNode && "".red
-      str = if arguments.length > 1
-        out = (a for a in arguments)
-        out.join ' '
-      else
-        arguments[0]
-
+      str = args.join ' '
       console.error str.red
     else
-      console.error arguments...
+      console.error args...
 
-  @rawWarningLog: =>
+  @rawWarningLog: (args...)=>
     return if @loggingHidden
     if isNode && "".red
-      str = if arguments.length > 1
-        out = (a for a in arguments)
-        out.join ' '
-      else
-        arguments[0]
-
+      str = args.join ' '
       console.warn str.yellow
     else
-      console.warn arguments...
+      console.warn args...
 
   noOptions = {}
   getLogger = ({isError, isWarning}) ->

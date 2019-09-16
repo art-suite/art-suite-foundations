@@ -151,6 +151,10 @@ module.exports = class Types
   # else
   #   (o) => o? && isNumber(o.length) && o.constructor == Array
 
+  @isArguments: (o) ->
+    o? &&
+    typeof o.length == "number" &&
+    o.toString() == '[object Arguments]'
 
   # cross-iFrame friendly
   # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray

@@ -1,8 +1,8 @@
 {compactFlatten, deepArrayEach, isArrayOrArguments, mergeInto} = require './Core'
 {isPlainObject, isObject, isFunction, isPlainArray} = require './TypesExtended'
 
-log = ->
-  Neptune.Art.StandardLib.log arguments...
+log = (args...)->
+  Neptune.Art.StandardLib.log args...
 
 module.exports = class Iteration
   returnFirst = (a) -> a
@@ -107,7 +107,7 @@ module.exports = class Iteration
 
   1) The with-block has a different argument order. Into is passed first instead of last:
     with: (into, value, key, whenReturnValue) ->
-    This allows you to drop-in functions that take two arguments and reduce them to one like:
+    This allows you to drop-in functions that take two args and reduce them to one like:
       Math.max
       add = (a, b) -> a + b
 

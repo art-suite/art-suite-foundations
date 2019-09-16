@@ -214,10 +214,7 @@ defineModule module, ->
 
 
       ###
-      serialize: (f) ->
-        =>
-          args = arguments
-          @then -> f args...
+      serialize: (f) -> (args...) => @then -> f args...
 
       # invoke f after the last serialized invocation's promises are resolved
       # OUT: promise.then (fResult) ->
@@ -251,9 +248,9 @@ defineModule module, ->
         .catch (lastError) => if currentLastPromise == @_lastPromise then throw lastError else @allDonePromise()
 
     ###
-    OUT: serializedF = -> Promise.resolve f arguments...
-      IN: any arguments
-      EFFECT: f is invoked with arguments passed in AFTER the last invocation of serializedF completes.
+    OUT: serializedF = -> Promise.resolve f args...
+      IN: any args
+      EFFECT: f is invoked with args passed in AFTER the last invocation of serializedF completes.
       OUT: promise.then -> results from f
 
     NOTE: 'f' can return a promise, but it doesn't have to. If it does return a promise, the next

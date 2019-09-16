@@ -47,13 +47,13 @@ module.exports = class ObjectExtensions
     They should be converted to strings, first,
     which is what they would become anyway.
 
-  IN: 0 or more arguments
+  IN: 0 or more args
     out = {}
-    list = arguments
+    list = args
 
     for element in list
       objects: merge into out
-      arrays or argument lists: recurse using element as the list
+      arrays or args lists: recurse using element as the list
       null or undefined: skip
       else out[element] = next element (or undefined if none)
 
@@ -73,9 +73,9 @@ module.exports = class ObjectExtensions
         key = element
     out[key] = undefined if key
 
-  @toObject: ->
+  @toObject: (all...)->
     out = {}
-    toObjectInternal arguments, out
+    toObjectInternal all, out
     out
 
   ###
@@ -101,16 +101,16 @@ module.exports = class ObjectExtensions
 
     OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
   ###
-  @select: (obj, a) ->
+  @select: (obj, args...) ->
     return {} unless obj
     result = {}
-    if isFunction a
+    if isFunction a = args[0]
       if a.length == 1
         result[k] = v for k, v of obj when a v
       else
         result[k] = v for k, v of obj when a k, v
     else
-      properties = compactFlatten Array.prototype.slice.call arguments, 1
+      properties = compactFlatten args
       result[prop] = v for prop in properties when (v = obj[prop])? || obj.hasOwnProperty prop
     result
 

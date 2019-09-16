@@ -478,9 +478,9 @@ module.exports = class ArrayExtensions
   # SSSSSS
 
   # trying out various aliases to see which one I like
-  @wordsArray: w = ->
+  @wordsArray: w = (args...)->
     out = []
-    for arg in arguments
+    for arg in args
       if isString(arg) && !arg.match exactlyOneWordRegex
         out = out.concat arg.match wordsRegex
       else
@@ -490,8 +490,4 @@ module.exports = class ArrayExtensions
   @wordArray: @wordsArray
   @w: @wordsArray # this one makes it feel a lot like ruby's %w{a b c}. Instead, we have: w "a b c"
 
-  @a: a = ->
-    out = []
-    out.push arg for arg in arguments
-    out
-
+  @a: a = (args...)-> args
