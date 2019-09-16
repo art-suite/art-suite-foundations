@@ -150,7 +150,16 @@ escapeForBlockString = (str) =>
     escapeJavascriptString x, true
     .replace /\ /g, '\\s'
 
-cafScriptWordStringRegExp = /^(?=[^'":])[^\n\s,)\]\}]+$/
+cafScriptWordStringRegExp = ///
+  ^(?=[^'":])
+
+  (
+    [^ \# \s \0-\x20 \x7f ; , () [ \] {} \\ ]
+    | \# ([^{]|$)
+  )+
+
+  $
+///
 
 formattedInspectString = (m, options) ->
   out = switch
