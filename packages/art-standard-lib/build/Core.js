@@ -108,21 +108,31 @@ module.exports = [__webpack_require__(/*! ./ArrayCompactFlatten */ 11), __webpac
 
 "use strict";
 
-var ArrayCompactFlatten, isArguments, isArray, ref,
+var ArrayCompactFlatten, isArray,
   slice = [].slice;
 
-ref = __webpack_require__(/*! ./Types */ 12), isArray = ref.isArray, isArguments = ref.isArguments;
+isArray = __webpack_require__(/*! ./Types */ 12).isArray;
 
 module.exports = ArrayCompactFlatten = (function() {
-  var arraySlice, compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastBasic, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastBasic, flatten, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastBasic;
+  var compact, compactFlattenIfNeeded, compactFlattenIfNeededFast, compactFlattenIfNeededFastCustom, deepArrayEach, deepArrayEachFast, doFlattenInternal, doFlattenInternalFast, doFlattenInternalFastCustom, flatten, isArrayOrArguments, keepAll, keepUnlessNullOrUndefined, needsFlatteningOrCompacting, needsFlatteningOrCompactingFast, needsFlatteningOrCompactingFastCustom;
 
   function ArrayCompactFlatten() {}
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
-    return (o != null) && typeof o.length === "number" && (o.constructor === Array || o.toString() === '[object Arguments]');
+    return isArray(o) || (typeof (o != null ? o.length : void 0) === "number" && o.toString() === '[object Arguments]' ? (console.warn("DEPRICATED compactFlatten* no longer supports Arguments objects"), true) : false);
   };
 
-  ArrayCompactFlatten.needsFlatteningOrCompacting = needsFlatteningOrCompacting = function(array, keepTester) {
+  ArrayCompactFlatten.needsFlatteningOrCompacting = function(array, keepTester) {
+    console.warn("DEPRICATED - needsFlatteningOrCompacting");
+    return needsFlatteningOrCompacting(array, keepTester);
+  };
+
+  ArrayCompactFlatten.keepUnlessNullOrUndefined = function(a) {
+    console.warn("DEPRICATED: keepUnlessNullOrUndefined");
+    return a != null;
+  };
+
+  needsFlatteningOrCompacting = function(array, keepTester) {
     var a, i, len;
     for (i = 0, len = array.length; i < len; i++) {
       a = array[i];
@@ -133,8 +143,12 @@ module.exports = ArrayCompactFlatten = (function() {
     return false;
   };
 
-  ArrayCompactFlatten.keepUnlessNullOrUndefined = keepUnlessNullOrUndefined = function(a) {
-    return a !== null && a !== void 0;
+  keepAll = function() {
+    return true;
+  };
+
+  keepUnlessNullOrUndefined = function(a) {
+    return a != null;
   };
 
 
@@ -149,24 +163,40 @@ module.exports = ArrayCompactFlatten = (function() {
    */
 
   ArrayCompactFlatten.compact = compact = function(array, keepTester) {
-    var a, i, len;
-    if (keepTester == null) {
-      keepTester = keepUnlessNullOrUndefined;
-    }
-    for (i = 0, len = array.length; i < len; i++) {
-      a = array[i];
-      if (!keepTester(a)) {
-        return (function() {
-          var j, len1, results;
-          results = [];
-          for (j = 0, len1 = array.length; j < len1; j++) {
-            a = array[j];
-            if (keepTester(a)) {
-              results.push(a);
+    var a, i, j, len, len1;
+    if (keepTester) {
+      for (i = 0, len = array.length; i < len; i++) {
+        a = array[i];
+        if (!keepTester(a)) {
+          return (function() {
+            var j, len1, results;
+            results = [];
+            for (j = 0, len1 = array.length; j < len1; j++) {
+              a = array[j];
+              if (keepTester(a)) {
+                results.push(a);
+              }
             }
-          }
-          return results;
-        })();
+            return results;
+          })();
+        }
+      }
+    } else {
+      for (j = 0, len1 = array.length; j < len1; j++) {
+        a = array[j];
+        if (a == null) {
+          return (function() {
+            var k, len2, results;
+            results = [];
+            for (k = 0, len2 = array.length; k < len2; k++) {
+              a = array[k];
+              if (a != null) {
+                results.push(a);
+              }
+            }
+            return results;
+          })();
+        }
       }
     }
     return array;
@@ -179,8 +209,10 @@ module.exports = ArrayCompactFlatten = (function() {
     to the top level (flatten)
    */
 
-  ArrayCompactFlatten.flatten = flatten = function(firstArg) {
-    return compactFlattenIfNeeded(arguments.length === 1 ? firstArg : arguments);
+  ArrayCompactFlatten.flatten = flatten = function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    return compactFlattenIfNeeded(args.length === 1 ? args[0] : args, keepAll);
   };
 
 
@@ -197,9 +229,9 @@ module.exports = ArrayCompactFlatten = (function() {
 
   ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
     if (keepTester) {
-      log.warn("DEPRICATED ArtStandardLib.ArrayCompactFlatten.compactFlatten: keepTester param; use customCompactFlatten");
+      throw new Error("DEPRICATED ArtStandardLib.ArrayCompactFlatten.compactFlatten: keepTester param; use customCompactFlatten");
     }
-    return compactFlattenIfNeeded(array, keepTester != null ? keepTester : keepUnlessNullOrUndefined);
+    return compactFlattenIfNeeded(array, keepUnlessNullOrUndefined);
   };
 
   ArrayCompactFlatten.customCompactFlatten = function(array, customKeepTester) {
@@ -209,29 +241,29 @@ module.exports = ArrayCompactFlatten = (function() {
   ArrayCompactFlatten.compactFlattenAll = function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return compactFlattenIfNeededFastBasic(all);
+    return compactFlattenIfNeededFast(all);
   };
 
   ArrayCompactFlatten.compactFlattenFast = function(array) {
-    return compactFlattenIfNeededFastBasic(array);
+    return compactFlattenIfNeededFast(array);
   };
 
   ArrayCompactFlatten.compactFlattenIntoFast = function(into, array) {
-    return doFlattenInternalFastBasic(array, into);
+    return doFlattenInternalFast(array, into);
   };
 
   ArrayCompactFlatten.customCompactFlattenFast = function(array, customKeepTester) {
-    return compactFlattenIfNeededFast(array, customKeepTester);
+    return compactFlattenIfNeededFastCustom(array, customKeepTester);
   };
 
   ArrayCompactFlatten.customCompactFlattenIntoFast = function(into, array, customKeepTester) {
-    return doFlattenInternalFast(array, into, customKeepTester);
+    return doFlattenInternalFastCustom(array, into, customKeepTester);
   };
 
   ArrayCompactFlatten.compactFlattenAllFast = function() {
     var all;
     all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    return compactFlattenIfNeededFastBasic(all);
+    return compactFlattenIfNeededFast(all);
   };
 
   ArrayCompactFlatten.deepArrayEachFast = deepArrayEachFast = function(array, f) {
@@ -270,8 +302,6 @@ module.exports = ArrayCompactFlatten = (function() {
     return array;
   };
 
-  arraySlice = Array.prototype.slice;
-
   doFlattenInternal = function(array, output, keepTester) {
     var el, i, len;
     for (i = 0, len = array.length; i < len; i++) {
@@ -287,69 +317,25 @@ module.exports = ArrayCompactFlatten = (function() {
     return output;
   };
 
-  keepAll = function() {
-    return true;
-  };
-
   compactFlattenIfNeeded = function(array, keepTester) {
-    if (keepTester == null) {
-      keepTester = keepAll;
-    }
-    if (array == null) {
-      return array;
-    }
-    if ((array != null) && !isArrayOrArguments(array)) {
-      return [array];
-    }
-    if (needsFlatteningOrCompacting(array, keepTester)) {
-      return doFlattenInternal(array, [], keepTester);
-    } else if (array.constructor !== Array) {
-      return arraySlice.call(array);
-    } else {
-      return array;
+    switch (false) {
+      case !(array == null):
+        return array;
+      case !!isArrayOrArguments(array):
+        return [array];
+      case !(needsFlatteningOrCompacting(array, keepTester) || !isArray(array)):
+        return doFlattenInternal(array, [], keepTester);
+      default:
+        return array;
     }
   };
 
-  doFlattenInternalFast = function(array, output, keepTester) {
+  doFlattenInternalFast = function(array, output) {
     var el, i, len;
     for (i = 0, len = array.length; i < len; i++) {
       el = array[i];
       if (isArray(el)) {
-        doFlattenInternalFast(el, output, keepTester);
-      } else {
-        if (keepTester(el)) {
-          output.push(el);
-        }
-      }
-    }
-    return output;
-  };
-
-  needsFlatteningOrCompactingFast = function(array, keepTester) {
-    var a, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      a = array[i];
-      if (isArray(a) || !keepTester(a)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  compactFlattenIfNeededFast = function(array, keepTester) {
-    if (needsFlatteningOrCompactingFast(array, keepTester)) {
-      return doFlattenInternalFast(array, [], keepTester);
-    } else {
-      return array;
-    }
-  };
-
-  doFlattenInternalFastBasic = function(array, output) {
-    var el, i, len;
-    for (i = 0, len = array.length; i < len; i++) {
-      el = array[i];
-      if (isArray(el)) {
-        doFlattenInternalFastBasic(el, output);
+        doFlattenInternalFast(el, output);
       } else if (el != null) {
         output.push(el);
       }
@@ -357,7 +343,7 @@ module.exports = ArrayCompactFlatten = (function() {
     return output;
   };
 
-  needsFlatteningOrCompactingFastBasic = function(array) {
+  needsFlatteningOrCompactingFast = function(array) {
     var el, i, len;
     for (i = 0, len = array.length; i < len; i++) {
       el = array[i];
@@ -368,9 +354,43 @@ module.exports = ArrayCompactFlatten = (function() {
     return false;
   };
 
-  compactFlattenIfNeededFastBasic = function(array) {
-    if (needsFlatteningOrCompactingFastBasic(array)) {
-      return doFlattenInternalFastBasic(array, []);
+  compactFlattenIfNeededFast = function(array) {
+    if (needsFlatteningOrCompactingFast(array)) {
+      return doFlattenInternalFast(array, []);
+    } else {
+      return array;
+    }
+  };
+
+  doFlattenInternalFastCustom = function(array, output, keepTester) {
+    var el, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      el = array[i];
+      if (isArray(el)) {
+        doFlattenInternalFastCustom(el, output, keepTester);
+      } else {
+        if (keepTester(el)) {
+          output.push(el);
+        }
+      }
+    }
+    return output;
+  };
+
+  needsFlatteningOrCompactingFastCustom = function(array, keepTester) {
+    var a, i, len;
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (isArray(a) || !keepTester(a)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  compactFlattenIfNeededFastCustom = function(array, keepTester) {
+    if (needsFlatteningOrCompactingFastCustom(array, keepTester)) {
+      return doFlattenInternalFastCustom(array, [], keepTester);
     } else {
       return array;
     }
@@ -1101,7 +1121,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.62.2\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.63.0\"}");
 
 /***/ }),
 
