@@ -1,5 +1,4 @@
-import &StandardImport, &Data, {}
-  &webpackMerge   # webpack-merge tries to be "smart" - I prefer deepMerge
+import &StandardImport, &Data
 
 # https://webpack.js.org/concepts/configuration/
 
@@ -32,7 +31,7 @@ class ConfigureWebpack extends &ConfigureBase
     targetNode = !devServer && !!abcConfig.target?.node
 
     standard = StandardWebpackConfig.get npmRoot, abcConfig, targetNode
-    baseConfig = webpackMerge standard, common
+    baseConfig = &webpackMerge standard, common
     targets ||= index: {}
 
 
@@ -47,7 +46,7 @@ class ConfigureWebpack extends &ConfigureBase
         targetConfig = objectWithout targetConfig, "includeNpms"
 
       if !entriesWithNoOverrides || keys = 1 < objectKeyCount targetConfig
-        webpackEntry = webpackMerge baseConfig, targetConfig
+        webpackEntry = &webpackMerge baseConfig, targetConfig
         webpackEntry.target ||= "node" if targetNode
         config = @normalizeTargetConfig webpackEntry, includeNpms
         entriesWithNoOverrides = config unless keys
@@ -61,7 +60,7 @@ class ConfigureWebpack extends &ConfigureBase
 
   @normalizeTargetConfig: (targetConfig, includeNpms) ->
     if targetConfig.target == "node"
-      webpackMerge
+      &webpackMerge
         output:
           libraryTarget: "commonjs2"
           pathinfo: true
@@ -86,7 +85,7 @@ class ConfigureWebpack extends &ConfigureBase
         targetConfig
 
     else
-      webpackMerge
+      &webpackMerge
         output:
           pathinfo: true
 
@@ -97,7 +96,7 @@ class ConfigureWebpack extends &ConfigureBase
     object targetConfig, targetName in-object targets when targetConfig
       if targetConfig extract entry is String
         targetConfig = objectWithout targetConfig, :entry
-      webpackMerge
+      &webpackMerge
         entry: [targetName]: entry ? "" ./#{targetName}
         targetConfig
 
