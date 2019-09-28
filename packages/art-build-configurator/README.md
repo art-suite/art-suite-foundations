@@ -3,26 +3,27 @@ Tools for configuring npm (package.json) and webpack (webpack.config.js)
 
 ### Initializing a new Art Suite App
 
+> NOTE: Your directory-name is used to initialize
+> various files including package.json, so pick a good name.
+
 ```bash
-# NOTE: Your directory-name is used to initialize 
-# various files including package.json, so pick a good name.
-# Make a directory with your app name; cd into it
+# replace "my-app-name" with your appo's name
 mkdir my-app-name
 cd my-app-name
 
-# install and run ABC
-echo "{}" > package.json   # force npm to install in this folder
-npm install art-build-configurator
-./node_modules/.bin/abc --init --app
+# create package.json forces npm to install in your directory
+echo "{}" > package.json
 
-# do clean install of all packages
-# (now that ABC set up the correct dependencies)
-rm package-lock.json       # force clean install
+# install & configure abc
+npm install art-build-configurator
+npx art-build-configurator --init app --git
+
+# install newly configured dependencies
 npm install
 
-# start your app!
+# start your app
 npm start
-``` 
+```
 
 Then go to:
 http://localhost:8080/webpack-dev-server/
@@ -47,7 +48,7 @@ The output package.json file is generated as follows:
 2. `defaultPackage = ABC's default package.json`
 3. One of two things can happen depending upon the type of `package = ArtBuildConfig.npm || ArtBuildConfig.package` (two aliases):
 	* package is an object: merged it: `deepMerge defaultPackage, package`
-	* package is a function: invoke it: `package(defaultPackage)` 
+	* package is a function: invoke it: `package(defaultPackage)`
 4. Set version to the version read in step 1
 5. Write the resulting package.json
 
