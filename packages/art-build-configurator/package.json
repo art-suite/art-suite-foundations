@@ -1,7 +1,8 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bin": {
-    "abc": "./abc"
+    "abc": "./abc",
+    "art-build-configurator": "./art-build-configurator"
   },
   "bugs": "https:/github.com/art-suite/art-build-configurator/issues",
   "dependencies": {
