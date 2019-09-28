@@ -138,7 +138,7 @@ module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow 
 /*! exports provided: author, bin, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\"},\"bugs\":\"https:/github.com/art-suite/art-build-configurator/issues\",\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-build-configurator\",\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-build-configurator.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.26.2\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\",\"art-build-configurator\":\"./art-build-configurator\"},\"bugs\":\"https:/github.com/art-suite/art-build-configurator/issues\",\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-build-configurator\",\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-build-configurator.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.26.4\"}");
 
 /***/ }),
 /* 6 */,
@@ -1152,7 +1152,6 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
       "StandardWebpackConfig",
-      "webpackMerge",
       "compactFlatten",
       "objectWithout",
       "objectKeyCount",
@@ -1164,15 +1163,9 @@ Caf.defMod(module, () => {
       "String",
       "Promise"
     ],
-    [
-      global,
-      __webpack_require__(/*! ../StandardImport */ 17),
-      __webpack_require__(/*! ../Data */ 19),
-      { webpackMerge: __webpack_require__(/*! webpack-merge */ 36) }
-    ],
+    [global, __webpack_require__(/*! ../StandardImport */ 17), __webpack_require__(/*! ../Data */ 19)],
     (
       StandardWebpackConfig,
-      webpackMerge,
       compactFlatten,
       objectWithout,
       objectKeyCount,
@@ -1223,7 +1216,7 @@ Caf.defMod(module, () => {
               abcConfig,
               targetNode
             );
-            baseConfig = webpackMerge(standard, common);
+            baseConfig = __webpack_require__(/*! webpack-merge */ 36)(standard, common);
             targets || (targets = { index: {} });
             entriesWithNoOverrides = null;
             return compactFlatten(
@@ -1235,7 +1228,10 @@ Caf.defMod(module, () => {
                 }
                 return !entriesWithNoOverrides ||
                   (keys = 1 < objectKeyCount(targetConfig))
-                  ? ((webpackEntry = webpackMerge(baseConfig, targetConfig)),
+                  ? ((webpackEntry = __webpack_require__(/*! webpack-merge */ 36)(
+                      baseConfig,
+                      targetConfig
+                    )),
                     targetNode
                       ? webpackEntry.target || (webpackEntry.target = "node")
                       : undefined,
@@ -1256,7 +1252,7 @@ Caf.defMod(module, () => {
           this.getTargets = function() {};
           this.normalizeTargetConfig = function(targetConfig, includeNpms) {
             return targetConfig.target === "node"
-              ? webpackMerge(
+              ? __webpack_require__(/*! webpack-merge */ 36)(
                   {
                     output: { libraryTarget: "commonjs2", pathinfo: true },
                     externals: [
@@ -1288,7 +1284,10 @@ Caf.defMod(module, () => {
                   },
                   targetConfig
                 )
-              : webpackMerge({ output: { pathinfo: true } }, targetConfig);
+              : __webpack_require__(/*! webpack-merge */ 36)(
+                  { output: { pathinfo: true } },
+                  targetConfig
+                );
           };
           this.normalizeTargets = function(targets = {}) {
             let from, into, temp;
@@ -1312,7 +1311,7 @@ Caf.defMod(module, () => {
                                   "entry"
                                 ))
                               : undefined,
-                            webpackMerge(
+                            __webpack_require__(/*! webpack-merge */ 36)(
                               {
                                 entry: {
                                   [targetName]:

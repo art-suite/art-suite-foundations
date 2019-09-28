@@ -26,8 +26,7 @@ realRequire = eval :require
         Managed: (don't edit directly, edit abc's config)
         - #{} "package.json".green
         - #{} "webpack.config.js".green
-
-        #{} unless &useBuild then "DEV-WARNING: use-build == false".yellow
+        #{} unless &useBuild then "\nDEV-WARNING: use-build == false".yellow
 
   .parse process.argv
 
