@@ -4,6 +4,9 @@ ArtBuildConfigurator = Neptune.Art.Build.Configurator
 
 realRequire = eval :require
 
+unless &useBuild then console.log "\nDEV-WARNING: use-build == false".yellow
+
+
 {git, pv, pretend, configure, init, force, verbose, app, require: requireOption} = commander =
   &commander
   .option '-c, --configure'         "" configure and update all
@@ -26,7 +29,6 @@ realRequire = eval :require
         Managed: (don't edit directly, edit abc's config)
         - #{} "package.json".green
         - #{} "webpack.config.js".green
-        #{} unless &useBuild then "\nDEV-WARNING: use-build == false".yellow
 
   .parse process.argv
 
@@ -42,7 +44,8 @@ when pretend || configure || init || git
     process.cwd()
     {} pretend, configure, init, force, verbose, app, git
 
-  .catch (e) -> &ArtStandardLib.log.error e.stack
+  .tap -> console.log "success".green
+  .catch (e) -> &ArtStandardLib.log.error e
 
 else
   commander.outputHelp()

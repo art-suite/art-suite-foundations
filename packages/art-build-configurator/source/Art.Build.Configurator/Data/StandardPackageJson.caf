@@ -1,7 +1,8 @@
 import &ArtStandardLib
 
 class StandardPackageJson
-  @get: (abcConfig)->
+
+  @getGitInfo: ->
     &shellExecSimple "" git remote -v
     .then (lines) -> merge
       if match = find line in lines.split /\n/g
@@ -36,7 +37,12 @@ class StandardPackageJson
 
           homepage
           bugs
+    .catch -> {}
 
+  @get: (abcConfig)->
+    @getGitInfo()
+    .then (gitInfo) -> merge
+      gitInfo
       license:      :ISC
       name:         peek process.cwd().split :/
       version:
