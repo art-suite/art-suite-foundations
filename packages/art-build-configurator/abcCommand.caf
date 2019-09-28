@@ -18,8 +18,16 @@ realRequire = eval :require
   .on     :--help ->
     console.log
       """
-        looks for '#{ArtBuildConfigurator.configFilename}' and configs as instructed
-        (using build: #{&useBuild})
+
+        #{} "art-build-configurator (abc) - initialize and configure ArtSuiteJS projects".white
+
+        Config: #{ArtBuildConfigurator.configFilename.green}
+
+        Managed: (don't edit directly, edit abc's config)
+        - #{} "package.json".green
+        - #{} "webpack.config.js".green
+
+        #{} unless &useBuild then "DEV-WARNING: use-build == false".yellow
 
   .parse process.argv
 
