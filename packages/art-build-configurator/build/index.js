@@ -131,17 +131,17 @@ module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow 
 /***/ }),
 /* 3 */,
 /* 4 */,
-/* 5 */
+/* 5 */,
+/* 6 */
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
 /*! exports provided: author, bin, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\",\"art-build-configurator\":\"./art-build-configurator\"},\"bugs\":\"https:/github.com/art-suite/art-build-configurator/issues\",\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-build-configurator\",\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-build-configurator.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.26.4\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\",\"art-build-configurator\":\"./art-build-configurator\"},\"bugs\":\"https:/github.com/art-suite/art-build-configurator/issues\",\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-build-configurator\",\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-build-configurator.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.26.5\"}");
 
 /***/ }),
-/* 6 */,
 /* 7 */
 /*!***********************************************************************************!*\
   !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
@@ -209,7 +209,7 @@ __webpack_require__(/*! ./Recipes */ 38);
 module.exports = __webpack_require__(/*! neptune-namespaces */ 11).addNamespace(
   'Art.Build.Configurator',
   (class Configurator extends Neptune.PackageNamespace {})
-  ._configureNamespace(__webpack_require__(/*! ../../package.json */ 5))
+  ._configureNamespace(__webpack_require__(/*! ../../package.json */ 6))
 );
 __webpack_require__(/*! ./Configurators/namespace */ 12);
 __webpack_require__(/*! ./Data/namespace */ 13);
@@ -684,20 +684,10 @@ Caf.defMod(module, () => {
       return (StandardPackageJson = Caf.defClass(
         class StandardPackageJson extends Object {},
         function(StandardPackageJson, classSuper, instanceSuper) {
-          this.get = function(abcConfig) {
-            return __webpack_require__(/*! ../ShellExecSimple */ 23)("git remote -v").then(
-              lines => {
-                let match,
-                  _1,
-                  _2,
-                  domain,
-                  path,
-                  extension,
-                  bugs,
-                  homepage,
-                  temp,
-                  base,
-                  base1;
+          this.getGitInfo = function() {
+            return __webpack_require__(/*! ../ShellExecSimple */ 23)("git remote -v")
+              .then(lines => {
+                let match, _1, _2, domain, path, extension, bugs, homepage;
                 return merge(
                   (match = Caf.find(lines.split(/\n/g), line =>
                     line
@@ -721,42 +711,49 @@ Caf.defMod(module, () => {
                         homepage,
                         bugs
                       })
-                    : undefined,
-                  {
-                    license: "ISC",
-                    name: peek(process.cwd().split("/")),
-                    version:
-                      (temp =
-                        __webpack_require__(/*! fs */ 26).existsSync("package.json") &&
-                        JSON.parse(
-                          __webpack_require__(/*! fs */ 26)
-                            .readFileSync("package.json")
-                            .toString()
-                        ).version) != null
-                        ? temp
-                        : "0.0.1",
-                    author: "Shane Brinkman-Davis Delamore, Imikimi LLC",
-                    dependencies: __webpack_require__(/*! ./StandardDependencies */ 20),
-                    devDependencies: __webpack_require__(/*! ./StandardDevDependencies */ 21),
-                    scripts: merge({
-                      test:
-                        Caf.exists(abcConfig) &&
-                        (Caf.exists((base = abcConfig.target)) && base.node)
-                          ? "nn -s;mocha -u tdd"
-                          : "webpack-dev-server  --progress --env.devServer",
-                      start:
-                        "webpack-dev-server --hot --inline --progress --env.devServer",
-                      testInBrowser:
-                        Caf.exists(abcConfig) &&
-                        (Caf.exists((base1 = abcConfig.target)) && base1.node)
-                          ? "webpack-dev-server --progress --env.devServer"
-                          : undefined,
-                      build: "webpack --progress"
-                    })
-                  }
+                    : undefined
                 );
-              }
-            );
+              })
+              .catch(() => {
+                return {};
+              });
+          };
+          this.get = function(abcConfig) {
+            return this.getGitInfo().then(gitInfo => {
+              let temp, base, base1;
+              return merge(gitInfo, {
+                license: "ISC",
+                name: peek(process.cwd().split("/")),
+                version:
+                  (temp =
+                    __webpack_require__(/*! fs */ 26).existsSync("package.json") &&
+                    JSON.parse(
+                      __webpack_require__(/*! fs */ 26)
+                        .readFileSync("package.json")
+                        .toString()
+                    ).version) != null
+                    ? temp
+                    : "0.0.1",
+                author: "Shane Brinkman-Davis Delamore, Imikimi LLC",
+                dependencies: __webpack_require__(/*! ./StandardDependencies */ 20),
+                devDependencies: __webpack_require__(/*! ./StandardDevDependencies */ 21),
+                scripts: merge({
+                  test:
+                    Caf.exists(abcConfig) &&
+                    (Caf.exists((base = abcConfig.target)) && base.node)
+                      ? "nn -s;mocha -u tdd"
+                      : "webpack-dev-server  --progress --env.devServer",
+                  start:
+                    "webpack-dev-server --hot --inline --progress --env.devServer",
+                  testInBrowser:
+                    Caf.exists(abcConfig) &&
+                    (Caf.exists((base1 = abcConfig.target)) && base1.node)
+                      ? "webpack-dev-server --progress --env.devServer"
+                      : undefined,
+                  build: "webpack --progress"
+                })
+              });
+            });
           };
         }
       ));
