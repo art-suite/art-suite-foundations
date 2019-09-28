@@ -14,7 +14,7 @@ unless &useBuild then console.log "\nDEV-WARNING: use-build == false".yellow
   .option '-r, --require [source]'  "" require(source) - use to register recipes
   .option '-p, --pretend'           "" show the configs that will be generated without writing them
   .option '-f, --force'             "" when initialize, force overwrite all
-  .option '-i, --init [recipe]'     "" initialize a new Art-style project
+  .option '-i, --init [recipe]'     "" initialize a new Art-style project [default recipe: core]
   .option '--git'                   "" init git (unless .git is already present)
   .option '--pv'                    "" show YOUR package's current version
   .version &package.version

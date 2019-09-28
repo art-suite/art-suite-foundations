@@ -1,7 +1,7 @@
 import &StandardImport
 
 class Node extends &Recipe
-  @description: "" Boilerplate for writing a Node NPM for the art-suite.
+  @description: "" Boilerplate for writing a Node NPM for the art-suite. (base: core)
 
   @getter files: ->
     merge

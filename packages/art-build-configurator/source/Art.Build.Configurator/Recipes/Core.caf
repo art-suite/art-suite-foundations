@@ -1,7 +1,7 @@
 import &StandardImport
 
 class Core extends &Recipe
-  @description: "" The package basics for buliding any app with the art-suite.
+  @description: "" Basics for buliding any app with the ArtSuiteJS
 
   @getter
     files: ->

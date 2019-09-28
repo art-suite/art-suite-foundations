@@ -29,8 +29,12 @@ shellExec = (cmd, opts) ->
   shellExec command
   .then (result) ->
     if present result.stderr
-      log.error result.stderr
-      Promise.reject result.stderr
+      Promise.reject new Error
+        """
+          shellExec: #{command}
+
+          stderr:
+          #{} result.stderr
     else
       out = result.stdout.trim()
       if verbose

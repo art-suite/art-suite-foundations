@@ -11,7 +11,6 @@ class Main
   @log: (args...) =>
     log args... unless @quiet
 
-
   @go: (npmRoot, options) =>
     options extract pretend, configure, init, force, quiet, git
 
@@ -38,8 +37,6 @@ class Main
         .then -> &shellExecSimple 'git add .'
         .then -> &shellExecSimple 'git commit -m "initial checkin by art-build-configurator#{if init then " --init #{init}" else ''}"'
         .then -> @log "git initialized".yellow
-
-    .catch (error) -> log.error error
 
   @shellExec: (command) ->
     &shellExecSimple command, {} @quiet
@@ -105,10 +102,11 @@ class Main
     else
       @log "\n#{if pretend then :PRETEND-}INIT-#{recipeName}: #{npmRoot}"
       unless recipe = &RecipeRegistry.recipes[recipeName]
+        log recipes: object recipe, name in &RecipeRegistry.recipes
+          recipe.description ? "" (no description)
+
         Promise.reject
-          "Please provide a valid recipe name:\n\n" + formattedInspect
-            object recipe, name in &RecipeRegistry.recipes
-              recipe.description ? "" (no description)
+          "Please provide a valid recipe name."
 
       else
         recipe.writeFiles npmRoot, options
@@ -151,9 +149,9 @@ class Main
         @writeConfig npmRoot, abcConfig
 
   @writeConfig: (npmRoot, abcConfig) ->
-    Promise.all []
-      ConfigurePackageJson.writeConfig npmRoot, abcConfig
-      ConfigureWebpack.writeConfig npmRoot, abcConfig
+    Promise
+    .then -> ConfigurePackageJson.writeConfig npmRoot, abcConfig
+    .then -> ConfigureWebpack.writeConfig npmRoot, abcConfig
 
   # called by webpack to get config
   @getWebpackConfig: (npmRoot, env, argv) =>
