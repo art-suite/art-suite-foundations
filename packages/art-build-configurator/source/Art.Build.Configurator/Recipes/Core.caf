@@ -13,10 +13,10 @@ class Core extends &Recipe
       ".gitignore": """
         node_modules/
 
-      .travis.yml: """
-        language: node_js
-        node_js:
-          - "8"
+      # .travis.yml: """
+      #   language: node_js
+      #   node_js:
+      #     - "8"
 
       register.js:
         """
