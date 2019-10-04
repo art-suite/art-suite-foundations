@@ -166,6 +166,9 @@ module.exports = class ArrayExtensions
       array.push item
       true
 
+  # ALIAS
+  @pushUnique: @pushIfNotPresent
+
   ###
   IN:
     array: []
@@ -283,6 +286,9 @@ module.exports = class ArrayExtensions
     array = array.slice()
     array.push value unless value in array
     array
+
+  # ALIAS
+  @arrayWithUnique: @arrayWithOne
 
   @slice: (a, b, c) -> arraySlice.call a, b, c
 
