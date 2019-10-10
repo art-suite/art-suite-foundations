@@ -1,6 +1,13 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "author": "Shane Brinkman-Davis Delamore",
   "dependencies": {},
+  "bugs": "https:/github.com/art-suite/art-comprehensions/issues",
+  "homepage": "https://github.com/art-suite/art-comprehensions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-comprehensions.git"
+  },
+
   "description": "Simple, powerful iteration comprehensions for JavaScript.",
   "devDependencies": {
     "art-testbench": "*",
