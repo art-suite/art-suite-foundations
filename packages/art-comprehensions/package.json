@@ -1,0 +1,18 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "dependencies": {
+  },
+  "description": "Simple, powerful iteration comprehensions for JavaScript.",
+  "devDependencies": {
+    "art-testbench":    "*",
+    "chai":             "^4.2.0",
+    "mocha":            "^6.2.0",
+    "caffeine-script":  "*"
+  },
+  "license": "ISC",
+  "name": "art-comprehensions",
+  "scripts": {
+    "test": "nn -s;mocha -u tdd"
+  },
+  "version": "1.0.0"
+}
