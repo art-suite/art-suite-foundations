@@ -1,0 +1,10 @@
+import &StandardImport
+
+suite:
+  _find: ->
+    source = [1, 2, 9, 3, 4]
+    test "when",      -> assert.eq 9,   _find source, when: (v) -> v % 3 == 0
+    test "with",      -> assert.eq 90,  _find source, (v) -> if v % 3 == 0 then v * 10
+    test "when with", -> assert.eq 45,  _find source,
+      when: (v) -> v % 3 == 0
+      with: (v) -> v * 5

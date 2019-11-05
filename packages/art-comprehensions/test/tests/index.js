@@ -4,5 +4,11 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  Comprehensions: require('./Comprehensions')
+  Array:          require('./Array'),
+  Comprehensions: require('./Comprehensions'),
+  Each:           require('./Each'),
+  Find:           require('./Find'),
+  Object:         require('./Object'),
+  Reduce:         require('./Reduce'),
+  StandardImport: require('./StandardImport')
 });

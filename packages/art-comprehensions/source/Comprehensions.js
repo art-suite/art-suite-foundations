@@ -77,17 +77,13 @@ let normalizedEachWhile = function(source, into, withBlock, options) {
   return into;
 };
 
-let normalizedInject = function(source, into, withBlock, options) {
+let normalizedReduce = function(source, into, withBlock, options) {
   let intoSet;
   if (source == null) return into;
-  intoSet = into !== undefined
   normalizedEach(
     source,
     undefined,
-    intoSet ?
-      (v, k, __, w) => into = withBlock(into, v, k, w)
-    : (v, k, __, w) => into = intoSet ? withBlock(into, v, k, w) : (intoSet = true, v)
-    ,
+    (v, k, __, w) => into = withBlock(into, v, k, w),
     options
   );
   return into;
@@ -172,6 +168,6 @@ module.exports = {
   each:   (source, a, b) => invokeNormalizedIteration(normalizedEach,   source, a, b),
   array:  (source, a, b) => invokeNormalizedIteration(normalizedArray,  source, a, b),
   object: (source, a, b) => invokeNormalizedIteration(normalizedObject, source, a, b),
-  reduce: (source, a, b) => invokeNormalizedIteration(normalizedInject, source, a, b),
+  reduce: (source, a, b) => invokeNormalizedIteration(normalizedReduce, source, a, b),
   find:   (source, a, b) => invokeNormalizedIteration(normalizedFind,   source, a, b),
 };

@@ -1,0 +1,92 @@
+import &StandardImport
+
+suite: ->
+  add = (a, b) -> a + b
+  injectMerge = (obj, v, k) -> obj[k] = v; obj
+  mySelect = (obj, v, k) -> obj[k] = v if v >= 2; obj
+  {max} = Math
+
+
+  # testCountCalls = (expected, args...) ->
+  #   test
+  #     context = "countCalls == #{expected} for #{(array arg in args with formattedInspect arg).join ', '}"
+  #     ->
+  #       count = 0
+  #       _reduce args..., -> count++
+  #       assert.eq expected, count, {} expected, args
+
+  # testCountCalls 0, []
+  # testCountCalls 0, [], 1
+  # testCountCalls 0, [1]
+  # testCountCalls 1, [1], 1
+  # testCountCalls 1, [1, 1]
+
+  testReduce = (expected, source, _inject, o) ->
+    test "#{formattedInspect source}, #{formattedInspect _inject}, #{formattedInspect o} => #{formattedInspect expected}" ->
+      assert.eq expected, _reduce source, _inject, o
+
+  testReduce undefined, [], undefined, add
+  testReduce 123, [],    123 add
+  testReduce 123, [123], 0   add
+  testReduce 666, [123], 543 add
+
+  testReduce 10,  [1, 2, 3, 4], 0,  add
+  testReduce 5,   [5, 2, 0, 3], 0,  (a, b) -> max a, b
+  testReduce 110, [1, 2, 3, 4], 100, add
+  testReduce 110, [1, 2, 3, 4], into: 100, with:  add
+  testReduce 10,  {a: 1, b: 2, c: 3, d: 4}, 0,    add
+  testReduce 110, {a: 1, b: 2, c: 3, d: 4}, 100,  add
+
+  testReduce
+    foo: 1
+    bar: 2
+    a:   1
+    b:   2
+    c:   3
+    d:   4
+
+    a:    1 b: 2 c: 3 d: 4
+
+    foo:  1 bar: 2
+
+    injectMerge
+
+  testReduce
+    foo: 1
+    bar: 2
+    0:   11
+    1:   22
+    2:   33
+    3:   44
+
+    11 22 33 44
+
+    foo: 1 bar: 2
+
+    injectMerge
+
+  testReduce
+    foo: 1
+    bar: 2
+    b:   2
+    c:   3
+    d:   4
+
+    a: 1 b: 2 c: 3 d: 4
+
+    foo: 1 bar: 2
+
+    mySelect
+
+  testReduce
+    foo: 1
+    bar: 2
+    1:   2
+    2:   3
+    3:   4
+
+    1 2 3 4
+
+    foo: 1 bar: 2
+
+    mySelect

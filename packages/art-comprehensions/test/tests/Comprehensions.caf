@@ -1,12 +1,4 @@
-import &ArtStandardLib
-
-&ArtComprehensions extract
-  array   as _array
-  each    as _each
-  object  as _object
-  reduce  as _reduce
-  find    as _find
-
+import &StandardImport
 
 suite:
   _each:
@@ -142,73 +134,3 @@ suite:
 
       test "1-arg function: (v) -> v + v", ->
         assert.eq ["aa", "bb"], _array ["a", "b"], (v) -> v+v
-
-  _reduce: ->
-    add = (a, b) -> a + b
-    injectMerge = (obj, v, k) -> obj[k] = v; obj
-    mySelect = (obj, v, k) -> obj[k] = v if v >= 2; obj
-    {max} = Math
-
-
-    testCountCalls = (expected, args...) ->
-      test
-        context = "countCalls == #{expected} for #{(array arg in args with formattedInspect arg).join ', '}"
-        ->
-          count = 0
-          _reduce args..., -> count++
-          assert.eq expected, count, {} expected, args
-
-    testCountCalls 0, []
-    testCountCalls 0, [], 1
-    testCountCalls 0, [1]
-    testCountCalls 1, [1], 1
-    testCountCalls 1, [1, 1]
-
-    test "[], add -> undefined",   -> assert.eq undefined, _reduce [], add
-    test "[], 123, add -> 123",     -> assert.eq 123, _reduce [], 123, add
-    test "[123], add -> 123",      -> assert.eq 123, _reduce [123], add
-    test "[123], 543, add -> 666", -> assert.eq 666, _reduce [123], 543, add
-
-    test "[1, 2, 3, 4], add", -> assert.eq 10,  _reduce [1, 2, 3, 4], add
-    test "[5, 2, 0, 3], max", -> assert.eq 5,   _reduce [5, 2, 0, 3], (a, b) -> max a, b
-    test "[1, 2, 3, 4], 100, add", -> assert.eq 110, _reduce [1, 2, 3, 4], 100, add
-    test "[1, 2, 3, 4], into: 100, with: add", -> assert.eq 110, _reduce [1, 2, 3, 4], into: 100, with: add
-    test "a: 1, b: 2, c: 3, d: 4, add",      -> assert.eq 10,  _reduce {a: 1, b: 2, c: 3, d: 4}, add
-    test "a: 1, b: 2, c: 3, d: 4, 100, add", -> assert.eq 110, _reduce {a: 1, b: 2, c: 3, d: 4}, 100, add
-    test "a: 1, b: 2, c: 3, d: 4, {foo:1, bar: 2}, injectMerge", ->
-      assert.eq
-        foo: 1
-        bar: 2
-        a:   1
-        b:   2
-        c:   3
-        d:   4
-        _reduce {a: 1, b: 2, c: 3, d: 4}, {foo:1, bar: 2}, injectMerge
-
-    test "[11, 22, 33, 44], {foo:1, bar: 2}, injectMerge", ->
-      assert.eq
-        foo: 1
-        bar: 2
-        0:   11
-        1:   22
-        2:   33
-        3:   44
-        _reduce [11, 22, 33, 44], {foo:1, bar: 2}, injectMerge
-
-    test "a: 1, b: 2, c: 3, d: 4, {foo:1, bar: 2}, mySelect", ->
-      assert.eq
-        foo: 1
-        bar: 2
-        b:   2
-        c:   3
-        d:   4
-        _reduce {a: 1, b: 2, c: 3, d: 4}, {foo:1, bar: 2}, mySelect
-
-    test "[1, 2, 3, 4], {foo:1, bar: 2}, mySelect", ->
-      assert.eq
-        foo: 1
-        bar: 2
-        1:   2
-        2:   3
-        3:   4
-        _reduce [1, 2, 3, 4], {foo:1, bar: 2}, mySelect

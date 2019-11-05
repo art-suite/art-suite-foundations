@@ -1,0 +1,13 @@
+&ArtComprehensions extract
+  array   as _array
+  each    as _each
+  object  as _object
+  reduce  as _reduce
+  find    as _find
+
+&ArtStandardLib.mergeWithSelf {}
+  _array
+  _each
+  _object
+  _reduce
+  _find
