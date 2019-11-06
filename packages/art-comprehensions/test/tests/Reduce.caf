@@ -6,29 +6,17 @@ suite: ->
   mySelect = (obj, v, k) -> obj[k] = v if v >= 2; obj
   {max} = Math
 
+  testReduce = (expected, source, _inject, options) ->
+    test "#{formattedInspect source}, #{formattedInspect _inject}, #{formattedInspect options} => #{formattedInspect expected}" ->
+      assert.eq
+        expected
+        _reduce source, _inject, options
+        {} expected, source, _inject, options
 
-  # testCountCalls = (expected, args...) ->
-  #   test
-  #     context = "countCalls == #{expected} for #{(array arg in args with formattedInspect arg).join ', '}"
-  #     ->
-  #       count = 0
-  #       _reduce args..., -> count++
-  #       assert.eq expected, count, {} expected, args
-
-  # testCountCalls 0, []
-  # testCountCalls 0, [], 1
-  # testCountCalls 0, [1]
-  # testCountCalls 1, [1], 1
-  # testCountCalls 1, [1, 1]
-
-  testReduce = (expected, source, _inject, o) ->
-    test "#{formattedInspect source}, #{formattedInspect _inject}, #{formattedInspect o} => #{formattedInspect expected}" ->
-      assert.eq expected, _reduce source, _inject, o
-
-  testReduce undefined, [], undefined, add
-  testReduce 123, [],    123 add
-  testReduce 123, [123], 0   add
-  testReduce 666, [123], 543 add
+  # testReduce undefined, [], undefined, add
+  # testReduce 123, [],    123 add
+  # testReduce 123, [123], 0   add
+  # testReduce 666, [123], 543 add
 
   testReduce 10,  [1, 2, 3, 4], 0,  add
   testReduce 5,   [5, 2, 0, 3], 0,  (a, b) -> max a, b

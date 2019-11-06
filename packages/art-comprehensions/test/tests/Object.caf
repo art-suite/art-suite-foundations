@@ -21,11 +21,6 @@ suite:
     test "2-arg function: (v, k) -> k + v", ->
       assert.eq {a: "a1", b: "b2"}, _object {a: 1, b: 2}, (v, k) -> k + v
 
-    test "3-arg function: (v, k, map) -> map[k+v] = v", ->
-      source = {a: 1, b: 2}
-      assert.eq {a1: 1, b2: 2}, _each source, (_into = {}), (v, k) -> _into[k + v] = v
-      assert.eq {a1: 1, a: 1, b2: 2, b: 2}, _object source,             (v, k, _into) -> _into[k+v] = v
-
     test "when", ->
       assert.eq {b: 2, d: 4}, _object {a: 1, b: 2, c: 3, d: 4}, when: (v) -> v % 2 == 0
 
@@ -38,19 +33,6 @@ suite:
         _object {a: 1, b: 2, c: 3, d: 4},
           key: (v) -> v * 101
 
-    test "key - all values passed through", ->
-      assert.eq
-        _array: [1, 2, 3, 4]
-        a102: 1
-        b204: 2
-        c306: 3
-        d408: 4
-        _object {a: 1, b: 2, c: 3, d: 4},
-          when: (v) -> v * 2
-          key: (v, k, _into, w) ->
-            (_into._array ||= []).push v
-            "#{k}#{v * 100 + w}"
-
   fromArrays: ->
     test "0-arg function: -> true", ->
       assert.eq {a: true, b: true}, _object ["a", "b"], -> true
@@ -60,6 +42,3 @@ suite:
 
     test "2-arg function: (v, k) -> map[k+v] = v", ->
       assert.eq {a: "0a", b: "1b"}, _object ["a", "b"], (v, k) -> k+v
-
-    test "3-arg function: (v, k, map) -> map[k+v] = v", ->
-      assert.eq {"0a": "a", a: "a", "1b": "b", b: "b"}, _object ["a", "b"], (v, k, map) -> map[k+v] = v

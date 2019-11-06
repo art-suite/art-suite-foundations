@@ -1,113 +1,102 @@
-let isPlainObject     = (v)       => (v != null) && v.constructor === Object;
-let isFunction        = (obj)     => typeof obj === "function";
-let returnFirst       = (a)       => a
-let returnSecond      = (a, b)    => b
-let arrayIterableTest = (source)  => source != null && source.length >= 0
+const isPlainObject = v => v != null && v.constructor === Object;
+const isFunction = obj => typeof obj === "function";
+const returnFirst = a => a;
+const returnSecond = (a, b) => b;
+const isArrayIterable = source => source != null && source.length >= 0;
+const isOfIterable = o => isFunction(o[Symbol.iterator] || o.next);
+const exists = value => value != null;
 
-let emptyOptions = {};
+const emptyOptions = {};
 
-let normalizedEach = function(source, into, withBlock, options) {
-  let i, j, k, len, whenBlock;
-  if (into === undefined) into = source;
-  if (options) whenBlock = options.when;
-  if (arrayIterableTest(source)) {
-    if (whenBlock) {
-      for (k = i = 0, len = source.length; i < len; k = ++i) {
-        let v = source[k];
-        let w = whenBlock(v, k);
-        if (w) withBlock(v, k, into, w);
-      }
-    } else {
-      for (k = j = 0, len = source.length; j < len; k = ++j) {
-        let v = source[k];
-        withBlock(v, k, into);
-      }
-    }
-  } else if (source != null) {
-    if (whenBlock) {
-      for (k in source) {
-        let v = source[k];
-        let w = whenBlock(v, k);
-        if (w) withBlock(v, k, into, w);
-      }
-    } else {
-      for (k in source) {
-        let v = source[k];
-        withBlock(v, k, into);
-      }
-    }
-  }
-  return into;
+const iterate = (source, body) => {
+  if (exists(source))
+    if (isArrayIterable(source))
+      for (let key = 0, { length } = source; key < length; key++)
+        body(source[key], key);
+    else if (isOfIterable(source))
+      if (isFunction(source.entries))
+        for (const [key, value] of source.entries()) body(value, key);
+      else for (const value of source) body(value, null);
+    else for (const key in source) body(source[key], key);
 };
 
-let normalizedEachWhile = function(source, into, withBlock, options) {
-  let i, j, k, len, whenBlock;
-  if (into === undefined) into = source;
-  if (options) whenBlock = options.when;
-
-  if (arrayIterableTest(source)) {
-    if (whenBlock) {
-      for (k = i = 0, len = source.length; i < len; k = ++i) {
-        let v = source[k];
-        let w = whenBlock(v, k);
-        if (w) {
-          if (!withBlock(v, k, into, w)) break;
+const iterateWithBreak = (source, body) => {
+  if (exists(source))
+    if (isArrayIterable(source))
+      for (let key = 0, { length } = source; key < length; key++) {
+        if (body(source[key], key)) break;
+      }
+    else if (isOfIterable(source))
+      if (isFunction(source.entries))
+        for (const [key, value] of source.entries()) {
+          if (body(value, key)) break;
         }
+      else
+        for (const value of source) {
+          if (body(value, null)) break;
+        }
+    else
+      for (const key in source) {
+        if (body(source[key], key)) break;
       }
-    } else {
-      for (k = j = 0, len = source.length; j < len; k = ++j) {
-        let v = source[k];
-        if (!withBlock(v, k, into)) break;
+};
+
+const normalizeBody = (_with, options) => {
+  let { when, map } = options;
+  const _with_map = map ? (v, k) => _with(map(v), k) : _with;
+  return when
+    ? (v, k) => {
+        if (when(v, k)) _with_map(v, k);
       }
-    }
-  } else if (source != null) {
-    if (whenBlock) {
-      for (k in source) {
-        let v = source[k];
-        let w = whenBlock(v, k);
-        if (w && !withBlock(v, k, into, w)) break;
-      }
-    } else {
-      for (k in source) {
-        let v = source[k];
-        if (!withBlock(v, k, into)) break;
-      }
-    }
-  }
+    : _with_map;
+};
+
+const _each = (source, _with, options) => {
+  iterate(source, normalizeBody(_with, options));
+};
+
+const normalizedEach = (source, into, _with, options) => {
+  _each(source, _with, options);
   return into;
 };
 
-let normalizedReduce = function(source, into, withBlock, options) {
-  let intoSet;
-  if (source == null) return into;
-  normalizedEach(
+let normalizedReduce = function(source, into, _with, options) {
+  _each(source, (v, k) => (into = _with(into, v, k)), options);
+  return into;
+};
+
+let normalizeKeyFunction = (source, options) =>
+  options.key ||
+  options.withKey ||
+  (isArrayIterable(source) ? returnFirst : returnSecond);
+
+let normalizedObject = (source, into, _with, options) => {
+  let key = normalizeKeyFunction(source, options);
+  if (into == null) into = {};
+  _each(source, (v, k) => (into[key(v, k)] = _with(v, k)), options);
+  return into;
+};
+
+let normalizedArray = (source, into, _with, options) => {
+  if (into == null) into = [];
+  _each(source, (v, k) => into.push(_with(v, k)), options);
+  return into;
+};
+
+let normalizedFind = function(source, found, _with, options) {
+  let { when, map } = options;
+  const _with_map = map ? (v, k) => _with(map(v), k) : _with;
+  iterateWithBreak(
     source,
-    undefined,
-    (v, k, __, w) => into = withBlock(into, v, k, w),
-    options
+    when
+      ? (v, k) => {
+          if (when(v, k)) {
+            found = _with_map(v, k);
+            return true;
+          }
+        }
+      : (v, k) => (found = _with_map(v, k))
   );
-  return into;
-};
-
-let normalizedObject = function(source, into, withBlock, options) {
-  let keyFunction = options.key || options.withKey || (arrayIterableTest(source) ? returnFirst : returnSecond);
-  return normalizedEach(source, into != null ? into : {}, (v, k, into, w) =>
-    into[keyFunction(v, k, into, w)] = withBlock(v, k, into, w)
-  , options);
-};
-
-let normalizedArray = (source, into, withBlock, options) =>
-  normalizedEach(source, into != null ? into : [], (v, k, into, w) =>
-    into.push(withBlock(v, k, into, w))
-  , options);
-
-let normalizedFind = function(source, into, withBlock, options) {
-  let found;
-  normalizedEachWhile(source, found, options.whenBlock ? (v, k, into, w) => {
-    found = withBlock(v, k, null, w);
-    return false;
-  } : (v, k, into, w) => !(found = withBlock(v, k, null, w))
-  , options);
   return found;
 };
 
@@ -121,14 +110,14 @@ an new array or new object otherwise, we pass IN the iteration function
 and pass the params directly to it. This keeps the computed params on the
 stack and doesn't create new objects.
 
-IN signature 1: (iteration, source, into, withBlock) ->
+IN signature 1: (iteration, source, into, _with) ->
 IN signature 2: (iteration, source, into, options) ->
-IN signature 3: (iteration, source, withBlock) ->
+IN signature 3: (iteration, source, _with) ->
 IN signature 4: (iteration, source, options) ->
 IN signature 5: (iteration, source) ->
 
 IN:
-iteration: (source, into, withBlock, options) -> out
+iteration: (source, into, _with, options) -> out
 
   The iteration function is invoked last with the computed args.
   Its results are returned.
@@ -136,38 +125,43 @@ iteration: (source, into, withBlock, options) -> out
   IN:
     source:     passed directly through from inputs
     into:       passed directly through from inputs OR from options.into
-    withBlock:  passed directly through from inputs OR from options.with
+    _with:  passed directly through from inputs OR from options.with
     options:    passed directly through from inputs OR {}
                 (guaranteed to be set and a plainObject)
 
 source: the source collection to be iterated over. Passed directly through.
 
 into:       passed through to 'iteration'
-withBlock:  passed through to 'iteration'
+_with:      passed through to 'iteration'
 options:    passed through to 'iteration' AND:
 
   into:     set 'into' from the options object
-  with:     set 'withBlock' from the options object
+  with:     set '_with' from the options object
 
 OUT: out
 */
 let invokeNormalizedIteration = function(iteration, source, a, b) {
-  let into, options, withBlock;
-  options = b ? (into = a, b) : a;
+  let into, options, _with;
+  options = b ? ((into = a), b) : a;
   if (isPlainObject(options)) {
-    if (into == null) into = options.into;
-    withBlock = options.with;
+    if (into == null) into = options.into || options.inject;
+    _with = options.with;
   } else {
-    if (isFunction(options)) withBlock = options;
+    if (isFunction(options)) _with = options;
     options = emptyOptions;
   }
-  return iteration(source, into, withBlock || returnFirst, options);
+  return iteration(source, into, _with || returnFirst, options);
 };
 
 module.exports = {
-  each:   (source, a, b) => invokeNormalizedIteration(normalizedEach,   source, a, b),
-  array:  (source, a, b) => invokeNormalizedIteration(normalizedArray,  source, a, b),
-  object: (source, a, b) => invokeNormalizedIteration(normalizedObject, source, a, b),
-  reduce: (source, a, b) => invokeNormalizedIteration(normalizedReduce, source, a, b),
-  find:   (source, a, b) => invokeNormalizedIteration(normalizedFind,   source, a, b),
+  each: (source, a, b) =>
+    invokeNormalizedIteration(normalizedEach, source, a, b),
+  array: (source, a, b) =>
+    invokeNormalizedIteration(normalizedArray, source, a, b),
+  object: (source, a, b) =>
+    invokeNormalizedIteration(normalizedObject, source, a, b),
+  reduce: (source, a, b) =>
+    invokeNormalizedIteration(normalizedReduce, source, a, b),
+  find: (source, a, b) =>
+    invokeNormalizedIteration(normalizedFind, source, a, b)
 };

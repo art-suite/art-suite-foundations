@@ -5,7 +5,6 @@
 
 .addModules({
   Array:          require('./Array'),
-  Comprehensions: require('./Comprehensions'),
   Each:           require('./Each'),
   Find:           require('./Find'),
   Object:         require('./Object'),
