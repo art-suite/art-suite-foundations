@@ -1,15 +1,16 @@
 import &StandardImport
 
-suite:
-  fromObjects: ->
-    test "no function, empty _object", ->
-      assert.eq [], _array {}
+suite: ->
+  testComprehension [],         _array, null
+  testComprehension [],         _array, []
+  testComprehension [2 4]       _array, {a:1 b:2} x2
+  testComprehension [2 4 6 8]   _array, [1 2 3 4] x2
+  testComprehension [2 4 6 8]   _array, [1 2 3 4] map:  x2
+  testComprehension [4 8]       _array, [1 2 3 4] with: x2, when: even
+  testComprehension [4 8 12 16] _array, [1 2 3 4] with: x2, map: x2
 
-    test "no function, non-empty _object", ->
-      assert.eq [1, 2], _array a: 1, b: 2
+  map = new Map []
+    :a 1
+    :b 2
 
-    test "0-arg function: -> 123", ->
-      assert.eq [123, 123], _array {a: 1, b: 2}, -> 123
-
-    test "1-arg function: (v) -> v + v", ->
-      assert.eq ["aa", "bb"], _array ["a", "b"], (v) -> v+v
+  testComprehension [2 4]       _array, map, x2

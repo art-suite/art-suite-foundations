@@ -51,6 +51,11 @@ const normalizeBody = (_with, options) => {
     : _with_map;
 };
 
+let normalizeKeyFunction = (source, options) =>
+  options.key ||
+  options.withKey ||
+  (isArrayIterable(source) ? returnFirst : returnSecond);
+
 const _each = (source, _with, options) => {
   iterate(source, normalizeBody(_with, options));
 };
@@ -60,15 +65,11 @@ const normalizedEach = (source, into, _with, options) => {
   return into;
 };
 
-let normalizedReduce = function(source, into, _with, options) {
-  _each(source, (v, k) => (into = _with(into, v, k)), options);
+let normalizedArray = (source, into, _with, options) => {
+  if (into == null) into = [];
+  _each(source, (v, k) => into.push(_with(v, k)), options);
   return into;
 };
-
-let normalizeKeyFunction = (source, options) =>
-  options.key ||
-  options.withKey ||
-  (isArrayIterable(source) ? returnFirst : returnSecond);
 
 let normalizedObject = (source, into, _with, options) => {
   let key = normalizeKeyFunction(source, options);
@@ -77,9 +78,19 @@ let normalizedObject = (source, into, _with, options) => {
   return into;
 };
 
-let normalizedArray = (source, into, _with, options) => {
-  if (into == null) into = [];
-  _each(source, (v, k) => into.push(_with(v, k)), options);
+let normalizedReduce = (source, into, _with, options) => {
+  let first = true;
+  _each(source, (v, k) => {
+    if (first)
+      {first = false; into = v;}
+    else
+      into = _with(into, v, k)
+  }, options);
+  return into;
+};
+
+let normalizedInject = function(source, into, _with, options) {
+  _each(source, (v, k) => (into = _with(into, v, k)), options);
   return into;
 };
 
@@ -162,6 +173,8 @@ module.exports = {
     invokeNormalizedIteration(normalizedObject, source, a, b),
   reduce: (source, a, b) =>
     invokeNormalizedIteration(normalizedReduce, source, a, b),
+  inject: (source, a, b) =>
+    invokeNormalizedIteration(normalizedInject, source, a, b),
   find: (source, a, b) =>
     invokeNormalizedIteration(normalizedFind, source, a, b)
 };

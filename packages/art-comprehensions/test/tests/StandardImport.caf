@@ -1,9 +1,12 @@
+import &ArtStandardLib
+
 &ArtComprehensions extract
   array   as _array
   each    as _each
   object  as _object
   reduce  as _reduce
   find    as _find
+  inject  as _inject
 
 &ArtStandardLib.mergeWithSelf {}
   _array
@@ -11,3 +14,16 @@
   _object
   _reduce
   _find
+  _inject
+
+  testComprehension = (expected, f, source, a, b) ->
+    test "#{f.name} #{formattedInspect source}, #{a?.name ? formattedInspect a}, #{b?.name ? formattedInspect b} => #{formattedInspect expected}" ->
+      assert.eq
+        expected
+        f source, a, b
+        {} expected, source, a, b
+
+  add = (a, b) -> a + b
+  mul = (a, b) -> a * b
+  x2 = (a) -> a * 2
+  even = (a) -> a % 2 == 0

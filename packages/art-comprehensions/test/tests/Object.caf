@@ -12,14 +12,11 @@ suite:
       assert.eq a, b
       assert.notSame a, b
 
-    test "0-arg function: -> 123", ->
-      assert.eq {a: 123, b: 123}, _object {a: 1, b: 2}, -> 123
-
-    test "1-arg function: (v) -> v + 1", ->
-      assert.eq {a: 2, b: 3}, _object {a: 1, b: 2}, (v) -> v + 1
-
-    test "2-arg function: (v, k) -> k + v", ->
-      assert.eq {a: "a1", b: "b2"}, _object {a: 1, b: 2}, (v, k) -> k + v
+    testComprehension {a:2 b:4 c:6 d:8} _object, {a:1 b:2 c:3 d:4}  x2
+    testComprehension {a:2 b:4 c:6 d:8} _object, {a:1 b:2 c:3 d:4}  with: x2
+    testComprehension {a:2 b:4 c:6 d:8} _object, {a:1 b:2 c:3 d:4}  map:  x2
+    testComprehension {b:2 d:4}         _object, {a:1 b:2 c:3 d:4}  when: even
+    testComprehension {a::a1 b::b2}     _object, {a:1 b:2}          (v, k) -> k + v
 
     test "when", ->
       assert.eq {b: 2, d: 4}, _object {a: 1, b: 2, c: 3, d: 4}, when: (v) -> v % 2 == 0
