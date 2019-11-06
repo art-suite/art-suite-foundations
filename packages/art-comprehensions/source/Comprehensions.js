@@ -44,7 +44,7 @@ const iterateWithBreak = (source, body) => {
 
 const normalizeBody = (_with, options) => {
   let { when, map } = options;
-  const _with_map = map ? (v, k) => _with(map(v), k) : _with;
+  const _with_map = map ? (v, k) => _with(map(v, k), k) : _with;
   return when
     ? (v, k) => {
         if (when(v, k)) _with_map(v, k);
@@ -97,7 +97,7 @@ let normalizedInject = function(source, into, _with, options) {
 
 let normalizedFind = function(source, found, _with, options) {
   let { when, map } = options;
-  const _with_map = map ? (v, k) => _with(map(v), k) : _with;
+  const _with_map = map ? (v, k) => _with(map(v, k), k) : _with;
   iterateWithBreak(
     source,
     when

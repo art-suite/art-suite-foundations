@@ -1,7 +1,21 @@
-# COMMON API
+# API
+
+### Functions
+
+```javascript
+each()
+array()
+object()
+find()
+inject()
+reduce()
+```
+
+### COMMON API
 All comprehensions support four standard input patterns:
 
 ```
+f() => undefined
 f(source) => into
 f(source, with) => into
 f(source, into, with) => into
@@ -18,12 +32,13 @@ Where:
     - **null/undefined:** treated as an empty container (eqivelent to passing in `[]` or `{}`)
 
   - **options:**
-    - **with:** with
-    - **when:** when
-    - **into:** into
+    - **when**: (value, key) -> booleanish
+    - **with**: (see with)
+    - **map**:  (value, key) -> new value
+    - **into/returning/inject**: any (these are alias of each other)
 
   - **with:**
-    - `(value, key, into, whenBlockResult) -> value`
+    - `(value, key) -> new value`
     - Generally, this function generates the 'value' used for each part of the
       iteration. When constructing a new collection, this is the value for each
       entry. ('find' and 'reduce' use this differently)
@@ -108,19 +123,25 @@ find(source, options) => a value from 'options.with' or directly from source
   - if have when: **!!when() == true**
   - if no when: **!!with() == true**
 
-### reduce
+### reduce and inject
 
-`reduce` differences from the common-api:
+These comprehensions are very similar. Inject always injects an initial `last` value (from inject/into/returning value if passed in, undefined otherwise). Reduce never injects a value.
 
+- `last` gets initialized to
+  - for inject: inject/into/returning
+  - for reduce: the first value in source
 - `with` has a different argument order:
-  - (into, value, key) ->
-  - i.e. `into` is passed first instead of last
+  - (last, value, key) ->
   - This allows you to drop-in functions that take two args and reduce them to one like:
-    - Math.max
     - add = (a, b) => a + b
 
   - The default `with` still returns `v` (which is now the second argument).
+  - Note, for reduce, with gets called N-1 times, for inject, with gets called N times.
 
-- each iteration, `into` is updated as follows: `into = with(into, value, key)`
+- each iteration, `last` is updated as follows: `last = with(last, value, key)`
+- `map` is super handy; it gets called AFTER `when` but before `with`
+
+```javascript
+// sum records containing amount
+reduce(source, 0, {map: ({amount}) -> amount, with: add})
 ```
-
