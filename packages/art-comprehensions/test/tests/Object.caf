@@ -18,24 +18,27 @@ suite:
     testComprehension {b:2 d:4}         _object, {a:1 b:2 c:3 d:4}  when: even
     testComprehension {a::a1 b::b2}     _object, {a:1 b:2}          (v, k) -> k + v
 
-    test "when", ->
-      assert.eq {b: 2, d: 4}, _object {a: 1, b: 2, c: 3, d: 4}, when: (v) -> v % 2 == 0
-
-    test "key", ->
-      assert.eq
-        101: 1
-        202: 2
-        303: 3
-        404: 4
-        _object {a: 1, b: 2, c: 3, d: 4},
-          key: (v) -> v * 101
+    testComprehension
+      11: 1 22: 2 33: 3 44: 4
+      _object
+      a: 1 b: 2 c: 3 d: 4
+      key: (v) -> v * 11
 
   fromArrays: ->
-    test "0-arg function: -> true", ->
-      assert.eq {a: true, b: true}, _object ["a", "b"], -> true
+    testComprehension {1:1    2:2}    _object, [1 2]
+    testComprehension {1:true 2:true} _object, [1 2] -> true
+    testComprehension {1:2    2:4}    _object, [1 2] x2
+    testComprehension {a::aa  b::bb}  _object, [:a :b] x2
+    testComprehension {a:0a   b:1b}   _object, [:a :b] (v, k) -> k + v
 
-    test "1-arg function: (v) -> v + v", ->
-      assert.eq {a: "aa", b: "bb"}, _object ["a", "b"], (v) -> v+v
+  fromMaps: ->
+    myMap = new Map []
+      :a 1
+      :b 2
+      :c 3
+      :d 4
 
-    test "2-arg function: (v, k) -> map[k+v] = v", ->
-      assert.eq {a: "0a", b: "1b"}, _object ["a", "b"], (v, k) -> k+v
+    testComprehension {a:2 b:4 c:6 d:8} _object, myMap, x2
+
+  fromGenerators: ->
+    testComprehension {1:2 2:4 3:6} _object, generate3(), x2

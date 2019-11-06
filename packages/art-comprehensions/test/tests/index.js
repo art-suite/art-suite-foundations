@@ -7,6 +7,7 @@
   Array:          require('./Array'),
   Each:           require('./Each'),
   Find:           require('./Find'),
+  Generators:     require('./generators'),
   Object:         require('./Object'),
   Reduce:         require('./Reduce'),
   StandardImport: require('./StandardImport')

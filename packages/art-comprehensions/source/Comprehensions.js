@@ -16,7 +16,8 @@ const iterate = (source, body) => {
     else if (isOfIterable(source))
       if (isFunction(source.entries))
         for (const [key, value] of source.entries()) body(value, key);
-      else for (const value of source) body(value, null);
+      else
+        for (const value of source) body(value, value);
     else for (const key in source) body(source[key], key);
 };
 
@@ -155,7 +156,9 @@ let invokeNormalizedIteration = function(iteration, source, a, b) {
   let into, options, _with;
   options = b ? ((into = a), b) : a;
   if (isPlainObject(options)) {
-    if (into == null) into = options.into || options.inject;
+    if (into === undefined) into = options.into
+    if (into === undefined) into = options.inject
+    if (into === undefined) into = options.returning
     _with = options.with;
   } else {
     if (isFunction(options)) _with = options;
