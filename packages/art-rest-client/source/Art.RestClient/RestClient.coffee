@@ -171,7 +171,7 @@ module.exports = class RestClient extends BaseClass
 
   ###
   restRequest: (options) ->
-    {verb, verbose, method, url, data, body, query, headers, onProgress, responseType, formData, showProgressAfter} = options
+    {verb, verbose, method, url, data, body, query, headers, onProgress, normalizedHeaders, responseType, formData, showProgressAfter} = options
     showProgressAfter = 100 unless isNumber showProgressAfter
 
     method ||= verb
@@ -202,7 +202,7 @@ module.exports = class RestClient extends BaseClass
       onProgress
       responseType
       showProgressAfter
-      headers: normalizeHeaders headers
+      headers: merge normalizedHeaders, normalizeHeaders headers
     }
 
   @normalizeHeaders: normalizeHeaders = (headers) ->
@@ -322,5 +322,5 @@ module.exports = class RestClient extends BaseClass
         else
           request.upload.addEventListener "progress", progressCallbackInternal
 
-      log "ArtRestClient: #{method} #{url}" if verbose
+      log ArtRestClient: {method, url, headers} if verbose
       request.send body
