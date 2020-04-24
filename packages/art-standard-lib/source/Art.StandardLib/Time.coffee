@@ -30,21 +30,15 @@ module.exports = class Time
   @performanceSecondToDateSecond: (performanceSecond) -> performanceSecond + dateSecondMinusPerformanceSecond
   @timeStampToPerformanceSecond: (htmlEventTimeStamp) -> htmlEventTimeStamp / 1000 - dateSecondMinusPerformanceSecond
 
-  @durationString: (seconds) ->
+  @durationString: (seconds, levels = 1, divider = ' ', recursing = false) =>
     for [name, multiplier] in multiples
       if seconds >= multiplier
-        return "#{(seconds / multiplier) | 0}#{name}"
-    return "0"
-    # if seconds >= 99
-    #   "#{(seconds / 60) + .5 | 0}m"
-    # else if seconds >= 10
-    #   "#{seconds | 0}s"
-    # else if seconds >= 0.100
-    #   "#{seconds * 1000 | 0}ms"
-    # else if seconds >= 0.000100
-    #   "#{seconds * 1000000 | 0}μs"
-    # else #if seconds >= 0.000000010
-    #   "#{seconds * 1000000000 | 0}ns"
+        result = if levels > 1
+          "#{(seconds / multiplier) | 0}#{name}#{@durationString seconds % multiplier, levels - 1, divider, true}"
+        else "#{(.5 + seconds / multiplier) | 0}#{name}"
+        result = divider + result if recursing
+        return result
+    if recursing then '' else "0"
 
   @dateAgeInSeconds: (date) -> ((new Date) - date) * .001
   @dateToSeconds: (date) -> post.getTime() * .001
