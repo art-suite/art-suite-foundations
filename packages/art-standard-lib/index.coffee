@@ -1,0 +1,1 @@
+module.exports = Neptune?.Art?.StandardLib ? require './source/Art.StandardLib'

@@ -1,0 +1,3 @@
+require '../index.coffee'
+module.exports =
+  Neptune.Art.StandardLib.merge Neptune.Art.StandardLib, test: (args...) -> global.test args...
