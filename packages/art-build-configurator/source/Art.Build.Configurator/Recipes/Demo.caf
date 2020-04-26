@@ -1,0 +1,227 @@
+import &StandardImport
+
+class Demo extends &Recipe
+  @description: "" A demo ArtSuiteJS app (base: app)
+
+  @getter files: ->
+    deepMerge
+      @recipe &App
+
+      source: [@namespaceDirPath]:
+        StandardImport.caf: "" &ArtSuite/Node
+
+        _Client:
+          Main.caf:
+            """
+              import &StandardImport
+              &Models
+              &Pipelines
+
+              &ArtSuiteApp.initArtSuiteClient
+                title:         :#{@packageDotName}
+                MainComponent:
+                  class CanvasComponent extends Component
+
+                    render: ->
+                      CanvasElement &Components/App()
+
+          Components:
+            User.caf:
+              """
+                import &StandardImport
+
+                class User extends FluxComponent
+
+                  delete: ->
+                    pipelines.user.delete @props.user?.id
+                    .then -> @models.allUsers.reload ""
+
+                  render: ->
+                    Element
+                      :parentWidthChildrenHeight
+                      animators: size: toFrom: h: 0
+                      :clip
+                      Element
+                        :parentWidthChildrenHeight
+                        :row :childrenCenterLeft
+                        childrenMargins: 10
+                        TextElement
+                          &TextStyles.text
+                          :parentWidthChildrenHeight
+                          text:       @props.user?.name
+                        &Button
+                          text: :delete
+                          action: @delete
+
+            Users.caf:
+              """
+                import &StandardImport
+
+                class Users extends FluxComponent
+                  @subscriptions
+                    allUsers: ""
+                    :viewState.descending
+
+                  render: ->
+                    ScrollElement
+                      clip: true
+                      childrenMargins: 10
+                      array user from @allUsers?.sort
+                          if @descending
+                            (a, b) -> a.name.localeCompare b.name
+                          else
+                            (a, b) -> b.name.localeCompare a.name
+                        &User {} user, key: user.id
+
+            App.caf:
+              """
+                import &StandardImport
+
+                class App extends FluxComponent
+                  @subscriptions :viewState.descending
+
+                  addUser: ->
+                    @models.user.create data: name: randomElement []
+                      :Craig   :David   :Elle      :Frank,
+                      :Greg    :Hank    :Ian       :Jan,
+                      :Kelly   :Lois    :Mary      :Noah,
+                      :Piper   :Quinn   :Robert    :Sally,
+                      :Tuck    :Udy     :Violette  :William,
+                      :Xavier  :Yesler  :Zane
+
+                    .then ->
+                      @models.allUsers.reload ""
+
+                  render: ->
+                    Element
+                      &StyleProps.background
+
+                      Element
+                        padding: 10
+                        childrenLayout:   :column
+                        childrenMargins:  10
+
+                        Element
+                          margin: 10
+                          :parentWidthChildrenHeight
+                          :row :childrenCenterLeft
+                          childrenMargins:  10
+                          TextElement
+                            &TextStyles.titleText
+                            :parentWidthChildrenHeight
+                            text:   :#{@packageDotName}
+
+                          &Button
+                            text:   if @descending then :descending else :ascending
+                            action: @models.viewState.toggleDescending
+
+                          &Button
+                            text:   :add-user
+                            action: @addUser
+
+                        &Users()
+
+            Button.caf:
+              """
+                import &StandardImport
+
+                class Button extends PointerActionsMixin Component
+
+                  render: ->
+                    Element
+                      on:         @pointerHandlers
+                      size:       cs: 1
+                      padding:    10
+                      cursor:     :pointer
+                      animators:  :draw
+                      draw:
+                        rectangle: radius: 5
+                        &Palette[if @hover then :secondary else :primary]
+
+                      TextElement
+                        &TextStyles.text
+                        :childrenSize
+                        color:  &TextPalette.white.primary
+                        text:   @props.text
+
+          StyleProps.caf:
+            """
+              import &StandardImport
+              class StyleProps extends HotStyleProps
+                @background: draw: #f7f7f7
+
+          Palette.caf:
+            """
+              import &StandardImport
+              class Palette extends HotStyleProps
+                @primary: #48f
+                @secondary: #f49
+
+          TextPalette.caf:
+            """
+              import &StandardImport
+              class TextStyles extends HotStyleProps
+                @black:
+                  primary:          rgbColor #000000d2
+                  secondary:        rgbColor #0008
+                  disabled:         rgbColor #0004
+
+                @white:
+                  primary:          rgbColor #fffd
+                  secondary:        rgbColor #fff8
+                  disabled:         rgbColor #fff4
+
+          TextStyles.caf:
+            """
+              import &StandardImport
+              class TextStyles extends HotStyleProps
+                @text:
+                  fontFamily: :sans-serif
+                  color: &TextPalette.black.secondary
+
+                @titleText:
+                  fontSize:   24
+                  fontWeight: :bold
+                  fontFamily: :sans-serif
+                  color: &TextPalette.black.primary
+
+          Models:
+            ViewState.caf:
+              """
+                import &StandardImport
+
+                class ViewState extends ApplicationState
+                  @stateFields
+                    descending: true
+
+        Pipelines:
+          User.caf:
+            """
+              import &StandardImport
+
+              class User extends Pipeline
+                @publicRequestTypes :get :create :update :delete :allUsers
+                @query
+                  allUsers: (request) -> array request.pipeline.db
+
+                constructor: ->
+                  super
+                  @db =
+                    abc123: id: :abc123 name: :Alice
+                    efg456: id: :efg456 name: :Bill
+
+                @handlers
+                  get: ({key}) ->
+                    @db[key]
+
+                  create: ({data}) ->
+                    @db[id = randomString()] = merge data, {} id
+
+                  update: ({data, key}) ->
+                    if @db[key]
+                      @db[key] = merge @db[key], data
+
+                  delete: ({key}) ->
+                    if @db[key]
+                      @db = objectWithout @db, key
+                      true

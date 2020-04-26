@@ -1,0 +1,24 @@
+import &StandardImport
+
+suite: ->
+  MySingleton = null
+  setup ->
+    class MySingleton extends BaseClass
+      @singletonClass()
+
+  test :instanceof ->
+
+    assert.instanceof MySingleton, MySingleton.singleton
+    assert.instanceof MySingleton, MySingleton.getSingleton()
+
+  test "classes are equal" ->
+    assert.equal MySingleton, MySingleton.singleton.class
+    assert.equal MySingleton, MySingleton.getSingleton().class
+
+  test "only one singleton" ->
+    assert.equal MySingleton.singleton, MySingleton.singleton
+
+  test "singleton no longer needs declaration" ->
+    class MyNewSingleton extends BaseClass
+
+    assert.instanceof MyNewSingleton, MyNewSingleton.getSingleton()
