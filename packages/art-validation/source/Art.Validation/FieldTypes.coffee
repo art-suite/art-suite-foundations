@@ -6,7 +6,7 @@
   toMilliseconds
   toDate
   toSeconds
-  toLowerCase
+  lowerCase
   emailRegexp
   urlRegexp
   log
@@ -93,7 +93,7 @@ module.exports = FieldTypes =
 
   email:
     validate: (v) -> isString(v) && v.trim().match emailRegexp
-    preprocess: (v) -> v.trim().toLowerCase()
+    preprocess: (v) -> lowerCase v.trim()
 
   url:
     validate: (v) -> isString(v) && v.match urlRegexp
@@ -107,7 +107,14 @@ module.exports = FieldTypes =
     preprocess: (v) ->
       v = v.trim()
       v.length > 0 && v
-    maxLength: 1024 # a reasonable upper cap; can be overridden
+    maxLength: 1024 # a reasonable upper cap; can override
+
+  username:
+    minLength: 3    # can override
+    maxLength: 30   # can override
+    present: true
+    validate:   (v) -> isString(v) && /^\s*\w+\s*$/i.test v
+    preprocess: (v) -> lowerCase v.trim()
 
   function:
     dataType: functionDataType
