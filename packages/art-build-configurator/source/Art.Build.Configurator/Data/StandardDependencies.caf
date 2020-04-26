@@ -1,0 +1,2 @@
+# Always pull deps from ABC
+art-build-configurator:               :*
