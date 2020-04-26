@@ -1,0 +1,23 @@
+import &StandardImport
+
+suite:
+  postCreate: ->
+    test "postCreate child" ->
+      assert.eq
+        class Foo extends BaseClass
+          @postCreate: -> 123
+        123
+
+    test "postCreate grandchild" ->
+      assert.eq
+        class Foo extends BaseClass
+          @postCreate: ->
+            class: Foo
+            number: 123
+        .number
+        123
+
+      assert.eq
+        class Bar extends Foo.class
+          @postCreate: -> 456
+        456

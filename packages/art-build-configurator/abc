@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+require('./index');
+
+if (require("./use-build")) { // use build
+  require('./build/abcCommand');
+
+} else {
+  require('./register');
+  require('./abcCommand');
+}
