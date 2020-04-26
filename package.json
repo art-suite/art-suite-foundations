@@ -8,6 +8,7 @@
     "art-monorepo": "file:packages/art-monorepo",
     "pluralize": "*",
     "art-standard-lib": "file:packages/art-standard-lib",
+    "art-testbench": "file:packages/art-testbench",
     "coffee-script": "*",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "neptune-namespaces": "file:packages/neptune-namespaces"
