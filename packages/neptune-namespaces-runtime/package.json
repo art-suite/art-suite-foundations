@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
   "dependencies": {
     "art-standard-lib": "*",
-    "coffee-script": "*"
+    "coffee-script": "^1.12.7"
   },
   "description": "Neptune.Namespaces.Runtime",
   "license": "ISC",

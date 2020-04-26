@@ -4,7 +4,7 @@
     "abc": "./abc",
     "art-build-configurator": "./art-build-configurator"
   },
-  "bugs": "https:/github.com/art-suite/art-build-configurator/issues",
+  "bugs": "https:/github.com/art-suite/art-suite-foundations2/issues",
   "dependencies": {
     "art-browser-tools": "*",
     "art-build-configurator": "*",
@@ -21,11 +21,10 @@
     "commander": "^2.19.0",
     "dateformat": "^3.0.3",
     "detect-node": "^2.0.4",
-    "fs-extra": "^8.0.0",
-    "glob": "^7.1.4",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
-    "neptune-namespaces": "*",
-    "pluralize": "^8.0.0"
+    "neptune-namespaces": "*"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
@@ -46,12 +45,12 @@
     "webpack-node-externals": "^1.7.2",
     "webpack-stylish": "^0.1.8"
   },
-  "homepage": "https://github.com/art-suite/art-build-configurator",
+  "homepage": "https://github.com/art-suite/art-suite-foundations2",
   "license": "ISC",
   "name": "art-build-configurator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/art-suite/art-build-configurator.git"
+    "url": "https://github.com/art-suite/art-suite-foundations2.git"
   },
   "scripts": {
     "build": "webpack --progress",

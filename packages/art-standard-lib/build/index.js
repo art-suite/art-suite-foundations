@@ -184,7 +184,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.63.0\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.63.0\"}");
 
 /***/ }),
 /* 5 */
@@ -342,7 +342,7 @@ module.exports = ArrayCompactFlatten = (function() {
     array: array or arguments-object
     keepTester: (value) -> true/false
       OUT: return true if that element should be in the output
-  
+
   OUT: array where all elements test true to keepTester
   NOTE: NOT recursive - just does a shallow pass
    */
@@ -406,7 +406,7 @@ module.exports = ArrayCompactFlatten = (function() {
     array: array or arguments-object
     keepTester: (value) -> true/false
       OUT: return true if that element should be in the output
-  
+
   OUT: array where all elements test true to keepTester
   NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
     to the top level (flatten)
@@ -467,7 +467,7 @@ module.exports = ArrayCompactFlatten = (function() {
 
   /*
   IN: array: any object that has a length
-  
+
   EFFECT:
     itterates over array and recurse over any element which isArrayOrArguments
     invokes f on every element that is not isArrayOrArguments
@@ -688,36 +688,36 @@ module.exports = Types = (function() {
   NAME: isClass
   IN: obj:anything
   OUT: boolean
-  
+
   Classes are Functions in JavaScript, and there is no built-in way to tell
   the differences even though, as-of ES6, there actually is a difference.
-  
+
   WARNING #1: This function cannot reliably detect a class which doesn't extend another.
-  
+
   TRUE-POSITIVES:
     100% true if obj is an extended class
     probably-true if obj is a function AND
       obj has enumerable properties or
       obj's prototype has enumerable properties
-  
+
   FALSE-POSITIVES:
     If you passed in a function with one or more manually set, enumerable properties.
-  
+
   FALSE-NEGATIVES:
     If you passed in a 'class' with no enumerable prototype properties and no enumerable
     static/class properties.
-  
+
   WARNING #2:
     Static/class methods declared with ES6 class syntax ARE NOT ENUMERABLE (face-palm).
     Therefor, in this case, FALSE-NEGATIVES are possible even if you have class methods.
-  
+
     It's just too costly to check for non-enumerable methods.
-  
+
   RECOMENDAION:
     To make your classes reliabily detectable: ALWAYS extend something.
     If you aren't extending anything else, extend Object.
     This is what CaffeineScript does.
-  
+
   WHY hasOwnProperties for obj and hasProperties for obj.prototype???
     hasProperties is faster
     hasOwnProperties because _functionsPrototype actuall has getName added to it
@@ -789,55 +789,55 @@ module.exports = Types = (function() {
   NOTE:
     getSuper doesn't work in CoffeeScript classes objects, but it does on ES6 classes.
     getSuper does work on CoffeeScript class instance objects.
-  
+
   All about getSuper in ES6 land:
-  
+
     class A {}
     class B extends A {}
     class C extends B {}
-  
+
     a = new A
     b = new B
     c = new C
-  
+
     getSuper(B) == A
     getSuper(C) == B
-  
+
     getSuper(A.prototype) == Object.prototype
     getSuper(B.prototype) == A.prototype
     getSuper(C.prototype) == B.prototype
-  
+
     getSuper(b) == A.prototype
     getSuper(c) == B.prototype
-  
+
   prototype map:
-  
+
   KEY:
     <->
        <-- .constructor
        --> .prototype
     ^  Object.getPrototypeOf
-  
+
   MAP:
     A <-> aPrototype
-  
+
     ^     ^     ^
     |     |     a
     |     |
-  
+
     B <-> bPrototype
-  
+
     ^     ^     ^
     |     |     b
     |     |
-  
+
     C <-> cPrototype
-  
+
                 ^
                 c
-  
+
   Definition of super:
-  
+
     if instance then prototype's prototype
     else prototype
    */
@@ -1044,12 +1044,12 @@ module.exports = Merge = (function() {
 
 
   /*
-  
+
   merge "flattens" its args and then adds all keys from all objects in
   the list into a new object which is returned.
-  
+
   return: new object
-  
+
   The first object's keys are added first. If two or more objects have the same
   keys, the value set in the result is the last object's in the list with that key.
    */
@@ -1075,9 +1075,9 @@ module.exports = Merge = (function() {
 
   /*
   The same as 'merge' with one difference:
-  
+
   Instead of a new object, all objects are merged into the first object in the list.
-  
+
   return: first object in the flattened list
   return: null if no source objects
    */
@@ -1134,12 +1134,12 @@ module.exports = Merge = (function() {
   /*
   Just like mergeInfo except only merge into the result object
   UNLESS 'result' already has that property with a non-undefined value.
-  
+
   if
     mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
   then
     mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
-  
+
   Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
    */
 
@@ -1244,9 +1244,9 @@ module.exports = Merge = (function() {
     Second, it gathers up and merges all plain-objects in its args list
     Last, all remaining items get added to the "children" list
   The question is, what does it return? Options:
-  
+
     OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-  
+
   Options if both objects and non-object values are present:
     a. return compactFlatten [plainObject, nonObjectValues]
     b. return merge plainObject, children: nonObjectValues
@@ -1393,7 +1393,7 @@ defineModule(module, function() {
       IN: (error, data) ->
         error: null or set if there was an error
         data: set if error is null
-    
+
     Example:
       Promise.withCallback (callback) ->
         doAsyncStuff -> callback()
@@ -1458,21 +1458,21 @@ defineModule(module, function() {
     /*
     Serializer makes it easy to ensure promise-returning functions are invoked in order, after each
     promise is resolved.
-    
+
     USAGE:
-    
+
        * EXAMPLE 1: Basic - not too different from normal Promise sequences
       serializer = new ArtPromise.Serializer
       serializer.then -> doA()
-    
+
        * then execute sometime later, possbly asynchronously:
       serializer.then -> doB()
-    
+
        * then execute sometime later, possbly asynchronously:
       serializer.then (doBResult) ->
          * doA and doB have completed and any returning promises resolved
          * the result of the last 'then' is passed in
-    
+
        * EXAMPLE 2: apply the same async function serially to each element in list
        * - list's order is preserved
        * - each invocation waits for the previous one to complete
@@ -1481,19 +1481,19 @@ defineModule(module, function() {
       serializer.then (lastFResult) ->
          * do something after the last invocation of f completes
          * the result of the last invocation of 'f' is passed in
-    
+
        * EXAMPLE 3: mix multiple serialized functions and manual @then invocations
        * - invocation order is perserved
       serializer = new ArtPromise.Serializer
       serializedA = serializer.serialize aFunction
       serializedB = serializer.serialize bFunction
-    
+
       serializedB()
       serializer.then -> @cFunction()
       serializedB()
       serializedA()
       serializedB()
-    
+
       serializer.then (lastBFunctionResult) ->
          * this is invoked AFTER:
          * evaluating, in order, waiting for any promises:
@@ -1513,31 +1513,31 @@ defineModule(module, function() {
         - invoking serializedF queues f in this serializer instance's sequence via @then
       IN: any function with any signature
       OUT: (f's signature) -> promise.then (fResult) ->
-      
+
       Example with Comparison:
-      
+
          * all asyncActionReturningPromise(element)s get called immediately
          * and may complete randomly at some later event
         myArray.forEach (element) ->
           asyncActionReturningPromise element
-      
+
          * VS
-      
+
          * asyncActionReturningPromise(element) only gets called
          * after the previous call completes.
          * If a previous call failes, the remaining calls never happen.
         serializer = new Promise.Serializer
         myArray.forEach serializer.serialize (element) ->
           asyncActionReturningPromise element
-      
+
          * bonus, you can do things when all the promises complete:
         serializer.then =>
-      
+
          * or if anything fails
         serializer.catch =>
-      
+
          * VS - shortcut
-      
+
          * Just insert "Promise.serialize" before your forEach function to ensure serial invocations.
          * However, you don't get the full functionality of the previous example.
         myArray.forEach Promise.serialize (element) ->
@@ -1576,10 +1576,10 @@ defineModule(module, function() {
       /*
       OUT: promise that resolves / rejects only when there are no more
         pending tasks queued with the serializer.
-      
+
         .then (lastResult) ->
         .catch (lastError) ->
-      
+
       NOTE: allDonePromise could complete, then more tasks could be queued with the serializer.
         Promises can't be resolved/rejected twice, so when the more-tasks complete, the first
         allDonePromise won't do anything.
@@ -1619,10 +1619,10 @@ defineModule(module, function() {
       IN: any args
       EFFECT: f is invoked with args passed in AFTER the last invocation of serializedF completes.
       OUT: promise.then -> results from f
-    
+
     NOTE: 'f' can return a promise, but it doesn't have to. If it does return a promise, the next
       'f' invocation will not start until and if the previous one's promise completes.
-    
+
     USAGE:
       serializedF = Promise.serialize f = -> # do something, possibly returning a promise
       serializedF()
@@ -1630,7 +1630,7 @@ defineModule(module, function() {
       serializedF()
       .then (resultOfLastF)->
          * executed after f was executed and any returned promises resolved, 3 times, sequentially
-    
+
     OR
       serializedF = Promise.serialize f = (element) -> # do something with element, possibly returning a promise
       Promise.all (serializedF item for item in list)
@@ -1803,7 +1803,7 @@ module.exports = Types = (function() {
     if (o = a > b) || a <= b
       return o
     a.gt b
-  
+
    * just a tad more complex and only sacrifices clear errors
   gt = (a, b)->
     if typeof a == typeof b
@@ -1860,40 +1860,40 @@ module.exports = Types = (function() {
   /*
   like RubyOnRails#present:
     "An object is present if it's not blank."
-  
+
   basic:
     present null, undefined, false or "" returns false (or whatever returnIfNotPresent is set to)
     all other values return something truish - generally themselves
-  
+
     Yes, in ruby/rails, present(false) == false. Though logically true, I've also found it lead
     to unexpected results in production code. I had a false-value where I was expecting a string due
     to a corrupted database value.
-  
+
     Possible argment for present(false) == false: It's easy to accidentally return false when you
     meant to return null or undefined. I think this is how my database got the corrupted false-instead-of
     null-value.
-  
+
     Another argument: present(x) should always be false if x is false.
-  
+
   custom:
     for bar where isFunction bar.present
       present bar returns bar.present()
-  
+
   special-case truish results:
     present 0 or false returns true
-  
+
   for any other value foo,
     present foo returns foo
-  
+
   IN:
     obj:
       object tested for presence
     returnIfNotPresent: [false]
       what to return if not present
-  
+
   OUT:
     returnIfNotPresent, true, or the value passed in
-  
+
   If 'obj' has method: obj.present() => obj.present()
    */
 
@@ -2066,7 +2066,7 @@ module.exports = Types = (function() {
   Applies "f" to every -value- in a nested structure of plain arrays and objects.
   Pure functional efficient:
     If an array or object, and all its sub values, didn't change, the original array/object is reused.
-  
+
   NOTE: deepMap only yields values to 'mapper' which are NOT plain arrays nor plain objects.
    */
 
@@ -2436,7 +2436,7 @@ module.exports = RegExpExtensions = (function() {
     at least one non-space in domain
     only one '@'
     Domain must have at least one '.' after a character and before a character
-  
+
   Minimum Example:
     a@a.a
    */
@@ -2484,14 +2484,14 @@ module.exports = RegExpExtensions = (function() {
 
   /*
   match OUTPUT: [url, protocol, '://', domain, ':', port, path, '?', query]
-  
+
   USAGE:
     [__, protocol, __, domain, __, port, path, __, query, __, fragment] = str.match findUrlRegExp
-  
+
   DESIGN NOTE:
     The reason why I included the fixed strings ('://', ':' and '?') was so that
     you can take the matchResult, alter individual elements and create a value url easily by:
-  
+
       matchResult.slice(1).join ''
    */
 
@@ -3393,10 +3393,10 @@ module.exports = StringExtensions = (function() {
   IN: an array and optionally a string, in any order
     joiner: the string
     array-to-flatten-and-join: the array
-  
+
   OUT:
     compactFlatten(array).join joiner || ""
-  
+
   NOTE: this uses Ruby's default value for joining - the empty array, not ',' which is JavaScripts
    */
 
@@ -3423,7 +3423,7 @@ module.exports = StringExtensions = (function() {
 
   /*
    * CaffeineScript once we have reduce + til support:
-  
+
   @fastHash: (string) ->
      * 22 tokens
     reduce hash, i til string.length inject 0
@@ -3487,21 +3487,21 @@ module.exports = StringExtensions = (function() {
     Examples:
        * just, always, pluralize:
       pluralize "food" >> "foods"
-  
+
        * pluralize and output number
       pluralize -1, "food" -> "-1 foods"
       pluralize 0, "food" -> "0 foods"
       pluralize 1, "food" -> "1 food"
       pluralize 2, "food" -> "2 foods"
-  
+
        * order of the first 2 params doesn't matter
       pluralize 1, "food" -> "1 food"
       pluralize "food", 1 -> "1 food"
-  
+
        * custom pluralForms
       pluralize 1, "dragon", "frogs" -> "1 dragon"
       pluralize 3, "dragon", "frogs" -> "2 frogs"
-  
+
     IN:
       various signatures:
         pluralize singleForm
@@ -3509,44 +3509,44 @@ module.exports = StringExtensions = (function() {
         pluralize number, singleForm
         pluralize singleForm, number, pluralForm
         pluralize number, singleForm, pluralForm
-  
+
       number:     <Number>
       singleForm: <String> singular noun
         NOTE: if pluralForm is not provided, it's ok
           if this is a plural nown, it'll still
           'do the right thing'
-  
+
       pluralForm: <String> plural noun
-  
+
     OUT:
-  
+
       unless number == 0
         pluralForm ?=
-  
+
       if a number was provided
         "#{number} #{correct singleForm or pluralForm}"
       else
         pluralForm
-  
+
     NOTE:
       Now using: https://www.npmjs.com/package/pluralize
       It provides nice functionality and knows about all the odd
       english words.
-  
+
       Compatibility:
         ArtStandardLib's pluralize always outputs the number
         if the number is given, unlike npm-pluralize, which
         requires a 'true' in the 3rd argument to enable outputting
         the number.
-  
+
         ArtStandardLib let's you provide your own, custom pluralForm.
         npm-pluralize requires you to 'register' it first via addIrregularRule.
         You can still do that, if you wish, but it's renamed 'addPluralizeRule'
         in ArtStandardLib since it's expected you'll import it 'bare' and
         'addIrregularRule' could mean anything out-of-context.
-  
+
       It's an extra 2.1k payload minimized and brotli-zipped for client-side.
-  
+
       It also allows us to provide:
         {@plural, @singular, @isSingular, @isPlural, @addPluralizeRule}
    */
@@ -3656,7 +3656,7 @@ module.exports = StringExtensions = (function() {
   /*
   SBD for a while I only had JSON.stringify here, but I hate seeing: "I said, \"hello.\""
   when I could be seeing: 'I said, "hello."'
-  
+
   Is this going to break anything? I figure if you really need "" only, just use stringify.
    */
 
@@ -3892,7 +3892,7 @@ module.exports = StringExtensions = (function() {
       wordBreakFunction: (word, maxLength) -> shorterWord
          * given a word and the maximum length of that word, returns
          * a word <= maxLength according to wordLengthFunction
-  
+
     b) Use cases
       - TextLayout - uses pixels for length rather than characters
       - Art.Engine.Element 'flow' layout
@@ -3909,11 +3909,11 @@ module.exports = StringExtensions = (function() {
           "Shane Delamore", 10 > "Shane D"
         Or, just leave breakwords: false and get:
           "Shane Delamore", 10 > "Shane"
-  
+
     c) returns both the output string and the "string remaining" - everything not included
     d) alternate input: an array of strings already broken up by words - the "remainging" return value would then also be an array of "words"
       (this would be for efficiency when doing multi-line layout)
-  
+
   Right now, it works as follows:
   The output string is guaranteed to be:
     <= maxLength
@@ -4150,35 +4150,35 @@ module.exports = MathExtensions = (function() {
   /*
   WARNING: if you are working with very small, near-zero numbers, and
     don't want them be be considered actually 0, don't use this!
-  
+
   OUT:
     true if two floating point numbers are within
     'floating-point error' of each other.
-  
+
   What does that mean?
-  
+
   For exponents > 0
     They are the same if their exponent is the same and their mantisssas
     are very close.
-  
+
   For exponents < 0
     HOWEVER, negative-exponent numbers are compared using their
     full value. That means theit exponents could be very different.
-  
+
     return true iff abs(a - b) < float32Precision
-  
+
   NOTES
     The problem is comparing against 0. Since "0" has no magnitude, we
     have to define how we compare when one of the two numbers is 0 and
     the other isn't.
-  
+
     Option 1: always not-equal
     Option 2: equal if the mantissa is near-zero
     Option 3: equal if the value, including exponent, is near-zero
       i.e. - use float32Eq0
-  
+
     I've basically chosen Option #3.
-  
+
     To maintain maximum consistency, I've decided ALL numbers with
     exponents < 0 will be compared without compensating for their magnitudes.
    */
@@ -4882,20 +4882,20 @@ module.exports = ObjectExtensions = (function() {
   /*
   NOTE:
     null and undefined keys are NOT SUPPORTED
-  
+
     They should be converted to strings, first,
     which is what they would become anyway.
-  
+
   IN: 0 or more args
     out = {}
     list = args
-  
+
     for element in list
       objects: merge into out
       arrays or args lists: recurse using element as the list
       null or undefined: skip
       else out[element] = next element (or undefined if none)
-  
+
   OUT: plain object
    */
 
@@ -4956,10 +4956,10 @@ module.exports = ObjectExtensions = (function() {
   /*
   IN:
     obj: the object to select fields from
-  
+
     2nd argument can be:
       selectFunction: (value, key) -> true / false
-  
+
     OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
    */
 
@@ -5179,30 +5179,30 @@ module.exports = Iteration = (function() {
 
   /*
   COMMON API:
-  
+
   IN: (source, withBlock = returnFirst) ->
   IN: (source, options) ->
   IN: (source, into, withBlock = returnFirst) ->
   IN: (source, into, options) ->
-  
+
   source:
     array-like (see arrayIterableTest)
       use indexes to iterate
-  
+
     non-null
-  
+
   options:
     with: withBlock
     when: whenBlock
     into: into
-  
+
   withBlock: (value, key, into, whenBlockResult) -> value
     Generally, this generates the 'value' used for each part of the iteration.
     When constructing a new collection, this is the value for each entry.
     'find' and 'reduce' use this differently.
-  
+
   OUT: into
-  
+
   TODO:
     - support ES6 iterables and iterators
     - flatten: true - if source is an array, recurse into any sub-arrays
@@ -5219,7 +5219,7 @@ module.exports = Iteration = (function() {
 
   /*
   each differences from the common-api:
-  
+
   1) into defaults to source
    */
 
@@ -5270,7 +5270,7 @@ module.exports = Iteration = (function() {
 
   /*
   eachWhile differences from the common-api:
-  
+
   1) into defaults to source
   2) stops when withBlock returns false
    */
@@ -5330,20 +5330,20 @@ module.exports = Iteration = (function() {
 
   /*
   reduce differences from the common-api:
-  
+
   1) The with-block has a different argument order. Into is passed first instead of last:
     with: (into, value, key, whenReturnValue) ->
     This allows you to drop-in functions that take two args and reduce them to one like:
       Math.max
       add = (a, b) -> a + b
-  
+
     The default with-block still returns value (which is now the second argument).
-  
+
   1) if into starts out undefined:
     for v = the first value (if whenBlock is present, the first value when whenBlock is true)
       into = v
       skip: withBlock
-  
+
   2) when withBlock is executed, into is updated:
     into = withBlock()
    */
@@ -5368,12 +5368,12 @@ module.exports = Iteration = (function() {
 
   /*
   object differences from the common-api:
-  
+
   IN:
     options.key: (value, key, into, whenBlockResult) -> value
-  
+
   1) into defaults to a new object ({}) (if into == undefined)
-  
+
   2) when withBlock is executed, into is updated:
     if source is array-like:
       into[v] = withBlock()
@@ -5396,9 +5396,9 @@ module.exports = Iteration = (function() {
 
   /*
   array differences from the common-api:
-  
+
   1) into defaults to a new array ([]) (if into == undefined)
-  
+
   2) when withBlock is executed, into is updated:
     into.push withBlock()
    */
@@ -5416,7 +5416,7 @@ module.exports = Iteration = (function() {
 
   /*
   differs from common api:
-  
+
   1) returns the last value returned by withBlock or undefined if withBlock was never executed
   2) stops if
     a) whenBlock?:  and it returned true (stops after withBlock is evaluated)
@@ -5445,35 +5445,35 @@ module.exports = Iteration = (function() {
   an new array or new object otherwise, we pass IN the iteration function
   and pass the params directly to it. This keeps the computed params on the
   stack and doesn't create new objects.
-  
+
   IN signature 1: (iteration, source, into, withBlock) ->
   IN signature 2: (iteration, source, into, options) ->
   IN signature 3: (iteration, source, withBlock) ->
   IN signature 4: (iteration, source, options) ->
   IN signature 5: (iteration, source) ->
-  
+
   IN:
     iteration: (source, into, withBlock, options) -> out
-  
+
       The iteration function is invoked last with the computed args.
       Its retults are returned.
-  
+
       IN:
         source:     passed directly through from inputs
         into:       passed directly through from inputs OR from options.into
         withBlock:  passed directly through from inputs OR from options.with
         options:    passed direftly through from inputs OR {}
                     (guaranteed to be set and a plainObject)
-  
+
     source: the source collection to be iterated over. Passed streight through.
-  
+
     into:       passed through to 'iteration'
     withBlock:  passed through to 'iteration'
     options:    passed through to 'iteration' AND:
-  
+
       into:     set 'into' from the options object
       with:     set 'withBlock' from the options object
-  
+
   OUT: out
    */
 
@@ -5722,7 +5722,7 @@ module.exports = Eq = (function() {
 
   /*
   compare is recursive. However, it only recurses for 'plain' objects and arrays.
-  
+
   If you want to compare custom objects deeply, you must add an .eq or .compare function to your custom objects.
     signature: a.eq b, recursionBlockArray => truthy if a equals b
     signature: a.compare b, recursionBlockArray => NaN / <0 / 0 / >0 for incomparable / a<b / a==b / a>b respectively
@@ -5732,7 +5732,7 @@ module.exports = Eq = (function() {
       recursionBlockArray: an array of objects already on the stack being tested, pass this to
     It is an array of every object recursively currently being tested - don't test an object in this array
     recursionBlockArray can be altered, but should be returned in its original state. It may be null.
-  
+
   IN:
     a and b: compare a and b
     recursionBlockEnabled:
@@ -5742,11 +5742,11 @@ module.exports = Eq = (function() {
     NaN:
       a and b are different types
       a and b are otherwise not comparable
-  
+
     <0: a < b
     0:  a == b
     >0: a > b
-  
+
   TODO:
     recursionBlockArray could be reused.
     Further, depth == 1 checks could be safely skipped to make
@@ -6102,14 +6102,14 @@ module.exports = ArrayExtensions = (function() {
     element: anything
   OUT:
     array containing element as the last element
-  
+
   EFFECT:
     if array was falsy, a new length-1 array is returned
     else, array was mutated by pushing the current element
-  
+
   WHY?
     Why write this when arrays alread have push?
-  
+
     1) if array is null, this works as desired
     2) this returns array, not array.length
       Returning the array is what Ruby's push does.
@@ -6183,14 +6183,14 @@ module.exports = ArrayExtensions = (function() {
 
   /*
   findSortedFirst
-  
+
   Acts as-if it sorted the array and returned the first element.
-  
+
   Details:
     tests each element in the array againts the current "smallest"
     returns the element for which tests "smaller" than every other
     element a is "smaller" than b if compareFunction(a, b) returns >0 value
-  
+
   IN:
     array - the array to search or null
     compareFunction - (a, b) -> # standard compare function
@@ -6199,7 +6199,7 @@ module.exports = ArrayExtensions = (function() {
         <0: if b is greater than a
         >0: if a is greater than b
       default: (a, b) -> a - b
-  
+
   OUT:
     largest value in array or undefined if array is null or length 0
    */
@@ -6497,10 +6497,10 @@ module.exports = ArrayExtensions = (function() {
 
   /*
   stableSort is an in-place, stable sort
-  
+
   "stable" means that if two elements are 'equal' under the compare test, their order won't
   change with respect to each other.
-  
+
   NOTE: array.sort is not guaranteed to be stable
    */
 
@@ -7311,9 +7311,9 @@ module.exports = {
           examples:
             "123"
             "123.456"
-  
+
           toMilliseconds v - 0
-  
+
         else
           toMilliseconds Date.parse v
   OUT:
@@ -7535,7 +7535,7 @@ module.exports = ObjectDiff = (function() {
   /*
   SBD this has been thouroughly benchmarked on Safari and Chrome as of 2015-11-06
   This is as fast as I could make it.
-  
+
   IN:
     newObj:   the changed-to object   (must be set)
     oldObj:   the changed-from object (default: {})
@@ -7555,11 +7555,11 @@ module.exports = ObjectDiff = (function() {
       If you have previously computed the number of keys in oldObj, pass it in.
       Counting the number of keys in an object can be slow. If we know the number
       of keys this routine can be more efficient.
-  
+
       NOTE that this function returns the key-count of the new object. That way if you
       are calling objecfDiff several times over a sequence of object changes, can you keep
       the results from this function, you already have the oldObjKeyCount for the next call.
-  
+
   OUT: newObjKeyCount - number of keys in the new object
    */
 
@@ -8184,21 +8184,21 @@ module.exports = Clone = (function() {
 
   /*
   clones plain objects and arrays, but not any other type
-  
+
   FEATURES
     - no allocations beyond the newly crearted object and arrays
-  
+
   recursiveSafe: uses a stack
     This means:
       NO two objects or arrays in the output structure will be "==="
       UNLESS they were in a (grand)parent/(grand)child relationship in the source.
-  
+
       This means if you have the same (===) object/array more than once in the structure,
       in a non (grand)parent/(grand)child way, each use will get a separate cloned output
       in the new structure. In other words
-  
+
     This as a nice advantage: the output is JSON-compatible.
-  
+
     This is mostly a performance optimization. It allows us to avoid any extra object allocations.
     Once we can safely use the new ES6 Map everywhere, we might perf-test again to see if full
     recursion-safety isn't just as fast.
@@ -8492,16 +8492,16 @@ module.exports = Log = (function() {
 
 
   /*
-  
+
   IN:
     labelString, value
     OR object with one or more properties (usually just one)
       returns the last value of the objects last key-value pair
-  
+
   EX:
     log.withLabel foo: myObject
      * out: myObject
-  
+
     log.withLabel "foo", myObject
      * out: myObject
    */
@@ -8750,17 +8750,17 @@ module.exports = ReschedulableTimer = (function() {
   /*
   every time you call timeout it effectively cancels all previously pending timeouts
   leaving only this, new timeout active.
-  
+
   In actuality, the repvious timeouts complete at some point, but their 'actions' are skipped.
-  
+
   OUT:
     Promise.then ->
       The result of the next-completed timeout.
-  
+
       Note:
         If no additional calls to timeout are made within your ms, then
         this will be the result of your action.
-  
+
         However, if another timeout is triggered before ms expires, the result
         will be the result of the action passed in then.
    */

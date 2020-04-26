@@ -88,9 +88,9 @@ module.exports =
 /******/ ([
 /* 0 */,
 /* 1 */
-/*!*************************************************!*\
-  !*** ../node_modules/webpack/buildin/module.js ***!
-  \*************************************************/
+/*!***********************************!*\
+  !*** (webpack)/buildin/module.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -139,7 +139,7 @@ module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow 
 /*! exports provided: author, bin, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\",\"art-build-configurator\":\"./art-build-configurator\"},\"bugs\":\"https:/github.com/art-suite/art-build-configurator/issues\",\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.0.0\",\"glob\":\"^7.1.4\",\"glob-promise\":\"^3.4.0\",\"neptune-namespaces\":\"*\",\"pluralize\":\"^8.0.0\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-build-configurator\",\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-build-configurator.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.26.8\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"abc\":\"./abc\",\"art-build-configurator\":\"./art-build-configurator\"},\"bugs\":\"https:/github.com/art-suite/art-suite-foundations2/issues\",\"dependencies\":{\"art-browser-tools\":\"*\",\"art-build-configurator\":\"*\",\"art-class-system\":\"*\",\"art-config\":\"*\",\"art-filebuilder\":\"*\",\"art-object-tree-factory\":\"*\",\"art-standard-lib\":\"*\",\"bluebird\":\"^3.5.5\",\"caffeine-script\":\"*\",\"caffeine-script-runtime\":\"*\",\"coffee-script\":\"^1.12.7\",\"colors\":\"^1.3.2\",\"commander\":\"^2.19.0\",\"dateformat\":\"^3.0.3\",\"detect-node\":\"^2.0.4\",\"fs-extra\":\"^8.1.0\",\"glob\":\"^7.1.6\",\"glob-promise\":\"^3.4.0\",\"neptune-namespaces\":\"*\"},\"description\":\"Tools for configuring npm (package.json) and webpack (webpack.config.js)\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-suite-foundations2\",\"license\":\"ISC\",\"name\":\"art-build-configurator\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-suite-foundations2.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.26.9\"}");
 
 /***/ }),
 /* 7 */
@@ -166,7 +166,7 @@ Caf.defMod(module, () => {
   return __webpack_require__(/*! ./source/Art.Build.Configurator */ 9);
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 9 */
@@ -291,7 +291,7 @@ Caf.defMod(module, () => {
   return [__webpack_require__(/*! ./Main */ 16)];
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 16 */
@@ -510,7 +510,7 @@ Caf.defMod(module, () => {
           [executable, firstArg] = process.argv;
           isWebpackDevServer = !!(
             executable.match(/\/node$/) &&
-            (Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/))
+            Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/)
           );
           this.log(`\nNeptuneNamespaces: ${Caf.toString(npmRoot)}`);
           return __webpack_require__(/*! ./RunNeptuneNamespaces */ 46)(npmRoot, isWebpackDevServer);
@@ -553,7 +553,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 17 */
@@ -575,7 +575,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 18 */
@@ -622,7 +622,7 @@ Caf.defMod(module, () => {
   return { "art-build-configurator": "*" };
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 21 */
@@ -649,14 +649,14 @@ Caf.defMod(module, () => {
     "json-loader": "^0.5.7",
     "script-loader": "^0.7.2",
     "style-loader": "^1.0.0",
-    mocha: "^6.2.0",
+    mocha: "^7.0.0",
     chai: "^4.2.0",
     "mock-fs": "^4.10.0",
     "art-testbench": "*"
   };
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 22 */
@@ -734,14 +734,14 @@ Caf.defMod(module, () => {
                 scripts: merge({
                   test:
                     Caf.exists(abcConfig) &&
-                    (Caf.exists((base = abcConfig.target)) && base.node)
+                    Caf.exists((base = abcConfig.target)) && base.node
                       ? "nn -s;mocha -u tdd"
                       : "webpack-dev-server  --progress --env.devServer",
                   start:
                     "webpack-dev-server --hot --inline --progress --env.devServer",
                   testInBrowser:
                     Caf.exists(abcConfig) &&
-                    (Caf.exists((base1 = abcConfig.target)) && base1.node)
+                    Caf.exists((base1 = abcConfig.target)) && base1.node
                       ? "webpack-dev-server --progress --env.devServer"
                       : undefined,
                   build: "webpack --progress"
@@ -755,7 +755,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 23 */
@@ -824,7 +824,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 24 */
@@ -937,7 +937,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 28 */
@@ -1019,7 +1019,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 32 */
@@ -1067,7 +1067,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 33 */
@@ -1132,7 +1132,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 35 */
@@ -1336,7 +1336,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 36 */
@@ -1446,7 +1446,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 40 */
@@ -1561,7 +1561,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 41 */
@@ -1608,7 +1608,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 43 */
@@ -1705,7 +1705,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 44 */
@@ -1777,7 +1777,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 45 */
@@ -1819,7 +1819,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 46 */
@@ -1876,7 +1876,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 47 */
@@ -1910,7 +1910,7 @@ Caf.defMod(module, () => {
     : undefined;
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
 /* 49 */
@@ -1947,7 +1947,7 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ })
 /******/ ]);
