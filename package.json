@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "glob-promise": "^3.4.0",
+    "glob": "^7.1.6",
+    "art-monorepo": "file:packages/art-monorepo"
+  },
+  "devDependencies": {}
+}
