@@ -20,7 +20,7 @@
     "art-binary": "file:packages/art-binary",
     "art-browser-tools": "*",
     "art-class-system": "file:packages/art-class-system",
-    "art-config": "*",
+    "art-config": "file:packages/art-config",
     "art-filebuilder": "file:packages/art-filebuilder",
     "art-object-tree-factory": "file:packages/art-object-tree-factory",
     "art-standard-lib": "file:packages/art-standard-lib",
@@ -36,6 +36,7 @@
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "neptune-namespaces": "file:packages/neptune-namespaces",
+    "art-events": "*",
     "art-monorepo": "file:packages/art-monorepo",
     "pluralize": "^8.0.0",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime"
