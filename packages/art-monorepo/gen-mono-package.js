@@ -1,17 +1,10 @@
 #!/usr/local/bin/node
 const glob = require("glob-promise");
 const fs = require('fs-extra');
-
-const readJson = (file) => {
-  if (fs.existsSync(file))
-    return JSON.parse(fs.readFileSync(file));
-  else
-    return {}
-}
+const {readJson} = require('./lib');
 
 const currentPackage = readJson("package.json");
 currentPackage.dependencies = {};
-currentPackage.devDependencies = {};
 let previousSubPackages = {}
 
 const eachFromObject = (obj, f) => {
@@ -50,12 +43,12 @@ const addDep = (type, name, version, subPackage) => {
   previousSubPackages[type][name] = subPackage;
 }
 
-glob("!(node_modules)/*/**/package.json").then((result)=>{
+glob("!(node_modules)/*/**/package.json").then((result) => {
   result.forEach(file => {
     const [package, __] = file.split(/\/package.json$/);
-    const {name, dependencies, devDependencies} = readJson(file);
-    eachFromObject(dependencies,    (v, k) => addDep("dependencies", k, v, package));
-    eachFromObject(devDependencies, (v, k) => addDep("devDependencies", k, v, package));
+    const { name, dependencies, devDependencies } = readJson(file);
+    eachFromObject(dependencies, (v, k) => addDep("dependencies", k, v, package));
+    eachFromObject(devDependencies, (v, k) => addDep("dependencies", k, v, package));
     addDep("dependencies", name, `file:${package}`);
   });
   fs.writeFileSync("package.json", JSON.stringify(currentPackage, null, '  '));

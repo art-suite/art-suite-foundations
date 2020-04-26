@@ -1,20 +1,7 @@
 {
   "dependencies": {
     "art-build-configurator": "*",
-    "art-binary": "file:packages/art-binary",
-    "fs-extra": "^8.1.0",
-    "glob-promise": "^3.4.0",
-    "glob": "^7.1.6",
-    "art-monorepo": "file:packages/art-monorepo",
-    "pluralize": "*",
-    "art-standard-lib": "file:packages/art-standard-lib",
     "art-testbench": "file:packages/art-testbench",
-    "coffee-script": "*",
-    "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
-    "neptune-namespaces": "file:packages/neptune-namespaces"
-  },
-  "devDependencies": {
-    "art-testbench": "*",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -29,6 +16,19 @@
     "webpack-dev-server": "^3.7.2",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2",
-    "webpack-stylish": "^0.1.8"
+    "webpack-stylish": "^0.1.8",
+    "art-binary": "file:packages/art-binary",
+    "fs-extra": "^8.1.0",
+    "glob-promise": "^3.4.0",
+    "glob": "^7.1.6",
+    "art-monorepo": "file:packages/art-monorepo",
+    "pluralize": "*",
+    "art-standard-lib": "file:packages/art-standard-lib",
+    "coffee-script": "*",
+    "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
+    "neptune-namespaces": "file:packages/neptune-namespaces"
+  }
+  , "scripts": {
+    "test": "./run-all-tests.js"
   }
 }
