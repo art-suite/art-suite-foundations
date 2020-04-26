@@ -1,0 +1,3 @@
+&ArtStandardLib.merge
+  &ArtTestbench
+  &source/Art/Testbench/Node

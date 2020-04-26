@@ -1,0 +1,4 @@
+&ArtTestbench/Node
+.initTesting
+  synchronous: true
+  defineTests: -> &tests

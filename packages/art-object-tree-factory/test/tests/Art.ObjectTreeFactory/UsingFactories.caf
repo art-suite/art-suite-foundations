@@ -1,0 +1,212 @@
+import &StandardImport
+
+testNames = :Alice :Bill :John :SallyMae
+testNamesLowerCamelCased = array name in testNames with lowerCamelCase name
+
+
+class MyObject extends BaseObject
+  constructor: (@name, @props, @children) ->
+
+  @getter
+    plainObjects: ->
+      merge {}
+        @name
+        @props
+        children: if @children then array child in @children with toPlainObjects child
+
+suite:
+  basics: ->
+
+    {Alice, Bill, John, SallyMae} = createObjectTreeFactories testNamesLowerCamelCased, (name, props, children) ->
+      new MyObject name, props, children
+
+    test "Alice()", ->
+      assert.eq
+        Alice().plainObjects
+
+        name:     :alice
+
+    test "Alice age:12", ->
+      assert.eq
+        Alice age: 12
+        .plainObjects
+
+        name:     :alice
+        props:    age: 12
+
+    test "Alice (age: 25), (name: :alice)", ->
+      assert.eq
+        Alice
+          {} age: 25
+          {} name: :alice
+
+        .plainObjects
+
+        name:     :alice
+        props:    age: 25, name: :alice
+
+    test "Alice (age: 12), Bill(), gender: :female", ->
+      assert.eq
+        Alice
+          age: 12
+          Bill()
+          gender: 'female'
+        .plainObjects
+
+        name: :alice
+        props: age: 12, gender: 'female'
+        children: []
+          name:     :bill
+
+    test "Alice Bill()", ->
+      assert.eq
+        Alice Bill()
+        .plainObjects
+
+        name: :alice
+        children: []
+          name:     :bill
+
+    test "Alice Bill(), SallyMae()", ->
+      assert.eq
+        Alice
+          Bill()
+          SallyMae()
+
+        .plainObjects
+
+        name: :alice
+        children: []
+          {}
+            name:     :bill
+          {}
+            name:     :sallyMae
+
+  incompleteParts: ->
+    {Alice, Bill, John, SallyMae} = createObjectTreeFactories
+      testNamesLowerCamelCased
+      (name, props, children) -> merge {} props, children
+
+    test "Alice()", ->
+      assert.eq
+        Alice()
+        {}
+
+    test "Alice false", ->
+      assert.eq
+        Alice false
+        {}
+
+    test "Alice {}", ->
+      assert.eq
+        Alice {}
+
+        props:    {}
+
+    test "Alice []", ->
+      assert.eq
+        Alice []
+        {}
+
+    test "Alice [{}]", ->
+      assert.eq
+        Alice [] {}
+
+        props:    {}
+
+    test "Alice '' 0 true", ->
+      assert.eq
+        Alice '', 0, true
+
+        children: ['', 0, true]
+
+    test "Alice [null, undefined, false, [], [false, [undefined, null]]]", ->
+      assert.eq
+        Alice null, undefined, false, [], [] false, [] undefined, null
+        {}
+
+  customMergeAndPreprocess:
+    baseline: ->
+
+      {Alice, Bill, John, SallyMae} = createObjectTreeFactories
+        testNamesLowerCamelCased
+        (name, props, children) -> new MyObject name, props, children
+
+      test "Alice info:{a:123}, Bill(), info:{b:456}", ->
+        tree =
+        assert.eq
+          Alice
+            info: a: 123
+            Bill()
+            info: b: 456
+
+          .plainObjects
+          name: :alice
+          props: info: b: 456
+          children: []
+            name: :bill
+
+      test "Alice (info: a: 123), 'hi'", ->
+        assert.eq
+          Alice
+            info: a: 123
+            :hi
+
+          .plainObjects
+
+          name:     :alice
+          props:    info: a: 123
+          children: [] :hi
+
+    customMergePropsInto: ->
+
+      {Alice, Bill, John, SallyMae} = createObjectTreeFactories
+        mergePropsInto: (_into, source) ->
+          array v, k in source
+            _into[k] = if isPlainObject v
+              mergeInto _into[k], v
+            else
+              v
+
+        testNamesLowerCamelCased
+        (name, props, children) -> new MyObject name, props, children
+
+      test "Alice info:{a:123}, Bill(), info:{b:456}", ->
+        tree =
+        assert.eq
+          Alice
+            info: a: 123
+            Bill()
+            info: b: 456
+
+          .plainObjects
+
+          name: :alice
+          props: info: a: 123, b: 456
+          children: []
+            name: :bill
+
+    customPreprocessElement: ->
+
+      {Alice, Bill, John, SallyMae} = createObjectTreeFactories
+        preprocessElement: (element) ->
+          if isString element
+            text: element
+          else
+            element
+
+        testNamesLowerCamelCased
+        (name, props, children) -> new MyObject name, props, children
+
+      test "Alice (info: a: 123), 'hi'", ->
+        assert.eq
+          Alice
+            info: a: 123
+            :hi
+
+          .plainObjects
+
+          name: :alice
+          props:
+            info: a: 123
+            text: :hi

@@ -1,0 +1,34 @@
+import &StandardImport
+suite: ->
+  realRequire = null
+
+  chainedTest ->
+    ArtBuildConfigurator.Main extract realRequire
+    ArtBuildConfigurator.Main.realRequire = (file) -> {}
+
+    mockFs my-package: {}
+
+  .thenTest "chdir :my-package" ->
+    process.chdir :my-package
+
+  .thenTest "configure once" ->
+    ArtBuildConfigurator.go
+      process.cwd()
+      configure: true
+      quiet: true
+
+  .thenTest "verify output" ->
+    assert.eq
+      Object.keys mockFs.getTree()
+      .sort()
+      :art.build.config.caf :package.json :register.js :webpack.config.js
+
+  .thenTest "configure twice" ->
+    ArtBuildConfigurator.go
+      process.cwd()
+      configure: true
+      quiet: true
+
+  .thenTest :teardown ->
+    ArtBuildConfigurator.Main.realRequire = realRequire
+    mockFs.restore()
