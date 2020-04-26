@@ -6,7 +6,9 @@
     "art-monorepo": "file:packages/art-monorepo",
     "art-build-configurator": "*",
     "pluralize": "*",
-    "art-standard-lib": "file:packages/art-standard-lib"
+    "art-standard-lib": "file:packages/art-standard-lib",
+    "neptune-namespaces-runtime": "*",
+    "neptune-namespaces": "file:packages/neptune-namespaces"
   },
   "devDependencies": {
     "art-testbench": "*",
