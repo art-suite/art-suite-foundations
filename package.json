@@ -7,7 +7,8 @@
     "art-build-configurator": "*",
     "pluralize": "*",
     "art-standard-lib": "file:packages/art-standard-lib",
-    "neptune-namespaces-runtime": "*",
+    "coffee-script": "*",
+    "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "neptune-namespaces": "file:packages/neptune-namespaces"
   },
   "devDependencies": {
