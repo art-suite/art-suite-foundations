@@ -1,0 +1,37 @@
+import &StandardImport
+
+class Cli
+
+  ##
+    IN: config:
+      commands:
+        default: command-function (optional)
+        command1Name: command-function
+        command2Name: command-function
+        command3Name: command-function
+
+      help: see Help.getHelp
+
+      argv: [<String>] - defaults to process.argv; provided primarilly for testing
+
+    command-function: (options, args) -> result, optionally a Promise
+      IN:
+        options:  are the parsed options - see Parse.parseArgs
+        args:     undefined or array of arguments not part of options
+
+    options: object mapping lowerCamelCase option names to values parsed from the argv array
+  @start: ({commands, help, argv = process.argv}) =>
+    [nodeJs, startFile, args...] = argv
+    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand args
+
+    if commandFunction && !options.help
+      if options.verbose
+        log {}
+          command: commandName
+          options
+
+      Promise.then -> commandFunction options, args
+      .then (result) -> result? && log result
+
+    else
+      log &Help.getHelp startFile, help, options.help && commandName

@@ -1,0 +1,86 @@
+import &StandardImport, {} &colors
+
+class Help
+  @toHelpString: (args...) -> compactFlatten(args).join "\n"
+  @getCommandSummary: (commandName, {alias, description, options}) ->
+    commandName = dashCase commandName
+    []
+      "\n-----------------------\n#{colors.bold colors.brightWhite 'commandName: #{commandName}'} #{alias && '(#{alias})'}"
+      description
+      if options then "\noptions: " + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
+      if options then "detailed help: " + colors.green "#{commandName} --help"
+
+  @getOptionDetails: (option, details) ->
+    switch
+    when details is String  then description = details
+    when (details is Array) && details.length == 2  then [argument, description] = details
+    when details is Object                          then {argument, description, advanced} = details
+    else
+      log.warn {} option, details
+      throw new Error "expecting options details to be string, 2-length array or object"
+    []
+      colors.blue("option: ") + colors.green " --#{option} #{colors.yellow argument if argument}" + if advanced then colors.grey " (advanced)" else ''
+      "  " + description + "\n"
+
+  @getCommandDetails: (command, {alias, description, options}) ->
+    []
+      "\n-----------------------\n#{colors.bold colors.brightWhite 'Command: #{command}'} #{alias && '(#{alias})'}"
+      description + "\n"
+      options && each option in Object.keys(options).sort()
+        @getOptionDetails option, options[option]
+
+  ## getHelp
+    IN:
+      startFile: <String> name of the CLI app
+      help:
+        description: <String>
+        commands:
+          command1Name:
+            description:
+            options: {} option-name to option-help
+
+            examples: []
+              cli-example <string>
+              cli-example-description <string>
+              ...
+      commandName: <String> (optional)
+        If provided, show detailed help about this command derived from input help[commandName]
+
+    NOTE: all commandNames are normalized to lowerCamelCaser, so you can pass in a mix.
+
+    option-help:
+        description <String>
+      OR
+        [] argument-name <String>, description <String>
+      OR
+        argument: <String>
+        description: <String>
+        advanced: t/f
+          If true, hidden except on command-specific help
+          Also gets note as "advanced" in help when listed.
+
+  @getHelp: (startFile, help, commandName) =>
+    @toHelpString
+      """
+        #{startFile} help:
+
+        Usage: #{&path.basename startFile} command [options]
+
+      if help?
+        help extract commands, description
+        []
+          "\n#{description}\n" if description
+
+          if commands
+            commands = object v, k from commands with-key lowerCamelCase k
+            if commandSpecificHelp = commands[lowerCamelCase commandName]
+              @getCommandDetails commandName, commandSpecificHelp
+            else
+              array commandName from Object.keys(commands).sort()
+                @getCommandSummary commandName, commands[commandName]
+
+      unless help?.commands
+        """
+          Commands: #{}
+            Object.keys commands
+            .join ', '

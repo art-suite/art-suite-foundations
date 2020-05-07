@@ -1,0 +1,96 @@
+import &StandardImport
+import ArtCli.Parse
+
+suite:
+  parseArgs:
+    options: ->
+      test 'empty args' ->
+        assert.eq
+          parseArgs []
+          commands: []
+          options: {}
+
+      test 'boolean value' ->
+        assert.eq
+          parseArgs [] "" --verbose
+          commands: []
+          options: verbose: true
+
+      test 'number value' ->
+        assert.eq
+          parseArgs [] :--num :123
+          commands: []
+          options: num: 123
+
+      test 'single string' ->
+        assert.eq
+          parseArgs [] :--foo :bar
+          commands: []
+          options: foo: :bar
+
+      test 'list' ->
+        assert.eq
+          parseArgs [] :--foo :bar :baz
+          commands: []
+          options: foo: :bar :baz
+
+    commands: ->
+      test 'one command' ->
+        assert.eq
+          parseArgs [] :myCommand
+          commands: [] :myCommand
+          options: {}
+
+      test 'multiple command' ->
+        assert.eq
+          parseArgs [] :myCommand1 :myCommand2
+          commands: [] :myCommand1 :myCommand2
+          options: {}
+
+    mixed: ->
+      test 'multiple commands and options' ->
+        assert.eq
+          parseArgs [] :myCommand1 :myCommand2 :--files :one.json :two.json :--output :out.json
+          commands: [] :myCommand1 :myCommand2
+          options:
+            files:  [] :one.json, :two.json
+            output: :out.json
+
+  selectCommand:
+    defaults: ->
+      test 'no commandNames with default' ->
+        assert.eq
+          selectCommand
+            commandFunctions =
+              default: :foo
+              foo: ->
+            []
+          commandFunction: commandFunctions.foo
+          commandName: :foo
+
+      test 'one commandNames which isnt a command with default' ->
+        assert.eq
+          selectCommand
+            commandFunctions =
+              default: :foo
+              foo: ->
+            [] :bar
+          commandFunction: commandFunctions.foo
+          commandName: :foo
+          args: [] :bar
+
+    basics: ->
+      test 'foo is a command' ->
+        assert.eq
+          selectCommand
+            commandFunctions = foo: ->
+            [] :foo
+          commandFunction: commandFunctions.foo
+          commandName: :foo
+
+      test 'foo is not a command' ->
+        assert.eq
+          selectCommand
+            commandFunctions = bar: ->
+            [] :foo
+          {} args: [] :foo
