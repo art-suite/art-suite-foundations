@@ -2,8 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https:/github.com/art-suite/art-cli/issues",
   "dependencies": {
-    "art-build-configurator": "*",
-    "colors": "^1.4.0"
+    "art-build-configurator": "*"
   },
   "description": "Art.Cli",
   "devDependencies": {
@@ -13,7 +12,7 @@
     "coffee-loader": "^0.7.3",
     "css-loader": "^3.0.0",
     "json-loader": "^0.5.7",
-    "mocha": "^6.2.0",
+    "mocha": "^7.0.0",
     "mock-fs": "^4.10.0",
     "script-loader": "^0.7.2",
     "style-loader": "^1.0.0",
@@ -26,7 +25,7 @@
   },
   "homepage": "https://github.com/art-suite/art-cli",
   "license": "ISC",
-  "name": "@art-suite/cli",
+  "name": "art-cli",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-cli.git"

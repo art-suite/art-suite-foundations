@@ -93,6 +93,111 @@ module.exports =
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(/*! ./build */ 1)
+
+/***/ }),
+/* 1 */
+/*!************************!*\
+  !*** ./build/index.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
 __webpack_require__(/*! ./register.js */ 1)
 module.exports = __webpack_require__(/*! ./source */ 4)
 
@@ -119,7 +224,7 @@ __webpack_require__(/*! caffeine-mc/register */ 3);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('coffee-script/register' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! coffee-script/register */ 2 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 3 */
@@ -129,7 +234,7 @@ module.exports = require('coffee-script/register' /* ABC - not inlining fellow N
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('caffeine-mc/register' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! caffeine-mc/register */ 3 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 4 */
@@ -187,7 +292,7 @@ module.exports = __webpack_require__(/*! neptune-namespaces */ 7).addNamespace(
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! neptune-namespaces */ 4 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 8 */
@@ -256,7 +361,7 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! caffeine-script-runtime */ 5 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 12 */
@@ -336,7 +441,7 @@ Caf.defMod(module, () => {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! art-standard-lib */ 6 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 15 */
@@ -346,7 +451,7 @@ module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */)
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! art-class-system */ 7 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 16 */
@@ -659,10 +764,93 @@ Caf.defMod(module, () => {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require('colors' /* ABC - not inlining fellow NPM */);
+module.exports = __webpack_require__(/*! colors */ 8 /* ABC - not inlining fellow NPM */);
 
 /***/ }),
 /* 19 */
+/*!***********************************************************************!*\
+  !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __webpack_require__(/*! path */ 9 /* ABC - not inlining fellow NPM */);
+
+/***/ })
+/******/ ]);
+
+/***/ }),
+/* 2 */
+/*!*****************************************************************************************!*\
+  !*** external "require('coffee-script/register' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('coffee-script/register' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 3 */
+/*!***************************************************************************************!*\
+  !*** external "require('caffeine-mc/register' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('caffeine-mc/register' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 4 */
+/*!*************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 5 */
+/*!******************************************************************************************!*\
+  !*** external "require('caffeine-script-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 6 */
+/*!***********************************************************************************!*\
+  !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 7 */
+/*!***********************************************************************************!*\
+  !*** external "require('art-class-system' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 8 */
+/*!*************************************************************************!*\
+  !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('colors' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 9 */
 /*!***********************************************************************!*\
   !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
   \***********************************************************************/
