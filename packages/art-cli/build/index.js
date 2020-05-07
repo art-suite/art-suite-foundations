@@ -87,242 +87,23 @@ module.exports =
 /************************************************************************/
 /******/ ([
 /* 0 */
-/*!******************!*\
-  !*** ./index.js ***!
-  \******************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! ./build */ 1)
-
-/***/ }),
-/* 1 */
-/*!************************!*\
-  !*** ./build/index.js ***!
-  \************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports =
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/*!******************!*\
-  !*** ./index.js ***!
-  \******************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(/*! ./register.js */ 1)
-module.exports = __webpack_require__(/*! ./source */ 4)
-
-/***/ }),
-/* 1 */
-/*!*********************!*\
-  !*** ./register.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-  REGISTER CoffeeScript (.coffee) and CaffeineScript (.caf) loaders & compilers.
-  NOTE: for Node; ultimately a NOOP for Webpack.
-*/
-__webpack_require__(/*! coffee-script/register */ 2);
-__webpack_require__(/*! caffeine-mc/register */ 3);
-
-/***/ }),
-/* 2 */
-/*!*****************************************************************************************!*\
-  !*** external "require('coffee-script/register' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __webpack_require__(/*! coffee-script/register */ 2 /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 3 */
-/*!***************************************************************************************!*\
-  !*** external "require('caffeine-mc/register' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __webpack_require__(/*! caffeine-mc/register */ 3 /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 4 */
-/*!*************************!*\
-  !*** ./source/index.js ***!
-  \*************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! ./Art.Cli */ 5);
-
-/***/ }),
-/* 5 */
-/*!*********************************!*\
-  !*** ./source/Art.Cli/index.js ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// generated by Neptune Namespaces v4.x.x
-// file: Art.Cli/index.js
-
-(module.exports = __webpack_require__(/*! ./namespace */ 6))
-.includeInNamespace(__webpack_require__(/*! ./Cli */ 9))
-.addModules({
-  Help:           __webpack_require__(/*! ./Help */ 17),
-  Main:           __webpack_require__(/*! ./Main */ 12),
-  Parse:          __webpack_require__(/*! ./Parse */ 16),
-  StandardImport: __webpack_require__(/*! ./StandardImport */ 13)
-});
-
-/***/ }),
-/* 6 */
-/*!*************************************!*\
-  !*** ./source/Art.Cli/namespace.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// generated by Neptune Namespaces v4.x.x
-// file: Art.Cli/namespace.js
-
-module.exports = __webpack_require__(/*! neptune-namespaces */ 7).addNamespace(
-  'Art.Cli',
-  (class Cli extends Neptune.PackageNamespace {})
-  ._configureNamespace(__webpack_require__(/*! ../../package.json */ 8))
-);
-
-
-/***/ }),
-/* 7 */
-/*!*************************************************************************************!*\
-  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __webpack_require__(/*! neptune-namespaces */ 4 /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 8 */
-/*!**********************!*\
-  !*** ./package.json ***!
-  \**********************/
-/*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"art-cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"0.1.0\"}");
-
-/***/ }),
-/* 9 */
-/*!********************************!*\
-  !*** ./source/Art.Cli/Cli.caf ***!
-  \********************************/
+/*!*******************!*\
+  !*** ./index.caf ***!
+  \*******************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 11);
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
-  return { start: __webpack_require__(/*! ./Main */ 12).start };
+  return __webpack_require__(/*! ./source */ 3);
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 10 */
+/* 1 */
 /*!*************************************************!*\
   !*** ../node_modules/webpack/buildin/module.js ***!
   \*************************************************/
@@ -354,34 +135,119 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 11 */
+/* 2 */
 /*!******************************************************************************************!*\
   !*** external "require('caffeine-script-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
   \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = __webpack_require__(/*! caffeine-script-runtime */ 5 /* ABC - not inlining fellow NPM */);
+module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 12 */
-/*!*********************************!*\
-  !*** ./source/Art.Cli/Main.caf ***!
-  \*********************************/
+/* 3 */
+/*!*************************!*\
+  !*** ./source/index.js ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./ArtSuite.Cli */ 4);
+
+/***/ }),
+/* 4 */
+/*!**************************************!*\
+  !*** ./source/ArtSuite.Cli/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// generated by Neptune Namespaces v4.x.x
+// file: ArtSuite.Cli/index.js
+
+(module.exports = __webpack_require__(/*! ./namespace */ 5))
+.includeInNamespace(__webpack_require__(/*! ./Cli */ 8))
+.addModules({
+  Help:           __webpack_require__(/*! ./Help */ 14),
+  Main:           __webpack_require__(/*! ./Main */ 9),
+  Parse:          __webpack_require__(/*! ./Parse */ 13),
+  StandardImport: __webpack_require__(/*! ./StandardImport */ 10)
+});
+
+/***/ }),
+/* 5 */
+/*!******************************************!*\
+  !*** ./source/ArtSuite.Cli/namespace.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// generated by Neptune Namespaces v4.x.x
+// file: ArtSuite.Cli/namespace.js
+
+module.exports = __webpack_require__(/*! neptune-namespaces */ 6).addNamespace(
+  'ArtSuite.Cli',
+  (class Cli extends Neptune.PackageNamespace {})
+  ._configureNamespace(__webpack_require__(/*! ../../package.json */ 7))
+);
+
+
+/***/ }),
+/* 6 */
+/*!*************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 7 */
+/*!**********************!*\
+  !*** ./package.json ***!
+  \**********************/
+/*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"art-colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"0.1.2\"}");
+
+/***/ }),
+/* 8 */
+/*!*************************************!*\
+  !*** ./source/ArtSuite.Cli/Cli.caf ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 11);
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
+Caf.defMod(module, () => {
+  return { start: __webpack_require__(/*! ./Main */ 9).start };
+});
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
+
+/***/ }),
+/* 9 */
+/*!**************************************!*\
+  !*** ./source/ArtSuite.Cli/Main.caf ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["log", "Promise", "process"],
-    [global, __webpack_require__(/*! ./StandardImport */ 13)],
+    [global, __webpack_require__(/*! ./StandardImport */ 10)],
     (log, Promise, process) => {
-      let Cli;
-      return (Cli = Caf.defClass(class Cli extends Object {}, function(
-        Cli,
+      let Main;
+      return (Main = Caf.defClass(class Main extends Object {}, function(
+        Main,
         classSuper,
         instanceSuper
       ) {
@@ -393,7 +259,7 @@ Caf.defMod(module, () => {
             commandFunction,
             commandName,
             args
-          } = __webpack_require__(/*! ./Parse */ 16).parseAndSelectCommand(args));
+          } = __webpack_require__(/*! ./Parse */ 13).parseAndSelectCommand(args));
           return commandFunction && !options.help
             ? (options.verbose
                 ? log({ command: commandName, options })
@@ -402,7 +268,7 @@ Caf.defMod(module, () => {
                 result => result != null && log(result)
               ))
             : log(
-                __webpack_require__(/*! ./Help */ 17).getHelp(
+                __webpack_require__(/*! ./Help */ 14).getHelp(
                   startFile,
                   help,
                   options.help && commandName
@@ -414,60 +280,60 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 13 */
-/*!*******************************************!*\
-  !*** ./source/Art.Cli/StandardImport.caf ***!
-  \*******************************************/
+/* 10 */
+/*!************************************************!*\
+  !*** ./source/ArtSuite.Cli/StandardImport.caf ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 11);
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
-  return __webpack_require__(/*! art-standard-lib */ 14).mergeWithSelf(__webpack_require__(/*! art-class-system */ 15));
+  return __webpack_require__(/*! art-standard-lib */ 11).mergeWithSelf(__webpack_require__(/*! art-class-system */ 12));
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 14 */
+/* 11 */
 /*!***********************************************************************************!*\
   !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
   \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = __webpack_require__(/*! art-standard-lib */ 6 /* ABC - not inlining fellow NPM */);
+module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 15 */
+/* 12 */
 /*!***********************************************************************************!*\
   !*** external "require('art-class-system' /* ABC - not inlining fellow NPM *_/)" ***!
   \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = __webpack_require__(/*! art-class-system */ 7 /* ABC - not inlining fellow NPM */);
+module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 16 */
-/*!**********************************!*\
-  !*** ./source/Art.Cli/Parse.caf ***!
-  \**********************************/
+/* 13 */
+/*!***************************************!*\
+  !*** ./source/ArtSuite.Cli/Parse.caf ***!
+  \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 11);
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["isFunction", "isClass", "lowerCamelCase", "log", "merge"],
-    [global, __webpack_require__(/*! ./StandardImport */ 13)],
+    [global, __webpack_require__(/*! ./StandardImport */ 10)],
     (isFunction, isClass, lowerCamelCase, log, merge) => {
       let isNonClassFunction, Parse;
       isNonClassFunction = function(f) {
@@ -579,19 +445,19 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 17 */
-/*!*********************************!*\
-  !*** ./source/Art.Cli/Help.caf ***!
-  \*********************************/
+/* 14 */
+/*!**************************************!*\
+  !*** ./source/ArtSuite.Cli/Help.caf ***!
+  \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 11);
+let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
@@ -605,7 +471,7 @@ Caf.defMod(module, () => {
       "Error",
       "lowerCamelCase"
     ],
-    [global, __webpack_require__(/*! ./StandardImport */ 13), { colors: __webpack_require__(/*! colors */ 18) }],
+    [global, __webpack_require__(/*! ./StandardImport */ 10), { colors: __webpack_require__(/*! colors */ 15) }],
     (
       compactFlatten,
       dashCase,
@@ -632,7 +498,7 @@ Caf.defMod(module, () => {
         ) {
           let from, into, temp;
           commandName = dashCase(commandName);
-          return [
+          return this.toHelpString(
             `\n-----------------------\n${Caf.toString(
               colors.bold(
                 colors.brightWhite(`commandName: ${Caf.toString(commandName)}`)
@@ -641,30 +507,30 @@ Caf.defMod(module, () => {
             description,
             options
               ? "\noptions: " +
-                colors.green(
-                  ((from = options),
-                  (into = []),
-                  from != null
-                    ? (() => {
-                        for (let k1 in from) {
-                          let v, k;
-                          v = from[k1];
-                          k = k1;
-                          temp = !v.advanced ? into.push(k) : undefined;
-                        }
-                        return temp;
-                      })()
-                    : undefined,
-                  into)
-                    .sort()
-                    .join(", ")
-                )
+                  colors.green(
+                    ((from = options),
+                    (into = []),
+                    from != null
+                      ? (() => {
+                          for (let k1 in from) {
+                            let v, k;
+                            v = from[k1];
+                            k = k1;
+                            temp = !v.advanced ? into.push(k) : undefined;
+                          }
+                          return temp;
+                        })()
+                      : undefined,
+                    into)
+                      .sort()
+                      .join(", ")
+                  )
               : undefined,
             options
               ? "detailed help: " +
-                colors.green(`${Caf.toString(commandName)} --help`)
+                  colors.green(`${Caf.toString(commandName)} --help`)
               : undefined
-          ];
+          );
         };
         this.getOptionDetails = function(option, details) {
           let description, argument, advanced;
@@ -684,7 +550,7 @@ Caf.defMod(module, () => {
                 "expecting options details to be string, 2-length array or object"
               );
           }
-          return [
+          return this.toHelpString(
             colors.blue("option: ") +
               colors.green(
                 ` --${Caf.toString(option)} ${Caf.toString(
@@ -692,13 +558,10 @@ Caf.defMod(module, () => {
                 )}` + (advanced ? colors.grey(" (advanced)") : "")
               ),
             "  " + description + "\n"
-          ];
+          );
         };
-        this.getCommandDetails = function(
-          command,
-          { alias, description, options }
-        ) {
-          return [
+        this.getCommandDetails = (command, { alias, description, options }) =>
+          this.toHelpString(
             `\n-----------------------\n${Caf.toString(
               colors.bold(
                 colors.brightWhite(`Command: ${Caf.toString(command)}`)
@@ -706,16 +569,15 @@ Caf.defMod(module, () => {
             )} ${Caf.toString(alias && `(${Caf.toString(alias)})`)}`,
             description + "\n",
             options &&
-              Caf.each2(Object.keys(options).sort(), option =>
+              Caf.array(Object.keys(options).sort(), option =>
                 this.getOptionDetails(option, options[option])
               )
-          ];
-        };
+          );
         this.getHelp = (startFile, help, commandName) => {
           let commands, description, commandSpecificHelp;
           return this.toHelpString(
             `${Caf.toString(startFile)} help:\n\nUsage: ${Caf.toString(
-              __webpack_require__(/*! path */ 19).basename(startFile)
+              __webpack_require__(/*! path */ 16).basename(startFile)
             )} command [options]`,
             help != null
               ? (((commands = help.commands), (description = help.description)),
@@ -754,93 +616,10 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 10)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 1)(module)))
 
 /***/ }),
-/* 18 */
-/*!*************************************************************************!*\
-  !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __webpack_require__(/*! colors */ 8 /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 19 */
-/*!***********************************************************************!*\
-  !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __webpack_require__(/*! path */ 9 /* ABC - not inlining fellow NPM */);
-
-/***/ })
-/******/ ]);
-
-/***/ }),
-/* 2 */
-/*!*****************************************************************************************!*\
-  !*** external "require('coffee-script/register' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('coffee-script/register' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 3 */
-/*!***************************************************************************************!*\
-  !*** external "require('caffeine-mc/register' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('caffeine-mc/register' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 4 */
-/*!*************************************************************************************!*\
-  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 5 */
-/*!******************************************************************************************!*\
-  !*** external "require('caffeine-script-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
-  \******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 6 */
-/*!***********************************************************************************!*\
-  !*** external "require('art-standard-lib' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('art-standard-lib' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 7 */
-/*!***********************************************************************************!*\
-  !*** external "require('art-class-system' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 8 */
+/* 15 */
 /*!*************************************************************************!*\
   !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
   \*************************************************************************/
@@ -850,7 +629,7 @@ module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */)
 module.exports = require('colors' /* ABC - not inlining fellow NPM */);
 
 /***/ }),
-/* 9 */
+/* 16 */
 /*!***********************************************************************!*\
   !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
   \***********************************************************************/

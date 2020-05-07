@@ -6,7 +6,7 @@ npm:
 
   dependencies:
     art-build-configurator: :*
-    art-colors: ^1.4.0
+    art-colors: :^1.4.0
 
 webpack:
   # common properties are merged into each target's properties
