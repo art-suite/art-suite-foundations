@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/art-suite/art-cli",
   "license": "ISC",
-  "name": "art-cli",
+  "name": "@art-suite/cli",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-cli.git"
