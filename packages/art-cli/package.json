@@ -3,7 +3,7 @@
   "bugs": "https:/github.com/art-suite/art-cli/issues",
   "dependencies": {
     "art-build-configurator": "*",
-    "art-colors": "^1.4.0"
+    "colors": "^1.4.0"
   },
   "description": "Art.Cli",
   "devDependencies": {
