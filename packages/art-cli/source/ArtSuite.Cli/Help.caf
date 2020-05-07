@@ -4,7 +4,7 @@ class Help
   @toHelpString: (args...) -> compactFlatten(args).join "\n"
   @getCommandSummary: (commandName, {alias, description, options}) ->
     commandName = dashCase commandName
-    []
+    @toHelpString
       "\n-----------------------\n#{colors.bold colors.brightWhite 'commandName: #{commandName}'} #{alias && '(#{alias})'}"
       description
       if options then "\noptions: " + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
@@ -18,15 +18,15 @@ class Help
     else
       log.warn {} option, details
       throw new Error "expecting options details to be string, 2-length array or object"
-    []
+    @toHelpString
       colors.blue("option: ") + colors.green " --#{option} #{colors.yellow argument if argument}" + if advanced then colors.grey " (advanced)" else ''
       "  " + description + "\n"
 
-  @getCommandDetails: (command, {alias, description, options}) ->
-    []
+  @getCommandDetails: (command, {alias, description, options}) =>
+    @toHelpString
       "\n-----------------------\n#{colors.bold colors.brightWhite 'Command: #{command}'} #{alias && '(#{alias})'}"
       description + "\n"
-      options && each option in Object.keys(options).sort()
+      options && array option in Object.keys(options).sort()
         @getOptionDetails option, options[option]
 
   ## getHelp

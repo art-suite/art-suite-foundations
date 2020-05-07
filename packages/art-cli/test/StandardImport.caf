@@ -1,4 +1,4 @@
 &ArtStandardLib.mergeWithSelf
   &ArtClassSystem
   &ArtTestbench
-  {} &ArtCli
+  ArtCli: &source

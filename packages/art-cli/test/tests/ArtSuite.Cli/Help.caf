@@ -1,0 +1,48 @@
+import &StandardImport
+import ArtCli.Help
+
+help =
+  description: "" a description
+  commands:
+    walk:
+      alias: :wlk
+      description: "walk about"
+      options:
+        gate: :mph "" estimated mph for yer walking
+
+    run:
+      description: "run about"
+      options:
+        gate: :mph "" estimated mph for yer walking
+
+    cartewheel:
+      description: "this stuff is hard"
+      advanced: true
+
+suite:
+  basic: ->
+
+    test "getHelp" ->
+      h = getHelp :myCommand help
+      assert.match h, /walk/
+      assert.match h, /gate/
+      assert.match h, /options:/
+      assert.match h, /run/
+      assert.notMatch h, /yer walking/
+
+  detailedHelp: ->
+    test "getCommandDetails" ->
+      h = getCommandDetails :walk, help.commands.walk
+      assert.match h, /walk/
+      assert.match h, /gate/
+      assert.match h, /option:/
+      assert.match h, /yer walking/
+
+    test "getHelp specific command" ->
+      h = getHelp :myCommand help, :walk
+      log h
+      assert.match h, /walk/
+      assert.match h, /gate/
+      assert.match h, /option:/
+      assert.notMatch h, /run/
+      assert.match h, /yer walking/

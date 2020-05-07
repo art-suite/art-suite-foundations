@@ -4,5 +4,6 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  Help:  require('./Help'),
   Parse: require('./Parse')
 });
