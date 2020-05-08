@@ -25,3 +25,11 @@ import &ArtStandardLib
 
               Will Santa come this year?
               Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
+
+          "" --rudolph
+          """
+            output:
+
+              Will Santa come this year?
+              No Santa this year.
+              Rudolph's nose glows!

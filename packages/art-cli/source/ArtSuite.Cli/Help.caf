@@ -41,6 +41,7 @@ class Help
         array example, i from examples by 2
           description = examples[i+1]
           []
+            ""
             "  " + colors.brightWhite cliName + " " + example
             ""
             "    " + description.replace /\n/g, "\n    "
