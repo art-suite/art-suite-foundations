@@ -63,12 +63,11 @@ class Help extends BaseClass
         array option in Object.keys(options).sort() with @getOptionDetails option, options[option]
         .join :\n\n
 
-      colors.blue "\nexamples: " if examples?.length > 0
+      colors.blue "\nexamples:\n" if examples?.length > 0
       if examples?.length > 0
         array example, i from examples by 2
           description = examples[i+1]
           []
-            ""
             "  #{@coloredCliName} #{colors.brightWhite command} "
             + if example is Object
               array value, option from example
