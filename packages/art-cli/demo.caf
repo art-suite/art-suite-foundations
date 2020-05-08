@@ -18,3 +18,10 @@ import &ArtStandardLib
         options:
           rudolph:  "" Should Rudolph come too?
           santa:    :number-of-ho-hos "" Santa will come if he says 'Ho!' at least once.
+        examples:
+          "" --santa 10
+          """
+            output:
+
+              Will Santa come this year?
+              Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
