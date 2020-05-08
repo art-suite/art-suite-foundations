@@ -1,0 +1,27 @@
+import &StandardImport
+import ArtCli.Main
+
+suite: ->
+  test "start + go" ->
+    goRan = false
+    start
+      commands: go: -> goRan = true
+      argv: :nodeJs :startFile :go
+      output: assert.true
+
+    .then (out) ->
+      assert.true out
+
+      assert.eq
+        {} goRan
+        goRan: true
+
+  test "start + noGo" ->
+    goRan = false
+    start
+      commands: go: -> goRan = true
+      argv: :nodeJs :startFile :noGo
+
+    assert.eq
+      {} goRan
+      goRan: false
