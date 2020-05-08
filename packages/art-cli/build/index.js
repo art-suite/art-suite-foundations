@@ -210,7 +210,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.0.0\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.0.1\"}");
 
 /***/ }),
 /* 8 */
@@ -280,13 +280,17 @@ Caf.defMod(module, () => {
                     )
                   : undefined,
                 commandFunction(options, args))
-              : help != null
-              ? __webpack_require__(/*! ./Help */ 14).getHelp(
+              : __webpack_require__(/*! ./Help */ 14).getHelp(
                   startFile,
-                  help,
-                  options.help ? commandName : undefined
+                  help != null
+                    ? help
+                    : {
+                        commands: Caf.object(commands, () => {
+                          return {};
+                        })
+                      },
+                  Caf.exists(options) && options.help ? commandName : undefined
                 )
-              : __webpack_require__(/*! ./Help */ 14).getBasicHelp(commands)
           ).tap(result => result != null && output(result));
         };
       }));
@@ -535,26 +539,28 @@ Caf.defMod(module, () => {
     [
       "compactFlatten",
       "dashCase",
-      "colors",
       "present",
       "String",
       "Array",
       "Object",
       "log",
       "Error",
+      "colors",
+      "objectHasKeys",
       "lowerCamelCase"
     ],
     [global, __webpack_require__(/*! ./StandardImport */ 10), { colors: __webpack_require__(/*! colors */ 15) }],
     (
       compactFlatten,
       dashCase,
-      colors,
       present,
       String,
       Array,
       Object,
       log,
       Error,
+      colors,
+      objectHasKeys,
       lowerCamelCase
     ) => {
       let Help;
@@ -569,40 +575,14 @@ Caf.defMod(module, () => {
             .trim();
         };
         this.getCommandSummary = function(
+          cliName,
           commandName,
           { alias, description, options }
         ) {
-          let from, into, temp;
           commandName = dashCase(commandName);
           return this.toHelpString(
-            `${Caf.toString(
-              colors.bold(
-                colors.brightWhite(`Command: ${Caf.toString(commandName)}`)
-              )
-            )} ${Caf.toString(alias && `(${Caf.toString(alias)})`)}`,
-            present(description) ? `  ${Caf.toString(description)}` : undefined,
-            "",
-            options
-              ? colors.blue("  options: ") +
-                  colors.green(
-                    ((from = options),
-                    (into = []),
-                    from != null
-                      ? (() => {
-                          for (let k1 in from) {
-                            let v, k;
-                            v = from[k1];
-                            k = k1;
-                            temp = !v.advanced ? into.push(k) : undefined;
-                          }
-                          return temp;
-                        })()
-                      : undefined,
-                    into)
-                      .sort()
-                      .join(", ")
-                  )
-              : undefined
+            this.getCommandUsage(cliName, commandName, alias, options),
+            present(description) ? `  ${Caf.toString(description)}` : undefined
           );
         };
         this.getOptionDetails = function(option, details) {
@@ -629,8 +609,47 @@ Caf.defMod(module, () => {
                 argument ? colors.yellow(argument) : undefined
               )}`
             ) + (advanced ? colors.grey(" (advanced)") : ""),
-            "\n    " + description
+            "    " + description
           );
+        };
+        this.getCommandUsage = (cliName, command, alias, options) => {
+          command = dashCase(command);
+          return compactFlatten([
+            colors.green(cliName),
+            colors.bold(colors.brightWhite(command)),
+            alias ? `(${Caf.toString(alias)})` : undefined,
+            this.getOptionsList(
+              Caf.object(options, null, o => o.required),
+              true
+            ),
+            this.getOptionsList(Caf.object(options, null, o => !o.required))
+          ]).join(" ");
+        };
+        this.getOptionsList = (options, required) => {
+          let l, from, into, to, i, temp;
+          return objectHasKeys(options)
+            ? ((l = ((from = Object.keys(options).sort()),
+              (into = []),
+              from != null
+                ? ((to = from.length),
+                  (i = 0),
+                  (() => {
+                    while (i < to) {
+                      let k;
+                      k = from[i];
+                      if (!options[k].advanced) {
+                        into.push(colors.green(`--${Caf.toString(k)}`));
+                      }
+                      temp = i++;
+                    }
+                    return temp;
+                  })())
+                : undefined,
+              into)
+                .sort()
+                .join(" ")),
+              required ? l : `[${Caf.toString(l)}]`)
+            : undefined;
         };
         this.getCommandDetails = (
           command,
@@ -639,24 +658,16 @@ Caf.defMod(module, () => {
         ) => {
           let from, into, to, i1, temp;
           return this.toHelpString(
-            compactFlatten([
-              `${Caf.toString(
-                colors.bold(
-                  colors.brightWhite(
-                    `Command details: ${Caf.toString(command)}`
-                  )
-                )
-              )}`,
-              alias ? `(${Caf.toString(alias)})` : undefined,
-              options ? colors.blue("[options]") : undefined
-            ]).join(" "),
-            present(description) ? `  ${Caf.toString(description)}` : undefined,
+            `usage: ${Caf.toString(
+              this.getCommandUsage(cliName, command, alias, options)
+            )}`,
+            present(description) ? `\n${Caf.toString(description)}` : undefined,
             "",
             options ? colors.blue("options:\n") : undefined,
             options
               ? Caf.array(Object.keys(options).sort(), option =>
                   this.getOptionDetails(option, options[option])
-                ).join("\n\n\n")
+                ).join("\n\n")
               : undefined,
             (Caf.exists(examples) && examples.length) > 0
               ? colors.blue("\nexamples: ")
@@ -676,8 +687,23 @@ Caf.defMod(module, () => {
                           ((description = examples[i + 1]),
                           [
                             "",
-                            "  " + colors.brightWhite(cliName + " " + example),
-                            "",
+                            "  " +
+                              colors.brightWhite(
+                                cliName +
+                                  " " +
+                                  (Caf.is(example, Object)
+                                    ? Caf.array(
+                                        example,
+                                        (value, option) =>
+                                          colors.green(
+                                            `--${Caf.toString(option)}`
+                                          ) +
+                                          (value !== undefined && value !== true
+                                            ? colors.yellow(" " + value)
+                                            : "")
+                                      )
+                                    : example)
+                              ),
                             "    " + description.replace(/\n/g, "\n    "),
                             ""
                           ])
@@ -704,13 +730,7 @@ Caf.defMod(module, () => {
             Caf.exists(commands) && commands[lowerCamelCase(commandName)];
           return this.toHelpString(
             !commandSpecificHelp
-              ? `${Caf.toString(cliName)} help:\n\nUsage: ${Caf.toString(
-                  colors.green(cliName)
-                )} ${Caf.toString(
-                  colors.brightWhite("command")
-                )} ${Caf.toString(colors.blue("[options]"))}\n\n${Caf.toString(
-                  description
-                )}`.trim() + "\n"
+              ? this.getGeneralInfo(cliName, description)
               : undefined,
             commands
               ? ((commands = Caf.object(commands, null, null, null, (v, k) =>
@@ -723,18 +743,26 @@ Caf.defMod(module, () => {
                       cliName
                     )
                   : Caf.array(Object.keys(commands).sort(), commandName =>
-                      this.getCommandSummary(commandName, commands[commandName])
-                    ).join("\n\n") +
-                    "\n\nGet detailed help for any command with:" +
-                    colors.green(` ${Caf.toString(cliName)}`) +
-                    colors.brightWhite(" command") +
-                    colors.green(" --help"))
+                      this.getCommandSummary(
+                        cliName,
+                        commandName,
+                        commands[commandName]
+                      )
+                    ).join("\n\n"))
               : undefined
           );
         };
-        this.getBasicHelp = function(commands) {
-          return `Commands: ${Caf.toString(Object.keys(commands).join(", "))}`;
-        };
+        this.getGeneralInfo = (cliName, description) =>
+          compactFlatten([
+            `usage: ${Caf.toString(colors.green(cliName))} ${Caf.toString(
+              colors.brightWhite("command")
+            )} ${Caf.toString(colors.blue("[options]"))}` +
+              "\nhelp: " +
+              colors.green(` ${Caf.toString(cliName)}`) +
+              colors.brightWhite(" command") +
+              colors.green(" --help"),
+            description
+          ]).join("\n\n") + "\n";
       }));
     }
   );
