@@ -210,7 +210,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.0.1\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.0.2\"}");
 
 /***/ }),
 /* 8 */
@@ -537,7 +537,9 @@ let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
+      "BaseClass",
       "compactFlatten",
+      "colors",
       "dashCase",
       "present",
       "String",
@@ -545,13 +547,14 @@ Caf.defMod(module, () => {
       "Object",
       "log",
       "Error",
-      "colors",
       "objectHasKeys",
       "lowerCamelCase"
     ],
     [global, __webpack_require__(/*! ./StandardImport */ 10), { colors: __webpack_require__(/*! colors */ 15) }],
     (
+      BaseClass,
       compactFlatten,
+      colors,
       dashCase,
       present,
       String,
@@ -559,29 +562,33 @@ Caf.defMod(module, () => {
       Object,
       log,
       Error,
-      colors,
       objectHasKeys,
       lowerCamelCase
     ) => {
       let Help;
-      return (Help = Caf.defClass(class Help extends Object {}, function(
+      return (Help = Caf.defClass(class Help extends BaseClass {}, function(
         Help,
         classSuper,
         instanceSuper
       ) {
+        this.classProperty("cliName");
         this.toHelpString = function(...args) {
           return compactFlatten(args)
             .join("\n")
             .trim();
         };
+        this.classGetter({
+          coloredCliName: function() {
+            return colors.cyan(this.cliName);
+          }
+        });
         this.getCommandSummary = function(
-          cliName,
           commandName,
           { alias, description, options }
         ) {
           commandName = dashCase(commandName);
           return this.toHelpString(
-            this.getCommandUsage(cliName, commandName, alias, options),
+            this.getCommandUsage(commandName, alias, options),
             present(description) ? `  ${Caf.toString(description)}` : undefined
           );
         };
@@ -612,10 +619,10 @@ Caf.defMod(module, () => {
             "    " + description
           );
         };
-        this.getCommandUsage = (cliName, command, alias, options) => {
+        this.getCommandUsage = (command, alias, options) => {
           command = dashCase(command);
           return compactFlatten([
-            colors.green(cliName),
+            this.coloredCliName,
             colors.bold(colors.brightWhite(command)),
             alias ? `(${Caf.toString(alias)})` : undefined,
             this.getOptionsList(
@@ -653,13 +660,12 @@ Caf.defMod(module, () => {
         };
         this.getCommandDetails = (
           command,
-          { alias, description, options, examples },
-          cliName
+          { alias, description, options, examples }
         ) => {
           let from, into, to, i1, temp;
           return this.toHelpString(
             `usage: ${Caf.toString(
-              this.getCommandUsage(cliName, command, alias, options)
+              this.getCommandUsage(command, alias, options)
             )}`,
             present(description) ? `\n${Caf.toString(description)}` : undefined,
             "",
@@ -688,22 +694,22 @@ Caf.defMod(module, () => {
                           [
                             "",
                             "  " +
-                              colors.brightWhite(
-                                cliName +
-                                  " " +
-                                  (Caf.is(example, Object)
-                                    ? Caf.array(
-                                        example,
-                                        (value, option) =>
-                                          colors.green(
-                                            `--${Caf.toString(option)}`
-                                          ) +
-                                          (value !== undefined && value !== true
-                                            ? colors.yellow(" " + value)
-                                            : "")
-                                      )
-                                    : example)
-                              ),
+                              this.coloredCliName +
+                              " " +
+                              (Caf.is(example, Object)
+                                ? Caf.array(
+                                    example,
+                                    (value, option) =>
+                                      colors.brightWhite(command) +
+                                      " " +
+                                      colors.green(
+                                        `--${Caf.toString(option)}`
+                                      ) +
+                                      (value !== undefined && value !== true
+                                        ? colors.yellow(" " + value)
+                                        : "")
+                                  )
+                                : example),
                             "    " + description.replace(/\n/g, "\n    "),
                             ""
                           ])
@@ -718,47 +724,37 @@ Caf.defMod(module, () => {
           );
         };
         this.getHelp = (startFile, help, commandName) => {
-          let description, commands, cliName, commandSpecificHelp;
+          let description, commands, commandSpecificHelp;
           if (help != null) {
             description = help.description;
             commands = Caf.object(help.commands, null, null, null, (v, k) =>
               lowerCamelCase(k)
             );
           }
-          cliName = __webpack_require__(/*! path */ 16).basename(startFile);
+          this.cliName = __webpack_require__(/*! path */ 16).basename(startFile);
           commandSpecificHelp =
             Caf.exists(commands) && commands[lowerCamelCase(commandName)];
           return this.toHelpString(
-            !commandSpecificHelp
-              ? this.getGeneralInfo(cliName, description)
-              : undefined,
+            !commandSpecificHelp ? this.getGeneralInfo(description) : undefined,
             commands
               ? ((commands = Caf.object(commands, null, null, null, (v, k) =>
                   lowerCamelCase(k)
                 )),
                 commandSpecificHelp
-                  ? this.getCommandDetails(
-                      commandName,
-                      commandSpecificHelp,
-                      cliName
-                    )
+                  ? this.getCommandDetails(commandName, commandSpecificHelp)
                   : Caf.array(Object.keys(commands).sort(), commandName =>
-                      this.getCommandSummary(
-                        cliName,
-                        commandName,
-                        commands[commandName]
-                      )
+                      this.getCommandSummary(commandName, commands[commandName])
                     ).join("\n\n"))
               : undefined
           );
         };
-        this.getGeneralInfo = (cliName, description) =>
+        this.getGeneralInfo = description =>
           compactFlatten([
-            `usage: ${Caf.toString(colors.green(cliName))} ${Caf.toString(
+            `usage: ${Caf.toString(this.coloredCliName)} ${Caf.toString(
               colors.brightWhite("command")
             )} ${Caf.toString(colors.blue("[options]"))}` +
               "\nhelp: " +
-              colors.green(` ${Caf.toString(cliName)}`) +
+              this.coloredCliName +
               colors.brightWhite(" command") +
               colors.green(" --help"),
             description
