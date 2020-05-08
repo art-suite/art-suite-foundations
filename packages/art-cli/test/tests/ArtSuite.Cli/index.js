@@ -5,5 +5,6 @@
 
 .addModules({
   Help:  require('./Help'),
+  Main:  require('./Main'),
   Parse: require('./Parse')
 });

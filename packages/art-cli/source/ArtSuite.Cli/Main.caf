@@ -20,18 +20,23 @@ class Main
         args:     undefined or array of arguments not part of options
 
     options: object mapping lowerCamelCase option names to values parsed from the argv array
-  @start: ({commands, help, argv = process.argv}) =>
+  @start: ({commands, help, argv = process.argv, output = log}) =>
     [nodeJs, startFile, args...] = argv
-    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand args
 
-    if commandFunction && !options.help
-      if options.verbose
-        log {}
-          command: commandName
-          options
+    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand commands, args
 
-      Promise.then -> commandFunction options, args
-      .then (result) -> result? && log result
+    Promise.then ->
+      if commandFunction && !options.help
+        if options.verbose
+          output merge {}
+            command:  commandName
+            options:  if objectHasKeys options then options
+            args:     if args?.length > 0 then args
 
-    else
-      log &Help.getHelp startFile, help, options.help && commandName
+        commandFunction options, args
+
+      else
+        if help then  &Help.getHelp startFile, help, if options.help then commandName
+        else          &Help.getBasicHelp commands
+
+    .tap (result) -> result? && output result

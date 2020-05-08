@@ -66,21 +66,20 @@ class Help
 
         Usage: #{&path.basename startFile} command [options]
 
-      if help?
-        help extract commands, description
-        []
-          "\n#{description}\n" if description
+      help extract commands, description
+      []
+        "\n#{description}\n" if description
 
-          if commands
-            commands = object v, k from commands with-key lowerCamelCase k
-            if commandSpecificHelp = commands[lowerCamelCase commandName]
-              @getCommandDetails commandName, commandSpecificHelp
-            else
-              array commandName from Object.keys(commands).sort()
-                @getCommandSummary commandName, commands[commandName]
+        if commands
+          commands = object v, k from commands with-key lowerCamelCase k
+          if commandSpecificHelp = commands[lowerCamelCase commandName]
+            @getCommandDetails commandName, commandSpecificHelp
+          else
+            array commandName from Object.keys(commands).sort()
+              @getCommandSummary commandName, commands[commandName]
 
-      unless help?.commands
-        """
-          Commands: #{}
-            Object.keys commands
-            .join ', '
+  @getBasicHelp: (commands) ->
+      """
+        Commands: #{}
+          Object.keys commands
+          .join ', '

@@ -40,7 +40,6 @@ suite:
 
     test "getHelp specific command" ->
       h = getHelp :myCommand help, :walk
-      log h
       assert.match h, /walk/
       assert.match h, /gate/
       assert.match h, /option:/
