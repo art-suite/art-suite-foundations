@@ -2,6 +2,7 @@ import &ArtStandardLib
 
 &source.start
   commands:
+    sing: ({song}) -> "" ♫ #{song} ♫!
     send-cheer: -> "" May you have a holly, jolly Christmas this year!
     xmas: ({ santa, rudolph }) ->
       compactFlatten []
@@ -13,6 +14,12 @@ import &ArtStandardLib
   help:
     description: "" A demo app with a holiday theme.
     commands:
+      sing:
+        description: "Sing any name you choose"
+        options:
+          song:
+            description: "name of the song to sing"
+            required: true
       send-cheer: description: "" Just a little holiday cheer.
       xmas:
         description: "" This will tell you exactly what you need.

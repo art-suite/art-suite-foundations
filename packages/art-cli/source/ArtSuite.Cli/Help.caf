@@ -21,12 +21,17 @@ class Help extends BaseClass
     switch
     when details is String  then description = details
     when (details is Array) && details.length == 2  then [argument, description] = details
-    when details is Object                          then {argument, description, advanced} = details
+    when details is Object                          then {argument, description, advanced, required} = details
     else
       log.warn {} option, details
       throw new Error "expecting options details to be string, 2-length array or object"
     @toHelpString
-      colors.green("  --#{option} #{colors.yellow argument if argument}") + if advanced then colors.grey " (advanced)" else ''
+      compactFlatten []
+        colors.green "  --#{option}"
+        if argument then colors.yellow argument
+        if required then colors.brightWhite "(REQUIRED)"
+        if advanced then colors.grey "(advanced)"
+      .join ' '
       "    " + description
 
   @getCommandUsage: (command, alias, options) =>
