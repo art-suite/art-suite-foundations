@@ -210,7 +210,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"0.2.3\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"0.3.0\"}");
 
 /***/ }),
 /* 8 */
@@ -346,9 +346,17 @@ module.exports = require('art-class-system' /* ABC - not inlining fellow NPM */)
 let Caf = __webpack_require__(/*! caffeine-script-runtime */ 2);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["isFunction", "isClass", "lowerCamelCase", "log", "merge"],
+    [
+      "isFunction",
+      "isClass",
+      "lowerCamelCase",
+      "JSON",
+      "log",
+      "Error",
+      "merge"
+    ],
     [global, __webpack_require__(/*! ./StandardImport */ 10)],
-    (isFunction, isClass, lowerCamelCase, log, merge) => {
+    (isFunction, isClass, lowerCamelCase, JSON, log, Error, merge) => {
       let isNonClassFunction, Parse;
       isNonClassFunction = function(f) {
         return isFunction(f) && !isClass(f);
@@ -360,43 +368,91 @@ Caf.defMod(module, () => {
       ) {
         this.optionRegExp = /^--(.+)$/;
         this.evalJsRegExp = /^js:(.*)$/;
+        this.typedArgumentRegExp = /^([a-z]+):(.*)$/;
         this.numberRegExp = /^[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?$/i;
         this.parseArgs = args => {
           let currentOptionName, commands, currentOption, parsedOptions;
-          currentOptionName = "arg";
+          currentOptionName = "argument";
           commands = currentOption = [];
           Caf.each2(
             args,
-            (arg, i) => {
-              let option, evalMatch, error;
-              return (option = arg.match(this.optionRegExp))
+            (argument, i) => {
+              let option, typedMatch, __, type, value, error;
+              return (option = argument.match(this.optionRegExp))
                 ? (currentOption = parsedOptions[
                     (currentOptionName = lowerCamelCase(option[1]))
                   ] = [])
                 : currentOption.push(
                     (() => {
                       switch (false) {
-                        case !this.numberRegExp.test(arg):
-                          return arg / 1;
-                        case !this.evalJsRegExp.test(arg):
-                          evalMatch = arg.match(this.evalJsRegExp);
+                        case !(argument === "true"):
+                          return true;
+                        case !(argument === "false"):
+                          return false;
+                        case !this.numberRegExp.test(argument):
+                          return argument / 1;
+                        case !(typedMatch = this.typedArgumentRegExp.exec(
+                          argument
+                        )):
+                          [__, type, value] = typedMatch;
                           return (() => {
-                            try {
-                              return eval(evalMatch[1]);
-                            } catch (error1) {
-                              error = error1;
-                              return log.error({
-                                evaluationError: {
-                                  option: currentOptionName,
-                                  source: evalMatch[1],
-                                  raw: arg,
-                                  error
-                                }
-                              });
+                            switch (type) {
+                              case "string":
+                                return value;
+                              case "json":
+                                return (() => {
+                                  try {
+                                    return JSON.parse(value);
+                                  } catch (error1) {
+                                    error = error1;
+                                    log.error({
+                                      JsonParseError: {
+                                        option: currentOptionName,
+                                        type,
+                                        value,
+                                        argument,
+                                        error: error.message
+                                      }
+                                    });
+                                    return (() => {
+                                      throw error;
+                                    })();
+                                  }
+                                })();
+                              case "js":
+                                return (() => {
+                                  try {
+                                    return eval(value);
+                                  } catch (error2) {
+                                    error = error2;
+                                    log.error({
+                                      JavaScriptEvalError: {
+                                        option: currentOptionName,
+                                        type,
+                                        value,
+                                        argument,
+                                        error: error.message
+                                      }
+                                    });
+                                    return (() => {
+                                      throw error;
+                                    })();
+                                  }
+                                })();
+                              default:
+                                return (() => {
+                                  throw new Error(
+                                    `invalid data-type '${Caf.toString(
+                                      type
+                                    )}:' in: ${Caf.toString(
+                                      argument
+                                    )}\nExpecting: 'string:' or 'js:'`
+                                  );
+                                })();
                             }
                           })();
                         default:
-                          return arg;
+                          return argument;
                       }
                     })()
                   );
