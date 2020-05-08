@@ -23,20 +23,25 @@ class Help
       log.warn {} option, details
       throw new Error "expecting options details to be string, 2-length array or object"
     @toHelpString
-      colors.blue("option: ") + colors.green(" --#{option} #{colors.yellow argument if argument}") + if advanced then colors.grey " (advanced)" else ''
-      "  " + description + "\n"
+      colors.green("  --#{option} #{colors.yellow argument if argument}") + if advanced then colors.grey " (advanced)" else ''
+      "\n    " + description
 
 
   @getCommandDetails: (command, {alias, description, options, examples}, cliName) =>
     @toHelpString
-      "" #{colors.bold colors.brightWhite 'Command details: #{command}'} #{alias && '(#{alias})'}
+      compactFlatten []
+        "" #{colors.bold colors.brightWhite 'Command details: #{command}'}
+        '(#{alias})' if alias
+        colors.blue "[options]" if options
+      .join ' '
       "  #{description}" if present description
       ""
+      colors.blue "options:\n" if options
       if options
         array option in Object.keys(options).sort() with @getOptionDetails option, options[option]
-        .join :\n\n
+        .join :\n\n\n
 
-      "\nexamples: " if examples?.length > 0
+      colors.blue "\nexamples: " if examples?.length > 0
       if examples?.length > 0
         array example, i from examples by 2
           description = examples[i+1]
