@@ -210,7 +210,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"0.1.9\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-cli/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"colors\":\"^1.4.0\"},\"description\":\"Art.Cli\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-cli\",\"license\":\"ISC\",\"name\":\"@art-suite/cli\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-cli.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"0.2.0\"}");
 
 /***/ }),
 /* 8 */
@@ -528,7 +528,7 @@ Caf.defMod(module, () => {
             "",
             options
               ? "  options: " +
-                  colors.green(
+                  colors.blue(
                     ((from = options),
                     (into = []),
                     from != null
@@ -546,10 +546,6 @@ Caf.defMod(module, () => {
                       .sort()
                       .join(", ")
                   )
-              : undefined,
-            options
-              ? "  detailed help: " +
-                  colors.green(`${Caf.toString(commandName)} --help`)
               : undefined
           );
         };
@@ -572,8 +568,8 @@ Caf.defMod(module, () => {
               );
           }
           return this.toHelpString(
-            colors.blue("option: ") +
-              colors.green(
+            "option: " +
+              colors.blue(
                 ` --${Caf.toString(option)} ${Caf.toString(
                   argument ? colors.yellow(argument) : undefined
                 )}` + (advanced ? colors.grey(" (advanced)") : "")
@@ -581,8 +577,13 @@ Caf.defMod(module, () => {
             "  " + description + "\n"
           );
         };
-        this.getCommandDetails = (command, { alias, description, options }) =>
-          this.toHelpString(
+        this.getCommandDetails = (
+          command,
+          { alias, description, options, examples },
+          cliName
+        ) => {
+          let from, into, to, i1, temp;
+          return this.toHelpString(
             `${Caf.toString(
               colors.bold(
                 colors.brightWhite(`Command details: ${Caf.toString(command)}`)
@@ -594,24 +595,54 @@ Caf.defMod(module, () => {
               ? Caf.array(Object.keys(options).sort(), option =>
                   this.getOptionDetails(option, options[option])
                 ).join("\n\n")
+              : undefined,
+            (Caf.exists(examples) && examples.length) > 0
+              ? "\nexamples: "
+              : undefined,
+            (Caf.exists(examples) && examples.length) > 0
+              ? ((from = examples),
+                (into = []),
+                from != null
+                  ? ((to = from.length),
+                    (i1 = 0),
+                    (() => {
+                      while (i1 < to) {
+                        let example, i;
+                        example = from[i1];
+                        i = i1;
+                        into.push(
+                          ((description = examples[i + 1]),
+                          [
+                            "  " + colors.brightWhite(cliName + " " + example),
+                            "",
+                            "    " + description.replace(/\n/g, "\n    "),
+                            ""
+                          ])
+                        );
+                        temp = i1 += 2;
+                      }
+                      return temp;
+                    })())
+                  : undefined,
+                into)
               : undefined
           );
+        };
         this.getHelp = (startFile, help, commandName) => {
-          let description, commands, commandSpecificHelp;
+          let description, commands, cliName, commandSpecificHelp;
           if (help != null) {
             description = help.description;
             commands = Caf.object(help.commands, null, null, null, (v, k) =>
               lowerCamelCase(k)
             );
           }
+          cliName = __webpack_require__(/*! path */ 16).basename(startFile);
           commandSpecificHelp =
             Caf.exists(commands) && commands[lowerCamelCase(commandName)];
           return this.toHelpString(
             !commandSpecificHelp
-              ? `${Caf.toString(
-                  __webpack_require__(/*! path */ 16).basename(startFile)
-                )} help:\n\nUsage: ${Caf.toString(
-                  colors.green(__webpack_require__(/*! path */ 16).basename(startFile))
+              ? `${Caf.toString(cliName)} help:\n\nUsage: ${Caf.toString(
+                  colors.green(cliName)
                 )} ${Caf.toString(
                   colors.brightWhite("command")
                 )} ${Caf.toString(colors.blue("[options]"))}\n\n${Caf.toString(
@@ -623,10 +654,18 @@ Caf.defMod(module, () => {
                   lowerCamelCase(k)
                 )),
                 commandSpecificHelp
-                  ? this.getCommandDetails(commandName, commandSpecificHelp)
+                  ? this.getCommandDetails(
+                      commandName,
+                      commandSpecificHelp,
+                      cliName
+                    )
                   : Caf.array(Object.keys(commands).sort(), commandName =>
                       this.getCommandSummary(commandName, commands[commandName])
-                    ).join("\n\n"))
+                    ).join("\n\n") +
+                    "\n\nGet detailed help for any command with:" +
+                    colors.green(` ${Caf.toString(cliName)}`) +
+                    colors.brightWhite(" command") +
+                    colors.blue(" --help"))
               : undefined
           );
         };
