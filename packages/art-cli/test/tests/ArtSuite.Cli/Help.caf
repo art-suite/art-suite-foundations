@@ -44,14 +44,14 @@ suite:
       assert.match h, /walk/
       assert.notMatch h, description
       assert.match h, /gate/
-      assert.match h, /option:/
+      assert.match h, /option/
       assert.match h, /yer walking/
 
     test "getHelp specific command" ->
       h = getHelp :myCommand help, :walk
       assert.match h, /walk/
       assert.match h, /gate/
-      assert.match h, /option:/
+      assert.match h, /option/
       assert.notMatch h, /run/
       assert.match h, /yer walking/
 
