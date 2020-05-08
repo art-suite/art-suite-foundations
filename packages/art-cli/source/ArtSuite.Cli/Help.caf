@@ -1,15 +1,20 @@
 import &StandardImport, {} &colors
 
-class Help
+class Help extends BaseClass
+  @classProperty :cliName
+
   @toHelpString: (args...) ->
     compactFlatten args
     .join "\n"
     .trim()
 
-  @getCommandSummary: (cliName, commandName, {alias, description, options}) ->
+  @classGetter
+    coloredCliName: -> colors.cyan @cliName
+
+  @getCommandSummary: (commandName, {alias, description, options}) ->
     commandName = dashCase commandName
     @toHelpString
-      @getCommandUsage cliName, commandName, alias, options
+      @getCommandUsage commandName, alias, options
       "  #{description}" if present description
 
   @getOptionDetails: (option, details) ->
@@ -24,10 +29,10 @@ class Help
       colors.green("  --#{option} #{colors.yellow argument if argument}") + if advanced then colors.grey " (advanced)" else ''
       "    " + description
 
-  @getCommandUsage: (cliName, command, alias, options) =>
+  @getCommandUsage: (command, alias, options) =>
     command = dashCase command
     compactFlatten []
-      colors.green cliName
+      @coloredCliName
       colors.bold colors.brightWhite command
       if alias then "" (#{alias})
       @getOptionsList (object o from options when o.required), true
@@ -43,9 +48,9 @@ class Help
         .join ' '
       if required then l else "[#{l}]"
 
-  @getCommandDetails: (command, {alias, description, options, examples}, cliName) =>
+  @getCommandDetails: (command, {alias, description, options, examples}) =>
     @toHelpString
-      "" usage: #{@getCommandUsage cliName, command, alias, options}
+      "" usage: #{@getCommandUsage command, alias, options}
       "\n#{description}" if present description
       ""
       colors.blue "options:\n" if options
@@ -59,10 +64,12 @@ class Help
           description = examples[i+1]
           []
             ""
-            "  " + colors.brightWhite cliName + " " +
+            "  " + @coloredCliName + " " +
               if example is Object
                 array value, option from example
-                  colors.green "--#{option}"
+                  colors.brightWhite command
+                  + " "
+                  + colors.green "--#{option}"
                   + if value != undefined && value != true
                     colors.yellow " " + value
                   else ''
@@ -105,27 +112,27 @@ class Help
       help extract description
       commands = object v, k from help.commands with-key lowerCamelCase k
 
-    cliName = &path.basename startFile
+    @cliName = &path.basename startFile
     commandSpecificHelp = commands?[lowerCamelCase commandName]
 
     @toHelpString
-      @getGeneralInfo cliName, description unless commandSpecificHelp
+      @getGeneralInfo description unless commandSpecificHelp
 
       if commands
         commands = object v, k from commands with-key lowerCamelCase k
         if commandSpecificHelp
-          @getCommandDetails commandName, commandSpecificHelp, cliName
+          @getCommandDetails commandName, commandSpecificHelp
         else
           array commandName from Object.keys(commands).sort()
-            @getCommandSummary cliName, commandName, commands[commandName]
+            @getCommandSummary commandName, commands[commandName]
           .join "\n\n"
 
 
-  @getGeneralInfo: (cliName, description) =>
+  @getGeneralInfo: (description) =>
     compactFlatten []
-      "" usage: #{colors.green cliName} #{colors.brightWhite :command} #{colors.blue "[options]"}
+      "" usage: #{@coloredCliName} #{colors.brightWhite :command} #{colors.blue "[options]"}
       + "" \nhelp:\_
-      + colors.green  " #{cliName}"
+      + @coloredCliName
       + colors.brightWhite " command"
       + colors.green " --help"
       description
