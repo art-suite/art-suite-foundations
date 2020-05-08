@@ -9,7 +9,7 @@ class Help extends BaseClass
     .trim()
 
   @classGetter
-    coloredCliName: -> colors.cyan @cliName
+    coloredCliName: -> colors.bold colors.blue @cliName
 
   @getCommandSummary: (commandName, {alias, description, options}) ->
     commandName = dashCase commandName
@@ -45,7 +45,7 @@ class Help extends BaseClass
       l =
         array k from-array Object.keys(options).sort() with colors.green "--#{k}" when !options[k].advanced
         .sort()
-        .join ' '
+        .join if required then ' ' else ', '
       if required then l else "[#{l}]"
 
   @getCommandDetails: (command, {alias, description, options, examples}) =>
@@ -64,16 +64,15 @@ class Help extends BaseClass
           description = examples[i+1]
           []
             ""
-            "  " + @coloredCliName + " " +
-              if example is Object
-                array value, option from example
-                  colors.brightWhite command
-                  + " "
-                  + colors.green "--#{option}"
-                  + if value != undefined && value != true
-                    colors.yellow " " + value
-                  else ''
-              else example
+            "  #{@coloredCliName} #{colors.brightWhite command} "
+            + if example is Object
+              array value, option from example
+                colors.green "--#{option}"
+                + if value != undefined && value != true
+                  colors.yellow " " + value
+                else ''
+              .join ' '
+            else example
             "    " + description.replace /\n/g, "\n    "
             ""
 

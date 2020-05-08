@@ -34,3 +34,11 @@ import &ArtStandardLib
               Will Santa come this year?
               No Santa this year.
               Rudolph's nose glows!
+
+          rudolph: true santa: 10
+          """
+            output:
+
+              Will Santa come this year?
+              Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
+              Rudolph's nose glows!
