@@ -12,7 +12,7 @@ class Help
       "" #{colors.bold colors.brightWhite 'Command: #{commandName}'} #{alias && '(#{alias})'}
       "  #{description}" if present description
       ""
-      if options then "  options: " + colors.blue (array v, k from-object options with k when !v.advanced).sort().join ', '
+      if options then colors.blue("  options: ") + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
 
   @getOptionDetails: (option, details) ->
     switch
@@ -23,7 +23,7 @@ class Help
       log.warn {} option, details
       throw new Error "expecting options details to be string, 2-length array or object"
     @toHelpString
-      "option: " + colors.blue " --#{option} #{colors.yellow argument if argument}" + if advanced then colors.grey " (advanced)" else ''
+      colors.blue("option: ") + colors.green(" --#{option} #{colors.yellow argument if argument}") + if advanced then colors.grey " (advanced)" else ''
       "  " + description + "\n"
 
 
@@ -106,7 +106,7 @@ class Help
           + "" \n\nGet detailed help for any command with:
           + colors.green  " #{cliName}"
           + colors.brightWhite " command"
-          + colors.blue " --help"
+          + colors.green " --help"
 
 
   @getBasicHelp: (commands) ->

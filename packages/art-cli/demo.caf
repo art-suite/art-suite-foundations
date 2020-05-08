@@ -6,7 +6,7 @@ import &ArtStandardLib
     xmas: ({ santa, rudolph }) ->
       compactFlatten []
         "" Will Santa come this year?
-        if santa > 0 then repeat("Ho! ", santa) else ' Santa will come!': 'No Santa this year.'
+        if santa > 0 then repeat("Ho! ", santa) else 'No Santa this year.'
         if rudolph then "Rudolph's nose glows!"
       .join :\n
 
