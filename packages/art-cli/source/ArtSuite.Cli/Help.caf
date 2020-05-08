@@ -1,14 +1,19 @@
 import &StandardImport, {} &colors
 
 class Help
-  @toHelpString: (args...) -> compactFlatten(log args).join "\n"
+  @toHelpString: (args...) ->
+    compactFlatten args
+    .join "\n"
+    .trim()
+
   @getCommandSummary: (commandName, {alias, description, options}) ->
     commandName = dashCase commandName
     @toHelpString
-      "\n-----------------------\n#{colors.bold colors.brightWhite 'Command: #{commandName}'} #{alias && '(#{alias})'}"
-      description
-      if options then "\noptions: " + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
-      if options then "detailed help: " + colors.green "#{commandName} --help"
+      "" #{colors.bold colors.brightWhite 'Command: #{commandName}'} #{alias && '(#{alias})'}
+      "  #{description}" if present description
+      ""
+      if options then "  options: " + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
+      if options then "  detailed help: " + colors.green "#{commandName} --help"
 
   @getOptionDetails: (option, details) ->
     switch
@@ -24,10 +29,12 @@ class Help
 
   @getCommandDetails: (command, {alias, description, options}) =>
     @toHelpString
-      "\n-----------------------\n#{colors.bold colors.brightWhite 'Command details: #{command}'} #{alias && '(#{alias})'}"
-      description + "\n"
-      options && array option in Object.keys(options).sort()
-        @getOptionDetails option, options[option]
+      "" #{colors.bold colors.brightWhite 'Command details: #{command}'} #{alias && '(#{alias})'}
+      "  #{description}" if present description
+      ""
+      if options
+        array option in Object.keys(options).sort() with @getOptionDetails option, options[option]
+        .join :\n\n
 
   ## getHelp
     IN:
@@ -60,7 +67,11 @@ class Help
           Also gets note as "advanced" in help when listed.
 
   @getHelp: (startFile, help, commandName) =>
-    commandSpecificHelp = (help extract? description, commands)?[lowerCamelCase commandName]
+    if help?
+      help extract description
+      commands = object v, k from help.commands with-key lowerCamelCase k
+
+    commandSpecificHelp = commands?[lowerCamelCase commandName]
 
     @toHelpString
       unless commandSpecificHelp
@@ -70,6 +81,8 @@ class Help
           Usage: #{&path.basename startFile} command [options]
 
           #{description}
+        .trim()
+        + :\n
 
       if commands
         commands = object v, k from commands with-key lowerCamelCase k
@@ -78,6 +91,7 @@ class Help
         else
           array commandName from Object.keys(commands).sort()
             @getCommandSummary commandName, commands[commandName]
+          .join "\n\n"
 
   @getBasicHelp: (commands) ->
     """

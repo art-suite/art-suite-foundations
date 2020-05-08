@@ -88,6 +88,14 @@ suite:
           commandFunction: commandFunctions.foo
           commandName: :foo
 
+      test 'foo-bar is a command' ->
+        assert.eq
+          selectCommand
+            commandFunctions = foo-bar: ->
+            [] :foo-bar
+          commandFunction: commandFunctions[:foo-bar]
+          commandName: :foo-bar
+
       test 'foo is not a command' ->
         assert.eq
           selectCommand

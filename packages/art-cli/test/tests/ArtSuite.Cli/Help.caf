@@ -66,3 +66,32 @@ suite:
         h.match ///g #{description}
         .length
         1
+
+    test "multi-word commands" ->
+      assert.match
+        getHelp
+          :myCli
+          commands: list-buckets: details = description: "" Just give me some fun.
+          :list-buckets
+        /details/i
+
+      assert.match
+        getHelp
+          :myCli
+          commands: list-buckets: details
+          :listBuckets
+        /details/i
+
+      assert.match
+        getHelp
+          :myCli
+          commands: listBuckets: details
+          :list-buckets
+        /details/i
+
+      assert.match
+        getHelp
+          :myCli
+          commands: listBuckets: details
+          :listBuckets
+        /details/i

@@ -57,7 +57,9 @@ class Parse
   @selectCommand: (commands, commandNames) ->
     [commandName, args...] = commandNames
 
-    unless isNonClassFunction commandFunction = commands[commandName = lowerCamelCase commandName]
+    commands = object v, k from commands with-key lowerCamelCase k
+
+    unless isNonClassFunction commandFunction = commands[lowerCamelCase commandName]
       unless isNonClassFunction commandFunction = commands[commandName = commands.default]
         commandFunction = undefined
         commandName = undefined
