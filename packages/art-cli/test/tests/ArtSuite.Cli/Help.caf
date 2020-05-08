@@ -1,8 +1,8 @@
 import &StandardImport
 import ArtCli.Help
 
-help =
-  description: "" a description
+help = {}
+  description = "" abc-description
   commands:
     walk:
       alias: :wlk
@@ -45,3 +45,11 @@ suite:
       assert.match h, /option:/
       assert.notMatch h, /run/
       assert.match h, /yer walking/
+
+  dontLetThisHappenAgain: ->
+    test "getHelp only returns on copy of the description" ->
+      h = getHelp :myCommand help
+      assert.eq
+        h.match ///g #{description}
+        .length
+        1
