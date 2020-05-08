@@ -78,7 +78,7 @@ class Help
         """
           #{&path.basename startFile} help:
 
-          Usage: #{&path.basename startFile} command [options]
+          Usage: #{colors.green &path.basename startFile} #{colors.brightWhite :command} #{colors.blue "[options]"}
 
           #{description}
         .trim()
