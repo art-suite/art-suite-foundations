@@ -1,0 +1,18 @@
+import &ArtStandardLib
+
+&source.start
+  commands:
+    xmas: ({ santa, rudolph }) ->
+      compactFlatten []
+        "" Will Santa come this year?
+        if santa > 0 then repeat("Ho! ", santa) else ' Santa will come!': 'No Santa this year.'
+        if rudolph then "Rudolph's nose glows!"
+      .join :\n
+
+  help:
+    commands:
+      xmas:
+        description: "" This will tell you exactly what you need.
+        options:
+          rudolph:  "" Should Rudolph come too?
+          santa:    :number-of-ho-hos "" Santa will come if he says 'Ho!' at least once.

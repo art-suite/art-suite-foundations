@@ -36,7 +36,7 @@ class Main
         commandFunction options, args
 
       else
-        if help then  &Help.getHelp startFile, help, if options.help then commandName
+        if help? then &Help.getHelp startFile, help, (if options.help then commandName)
         else          &Help.getBasicHelp commands
 
     .tap (result) -> result? && output result

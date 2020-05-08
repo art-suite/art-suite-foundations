@@ -15,6 +15,9 @@ help = {}
       options:
         gate: :mph "" estimated mph for yer walking
 
+    info:
+      description: "show info"
+
     cartewheel:
       description: "this stuff is hard"
       advanced: true
@@ -30,10 +33,16 @@ suite:
       assert.match h, /run/
       assert.notMatch h, /yer walking/
 
+  getBasicHelp: ->
+    test "getBasicHelp" ->
+      h = getBasicHelp info: -> "some info"
+      assert.eq h, "" Commands: info
+
   detailedHelp: ->
     test "getCommandDetails" ->
       h = getCommandDetails :walk, help.commands.walk
       assert.match h, /walk/
+      assert.notMatch h, description
       assert.match h, /gate/
       assert.match h, /option:/
       assert.match h, /yer walking/
@@ -46,7 +55,11 @@ suite:
       assert.notMatch h, /run/
       assert.match h, /yer walking/
 
-  dontLetThisHappenAgain: ->
+  regressions: ->
+    test "getHelp on a command with no options should still show details" ->
+      h = getHelp :myCommand help, :info
+      assert.match h, /details/
+
     test "getHelp only returns on copy of the description" ->
       h = getHelp :myCommand help
       assert.eq

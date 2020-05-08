@@ -280,15 +280,13 @@ Caf.defMod(module, () => {
                     )
                   : undefined,
                 commandFunction(options, args))
-              : help
+              : help != null
               ? __webpack_require__(/*! ./Help */ 14).getHelp(
                   startFile,
                   help,
-                  options.help
-                    ? commandName
-                    : __webpack_require__(/*! ./Help */ 14).getBasicHelp(commands)
+                  options.help ? commandName : undefined
                 )
-              : undefined
+              : __webpack_require__(/*! ./Help */ 14).getBasicHelp(commands)
           ).tap(result => result != null && output(result));
         };
       }));
@@ -517,7 +515,7 @@ Caf.defMod(module, () => {
           return this.toHelpString(
             `\n-----------------------\n${Caf.toString(
               colors.bold(
-                colors.brightWhite(`commandName: ${Caf.toString(commandName)}`)
+                colors.brightWhite(`Command: ${Caf.toString(commandName)}`)
               )
             )} ${Caf.toString(alias && `(${Caf.toString(alias)})`)}`,
             description,
@@ -580,7 +578,7 @@ Caf.defMod(module, () => {
           this.toHelpString(
             `\n-----------------------\n${Caf.toString(
               colors.bold(
-                colors.brightWhite(`Command: ${Caf.toString(command)}`)
+                colors.brightWhite(`Command details: ${Caf.toString(command)}`)
               )
             )} ${Caf.toString(alias && `(${Caf.toString(alias)})`)}`,
             description + "\n",
@@ -598,25 +596,23 @@ Caf.defMod(module, () => {
                 : undefined)
             ) && base[lowerCamelCase(commandName)];
           return this.toHelpString(
-            `${Caf.toString(startFile)} help:\n\nUsage: ${Caf.toString(
-              __webpack_require__(/*! path */ 16).basename(startFile)
-            )} command [options]`,
-            [
-              description ? `\n${Caf.toString(description)}\n` : undefined,
-              commands
-                ? ((commands = Caf.object(commands, null, null, null, (v, k) =>
-                    lowerCamelCase(k)
-                  )),
-                  commandSpecificHelp
-                    ? this.getCommandDetails(commandName, commandSpecificHelp)
-                    : Caf.array(Object.keys(commands).sort(), commandName =>
-                        this.getCommandSummary(
-                          commandName,
-                          commands[commandName]
-                        )
-                      ))
-                : undefined
-            ]
+            !commandSpecificHelp
+              ? `${Caf.toString(
+                  __webpack_require__(/*! path */ 16).basename(startFile)
+                )} help:\n\nUsage: ${Caf.toString(
+                  __webpack_require__(/*! path */ 16).basename(startFile)
+                )} command [options]\n\n${Caf.toString(description)}`
+              : undefined,
+            commands
+              ? ((commands = Caf.object(commands, null, null, null, (v, k) =>
+                  lowerCamelCase(k)
+                )),
+                commandSpecificHelp
+                  ? this.getCommandDetails(commandName, commandSpecificHelp)
+                  : Caf.array(Object.keys(commands).sort(), commandName =>
+                      this.getCommandSummary(commandName, commands[commandName])
+                    ))
+              : undefined
           );
         };
         this.getBasicHelp = function(commands) {

@@ -1,11 +1,11 @@
 import &StandardImport, {} &colors
 
 class Help
-  @toHelpString: (args...) -> compactFlatten(args).join "\n"
+  @toHelpString: (args...) -> compactFlatten(log args).join "\n"
   @getCommandSummary: (commandName, {alias, description, options}) ->
     commandName = dashCase commandName
     @toHelpString
-      "\n-----------------------\n#{colors.bold colors.brightWhite 'commandName: #{commandName}'} #{alias && '(#{alias})'}"
+      "\n-----------------------\n#{colors.bold colors.brightWhite 'Command: #{commandName}'} #{alias && '(#{alias})'}"
       description
       if options then "\noptions: " + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
       if options then "detailed help: " + colors.green "#{commandName} --help"
@@ -24,7 +24,7 @@ class Help
 
   @getCommandDetails: (command, {alias, description, options}) =>
     @toHelpString
-      "\n-----------------------\n#{colors.bold colors.brightWhite 'Command: #{command}'} #{alias && '(#{alias})'}"
+      "\n-----------------------\n#{colors.bold colors.brightWhite 'Command details: #{command}'} #{alias && '(#{alias})'}"
       description + "\n"
       options && array option in Object.keys(options).sort()
         @getOptionDetails option, options[option]
@@ -63,24 +63,24 @@ class Help
     commandSpecificHelp = (help extract? description, commands)?[lowerCamelCase commandName]
 
     @toHelpString
-      """
-        #{startFile} help:
+      unless commandSpecificHelp
+        """
+          #{&path.basename startFile} help:
 
-        Usage: #{&path.basename startFile} command [options]
+          Usage: #{&path.basename startFile} command [options]
 
-      []
-        "\n#{description}\n" if description
+          #{description}
 
-        if commands
-          commands = object v, k from commands with-key lowerCamelCase k
-          if commandSpecificHelp
-            @getCommandDetails commandName, commandSpecificHelp
-          else
-            array commandName from Object.keys(commands).sort()
-              @getCommandSummary commandName, commands[commandName]
+      if commands
+        commands = object v, k from commands with-key lowerCamelCase k
+        if commandSpecificHelp
+          @getCommandDetails commandName, commandSpecificHelp
+        else
+          array commandName from Object.keys(commands).sort()
+            @getCommandSummary commandName, commands[commandName]
 
   @getBasicHelp: (commands) ->
-      """
-        Commands: #{}
-          Object.keys commands
-          .join ', '
+    """
+      Commands: #{}
+        Object.keys commands
+        .join ', '
