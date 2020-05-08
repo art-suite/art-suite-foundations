@@ -38,7 +38,7 @@ class Help
   @getOptionsList: (options, required) =>
     if objectHasKeys options
       l =
-        array v, k from-object options with colors.green "--#{k}" when !v.advanced
+        array k from-array Object.keys(options).sort() with colors.green "--#{k}" when !options[k].advanced
         .sort()
         .join ' '
       if required then l else "[#{l}]"
