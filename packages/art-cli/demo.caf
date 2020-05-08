@@ -11,6 +11,7 @@ import &ArtStandardLib
       .join :\n
 
   help:
+    description: "" A demo app with a holiday theme.
     commands:
       send-cheer: description: "" Just a little holiday cheer.
       xmas:
@@ -19,14 +20,14 @@ import &ArtStandardLib
           rudolph:  "" Should Rudolph come too?
           santa:    :number-of-ho-hos "" Santa will come if he says 'Ho!' at least once.
         examples:
-          "" --santa 10
+          santa: 10
           """
             output:
 
               Will Santa come this year?
               Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
 
-          "" --rudolph
+          rudolph: true
           """
             output:
 

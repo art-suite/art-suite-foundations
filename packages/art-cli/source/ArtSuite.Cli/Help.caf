@@ -6,13 +6,11 @@ class Help
     .join "\n"
     .trim()
 
-  @getCommandSummary: (commandName, {alias, description, options}) ->
+  @getCommandSummary: (cliName, commandName, {alias, description, options}) ->
     commandName = dashCase commandName
     @toHelpString
-      "" #{colors.bold colors.brightWhite 'Command: #{commandName}'} #{alias && '(#{alias})'}
+      @getCommandUsage cliName, commandName, alias, options
       "  #{description}" if present description
-      ""
-      if options then colors.blue("  options: ") + colors.green (array v, k from-object options with k when !v.advanced).sort().join ', '
 
   @getOptionDetails: (option, details) ->
     switch
@@ -24,22 +22,36 @@ class Help
       throw new Error "expecting options details to be string, 2-length array or object"
     @toHelpString
       colors.green("  --#{option} #{colors.yellow argument if argument}") + if advanced then colors.grey " (advanced)" else ''
-      "\n    " + description
+      "    " + description
 
+  @getCommandUsage: (cliName, command, alias, options) =>
+    command = dashCase command
+    compactFlatten []
+      colors.green cliName
+      colors.bold colors.brightWhite command
+      if alias then "" (#{alias})
+      @getOptionsList (object o from options when o.required), true
+      @getOptionsList object o from options when !o.required
+    .join ' '
+
+
+  @getOptionsList: (options, required) =>
+    if objectHasKeys options
+      l =
+        array v, k from-object options with colors.green "--#{k}" when !v.advanced
+        .sort()
+        .join ' '
+      if required then l else "[#{l}]"
 
   @getCommandDetails: (command, {alias, description, options, examples}, cliName) =>
     @toHelpString
-      compactFlatten []
-        "" #{colors.bold colors.brightWhite 'Command details: #{command}'}
-        '(#{alias})' if alias
-        colors.blue "[options]" if options
-      .join ' '
-      "  #{description}" if present description
+      "" usage: #{@getCommandUsage cliName, command, alias, options}
+      "\n#{description}" if present description
       ""
       colors.blue "options:\n" if options
       if options
         array option in Object.keys(options).sort() with @getOptionDetails option, options[option]
-        .join :\n\n\n
+        .join :\n\n
 
       colors.blue "\nexamples: " if examples?.length > 0
       if examples?.length > 0
@@ -47,8 +59,14 @@ class Help
           description = examples[i+1]
           []
             ""
-            "  " + colors.brightWhite cliName + " " + example
-            ""
+            "  " + colors.brightWhite cliName + " " +
+              if example is Object
+                array value, option from example
+                  colors.green "--#{option}"
+                  + if value != undefined && value != true
+                    colors.yellow " " + value
+                  else ''
+              else example
             "    " + description.replace /\n/g, "\n    "
             ""
 
@@ -91,15 +109,7 @@ class Help
     commandSpecificHelp = commands?[lowerCamelCase commandName]
 
     @toHelpString
-      unless commandSpecificHelp
-        """
-          #{cliName} help:
-
-          Usage: #{colors.green cliName} #{colors.brightWhite :command} #{colors.blue "[options]"}
-
-          #{description}
-        .trim()
-        + :\n
+      @getGeneralInfo cliName, description unless commandSpecificHelp
 
       if commands
         commands = object v, k from commands with-key lowerCamelCase k
@@ -107,16 +117,17 @@ class Help
           @getCommandDetails commandName, commandSpecificHelp, cliName
         else
           array commandName from Object.keys(commands).sort()
-            @getCommandSummary commandName, commands[commandName]
+            @getCommandSummary cliName, commandName, commands[commandName]
           .join "\n\n"
-          + "" \n\nGet detailed help for any command with:
-          + colors.green  " #{cliName}"
-          + colors.brightWhite " command"
-          + colors.green " --help"
 
 
-  @getBasicHelp: (commands) ->
-    """
-      Commands: #{}
-        Object.keys commands
-        .join ', '
+  @getGeneralInfo: (cliName, description) =>
+    compactFlatten []
+      "" usage: #{colors.green cliName} #{colors.brightWhite :command} #{colors.blue "[options]"}
+      + "" \nhelp:\_
+      + colors.green  " #{cliName}"
+      + colors.brightWhite " command"
+      + colors.green " --help"
+      description
+    .join "\n\n"
+    + :\n
