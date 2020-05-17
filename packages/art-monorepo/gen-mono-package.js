@@ -47,6 +47,7 @@ glob("!(node_modules)/*/**/package.json").then((result) => {
   result.forEach(file => {
     const [package, __] = file.split(/\/package.json$/);
     const { name, dependencies, devDependencies } = readJson(file);
+    console.log(`package: ${package}`);
     eachFromObject(dependencies, (v, k) => addDep("dependencies", k, v, package));
     eachFromObject(devDependencies, (v, k) => addDep("dependencies", k, v, package));
     addDep("dependencies", name, `file:${package}`);
