@@ -82,7 +82,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 66);
+/******/ 	return __webpack_require__(__webpack_require__.s = 67);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -119,7 +119,7 @@ module.exports = ArrayCompactFlatten = (function() {
   function ArrayCompactFlatten() {}
 
   ArrayCompactFlatten.isArrayOrArguments = isArrayOrArguments = function(o) {
-    return isArray(o) || (typeof (o != null ? o.length : void 0) === "number" && o.toString() === '[object Arguments]' ? (console.warn("DEPRICATED compactFlatten* no longer supports Arguments objects"), true) : false);
+    return isArray(o) || (typeof (o != null ? o.length : void 0) === "number" && o.toString() === '[object Arguments]' ? (console.error("DEPRICATED compactFlatten* no longer supports Arguments objects"), true) : false);
   };
 
   ArrayCompactFlatten.needsFlatteningOrCompacting = function(array, keepTester) {
@@ -157,7 +157,7 @@ module.exports = ArrayCompactFlatten = (function() {
     array: array or arguments-object
     keepTester: (value) -> true/false
       OUT: return true if that element should be in the output
-
+  
   OUT: array where all elements test true to keepTester
   NOTE: NOT recursive - just does a shallow pass
    */
@@ -221,7 +221,7 @@ module.exports = ArrayCompactFlatten = (function() {
     array: array or arguments-object
     keepTester: (value) -> true/false
       OUT: return true if that element should be in the output
-
+  
   OUT: array where all elements test true to keepTester
   NOTE: RECURSIVE: recurses into all arry or arguments-objects and adds their contents
     to the top level (flatten)
@@ -282,7 +282,7 @@ module.exports = ArrayCompactFlatten = (function() {
 
   /*
   IN: array: any object that has a length
-
+  
   EFFECT:
     itterates over array and recurse over any element which isArrayOrArguments
     invokes f on every element that is not isArrayOrArguments
@@ -504,36 +504,36 @@ module.exports = Types = (function() {
   NAME: isClass
   IN: obj:anything
   OUT: boolean
-
+  
   Classes are Functions in JavaScript, and there is no built-in way to tell
   the differences even though, as-of ES6, there actually is a difference.
-
+  
   WARNING #1: This function cannot reliably detect a class which doesn't extend another.
-
+  
   TRUE-POSITIVES:
     100% true if obj is an extended class
     probably-true if obj is a function AND
       obj has enumerable properties or
       obj's prototype has enumerable properties
-
+  
   FALSE-POSITIVES:
     If you passed in a function with one or more manually set, enumerable properties.
-
+  
   FALSE-NEGATIVES:
     If you passed in a 'class' with no enumerable prototype properties and no enumerable
     static/class properties.
-
+  
   WARNING #2:
     Static/class methods declared with ES6 class syntax ARE NOT ENUMERABLE (face-palm).
     Therefor, in this case, FALSE-NEGATIVES are possible even if you have class methods.
-
+  
     It's just too costly to check for non-enumerable methods.
-
+  
   RECOMENDAION:
     To make your classes reliabily detectable: ALWAYS extend something.
     If you aren't extending anything else, extend Object.
     This is what CaffeineScript does.
-
+  
   WHY hasOwnProperties for obj and hasProperties for obj.prototype???
     hasProperties is faster
     hasOwnProperties because _functionsPrototype actuall has getName added to it
@@ -605,55 +605,55 @@ module.exports = Types = (function() {
   NOTE:
     getSuper doesn't work in CoffeeScript classes objects, but it does on ES6 classes.
     getSuper does work on CoffeeScript class instance objects.
-
+  
   All about getSuper in ES6 land:
-
+  
     class A {}
     class B extends A {}
     class C extends B {}
-
+  
     a = new A
     b = new B
     c = new C
-
+  
     getSuper(B) == A
     getSuper(C) == B
-
+  
     getSuper(A.prototype) == Object.prototype
     getSuper(B.prototype) == A.prototype
     getSuper(C.prototype) == B.prototype
-
+  
     getSuper(b) == A.prototype
     getSuper(c) == B.prototype
-
+  
   prototype map:
-
+  
   KEY:
     <->
        <-- .constructor
        --> .prototype
     ^  Object.getPrototypeOf
-
+  
   MAP:
     A <-> aPrototype
-
+  
     ^     ^     ^
     |     |     a
     |     |
-
+  
     B <-> bPrototype
-
+  
     ^     ^     ^
     |     |     b
     |     |
-
+  
     C <-> cPrototype
-
+  
                 ^
                 c
-
+  
   Definition of super:
-
+  
     if instance then prototype's prototype
     else prototype
    */
@@ -862,12 +862,12 @@ module.exports = Merge = (function() {
 
 
   /*
-
+  
   merge "flattens" its args and then adds all keys from all objects in
   the list into a new object which is returned.
-
+  
   return: new object
-
+  
   The first object's keys are added first. If two or more objects have the same
   keys, the value set in the result is the last object's in the list with that key.
    */
@@ -893,9 +893,9 @@ module.exports = Merge = (function() {
 
   /*
   The same as 'merge' with one difference:
-
+  
   Instead of a new object, all objects are merged into the first object in the list.
-
+  
   return: first object in the flattened list
   return: null if no source objects
    */
@@ -952,12 +952,12 @@ module.exports = Merge = (function() {
   /*
   Just like mergeInfo except only merge into the result object
   UNLESS 'result' already has that property with a non-undefined value.
-
+  
   if
     mergeInfo a, b is just like merge a, b except it modifies and returns a instead of returning a new object
   then
     mergeIntoUnless b, a is just like merge a, b except it modifies and returns b instead of returning a new object
-
+  
   Note: mergeIntoUnless a, b, c, d, e, f is like merge f, e, d, c, b, a
    */
 
@@ -1062,9 +1062,9 @@ module.exports = Merge = (function() {
     Second, it gathers up and merges all plain-objects in its args list
     Last, all remaining items get added to the "children" list
   The question is, what does it return? Options:
-
+  
     OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-
+  
   Options if both objects and non-object values are present:
     a. return compactFlatten [plainObject, nonObjectValues]
     b. return merge plainObject, children: nonObjectValues
@@ -1121,7 +1121,7 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.63.0\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/imikimi/art-standard-lib/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"pluralize\":\"*\"},\"description\":\"The Standard Library for JavaScript that aught to be.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/imikimi/art-standard-lib\",\"license\":\"ISC\",\"name\":\"art-standard-lib\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/imikimi/art-standard-lib.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.65.2\"}");
 
 /***/ }),
 
@@ -1161,7 +1161,7 @@ __webpack_require__(/*! ./Inspected/namespace */ 7);
 
 /***/ }),
 
-/***/ 66:
+/***/ 67:
 /*!*********************!*\
   !*** ./Core.coffee ***!
   \*********************/

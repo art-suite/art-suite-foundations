@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./StandardLib'))
 .addModules({
+  Ansi:               require('./Ansi'),
   ArrayExtensions:    require('./ArrayExtensions'),
   AsyncExtensions:    require('./AsyncExtensions'),
   CallStack:          require('./CallStack'),

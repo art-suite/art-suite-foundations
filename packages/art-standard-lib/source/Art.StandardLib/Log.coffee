@@ -5,6 +5,7 @@ Inspect = require './Inspect/namespace'
 {merge} = require './Core'
 {deepResolve, containsPromises} = require './Promise'
 {isNode, getEnv} = require './Environment'
+{stripAnsi} = require './Ansi'
 
 {disableLog} = getEnv()
 
@@ -85,11 +86,14 @@ module.exports = class Log
       @_logNow m, stack, options
 
   @_logNow: (m, stack, options) =>
-    {className} = options
+    {className, color} = options
     logger = getLogger options
     if isNode
       logger if isString m
-        m
+        if color
+          m
+        else
+          stripAnsi m
       else
         Inspect.formattedInspect m, merge maxLineLength: process.stdout.columns, options
     else
@@ -98,7 +102,7 @@ module.exports = class Log
   standardOptions = if isNode
     try
       eval("require") "colors"
-    color: true
+    color: process.stdout.isTTY
   else {}
   # always returned the last argument passed in. That way you can:
   #     bar = foo # log foo's value in the middle of an expression, along with other values, without altering the rest of the expression

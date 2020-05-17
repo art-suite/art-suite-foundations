@@ -20,6 +20,7 @@ module.exports = [
   require "./TypesExtended"
   require "./CommonJs"
   require "./Iteration"
+  require "./Ansi"
 
   require "./Inspect"
   require "./Clone"

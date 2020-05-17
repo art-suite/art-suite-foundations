@@ -6,6 +6,7 @@
 {toInspectedObjects} = require './InspectedObjects'
 {w} = require '../ArrayExtensions'
 {object} = require '../Iteration'
+{ansiSafeStringLength} = require '../Ansi'
 
 indentString = '  '
 indentLength = indentString.length
@@ -291,19 +292,6 @@ alignTabs = (linesString, maxLineLength = 10000) ->
 
   alignedLines.join "\n"
 
-ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g
-
-stripAnsi = (str) ->
-  if ansiRegex.test str
-    str.replace ansiRegex, ''
-  else
-    str
-
-ansiSafeStringLength = (str)->
-  throw new Error "not string" unless isString str
-  if ansiRegex.test str
-    str = str.replace ansiRegex, ''
-  str.length
 
 postWhitespaceFormatting = (maxLineLength, string) ->
   lastIndent = 0
@@ -337,9 +325,6 @@ identity = (s) -> s
 passThroughColorizeFunctions = object colorNames, -> identity
 
 module.exports = class FormattedInspect
-  @ansiRegex: ansiRegex
-  @stripAnsi: stripAnsi
-  @ansiSafeStringLength: ansiSafeStringLength
   @alignTabs: alignTabs
   @_escapeForBlockString: escapeForBlockString
   @formattedInspectString: formattedInspectString

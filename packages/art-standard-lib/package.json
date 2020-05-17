@@ -3,7 +3,7 @@
   "bugs": "https:/github.com/art-suite/art-suite-foundations2/issues",
   "dependencies": {
     "art-build-configurator": "*",
-    "pluralize": "^8.0.0"
+    "pluralize": "*"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
@@ -37,5 +37,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "1.65.0"
+  "version": "1.65.2"
 }
