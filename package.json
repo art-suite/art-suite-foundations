@@ -38,7 +38,7 @@
     "neptune-namespaces": "file:packages/neptune-namespaces",
     "art-events": "*",
     "art-monorepo": "file:packages/art-monorepo",
-    "pluralize": "^8.0.0",
+    "pluralize": "*",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime"
   },
   "scripts": {
