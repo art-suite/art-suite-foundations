@@ -150,10 +150,10 @@ module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM *
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
-/*! exports provided: author, dependencies, description, devDependencies, license, name, scripts, version, default */
+/*! exports provided: author, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"dependencies\":{\"art-build-configurator\":\"*\",\"art-events\":\"*\"},\"description\":\"A powerful yet simple tool for configuring all your libraries consistently.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"mocha\":\"^6.2.0\",\"mock-fs\":\"^4.10.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"license\":\"ISC\",\"name\":\"art-config\",\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.12.0\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bugs\":\"https:/github.com/art-suite/art-suite-foundations2/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"art-events\":\"*\"},\"description\":\"A powerful yet simple tool for configuring all your libraries consistently.\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-suite-foundations2\",\"license\":\"ISC\",\"name\":\"art-config\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-suite-foundations2.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"1.13.0\"}");
 
 /***/ }),
 /* 5 */
@@ -237,13 +237,13 @@ defineModule(module, Configuration = (function(superClass) {
 
 })(BaseObject));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 7)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 7)(module)))
 
 /***/ }),
 /* 7 */
-/*!*************************************************!*\
-  !*** ../node_modules/webpack/buildin/module.js ***!
-  \*************************************************/
+/*!***********************************!*\
+  !*** (webpack)/buildin/module.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -341,7 +341,7 @@ defineModule(module, ConfigRegistry = (function(superClass) {
 
 })(BaseObject));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 7)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 7)(module)))
 
 /***/ }),
 /* 11 */
@@ -375,6 +375,24 @@ defineModule(module, Main = (function() {
 
   Main.getDefaultArtConfigName = getDefaultArtConfigName = function() {
     return Neptune.Art.Config.defaultArtConfigName;
+  };
+
+
+  /* getArtConfigSave
+    OUT: artConfig, but only the non-default values
+   */
+
+  Main.getArtConfigSave = function() {
+    var configurable, i, len, out, ref2, saveConfig;
+    out = {};
+    ref2 = ConfigRegistry.configurables;
+    for (i = 0, len = ref2.length; i < len; i++) {
+      configurable = ref2[i];
+      if (saveConfig = configurable.getConfigSave()) {
+        mergeInto(out, saveConfig);
+      }
+    }
+    return out;
   };
 
   setArtConfigName = function(name) {
@@ -583,7 +601,7 @@ defineModule(module, Main = (function() {
 
 })());
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 7)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 7)(module)))
 
 /***/ }),
 /* 12 */
@@ -673,7 +691,7 @@ defineModule(module, Lib = (function() {
 
 })());
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 7)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 7)(module)))
 
 /***/ }),
 /* 13 */
@@ -683,12 +701,12 @@ defineModule(module, Lib = (function() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, ErrorWithInfo, EventedMixin, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, namespace, ref,
+/* WEBPACK VAR INJECTION */(function(module) {var BaseClass, ConfigRegistry, Configurable, ErrorWithInfo, EventedMixin, deepMerge, defineModule, isPlainObject, log, merge, mergeInto, namespace, neq, ref,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
-ref = __webpack_require__(/*! art-standard-lib */ 8), defineModule = ref.defineModule, log = ref.log, merge = ref.merge, isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, deepMerge = ref.deepMerge, isPlainObject = ref.isPlainObject, ErrorWithInfo = ref.ErrorWithInfo;
+ref = __webpack_require__(/*! art-standard-lib */ 8), defineModule = ref.defineModule, log = ref.log, merge = ref.merge, isPlainObject = ref.isPlainObject, mergeInto = ref.mergeInto, deepMerge = ref.deepMerge, isPlainObject = ref.isPlainObject, ErrorWithInfo = ref.ErrorWithInfo, neq = ref.neq;
 
 BaseClass = __webpack_require__(/*! art-class-system */ 9).BaseClass;
 
@@ -784,6 +802,29 @@ defineModule(module, Configurable = (function(superClass) {
     return mergeInto(this.reset(), this.getConfigurationFromPath(globalConfig));
   };
 
+  Configurable.getConfigSave = function() {
+    var count, defaults, k, obj, out, ref1, ref2, v;
+    out = {};
+    defaults = this.getDefaults();
+    count = 0;
+    ref2 = (ref1 = this.config) != null ? ref1 : {};
+    for (k in ref2) {
+      v = ref2[k];
+      if (!(neq(v, defaults[k]))) {
+        continue;
+      }
+      count++;
+      out[k] = v;
+    }
+    if (count > 0) {
+      return (
+        obj = {},
+        obj["" + (this.getConfigurationPathString())] = out,
+        obj
+      );
+    }
+  };
+
   Configurable.on = function() {
     var a, ref1;
     a = 1 <= arguments.length ? slice.call(arguments, 0) : [];
@@ -838,7 +879,7 @@ defineModule(module, Configurable = (function(superClass) {
 
 })(EventedMixin(BaseClass)));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 7)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 7)(module)))
 
 /***/ }),
 /* 14 */
