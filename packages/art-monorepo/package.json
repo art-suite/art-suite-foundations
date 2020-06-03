@@ -5,7 +5,8 @@
   "dependencies": {
     "fs-extra": "^8.1.0",
     "glob-promise": "^3.4.0",
-    "glob": "^7.1.6"
+    "glob": "^7.1.6",
+    "stable": "^0.1.8"
   },
   "devDependencies": {},
   "version": "0.0.1"
