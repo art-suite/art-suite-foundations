@@ -1,1 +1,15 @@
-{"author": "Shane Brinkman-Davis Delamore", "dependencies": {"art-standard-lib": "^1.65.2", "fs-extra": "^9.0.0", "glob": "^7.1.6", "glob-promise": "^3.4.0"}, "devDependencies": {}, "license": "ISC", "name": "art-monorepo", "version": "0.0.1"}
+{
+  "author": "Shane Brinkman-Davis Delamore",
+  "dependencies": {
+    "art-standard-lib": "^1.65.2",
+    "fs-extra": "^9.0.0",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0"
+  },
+  "devDependencies": {
+    
+  },
+  "license": "ISC",
+  "name": "art-monorepo",
+  "version": "0.0.1"
+}

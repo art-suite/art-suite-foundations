@@ -19,7 +19,7 @@ updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDep
       fromVersion
 
 updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :dependencies, updatedMap = {}) ->
-  rootDeps = rootPackage[dependencySetName]
+  rootDeps = merge rootPackage.dependencies, rootPackage.devDependencies
   return unless objectHasKeys rootDeps
 
   each _package, packageRoot in packages into updatedMap
@@ -28,11 +28,13 @@ updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :depe
       newDeps = updateDependencyVersions packages, deps, rootDeps
       changed = newDeps && neq(newDeps, deps)
 
+      file = packageRoot + :/package.json
       if changed
         updatedMap[packageRoot] = true
-        file = packageRoot + :/package.json
         log update: file
-        writeJson file, merge _package, [dependencySetName]: newDeps
+        _package = merge _package, [dependencySetName]: newDeps
+
+      writeJson file, _package
 
 loadAllPackages().then (packages) ->
   rootPackage = readJson :package.json
@@ -47,9 +49,7 @@ loadAllPackages().then (packages) ->
     :devDependencies
     updatedMap
 
-  if objectHasKeys updatedMap
-    log updated: Object.keys updatedMap
-  else
+  unless objectHasKeys updatedMap
     log "Everything up to date."
 
 # loadAllPackages().then (packages) ->

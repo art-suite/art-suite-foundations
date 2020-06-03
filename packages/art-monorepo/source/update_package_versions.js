@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["readJson", "objectHasKeys", "neq", "log", "writeJson", "merge", "Object"],
+    ["readJson", "merge", "objectHasKeys", "neq", "log", "writeJson"],
     [global, require("./lib"), require("art-standard-lib")],
-    (readJson, objectHasKeys, neq, log, writeJson, merge, Object) => {
+    (readJson, merge, objectHasKeys, neq, log, writeJson) => {
       let fs,
         loadAllPackages,
         updateDependencyVersions,
@@ -55,7 +55,7 @@ Caf.defMod(module, () => {
         updatedMap = {}
       ) {
         let rootDeps;
-        rootDeps = rootPackage[dependencySetName];
+        rootDeps = merge(rootPackage.dependencies, rootPackage.devDependencies);
         if (!objectHasKeys(rootDeps)) {
           return;
         }
@@ -66,15 +66,15 @@ Caf.defMod(module, () => {
             return objectHasKeys((deps = _package[dependencySetName]))
               ? ((newDeps = updateDependencyVersions(packages, deps, rootDeps)),
                 (changed = newDeps && neq(newDeps, deps)),
+                (file = packageRoot + "/package.json"),
                 changed
                   ? ((updatedMap[packageRoot] = true),
-                    (file = packageRoot + "/package.json"),
                     log({ update: file }),
-                    writeJson(
-                      file,
-                      merge(_package, { [dependencySetName]: newDeps })
-                    ))
-                  : undefined)
+                    (_package = merge(_package, {
+                      [dependencySetName]: newDeps
+                    })))
+                  : undefined,
+                writeJson(file, _package))
               : undefined;
           },
           null,
@@ -91,9 +91,9 @@ Caf.defMod(module, () => {
           "devDependencies",
           updatedMap
         );
-        return objectHasKeys(updatedMap)
-          ? log({ updated: Object.keys(updatedMap) })
-          : log("Everything up to date.");
+        return !objectHasKeys(updatedMap)
+          ? log("Everything up to date.")
+          : undefined;
       });
     }
   );

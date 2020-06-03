@@ -1,1 +1,16 @@
-{"author": "Shane Brinkman-Davis Delamore, Imikimi LLC", "dependencies": {"art-build-configurator": "^1.26.10"}, "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai", "license": "ISC", "name": "art-testbench", "scripts": {"build": "webpack --progress", "start": "webpack-dev-server --hot --inline --progress", "test": "nn -s;mocha -u tdd", "testInBrowser": "webpack-dev-server --progress"}, "version": "1.17.2"}
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "dependencies": {
+    "art-build-configurator": "^1.26.10"
+  },
+  "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
+  "license": "ISC",
+  "name": "art-testbench",
+  "scripts": {
+    "build": "webpack --progress",
+    "start": "webpack-dev-server --hot --inline --progress",
+    "test": "nn -s;mocha -u tdd",
+    "testInBrowser": "webpack-dev-server --progress"
+  },
+  "version": "1.17.2"
+}

@@ -14,7 +14,7 @@ Caf.defMod(module, () => {
         writeJson: function(file, data) {
           return require("fs-extra").writeFileSync(
             file,
-            consistentJsonStringify(data)
+            consistentJsonStringify(data, "  ") + "\n"
           );
         },
         execShellCommand: function(cmd) {

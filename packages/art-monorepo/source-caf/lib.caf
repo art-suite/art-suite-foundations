@@ -6,7 +6,9 @@ readJson: (file) ->
   else {}
 
 writeJson: (file, data) ->
-  &fsExtra.writeFileSync file, consistentJsonStringify data
+  &fsExtra.writeFileSync file,
+    consistentJsonStringify data, '  '
+    + :\n
 
 # /** Executes a shell command and return it as a Promise.
 #   * @param cmd {string}
