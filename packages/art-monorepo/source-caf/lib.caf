@@ -1,0 +1,19 @@
+import &ArtStandardLib
+
+readJson: (file) ->
+  if &fsExtra.existsSync file
+    JSON.parse &fsExtra.readFileSync file
+  else {}
+
+writeJson: (file, data) ->
+  &fsExtra.writeFileSync file, consistentJsonStringify data
+
+# /** Executes a shell command and return it as a Promise.
+#   * @param cmd {string}
+#   * @return {Promise<string>}
+#   */
+execShellCommand: (cmd) ->
+  new Promise (resolve, reject) ->
+    &child_process.exec cmd, (error, stdout, stderr) =>
+      if (error) reject stderr || stdout
+      else resolve stdout || stderr

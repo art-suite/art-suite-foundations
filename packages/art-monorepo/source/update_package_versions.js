@@ -1,0 +1,100 @@
+"use strict";
+let Caf = require("caffeine-script-runtime");
+Caf.defMod(module, () => {
+  return Caf.importInvoke(
+    ["readJson", "objectHasKeys", "neq", "log", "writeJson", "merge", "Object"],
+    [global, require("./lib"), require("art-standard-lib")],
+    (readJson, objectHasKeys, neq, log, writeJson, merge, Object) => {
+      let fs,
+        loadAllPackages,
+        updateDependencyVersions,
+        updateAllPackageDependencies;
+      fs = require("fs-extra");
+      loadAllPackages = function() {
+        return require("glob-promise")(
+          "!(node_modules)/*/**/package.json"
+        ).then(results => {
+          let from, into, to, i, temp;
+          return (
+            (from = results),
+            (into = {}),
+            from != null
+              ? ((to = from.length),
+                (i = 0),
+                (() => {
+                  while (i < to) {
+                    let file;
+                    file = from[i];
+                    into[file.split(/\/package.json$/)[0]] = readJson(file);
+                    temp = i++;
+                  }
+                  return temp;
+                })())
+              : undefined,
+            into
+          );
+        });
+      };
+      updateDependencyVersions = function(packages, fromDeps, toDeps) {
+        return toDeps != null && fromDeps != null
+          ? Caf.object(fromDeps, (fromVersion, packageName) => {
+              let toVersion, fileRefMatch;
+              return (toVersion = toDeps[packageName]) &&
+                fromVersion !== toVersion
+                ? (fileRefMatch = toVersion.match(/^file:(.*)$/))
+                  ? `^${Caf.toString(packages[fileRefMatch[1]].version)}`
+                  : toVersion
+                : fromVersion;
+            })
+          : undefined;
+      };
+      updateAllPackageDependencies = function(
+        rootPackage,
+        packages,
+        dependencySetName = "dependencies",
+        updatedMap = {}
+      ) {
+        let rootDeps;
+        rootDeps = rootPackage[dependencySetName];
+        if (!objectHasKeys(rootDeps)) {
+          return;
+        }
+        return Caf.each2(
+          packages,
+          (_package, packageRoot) => {
+            let deps, newDeps, changed, file;
+            return objectHasKeys((deps = _package[dependencySetName]))
+              ? ((newDeps = updateDependencyVersions(packages, deps, rootDeps)),
+                (changed = newDeps && neq(newDeps, deps)),
+                changed
+                  ? ((updatedMap[packageRoot] = true),
+                    (file = packageRoot + "/package.json"),
+                    log({ update: file }),
+                    writeJson(
+                      file,
+                      merge(_package, { [dependencySetName]: newDeps })
+                    ))
+                  : undefined)
+              : undefined;
+          },
+          null,
+          updatedMap
+        );
+      };
+      return loadAllPackages().then(function(packages) {
+        let rootPackage, updatedMap;
+        rootPackage = readJson("package.json");
+        updatedMap = updateAllPackageDependencies(rootPackage, packages);
+        updateAllPackageDependencies(
+          rootPackage,
+          packages,
+          "devDependencies",
+          updatedMap
+        );
+        return objectHasKeys(updatedMap)
+          ? log({ updated: Object.keys(updatedMap) })
+          : log("Everything up to date.");
+      });
+    }
+  );
+});
