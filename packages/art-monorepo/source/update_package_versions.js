@@ -2,39 +2,19 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["readJson", "merge", "objectHasKeys", "neq", "log", "writeJson"],
+    [
+      "loadAllPackages",
+      "merge",
+      "objectHasKeys",
+      "neq",
+      "log",
+      "writeJson",
+      "readJson"
+    ],
     [global, require("./lib"), require("art-standard-lib")],
-    (readJson, merge, objectHasKeys, neq, log, writeJson) => {
-      let fs,
-        loadAllPackages,
-        updateDependencyVersions,
-        updateAllPackageDependencies;
+    (loadAllPackages, merge, objectHasKeys, neq, log, writeJson, readJson) => {
+      let fs, updateDependencyVersions, updateAllPackageDependencies;
       fs = require("fs-extra");
-      loadAllPackages = function() {
-        return require("glob-promise")(
-          "!(node_modules)/*/**/package.json"
-        ).then(results => {
-          let from, into, to, i, temp;
-          return (
-            (from = results),
-            (into = {}),
-            from != null
-              ? ((to = from.length),
-                (i = 0),
-                (() => {
-                  while (i < to) {
-                    let file;
-                    file = from[i];
-                    into[file.split(/\/package.json$/)[0]] = readJson(file);
-                    temp = i++;
-                  }
-                  return temp;
-                })())
-              : undefined,
-            into
-          );
-        });
-      };
       updateDependencyVersions = function(packages, fromDeps, toDeps) {
         return toDeps != null && fromDeps != null
           ? Caf.object(fromDeps, (fromVersion, packageName) => {

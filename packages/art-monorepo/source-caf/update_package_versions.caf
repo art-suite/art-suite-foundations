@@ -1,12 +1,6 @@
 import &lib, &ArtStandardLib
 fs = &fsExtra
 
-loadAllPackages = ->
-  &globPromise "!(node_modules)/*/**/package.json"
-  .then (results) ->
-    object file from-array results with-key file.split(/\/package.json$/)[0]
-      readJson file
-
 updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDeps?
   # log {} fromDeps, toDeps
   object fromVersion, packageName in fromDeps
