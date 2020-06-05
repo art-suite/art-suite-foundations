@@ -1,16 +1,7 @@
-# uses XMLHttpRequest2
-#  http://www.w3.org/TR/XMLHttpRequest2/
-#  http://www.html5rocks.com/en/tutorials/file/xhr2/
-
-# The new-new is 'fetch' - seems to be getting decent support
-#   https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-#   https://caniuse.com/#feat=fetch
-
 import &ArtStandardLib, &ArtCommunicationStatus, &ArtClassSystem
-
-# if in Node, we need to import xhr2
-realRequire = eval 'require'
-global.XMLHttpRequest ||= realRequire 'xhr2'
+unless global.XMLHttpRequest # if in Node, we need to import xhr2
+  realRequire = eval :require
+  global.XMLHttpRequest = realRequire :xhr2
 
 global extract XMLHttpRequest, FormData
 
@@ -18,16 +9,19 @@ class RestClient extends BaseClass
   @singletonClass()
   @RestClientClass: RestClient
 
+  @normalizeHeaders: normalizeHeaders = (headers) ->
+    object v, k in headers with-key capitalizedDashCase k
+
   @legalVerbs: legalVerbs = {}
   each v in :get :put :post :delete :head
     upper = v.toUpperCase()
     legalVerbs[v.toLowerCase()] = legalVerbs[upper] = upper
 
   ########################
-  # CLASS API
+    CLASS API
   ########################
-  # Can use most of the singleton API direclty on the class.
-  # See the instance/singleton API below for API detials.
+    Can use most of the singleton API direclty on the class.
+    See the instance/singleton API below for API detials.
   @get:             (url, options)          -> RestClient.singleton.get             url, options
   @put:             (url, data, options)    -> RestClient.singleton.put             url, data, options
   @post:            (url, data, options)    -> RestClient.singleton.post            url, data, options
@@ -41,10 +35,8 @@ class RestClient extends BaseClass
   @restJsonRequest: (options)               -> RestClient.singleton.restJsonRequest options
 
   ########################
-  # INSTANCE API (singleton)
+    INSTANCE API (singleton)
   ########################
-
-  ###
     get/put/post/delete
 
     IN:
@@ -92,14 +84,13 @@ class RestClient extends BaseClass
         If the progress is indeterminant, this is 0
         If this isn't an onProgress event, this is the amount of progress
         that was made up to the point of the event.
-
-  get:     (url, options)           -> @restRequest merge options, verb: "GET",    url: url
-  put:     (url, data, options)     -> @restRequest merge options, verb: "PUT",    url: url, data: data
-  post:    (url, data, options)     -> @restRequest merge options, verb: "POST",   url: url, data: data
-  delete:  (url, options)           -> @restRequest merge options, verb: "DELETE", url: url
+  get:     (url, options)           -> @restRequest merge options, verb: :GET    url: url
+  put:     (url, data, options)     -> @restRequest merge options, verb: :PUT    url: url, data: data
+  post:    (url, data, options)     -> @restRequest merge options, verb: :POST   url: url, data: data
+  delete:  (url, options)           -> @restRequest merge options, verb: :DELETE url: url
 
   # OUT: Promise -> responseData is ArrayBuffer
-  getArrayBuffer: (url, options)    -> @restRequest merge options, verb: "GET",    url: url, responseType: "arraybuffer"
+  getArrayBuffer: (url, options)    -> @restRequest merge options, verb: :GET    url: url, responseType: :arraybuffer
 
   ###
     get/put/post/deleteJson
@@ -113,10 +104,10 @@ class RestClient extends BaseClass
       additional options are set:
         responseType: "json"
         headers:      Accept: 'application/json'
-  getJson:     (url, options)       -> @restJsonRequest merge options, verb: "get",     url: url
-  deleteJson:  (url, options)       -> @restJsonRequest merge options, verb: "delete",  url: url
-  putJson:     (url, data, options) -> @restJsonRequest merge options, verb: "put",     url: url, data: data
-  postJson:    (url, data, options) -> @restJsonRequest merge options, verb: "post",    url: url, data: data
+  getJson:     (url, options)       -> @restJsonRequest merge options, verb: :get     url: url
+  deleteJson:  (url, options)       -> @restJsonRequest merge options, verb: :delete  url: url
+  putJson:     (url, data, options) -> @restJsonRequest merge options, verb: :put     url: url, data: data
+  postJson:    (url, data, options) -> @restJsonRequest merge options, verb: :post    url: url, data: data
 
   ###
     IN:
@@ -152,29 +143,40 @@ class RestClient extends BaseClass
         httpStatus:   number # HTTP status code, if the request is complete
 
     EFFECT:
-
   restRequest: (options) ->
-    {verb, verbose, method, url, data, body, query, headers, onProgress, normalizedHeaders, responseType, formData, showProgressAfter} = options
+    options extract
+      body
+      data
+      formData
+      headers
+      method
+      normalizedHeaders
+      onProgress
+      query
+      responseType
+      showProgressAfter
+      url
+      verb
+      verbose
+
     showProgressAfter = 100 unless isNumber showProgressAfter
 
-    method ||= verb
-    body ||= data
+    method  ?= verb
+    body    ?= data
 
     throw new Error "invalid method: #{specifiedVerb}" unless method = RestClient.legalVerbs[specifiedVerb = method]
 
     if formData
       throw new Error "can't specify both 'body' and 'formData'" if body
       body = new FormData
-      each v, k from formData
-        body.append k, v
+      each v, k from formData do body.append k, v
+
     else
       body = body?.toArrayBuffer?() || body
 
-    if method == "GET" && body
-      log.error RestClient_restRequest:
-        info: "can't GET with body"
-        options: options
-      throw new Error "With their ultimate wisdom, the gods decree: NO DATA WITH GET"
+    if method == :GET && body
+      log.error RestClient_restRequest: {} options, info: "" can't GET with body
+      throw new Error "" With their ultimate wisdom, the gods decree: NO DATA WITH GET
 
     url = appendQuery url, query if query
 
@@ -188,17 +190,13 @@ class RestClient extends BaseClass
       showProgressAfter
       headers: merge normalizedHeaders, normalizeHeaders headers
 
-  @normalizeHeaders: normalizeHeaders = (headers) ->
-    object v, k in headers with-key
-      capitalizedDashCase k
-
   restJsonRequest: (options) ->
     Promise.then =>
       {verb, method, data, headers} = options
       verb = RestClient.legalVerbs[verb || method]
       data = null if data && objectKeyCount(data) == 0
 
-      if verb == "GET" && options.data
+      if verb == :GET && options.data
         options = merge options,
           url: appendQuery options.url, object v in data
             JSON.stringify v
@@ -208,76 +206,79 @@ class RestClient extends BaseClass
       else
         data &&= JSON.stringify data
 
-      @restRequest merge options,
-        responseType: "json"
+      @restRequest merge options, {} data,
+        responseType:     :json
         headers: merge
-          Accept:         'application/json'
-          "Content-Type": 'application/json'
+          Accept:         :application/json
+          Content-Type:   :application/json
           headers
-        data:             data
 
+  #######################################
+    PRIVATE
+  #######################################
   # no error checking, only normalized options expected
   _normalizedRestRequest: (options) ->
-    {method, url, body, headers, onProgress, responseType, showProgressAfter, verbose} = options
-
+    options extract method, url, body, headers, onProgress, responseType, showProgressAfter, verbose
 
     new Promise (resolve, reject) ->
-
       fail = (props) ->
         reject new RequestError merge props, {}
-          sourceLib: "ArtRestClient"
           body
           headers
           responseType
-          key:      url
-          type:     method
-          responseUrl: request.responseURL
-          progress: restRequestStatus.progress
+          sourceLib:    :ArtRestClient
+          key:          url
+          type:         method
+          responseUrl:  request.responseURL
+          progress:     restRequestStatus.progress
 
-      restRequestStatus =
-        request: request = new XMLHttpRequest
+      restRequestStatus = {}
+        request = new XMLHttpRequest
+        options
         progress: 0
-        options: options
         abort: ->
           request.abort()
-          fail status: aborted, message: "XMLHttpRequest aborted"
+          fail status: aborted, message: "" XMLHttpRequest aborted
 
       getErrorResponse = ->
         try
           getResponse()
+
         catch error
           status:       serverFailure
           rawResponse:  request.response
-          message:      "ArtRestClient: Error parsing server's response: #{error}\nrawResponse: #{request.response}"
+          message:
+            """
+              ArtRestClient: Error parsing server's response: #{error}
+              rawResponse: #{request.response}
 
       getResponse = ->
         {response} = request
-        if response && responseType == "json"
+        if response && responseType == :json
           JSON.parse response
         else
           response
 
       request.open method, url, true
 
-      # NOTE: IE11 and IOS7 don't support responseType "json"
-      # https://developer.mozilla.org/en-US/docs/Web/API/FormData
-      # http://caniuse.com/#search=FormData
-      # TODO: we should detect if it is supported and use it if it is;
-      #   The supported platforms probably decode the JSON off-thread.
-      request.responseType = responseType if present(responseType) && responseType != "json"
+      ## NOTE: IE11 and IOS7 don't support responseType "json"
+        https://developer.mozilla.org/en-US/docs/Web/API/FormData
+        http://caniuse.com/#search=FormData
+        TODO: we should detect if it is supported and use it if it is;
+          The supported platforms probably decode the JSON off-thread.
+      request.responseType = responseType if present(responseType) && responseType != :json
 
       each v, k from headers
         request.setRequestHeader k, v
 
       requestResolved = false
 
-      request.addEventListener "error", (event) ->
+      # This gets triggered when there is no network connection. Is it triggered other times?
+      request.addEventListener :error (event) ->
         requestResolved = true
-        # This gets triggered when there is no network connection.
-        # Is it triggered other times?
-        fail status: networkFailure, message: "XMLHttpRequest error event triggered", data: {event}
+        fail status: networkFailure, message: "XMLHttpRequest error event triggered", data: {} event
 
-      request.addEventListener "load", (event) ->
+      request.addEventListener :load (event) ->
         requestResolved = true
 
         decodedHttpStatus = decodeHttpStatus httpStatus = request.status
@@ -285,7 +286,7 @@ class RestClient extends BaseClass
         unless (decodedHttpStatus.status == success) && (try resolve getResponse(); true)
           message = if decodedHttpStatus.status == success
             decodedHttpStatus.status = serverFailure
-            "error processing successful response"
+            "" error processing successful response
 
           fail merge decodedHttpStatus, {message, event, data: getErrorResponse()}
 
@@ -299,14 +300,12 @@ class RestClient extends BaseClass
         progressCallbackInternal = (event) ->
           {total, loaded} = lastProgressEvent = event
           if initialProgressCalled && !requestResolved
-            onProgress? restRequestStatus = merge restRequestStatus,
-              event: event
+            onProgress? restRequestStatus = merge restRequestStatus, {} event,
               progress: if total > 0 then loaded / total else 0
 
-        if method == "GET"
-          request.addEventListener "progress", progressCallbackInternal
-        else
-          request.upload.addEventListener "progress", progressCallbackInternal
+        if method == :GET
+              request.addEventListener        :progress progressCallbackInternal
+        else  request.upload.addEventListener :progress progressCallbackInternal
 
       log ArtRestClient: {method, url, headers} if verbose
       request.send body

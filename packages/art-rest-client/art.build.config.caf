@@ -2,6 +2,8 @@ target:
   node: true
 
 package:
+  devDependencies:
+    watch: :^1.0.0
   dependencies:
     xhr2:                     :^0.1.4
     art-communication-status: :^1.0.0

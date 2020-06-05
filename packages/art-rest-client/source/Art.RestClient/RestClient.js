@@ -4,12 +4,12 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
       "BaseClass",
+      "capitalizedDashCase",
       "merge",
       "isNumber",
       "Error",
       "log",
       "appendQuery",
-      "capitalizedDashCase",
       "Promise",
       "objectKeyCount",
       "JSON",
@@ -30,12 +30,12 @@ Caf.defMod(module, () => {
     ],
     (
       BaseClass,
+      capitalizedDashCase,
       merge,
       isNumber,
       Error,
       log,
       appendQuery,
-      capitalizedDashCase,
       Promise,
       objectKeyCount,
       JSON,
@@ -48,19 +48,25 @@ Caf.defMod(module, () => {
       decodeHttpStatus,
       success
     ) => {
-      let realRequire, XMLHttpRequest, FormData, RestClient, base, temp;
-      realRequire = eval("require");
-      (base = global).XMLHttpRequest ||
-        (base.XMLHttpRequest = realRequire("xhr2"));
+      let realRequire, XMLHttpRequest, FormData, RestClient, temp;
+      if (!global.XMLHttpRequest) {
+        realRequire = eval("require");
+        global.XMLHttpRequest = realRequire("xhr2");
+      }
       temp = global;
       XMLHttpRequest = temp.XMLHttpRequest;
       FormData = temp.FormData;
       return (RestClient = Caf.defClass(
         class RestClient extends BaseClass {},
         function(RestClient, classSuper, instanceSuper) {
-          let legalVerbs, normalizeHeaders;
+          let normalizeHeaders, legalVerbs;
           this.singletonClass();
           this.RestClientClass = RestClient;
+          this.normalizeHeaders = normalizeHeaders = function(headers) {
+            return Caf.object(headers, null, null, null, (v, k) =>
+              capitalizedDashCase(k)
+            );
+          };
           this.legalVerbs = legalVerbs = {};
           Caf.each2(["get", "put", "post", "delete", "head"], v => {
             let upper;
@@ -138,40 +144,38 @@ Caf.defMod(module, () => {
             );
           };
           this.prototype.restRequest = function(options) {
-            let verb,
-              verbose,
-              method,
-              url,
+            let body,
               data,
-              body,
-              query,
-              headers,
-              onProgress,
-              normalizedHeaders,
-              responseType,
               formData,
+              headers,
+              method,
+              normalizedHeaders,
+              onProgress,
+              query,
+              responseType,
               showProgressAfter,
-              specifiedVerb;
-            ({
+              url,
               verb,
               verbose,
-              method,
-              url,
-              data,
-              body,
-              query,
-              headers,
-              onProgress,
-              normalizedHeaders,
-              responseType,
-              formData,
-              showProgressAfter
-            } = options);
+              specifiedVerb;
+            body = options.body;
+            data = options.data;
+            formData = options.formData;
+            headers = options.headers;
+            method = options.method;
+            normalizedHeaders = options.normalizedHeaders;
+            onProgress = options.onProgress;
+            query = options.query;
+            responseType = options.responseType;
+            showProgressAfter = options.showProgressAfter;
+            url = options.url;
+            verb = options.verb;
+            verbose = options.verbose;
             if (!isNumber(showProgressAfter)) {
               showProgressAfter = 100;
             }
-            method || (method = verb);
-            body || (body = data);
+            method != null ? method : (method = verb);
+            body != null ? body : (body = data);
             if (!(method = RestClient.legalVerbs[(specifiedVerb = method)])) {
               throw new Error(`invalid method: ${Caf.toString(specifiedVerb)}`);
             }
@@ -189,7 +193,7 @@ Caf.defMod(module, () => {
             }
             if (method === "GET" && body) {
               log.error({
-                RestClient_restRequest: { info: "can't GET with body", options }
+                RestClient_restRequest: { options, info: "can't GET with body" }
               });
               throw new Error(
                 "With their ultimate wisdom, the gods decree: NO DATA WITH GET"
@@ -208,11 +212,6 @@ Caf.defMod(module, () => {
               showProgressAfter,
               headers: merge(normalizedHeaders, normalizeHeaders(headers))
             });
-          };
-          this.normalizeHeaders = normalizeHeaders = function(headers) {
-            return Caf.object(headers, null, null, null, (v, k) =>
-              capitalizedDashCase(k)
-            );
           };
           this.prototype.restJsonRequest = function(options) {
             return Promise.then(() => {
@@ -234,17 +233,20 @@ Caf.defMod(module, () => {
                 data && (data = JSON.stringify(data));
               }
               return this.restRequest(
-                merge(options, {
-                  responseType: "json",
-                  headers: merge(
-                    {
-                      Accept: "application/json",
-                      "Content-Type": "application/json"
-                    },
-                    headers
-                  ),
-                  data
-                })
+                merge(
+                  options,
+                  { data },
+                  {
+                    responseType: "json",
+                    headers: merge(
+                      {
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                      },
+                      headers
+                    )
+                  }
+                )
               );
             });
           };
@@ -257,16 +259,14 @@ Caf.defMod(module, () => {
               responseType,
               showProgressAfter,
               verbose;
-            ({
-              method,
-              url,
-              body,
-              headers,
-              onProgress,
-              responseType,
-              showProgressAfter,
-              verbose
-            } = options);
+            method = options.method;
+            url = options.url;
+            body = options.body;
+            headers = options.headers;
+            onProgress = options.onProgress;
+            responseType = options.responseType;
+            showProgressAfter = options.showProgressAfter;
+            verbose = options.verbose;
             return new Promise((resolve, reject) => {
               let fail,
                 restRequestStatus,
@@ -281,10 +281,10 @@ Caf.defMod(module, () => {
                 reject(
                   new RequestError(
                     merge(props, {
-                      sourceLib: "ArtRestClient",
                       body,
                       headers,
                       responseType,
+                      sourceLib: "ArtRestClient",
                       key: url,
                       type: method,
                       responseUrl: request.responseURL,
@@ -294,8 +294,8 @@ Caf.defMod(module, () => {
                 );
               restRequestStatus = {
                 request: (request = new XMLHttpRequest()),
-                progress: 0,
                 options,
+                progress: 0,
                 abort: () => {
                   request.abort();
                   return fail({
@@ -384,10 +384,11 @@ Caf.defMod(module, () => {
                   return initialProgressCalled && !requestResolved
                     ? Caf.isF(onProgress) &&
                         onProgress(
-                          (restRequestStatus = merge(restRequestStatus, {
-                            event,
-                            progress: total > 0 ? loaded / total : 0
-                          }))
+                          (restRequestStatus = merge(
+                            restRequestStatus,
+                            { event },
+                            { progress: total > 0 ? loaded / total : 0 }
+                          ))
                         )
                     : undefined;
                 };
