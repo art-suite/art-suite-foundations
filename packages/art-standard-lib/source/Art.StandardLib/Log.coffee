@@ -95,7 +95,7 @@ module.exports = class Log
         else
           stripAnsi m
       else
-        Inspect.formattedInspect m, merge maxLineLength: process.stdout.columns, options
+        Inspect.formattedInspect m, merge {maxLineLength: process.stdout.columns}, options
     else
       logger m #, "\n# StandardLib.log called " + @contextString stack, className
 

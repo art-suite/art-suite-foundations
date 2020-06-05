@@ -164,8 +164,15 @@ cafScriptWordStringRegExp = ///
 
 formattedInspectString = (m, options) ->
   out = switch
+    when options?.unquoted
+      m = m.trim()
+      if /\n/.test m
+        m
+      else m
+
     when cafScriptWordStringRegExp.test m
       ":#{m}"
+
     when /[^\n\s].*\n(.|\n)*[^\n\s]/.test m
       ('"""' + newLineWithIndentString +
       escapeForBlockString(m).replace /\n/g, newLineWithIndentString
