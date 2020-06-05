@@ -42,5 +42,5 @@
     "watch": "watch 'npm run build' ./source-caf",
     "watch-test": "watch 'npm run build-test' ./source-caf ./test"
   },
-  "version": "1.8.0"
+  "version": "1.8.1"
 }
