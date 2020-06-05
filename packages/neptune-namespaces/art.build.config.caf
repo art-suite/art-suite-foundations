@@ -9,6 +9,9 @@ package:
   dependencies:
     neptune-namespaces-runtime: :*
 
+  scripts:
+    build: "coffee --output source --compile source-coffee;caf -p -c source-caf -o source;nn -s"
+
 webpack:
   common: target: "node"
   targets:

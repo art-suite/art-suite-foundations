@@ -1,4 +1,4 @@
-NeptuneNamespaces = require "./"
+NeptuneNamespaces = require "./NeptuneNamespaces"
 
 {
   log, withoutTrailingSlash, promiseSequence, compactFlatten

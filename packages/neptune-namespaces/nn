@@ -1,8 +1,3 @@
 #!/usr/bin/env node
 
-if (require("./use-build")) { // use build
-  require('./build/nnCommand');
-} else {
-  require('./register');
-  require('./nnCommand');
-}
+require('./source/nnCommand')

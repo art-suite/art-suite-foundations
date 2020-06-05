@@ -115,7 +115,7 @@ __webpack_require__(/*! ./function */ 3);
 version = (__webpack_require__(/*! ../package.json */ 4)).version;
 
 if (global.Neptune) {
-  throw new Error("Load NeptuneNamespaces(" + version + ") FAILED. Another version already loaded: " + global.Neptune.version);
+  console.warn("Load NeptuneNamespaces(" + version + ") FAILED. Another version already loaded: " + global.Neptune.version);
 }
 
 module.exports = global.Neptune = Neptune = (function(superClass) {
@@ -458,11 +458,11 @@ module.exports = Namespace = (function() {
   /*
   IN: any combination of objects or arrays
     object: all properties in the object are added to the namespace
-  
+
     array: [fromObject, property names as one or more strings]
       for propName in every sub-string in args matching: /[0-9a-z_]+/ig
         @_addToNamespace propName, fromObject
-  
+
       Each string is parsed to find everything that matches: /[0-9a-z_]+/ig
       All resulting property names are concated into a one list.
       Every property in fromObject that matches one of the property-names is added to the namespace.
@@ -497,10 +497,10 @@ module.exports = Namespace = (function() {
 
   /*
   Every child of a namespace gets these properties:
-  
+
     namespace:      pointer to the parent namespace
     namespacePath:  string path from global to child
-  
+
   NOTE: only modules which return a class or function
     get their namespace-props set.
    */
@@ -541,17 +541,17 @@ module.exports = Namespace = (function() {
   /*
   Helper for includeInNamespace.
   Add anything to the namespace.
-  
+
   IN:
     propName:   property name to  value will be assigned to in the namespace (string)
     addingFrom: object
       used for reporting errors if attempting to overwrite an
       existing item.
-  
+
   EFFECT:
     Only adds value if @[propName] is not already set.
     Otherwise, reports error and continues.
-  
+
   OUT: value
    */
 
