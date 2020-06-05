@@ -1,1 +1,1 @@
-module.exports = require("./build/Types");
+module.exports = require('./source/Art.StandardLib/Core/Types');
