@@ -687,7 +687,7 @@ module.exports = Helper = (function() {
 /*! exports provided: author, bin, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"neptune-namespaces\":\"./nn\",\"nn\":\"./nn\"},\"bugs\":\"https:/github.com/art-suite/art-suite-foundations/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"neptune-namespaces-runtime\":\"*\"},\"description\":\"Generate index.coffee and namespace.coffee files from directory structures\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-suite-foundations\",\"license\":\"ISC\",\"name\":\"neptune-namespaces\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-suite-foundations.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"4.0.0\"}");
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"neptune-namespaces\":\"./nn\",\"nn\":\"./nn\"},\"bugs\":\"https:/github.com/art-suite/art-suite-foundations/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"neptune-namespaces-runtime\":\"*\"},\"description\":\"Generate index.coffee and namespace.coffee files from directory structures\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-suite-foundations\",\"license\":\"ISC\",\"name\":\"neptune-namespaces\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-suite-foundations.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"4.1.0\"}");
 
 /***/ }),
 /* 20 */
@@ -709,7 +709,7 @@ module.exports = MiniFoundation = (function() {
 
   function MiniFoundation() {}
 
-  if (v !== "Core") {
+  if (!(v === "Core" || k === "name" || k === "prototype" || k === "constructor")) {
     ref = __webpack_require__(/*! art-standard-lib/Core */ 10);
     for (k in ref) {
       v = ref[k];
@@ -1430,7 +1430,7 @@ module.exports = NamespaceStructure = (function() {
       return new Namespace({
         namespaceName: globalNamespaceName,
         namespacePath: globalNamespaceName,
-        path: 'neptune-namespaces'
+        path: 'neptune-namespaces-runtime'
       });
     }
   };
