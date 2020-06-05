@@ -1,7 +1,7 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
   "dependencies": {
-    "art-build-configurator": "*",
+    "art-build-configurator": "^1.26.10",
     "art-communication-status": "^1.0.0",
     "xhr2": "^0.1.4"
   },

@@ -4,11 +4,13 @@
     "art-browser-tools": "*",
     "art-build-configurator": "file:packages/art-build-configurator",
     "art-class-system": "file:packages/art-class-system",
+    "art-communication-status": "file:packages/art-communication-status",
     "art-config": "file:packages/art-config",
     "art-events": "*",
     "art-filebuilder": "file:packages/art-filebuilder",
     "art-monorepo": "file:packages/art-monorepo",
     "art-object-tree-factory": "file:packages/art-object-tree-factory",
+    "art-rest-client": "file:packages/art-rest-client",
     "art-standard-lib": "file:packages/art-standard-lib",
     "art-testbench": "file:packages/art-testbench",
     "bluebird": "^3.5.5",
@@ -39,7 +41,8 @@
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2",
-    "webpack-stylish": "^0.1.8"
+    "webpack-stylish": "^0.1.8",
+    "xhr2": "^0.1.4"
   },
   "scripts": {
     "test": "./run-all-tests.js"
