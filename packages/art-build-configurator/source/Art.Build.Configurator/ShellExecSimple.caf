@@ -1,0 +1,46 @@
+import &StandardImport
+
+shellExec = (cmd, opts) ->
+  Promise.then ->
+    child = require(:child_process).spawn
+      if isWin = process.platform == :win32 then :cmd else :sh
+
+      []
+        if isWin then :/C else :-c
+        cmd
+
+      merge
+        stdio:  :pipe
+        cwd:    process.cwd()
+        opts
+
+    new Promise (resolve) ->
+      stdout = stderr = ''
+
+      child.stdout?.on :data (data) -> stdout += data
+      child.stderr?.on :data (data) -> stderr += data
+
+      child.on :error (error) -> resolve {} stdout, stderr, cmd, error
+      child.on :close (code)  -> resolve {} stdout, stderr, cmd, code
+
+(command, options) ->
+  log "> #{command}".green if options extract? verbose
+
+  shellExec command
+  .then (result) ->
+    if present result.stderr
+      Promise.reject new Error
+        """
+          shellExec: #{command}
+
+          stderr:
+          #{} result.stderr
+    else
+      out = result.stdout.trim()
+      if verbose
+        if out.length > 0
+          log out.blue
+        else
+          log "<success; no output>".grey
+
+      out

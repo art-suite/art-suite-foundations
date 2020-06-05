@@ -1,0 +1,1 @@
+packages/art-monorepo/gen-mono-package.js

@@ -1,0 +1,10 @@
+target: node: true
+package:
+  description:  "" A powerful yet simple tool for configuring all your libraries consistently.
+  dependencies:
+    art-events: :*
+
+webpack:
+  common: {}
+  targets:
+    index: {}

@@ -1,0 +1,13 @@
+import {} &fs, &mockFs, &Path
+isDirectory = (file) -> fs.statSync(file).isDirectory()
+
+mockFs.getTree = readFsTree = (path = "") ->
+  object fileName in fs.readdirSync path
+    pathedFilename = Path.join path, fileName
+    if isDirectory pathedFilename
+      readFsTree pathedFilename
+    else
+      fs.readFileSync pathedFilename
+      .toString()
+
+mockFs
