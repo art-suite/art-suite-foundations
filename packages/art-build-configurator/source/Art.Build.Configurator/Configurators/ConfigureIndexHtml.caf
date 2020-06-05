@@ -1,0 +1,18 @@
+import &StandardImport, &ArtBrowserTools.DomElementFactories
+
+class ConfigureIndexHtml extends &ConfigureBase
+  @outFileName: :index.html
+
+  @get: (npmRoot, abcConfig) =>
+    Html Body Ul
+      array target in :Client :Admin
+        Li
+          A
+            href: "./#{target}"
+            target
+
+          "("
+          A
+            href: "./#{target}?dev"
+            :dev
+          ")"

@@ -1,0 +1,101 @@
+import &StandardImport
+
+class Core extends &Recipe
+  @description: "" Basics for buliding any app with the ArtSuiteJS
+
+  @getter
+    files: ->
+      @options extract targets, dependencies
+      if targets is String
+        targets = [] targets
+      else targets ?= [] :index
+
+      ".gitignore": """
+        node_modules/
+
+      # .travis.yml: """
+      #   language: node_js
+      #   node_js:
+      #     - "8"
+
+      register.js:
+        """
+          /*
+            REGISTER CoffeeScript (.coffee) and CaffeineScript (.caf) loaders & compilers.
+            NOTE: for Node; ultimately a NOOP for Webpack.
+          */
+          require('coffee-script/register');
+          require('caffeine-mc/register');
+
+      art.build.config.caf: """
+        #{} if @options.node then """
+          target:
+            ##
+              configures for standard node-targeted library
+              NOTE: node-targeted libraries can also be built into broswer-targeted libraries.
+                They just can't be used *directly* in the browser
+            node: true
+
+
+        #{}
+          formattedInspect
+            npm:
+              description: @packageDotName
+              dependencies: merge
+                art-build-configurator: :*
+                dependencies
+
+        webpack:
+          # common properties are merged into each target's properties
+          common: {}
+
+          # each target's individual properties
+          targets: #{
+            array target in targets
+              "#{target}: {}"
+            .join ', '
+        }
+
+      README.md: """
+        # #{@packageDotName}
+
+        > Initialized by Art.Build.Configurator
+
+        ### Install
+
+        ```coffeescript
+        npm install #{@packageDashName}
+        ```
+
+      test:
+        index.js: """
+          require('../register');
+          require('./index.caf');
+
+        index.caf: """
+          &StandardImport
+          &art-testbench/testing
+          .init
+            synchronous: true
+            defineTests: -> &tests
+
+        StandardImport.caf: """
+          &ArtStandardLib.mergeWithSelf
+            &ArtClassSystem
+            &ArtTestbench
+            &#{@packageUppercaseName}
+
+        tests:
+          [@namespaceDirPath]:
+            Test.caf: """
+              import &StandardImport
+              suite: ->
+                test '#{@mostSpecificName}' -> assert.eq 1, 1
+
+      source:
+        index.js: """ module.exports = require('./#{@namespaceDirPath}');
+        [@namespaceDirPath]:
+          StandardImport.caf:
+            """
+              &ArtStandardLib.mergeWithSelf
+                &ArtClassSystem
