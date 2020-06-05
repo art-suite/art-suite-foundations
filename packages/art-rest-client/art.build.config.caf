@@ -8,6 +8,12 @@ package:
 
   description: "" Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.
 
+  scripts:
+    build: "" caf -p -c source-caf -o source;nn -s
+    build-test: "" npm run build; npm run test --silent; echo
+    watch: "" watch 'npm run build' ./source-caf
+    watch-test: "" watch 'npm run build-test' ./source-caf ./test
+
 webpack:
   targets:
-    index: {}
+    test: {}

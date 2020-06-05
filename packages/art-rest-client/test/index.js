@@ -1,2 +1,2 @@
 require('../register.js');
-require('./index.coffee');
+require('./index.caf');
