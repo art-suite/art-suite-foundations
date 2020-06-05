@@ -51,7 +51,7 @@ suite "NeptuneNamespaces.Generation.Pathing", ->
       ]
       assert.match generatedFiles["source/Foo/Alpha.Beta/Gamma/namespace.js"],  /// require .* '\.\./namespace'     .* addNamespace       (.|\n)* Gamma       ///
       assert.match generatedFiles["source/Foo/Alpha.Beta/namespace.js"],        /// require .* '\.\./namespace'     .* vivifySubnamespace .* Alpha\.Beta ///
-      assert.match generatedFiles["source/Foo/namespace.js"],                   /// require .* 'neptune-namespaces' .* vivifySubnamespace .* Foo ///
+      assert.match generatedFiles["source/Foo/namespace.js"],                   /// require .* 'neptune-namespaces-runtime' .* vivifySubnamespace .* Foo ///
 
   test "pathed explicitly with includeInNamespace", ->
     generator = new Generator "source/Foo", pretend: true, quiet: true

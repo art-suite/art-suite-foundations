@@ -1,7 +1,7 @@
 colors = require "colors"
 Path = require 'path'
 module.exports = class MiniFoundation
-  @[k] = v for k, v of require 'art-standard-lib/Core' unless v == "Core"
+  @[k] = v for k, v of require 'art-standard-lib/Core' unless v == "Core" or k == "name" or k == "prototype" or k == "constructor"
   {compactFlatten, isFunction, isPlainArray, isPlainObject, isString} = @
 
   @promiseSequence: (promiseGeneratingFunctions) ->

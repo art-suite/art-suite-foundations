@@ -159,7 +159,7 @@ module.exports = class NamespaceStructure
       new Namespace
         namespaceName:  globalNamespaceName
         namespacePath:  globalNamespaceName
-        path:           'neptune-namespaces'
+        path:           'neptune-namespaces-runtime'
 
   _generateNamespaces: (dirs) ->
     namespaces = {}
