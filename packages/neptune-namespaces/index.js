@@ -1,4 +1,4 @@
-if (false) { // use build
+if (require("./use-build")) { // use build
   module.exports = require("./build");
 } else {
   require('coffee-script/register');

@@ -82,14 +82,89 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */,
 /* 1 */,
 /* 2 */,
-/* 3 */
+/* 3 */,
+/* 4 */,
+/* 5 */
+/*!******************************************************************************************!*\
+  !*** external "require('caffeine-script-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 6 */
+/*!*******************************************************************************!*\
+  !*** external "require('glob-promise' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('glob-promise' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 7 */
+/*!***************************************************************************!*\
+  !*** external "require('fs-extra' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('fs-extra' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 8 */
+/*!***********************************************************************!*\
+  !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('path' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 9 */
+/*!*************************************************************************!*\
+  !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('colors' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 10 */
+/*!****************************************************************************************!*\
+  !*** external "require('art-standard-lib/Core' /* ABC - not inlining fellow NPM *_/)" ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 11 */
+/*!*************************************************************************************!*\
+  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
+
+/***/ }),
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */
 /*!************************************************!*\
   !*** ./source/NeptuneNamespaces/Generator.caf ***!
   \************************************************/
@@ -114,9 +189,7 @@ Caf.defMod(module, () => {
       "Object",
       "normalizeDirectory",
       "IndexJsGenerator",
-      "IndexGenerator",
       "NamespaceJsGenerator",
-      "NamespaceGenerator",
       "NamespaceStructure",
       "Promise",
       "getRelativePath",
@@ -129,10 +202,10 @@ Caf.defMod(module, () => {
     ],
     [
       global,
-      __webpack_require__(/*! ./StandardImport */ 6),
-      __webpack_require__(/*! ./Generators */ 15),
-      __webpack_require__(/*! ./PackageRoot */ 23),
-      { NamespaceStructure: __webpack_require__(/*! ./NamespaceStructure */ 24) }
+      __webpack_require__(/*! ./StandardImport */ 17),
+      __webpack_require__(/*! ./Generators */ 21),
+      __webpack_require__(/*! ./PackageRoot */ 26),
+      { NamespaceStructure: __webpack_require__(/*! ./NamespaceStructure */ 27) }
     ],
     (
       getPackageRoot,
@@ -147,9 +220,7 @@ Caf.defMod(module, () => {
       Object,
       normalizeDirectory,
       IndexJsGenerator,
-      IndexGenerator,
       NamespaceJsGenerator,
-      NamespaceGenerator,
       NamespaceStructure,
       Promise,
       getRelativePath,
@@ -171,24 +242,10 @@ Caf.defMod(module, () => {
             }
             if (options) {
               Caf.each2(
-                [
-                  "pretend",
-                  "verbose",
-                  "lastGenerator",
-                  "force",
-                  "quiet",
-                  "js",
-                  "cleanup"
-                ],
+                ["pretend", "verbose", "lastGenerator", "force", "quiet"],
                 option => (this[option] = options[option])
               );
             }
-            this.js = this.cleanup = true;
-            console.log(
-              `Using @js=${Caf.toString(!!this.js)} and @cleanup=${Caf.toString(
-                !!this.cleanup
-              )}!!!`
-            );
             this.versionFile = this.constructor.findVersionFile(this.root);
             this.rootPrefix = getParentPath(this.root);
           }
@@ -336,16 +393,14 @@ Caf.defMod(module, () => {
             });
           };
           this.prototype.getIndexGenerator = function() {
-            return this.js ? IndexJsGenerator : IndexGenerator;
+            return IndexJsGenerator;
           };
           this.prototype.getNamespaceGenerator = function() {
-            return this.js ? NamespaceJsGenerator : NamespaceGenerator;
+            return NamespaceJsGenerator;
           };
           this.prototype.generateFromFiles = function(files) {
             let namespaces;
-            if (this.cleanup) {
-              this._cleanup(files);
-            }
+            this._cleanup(files);
             ({ namespaces } = new NamespaceStructure({
               root: this.root,
               files
@@ -363,11 +418,7 @@ Caf.defMod(module, () => {
           };
           this.prototype._cleanup = function(files) {
             let regex;
-            regex = RegExp(
-              `(\$|\\/)(index|namespace).${Caf.toString(
-                this.js ? "coffee" : "js"
-              )}\$`
-            );
+            regex = /($|\/)(index|namespace).coffee$/;
             return Caf.each2(
               files,
               file => {
@@ -449,7 +500,7 @@ Caf.defMod(module, () => {
             code
           }) {
             let commentStart;
-            name += this.js ? ".js" : ".coffee";
+            name += ".js";
             if (this.pretend) {
               this.infoLog(
                 `\ngenerated: ${Caf.toString(
@@ -458,7 +509,7 @@ Caf.defMod(module, () => {
               );
               this.infoLog(indent(code.green));
             }
-            commentStart = this.js ? "//" : "#";
+            commentStart = "//";
             code = `${Caf.toString(commentStart)} ${Caf.toString(
               generatedByStringBare
             )}\n${Caf.toString(commentStart)} file: ${Caf.toString(
@@ -474,13 +525,13 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 4)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 16)(module)))
 
 /***/ }),
-/* 4 */
-/*!*************************************************!*\
-  !*** ../node_modules/webpack/buildin/module.js ***!
-  \*************************************************/
+/* 16 */
+/*!***********************************!*\
+  !*** (webpack)/buildin/module.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -509,17 +560,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 5 */
-/*!******************************************************************************************!*\
-  !*** external "require('caffeine-script-runtime' /* ABC - not inlining fellow NPM *_/)" ***!
-  \******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('caffeine-script-runtime' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 6 */
+/* 17 */
 /*!*****************************************************!*\
   !*** ./source/NeptuneNamespaces/StandardImport.caf ***!
   \*****************************************************/
@@ -532,49 +573,19 @@ let Caf = __webpack_require__(/*! caffeine-script-runtime */ 5);
 Caf.defMod(module, () => {
   let out;
   out = {
-    glob: __webpack_require__(/*! glob-promise */ 7),
-    fsp: __webpack_require__(/*! fs-extra */ 8),
-    Path: __webpack_require__(/*! path */ 9)
+    glob: __webpack_require__(/*! glob-promise */ 6),
+    fsp: __webpack_require__(/*! fs-extra */ 7),
+    Path: __webpack_require__(/*! path */ 8)
   };
-  Caf.object(__webpack_require__(/*! ./Helper */ 10), null, null, out);
-  Caf.object(__webpack_require__(/*! ./MiniFoundation */ 12), null, null, out);
+  Caf.object(__webpack_require__(/*! ./Helper */ 18), null, null, out);
+  Caf.object(__webpack_require__(/*! ./MiniFoundation */ 20), null, null, out);
   return out;
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ 4)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 16)(module)))
 
 /***/ }),
-/* 7 */
-/*!*******************************************************************************!*\
-  !*** external "require('glob-promise' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('glob-promise' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 8 */
-/*!***************************************************************************!*\
-  !*** external "require('fs-extra' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('fs-extra' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 9 */
-/*!***********************************************************************!*\
-  !*** external "require('path' /* ABC - not inlining fellow NPM *_/)" ***!
-  \***********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('path' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 10 */
+/* 18 */
 /*!************************************************!*\
   !*** ./source/NeptuneNamespaces/Helper.coffee ***!
   \************************************************/
@@ -583,11 +594,11 @@ module.exports = require('path' /* ABC - not inlining fellow NPM */);
 
 var Helper, Path, arrayWithoutLast, fileWithoutExtension, log, max, pad, peek, ref, upperCamelCase, version;
 
-version = __webpack_require__(/*! ../../package.json */ 11).version;
+version = __webpack_require__(/*! ../../package.json */ 19).version;
 
-ref = __webpack_require__(/*! ./MiniFoundation */ 12), log = ref.log, upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast, pad = ref.pad;
+ref = __webpack_require__(/*! ./MiniFoundation */ 20), log = ref.log, upperCamelCase = ref.upperCamelCase, fileWithoutExtension = ref.fileWithoutExtension, peek = ref.peek, arrayWithoutLast = ref.arrayWithoutLast, pad = ref.pad;
 
-Path = __webpack_require__(/*! path */ 9);
+Path = __webpack_require__(/*! path */ 8);
 
 max = Math.max;
 
@@ -669,17 +680,17 @@ module.exports = Helper = (function() {
 
 
 /***/ }),
-/* 11 */
+/* 19 */
 /*!**********************!*\
   !*** ./package.json ***!
   \**********************/
-/*! exports provided: author, bin, dependencies, description, license, name, scripts, version, default */
+/*! exports provided: author, bin, bugs, dependencies, description, devDependencies, homepage, license, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","bin":{"neptune-namespaces":"./nn","nn":"./nn"},"dependencies":{"art-build-configurator":"*","neptune-namespaces-runtime":"*"},"description":"Generate index.coffee and namespace.coffee files from directory structures","license":"ISC","name":"neptune-namespaces","scripts":{"build":"webpack --progress","start":"webpack-dev-server --hot --inline --progress --env.devServer","test":"nn -s;mocha -u tdd","testInBrowser":"webpack-dev-server --progress --env.devServer"},"version":"3.4.2"};
+module.exports = JSON.parse("{\"author\":\"Shane Brinkman-Davis Delamore, Imikimi LLC\",\"bin\":{\"neptune-namespaces\":\"./nn\",\"nn\":\"./nn\"},\"bugs\":\"https:/github.com/art-suite/art-suite-foundations/issues\",\"dependencies\":{\"art-build-configurator\":\"*\",\"neptune-namespaces-runtime\":\"*\"},\"description\":\"Generate index.coffee and namespace.coffee files from directory structures\",\"devDependencies\":{\"art-testbench\":\"*\",\"case-sensitive-paths-webpack-plugin\":\"^2.2.0\",\"chai\":\"^4.2.0\",\"coffee-loader\":\"^0.7.3\",\"css-loader\":\"^3.0.0\",\"json-loader\":\"^0.5.7\",\"mocha\":\"^7.0.0\",\"mock-fs\":\"^4.10.0\",\"script-loader\":\"^0.7.2\",\"style-loader\":\"^1.0.0\",\"webpack\":\"^4.39.1\",\"webpack-cli\":\"*\",\"webpack-dev-server\":\"^3.7.2\",\"webpack-merge\":\"^4.2.1\",\"webpack-node-externals\":\"^1.7.2\",\"webpack-stylish\":\"^0.1.8\"},\"homepage\":\"https://github.com/art-suite/art-suite-foundations\",\"license\":\"ISC\",\"name\":\"neptune-namespaces\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/art-suite/art-suite-foundations.git\"},\"scripts\":{\"build\":\"webpack --progress\",\"start\":\"webpack-dev-server --hot --inline --progress --env.devServer\",\"test\":\"nn -s;mocha -u tdd\",\"testInBrowser\":\"webpack-dev-server --progress --env.devServer\"},\"version\":\"4.0.0\"}");
 
 /***/ }),
-/* 12 */
+/* 20 */
 /*!********************************************************!*\
   !*** ./source/NeptuneNamespaces/MiniFoundation.coffee ***!
   \********************************************************/
@@ -689,9 +700,9 @@ module.exports = {"author":"Shane Brinkman-Davis Delamore, Imikimi LLC\"","bin":
 var MiniFoundation, Path, colors,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-colors = __webpack_require__(/*! colors */ 13);
+colors = __webpack_require__(/*! colors */ 9);
 
-Path = __webpack_require__(/*! path */ 9);
+Path = __webpack_require__(/*! path */ 8);
 
 module.exports = MiniFoundation = (function() {
   var compactFlatten, escapeJavascriptString, formattedInspect, isFunction, isPlainArray, isPlainObject, isString, k, log, normalizeDirectory, ref, ref1, v;
@@ -699,7 +710,7 @@ module.exports = MiniFoundation = (function() {
   function MiniFoundation() {}
 
   if (v !== "Core") {
-    ref = __webpack_require__(/*! art-standard-lib/Core */ 14);
+    ref = __webpack_require__(/*! art-standard-lib/Core */ 10);
     for (k in ref) {
       v = ref[k];
       MiniFoundation[k] = v;
@@ -862,27 +873,7 @@ module.exports = MiniFoundation = (function() {
 
 
 /***/ }),
-/* 13 */
-/*!*************************************************************************!*\
-  !*** external "require('colors' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('colors' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 14 */
-/*!****************************************************************************************!*\
-  !*** external "require('art-standard-lib/Core' /* ABC - not inlining fellow NPM *_/)" ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 15 */
+/* 21 */
 /*!******************************************************!*\
   !*** ./source/NeptuneNamespaces/Generators/index.js ***!
   \******************************************************/
@@ -892,17 +883,15 @@ module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NP
 // generated by Neptune Namespaces v3.x.x
 // file: NeptuneNamespaces/Generators/index.js
 
-(module.exports = __webpack_require__(/*! ./namespace */ 16))
+(module.exports = __webpack_require__(/*! ./namespace */ 22))
 
 .addModules({
-  IndexGenerator:       __webpack_require__(/*! ./IndexGenerator */ 19),
-  IndexJsGenerator:     __webpack_require__(/*! ./IndexJsGenerator */ 20),
-  NamespaceGenerator:   __webpack_require__(/*! ./NamespaceGenerator */ 21),
-  NamespaceJsGenerator: __webpack_require__(/*! ./NamespaceJsGenerator */ 22)
+  IndexJsGenerator:     __webpack_require__(/*! ./IndexJsGenerator */ 24),
+  NamespaceJsGenerator: __webpack_require__(/*! ./NamespaceJsGenerator */ 25)
 });
 
 /***/ }),
-/* 16 */
+/* 22 */
 /*!**********************************************************!*\
   !*** ./source/NeptuneNamespaces/Generators/namespace.js ***!
   \**********************************************************/
@@ -912,14 +901,14 @@ module.exports = require('art-standard-lib/Core' /* ABC - not inlining fellow NP
 // generated by Neptune Namespaces v3.x.x
 // file: NeptuneNamespaces/Generators/namespace.js
 
-module.exports = __webpack_require__(/*! ../namespace */ 17).addNamespace(
+module.exports = __webpack_require__(/*! ../namespace */ 23).addNamespace(
   'Generators',
   class Generators extends Neptune.PackageNamespace {}
 );
 
 
 /***/ }),
-/* 17 */
+/* 23 */
 /*!***********************************************!*\
   !*** ./source/NeptuneNamespaces/namespace.js ***!
   \***********************************************/
@@ -929,89 +918,15 @@ module.exports = __webpack_require__(/*! ../namespace */ 17).addNamespace(
 // generated by Neptune Namespaces v3.x.x
 // file: NeptuneNamespaces/namespace.js
 
-module.exports = __webpack_require__(/*! neptune-namespaces */ 18).addNamespace(
+module.exports = __webpack_require__(/*! neptune-namespaces */ 11).addNamespace(
   'NeptuneNamespaces',
   (class NeptuneNamespaces extends Neptune.PackageNamespace {})
-  ._configureNamespace(__webpack_require__(/*! ../../package.json */ 11))
+  ._configureNamespace(__webpack_require__(/*! ../../package.json */ 19))
 );
-__webpack_require__(/*! ./Generators/namespace */ 16);
+__webpack_require__(/*! ./Generators/namespace */ 22);
 
 /***/ }),
-/* 18 */
-/*!*************************************************************************************!*\
-  !*** external "require('neptune-namespaces' /* ABC - not inlining fellow NPM *_/)" ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require('neptune-namespaces' /* ABC - not inlining fellow NPM */);
-
-/***/ }),
-/* 19 */
-/*!****************************************************************!*\
-  !*** ./source/NeptuneNamespaces/Generators/IndexGenerator.caf ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 5);
-Caf.defMod(module, () => {
-  return Caf.importInvoke(
-    ["compactFlatten", "requirePath", "alignColumns"],
-    [global, __webpack_require__(/*! ../StandardImport */ 6)],
-    (compactFlatten, requirePath, alignColumns) => {
-      let IndexGenerator;
-      return (IndexGenerator = Caf.defClass(
-        class IndexGenerator extends Object {},
-        function(IndexGenerator, classSuper, instanceSuper) {
-          this.generate = function(namespace) {
-            let includeInNamespace, generateNamespacedList, modules;
-            ({ includeInNamespace } = namespace);
-            generateNamespacedList = set =>
-              Caf.array(
-                Caf.array(set.namespaced, (path, namespaceName) => {
-                  return { namespaceName, path };
-                }).sort((a, b) => a.path.localeCompare(b.path)),
-                item => [
-                  " ",
-                  item.namespaceName + ":",
-                  `require '${Caf.toString(requirePath(item.path))}'`
-                ]
-              );
-            modules = generateNamespacedList(namespace.fileSet);
-            return compactFlatten([
-              Caf.array(
-                namespace.getAllNonNamespacedRequires(),
-                name => `require '${Caf.toString(requirePath(name))}'`
-              ),
-              "module.exports = require './namespace'",
-              includeInNamespace || modules.length > 0
-                ? "module.exports"
-                : undefined,
-              includeInNamespace &&
-                `.includeInNamespace require '${Caf.toString(
-                  requirePath(includeInNamespace)
-                )}'`,
-              modules.length > 0 ? ".addModules" : undefined,
-              alignColumns(modules),
-              Caf.array(
-                namespace.getAllNamespacedSubdirRequires(),
-                name => `require './${Caf.toString(name)}'`
-              )
-            ]).join("\n");
-          };
-        }
-      ));
-    }
-  );
-});
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 4)(module)))
-
-/***/ }),
-/* 20 */
+/* 24 */
 /*!******************************************************************!*\
   !*** ./source/NeptuneNamespaces/Generators/IndexJsGenerator.caf ***!
   \******************************************************************/
@@ -1024,7 +939,7 @@ let Caf = __webpack_require__(/*! caffeine-script-runtime */ 5);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["compactFlatten", "requirePath", "alignColumns"],
-    [global, __webpack_require__(/*! ../StandardImport */ 6)],
+    [global, __webpack_require__(/*! ../StandardImport */ 17)],
     (compactFlatten, requirePath, alignColumns) => {
       let IndexJsGenerator;
       return (IndexJsGenerator = Caf.defClass(
@@ -1087,96 +1002,10 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 4)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 16)(module)))
 
 /***/ }),
-/* 21 */
-/*!********************************************************************!*\
-  !*** ./source/NeptuneNamespaces/Generators/NamespaceGenerator.caf ***!
-  \********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-let Caf = __webpack_require__(/*! caffeine-script-runtime */ 5);
-Caf.defMod(module, () => {
-  return Caf.importInvoke(
-    ["isPathedNamespace", "peek", "PackageNamespaceClassName"],
-    [global, __webpack_require__(/*! ../StandardImport */ 6)],
-    (isPathedNamespace, peek, PackageNamespaceClassName) => {
-      let NamespaceGenerator;
-      return (NamespaceGenerator = Caf.defClass(
-        class NamespaceGenerator extends Object {},
-        function(NamespaceGenerator, classSuper, instanceSuper) {
-          this.getClassName = function({ namespaceName }) {
-            return isPathedNamespace(namespaceName)
-              ? peek(namespaceName.split("."))
-              : namespaceName;
-          };
-          this.getParentNamespacePath = function({ parent }) {
-            let temp;
-            return (temp = parent.parent && "../namespace") != null
-              ? temp
-              : parent.path;
-          };
-          this.generate = function(namespace, versionFile) {
-            let namespaceName,
-              isPathNamespace,
-              className,
-              parentNamespacePath,
-              requireParent;
-            namespaceName = namespace.namespaceName;
-            isPathNamespace = namespace.isPathNamespace;
-            className = this.getClassName(namespace);
-            parentNamespacePath = this.getParentNamespacePath(namespace);
-            requireParent = `(require '${Caf.toString(parentNamespacePath)}')`;
-            return `module.exports = ${Caf.toString(
-              (() => {
-                switch (false) {
-                  case !isPathNamespace:
-                    return `${Caf.toString(
-                      requireParent
-                    )}.vivifySubnamespace '${Caf.toString(namespaceName)}'`;
-                  case !(versionFile && namespace.getIsRootPackageNamespace()):
-                    return `${Caf.toString(
-                      requireParent
-                    )}.addNamespace '${Caf.toString(
-                      namespaceName
-                    )}', class ${Caf.toString(
-                      className
-                    )} extends ${Caf.toString(
-                      PackageNamespaceClassName
-                    )}\n  @version: require('${Caf.toString(
-                      versionFile
-                    )}').version`;
-                  default:
-                    return `${Caf.toString(
-                      requireParent
-                    )}.addNamespace('${Caf.toString(
-                      namespaceName
-                    )}', class ${Caf.toString(
-                      className
-                    )} extends ${Caf.toString(PackageNamespaceClassName)})`;
-                }
-              })()
-            )}\n${Caf.toString(
-              Caf.array(
-                namespace.getAllNamespacedSubdirRequires(),
-                name => `require './${Caf.toString(name)}/namespace'`
-              ).join(";\n")
-            )}`;
-          };
-        }
-      ));
-    }
-  );
-});
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 4)(module)))
-
-/***/ }),
-/* 22 */
+/* 25 */
 /*!**********************************************************************!*\
   !*** ./source/NeptuneNamespaces/Generators/NamespaceJsGenerator.caf ***!
   \**********************************************************************/
@@ -1188,13 +1017,24 @@ Caf.defMod(module, () => {
 let Caf = __webpack_require__(/*! caffeine-script-runtime */ 5);
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["PackageNamespaceClassName"],
-    [global, __webpack_require__(/*! ../StandardImport */ 6)],
-    PackageNamespaceClassName => {
+    ["isPathedNamespace", "peek", "PackageNamespaceClassName"],
+    [global, __webpack_require__(/*! ../StandardImport */ 17)],
+    (isPathedNamespace, peek, PackageNamespaceClassName) => {
       let NamespaceJsGenerator;
       return (NamespaceJsGenerator = Caf.defClass(
-        class NamespaceJsGenerator extends __webpack_require__(/*! ./NamespaceGenerator */ 21) {},
+        class NamespaceJsGenerator extends Object {},
         function(NamespaceJsGenerator, classSuper, instanceSuper) {
+          this.getClassName = function({ namespaceName }) {
+            return isPathedNamespace(namespaceName)
+              ? peek(namespaceName.split("."))
+              : namespaceName;
+          };
+          this.getParentNamespacePath = function({ parent }) {
+            let temp;
+            return (temp = parent.parent && "../namespace") != null
+              ? temp
+              : parent.path;
+          };
           this.generate = function(namespace, versionFile) {
             let namespaceName,
               isPathNamespace,
@@ -1250,10 +1090,10 @@ Caf.defMod(module, () => {
   );
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../node_modules/webpack/buildin/module.js */ 4)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../node_modules/webpack/buildin/module.js */ 16)(module)))
 
 /***/ }),
-/* 23 */
+/* 26 */
 /*!*****************************************************!*\
   !*** ./source/NeptuneNamespaces/PackageRoot.coffee ***!
   \*****************************************************/
@@ -1262,11 +1102,11 @@ Caf.defMod(module, () => {
 
 var PackageRoot, fs, normalizeDirectory, path;
 
-path = __webpack_require__(/*! path */ 9);
+path = __webpack_require__(/*! path */ 8);
 
-fs = __webpack_require__(/*! fs-extra */ 8);
+fs = __webpack_require__(/*! fs-extra */ 7);
 
-normalizeDirectory = __webpack_require__(/*! ./MiniFoundation */ 12).normalizeDirectory;
+normalizeDirectory = __webpack_require__(/*! ./MiniFoundation */ 20).normalizeDirectory;
 
 module.exports = PackageRoot = (function() {
   function PackageRoot() {}
@@ -1307,7 +1147,7 @@ module.exports = PackageRoot = (function() {
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /*!************************************************************!*\
   !*** ./source/NeptuneNamespaces/NamespaceStructure.coffee ***!
   \************************************************************/
@@ -1317,11 +1157,11 @@ module.exports = PackageRoot = (function() {
 var Namespace, NamespaceDir, NamespaceSet, NamespaceStructure, arrayWithoutLast, basename, fileWithoutExtension, globalNamespaceName, isPathedNamespace, log, merge, normalizeNamespaceName, peek, pushIfUnique, ref, ref1, shouldIncludeInNamespace, shouldNotAutoload, shouldNotNamespace, toFilename, toModuleName, upperCamelCase,
   slice = [].slice;
 
-ref = __webpack_require__(/*! ./MiniFoundation */ 12), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, log = ref.log, merge = ref.merge, arrayWithoutLast = ref.arrayWithoutLast, fileWithoutExtension = ref.fileWithoutExtension;
+ref = __webpack_require__(/*! ./MiniFoundation */ 20), upperCamelCase = ref.upperCamelCase, peek = ref.peek, pushIfUnique = ref.pushIfUnique, log = ref.log, merge = ref.merge, arrayWithoutLast = ref.arrayWithoutLast, fileWithoutExtension = ref.fileWithoutExtension;
 
-ref1 = __webpack_require__(/*! ./Helper */ 10), globalNamespaceName = ref1.globalNamespaceName, shouldNotAutoload = ref1.shouldNotAutoload, shouldNotNamespace = ref1.shouldNotNamespace, shouldIncludeInNamespace = ref1.shouldIncludeInNamespace, toFilename = ref1.toFilename, toModuleName = ref1.toModuleName;
+ref1 = __webpack_require__(/*! ./Helper */ 18), globalNamespaceName = ref1.globalNamespaceName, shouldNotAutoload = ref1.shouldNotAutoload, shouldNotNamespace = ref1.shouldNotNamespace, shouldIncludeInNamespace = ref1.shouldIncludeInNamespace, toFilename = ref1.toFilename, toModuleName = ref1.toModuleName;
 
-basename = __webpack_require__(/*! path */ 9).basename;
+basename = __webpack_require__(/*! path */ 8).basename;
 
 isPathedNamespace = Neptune.isPathedNamespace;
 
@@ -1611,20 +1451,31 @@ module.exports = NamespaceStructure = (function() {
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /*!**************************!*\
   !*** ./nnCommand.coffee ***!
   \**************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Commander, Generator, compactFlatten, log, promiseSequence, ref, root, run, standardRoots, version, withoutTrailingSlash;
+module.exports = __webpack_require__(/*! ./source/nnCommand */ 29);
 
-ref = __webpack_require__(/*! ./source/NeptuneNamespaces/MiniFoundation */ 12), log = ref.log, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, compactFlatten = ref.compactFlatten;
 
-Generator = __webpack_require__(/*! ./source/NeptuneNamespaces/Generator */ 3);
+/***/ }),
+/* 29 */
+/*!*********************************!*\
+  !*** ./source/nnCommand.coffee ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-version = __webpack_require__(/*! ./package.json */ 11).version;
+var Commander, Generator, NeptuneNamespaces, compactFlatten, log, promiseSequence, ref, root, run, standardRoots, version, withoutTrailingSlash;
+
+NeptuneNamespaces = __webpack_require__(/*! ./ */ 30);
+
+ref = NeptuneNamespaces.MiniFoundation, log = ref.log, withoutTrailingSlash = ref.withoutTrailingSlash, promiseSequence = ref.promiseSequence, compactFlatten = ref.compactFlatten;
+
+version = NeptuneNamespaces.version, Generator = NeptuneNamespaces.Generator;
 
 standardRoots = (function() {
   var i, len, ref1, results;
@@ -1637,7 +1488,7 @@ standardRoots = (function() {
   return results;
 })();
 
-Commander = __webpack_require__(/*! commander */ 26).version(version).usage('[options] <root ...>').option('-r, --root', 'list one or more --root arguments').option('-w, --watch', 'stay running, watch for changes, and automatically update').option('-v, --verbose', 'enable verbose output').option('-q, --quiet', 'suppress all output').option('-j, --js', 'output .js files instead of .coffee (experimental)').option('--cleanup', 'cleanup .coffee files if generating .js or visa-versa').option('-f, --force', 'overwrite all index and namespace files').option('-s, --std', "include the standard roots: " + (standardRoots.join(', '))).on("--help", function() {
+Commander = __webpack_require__(/*! commander */ 33).version(version).usage('[options] <root ...>').option('-r, --root', 'list one or more --root arguments').option('-w, --watch', 'stay running, watch for changes, and automatically update').option('-v, --verbose', 'enable verbose output').option('-q, --quiet', 'suppress all output').option('-j, --js', 'output .js files instead of .coffee (experimental)').option('--cleanup', 'cleanup .coffee files if generating .js or visa-versa').option('-f, --force', 'overwrite all index and namespace files').option('-s, --std', "include the standard roots: " + (standardRoots.join(', '))).on("--help", function() {
   return console.log("Generates 'namespace.(js|coffee)' and 'index.(js|coffee)' files to bind each specified root to the global Neptune namespace at runtime. \n\nRun with -v to see everything NN is doing.");
 }).parse(process.argv);
 
@@ -1696,7 +1547,159 @@ if (root.length === 0) {
 
 
 /***/ }),
-/* 26 */
+/* 30 */
+/*!*************************!*\
+  !*** ./source/index.js ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./NeptuneNamespaces */ 31);
+
+/***/ }),
+/* 31 */
+/*!*******************************************!*\
+  !*** ./source/NeptuneNamespaces/index.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// generated by Neptune Namespaces v3.x.x
+// file: NeptuneNamespaces/index.js
+
+(module.exports = __webpack_require__(/*! ./namespace */ 23))
+
+.addModules({
+  ArrayCompactFlatten: __webpack_require__(/*! ./ArrayCompactFlatten */ 32),
+  Generator:           __webpack_require__(/*! ./Generator */ 15),
+  Helper:              __webpack_require__(/*! ./Helper */ 18),
+  MiniFoundation:      __webpack_require__(/*! ./MiniFoundation */ 20),
+  NamespaceStructure:  __webpack_require__(/*! ./NamespaceStructure */ 27),
+  PackageRoot:         __webpack_require__(/*! ./PackageRoot */ 26),
+  StandardImport:      __webpack_require__(/*! ./StandardImport */ 17)
+});
+__webpack_require__(/*! ./Generators */ 21);
+
+/***/ }),
+/* 32 */
+/*!*************************************************************!*\
+  !*** ./source/NeptuneNamespaces/ArrayCompactFlatten.coffee ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var ArrayCompactFlatten, arraySlice, doFlattenInternal, flattenIfNeeded, isArguments, isArrayOrArguments, keepAll, needsFlatteningOrCompacting;
+
+arraySlice = Array.prototype.slice;
+
+isArguments = function(o) {
+  return o.constructor === Object && (typeof o.callee === "function") && (typeof o.length === "number");
+};
+
+isArrayOrArguments = function(o) {
+  return o && (o.constructor === Array || isArguments(o));
+};
+
+doFlattenInternal = function(array, keepTester, output) {
+  var a, i, len;
+  output || (output = []);
+  for (i = 0, len = array.length; i < len; i++) {
+    a = array[i];
+    if (isArrayOrArguments(a)) {
+      flattenIfNeeded(a, keepTester, output);
+    } else if (keepTester(a)) {
+      output.push(a);
+    }
+  }
+  return output;
+};
+
+needsFlatteningOrCompacting = function(array, keepTester) {
+  var a, i, len;
+  for (i = 0, len = array.length; i < len; i++) {
+    a = array[i];
+    if (isArrayOrArguments(a) || !keepTester(a)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+keepAll = function() {
+  return true;
+};
+
+flattenIfNeeded = function(array, keepTester, output) {
+  var i, len, v;
+  if (keepTester == null) {
+    keepTester = keepAll;
+  }
+  if (needsFlatteningOrCompacting(array, keepTester)) {
+    return doFlattenInternal(array, keepTester, output);
+  } else if (output) {
+    for (i = 0, len = array.length; i < len; i++) {
+      v = array[i];
+      output.push(v);
+    }
+    return output;
+  } else if (array.constructor !== Array) {
+    return arraySlice.call(array);
+  } else {
+    return array;
+  }
+};
+
+module.exports = ArrayCompactFlatten = (function() {
+  var compact, flatten, keepUnlessNullOrUndefined;
+
+  function ArrayCompactFlatten() {}
+
+  ArrayCompactFlatten.keepUnlessNullOrUndefined = keepUnlessNullOrUndefined = function(a) {
+    return a !== null && a !== void 0;
+  };
+
+  ArrayCompactFlatten.compact = compact = function(array, keepTester) {
+    var a, i, len;
+    if (keepTester == null) {
+      keepTester = keepUnlessNullOrUndefined;
+    }
+    for (i = 0, len = array.length; i < len; i++) {
+      a = array[i];
+      if (!keepTester(a)) {
+        return (function() {
+          var j, len1, results;
+          results = [];
+          for (j = 0, len1 = array.length; j < len1; j++) {
+            a = array[j];
+            if (keepTester(a)) {
+              results.push(a);
+            }
+          }
+          return results;
+        })();
+      }
+    }
+    return array;
+  };
+
+  ArrayCompactFlatten.flatten = flatten = function(firstArg) {
+    return flattenIfNeeded(arguments.length === 1 ? isArrayOrArguments(firstArg) ? firstArg : [firstArg] : arguments);
+  };
+
+  ArrayCompactFlatten.compactFlatten = function(array, keepTester) {
+    if (keepTester == null) {
+      keepTester = keepUnlessNullOrUndefined;
+    }
+    return flattenIfNeeded(array, keepTester);
+  };
+
+  return ArrayCompactFlatten;
+
+})();
+
+
+/***/ }),
+/* 33 */
 /*!****************************************************************************!*\
   !*** external "require('commander' /* ABC - not inlining fellow NPM *_/)" ***!
   \****************************************************************************/
