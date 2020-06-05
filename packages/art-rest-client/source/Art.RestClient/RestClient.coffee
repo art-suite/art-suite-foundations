@@ -24,9 +24,9 @@ StandardLib = require 'art-standard-lib'
 # with:
 #   xhr.js:     global.XMLHttpRequest ||= require 'xhr2'
 #   xhr.coffee: # empty
-# realRequire = eval 'require'
-# global.XMLHttpRequest ||= realRequire 'xhr2'
-require './.xhr2'
+realRequire = eval 'require'
+global.XMLHttpRequest ||= realRequire 'xhr2'
+# require './.xhr2'
 
 module.exports = class RestClient extends BaseClass
   @singletonClass()
