@@ -1,0 +1,14 @@
+
+import &StandardImport
+
+target: node: true
+package: (abcPackage) -> merge abcPackage,
+  description: "The Standard Library for JavaScript that aught to be."
+  dependencies:     &package.dependencies
+  devDependencies:  &package.devDependencies
+
+webpack:
+  targets:
+    index:  {}
+    Types:  {}
+    Core:   {}
