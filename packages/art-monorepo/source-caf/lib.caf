@@ -7,10 +7,10 @@ import &ArtStandardLib
     else {}
 
   writeJson: (file, data) ->
-    &fsExtra.writeFileSync file,
+    &fsExtra.writeFileSync
+      file
       consistentJsonStringify data, '  '
       + :\n
-
 
   loadAllPackages: ->
     &globPromise "!(node_modules)/*/**/package.json"

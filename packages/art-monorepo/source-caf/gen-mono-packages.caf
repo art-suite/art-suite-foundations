@@ -4,6 +4,8 @@ rootPackage = readJson :package.json
 rootPackage.dependencies = {}
 previousSubPackages = {}
 
+class HandledError extends Error
+
 addDep = (type, name, version, subPackage) ->
   intoPackageSet = rootPackage[type];
 
@@ -17,17 +19,22 @@ addDep = (type, name, version, subPackage) ->
     previousSubPackage = previousSubPackages[type][name]
     previousVersion = intoPackageSet[name]
 
-    log
-      """
-        CONFLICTING PACKAGE VERSIONS:
-          #{subPackage}: {'#{name}': '#{version}'}
-          #{previousSubPackage}: {'#{name}': '#{previousVersion}'}
+    log.warn "" CONFLICTING PACKAGE VERSIONS:
+    log.withOptions
+      color: true
+      unquoted: true
+      maxLineLength: 78
+      {}
+        dependency: name
+        conflictingPackages:
+          [subPackage.path + :/package.json]: version
+          [previousSubPackage.path + :/package.json]: previousVersion
 
-    throw new Error
-      ""
-        could not add #{type}: {'#{name}': '#{version}'}
-        from #{subPackage} because it's already '#{intoPackageSet[name]}'
-        from #{previousSubPackages[type][name]}
+    throw new HandledError
+      """
+        Missmatch conflict:
+          #{subPackage.path}: #{name}: '#{intoPackageSet[name]}'
+          #{previousSubPackage.path}: #{name}: '#{version}'
 
   else if !alreadyFileDep
     intoPackageSet[name] = version;
@@ -38,6 +45,7 @@ addDep = (type, name, version, subPackage) ->
 loadAllPackages()
 .then (packages) ->
   each _package, packageFolder from packages
+    _package.path = packageFolder
     _package extract name, dependencies, devDependencies
     log "package: #{packageFolder}"
 
@@ -46,3 +54,5 @@ loadAllPackages()
     addDep :dependencies, name, "file:#{packageFolder}"
 
   writeJson :package.json rootPackage
+.catch (error) ->
+  throw error unless error is HandledError

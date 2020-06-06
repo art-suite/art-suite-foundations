@@ -25,8 +25,8 @@ updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :depe
       file = packageRoot + :/package.json
       if changed
         updatedMap[packageRoot] = true
-        log update: file
-        _package = merge _package, [dependencySetName]: newDeps
+        log {} update: file
+        _package = packages[packageRoot] = merge _package, [dependencySetName]: newDeps
 
       writeJson file, _package
 
@@ -45,94 +45,3 @@ loadAllPackages().then (packages) ->
 
   unless objectHasKeys updatedMap
     log "Everything up to date."
-
-# loadAllPackages().then (packages) ->
-#   rootPackage = readJson :package.json
-#   rootPackage extract
-#     dependencies as rootDependencies
-#     devDependencies as rootDevDependencies
-
-#   rootDependencies = undefined unless rootDependencies && objectHasKeys rootDependencies
-#   rootDevDependencies = undefined unless rootDevDependencies && objectHasKeys rootDevDependencies
-
-#   each _package, file in packages
-#     _package extract dependencies, devDependencies
-#     dependencies = undefined unless dependencies && objectHasKeys dependencies
-#     devDependencies = undefined unless devDependencies && objectHasKeys devDependencies
-
-#     newDeps = updateDependencyVersions
-#       _package extract dependencies
-#       rootPackage.dependencies
-
-#     changed = newDeps && neq(newDeps, dependencies)
-
-#     newDevDeps = updateDependencyVersions
-#       _package extract devDependencies
-#       rootPackage.devDependencies
-
-#     changed ||= newDevDeps && neq(newDevDeps, devDependencies)
-
-#     if changed
-#       log file
-#       log merge {}
-#         dependencies
-#         devDependencies
-#         newDeps
-#         newDevDeps
-
-##
-  const glob = require("glob-promise");
-  const fs = require('fs-extra');
-  const {readJson} = require('./lib');
-
-  const currentPackage = readJson("package.json");
-  currentPackage.dependencies = {};
-  let previousSubPackages = {}
-
-  const eachFromObject = (obj, f) => {
-    let last;
-    if (obj) {
-      for (k in obj) {
-        last = f(obj[k], k)
-      }
-    }
-    return last;
-  }
-
-  const addDep = (type, name, version, subPackage) => {
-    // console.log({addDep:{type, name, version, subPackage}})
-    const into = currentPackage[type];
-
-    const existingDep = into[name];
-    const alreadyHaveDep = !!existingDep;
-    const alreadyFileDep = alreadyHaveDep && /^file:/.test(existingDep);
-    const settingFileDep = /^file:/.test(version);
-    const conflict = alreadyHaveDep && existingDep != version && alreadyFileDep == settingFileDep;
-
-    if (conflict) {
-      const previousSubPackage = previousSubPackages[type][name]
-      const previousVersion = into[name]
-      // console.log({into, type, name, version, subPackage, existingDep, previousSubPackages})
-      console.log('CONFLICTING PACKAGE VERSIONS:')
-      console.log(`  ${subPackage}: {'${name}': '${version}'}`);
-      console.log(`  ${previousSubPackage}: {'${name}': '${previousVersion}'}`);
-      throw new Error(`could not add ${type}: {'${name}': '${version}'} from ${subPackage} because it's already '${into[name]}' from ${previousSubPackages[type][name]}`)
-    } else if (!alreadyFileDep) {
-      // console.log(`set ${type}[${name}] to '${version}'`)
-      into[name] = version;
-    }
-    previousSubPackages[type] = previousSubPackages[type] || {}
-    previousSubPackages[type][name] = subPackage;
-  }
-
-  glob("!(node_modules)/*/**/package.json").then((result) => {
-    result.forEach(file => {
-      const [package, __] = file.split(/\/package.json$/);
-      const { name, dependencies, devDependencies } = readJson(file);
-      console.log(`package: ${package}`);
-      eachFromObject(dependencies, (v, k) => addDep("dependencies", k, v, package));
-      eachFromObject(devDependencies, (v, k) => addDep("dependencies", k, v, package));
-      addDep("dependencies", name, `file:${package}`);
-    });
-    fs.writeFileSync("package.json", JSON.stringify(currentPackage, null, '  '));
-  });

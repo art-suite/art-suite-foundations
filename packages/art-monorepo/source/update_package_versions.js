@@ -49,8 +49,9 @@ Caf.defMod(module, () => {
                 (file = packageRoot + "/package.json"),
                 changed
                   ? ((updatedMap[packageRoot] = true),
+                    log("-----------------------------"),
                     log({ update: file }),
-                    (_package = merge(_package, {
+                    (_package = packages[packageRoot] = merge(_package, {
                       [dependencySetName]: newDeps
                     })))
                   : undefined,
