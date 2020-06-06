@@ -256,6 +256,14 @@
       }
     };
 
+    Log.log.unquoted = function() {
+      var args, ref2;
+      args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+      return (ref2 = Log.log).withOptions.apply(ref2, [merge(standardOptions, {
+        unquoted: true
+      })].concat(slice.call(args)));
+    };
+
     Log.log.labeled = Log.log.withLabel;
 
     Log.log.error = function() {

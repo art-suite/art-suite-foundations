@@ -169,8 +169,8 @@ module.exports = class Log
       @log obj
       ret
 
+  @log.unquoted = (args...) => @log.withOptions merge(standardOptions, unquoted: true), args...
   @log.labeled = @log.withLabel
-
   @log.error = (args...) => @log.withOptions isError: true, args...
   @log.warn  = (args...) => @log.withOptions isWarning: true, args...
 
