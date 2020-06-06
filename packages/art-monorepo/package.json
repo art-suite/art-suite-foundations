@@ -1,7 +1,7 @@
 {
   "author": "Shane Brinkman-Davis Delamore",
   "dependencies": {
-    "art-standard-lib": "^1.67.0",
+    "art-standard-lib": "^1.68.0",
     "caffeine-script-runtime": "^1.13.3",
     "colors": "^1.4.0",
     "fs-extra": "^9.0.0",

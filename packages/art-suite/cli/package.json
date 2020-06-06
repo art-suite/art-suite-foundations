@@ -2,12 +2,12 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https:/github.com/art-suite/art-cli/issues",
   "dependencies": {
-    "art-build-configurator": "^1.26.10",
+    "art-build-configurator": "^1.26.11",
     "colors": "^1.4.0"
   },
   "description": "Art.Cli",
   "devDependencies": {
-    "art-testbench": "^1.17.3",
+    "art-testbench": "^1.17.4",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",

@@ -1,7 +1,7 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
   "dependencies": {
-    "art-build-configurator": "^1.26.10"
+    "art-build-configurator": "^1.26.11"
   },
   "description": "Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)",
   "license": "ISC",

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@art-suite/cli": "file:packages/art-cli",
+    "@art-suite/cli": "file:packages/art-suite/cli",
     "art-binary": "file:packages/art-binary",
     "art-browser-tools": "*",
     "art-build-configurator": "file:packages/art-build-configurator",
