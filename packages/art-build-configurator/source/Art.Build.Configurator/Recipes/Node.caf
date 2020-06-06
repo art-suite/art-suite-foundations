@@ -1,0 +1,43 @@
+import &StandardImport
+
+class Node extends &Recipe
+  @description: "" Boilerplate for writing a Node NPM for the art-suite. (base: core)
+
+  @getter files: ->
+    merge
+      @recipe &Core, node: true
+
+      index.js:
+        """
+          /*
+            NOTE: node PREFERS index.js OVER index.caf
+            I.E. webpack will ignore this file if index.caf is present.
+
+            use-build == true:  fast (no need to compile non-js files; all one file)
+            use-build == false: good for development of this package; don't have to re-build it to use it
+          */
+          if (require('./use-build')) {
+            module.exports = require('./build');
+          } else {
+            require('./register');
+            module.exports = require('./source');
+          };
+
+      index.caf:
+        """
+          ##
+            NOTE: webpack PREFERS index.caf OVER index.js
+            I.E. node will ignore this file if index.js is present.
+          &source
+
+      use-build.js:
+        """
+          /*
+            true:   load package from ./build
+            false:  load package from ./source
+
+            "use-build" is provided as a stand-alone file in case you
+            have multiple entry-points to your package. Each one can
+            reference this one value to decide to use ./build of ./source.
+          */
+          module.exports = true;

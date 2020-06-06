@@ -1,0 +1,41 @@
+target:
+  node: true
+
+npm:
+  dependencies:
+    # Art.Suite
+    neptune-namespaces:                   :*
+    art-object-tree-factory:              :*
+    art-build-configurator:               :*
+    art-class-system:                     :*
+    art-config:                           :*
+    art-standard-lib:                     :*
+    art-filebuilder:                      :*
+    art-browser-tools:                    :*
+
+    # Caffeine.Suite
+    caffeine-script:                      :*
+    caffeine-script-runtime:              :*
+
+    # compilers
+    coffee-script:                        :^1.12.7
+
+    # node baseline
+    bluebird:                             :^3.5.5
+    colors:                               :^1.4.0
+    commander:                            :^2.19.0
+    dateformat:                           :^3.0.3
+    detect-node:                          :^2.0.4
+    fs-extra:                             :^8.1.0
+    glob-promise:                         :^3.4.0
+    glob:                                 :^7.1.6
+
+  description: "" Tools for configuring npm (package.json) and webpack (webpack.config.js)
+
+  bin:
+    abc: :./abc
+    art-build-configurator: :./art-build-configurator
+
+webpack:
+  common: {}
+  targets: abcCommand: true, index: true
