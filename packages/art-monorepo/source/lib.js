@@ -33,7 +33,9 @@ Caf.defMod(module, () => {
                     while (i < to) {
                       let file;
                       file = from[i];
-                      into[file.split(/\/package.json$/)[0]] = readJson(file);
+                      if (!/node_modules\//.test(file)) {
+                        into[file.split(/\/package.json$/)[0]] = readJson(file);
+                      }
                       temp = i++;
                     }
                     return temp;
@@ -46,9 +48,7 @@ Caf.defMod(module, () => {
         execShellCommand: function(cmd) {
           return new Promise((resolve, reject) =>
             require("child_process").exec(cmd, (error, stdout, stderr) =>
-              error(reject(stderr || stdout))
-                ? undefined
-                : resolve(stdout || stderr)
+              error ? reject(stderr || stdout) : resolve(stdout || stderr)
             )
           );
         }
