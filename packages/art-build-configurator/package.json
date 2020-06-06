@@ -12,10 +12,10 @@
     "art-config": "^1.13.0",
     "art-filebuilder": "^2.1.1",
     "art-object-tree-factory": "^2.1.7",
-    "art-standard-lib": "^1.65.2",
+    "art-standard-lib": "^1.67.0",
     "bluebird": "^3.5.5",
     "caffeine-script": "*",
-    "caffeine-script-runtime": "*",
+    "caffeine-script-runtime": "^1.13.3",
     "coffee-script": "^1.12.7",
     "colors": "^1.4.0",
     "commander": "^5.0.0",
@@ -24,11 +24,11 @@
     "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
-    "neptune-namespaces": "^4.0.0"
+    "neptune-namespaces": "^4.2.0"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
-    "art-testbench": "^1.17.2",
+    "art-testbench": "^1.17.3",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",

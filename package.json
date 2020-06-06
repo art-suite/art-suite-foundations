@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@art-suite/cli": "file:packages/art-cli",
     "art-binary": "file:packages/art-binary",
     "art-browser-tools": "*",
     "art-build-configurator": "file:packages/art-build-configurator",
@@ -15,7 +16,7 @@
     "art-testbench": "file:packages/art-testbench",
     "bluebird": "^3.5.5",
     "caffeine-script": "*",
-    "caffeine-script-runtime": "*",
+    "caffeine-script-runtime": "^1.13.3",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -36,6 +37,7 @@
     "pluralize": "*",
     "script-loader": "^0.7.2",
     "style-loader": "^1.2.1",
+    "watch": "^1.0.0",
     "webpack": "^4.39.1",
     "webpack-cli": "*",
     "webpack-dev-server": "^3.11.0",

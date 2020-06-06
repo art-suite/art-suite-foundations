@@ -7,7 +7,7 @@
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
-    "art-testbench": "^1.17.2",
+    "art-testbench": "^1.17.3",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
