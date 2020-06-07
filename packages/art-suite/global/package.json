@@ -1,0 +1,13 @@
+{
+  "name": "@art-suite/global",
+  "dependencies": {
+    "global": "^4.4.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1"
+  },
+  "version": "1.0.0"
+}
