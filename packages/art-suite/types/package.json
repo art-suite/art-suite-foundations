@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@art-suite/global": "^1.0.0"
+  }, "scripts": {
+    "test": "nn -s;mocha -u tdd"
+  }
+}
