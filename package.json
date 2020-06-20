@@ -4,7 +4,7 @@
     "@art-suite/global": "file:packages/art-suite/global",
     "@art-suite/types": "file:packages/art-suite/types",
     "art-binary": "file:packages/art-binary",
-    "art-browser-tools": "*",
+    "art-browser-tools": "file:packages/art-browser-tools",
     "art-build-configurator": "file:packages/art-build-configurator",
     "art-class-system": "file:packages/art-class-system",
     "art-communication-status": "file:packages/art-communication-status",
