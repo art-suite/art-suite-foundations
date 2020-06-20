@@ -1,0 +1,46 @@
+import &StandardImport
+
+class NamespaceJsGenerator
+
+  @getClassName: ({namespaceName}) ->
+    if isPathedNamespace namespaceName
+          peek namespaceName.split '.'
+    else  namespaceName
+
+  @getParentNamespacePath: ({parent}) ->
+    parent.parent && "../namespace"
+    ? parent.path
+
+  @generate: (namespace, versionFile) ->
+    namespace extract namespaceName, isPathNamespace
+
+    className = @getClassName namespace
+    parentNamespacePath = @getParentNamespacePath namespace
+
+    requireParent = "" require('#{parentNamespacePath}')
+
+    """
+      module.exports = #{ switch
+        when isPathNamespace
+          "" module.exports =  #{requireParent}.vivifySubnamespace('#{namespaceName}');
+
+        when versionFile && namespace.getIsRootPackageNamespace()
+          """
+            #{requireParent}.addNamespace(
+              '#{namespaceName}',
+              (class #{className} extends #{PackageNamespaceClassName} {})
+              ._configureNamespace(require('#{versionFile}'))
+            );
+
+        else
+          """
+            #{requireParent}.addNamespace(
+              '#{namespaceName}',
+              class #{className} extends #{PackageNamespaceClassName} {}
+            );
+      }
+      #{
+        array name in namespace.getAllNamespacedSubdirRequires()
+          "require('./#{name}/namespace');"
+        .join "\n"
+      }

@@ -1,0 +1,16 @@
+target: node: true
+
+npm:
+  description:  :Art.Cli
+  name:         :@art-suite/cli
+
+  dependencies:
+    art-build-configurator: :*
+    colors: :^1.4.0
+
+webpack:
+  # common properties are merged into each target's properties
+  common: {}
+
+  # each target's individual properties
+  targets: index: {}

@@ -1,0 +1,6 @@
+if notPublished
+  tagName = :published
+  """
+    npm publish
+    git tag -f #{tagName}
+    git push origin "#{tagName}" --force

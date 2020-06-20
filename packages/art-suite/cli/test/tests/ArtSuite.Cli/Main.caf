@@ -1,0 +1,65 @@
+import &StandardImport
+import ArtCli.Main
+
+expectedGoOutput = :go-go-go
+
+suite: ->
+  test "start + go" ->
+    goRan = false
+    start
+      commands: go: -> goRan = true
+      argv: :nodeJs :startFile :go
+      output: assert.true
+
+    .then (out) ->
+      assert.true out
+
+      assert.eq
+        {} goRan
+        goRan: true
+
+  test "start with no args" ->
+    goRan = false
+    start
+      commands: go: -> goRan = true
+      argv: :nodeJs :startFile
+      output: ->
+
+    .then stripAnsi
+    .then (output) ->
+      assert.match output, "startFile go"
+      assert.eq
+        {} goRan
+        goRan: false
+
+  test "start with no args and default" ->
+    goOutput = undefined
+
+    start
+      commands:
+        default: :go
+        go: -> goOutput = expectedGoOutput
+      argv: :nodeJs :startFile
+      output: assert.true
+
+    .then stripAnsi
+    .then (output) ->
+      assert.match output, expectedGoOutput
+      assert.eq
+        {} goOutput
+        goOutput: expectedGoOutput
+
+  test "start + noGo" ->
+    goRan = false
+    start
+      commands: go: -> goRan = true
+      argv: :nodeJs :startFile :noGo
+      output: ->
+
+    .then stripAnsi
+    .then (output) ->
+      assert.match output, "startFile go"
+      assert.eq
+        {} goRan
+        goRan: false
+

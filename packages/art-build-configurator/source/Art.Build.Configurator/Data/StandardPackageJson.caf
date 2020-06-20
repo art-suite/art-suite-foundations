@@ -1,0 +1,78 @@
+import &ArtStandardLib
+
+class StandardPackageJson
+
+  @getGitInfo: ->
+    &shellExecSimple "" git remote -v
+    .then (lines) -> merge
+      if match = find line in lines.split /\n/g
+          line
+          .trim()
+          .match
+            ///i
+              ^origin\t
+
+              (git@|https?://)
+
+              ([^\s/:]+)
+
+              [:/]
+
+              ( (?: (?!\.\w+\b) [^\s] )+ )
+
+              \.?
+
+              (\w+)?
+
+        [_1, _2, domain, path, extension] = match
+
+        bugs = homepage = "" https://#{domain}/#{path}
+        if domain == :github.com
+          bugs = &path.join bugs, :issues
+
+        {}
+          repository:
+            url:  homepage + ".#{extension}"
+            type: extension
+
+          homepage
+          bugs
+    .catch -> {}
+
+  @get: (abcConfig)->
+    @getGitInfo()
+    .then (gitInfo) -> merge
+      gitInfo
+      license:      :ISC
+      name:         peek process.cwd().split :/
+      version:
+        &fs.existsSync :package.json
+        && JSON.parse
+            &fs.readFileSync :package.json
+            .toString()
+          .version
+        ? :0.0.1
+
+      author:           "" Shane Brinkman-Davis Delamore, Imikimi LLC
+      dependencies:     &StandardDependencies
+      devDependencies:  &StandardDevDependencies
+      scripts: merge
+        # https://docs.npmjs.com/misc/scripts#description
+        # standard life-cycle scripts
+        test:
+          if abcConfig?.target?.node
+                        "" nn -s;mocha -u tdd
+          else          "" webpack-dev-server  --progress --env.devServer
+        start:          "" webpack-dev-server --hot --inline --progress --env.devServer
+
+        testInBrowser: if abcConfig?.target?.node
+                        "" webpack-dev-server --progress --env.devServer
+
+        build:          "" webpack --progress
+
+        # ArtSuite scripts
+        # nodeTest: 'nn -s; mocha -u tdd --compilers coffee:coffee-script/register'
+        # dev:      'nn -s; webpack-dev-server -d --progress'
+        # hot:      'nn -s; webpack-dev-server --hot --inline --progress'
+        # nn:       'nn -s'
+
