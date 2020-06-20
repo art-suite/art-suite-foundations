@@ -2,4 +2,4 @@
 // file: Art/namespace.js
 
 module.exports = module.exports =  require('neptune-namespaces-runtime').vivifySubnamespace('Art');
-require('./EpochedState/namespace');
+require('./Events/namespace');
