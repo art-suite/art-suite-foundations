@@ -4,10 +4,8 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  ArtChaiTest:               require('./ArtChai.test'),
   AssertMatchTest:           require('./assert.match.test'),
   AssertResolvesRejectsTest: require('./assert.resolves_rejects.test'),
   AssertSameTest:            require('./assert.same.test'),
-  AssertWithin:              require('./assert.within'),
-  ResolvesRejectsTest:       require('./resolves_rejects.test')
+  AssertWithin:              require('./assert.within')
 });

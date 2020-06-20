@@ -1,0 +1,19 @@
+import
+  require :../ArtChai
+  global
+
+test 'assert.same' ->
+  assert.same 0, 0
+  a = {}
+  assert.same a, a
+  assert.rejects ->
+    assert.same 0, 1
+    assert.same a, {}
+
+test 'assert.notSame' ->
+  assert.notSame 0, 1
+  a = {}
+  assert.notSame a, {}
+  assert.rejects ->
+    assert.notSame 0, 0
+    assert.notSame a, a
