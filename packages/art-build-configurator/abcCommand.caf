@@ -1,0 +1,51 @@
+&colors
+
+ArtBuildConfigurator = Neptune.Art.Build.Configurator
+
+realRequire = eval :require
+
+unless &useBuild then console.log "\nDEV-WARNING: use-build == false".yellow
+
+
+{git, pv, pretend, configure, init, force, verbose, app, require: requireOption} = commander =
+  &commander
+  .option '-c, --configure'         "" configure and update all
+  .option '-v, --verbose'           "" verbose
+  .option '-r, --require [source]'  "" require(source) - use to register recipes
+  .option '-p, --pretend'           "" show the configs that will be generated without writing them
+  .option '-f, --force'             "" when initialize, force overwrite all
+  .option '-i, --init [recipe]'     "" initialize a new Art-style project [default recipe: core]
+  .option '--git'                   "" init git (unless .git is already present)
+  .option '--pv'                    "" show YOUR package's current version
+  .version &package.version
+  .on     :--help ->
+    console.log
+      """
+
+        #{} "art-build-configurator (abc) - initialize and configure ArtSuiteJS projects".white
+
+        Config: #{ArtBuildConfigurator.configFilename.green}
+
+        Managed: (don't edit directly, edit abc's config)
+        - #{} "package.json".green
+        - #{} "webpack.config.js".green
+
+  .parse process.argv
+
+switch
+when pv
+  console.log ArtBuildConfigurator.Versioning.current
+
+when pretend || configure || init || git
+  if requireOption is String
+    console.log "loading: require ".blue + "'#{requireOption}'".green
+    realRequire requireOption
+  ArtBuildConfigurator.go
+    process.cwd()
+    {} pretend, configure, init, force, verbose, app, git
+
+  .tap -> console.log "success".green
+  .catch (e) -> &ArtStandardLib.log.error e
+
+else
+  commander.outputHelp()

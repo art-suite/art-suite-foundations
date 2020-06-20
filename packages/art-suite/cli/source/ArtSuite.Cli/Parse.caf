@@ -1,0 +1,102 @@
+import &StandardImport
+
+isNonClassFunction = (f) ->
+  isFunction f
+  && !isClass f
+
+class Parse
+  @optionRegExp: /^--(.+)$/
+  @evalJsRegExp: /^js:(.*)$/
+  @typedArgumentRegExp: /^([a-z]+):(.*)$/
+  @numberRegExp:
+    ///i
+      ^
+      [-+]?
+      ( # floating point
+        [0-9]*
+        \.
+        [0-9]+
+      | # integer
+        [0-9]+
+      )
+
+      # exponent
+      ([eE][-+]?[0-9]+)?
+      $
+
+  @parseArgs: (args)=>
+    currentOptionName = :argument
+    commands = currentOption = []
+    each argument, i in args into parsedOptions = {}
+      if option = argument.match @optionRegExp
+        currentOption = parsedOptions[currentOptionName = lowerCamelCase option[1]] = []
+      else
+        currentOption.push
+          switch
+          when argument == :true then true
+          when argument == :false then false
+          when @numberRegExp.test argument then argument / 1
+          when typedMatch = @typedArgumentRegExp.exec argument
+            [__, type, value] = typedMatch
+            switch type
+            when :string
+              value
+            when :json
+              try JSON.parse value
+              catch error
+                log.error
+                  JsonParseError: {}
+                    option: currentOptionName
+                    type
+                    value
+                    argument
+                    error: error.message
+                throw error
+
+            when :js
+              try eval value
+              catch error
+                log.error
+                  JavaScriptEvalError: {}
+                    option: currentOptionName
+                    type
+                    value
+                    argument
+                    error: error.message
+                throw error
+
+            else throw new Error "invalid data-type '#{type}:' in: #{argument}\nExpecting: 'string:' or 'js:'"
+          else argument
+
+    {}
+      commands
+      options: object o, k in parsedOptions
+        switch o.length
+        when 0 then true
+        when 1 then o[0]
+        else o
+
+  @selectCommand: (commands, commandNames) ->
+    [commandName, args...] = commandNames
+
+    commands = object v, k from commands with-key lowerCamelCase k
+
+    unless isNonClassFunction commandFunction = commands[lowerCamelCase commandName]
+      unless isNonClassFunction commandFunction = commands[commandName = commands.default]
+        commandFunction = undefined
+        commandName = undefined
+      args = commandNames
+
+    merge {}
+      commandFunction
+      commandName
+      args: if args.length > 0 then args
+
+  @parseAndSelectCommand: (commands, args) =>
+    {options, commands: commandNames} = @parseArgs args
+    {commandFunction, commandName, args} = @selectCommand commands, commandNames
+    {}
+      commandFunction
+      commandName
+      args
+      options

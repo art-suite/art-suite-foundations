@@ -1,0 +1,11 @@
+import &StandardImport
+
+class RecipeRegistry extends BaseClass
+
+  @recipes = {}
+
+  @register: (recipeClass) ->
+    @recipes[dashCase recipeClass.name] = recipeClass
+
+  @classGetter
+    recipeNames: -> Object.keys @recipes

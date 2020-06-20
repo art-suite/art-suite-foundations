@@ -1,0 +1,5 @@
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &ArtObjectTreeFactory
+  &ArtBinary
+  {} &Path
