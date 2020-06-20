@@ -1,7 +1,7 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC\"",
   "dependencies": {
-    "art-standard-lib": "^1.68.0",
+    "art-standard-lib": "^1.69.0",
     "coffee-script": "^1.12.7"
   },
   "description": "Neptune.Namespaces.Runtime",

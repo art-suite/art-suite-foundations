@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@art-suite/cli": "file:packages/art-suite/cli",
+    "@art-suite/global": "file:packages/art-suite/global",
+    "@art-suite/types": "file:packages/art-suite/types",
     "art-binary": "file:packages/art-binary",
     "art-browser-tools": "*",
     "art-build-configurator": "file:packages/art-build-configurator",
@@ -29,12 +31,13 @@
     "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
+    "jest": "^26.0.1",
     "json-loader": "^0.5.7",
     "mocha": "^7.2.0",
     "mock-fs": "^4.10.0",
     "neptune-namespaces": "file:packages/neptune-namespaces",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
-    "pluralize": "*",
+    "pluralize": "^8.0.0",
     "script-loader": "^0.7.2",
     "style-loader": "^1.2.1",
     "watch": "^1.0.0",
