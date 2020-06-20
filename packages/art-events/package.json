@@ -1,8 +1,8 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "dependencies": {
-    "art-build-configurator": "*",
-    "art-epoched-state": "*"
+    "art-build-configurator": "^1.26.11",
+    "art-epoched-state": "^1.2.1"
   },
   "description": "Epoched event system",
   "license": "ISC",
