@@ -1,0 +1,47 @@
+import &ArtStandardLib, &Presentation, &Chai, &ArtChaiLib
+&ArtChaiOld
+
+promisify = (a) ->
+  if isFunction a
+    Promise.then -> a()
+  else if isPromise a
+    a
+  else Promise.resolve a
+
+assert.resolves = (a, context) ->
+  promisify a
+  .then
+    (v) -> v
+    (v) ->
+      failWithExpectedMessage
+        context
+        a
+        "" to be resolved. Instead, it rejected with:
+        v
+
+
+# returns a
+# Either use as last line of test, or follow with .then ->
+assert.rejects = (a, context) ->
+  promisify a
+  .then
+    (v) ->
+      failWithExpectedMessage
+        context
+        a
+        "to be rejected. Instead, it succeeded with:"
+        v
+    (v) -> v
+
+# generalize this if we have more assert functions with TWO binary tests
+assert.within = (a, b, c, context) ->
+  if a && a.gte && a.lte
+    failWithExpectedMessage context, a, "to be gte", b, "to be lte", c unless a.gte(b) and a.lte(c)
+  else
+    failWithExpectedMessage context, a, "to be >=",  b, "to be <=" , c unless a >= b and a <= c
+
+# Ruby/Caffeine Truth
+addTester "true",         (a) -> a != false && a?
+addTester "false",        (a) -> a == false || !a?
+
+&Chai

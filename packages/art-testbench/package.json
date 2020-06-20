@@ -31,10 +31,12 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "webpack --progress",
+    "build": "coffee --output source --compile source-coffee-caf &\ncaf -p -c source-coffee-caf -o source &\nwait\nnn -s",
+    "build-clean": "rm -rf source/*; npm run build",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
     "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress --env.devServer"
+    "testInBrowser": "webpack-dev-server --progress --env.devServer",
+    "watch": "watch 'npm run build' ./source-coffee-caf"
   },
   "version": "1.17.4"
 }

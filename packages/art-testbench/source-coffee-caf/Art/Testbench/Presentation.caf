@@ -1,0 +1,38 @@
+import &ArtStandardLib
+
+{}
+  maxLength = 80
+  indent = (str) -> '  ' + str.replace /\n/g, "\n  "
+  format = (val) ->
+    formattedInspect val, maxLength
+
+  failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
+    # log.error ArtTestbenchChaiFailure:
+    #   context:
+    #     if isString context
+    #       context
+    #     else
+    #       formattedInspect context
+    #   expected: compact [
+    #     a, verb, b
+    #     verb2 if verb2
+    #     c if verb2
+    #   ]
+
+    failWithExpectedMessageBase context, a, b, [
+      indent format a
+      verb
+      indent format b
+      [verb2, indent format c] if verb2
+    ]
+
+  failWithExpectedMessageBase = (context, a, b, lines) ->
+    &Chai.assert.fail a, b, compactFlattenJoin("\n\n", [
+      if context
+        if isString context
+          context
+        else
+          formattedInspect context
+      "expected"
+      lines
+    ]) + "\n"
