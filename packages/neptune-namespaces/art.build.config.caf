@@ -1,0 +1,20 @@
+target:
+  node: true
+package:
+  description: "Generate index.coffee and namespace.coffee files from directory structures",
+  bin:
+    neptune-namespaces: :./nn
+    nn:                 :./nn
+
+  dependencies:
+    neptune-namespaces-runtime: :*
+
+  scripts:
+    build: "coffee --output source --compile source-coffee;caf -p -c source-caf -o source;nn -s"
+
+webpack:
+  common: target: "node"
+  targets:
+    index: {}
+    generator: {}
+    nnCommand: {}

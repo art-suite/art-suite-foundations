@@ -1,0 +1,49 @@
+import &StandardImport
+
+class IndexJsGenerator
+  @generate: (namespace) ->
+    {includeInNamespace} = namespace
+
+    generateNamespacedList = (set) ->
+      array item, index in list =
+          array path, namespaceName in set.namespaced
+            {} namespaceName, path
+          .sort((a, b) -> a.path.localeCompare b.path)
+
+        []
+          " "
+          item.namespaceName + ":"
+          "require('#{requirePath item.path}')#{',' if index < list.length - 1}"
+
+    modules = generateNamespacedList namespace.fileSet
+
+    setExportString = "" module.exports = require('./namespace')
+
+    compactFlatten []
+
+      array name in namespace.getAllNonNamespacedRequires()
+        "" require('#{requirePath name}');
+
+      if includeInNamespace || modules.length > 0
+        """
+          (#{setExportString})
+          #{
+            if includeInNamespace
+              "" .includeInNamespace(require('#{requirePath includeInNamespace}'))
+          }
+          #{
+            if modules.length > 0
+              """
+                .addModules({
+                #{}
+                  compactFlatten alignColumns modules
+                  .join "\n"
+                })
+          };
+
+      else  "" #{setExportString};
+
+      array name in namespace.getAllNamespacedSubdirRequires()
+        "require('./#{name}');"
+
+    .join "\n"

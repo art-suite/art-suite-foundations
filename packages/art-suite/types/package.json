@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@art-suite/global": "^1.0.0"
+  },
+  "name": "@art-suite/types",
+  "scripts": {
+    "test": "nn -s;mocha -u tdd"
+  }
+}

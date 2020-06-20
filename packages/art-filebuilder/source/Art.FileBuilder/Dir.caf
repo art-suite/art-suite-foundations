@@ -1,0 +1,19 @@
+import &StandardImport
+Path = &Path
+
+createObjectTreeFactory
+  class DirClass extends BaseClass
+    constructor: (@props = {}, @children = []) ->
+      super
+      [dirname, children...] = @children
+      @props.dirname = dirname
+      @children = children
+
+    @getter
+      plainObjects: ->
+        [@props.dirname]:
+          merge (array child in @children with child.plainObjects || child)...
+
+    write: (options = {}) ->
+      path = Path.join options.path || '.', @props.dirname
+      array child in @children do child.write merge options, {path}

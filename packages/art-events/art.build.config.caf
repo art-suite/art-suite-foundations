@@ -1,0 +1,10 @@
+target: node: true
+package:
+  description: 'Epoched event system'
+  dependencies:
+    art-epoched-state: :*
+
+webpack:
+  common: {}
+  targets:
+    index: {}

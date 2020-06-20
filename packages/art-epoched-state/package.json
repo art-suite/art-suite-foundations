@@ -1,0 +1,16 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "dependencies": {
+    "art-build-configurator": "^1.26.11"
+  },
+  "description": "Art.Epoch",
+  "license": "ISC",
+  "name": "art-epoched-state",
+  "scripts": {
+    "build": "webpack --progress",
+    "start": "webpack-dev-server --hot --inline --progress",
+    "test": "nn -s;mocha -u tdd",
+    "testInBrowser": "webpack-dev-server --progress"
+  },
+  "version": "1.2.1"
+}

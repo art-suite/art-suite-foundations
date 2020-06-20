@@ -1,0 +1,47 @@
+import &lib, &ArtStandardLib
+fs = &fsExtra
+
+updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDeps?
+  # log {} fromDeps, toDeps
+  object fromVersion, packageName in fromDeps
+    if (toVersion = toDeps[packageName]) && fromVersion != toVersion
+      if fileRefMatch = toVersion.match /// ^file:(.*)$
+        "" ^#{packages[fileRefMatch[1]].version}
+      else
+        toVersion
+    else
+      fromVersion
+
+updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :dependencies, updatedMap = {}) ->
+  rootDeps = merge rootPackage.dependencies, rootPackage.devDependencies
+  return unless objectHasKeys rootDeps
+
+  each _package, packageRoot in packages into updatedMap
+    if objectHasKeys deps = _package[dependencySetName]
+
+      newDeps = updateDependencyVersions packages, deps, rootDeps
+      changed = newDeps && neq(newDeps, deps)
+
+      file = packageRoot + :/package.json
+      if changed
+        updatedMap[packageRoot] = true
+        log {} update: file
+        _package = packages[packageRoot] = merge _package, [dependencySetName]: newDeps
+
+      writeJson file, _package
+
+loadAllPackages().then (packages) ->
+  rootPackage = readJson :package.json
+
+  updatedMap = updateAllPackageDependencies
+    rootPackage
+    packages
+
+  updateAllPackageDependencies
+    rootPackage
+    packages
+    :devDependencies
+    updatedMap
+
+  unless objectHasKeys updatedMap
+    log "Everything up to date."

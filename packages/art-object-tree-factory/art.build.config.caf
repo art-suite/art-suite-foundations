@@ -1,0 +1,8 @@
+target: node: true
+
+package:
+  description: "Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)"
+
+webpack:
+  targets:
+    index: {}
