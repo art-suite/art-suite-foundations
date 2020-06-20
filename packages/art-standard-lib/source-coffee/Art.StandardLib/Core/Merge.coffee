@@ -17,8 +17,12 @@ module.exports = class Merge
 
   @mergeWithoutNulls: (all...) -> mergeIntoWithNullDeletes {}, all
 
-  @mergeWithSelf: (all...) ->
+  # New, better name
+  @mergeWith: (all...) ->
     mergeInto {}, @, all
+
+  # ALIAS - DEPRECATE?
+  @mergeWithSelf: @mergeWith
 
   ###
   The same as 'merge' with one difference:
