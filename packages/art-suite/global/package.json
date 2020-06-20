@@ -1,8 +1,5 @@
 {
   "name": "@art-suite/global",
-  "dependencies": {
-    "global": "^4.4.0"
-  },
   "scripts": {
     "test": "jest"
   },
