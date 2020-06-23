@@ -34,7 +34,7 @@
     "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
-    "jest": "^26.0.1",
+    "jest": "^26.1.0",
     "json-loader": "^0.5.7",
     "mocha": "^7.2.0",
     "mock-fs": "^4.10.0",
@@ -59,6 +59,8 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "test": "./run-all-tests.js"
+    "sync": "art-monorepo sync",
+    "test": "art-monorepo test",
+    "update": "art-monorepo update"
   }
 }

@@ -8,9 +8,7 @@
     "@art-suite/cli": "^1.1.2",
     "colors": "^1.4.0"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "@art-suite/monorepo",
@@ -21,8 +19,7 @@
   "scripts": {
     "build": "caf -p -c source-caf -o source; nn -s",
     "clean": "rm -rf source/*",
-    "build-clean": "npm run clean; npm run build",
-    "test": "cp aosdifh aosidfj"
+    "build-clean": "npm run clean; npm run build"
   },
-  "version": "1.0.2"
+  "version": "1.1.1"
 }
