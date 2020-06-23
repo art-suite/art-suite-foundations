@@ -4,12 +4,8 @@
     "art-monorepo": "./art-monorepo"
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
-  "dependencies": {
-    
-  },
-  "devDependencies": {
-    
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "art-monorepo",
@@ -20,5 +16,5 @@
   "scripts": {
     "build": "caf -p -c source-caf -o source"
   },
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
