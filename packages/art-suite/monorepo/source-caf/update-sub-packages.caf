@@ -16,17 +16,23 @@ updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :depe
   return unless objectHasKeys rootDeps
 
   each _package, packageRoot in packages into updatedMap
+    originalPackage = _package
+
     if objectHasKeys deps = _package[dependencySetName]
 
       newDeps = updateDependencyVersions packages, deps, rootDeps
       changed = newDeps && neq(newDeps, deps)
 
-      file = packageRoot + :/package.json
       if changed
-        updatedMap[packageRoot] = true
-        log {} update: file
         _package = packages[packageRoot] = merge _package, [dependencySetName]: newDeps
 
+    if universalUpdates
+      _package = merge _package, universalUpdates
+
+    if neq originalPackage, _package
+      updatedMap[packageRoot] = true
+      file = packageRoot + :/package.json
+      log {} update: file
       writeJson file, merge _package, universalUpdates
 
 updateSubPackages = ->
@@ -45,7 +51,9 @@ updateSubPackages = ->
       updatedMap
       {author, bugs, homepage, license, repository} = rootPackage
 
-    unless objectHasKeys updatedMap
+    if 0 < updateCount = objectKeyCount updatedMap
+      log "" Updated #{pluralize :package, updateCount}
+    else
       log "Everything up to date."
 
     null

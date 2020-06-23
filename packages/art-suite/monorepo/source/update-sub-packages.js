@@ -9,10 +9,22 @@ Caf.defMod(module, () => {
       "log",
       "writeJson",
       "loadAllPackages",
-      "readJson"
+      "readJson",
+      "objectKeyCount",
+      "pluralize"
     ],
     [global, require("art-standard-lib"), require("./lib")],
-    (merge, objectHasKeys, neq, log, writeJson, loadAllPackages, readJson) => {
+    (
+      merge,
+      objectHasKeys,
+      neq,
+      log,
+      writeJson,
+      loadAllPackages,
+      readJson,
+      objectKeyCount,
+      pluralize
+    ) => {
       let updateDependencyVersions,
         updateAllPackageDependencies,
         updateSubPackages;
@@ -44,18 +56,24 @@ Caf.defMod(module, () => {
         return Caf.each2(
           packages,
           (_package, packageRoot) => {
-            let deps, newDeps, changed, file;
-            return objectHasKeys((deps = _package[dependencySetName]))
-              ? ((newDeps = updateDependencyVersions(packages, deps, rootDeps)),
-                (changed = newDeps && neq(newDeps, deps)),
+            let originalPackage, deps, newDeps, changed, file;
+            originalPackage = _package;
+            if (objectHasKeys((deps = _package[dependencySetName]))) {
+              newDeps = updateDependencyVersions(packages, deps, rootDeps);
+              changed = newDeps && neq(newDeps, deps);
+              if (changed) {
+                _package = packages[packageRoot] = merge(_package, {
+                  [dependencySetName]: newDeps
+                });
+              }
+            }
+            if (universalUpdates) {
+              _package = merge(_package, universalUpdates);
+            }
+            return neq(originalPackage, _package)
+              ? ((updatedMap[packageRoot] = true),
                 (file = packageRoot + "/package.json"),
-                changed
-                  ? ((updatedMap[packageRoot] = true),
-                    log({ update: file }),
-                    (_package = packages[packageRoot] = merge(_package, {
-                      [dependencySetName]: newDeps
-                    })))
-                  : undefined,
+                log({ update: file }),
                 writeJson(file, merge(_package, universalUpdates)))
               : undefined;
           },
@@ -71,7 +89,8 @@ Caf.defMod(module, () => {
             bugs,
             homepage,
             license,
-            repository;
+            repository,
+            updateCount;
           rootPackage = readJson("package.json");
           updatedMap = updateAllPackageDependencies(rootPackage, packages);
           updateAllPackageDependencies(
@@ -82,7 +101,9 @@ Caf.defMod(module, () => {
             (({ author, bugs, homepage, license, repository } = rootPackage),
             { author, bugs, homepage, license, repository })
           );
-          if (!objectHasKeys(updatedMap)) {
+          if (0 < (updateCount = objectKeyCount(updatedMap))) {
+            log(`Updated ${Caf.toString(pluralize("package", updateCount))}`);
+          } else {
             log("Everything up to date.");
           }
           return null;
