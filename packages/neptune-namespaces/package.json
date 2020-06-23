@@ -4,7 +4,7 @@
     "neptune-namespaces": "./nn",
     "nn": "./nn"
   },
-  "bugs": "https:/github.com/art-suite/art-suite-foundations/issues",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-build-configurator": "^1.26.11",
     "neptune-namespaces-runtime": "^3.2.0"

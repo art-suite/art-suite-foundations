@@ -1,6 +1,6 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-  "bugs": "https:/github.com/art-suite/art-suite-foundations/issues",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-build-configurator": "^1.26.11",
     "pluralize": "^8.0.0"
