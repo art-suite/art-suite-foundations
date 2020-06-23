@@ -1,2 +1,2 @@
 #!/usr/local/bin/node
-require("./source/gen-mono-packages")
+require("./source/update-mono-package")()

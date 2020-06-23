@@ -1,15 +1,13 @@
 {
   "author": "Shane Brinkman-Davis Delamore",
   "dependencies": {
-    "art-standard-lib": "^1.69.0",
-    "caffeine-script-runtime": "^1.13.3",
-    "colors": "^1.4.0",
-    "fs-extra": "^9.0.0",
-    "glob": "^7.1.6",
-    "glob-promise": "^3.4.0"
+
+  },
+  "bin": {
+    "art-monorepo": "./art-monorepo"
   },
   "devDependencies": {
-    
+
   },
   "license": "ISC",
   "name": "art-monorepo",
