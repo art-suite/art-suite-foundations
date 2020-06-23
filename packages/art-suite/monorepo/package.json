@@ -4,7 +4,7 @@
     "art-monorepo": "./art-monorepo"
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
-  "dependencies": {},
+  "dependencies": {"@art-suite/cli":"^1.1.2"},
   "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
