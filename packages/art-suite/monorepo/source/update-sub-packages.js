@@ -33,7 +33,8 @@ Caf.defMod(module, () => {
         rootPackage,
         packages,
         dependencySetName = "dependencies",
-        updatedMap = {}
+        updatedMap = {},
+        universalUpdates
       ) {
         let rootDeps;
         rootDeps = merge(rootPackage.dependencies, rootPackage.devDependencies);
@@ -55,7 +56,7 @@ Caf.defMod(module, () => {
                       [dependencySetName]: newDeps
                     })))
                   : undefined,
-                writeJson(file, _package))
+                writeJson(file, merge(_package, universalUpdates)))
               : undefined;
           },
           null,
@@ -64,14 +65,22 @@ Caf.defMod(module, () => {
       };
       return (updateSubPackages = function() {
         return loadAllPackages().then(packages => {
-          let rootPackage, updatedMap;
+          let rootPackage,
+            updatedMap,
+            author,
+            bugs,
+            homepage,
+            license,
+            repository;
           rootPackage = readJson("package.json");
           updatedMap = updateAllPackageDependencies(rootPackage, packages);
           updateAllPackageDependencies(
             rootPackage,
             packages,
             "devDependencies",
-            updatedMap
+            updatedMap,
+            (({ author, bugs, homepage, license, repository } = rootPackage),
+            { author, bugs, homepage, license, repository })
           );
           if (!objectHasKeys(updatedMap)) {
             log("Everything up to date.");
