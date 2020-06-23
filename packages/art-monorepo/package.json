@@ -1,18 +1,14 @@
 {
   "author": "Shane Brinkman-Davis Delamore",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "bin": {
     "art-monorepo": "./art-monorepo"
   },
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "license": "ISC",
   "name": "art-monorepo",
   "scripts": {
     "build": "caf -p -c source-caf -o source"
   },
-  "version": "0.0.1"
+  "version": "0.1.0"
 }
