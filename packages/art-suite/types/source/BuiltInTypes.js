@@ -1,7 +1,8 @@
 let { Array, ArrayBuffer, Date, RegExp, Object, Function, ArtSuiteTypesMultiContextSupport } = global;
+let { isArrayIterable } = require("./DuckTypes");
 
 let
-  isArguments = (obj) => (obj != null) && typeof obj.length === "number" && obj.toString() === '[object Arguments]',
+  isArguments = (obj) => isArrayIterable(obj) && obj.toString() === '[object Arguments]',
   isArray = Array.isArray,
   isBoolean = (obj) => obj === true || obj === false,
   isNumber = (obj) => typeof obj === "number",
@@ -13,7 +14,7 @@ let
 let isArrayUniversal = isPlainArray = isArray;
 let isPlainObjectUniversal = function (v) { return (v != null) && null === Object.getPrototypeOf(Object.getPrototypeOf(v)) };
 
-let isFunction, isClass, isError, isArrayBuffer, isDate, isRegExp, isPlainObject;
+let isFunction, isError, isArrayBuffer, isDate, isRegExp, isPlainObject;
 
 if (ArtSuiteTypesMultiContextSupport) {
   isFunction = (obj) => (typeof obj === "function") && obj.constructor.name === "Function";

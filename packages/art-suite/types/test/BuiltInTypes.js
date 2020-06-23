@@ -21,146 +21,50 @@ let {
   isTypedArray
 } = require("../source");
 
+let mutuallyExclusiveTestObjects = [
+  [null],
+  [undefined],
+  ["0",                 isNumber],
+  ["1",                 isNumber],
+  ["({})",              isPlainObject],
+  ["[]",                isArray],
+  ["/./",               isRegExp],
+  ["''",                isString],
+  ["'1'",               isString],
+  ["true",              isBoolean],
+  ["false",             isBoolean],
+  ["(() => 0)",         isFunction],
+  ["(function(){})",    isFunction],
+  ["new Date()",        isDate],
+  ["Promise.resolve()", isPromise],
+];
 
-suite("isPromise", () => {
-  test("isPromise Promise.resolve()", () => {
-    assert.isTrue(isPromise(Promise.resolve()));
-  });
-  test("isPromise Promise.reject()", () => {
-    let p = Promise.reject()
-    assert.isTrue(isPromise(p));
-    p.catch(() => { });
-  });
-  test("isPromise 1 is false", () => {
-    assert.isFalse(isPromise(1));
-  });
-  test("isPromise '' is false", () => {
-    assert.isFalse(isPromise(''));
-  });
-  test("isPromise {} is false", () => {
-    assert.isFalse(isPromise({}));
-  });
-  return test("isPromise Promise is false", () => {
-    assert.isFalse(isPromise(Promise));
-  });
-});
+let mutuallyExclusiveTestFunctions = {
+  isNumber,
+  isPlainObject,
+  isArray,
+  isString,
+  isBoolean,
+  isDate,
+  isPromise,
+  isFunction
+};
 
-suite("isArrayIterable", () => {
-  test("isArrayIterable [] is true", () => {
-    assert.isTrue(isArrayIterable([]));
-  });
-  test("isArrayIterable Int8Array is true", () => {
-    assert.isTrue(isArrayIterable(new Int8Array(4)));
-  });
-  test("isArrayIterable arguments is true", () => {
-    assert.isTrue(isArrayIterable(arguments));
-  });
-  test("isArrayIterable string is true", () => {
-    assert.isTrue(isArrayIterable("hi"));
-    assert.isTrue(isArrayIterable(''));
-  });
-  test("isArrayIterable {length: 10} is true", () => {
-    assert.isTrue(isArrayIterable({
-      length: 10
-    }));
-  });
-  return test("isArrayIterable - non arrays are false", () => {
-    assert.isFalse(isArrayIterable());
-    assert.isFalse(isArrayIterable(null));
-    assert.isFalse(isArrayIterable(void 0));
-    assert.isFalse(isArrayIterable({}));
-    assert.isFalse(isArrayIterable(123));
-  });
-});
-
-suite("isString", () => {
-  test("isString 'foo' is true", () => {
-    assert.isTrue(isString("foo"));
-    assert.isTrue(isString(''));
-  });
-  return test("isString - non strings are false", () => {
-    assert.isFalse(isString());
-    assert.isFalse(isString(null));
-    assert.isFalse(isString(void 0));
-    assert.isFalse(isString(123));
-    assert.isFalse(isString({}));
-    assert.isFalse(isString([]));
-    assert.isFalse(isString(() => { }));
-  });
-});
-
-suite("isPlainArray", () => {
-  test("isPlainArray is isArray", () => assert.equal(isPlainArray, isArray));
-
-  test("isPlainArray []", () => assert.isTrue(isPlainArray([])));
-
-  return test("isPlainArray - false values", () => {
-    assert.isFalse(isPlainArray({}));
-    assert.isFalse(isPlainArray(123));
-    assert.isFalse(isPlainArray(""));
-    assert.isFalse(isPlainArray("abc"));
-    assert.isFalse(isPlainArray(new Int8Array(4)));
-    assert.isFalse(isPlainArray(false));
-    assert.isFalse(isPlainArray(null));
-    assert.isFalse(isPlainArray(void 0));
-  });
-});
-
-suite("isFunction", () => {
-  test("isFunction(->) is true", () => {
-    assert.isTrue(isFunction(() => { }));
-  });
-  test("isFunction(class Foo) is true", () => {
-    var Foo;
-    assert.isTrue(isFunction(Foo = (() => {
-      function Foo() { }
-
-      return Foo;
-
-    })()));
-  });
-
-  return test("isFunction - non functions are false", () => {
-    assert.isFalse(isFunction());
-    assert.isFalse(isFunction(null));
-    assert.isFalse(isFunction(''));
-    assert.isFalse(isFunction(void 0));
-    assert.isFalse(isFunction(123));
-    assert.isFalse(isFunction({}));
-    assert.isFalse(isFunction([]));
-    assert.isFalse(isFunction("foo"));
-  });
-});
-
-suite("isDate", () => {
-  test("isDate new Date is true", () => {
-    assert.isTrue(isDate(new Date));
-  });
-  test("isDate '' is false", () => {
-    assert.isFalse(isDate(""));
-  });
-  return test("isDate '07-04-2018' is false", () => {
-    assert.isFalse(isDate("07-04-2018"));
-  });
-});
-
-suite("isPlainObject", () => {
-  test("isPlainObject {} is true", () => {
-    assert.isTrue(isPlainObject({}));
-  });
-  test("isPlainObject(new class Foo) is false", () => {
-    assert.isFalse(isPlainObject(new class Foo {}));
-  });
-  return test("isPlainObject - non plain objects are false", () => {
-    assert.isFalse(isPlainObject());
-    assert.isFalse(isPlainObject(null));
-    assert.isFalse(isPlainObject(void 0));
-    assert.isFalse(isPlainObject(123));
-    assert.isFalse(isPlainObject("foo"));
-    assert.isFalse(isPlainObject(""));
-    assert.isFalse(isPlainObject([]));
-    assert.isFalse(isPlainObject(() => { }));
-  });
+suite("mutually exclusive types", () => {
+  for (fName in mutuallyExclusiveTestFunctions) {
+    let suiteTestFunction = mutuallyExclusiveTestFunctions[fName];
+    suite(fName, () => {
+      mutuallyExclusiveTestObjects.map(([testObjectJs, testFunction]) => {
+        let shouldBe = testFunction === suiteTestFunction;
+        test(`${shouldBe} === ${fName}(${testObjectJs})`, () => {
+          assert.equal(
+            suiteTestFunction(eval(testObjectJs)),
+            shouldBe
+          );
+        })
+      })
+    })
+  }
 });
 
 suite("isArguments", () => {
