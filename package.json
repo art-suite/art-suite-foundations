@@ -12,7 +12,7 @@
     "art-epoched-state": "file:packages/art-epoched-state",
     "art-events": "file:packages/art-events",
     "art-filebuilder": "file:packages/art-filebuilder",
-    "art-monorepo": "file:packages/art-monorepo",
+    "art-monorepo": "file:packages/art-suite/monorepo",
     "art-object-tree-factory": "file:packages/art-object-tree-factory",
     "art-rest-client": "file:packages/art-rest-client",
     "art-standard-lib": "file:packages/art-standard-lib",
