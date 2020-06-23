@@ -65,11 +65,16 @@ module.exports = class StringExtensions
 
   @cryptoRandomString: if isBrowser
     {crypto} = global
+    unless crypto
+      realRequire = eval('require')
+      crypto = realRequire "crypto"
+
     if crypto
       (l = 16, c) -> randomString l, c, crypto.getRandomValues new Uint8Array l
     else
       console.warn "window.crypto not available, using standard random for cryptoRandomString"
       (l = 16, c) -> randomString l, c
+
   else
     crypto = require 'crypto'
     (l, c) -> randomString l, c, crypto.randomBytes l

@@ -21,7 +21,7 @@
   floor = Math.floor;
 
   module.exports = StringExtensions = (function() {
-    var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, npmPluralize, patchedNpmPluralize, pluralize, randomString, ref, repeat, standardIndent;
+    var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, npmPluralize, patchedNpmPluralize, pluralize, randomString, realRequire, ref, repeat, standardIndent;
 
     function StringExtensions() {}
 
@@ -101,7 +101,7 @@
       }
     };
 
-    StringExtensions.cryptoRandomString = isBrowser ? ((crypto = global.crypto, global), crypto ? function(l, c) {
+    StringExtensions.cryptoRandomString = isBrowser ? ((crypto = global.crypto, global), !crypto ? (realRequire = eval('require'), crypto = realRequire("crypto")) : void 0, crypto ? function(l, c) {
       if (l == null) {
         l = 16;
       }
