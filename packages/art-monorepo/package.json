@@ -10,5 +10,5 @@
   "scripts": {
     "build": "caf -p -c source-caf -o source"
   },
-  "version": "0.1.0"
+  "version": "1.0.0"
 }
