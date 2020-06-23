@@ -8,18 +8,20 @@ Caf.defMod(module, () => {
       "neq",
       "log",
       "writeJson",
+      "blue",
       "loadAllPackages",
       "readJson",
       "objectKeyCount",
       "pluralize"
     ],
-    [global, require("art-standard-lib"), require("./lib")],
+    [global, require("art-standard-lib"), require("./lib"), require("colors")],
     (
       merge,
       objectHasKeys,
       neq,
       log,
       writeJson,
+      blue,
       loadAllPackages,
       readJson,
       objectKeyCount,
@@ -81,7 +83,8 @@ Caf.defMod(module, () => {
           updatedMap
         );
       };
-      return (updateSubPackages = function() {
+      return (updateSubPackages = function({ quiet }) {
+        !quiet && log(blue("Updating ./package.json >> **/package.json..."));
         return loadAllPackages().then(packages => {
           let rootPackage,
             updatedMap,

@@ -4,9 +4,10 @@ Caf.defMod(module, () => {
   return (() => {
     return require("@art-suite/cli").start({
       commands: {
-        "test-all": require("./test-all"),
-        "update-sub-packages": require("./update-sub-packages"),
-        "update-mono-package": require("./update-mono-package")
+        test: require("./test"),
+        sync: require("./sync"),
+        "update-mono-package": require("./update-mono-package"),
+        "update-sub-packages": require("./update-sub-packages")
       }
     });
   })();

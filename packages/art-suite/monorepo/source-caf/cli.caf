@@ -1,8 +1,8 @@
 import &ArtStandardLib
 
 require :@art-suite/cli
-.start
-  commands: {}
-    &test-all
-    &update-sub-packages
-    &update-mono-package
+.start commands: {}
+  &test
+  &sync
+  &update-mono-package
+  &update-sub-packages

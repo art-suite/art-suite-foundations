@@ -1,0 +1,46 @@
+import &ArtStandardLib, &Lib, &colors
+indent = (str) ->
+  "    " + str.replace /\n/g "\n    "
+
+logTest = (verb, packagePath) ->
+  log
+    blue "#{verb}: "
+    + packagePath
+
+test = ->
+  loadAllPackages()
+  .then (packages) ->
+    array {scripts}, packagePath in packages when scripts.test
+      packagePath
+
+  .then (packagePaths) ->
+    logTest :TESTING pluralize :package packagePaths.length
+    passed = []
+    failed = []
+    Promise.all array packagePath in packagePaths
+      logTest :TEST grey packagePath
+
+      execShellCommand "" cd #{packagePath};npm test
+      .then
+        -> passed.push packagePath; logTest :PASSED green packagePath
+        ({stdout, stderr}) ->
+          failed.push packagePath
+          logTest :FAILED red packagePath
+          if present stdout
+            log blue "  #{packagePath} > npm test (stdout)"
+            log indent stdout.trim()
+            log ""
+          if present stderr
+            log blue "  #{packagePath} > npm test (stderr)"
+            log red indent stderr.trim()
+            log ""
+
+    .then ->
+      log blue "" \nRESULTS:
+      log blue "  passed: " + yellow passed.length
+      if failed.length > 0
+        each f in failed
+          log blue "  failed: " + red f
+
+      process.exit 1 if failed > 1
+      null

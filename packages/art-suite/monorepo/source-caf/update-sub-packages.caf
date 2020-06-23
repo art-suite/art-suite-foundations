@@ -1,7 +1,6 @@
-import &ArtStandardLib, &Lib
+import &ArtStandardLib, &Lib, &colors
 
 updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDeps?
-  # log {} fromDeps, toDeps
   object fromVersion, packageName in fromDeps
     if (toVersion = toDeps[packageName]) && fromVersion != toVersion
       if fileRefMatch = toVersion.match /// ^file:(.*)$
@@ -35,7 +34,9 @@ updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :depe
       log {} update: file
       writeJson file, merge _package, universalUpdates
 
-updateSubPackages = ->
+updateSubPackages = ({quiet}) ->
+  !quiet && log blue "" Updating ./package.json >> **/package.json...
+
   loadAllPackages()
   .then (packages) ->
     rootPackage = readJson :package.json

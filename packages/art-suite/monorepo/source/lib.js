@@ -48,7 +48,7 @@ Caf.defMod(module, () => {
         execShellCommand: function(cmd) {
           return new Promise((resolve, reject) =>
             require("child_process").exec(cmd, (error, stdout, stderr) =>
-              error ? reject(stderr || stdout) : resolve(stdout || stderr)
+              error ? reject({ stderr, stdout }) : resolve(stdout)
             )
           );
         }

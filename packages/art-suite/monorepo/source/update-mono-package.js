@@ -2,13 +2,55 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["readJson", "Error", "loadAllPackages", "log", "writeJson"],
-    [global, require("art-standard-lib"), require("./lib")],
-    (readJson, Error, loadAllPackages, log, writeJson) => {
-      let updateMonoPackage;
-      return (updateMonoPackage = function() {
-        let rootPackage, previousSubPackages, HandledError, addDep;
+    [
+      "merge",
+      "log",
+      "blue",
+      "readJson",
+      "clone",
+      "Error",
+      "loadAllPackages",
+      "neq",
+      "writeJson"
+    ],
+    [global, require("art-standard-lib"), require("./lib"), require("colors")],
+    (
+      merge,
+      log,
+      blue,
+      readJson,
+      clone,
+      Error,
+      loadAllPackages,
+      neq,
+      writeJson
+    ) => {
+      let addArtMonorepoFeatures, updateMonoPackage;
+      addArtMonorepoFeatures = function(rootPackage) {
+        let temp, base;
+        (temp = (base = rootPackage.dependencies)[
+          require("../package").name
+        ]) != null
+          ? temp
+          : (base[require("../package").name] =
+              "^" + require("../package").version);
+        rootPackage.scripts = merge(
+          { test: "art-monorepo test", sync: "art-monorepo sync" },
+          rootPackage.scripts
+        );
+        return rootPackage;
+      };
+      return (updateMonoPackage = function({ quiet }) {
+        let rootPackage,
+          originalRootPackage,
+          previousSubPackages,
+          HandledError,
+          addDep;
+        if (!quiet) {
+          log(blue("Updating **/package.json >> ./package.json..."));
+        }
         rootPackage = readJson("package.json");
+        originalRootPackage = clone(rootPackage);
         rootPackage.dependencies = {};
         previousSubPackages = {};
         HandledError = Caf.defClass(class HandledError extends Error {});
@@ -69,7 +111,6 @@ Caf.defMod(module, () => {
               name = _package.name;
               dependencies = _package.dependencies;
               devDependencies = _package.devDependencies;
-              log(`package: ${Caf.toString(packageFolder)}`);
               Caf.each2(dependencies, (v, k) =>
                 addDep("dependencies", k, v, _package)
               );
@@ -82,7 +123,14 @@ Caf.defMod(module, () => {
                 `file:${Caf.toString(packageFolder)}`
               );
             });
-            return writeJson("package.json", rootPackage);
+            addArtMonorepoFeatures(rootPackage);
+            if (neq(originalRootPackage, rootPackage)) {
+              writeJson("package.json", rootPackage);
+              log("Updated ./package.json");
+            } else {
+              log("Everything up to date.");
+            }
+            return null;
           })
           .catch(error =>
             !Caf.is(error, HandledError)

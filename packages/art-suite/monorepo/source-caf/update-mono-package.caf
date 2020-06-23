@@ -1,9 +1,23 @@
-import &ArtStandardLib, &Lib
+import &ArtStandardLib, &Lib, &colors
 
-updateMonoPackage = ->
+addArtMonorepoFeatures = (rootPackage) ->
+  rootPackage.dependencies[&package.name] ?= :^ + &package.version
+  rootPackage.scripts = merge
+    test: "" art-monorepo test
+    sync: "" art-monorepo sync
+
+    rootPackage.scripts
+
+  rootPackage
+
+updateMonoPackage = ({quiet}) ->
+  unless quiet
+    log blue "" Updating **/package.json >> ./package.json...
 
   rootPackage = readJson :package.json
+  originalRootPackage = clone rootPackage
   rootPackage.dependencies = {}
+
   previousSubPackages = {}
 
   class HandledError extends Error
@@ -49,12 +63,21 @@ updateMonoPackage = ->
     each _package, packageFolder from packages
       _package.path = packageFolder
       _package extract name, dependencies, devDependencies
-      log "package: #{packageFolder}"
+      # log "package: #{packageFolder}"
 
       each v, k in dependencies     with addDep :dependencies, k, v, _package
       each v, k in devDependencies  with addDep :dependencies, k, v, _package
       addDep :dependencies, name, "file:#{packageFolder}"
 
-    writeJson :package.json rootPackage
+    addArtMonorepoFeatures rootPackage
+
+    if neq originalRootPackage, rootPackage
+      writeJson :package.json rootPackage
+      log "Updated ./package.json"
+    else
+      log "Everything up to date."
+
+    null
+
   .catch (error) ->
     throw error unless error is HandledError
