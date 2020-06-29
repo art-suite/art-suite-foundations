@@ -1,10 +1,28 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "bugs": "https:/github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-build-configurator": "^1.26.13"
   },
   "description": "Art.Epoch",
+  "devDependencies": {
+    "art-testbench": "*",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "chai": "^4.2.0",
+    "coffee-loader": "^0.7.3",
+    "css-loader": "^3.0.0",
+    "json-loader": "^0.5.7",
+    "mocha": "^7.0.0",
+    "mock-fs": "^4.10.0",
+    "script-loader": "^0.7.2",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "*",
+    "webpack-dev-server": "^3.7.2",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-stylish": "^0.1.8"
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "art-epoched-state",
@@ -13,10 +31,12 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "webpack --progress",
-    "start": "webpack-dev-server --hot --inline --progress",
-    "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress"
+    "build": "coffee --output source --compile source-coffee-caf &\ncaf -p -c source-coffee-caf -o source &\nwait\nnn -s",
+    "build-clean": "rm -rf source/*; npm run build",
+    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "test": "jest",
+    "testInBrowser": "webpack-dev-server --progress --env.devServer",
+    "watch": "watch 'npm run build' ./source-coffee-caf"
   },
   "version": "1.2.3"
 }
