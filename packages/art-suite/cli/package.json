@@ -7,7 +7,7 @@
   },
   "description": "Art.Cli",
   "devDependencies": {
-    "art-testbench": "^1.17.4",
+    "art-testbench": "^1.18.1",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
