@@ -6,13 +6,13 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-browser-tools": "^1.2.3",
-    "art-build-configurator": "^1.26.13",
-    "art-class-system": "^1.11.5",
-    "art-config": "^1.13.6",
-    "art-filebuilder": "^2.1.4",
-    "art-object-tree-factory": "^2.1.10",
-    "art-standard-lib": "^1.69.2",
+    "art-browser-tools": "^1.2.4",
+    "art-build-configurator": "^1.26.14",
+    "art-class-system": "^1.11.6",
+    "art-config": "^1.13.7",
+    "art-filebuilder": "^2.1.5",
+    "art-object-tree-factory": "^2.1.11",
+    "art-standard-lib": "^1.69.4",
     "bluebird": "^3.5.5",
     "caffeine-script": "*",
     "caffeine-script-runtime": "^1.13.3",
@@ -24,11 +24,11 @@
     "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
-    "neptune-namespaces": "^4.2.2"
+    "neptune-namespaces": "^4.2.3"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
-    "art-testbench": "^1.18.7",
+    "art-testbench": "^1.18.8",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -58,5 +58,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "1.26.13"
+  "version": "1.26.14"
 }

@@ -2,11 +2,11 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "^1.26.13"
+    "art-build-configurator": "^1.26.14"
   },
   "description": "Art.Binary",
   "devDependencies": {
-    "art-testbench": "^1.18.7",
+    "art-testbench": "^1.18.8",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -36,5 +36,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "1.1.6"
+  "version": "1.1.7"
 }

@@ -6,12 +6,12 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "^1.26.13",
-    "neptune-namespaces-runtime": "^3.2.2"
+    "art-build-configurator": "^1.26.14",
+    "neptune-namespaces-runtime": "^3.2.3"
   },
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "devDependencies": {
-    "art-testbench": "^1.18.7",
+    "art-testbench": "^1.18.8",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -41,5 +41,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "4.2.2"
+  "version": "4.2.3"
 }

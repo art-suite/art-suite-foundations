@@ -5,10 +5,12 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/cli": "^1.1.4",
+    "@art-suite/cli": "^1.1.5",
     "colors": "^1.4.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "@art-suite/monorepo",
