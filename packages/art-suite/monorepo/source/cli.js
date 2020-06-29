@@ -6,6 +6,7 @@ Caf.defMod(module, () => {
       commands: {
         test: require("./test"),
         sync: require("./sync"),
+        update: require("./update"),
         "update-mono-package": require("./update-mono-package"),
         "update-sub-packages": require("./update-sub-packages")
       }
