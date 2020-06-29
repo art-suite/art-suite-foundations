@@ -7,7 +7,7 @@
   },
   "description": "A powerful yet simple tool for configuring all your libraries consistently.",
   "devDependencies": {
-    "art-testbench": "^1.18.1",
+    "art-testbench": "^1.18.2",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -37,5 +37,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "1.13.1"
+  "version": "1.13.2"
 }
