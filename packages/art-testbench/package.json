@@ -38,5 +38,5 @@
     "testInBrowser": "webpack-dev-server --progress --env.devServer",
     "watch": "watch 'npm run build' ./source-coffee-caf"
   },
-  "version": "1.18.0"
+  "version": "1.18.1"
 }
