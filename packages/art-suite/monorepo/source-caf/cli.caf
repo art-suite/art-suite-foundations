@@ -4,6 +4,7 @@ require :@art-suite/cli
 .start commands: {}
   &test
   &sync
+  &run
   &update
   &update-mono-package
   &update-sub-packages

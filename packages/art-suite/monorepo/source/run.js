@@ -6,9 +6,7 @@ Caf.defMod(module, () => {
     [global, require("art-standard-lib")],
     merge => {
       return function(options) {
-        return require("./runLib")(
-          merge(options, { command: "npm test", verb: "test" })
-        );
+        return require("./runLib")(merge(options, { verb: "run" }));
       };
     }
   );
