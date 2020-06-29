@@ -59,7 +59,7 @@ assert.test = {}
           args = [] unless args?
           invoke = if args.length == 0 then "#{func.getName()}()" else "#{func.getName()} #{inspectLean(args, forArgs:true)}"
           args = [args] unless isPlainArray args
-          test "#{name} #{invoke}", ->
+          global.test "#{name} #{invoke}", ->
             testerFor func(args...), context
 
       else
@@ -68,5 +68,5 @@ assert.test = {}
           args = [] unless args?
           invoke = if args.length == 0 then "#{func.getName()}()" else "(#{func.getName()} #{inspectLean(args, forArgs:true)})"
           args = [args] unless isPlainArray args
-          test "#{name} #{invoke}, #{inspect testValue}", ->
+          global.test "#{name} #{invoke}, #{inspect testValue}", ->
             testerFor func(args...), testValue, context

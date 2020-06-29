@@ -7,6 +7,7 @@ package: (abcPackage) ->
     dependencies:     &package.dependencies
     devDependencies:  &package.devDependencies
     scripts: merge abcPackage.scripts,
+      test: "jest"
       build:
         """
           coffee --output source --compile #{sourceDir} &

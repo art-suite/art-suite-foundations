@@ -12,7 +12,6 @@ Caf.defMod(module, () => {
       "log",
       "inspectLean",
       "isPlainArray",
-      "test",
       "inspect"
     ],
     [
@@ -31,7 +30,6 @@ Caf.defMod(module, () => {
       log,
       inspectLean,
       isPlainArray,
-      test,
       inspect
     ) => {
       let getTesterFor, addTester;
@@ -97,9 +95,10 @@ Caf.defMod(module, () => {
                   if (!isPlainArray(args)) {
                     args = [args];
                   }
-                  return test(`${Caf.toString(name)} ${Caf.toString(
-                    invoke
-                  )}`, () => testerFor(func(...args), context));
+                  return global.test(
+                    `${Caf.toString(name)} ${Caf.toString(invoke)}`,
+                    () => testerFor(func(...args), context)
+                  );
                 }
               : (func, args, testValue, context) => {
                   let invoke;
@@ -118,10 +117,12 @@ Caf.defMod(module, () => {
                   if (!isPlainArray(args)) {
                     args = [args];
                   }
-                  return test(`${Caf.toString(name)} ${Caf.toString(
-                    invoke
-                  )}, ${Caf.toString(inspect(testValue))}`, () =>
-                    testerFor(func(...args), testValue, context));
+                  return global.test(
+                    `${Caf.toString(name)} ${Caf.toString(
+                      invoke
+                    )}, ${Caf.toString(inspect(testValue))}`,
+                    () => testerFor(func(...args), testValue, context)
+                  );
                 });
         })
       };
