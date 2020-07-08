@@ -1,4 +1,3 @@
 #!/usr/bin/env node
 
-require('./register.js')
-require('./demo.caf')
+require('./source/demo')

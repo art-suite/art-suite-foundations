@@ -1,12 +1,16 @@
+import &ArtStandardLib
 target: node: true
 
-npm:
+package: (abcPackage) -> merge abcPackage,
   description:  :Art.Cli
   name:         :@art-suite/cli
+  dependencies:     &package.dependencies
+  devDependencies:  &package.devDependencies
 
-  dependencies:
-    art-build-configurator: :*
-    colors: :^1.4.0
+  scripts:
+    build:        "" caf -p -c source-caf -o source; nn -s
+    build-clean:  "" npm run clean; npm run build
+    clean:        "" rm -rf source/*
 
 webpack:
   # common properties are merged into each target's properties

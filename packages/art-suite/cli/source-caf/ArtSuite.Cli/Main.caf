@@ -21,7 +21,7 @@ class Main
 
     options: object mapping lowerCamelCase option names to values parsed from the argv array
   @start: ({commands, help, argv = process.argv, output = log}) =>
-    [nodeJs, startFile, args...] = argv
+    [nodeJs, startFile, args...] = log argv
 
     {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand commands, args
 

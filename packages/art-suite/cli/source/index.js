@@ -1,1 +1,1 @@
-module.exports = require('./ArtSuite.Cli');
+module.exports = require("./ArtSuite.Cli");

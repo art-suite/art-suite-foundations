@@ -3,6 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-build-configurator": "^1.26.14",
+    "art-class-system": "^1.11.6",
+    "art-standard-lib": "^1.69.4",
     "colors": "^1.4.0"
   },
   "description": "Art.Cli",
@@ -32,7 +34,9 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "webpack --progress",
+    "build": "caf -p -c source-caf -o source; nn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
