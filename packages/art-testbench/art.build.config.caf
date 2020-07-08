@@ -1,7 +1,7 @@
 import &ArtStandardLib
 target: node: true
 package: (abcPackage) ->
-  sourceDir = :source-coffee-caf
+  sourceDir = :source-source
   merge abcPackage,
     description: 'Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai'
     dependencies:     &package.dependencies
