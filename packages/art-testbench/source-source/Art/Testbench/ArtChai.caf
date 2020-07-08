@@ -40,8 +40,16 @@ assert.within = (a, b, c, context) ->
   else
     failWithExpectedMessage context, a, "to be >=",  b, "to be <=" , c unless a >= b and a <= c
 
-# Ruby/Caffeine Truth
-addTester "true",         (a) -> a != false && a?
-addTester "false",        (a) -> a == false || !a?
+# Exact Truth
+addTester "true",         (a) -> a == true
+addTester "false",        (a) -> a == false
+
+# JavaScript Truth
+addTester "jsTrue",       (a) -> !!a
+addTester "jsFalse",      (a) -> !a
+
+# Ruby Truth
+addTester "rubyTrue",     (a) -> a == true && a?
+addTester "rubyFalse",    (a) -> a == false || !a?
 
 &Chai

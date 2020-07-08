@@ -2,21 +2,18 @@ import &ArtStandardLib
 target: node: true
 package: (abcPackage) ->
   sourceDir = :source-source
-  merge abcPackage,
-    description: 'Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai'
-    dependencies:     &package.dependencies
-    devDependencies:  &package.devDependencies
-    scripts: merge abcPackage.scripts,
+  merge &package,
+    scripts: merge &package.scripts,
       test: "jest"
       build:
         """
           coffee --output source --compile #{sourceDir} &
           caf -p -c #{sourceDir} -o source &
           wait
-          nn -s
+          nn -sq
 
       build-clean:  "" rm -rf source/*; npm run build
-      watch:        "" watch 'npm run build' ./#{sourceDir}
+      watch:        "" npm-watch
 
 webpack:
   common: {}

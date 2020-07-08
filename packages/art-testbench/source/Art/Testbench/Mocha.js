@@ -27,15 +27,15 @@
   Use mocha as normal, but if you added dots (.) in your suite names, this will
   break them out into nested test suites and group suites with the same path together.
   It also alphabetizes them.
-
+  
   Ex:
-
+  
     suite "Art.Foundation.Async", asyncTests
     suite "Art.Foundation.Binary", binaryTests
     suite "Art.Atomic", atomicTests
-
+  
   Becomes:
-
+  
     suite "Art", ->
       suite "Atomic", atomicTests
       suite "Foundation", ->

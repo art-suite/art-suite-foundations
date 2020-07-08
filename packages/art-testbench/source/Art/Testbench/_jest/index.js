@@ -7,5 +7,6 @@
   AssertMatchTest:           require('./assert.match.test'),
   AssertResolvesRejectsTest: require('./assert.resolves_rejects.test'),
   AssertSameTest:            require('./assert.same.test'),
+  AssertTruthTest:           require('./assert.truth.test'),
   AssertWithin:              require('./assert.within')
 });

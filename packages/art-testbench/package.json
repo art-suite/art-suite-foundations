@@ -4,7 +4,8 @@
   "dependencies": {
     "art-build-configurator": "^1.26.14",
     "art-events": "^1.3.4",
-    "chai": "^4.2.0"
+    "chai": "^4.2.0",
+    "npm-watch": "^0.6.0"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
   "devDependencies": {
@@ -18,12 +19,21 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee --output source --compile source-coffee-caf &\ncaf -p -c source-coffee-caf -o source &\nwait\nnn -s",
+    "build": "coffee --output source --compile source-source &\ncaf -p -c source-source -o source &\nwait\nnn -sq",
     "build-clean": "rm -rf source/*; npm run build",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
     "test": "jest",
     "testInBrowser": "webpack-dev-server --progress --env.devServer",
-    "watch": "watch 'npm run build' ./source-coffee-caf"
+    "watch": "npm-watch"
   },
-  "version": "1.18.8"
+  "version": "1.18.8",
+  "watch": {
+    "build": {
+      "extensions": "caf",
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }

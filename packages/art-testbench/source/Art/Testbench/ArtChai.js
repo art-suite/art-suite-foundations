@@ -75,9 +75,21 @@ Caf.defMod(module, () => {
           : undefined;
       };
       addTester("true", function(a) {
-        return a !== false && a != null;
+        return a === true;
       });
       addTester("false", function(a) {
+        return a === false;
+      });
+      addTester("jsTrue", function(a) {
+        return !!a;
+      });
+      addTester("jsFalse", function(a) {
+        return !a;
+      });
+      addTester("rubyTrue", function(a) {
+        return a === true && a != null;
+      });
+      addTester("rubyFalse", function(a) {
         return a === false || !(a != null);
       });
       return require("chai");
