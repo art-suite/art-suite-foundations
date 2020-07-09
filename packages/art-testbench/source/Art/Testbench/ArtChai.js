@@ -87,7 +87,7 @@ Caf.defMod(module, () => {
         return !a;
       });
       addTester("rubyTrue", function(a) {
-        return a === true && a != null;
+        return a !== false && a != null;
       });
       addTester("rubyFalse", function(a) {
         return a === false || !(a != null);

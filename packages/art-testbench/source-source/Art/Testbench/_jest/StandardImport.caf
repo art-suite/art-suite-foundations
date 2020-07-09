@@ -1,0 +1,3 @@
+&ArtStandardLib.mergeWithSelf
+  {test, describe} = global
+  &Testbench

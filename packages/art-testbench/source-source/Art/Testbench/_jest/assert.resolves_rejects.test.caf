@@ -1,6 +1,4 @@
-import
-  require :../ArtChai
-  global
+import &StandardImport
 
 test 'assert.resolves' ->
   assert.resolves :anything

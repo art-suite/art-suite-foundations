@@ -3,7 +3,7 @@ let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["test", "assert", "Promise"],
-    [global, require("../ArtChai"), global],
+    [global, require("./StandardImport")],
     (test, assert, Promise) => {
       test("assert.within built-in inequality", function() {
         assert.within(5, 0, 10);

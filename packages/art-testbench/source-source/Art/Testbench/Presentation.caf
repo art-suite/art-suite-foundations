@@ -26,13 +26,32 @@ import &ArtStandardLib
       [verb2, indent format c] if verb2
     ]
 
+  generateFailedMessage = (context, a, b, lines) ->
+    :\n +
+      compactFlattenAll
+        if context
+          if isFunction context
+            context = try
+              context a, b, lines
+            catch error
+              getContextFunctionError: {} context, error
+
+          if isString context
+            context
+          else
+            formattedInspect context
+
+        :expected
+
+        lines
+
+        :\n
+
+      .join :\n\n
+
+
   failWithExpectedMessageBase = (context, a, b, lines) ->
-    &Chai.assert.fail a, b, compactFlattenJoin("\n\n", [
-      if context
-        if isString context
-          context
-        else
-          formattedInspect context
-      "expected"
-      lines
-    ]) + "\n"
+    &Chai.assert.fail
+      a
+      b
+      generateFailedMessage context, a, b, lines

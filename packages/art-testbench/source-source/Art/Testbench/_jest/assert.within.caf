@@ -1,6 +1,4 @@
-import
-  require :../ArtChai
-  global
+import &StandardImport
 
 test 'assert.within built-in inequality' ->
   assert.within 5, 0, 10

@@ -3,7 +3,7 @@ let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["test", "assert"],
-    [global, require("../ArtChai"), global],
+    [global, require("./StandardImport")],
     (test, assert) => {
       test("assert.match", function() {
         assert.match("hi frank", /fr/);

@@ -1,6 +1,4 @@
-import
-  require :../ArtChai
-  global
+import &StandardImport
 
 test 'assert.true' ->
   assert.true true
@@ -36,12 +34,12 @@ test 'assert.jsFalse' ->
 
 test 'assert.rubyTrue' ->
   assert.rubyTrue true
-  assert.rubyTrue 1
   assert.rubyTrue "true"
   assert.rubyTrue "false"
   assert.rubyTrue {}
   assert.rubyTrue ''
   assert.rubyTrue 0
+  assert.rubyTrue 1
   Promise.all array v in null undefined false
     assert.rejects
       -> assert.rubyTrue v

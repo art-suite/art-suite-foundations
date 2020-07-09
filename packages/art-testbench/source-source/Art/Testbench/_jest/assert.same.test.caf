@@ -1,6 +1,4 @@
-import
-  require :../ArtChai
-  global
+import &StandardImport
 
 test 'assert.same' ->
   assert.same 0, 0

@@ -3,7 +3,7 @@ let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["test", "assert", "Promise"],
-    [global, require("../ArtChai"), global],
+    [global, require("./StandardImport")],
     (test, assert, Promise) => {
       test("assert.true", function() {
         assert.true(true);
@@ -49,12 +49,12 @@ Caf.defMod(module, () => {
       });
       test("assert.rubyTrue", function() {
         assert.rubyTrue(true);
-        assert.rubyTrue(1);
         assert.rubyTrue("true");
         assert.rubyTrue("false");
         assert.rubyTrue({});
         assert.rubyTrue("");
         assert.rubyTrue(0);
+        assert.rubyTrue(1);
         return Promise.all(
           Caf.array([null, undefined, false], v =>
             assert.rejects(() => assert.rubyTrue(v), { v })

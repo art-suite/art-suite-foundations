@@ -2,13 +2,14 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["formattedInspect", "compactFlattenJoin", "isString"],
+    ["formattedInspect", "compactFlattenAll", "isFunction", "isString"],
     [global, require("art-standard-lib")],
-    (formattedInspect, compactFlattenJoin, isString) => {
+    (formattedInspect, compactFlattenAll, isFunction, isString) => {
       let maxLength,
         indent,
         format,
         failWithExpectedMessage,
+        generateFailedMessage,
         failWithExpectedMessageBase;
       return {
         maxLength: (maxLength = 80),
@@ -33,6 +34,37 @@ Caf.defMod(module, () => {
             verb2 ? [verb2, indent(format(c))] : undefined
           ]);
         }),
+        generateFailedMessage: (generateFailedMessage = function(
+          context,
+          a,
+          b,
+          lines
+        ) {
+          let error;
+          return (
+            "\n" +
+            compactFlattenAll(
+              context
+                ? (isFunction(context)
+                    ? (context = (() => {
+                        try {
+                          return context(a, b, lines);
+                        } catch (error1) {
+                          error = error1;
+                          return {
+                            getContextFunctionError: { context, error }
+                          };
+                        }
+                      })())
+                    : undefined,
+                  isString(context) ? context : formattedInspect(context))
+                : undefined,
+              "expected",
+              lines,
+              "\n"
+            ).join("\n\n")
+          );
+        }),
         failWithExpectedMessageBase: (failWithExpectedMessageBase = function(
           context,
           a,
@@ -42,15 +74,7 @@ Caf.defMod(module, () => {
           return require("chai").assert.fail(
             a,
             b,
-            compactFlattenJoin("\n\n", [
-              context
-                ? isString(context)
-                  ? context
-                  : formattedInspect(context)
-                : undefined,
-              "expected",
-              lines
-            ]) + "\n"
+            generateFailedMessage(context, a, b, lines)
           );
         })
       };

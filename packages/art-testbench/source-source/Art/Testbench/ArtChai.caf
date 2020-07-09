@@ -49,7 +49,7 @@ addTester "jsTrue",       (a) -> !!a
 addTester "jsFalse",      (a) -> !a
 
 # Ruby Truth
-addTester "rubyTrue",     (a) -> a == true && a?
+addTester "rubyTrue",     (a) -> a != false && a?
 addTester "rubyFalse",    (a) -> a == false || !a?
 
 &Chai
