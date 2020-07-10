@@ -28,22 +28,20 @@
     "webpack-stylish": "^0.1.8"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "license": "ISC",
   "name": "@art-suite/cli",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "scripts": {
     "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
-    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
-    "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress --env.devServer",
+    "test": "jest",
     "watch": "npm-watch"
   },
   "version": "1.1.5",
@@ -56,5 +54,4 @@
       "quiet": false
     }
   }
-
 }
