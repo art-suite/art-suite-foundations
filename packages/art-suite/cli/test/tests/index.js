@@ -2,4 +2,3 @@
 // file: tests/index.js
 
 module.exports = require('./namespace');
-require('./ArtSuite.Cli');

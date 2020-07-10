@@ -21,7 +21,8 @@ Caf.defMod(module, () => {
             ]).join("\n");
           },
           stat: function({ commands }) {
-            return log({ commands });
+            log({ commands });
+            return null;
           }
         },
         help: {

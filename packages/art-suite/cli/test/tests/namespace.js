@@ -2,4 +2,3 @@
 // file: tests/namespace.js
 
 module.exports = module.exports =  require('neptune-namespaces-runtime').vivifySubnamespace('Tests');
-require('./ArtSuite.Cli/namespace');

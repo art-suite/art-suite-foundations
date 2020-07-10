@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["log", "Promise", "process", "merge", "objectHasKeys"],
+    ["Promise", "process", "log", "merge", "objectHasKeys"],
     [global, require("./StandardImport")],
-    (log, Promise, process, merge, objectHasKeys) => {
+    (Promise, process, log, merge, objectHasKeys) => {
       let Main;
       return (Main = Caf.defClass(class Main extends Object {}, function(
         Main,
@@ -18,7 +18,7 @@ Caf.defMod(module, () => {
           output = log
         }) => {
           let nodeJs, startFile, args, options, commandFunction, commandName;
-          [nodeJs, startFile, ...args] = log(argv);
+          [nodeJs, startFile, ...args] = argv;
           ({
             options,
             commandFunction,

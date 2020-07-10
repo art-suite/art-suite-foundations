@@ -13,6 +13,7 @@ import &ArtStandardLib
 
     stat: ({ commands }) ->
       log {} commands
+      null
 
   help:
     description: "" A demo app with a holiday theme.

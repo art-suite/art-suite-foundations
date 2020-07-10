@@ -34,6 +34,9 @@
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "scripts": {
     "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",

@@ -22,7 +22,7 @@ help = {}
       description: "this stuff is hard"
       advanced: true
 
-suite:
+describe
   basic: ->
 
     test "getHelp" ->

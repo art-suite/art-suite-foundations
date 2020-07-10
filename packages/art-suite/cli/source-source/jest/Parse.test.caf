@@ -1,7 +1,7 @@
 import &StandardImport
 import ArtCli.Parse
 
-suite:
+describe
   parseArgs:
     options: ->
       test 'empty args' ->
