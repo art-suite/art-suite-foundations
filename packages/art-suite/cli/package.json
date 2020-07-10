@@ -17,6 +17,7 @@
     "json-loader": "^0.5.7",
     "mocha": "^7.2.0",
     "mock-fs": "^4.10.0",
+    "npm-watch": "^0.6.0",
     "script-loader": "^0.7.2",
     "style-loader": "^1.2.1",
     "webpack": "^4.39.1",
@@ -34,12 +35,23 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -p -c source-caf -o source; nn -s",
+    "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
     "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress --env.devServer"
+    "testInBrowser": "webpack-dev-server --progress --env.devServer",
+    "watch": "npm-watch"
   },
-  "version": "1.1.5"
+  "version": "1.1.5",
+  "watch": {
+    "build": {
+      "extensions": "caf",
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+
 }

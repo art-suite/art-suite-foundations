@@ -8,7 +8,7 @@ package: (abcPackage) -> merge abcPackage,
   devDependencies:  &package.devDependencies
 
   scripts:
-    build:        "" caf -p -c source-caf -o source; nn -s
+    build:        "" caf -p -c source-source -o source; nn -s
     build-clean:  "" npm run clean; npm run build
     clean:        "" rm -rf source/*
 

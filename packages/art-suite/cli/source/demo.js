@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["compactFlatten", "repeat"],
+    ["compactFlatten", "repeat", "log"],
     [global, require("art-standard-lib")],
-    (compactFlatten, repeat) => {
+    (compactFlatten, repeat, log) => {
       return require("../source").start({
         commands: {
           sing: function({ song }) {
@@ -19,6 +19,9 @@ Caf.defMod(module, () => {
               santa > 0 ? repeat("Ho! ", santa) : "No Santa this year.",
               rudolph ? "Rudolph's nose glows!" : undefined
             ]).join("\n");
+          },
+          stat: function({ commands }) {
+            return log({ commands });
           }
         },
         help: {

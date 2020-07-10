@@ -11,6 +11,9 @@ import &ArtStandardLib
         if rudolph then "Rudolph's nose glows!"
       .join :\n
 
+    stat: ({ commands }) ->
+      log {} commands
+
   help:
     description: "" A demo app with a holiday theme.
     commands:
@@ -20,6 +23,7 @@ import &ArtStandardLib
           song:
             description: "name of the song to sing"
             required: true
+
       send-cheer: description: "" Just a little holiday cheer.
       xmas:
         description: "" This will tell you exactly what you need.
