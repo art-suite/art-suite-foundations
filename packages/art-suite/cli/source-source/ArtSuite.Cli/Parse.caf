@@ -98,5 +98,7 @@ class Parse
     {}
       commandFunction
       commandName
-      args
-      options
+      options:
+        if args?.length > 0
+          merge options, {} args
+        else options

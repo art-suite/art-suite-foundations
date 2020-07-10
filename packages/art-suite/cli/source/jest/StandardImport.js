@@ -11,14 +11,15 @@ Caf.defMod(module, () => {
         require("art-testbench"),
         {
           describe: (describe = function(map) {
-            return Caf.each2(map, (v, k) =>
+            Caf.each2(map, (v, k) =>
               Caf.is(v, Function)
                 ? global.describe(k, () => {
                     v();
                     return undefined;
                   })
-                : describe(v)
+                : global.describe(k, () => describe(v))
             );
+            return undefined;
           })
         },
         { ArtCli: require("../ArtSuite.Cli") }

@@ -7,10 +7,42 @@ Caf.defMod(module, () => {
     (parentImports = [global, require("./StandardImport")]),
     ArtCli => {
       return Caf.importInvoke(
-        ["describe", "test", "assert", "parseArgs", "JSON", "selectCommand"],
+        [
+          "describe",
+          "test",
+          "assert",
+          "parseAndSelectCommand",
+          "parseArgs",
+          "JSON",
+          "selectCommand"
+        ],
         [parentImports, ArtCli.Parse],
-        (describe, test, assert, parseArgs, JSON, selectCommand) => {
+        (
+          describe,
+          test,
+          assert,
+          parseAndSelectCommand,
+          parseArgs,
+          JSON,
+          selectCommand
+        ) => {
           return describe({
+            parseAndSelectCommand: function() {
+              return test("parseAndSelectCommand", () => {
+                let foo, bar;
+                return assert.eq(
+                  parseAndSelectCommand(
+                    { foo: (foo = () => {}), bar: (bar = () => {}) },
+                    ["foo", "bar"]
+                  ),
+                  {
+                    commandFunction: foo,
+                    commandName: "foo",
+                    options: { args: ["bar"] }
+                  }
+                );
+              });
+            },
             parseArgs: {
               options: function() {
                 return test("empty args", () =>

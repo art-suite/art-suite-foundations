@@ -166,7 +166,14 @@ Caf.defMod(module, () => {
             commands,
             commandNames
           ));
-          return { commandFunction, commandName, args, options };
+          return {
+            commandFunction,
+            commandName,
+            options:
+              (Caf.exists(args) && args.length) > 0
+                ? merge(options, { args })
+                : options
+          };
         };
       }));
     }

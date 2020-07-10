@@ -2,6 +2,19 @@ import &StandardImport
 import ArtCli.Parse
 
 describe
+  parseAndSelectCommand: ->
+    test 'parseAndSelectCommand' ->
+      assert.eq
+        parseAndSelectCommand
+          {}
+            foo = ->
+            bar = ->
+          [] :foo :bar
+
+        commandFunction: foo
+        commandName:     :foo
+        options:         args: [] :bar
+
   parseArgs:
     options: ->
       test 'empty args' ->
