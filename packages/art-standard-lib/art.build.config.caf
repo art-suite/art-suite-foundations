@@ -14,3 +14,13 @@ webpack:
     index:  {}
     Types:  {}
     Core:   {}
+
+##
+  package.json: ({packageRoot, gitRoot, current}) ->
+    deepMerge
+      current
+      description: "The Standard Library for JavaScript that aught to be."
+      scripts:
+        build: "coffee --output source --compile source-coffee; nn -s --quiet"
+        clean: "rm -rf source/*"
+        build-clean: "npm run clean; npm run build"

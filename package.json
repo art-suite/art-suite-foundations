@@ -4,6 +4,7 @@
   "dependencies": {
     "@art-suite/cli": "file:packages/art-suite/cli",
     "@art-suite/global": "file:packages/art-suite/global",
+    "@art-suite/mock-fs": "file:packages/art-suite/mock-fs",
     "@art-suite/monorepo": "file:packages/art-suite/monorepo",
     "@art-suite/types": "file:packages/art-suite/types",
     "art-binary": "file:packages/art-binary",
@@ -40,6 +41,7 @@
     "mock-fs": "^4.10.0",
     "neptune-namespaces": "file:packages/neptune-namespaces",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
+    "npm-watch": "^0.6.0",
     "pluralize": "^8.0.0",
     "script-loader": "^0.7.2",
     "style-loader": "^1.2.1",

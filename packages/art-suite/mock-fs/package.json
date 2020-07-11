@@ -5,15 +5,17 @@
     "mock-fs": "^4.10.0"
   },
   "devDependencies": {
-    "art-testbench": "^1.18.8",
-    "art-standard-lib": "*"
+    "art-testbench": "^2.1.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
+  "name": "@art-suite/mock-fs",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
-  }, "scripts": {
+  },
+  "scripts": {
     "test": "jest --env node"
-  }
+  },
+  "version": "1.0.0"
 }
