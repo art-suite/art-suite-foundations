@@ -2,10 +2,10 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["compactFlatten", "repeat", "log"],
+    ["compactFlatten", "repeat", "Object"],
     [global, require("art-standard-lib")],
-    (compactFlatten, repeat, log) => {
-      return require("../source").start({
+    (compactFlatten, repeat, Object) => {
+      return require("./ArtSuite.Cli").start({
         commands: {
           sing: function({ song }) {
             return `♫ ${Caf.toString(song)} ♫!`;
@@ -20,9 +20,21 @@ Caf.defMod(module, () => {
               rudolph ? "Rudolph's nose glows!" : undefined
             ]).join("\n");
           },
-          stat: function({ commands }) {
-            log({ commands });
-            return null;
+          stat: {
+            description: "stat the listed files",
+            action: function({ args }) {
+              return Caf.object(args, arg => {
+                let stat;
+                stat = require("fs").statSync(arg);
+                return Caf.object(
+                  Object.keys(stat),
+                  k => stat[k],
+                  null,
+                  null,
+                  k => k
+                );
+              });
+            }
           }
         },
         help: {

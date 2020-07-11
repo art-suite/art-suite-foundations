@@ -22,8 +22,8 @@ Caf.defMod(module, () => {
             description: (description = "abc-description"),
             commands: {
               walk: {
-                alias: "wlk",
                 description: "walk about",
+                examples: "walk",
                 options: { gate: ["mph", "estimated mph for yer walking"] }
               },
               run: {

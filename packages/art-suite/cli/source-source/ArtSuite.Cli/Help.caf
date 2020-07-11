@@ -11,10 +11,10 @@ class Help extends BaseClass
   @classGetter
     coloredCliName: -> colors.bold colors.blue @cliName
 
-  @getCommandSummary: (commandName, {alias, description, options}) ->
+  @getCommandSummary: (commandName, {description, options}) ->
     commandName = dashCase commandName
     @toHelpString
-      @getCommandUsage commandName, alias, options
+      @getCommandUsage commandName, options
       "  #{description}" if present description
 
   @getOptionDetails: (option, details) ->
@@ -34,12 +34,11 @@ class Help extends BaseClass
       .join ' '
       "    " + description
 
-  @getCommandUsage: (command, alias, options) =>
+  @getCommandUsage: (command, options) =>
     command = dashCase command
     compactFlatten []
       @coloredCliName
       colors.bold colors.brightWhite command
-      if alias then "" (#{alias})
       @getOptionsList (object o from options when o.required), true
       @getOptionsList object o from options when !o.required
     .join ' '
@@ -53,9 +52,9 @@ class Help extends BaseClass
         .join if required then ' ' else ', '
       if required then l else "[#{l}]"
 
-  @getCommandDetails: (command, {alias, description, options, examples}) =>
+  @getCommandDetails: (command, {description, options, examples}) =>
     @toHelpString
-      "" usage: #{@getCommandUsage command, alias, options}
+      "" usage: #{@getCommandUsage command, options}
       "\n#{description}" if present description
       ""
       colors.blue "options:\n" if options

@@ -25,6 +25,10 @@ class Main
 
     {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand commands, args
 
+    commandsHelp = object v from commands when v is Object
+    if objectHasKeys commandsHelp
+      help = merge help, commands: merge help?.commands, commandsHelp
+
     Promise.then ->
       if commandFunction && !options.help
         if options.verbose

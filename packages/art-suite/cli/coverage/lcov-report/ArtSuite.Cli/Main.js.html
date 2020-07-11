@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>14/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">46.15% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/22</span>
+                <span class='fraction'>12/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.86% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>13/14</span>
             </div>
         
             
@@ -116,7 +116,19 @@
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
 <a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -130,6 +142,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,6 +158,12 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -179,9 +203,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () =&gt; {
   return Caf.importInvoke(
-    ["Promise", "process", "log", "merge", "objectHasKeys"],
+    ["objectHasKeys", "merge", "Promise", "process", "log", "Object"],
     [global, require("./StandardImport")],
-    (Promise, process, log, merge, objectHasKeys) =&gt; {
+    (objectHasKeys, merge, Promise, process, log, Object) =&gt; {
       let Main;
       return (Main = Caf.defClass(class Main extends Object {}, function(
         Main,
@@ -194,7 +218,13 @@ Caf.defMod(module, () =&gt; {
           argv = <span class="branch-0 cbranch-no" title="branch not covered" >process.argv,</span>
           output = <span class="branch-0 cbranch-no" title="branch not covered" >log</span>
         }) =&gt; {
-          let nodeJs, startFile, args, options, commandFunction, commandName;
+          let nodeJs,
+            startFile,
+            args,
+            options,
+            commandFunction,
+            commandName,
+            commandsHelp;
           [nodeJs, startFile, ...args] = argv;
           ({
             options,
@@ -202,6 +232,12 @@ Caf.defMod(module, () =&gt; {
             commandName,
             args
           } = require("./Parse").parseAndSelectCommand(commands, args));
+          commandsHelp = Caf.object(commands, null, v =&gt; Caf.is(v, Object));
+          <span class="missing-if-branch" title="if path not taken" >I</span>if (objectHasKeys(commandsHelp)) {
+<span class="cstat-no" title="statement not covered" >            help = merge(help, {</span>
+              commands: merge(Caf.exists(help) &amp;&amp; help.commands, commandsHelp)
+            });
+          }
           return Promise.then(() =&gt;
             commandFunction &amp;&amp; !options.help
               ? (options.verbose
@@ -241,7 +277,7 @@ Caf.defMod(module, () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jul 10 2020 16:29:40 GMT-0700 (Pacific Daylight Time)
+                at Fri Jul 10 2020 17:08:34 GMT-0700 (Pacific Daylight Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

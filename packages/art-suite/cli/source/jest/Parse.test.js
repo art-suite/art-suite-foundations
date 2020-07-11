@@ -14,6 +14,7 @@ Caf.defMod(module, () => {
           "parseAndSelectCommand",
           "parseArgs",
           "JSON",
+          "Error",
           "selectCommand"
         ],
         [parentImports, ArtCli.Parse],
@@ -24,15 +25,40 @@ Caf.defMod(module, () => {
           parseAndSelectCommand,
           parseArgs,
           JSON,
+          Error,
           selectCommand
         ) => {
           return describe({
             parseAndSelectCommand: function() {
-              return test("parseAndSelectCommand", () => {
+              test("parseAndSelectCommand", () => {
                 let foo, bar;
                 return assert.eq(
                   parseAndSelectCommand(
                     { foo: (foo = () => {}), bar: (bar = () => {}) },
+                    ["foo", "bar"]
+                  ),
+                  {
+                    commandFunction: foo,
+                    commandName: "foo",
+                    options: { args: ["bar"] }
+                  }
+                );
+              });
+              return test("parseAndSelectCommand commands with help", () => {
+                let foo, bar;
+                return assert.eq(
+                  parseAndSelectCommand(
+                    {
+                      foo: {
+                        action: (foo = () => {}),
+                        description: "walk about",
+                        examples: "walk",
+                        options: {
+                          gate: ["mph", "estimated mph for yer walking"]
+                        }
+                      },
+                      bar: (bar = () => {})
+                    },
                     ["foo", "bar"]
                   ),
                   {
@@ -128,13 +154,25 @@ Caf.defMod(module, () => {
                       ),
                       ["frank"]
                     ));
-                  return test("function", () => {
+                  test("function", () => {
                     let f;
                     f = v => v * 123;
                     return assert.eq(
                       parseArgs(["--f", `js:${Caf.toString(f)}`]).options.f(10),
                       1230
                     );
+                  });
+                  return test("function throws error", () => {
+                    let f;
+                    f = v =>
+                      (() => {
+                        throw new Error();
+                      })();
+                    return assert
+                      .rejects(() =>
+                        parseArgs(["--f", "js:(() => {throw new Error();})()"])
+                      )
+                      .then(error => assert.instanceof(Error, error));
                   });
                 }
               },

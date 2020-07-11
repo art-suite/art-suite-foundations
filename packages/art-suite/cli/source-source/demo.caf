@@ -1,6 +1,6 @@
 import &ArtStandardLib
 
-&source.start
+&ArtSuiteCli.start
   commands:
     sing: ({song}) -> "" ♫ #{song} ♫!
     send-cheer: -> "" May you have a holly, jolly Christmas this year!
@@ -11,9 +11,13 @@ import &ArtStandardLib
         if rudolph then "Rudolph's nose glows!"
       .join :\n
 
-    stat: ({ commands }) ->
-      log {} commands
-      null
+    stat:
+      description: "" stat the listed files
+      action: ({ args }) ->
+        object arg in args
+          stat = &fs.statSync arg
+          object k from Object.keys stat with-key k
+            stat[k]
 
   help:
     description: "" A demo app with a holiday theme.

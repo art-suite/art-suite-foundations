@@ -50,11 +50,11 @@ Caf.defMod(module, () => {
         });
         this.getCommandSummary = function(
           commandName,
-          { alias, description, options }
+          { description, options }
         ) {
           commandName = dashCase(commandName);
           return this.toHelpString(
-            this.getCommandUsage(commandName, alias, options),
+            this.getCommandUsage(commandName, options),
             present(description) ? `  ${Caf.toString(description)}` : undefined
           );
         };
@@ -86,12 +86,11 @@ Caf.defMod(module, () => {
             "    " + description
           );
         };
-        this.getCommandUsage = (command, alias, options) => {
+        this.getCommandUsage = (command, options) => {
           command = dashCase(command);
           return compactFlatten([
             this.coloredCliName,
             colors.bold(colors.brightWhite(command)),
-            alias ? `(${Caf.toString(alias)})` : undefined,
             this.getOptionsList(
               Caf.object(options, null, o => o.required),
               true
@@ -127,13 +126,11 @@ Caf.defMod(module, () => {
         };
         this.getCommandDetails = (
           command,
-          { alias, description, options, examples }
+          { description, options, examples }
         ) => {
           let from, into, to, i1, temp;
           return this.toHelpString(
-            `usage: ${Caf.toString(
-              this.getCommandUsage(command, alias, options)
-            )}`,
+            `usage: ${Caf.toString(this.getCommandUsage(command, options))}`,
             present(description) ? `\n${Caf.toString(description)}` : undefined,
             "",
             options ? colors.blue("options:\n") : undefined,

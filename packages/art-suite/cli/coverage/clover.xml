@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1594423780519" clover="3.2.0">
-  <project timestamp="1594423780519" name="All files">
-    <metrics statements="145" coveredstatements="122" conditionals="104" coveredconditionals="67" methods="53" coveredmethods="48" elements="302" coveredelements="237" complexity="0" loc="145" ncloc="145" packages="2" files="8" classes="8"/>
+<coverage generated="1594426114486" clover="3.2.0">
+  <project timestamp="1594426114486" name="All files">
+    <metrics statements="146" coveredstatements="132" conditionals="116" coveredconditionals="82" methods="54" coveredmethods="51" elements="316" coveredelements="265" complexity="0" loc="146" ncloc="146" packages="2" files="4" classes="4"/>
     <package name="ArtSuite.Cli">
-      <metrics statements="137" coveredstatements="114" conditionals="102" coveredconditionals="65" methods="48" coveredmethods="43"/>
-      <file name="Cli.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/Cli.js">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="2" count="3" type="stmt"/>
-        <line num="3" count="3" type="stmt"/>
-        <line num="4" count="3" type="stmt"/>
-      </file>
+      <metrics statements="136" coveredstatements="122" conditionals="114" coveredconditionals="80" methods="48" coveredmethods="45"/>
       <file name="Help.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/Help.js">
-        <metrics statements="58" coveredstatements="45" conditionals="58" coveredconditionals="33" methods="21" coveredmethods="19"/>
+        <metrics statements="58" coveredstatements="51" conditionals="56" coveredconditionals="37" methods="21" coveredmethods="20"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
@@ -20,7 +14,7 @@
         <line num="41" count="3" type="stmt"/>
         <line num="42" count="29" type="stmt"/>
         <line num="46" count="3" type="stmt"/>
-        <line num="48" count="25" type="stmt"/>
+        <line num="48" count="29" type="stmt"/>
         <line num="51" count="3" type="stmt"/>
         <line num="55" count="10" type="stmt"/>
         <line num="56" count="10" type="stmt"/>
@@ -38,77 +32,80 @@
         <line num="89" count="3" type="stmt"/>
         <line num="90" count="17" type="stmt"/>
         <line num="91" count="17" type="stmt"/>
-        <line num="96" count="6" type="stmt"/>
-        <line num="99" count="6" type="stmt"/>
-        <line num="102" count="3" type="stmt"/>
-        <line num="104" count="34" type="cond" truecount="2" falsecount="0"/>
-        <line num="111" count="6" type="stmt"/>
-        <line num="113" count="6" type="stmt"/>
-        <line num="114" count="6" type="cond" truecount="1" falsecount="1"/>
-        <line num="115" count="6" type="stmt"/>
-        <line num="117" count="6" type="stmt"/>
-        <line num="119" count="6" type="stmt"/>
-        <line num="128" count="3" type="stmt"/>
-        <line num="133" count="7" type="stmt"/>
-        <line num="142" count="2" type="stmt"/>
-        <line num="155" count="0" type="stmt"/>
-        <line num="157" count="0" type="stmt"/>
-        <line num="158" count="0" type="stmt"/>
-        <line num="159" count="0" type="stmt"/>
-        <line num="169" count="0" type="stmt"/>
-        <line num="181" count="0" type="stmt"/>
-        <line num="183" count="0" type="stmt"/>
-        <line num="190" count="3" type="stmt"/>
-        <line num="192" count="10" type="cond" truecount="1" falsecount="1"/>
-        <line num="193" count="10" type="stmt"/>
-        <line num="194" count="10" type="stmt"/>
-        <line num="195" count="22" type="stmt"/>
+        <line num="95" count="6" type="stmt"/>
+        <line num="98" count="6" type="stmt"/>
+        <line num="101" count="3" type="stmt"/>
+        <line num="103" count="34" type="cond" truecount="2" falsecount="0"/>
+        <line num="110" count="6" type="stmt"/>
+        <line num="112" count="6" type="stmt"/>
+        <line num="113" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="114" count="6" type="stmt"/>
+        <line num="116" count="6" type="stmt"/>
+        <line num="118" count="6" type="stmt"/>
+        <line num="127" count="3" type="stmt"/>
+        <line num="132" count="7" type="stmt"/>
+        <line num="139" count="2" type="stmt"/>
+        <line num="152" count="2" type="stmt"/>
+        <line num="154" count="4" type="stmt"/>
+        <line num="155" count="4" type="stmt"/>
+        <line num="156" count="4" type="stmt"/>
+        <line num="166" count="0" type="stmt"/>
+        <line num="178" count="4" type="stmt"/>
+        <line num="180" count="2" type="stmt"/>
+        <line num="187" count="3" type="stmt"/>
+        <line num="189" count="10" type="cond" truecount="1" falsecount="1"/>
+        <line num="190" count="10" type="stmt"/>
+        <line num="191" count="10" type="stmt"/>
+        <line num="192" count="22" type="stmt"/>
+        <line num="195" count="10" type="stmt"/>
+        <line num="196" count="10" type="stmt"/>
         <line num="198" count="10" type="stmt"/>
-        <line num="199" count="10" type="stmt"/>
-        <line num="201" count="10" type="stmt"/>
-        <line num="205" count="22" type="stmt"/>
-        <line num="210" count="10" type="stmt"/>
-        <line num="215" count="3" type="stmt"/>
-        <line num="216" count="4" type="stmt"/>
+        <line num="202" count="22" type="stmt"/>
+        <line num="207" count="10" type="stmt"/>
+        <line num="212" count="3" type="stmt"/>
+        <line num="213" count="4" type="stmt"/>
       </file>
       <file name="Main.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/Main.js">
-        <metrics statements="11" coveredstatements="11" conditionals="22" coveredconditionals="11" methods="7" coveredmethods="7"/>
+        <metrics statements="14" coveredstatements="13" conditionals="26" coveredconditionals="12" methods="8" coveredmethods="8"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
         <line num="9" count="3" type="stmt"/>
         <line num="14" count="3" type="stmt"/>
-        <line num="21" count="4" type="stmt"/>
-        <line num="22" count="4" type="stmt"/>
+        <line num="27" count="4" type="stmt"/>
         <line num="28" count="4" type="stmt"/>
-        <line num="29" count="4" type="cond" truecount="4" falsecount="0"/>
-        <line num="49" count="2" type="stmt"/>
-        <line num="54" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="34" count="5" type="stmt"/>
+        <line num="35" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="40" count="4" type="stmt"/>
+        <line num="41" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="61" count="2" type="stmt"/>
+        <line num="66" count="4" type="cond" truecount="2" falsecount="0"/>
       </file>
       <file name="Parse.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/Parse.js">
-        <metrics statements="60" coveredstatements="50" conditionals="22" coveredconditionals="21" methods="18" coveredmethods="15"/>
+        <metrics statements="64" coveredstatements="58" conditionals="32" coveredconditionals="31" methods="19" coveredmethods="17"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
         <line num="17" count="3" type="stmt"/>
-        <line num="18" count="15" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="17" type="cond" truecount="2" falsecount="0"/>
         <line num="20" count="3" type="stmt"/>
         <line num="25" count="3" type="stmt"/>
         <line num="26" count="3" type="stmt"/>
         <line num="27" count="3" type="stmt"/>
         <line num="28" count="3" type="stmt"/>
         <line num="29" count="3" type="stmt"/>
-        <line num="31" count="20" type="stmt"/>
-        <line num="32" count="20" type="stmt"/>
-        <line num="33" count="20" type="stmt"/>
-        <line num="37" count="36" type="cond" truecount="2" falsecount="0"/>
-        <line num="43" count="22" type="cond" truecount="5" falsecount="0"/>
+        <line num="31" count="23" type="stmt"/>
+        <line num="32" count="23" type="stmt"/>
+        <line num="33" count="23" type="stmt"/>
+        <line num="37" count="42" type="cond" truecount="2" falsecount="0"/>
+        <line num="43" count="27" type="cond" truecount="5" falsecount="0"/>
         <line num="45" count="1" type="stmt"/>
         <line num="47" count="1" type="stmt"/>
         <line num="49" count="1" type="stmt"/>
-        <line num="53" count="6" type="stmt"/>
-        <line num="54" count="6" type="stmt"/>
-        <line num="55" count="6" type="cond" truecount="3" falsecount="1"/>
+        <line num="53" count="7" type="stmt"/>
+        <line num="54" count="7" type="stmt"/>
+        <line num="55" count="7" type="cond" truecount="3" falsecount="1"/>
         <line num="57" count="3" type="stmt"/>
         <line num="59" count="1" type="stmt"/>
         <line num="60" count="1" type="stmt"/>
@@ -117,64 +114,56 @@
         <line num="64" count="0" type="stmt"/>
         <line num="73" count="0" type="stmt"/>
         <line num="74" count="0" type="stmt"/>
-        <line num="79" count="2" type="stmt"/>
-        <line num="80" count="2" type="stmt"/>
-        <line num="81" count="2" type="stmt"/>
-        <line num="83" count="0" type="stmt"/>
-        <line num="84" count="0" type="stmt"/>
-        <line num="93" count="0" type="stmt"/>
-        <line num="94" count="0" type="stmt"/>
+        <line num="79" count="3" type="stmt"/>
+        <line num="80" count="3" type="stmt"/>
+        <line num="81" count="3" type="stmt"/>
+        <line num="83" count="1" type="stmt"/>
+        <line num="84" count="1" type="stmt"/>
+        <line num="92" count="1" type="stmt"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="98" count="0" type="stmt"/>
         <line num="99" count="0" type="stmt"/>
-        <line num="100" count="0" type="stmt"/>
-        <line num="111" count="13" type="stmt"/>
-        <line num="119" count="20" type="stmt"/>
-        <line num="122" count="14" type="stmt"/>
-        <line num="123" count="14" type="cond" truecount="3" falsecount="0"/>
-        <line num="125" count="1" type="stmt"/>
-        <line num="127" count="11" type="stmt"/>
-        <line num="129" count="2" type="stmt"/>
-        <line num="135" count="3" type="stmt"/>
-        <line num="137" count="9" type="stmt"/>
-        <line num="138" count="9" type="stmt"/>
-        <line num="139" count="12" type="stmt"/>
-        <line num="141" count="9" type="cond" truecount="2" falsecount="0"/>
-        <line num="146" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="151" count="3" type="stmt"/>
-        <line num="152" count="3" type="stmt"/>
-        <line num="154" count="6" type="stmt"/>
-        <line num="156" count="9" type="stmt"/>
-        <line num="162" count="3" type="stmt"/>
-        <line num="164" count="4" type="stmt"/>
-        <line num="165" count="4" type="stmt"/>
-        <line num="169" count="4" type="stmt"/>
-      </file>
-      <file name="StandardImport.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/StandardImport.js">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="2" count="3" type="stmt"/>
-        <line num="3" count="3" type="stmt"/>
-        <line num="4" count="3" type="stmt"/>
-      </file>
-      <file name="index.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/index.js">
-        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="4" count="3" type="stmt"/>
-      </file>
-      <file name="namespace.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/ArtSuite.Cli/namespace.js">
-        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="4" count="3" type="stmt"/>
+        <line num="110" count="17" type="stmt"/>
+        <line num="118" count="22" type="stmt"/>
+        <line num="121" count="14" type="stmt"/>
+        <line num="122" count="14" type="cond" truecount="3" falsecount="0"/>
+        <line num="124" count="1" type="stmt"/>
+        <line num="126" count="11" type="stmt"/>
+        <line num="128" count="2" type="stmt"/>
+        <line num="134" count="3" type="stmt"/>
+        <line num="136" count="17" type="stmt"/>
+        <line num="137" count="17" type="cond" truecount="4" falsecount="0"/>
+        <line num="138" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="140" count="3" type="stmt"/>
+        <line num="142" count="11" type="stmt"/>
+        <line num="143" count="11" type="stmt"/>
+        <line num="144" count="16" type="stmt"/>
+        <line num="146" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="147" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="153" count="3" type="stmt"/>
+        <line num="154" count="3" type="stmt"/>
+        <line num="156" count="6" type="stmt"/>
+        <line num="158" count="11" type="stmt"/>
+        <line num="164" count="3" type="stmt"/>
+        <line num="166" count="6" type="stmt"/>
+        <line num="167" count="6" type="stmt"/>
+        <line num="171" count="6" type="stmt"/>
       </file>
     </package>
     <package name="jest">
-      <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
+      <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="6"/>
       <file name="StandardImport.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/art-suite/cli/source/jest/StandardImport.js">
-        <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="5" coveredmethods="5"/>
+        <metrics statements="10" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="6"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
         <line num="9" count="3" type="stmt"/>
         <line num="14" count="5" type="stmt"/>
-        <line num="15" count="17" type="cond" truecount="2" falsecount="0"/>
-        <line num="17" count="14" type="stmt"/>
-        <line num="18" count="14" type="stmt"/>
+        <line num="15" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="15" type="stmt"/>
+        <line num="18" count="15" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="22" count="5" type="stmt"/>
       </file>
     </package>
   </project>

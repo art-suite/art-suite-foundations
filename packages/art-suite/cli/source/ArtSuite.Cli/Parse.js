@@ -81,15 +81,14 @@ Caf.defMod(module, () => {
                                     return eval(value);
                                   } catch (error2) {
                                     error = error2;
-                                    log.error({
+                                    error.info = {
                                       JavaScriptEvalError: {
                                         option: currentOptionName,
                                         type,
                                         value,
-                                        argument,
-                                        error: error.message
+                                        argument
                                       }
-                                    });
+                                    };
                                     return (() => {
                                       throw error;
                                     })();
@@ -132,21 +131,24 @@ Caf.defMod(module, () => {
             )
           };
         };
-        this.selectCommand = function(commands, commandNames) {
+        this.getCommand = function(commands, commandName) {
+          let c, temp;
+          c = commands[lowerCamelCase(commandName)];
+          c = (temp = Caf.exists(c) && c.action) != null ? temp : c;
+          return isNonClassFunction(c) ? c : undefined;
+        };
+        this.selectCommand = (commands, commandNames) => {
           let commandName, args, commandFunction;
           [commandName, ...args] = commandNames;
           commands = Caf.object(commands, null, null, null, (v, k) =>
             lowerCamelCase(k)
           );
-          if (
-            !isNonClassFunction(
-              (commandFunction = commands[lowerCamelCase(commandName)])
-            )
-          ) {
+          if (!(commandFunction = this.getCommand(commands, commandName))) {
             if (
-              !isNonClassFunction(
-                (commandFunction = commands[(commandName = commands.default)])
-              )
+              !(commandFunction = this.getCommand(
+                commands,
+                (commandName = commands.default)
+              ))
             ) {
               commandFunction = undefined;
               commandName = undefined;

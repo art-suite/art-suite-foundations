@@ -15,6 +15,24 @@ describe
         commandName:     :foo
         options:         args: [] :bar
 
+    test 'parseAndSelectCommand commands with help' ->
+      assert.eq
+        parseAndSelectCommand
+          {}
+            foo:
+              action:       foo = ->
+              description:  "walk about"
+              examples:     "" walk
+              options:
+                gate: :mph "" estimated mph for yer walking
+
+            bar = ->
+          [] :foo :bar
+
+        commandFunction: foo
+        commandName:     :foo
+        options:         args: [] :bar
+
   parseArgs:
     options: ->
       test 'empty args' ->
@@ -108,6 +126,14 @@ describe
             parseArgs [] :--f "js:#{f}"
             .options.f 10
             1230
+
+        test 'function throws error' ->
+          f = (v) => throw new Error
+          assert.rejects -> parseArgs [] :--f "js:(() => {throw new Error();})()"
+          .then (error) ->
+            assert.instanceof
+              Error
+              error
 
     commands: ->
       test 'one command' ->

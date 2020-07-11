@@ -56,13 +56,13 @@ class Parse
             when :js
               try eval value
               catch error
-                log.error
+                error.info =
                   JavaScriptEvalError: {}
                     option: currentOptionName
                     type
                     value
                     argument
-                    error: error.message
+
                 throw error
 
             else throw new Error "invalid data-type '#{type}:' in: #{argument}\nExpecting: 'string:' or 'js:'"
@@ -76,13 +76,18 @@ class Parse
         when 1 then o[0]
         else o
 
-  @selectCommand: (commands, commandNames) ->
+  @getCommand: (commands, commandName) ->
+    c = commands[lowerCamelCase commandName]
+    c = c?.action ? c
+    if isNonClassFunction c then c
+
+  @selectCommand: (commands, commandNames) =>
     [commandName, args...] = commandNames
 
     commands = object v, k from commands with-key lowerCamelCase k
 
-    unless isNonClassFunction commandFunction = commands[lowerCamelCase commandName]
-      unless isNonClassFunction commandFunction = commands[commandName = commands.default]
+    unless commandFunction = @getCommand commands, commandName
+      unless commandFunction = @getCommand commands, commandName = commands.default
         commandFunction = undefined
         commandName = undefined
       args = commandNames
