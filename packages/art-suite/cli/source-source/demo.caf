@@ -2,14 +2,49 @@ import &ArtStandardLib
 
 &ArtSuiteCli.start
   commands:
-    sing: ({song}) -> "" ♫ #{song} ♫!
+    sing:
+      action: ({song}) -> "" ♫ #{song} ♫!
+      description: "Sing any name you choose"
+      options:
+        song:
+          description: "name of the song to sing"
+          required: true
+
     send-cheer: -> "" May you have a holly, jolly Christmas this year!
-    xmas: ({ santa, rudolph }) ->
-      compactFlatten []
-        "" Will Santa come this year?
-        if santa > 0 then repeat("Ho! ", santa) else 'No Santa this year.'
-        if rudolph then "Rudolph's nose glows!"
-      .join :\n
+    xmas:
+      action: ({ santa, rudolph }) ->
+        compactFlatten []
+          "" Will Santa come this year?
+          if santa > 0 then repeat("Ho! ", santa) else 'No Santa this year.'
+          if rudolph then "Rudolph's nose glows!"
+        .join :\n
+      description: "" This will tell you exactly what you need.
+      options:
+        rudolph:  "" Should Rudolph come too?
+        santa:    :number-of-ho-hos "" Santa will come if he says 'Ho!' at least once.
+      examples:
+        santa: 10
+        """
+          output:
+
+            Will Santa come this year?
+            Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
+
+        rudolph: true
+        """
+          output:
+
+            Will Santa come this year?
+            No Santa this year.
+            Rudolph's nose glows!
+
+        rudolph: true santa: 10
+        """
+          output:
+
+            Will Santa come this year?
+            Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
+            Rudolph's nose glows!
 
     stat:
       description: "" stat the listed files
@@ -18,43 +53,3 @@ import &ArtStandardLib
           stat = &fs.statSync arg
           object k from Object.keys stat with-key k
             stat[k]
-
-  help:
-    description: "" A demo app with a holiday theme.
-    commands:
-      sing:
-        description: "Sing any name you choose"
-        options:
-          song:
-            description: "name of the song to sing"
-            required: true
-
-      send-cheer: description: "" Just a little holiday cheer.
-      xmas:
-        description: "" This will tell you exactly what you need.
-        options:
-          rudolph:  "" Should Rudolph come too?
-          santa:    :number-of-ho-hos "" Santa will come if he says 'Ho!' at least once.
-        examples:
-          santa: 10
-          """
-            output:
-
-              Will Santa come this year?
-              Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
-
-          rudolph: true
-          """
-            output:
-
-              Will Santa come this year?
-              No Santa this year.
-              Rudolph's nose glows!
-
-          rudolph: true santa: 10
-          """
-            output:
-
-              Will Santa come this year?
-              Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
-              Rudolph's nose glows!
