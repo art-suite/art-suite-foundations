@@ -52,3 +52,50 @@ The output package.json file is generated as follows:
 4. Set version to the version read in step 1
 5. Write the resulting package.json
 
+# WIP: ABC v2 >> AGC?
+
+* **A.C.G.**: @art-suite/config-generator
+* **configurator**: CONFIGURation generATOR
+
+Config:
+```coffeescript
+import &ArtStandardLib
+
+loaders:
+  json: (rawJsonString, generator) ->
+    consistentJsonStringify deepMerge current, generator current = JSON.parse rawJsonString
+
+# Gets applied when you run the "abc --configure" command
+
+generators:
+  ###
+    An array or object
+    <array>
+      Elements are functions or objects
+      <Functions> are invoked and passed the selected folder, fully qualified.
+
+    <objects>
+      each value, key in object
+        switch value
+        when value is String
+          key is the filename
+          value is the contents to write
+
+        when value is Function
+          key is the filename
+          function is invoked and passed in the current contents of the file, if any. The return value is written fo the file.
+          If there is a matching loader for the filename's extension, It is used.
+
+        when value is Array
+          key is a folder
+          create the folder if it doesn't exist
+          recurse with the root algorythm in this sub-folder
+
+  ###
+  package.json: ->
+    description: "The best package ever!"
+
+```
+
+&ArtBuildConfigurator.loaders.json
+&ArtBuildConfigurator.Builder.webpack
