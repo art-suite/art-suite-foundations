@@ -12,22 +12,12 @@ Caf.defMod(module, () => {
         (describe, test, assert, normalizeCommands) => {
           return describe({
             normalizeCommands: function() {
-              test("bad commands: class instead of function 1", () =>
-                assert.rejects(() => {
-                  let Bar;
-                  return normalizeCommands({
-                    foo: (Bar = Caf.defClass(class Bar extends Object {}))
-                  });
-                }));
-              return test("bad commands: class instead of function 2", () =>
-                assert.rejects(() => {
-                  let Bar;
-                  return normalizeCommands({
-                    foo: {
-                      run: (Bar = Caf.defClass(class Bar extends Object {}))
-                    }
-                  });
-                }));
+              test("bad commands: string instead of function 1", () =>
+                assert.rejects(() => normalizeCommands({ foo: "hi" })));
+              return test("bad commands: string instead of function 2", () =>
+                assert.rejects(() =>
+                  normalizeCommands({ foo: { run: "hi" } })
+                ));
             }
           });
         }

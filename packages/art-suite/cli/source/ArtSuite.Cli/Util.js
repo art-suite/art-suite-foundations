@@ -4,37 +4,25 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
       "lowerCamelCase",
-      "isFunction",
-      "isClass",
       "log",
+      "isFunction",
       "Error",
       "formattedInspect",
       "mergeInto"
     ],
     [global, require("./StandardImport")],
-    (
-      lowerCamelCase,
-      isFunction,
-      isClass,
-      log,
-      Error,
-      formattedInspect,
-      mergeInto
-    ) => {
-      let isNonClassFunction, normalizeCommandName;
+    (lowerCamelCase, log, isFunction, Error, formattedInspect, mergeInto) => {
+      let normalizeCommandName;
       return {
-        isNonClassFunction: (isNonClassFunction = function(f) {
-          return isFunction(f) && !isClass(f);
-        }),
         normalizeCommandName: (normalizeCommandName = lowerCamelCase),
         normalizeCommands: function(commands, help) {
           let description;
           commands = Caf.object(
             commands,
             (v, k) =>
-              isNonClassFunction(v)
+              isFunction(v)
                 ? { run: v }
-                : !isNonClassFunction(Caf.exists(v) && v.run)
+                : !isFunction(Caf.exists(v) && v.run)
                 ? (() => {
                     throw new Error(
                       `${Caf.toString(

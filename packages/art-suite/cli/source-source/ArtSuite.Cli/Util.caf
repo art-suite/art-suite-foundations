@@ -1,18 +1,14 @@
 import &StandardImport
 {}
 
-  isNonClassFunction = (f) ->
-    isFunction f
-    && !isClass f
-
   normalizeCommandName = lowerCamelCase
 
   normalizeCommands: (commands, help) ->
     commands = object v, k from commands with-key normalizeCommandName k
-      if isNonClassFunction v
+      if isFunction v
         run: v
 
-      else unless isNonClassFunction v?.run
+      else unless isFunction v?.run
         throw new Error """
           #{k}'s run value is not a plain function. Details:
 
