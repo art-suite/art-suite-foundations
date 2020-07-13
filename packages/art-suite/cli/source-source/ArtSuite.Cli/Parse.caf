@@ -1,8 +1,4 @@
-import &StandardImport
-
-isNonClassFunction = (f) ->
-  isFunction f
-  && !isClass f
+import &StandardImport, &Util
 
 class Parse
   @optionRegExp: /^--(.+)$/
@@ -76,30 +72,21 @@ class Parse
         when 1 then o[0]
         else o
 
-  @getCommand: (commands, commandName) ->
-    c = commands[lowerCamelCase commandName]
-    c = c?.run ? c
-    if isNonClassFunction c then c
+  @getCommandFunction: (commands, commandName) ->
+    if command = commands[normalizeCommandName commandName]
+      command.run
 
-  @selectCommand: (commands, commandNames) =>
+  @selectCommand: (commands, commandNames, defaultCommandName) =>
     [commandName, args...] = commandNames
 
-    commands = object v, k from commands with-key lowerCamelCase k
-
-    unless commandFunction = @getCommand commands, commandName
-      unless commandFunction = @getCommand commands, commandName = commands.default
-        commandFunction = undefined
-        commandName = undefined
-      args = commandNames
-
     merge {}
-      commandFunction
+      commandFunction = @getCommandFunction commands, commandName ?= defaultCommandName
       commandName
       args: if args.length > 0 then args
 
-  @parseAndSelectCommand: (commands, args) =>
+  @parseAndSelectCommand: (commands, args, defaultCommandName) =>
     {options, commands: commandNames} = @parseArgs args
-    {commandFunction, commandName, args} = @selectCommand commands, commandNames
+    {commandFunction, commandName, args} = @selectCommand commands, commandNames, defaultCommandName
     {}
       commandFunction
       commandName

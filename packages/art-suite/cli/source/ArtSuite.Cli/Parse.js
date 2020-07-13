@@ -2,21 +2,10 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    [
-      "isFunction",
-      "isClass",
-      "lowerCamelCase",
-      "JSON",
-      "log",
-      "Error",
-      "merge"
-    ],
-    [global, require("./StandardImport")],
-    (isFunction, isClass, lowerCamelCase, JSON, log, Error, merge) => {
-      let isNonClassFunction, Parse;
-      isNonClassFunction = function(f) {
-        return isFunction(f) && !isClass(f);
-      };
+    ["lowerCamelCase", "JSON", "log", "Error", "normalizeCommandName", "merge"],
+    [global, require("./StandardImport"), require("./Util")],
+    (lowerCamelCase, JSON, log, Error, normalizeCommandName, merge) => {
+      let Parse;
       return (Parse = Caf.defClass(class Parse extends Object {}, function(
         Parse,
         classSuper,
@@ -131,42 +120,33 @@ Caf.defMod(module, () => {
             )
           };
         };
-        this.getCommand = function(commands, commandName) {
-          let c, temp;
-          c = commands[lowerCamelCase(commandName)];
-          c = (temp = Caf.exists(c) && c.action) != null ? temp : c;
-          return isNonClassFunction(c) ? c : undefined;
+        this.getCommandFunction = function(commands, commandName) {
+          let command;
+          return (command = commands[normalizeCommandName(commandName)])
+            ? command.run
+            : undefined;
         };
-        this.selectCommand = (commands, commandNames) => {
+        this.selectCommand = (commands, commandNames, defaultCommandName) => {
           let commandName, args, commandFunction;
           [commandName, ...args] = commandNames;
-          commands = Caf.object(commands, null, null, null, (v, k) =>
-            lowerCamelCase(k)
-          );
-          if (!(commandFunction = this.getCommand(commands, commandName))) {
-            if (
-              !(commandFunction = this.getCommand(
-                commands,
-                (commandName = commands.default)
-              ))
-            ) {
-              commandFunction = undefined;
-              commandName = undefined;
-            }
-            args = commandNames;
-          }
           return merge({
-            commandFunction,
+            commandFunction: (commandFunction = this.getCommandFunction(
+              commands,
+              commandName != null
+                ? commandName
+                : (commandName = defaultCommandName)
+            )),
             commandName,
             args: args.length > 0 ? args : undefined
           });
         };
-        this.parseAndSelectCommand = (commands, args) => {
+        this.parseAndSelectCommand = (commands, args, defaultCommandName) => {
           let options, commandNames, commandFunction, commandName;
           ({ options, commands: commandNames } = this.parseArgs(args));
           ({ commandFunction, commandName, args } = this.selectCommand(
             commands,
-            commandNames
+            commandNames,
+            defaultCommandName
           ));
           return {
             commandFunction,

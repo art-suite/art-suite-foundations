@@ -1,12 +1,12 @@
 import &StandardImport
-import ArtCli.Parse
+import ArtCli.Parse, ArtCli.Util
 
 describe
   parseAndSelectCommand: ->
     test 'parseAndSelectCommand' ->
       assert.eq
         parseAndSelectCommand
-          {}
+          normalizeCommands {}
             foo = ->
             bar = ->
           [] :foo :bar
@@ -159,47 +159,44 @@ describe
 
   selectCommand:
     defaults: ->
-      test 'no commandNames with default' ->
+      test 'no commandName, but default was provided' ->
         assert.eq
           selectCommand
-            commandFunctions =
-              default: :foo
-              foo: ->
+            commandFunctions = foo: run: ->
             []
-          commandFunction: commandFunctions.foo
+            :foo
+          commandFunction: commandFunctions.foo.run
           commandName: :foo
 
-      test 'one commandNames which isnt a command with default' ->
+      test 'one commandName which isnt a command with default' ->
         assert.eq
           selectCommand
-            commandFunctions =
-              default: :foo
-              foo: ->
+            commandFunctions = foo: run: ->
             [] :bar
-          commandFunction: commandFunctions.foo
-          commandName: :foo
-          args: [] :bar
+            :foo
+
+          commandName: :bar
 
     basics: ->
       test 'foo is a command' ->
         assert.eq
           selectCommand
-            commandFunctions = foo: ->
+            commandFunctions = foo: run: ->
             [] :foo
-          commandFunction: commandFunctions.foo
+          commandFunction: commandFunctions.foo.run
           commandName: :foo
 
       test 'foo-bar is a command' ->
         assert.eq
           selectCommand
-            commandFunctions = foo-bar: ->
+            commands = normalizeCommands foo-bar: run: ->
             [] :foo-bar
-          commandFunction: commandFunctions[:foo-bar]
+          commandFunction: commands.fooBar.run
           commandName: :foo-bar
 
       test 'foo is not a command' ->
         assert.eq
           selectCommand
-            commandFunctions = bar: ->
+            commandFunctions = bar: run: ->
             [] :foo
-          {} args: [] :foo
+          commandName: :foo

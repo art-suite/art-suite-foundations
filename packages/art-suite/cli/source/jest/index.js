@@ -7,5 +7,6 @@
   HelpTest:       require('./Help.test'),
   MainTest:       require('./Main.test'),
   ParseTest:      require('./Parse.test'),
-  StandardImport: require('./StandardImport')
+  StandardImport: require('./StandardImport'),
+  UtilTest:       require('./Util.test')
 });

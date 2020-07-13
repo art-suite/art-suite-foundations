@@ -12,17 +12,19 @@ Caf.defMod(module, () => {
           "test",
           "assert",
           "parseAndSelectCommand",
+          "normalizeCommands",
           "parseArgs",
           "JSON",
           "Error",
           "selectCommand"
         ],
-        [parentImports, ArtCli.Parse],
+        [parentImports, ArtCli.Parse, ArtCli.Util],
         (
           describe,
           test,
           assert,
           parseAndSelectCommand,
+          normalizeCommands,
           parseArgs,
           JSON,
           Error,
@@ -34,7 +36,10 @@ Caf.defMod(module, () => {
                 let foo, bar;
                 return assert.eq(
                   parseAndSelectCommand(
-                    { foo: (foo = () => {}), bar: (bar = () => {}) },
+                    normalizeCommands({
+                      foo: (foo = () => {}),
+                      bar: (bar = () => {})
+                    }),
                     ["foo", "bar"]
                   ),
                   {
@@ -50,7 +55,7 @@ Caf.defMod(module, () => {
                   parseAndSelectCommand(
                     {
                       foo: {
-                        action: (foo = () => {}),
+                        run: (foo = () => {}),
                         description: "walk about",
                         examples: "walk",
                         options: {
@@ -212,31 +217,29 @@ Caf.defMod(module, () => {
             },
             selectCommand: {
               defaults: function() {
-                test("no commandNames with default", () => {
+                test("no commandName, but default was provided", () => {
                   let commandFunctions;
                   return assert.eq(
                     selectCommand(
-                      (commandFunctions = { default: "foo", foo: () => {} }),
-                      []
+                      (commandFunctions = { foo: { run: () => {} } }),
+                      [],
+                      "foo"
                     ),
                     {
-                      commandFunction: commandFunctions.foo,
+                      commandFunction: commandFunctions.foo.run,
                       commandName: "foo"
                     }
                   );
                 });
-                return test("one commandNames which isnt a command with default", () => {
+                return test("one commandName which isnt a command with default", () => {
                   let commandFunctions;
                   return assert.eq(
                     selectCommand(
-                      (commandFunctions = { default: "foo", foo: () => {} }),
-                      ["bar"]
+                      (commandFunctions = { foo: { run: () => {} } }),
+                      ["bar"],
+                      "foo"
                     ),
-                    {
-                      commandFunction: commandFunctions.foo,
-                      commandName: "foo",
-                      args: ["bar"]
-                    }
+                    { commandName: "bar" }
                   );
                 });
               },
@@ -244,24 +247,27 @@ Caf.defMod(module, () => {
                 test("foo is a command", () => {
                   let commandFunctions;
                   return assert.eq(
-                    selectCommand((commandFunctions = { foo: () => {} }), [
-                      "foo"
-                    ]),
+                    selectCommand(
+                      (commandFunctions = { foo: { run: () => {} } }),
+                      ["foo"]
+                    ),
                     {
-                      commandFunction: commandFunctions.foo,
+                      commandFunction: commandFunctions.foo.run,
                       commandName: "foo"
                     }
                   );
                 });
                 test("foo-bar is a command", () => {
-                  let commandFunctions;
+                  let commands;
                   return assert.eq(
                     selectCommand(
-                      (commandFunctions = { "foo-bar": () => {} }),
+                      (commands = normalizeCommands({
+                        "foo-bar": { run: () => {} }
+                      })),
                       ["foo-bar"]
                     ),
                     {
-                      commandFunction: commandFunctions["foo-bar"],
+                      commandFunction: commands.fooBar.run,
                       commandName: "foo-bar"
                     }
                   );
@@ -269,10 +275,11 @@ Caf.defMod(module, () => {
                 return test("foo is not a command", () => {
                   let commandFunctions;
                   return assert.eq(
-                    selectCommand((commandFunctions = { bar: () => {} }), [
-                      "foo"
-                    ]),
-                    { args: ["foo"] }
+                    selectCommand(
+                      (commandFunctions = { bar: { run: () => {} } }),
+                      ["foo"]
+                    ),
+                    { commandName: "foo" }
                   );
                 });
               }

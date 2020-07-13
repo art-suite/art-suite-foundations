@@ -1,11 +1,17 @@
 import &ArtStandardLib
 
 &ArtSuiteCli.start
+  description:
+    """
+      A demo of the art-suite/cli library.
+
   commands:
     sing:
-      run: ({song}) -> "" ♫ #{song} ♫!
+      run: ({song, args}) -> "" ♫ #{song ? args?.join ' '} ♫!
       description: "Sing any name you choose"
       options:
+        args:
+          description: "your favorite lyrics"
         song:
           description: "name of the song to sing"
           required: true

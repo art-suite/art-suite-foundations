@@ -7,5 +7,6 @@
   Help:           require('./Help'),
   Main:           require('./Main'),
   Parse:          require('./Parse'),
-  StandardImport: require('./StandardImport')
+  StandardImport: require('./StandardImport'),
+  Util:           require('./Util')
 });

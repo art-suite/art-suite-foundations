@@ -28,7 +28,14 @@ Caf.defMod(module, () => {
               },
               run: {
                 description: "run about",
-                options: { gate: ["mph", "estimated mph for yer walking"] }
+                options: {
+                  gate: {
+                    argument: "mph",
+                    description: "estimated mph for yer walking",
+                    advanced: true,
+                    required: true
+                  }
+                }
               },
               info: { description: "show info" },
               cartewheel: { description: "this stuff is hard", advanced: true }

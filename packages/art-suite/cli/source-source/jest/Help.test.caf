@@ -13,7 +13,11 @@ help = {}
     run:
       description: "run about"
       options:
-        gate: :mph "" estimated mph for yer walking
+        gate:
+          argument: :mph
+          description: "" estimated mph for yer walking
+          advanced: true
+          required: true
 
     info:
       description: "show info"

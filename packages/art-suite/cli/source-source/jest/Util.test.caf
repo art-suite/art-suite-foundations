@@ -1,0 +1,18 @@
+import &StandardImport
+import ArtCli.Parse, ArtCli.Util
+
+describe
+  normalizeCommands: ->
+    test "bad commands: class instead of function 1" ->
+      assert.rejects -> normalizeCommands foo: class Bar
+
+    test "bad commands: class instead of function 2" ->
+      assert.rejects -> normalizeCommands foo: run: class Bar
+
+  #   isNonClassFunction = (f) ->
+  #   isFunction f
+  #   && !isClass f
+
+  # normalizeCommandName = lowerCamelCase
+
+  # normalizeCommands: (commands, help) ->

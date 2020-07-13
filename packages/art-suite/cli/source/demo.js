@@ -6,13 +6,17 @@ Caf.defMod(module, () => {
     [global, require("art-standard-lib")],
     (compactFlatten, repeat, Object) => {
       return require("./ArtSuite.Cli").start({
+        description: "A demo of the art-suite/cli library.",
         commands: {
           sing: {
-            action: function({ song }) {
-              return `♫ ${Caf.toString(song)} ♫!`;
+            run: function({ song, args }) {
+              return `♫ ${Caf.toString(
+                song != null ? song : Caf.exists(args) && args.join(" ")
+              )} ♫!`;
             },
             description: "Sing any name you choose",
             options: {
+              args: { description: "your favorite lyrics" },
               song: { description: "name of the song to sing", required: true }
             }
           },
@@ -20,7 +24,7 @@ Caf.defMod(module, () => {
             return "May you have a holly, jolly Christmas this year!";
           },
           xmas: {
-            action: function({ santa, rudolph }) {
+            run: function({ santa, rudolph }) {
               return compactFlatten([
                 "Will Santa come this year?",
                 santa > 0 ? repeat("Ho! ", santa) : "No Santa this year.",
@@ -46,7 +50,7 @@ Caf.defMod(module, () => {
           },
           stat: {
             description: "stat the listed files",
-            action: function({ args }) {
+            run: function({ args }) {
               return Caf.object(args, arg => {
                 let stat;
                 stat = require("fs").statSync(arg);

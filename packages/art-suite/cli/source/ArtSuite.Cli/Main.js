@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["objectHasKeys", "merge", "Promise", "process", "log", "Object"],
-    [global, require("./StandardImport")],
-    (objectHasKeys, merge, Promise, process, log, Object) => {
+    ["normalizeCommands", "Promise", "process", "log", "merge"],
+    [global, require("./StandardImport"), require("./Util")],
+    (normalizeCommands, Promise, process, log, merge) => {
       let Main;
       return (Main = Caf.defClass(class Main extends Object {}, function(
         Main,
@@ -13,37 +13,31 @@ Caf.defMod(module, () => {
       ) {
         this.start = ({
           commands,
+          default: _default,
+          description,
           help,
           argv = process.argv,
           output = log
         }) => {
-          let nodeJs,
-            startFile,
-            args,
-            options,
-            commandFunction,
-            commandName,
-            commandsHelp;
+          let nodeJs, startFile, args, options, commandFunction, commandName;
           [nodeJs, startFile, ...args] = argv;
           ({
             options,
             commandFunction,
             commandName,
             args
-          } = require("./Parse").parseAndSelectCommand(commands, args));
-          commandsHelp = Caf.object(commands, null, v => Caf.is(v, Object));
-          if (objectHasKeys(commandsHelp)) {
-            help = merge(help, {
-              commands: merge(Caf.exists(help) && help.commands, commandsHelp)
-            });
-          }
+          } = require("./Parse").parseAndSelectCommand(
+            (commands = normalizeCommands(commands, help)),
+            args,
+            _default
+          ));
           return Promise.then(() =>
             commandFunction && !options.help
               ? (options.verbose
                   ? output(
                       merge({
+                        options,
                         command: commandName,
-                        options: objectHasKeys(options) ? options : undefined,
                         args:
                           (Caf.exists(args) && args.length) > 0
                             ? args
@@ -54,14 +48,8 @@ Caf.defMod(module, () => {
                 commandFunction(options, args))
               : require("./Help").getHelp(
                   startFile,
-                  help != null
-                    ? help
-                    : {
-                        commands: Caf.object(commands, () => {
-                          return {};
-                        })
-                      },
-                  Caf.exists(options) && options.help ? commandName : undefined
+                  { commands, description },
+                  commandName
                 )
           ).tap(result => result != null && output(result));
         };

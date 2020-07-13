@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &Util
 
 class Main
 
@@ -20,21 +20,20 @@ class Main
         args:     undefined or array of arguments not part of options
 
     options: object mapping lowerCamelCase option names to values parsed from the argv array
-  @start: ({commands, help, argv = process.argv, output = log}) =>
+  @start: ({commands, default: _default, description, help, argv = process.argv, output = log}) =>
     [nodeJs, startFile, args...] = argv
 
-    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand commands, args
-
-    commandsHelp = object v from commands when v is Object
-    if objectHasKeys commandsHelp
-      help = merge help, commands: merge help?.commands, commandsHelp
+    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand
+      commands = normalizeCommands commands, help
+      args
+      _default
 
     Promise.then ->
       if commandFunction && !options.help
         if options.verbose
           output merge {}
+            options
             command:  commandName
-            options:  if objectHasKeys options then options
             args:     if args?.length > 0 then args
 
         commandFunction options, args
@@ -42,7 +41,7 @@ class Main
       else
         &Help.getHelp
           startFile
-          help ? commands: object commands with {}
-          if options?.help then commandName
+          {} commands, description
+          commandName
 
     .tap (result) -> result? && output result
