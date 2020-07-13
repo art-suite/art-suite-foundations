@@ -13,7 +13,10 @@ import &StandardImport
         run: v
 
       else unless isNonClassFunction v?.run
-        throw new Error "" Values in the commands object must either be a Function or an object with at least: {run: Function}.
+        throw new Error """
+          #{k}'s run value is not a plain function. Details:
+
+          #{formattedInspect [k]: v}
 
       else v
 

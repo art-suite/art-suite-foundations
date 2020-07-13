@@ -2,9 +2,25 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["lowerCamelCase", "isFunction", "isClass", "log", "Error", "mergeInto"],
+    [
+      "lowerCamelCase",
+      "isFunction",
+      "isClass",
+      "log",
+      "Error",
+      "formattedInspect",
+      "mergeInto"
+    ],
     [global, require("./StandardImport")],
-    (lowerCamelCase, isFunction, isClass, log, Error, mergeInto) => {
+    (
+      lowerCamelCase,
+      isFunction,
+      isClass,
+      log,
+      Error,
+      formattedInspect,
+      mergeInto
+    ) => {
       let isNonClassFunction, normalizeCommandName;
       return {
         isNonClassFunction: (isNonClassFunction = function(f) {
@@ -21,7 +37,11 @@ Caf.defMod(module, () => {
                 : !isNonClassFunction(Caf.exists(v) && v.run)
                 ? (() => {
                     throw new Error(
-                      "Values in the commands object must either be a Function or an object with at least: {run: Function}."
+                      `${Caf.toString(
+                        k
+                      )}'s run value is not a plain function. Details:\n\n${Caf.toString(
+                        formattedInspect({ [k]: v })
+                      )}`
                     );
                   })()
                 : v,
