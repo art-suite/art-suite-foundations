@@ -20,7 +20,7 @@ describe
         parseAndSelectCommand
           {}
             foo:
-              action:       foo = ->
+              run:       foo = ->
               description:  "walk about"
               examples:     "" walk
               options:

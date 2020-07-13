@@ -78,7 +78,7 @@ class Parse
 
   @getCommand: (commands, commandName) ->
     c = commands[lowerCamelCase commandName]
-    c = c?.action ? c
+    c = c?.run ? c
     if isNonClassFunction c then c
 
   @selectCommand: (commands, commandNames) =>

@@ -3,7 +3,7 @@ import &ArtStandardLib
 &ArtSuiteCli.start
   commands:
     sing:
-      action: ({song}) -> "" ♫ #{song} ♫!
+      run: ({song}) -> "" ♫ #{song} ♫!
       description: "Sing any name you choose"
       options:
         song:
@@ -12,7 +12,7 @@ import &ArtStandardLib
 
     send-cheer: -> "" May you have a holly, jolly Christmas this year!
     xmas:
-      action: ({ santa, rudolph }) ->
+      run: ({ santa, rudolph }) ->
         compactFlatten []
           "" Will Santa come this year?
           if santa > 0 then repeat("Ho! ", santa) else 'No Santa this year.'
@@ -48,7 +48,7 @@ import &ArtStandardLib
 
     stat:
       description: "" stat the listed files
-      action: ({ args }) ->
+      run: ({ args }) ->
         object arg in args
           stat = &fs.statSync arg
           object k from Object.keys stat with-key k
