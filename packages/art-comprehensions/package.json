@@ -1,21 +1,23 @@
 {
-  "author": "Shane Brinkman-Davis Delamore",
-  "dependencies": {},
-  "bugs": "https:/github.com/art-suite/art-comprehensions/issues",
-  "homepage": "https://github.com/art-suite/art-comprehensions",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/art-suite/art-comprehensions.git"
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    
   },
   "description": "Simple, powerful iteration comprehensions for JavaScript.",
   "devDependencies": {
-    "art-testbench": "*",
+    "art-testbench": "^2.1.0",
+    "caffeine-script": "*",
     "chai": "^4.2.0",
-    "mocha": "^6.2.0",
-    "caffeine-script": "*"
+    "mocha": "^7.2.0"
   },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "art-comprehensions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
   "scripts": {
     "test": "nn -s;mocha -u tdd"
   },

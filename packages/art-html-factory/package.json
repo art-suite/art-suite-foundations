@@ -1,12 +1,18 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "*",
-    "art-object-tree-factory": "^1.0.0"
+    "art-build-configurator": "^1.26.14",
+    "art-object-tree-factory": "^2.1.11"
   },
   "description": "Generate HTML with an easy, declarative syntax.",
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "art-html-factory",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
   "scripts": {
     "build": "webpack --progress",
     "start": "webpack-dev-server --hot --inline --progress",
