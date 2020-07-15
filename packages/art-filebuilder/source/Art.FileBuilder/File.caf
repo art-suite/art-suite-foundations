@@ -1,0 +1,47 @@
+import &StandardImport, &ArtObjectTreeFactory
+Path = &Path
+
+createObjectTreeFactory
+  class FileClass extends BaseClass
+    constructor: (@props = {}, @children = []) ->
+      super
+      @props.filename = @children[0]
+      @props.contents = @children[1]
+
+    @getter
+      plainObjects: ->
+        [@props.filename]: @props.contents
+
+    write: (options = {}) ->
+      {filename, contents} = @props
+      {path, pretend, force, verbose, select, fs = &fs-extra} = options
+      path = Path.join path || '.', filename
+
+      selected = if select?
+        if isFunction select
+          select path
+        else if isRegExp select
+          select.test path
+      else true
+
+      if selected
+        exists = fs.existsSync path
+
+        if verbose
+          logContents = if exists
+            if contents == (fs.readFileSync path).toString()
+              "same:    #{path}".gray
+            else
+              if force
+                "overwriting: ".yellow + path.green
+              else
+                "skipped: #{path}".gray + " (cowardly refusing to overwrite - use: force)".yellow
+          else
+            "writing: ".gray + path.green
+
+          log if pretend then "PRETEND-".green + logContents else logContents
+
+        if !pretend && (!exists || force)
+          fs.ensureDirSync Path.dirname path
+          fs.writeFileSync path, contents?.nodeBuffer ? contents
+          path

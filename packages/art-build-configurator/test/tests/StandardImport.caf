@@ -1,0 +1,4 @@
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &ArtTestbench/Node
+  ArtBuildConfigurator: &source/ArtBuildConfigurator

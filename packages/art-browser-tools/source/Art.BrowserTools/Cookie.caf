@@ -1,0 +1,37 @@
+import &StandardImport
+global extract document
+
+setCookie = (cookieName, cookieValue, {expires, path}) ->
+
+  unless isString cookieValue
+    unless isPlainArray(cookieValue) || isPlainObject(cookieValue)
+      throw new Error "" cookieValue must be a string, array or object
+
+    cookieValue = JSON.stringify cookieValue
+
+  cookieString = "" #{cookieName}=#{cookieValue}
+
+  if expires
+    d = new Date()
+    d.setTime d.getTime() + expires * 24 * 60 * 60 * 1000
+    cookieString += "" ; expires=#{d.toUTCString()}
+
+  if path
+    cookieString += "" ; path=#{path}
+
+  document.cookie = cookieString
+
+class Cookie
+  @set: (name, value, options) -> setCookie name, value, options
+  @remove: (name, options)     -> setCookie name, path:options.path, expires: -1
+
+  @get: (cookieName) ->
+    name = cookieName + :=
+    ca = document.cookie.split ";"
+    value = null
+    each c in ca when !value
+      c = c.substring 1 while ' ' == c.charAt 0
+      if 0 == c.indexOf name
+        value = c.substring name.length, c.length
+        value = JSON.parse value if value.match /^[{[]/
+    value

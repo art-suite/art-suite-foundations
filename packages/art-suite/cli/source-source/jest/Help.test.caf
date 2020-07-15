@@ -1,0 +1,95 @@
+import &StandardImport
+import ArtCli.Help
+
+help = {}
+  description = "" abc-description
+  commands:
+    walk:
+      description: "walk about"
+      examples: "" walk
+      options:
+        gate: :mph "" estimated mph for yer walking
+
+    run:
+      description: "run about"
+      options:
+        gate:
+          argument: :mph
+          description: "" estimated mph for yer walking
+          advanced: true
+          required: true
+
+    info:
+      description: "show info"
+
+    cartewheel:
+      description: "this stuff is hard"
+      advanced: true
+
+describe
+  basic: ->
+
+    test "getHelp" ->
+      h = stripAnsi getHelp :myCommand help
+      assert.match h, /walk/
+      assert.match h, /gate/
+      assert.match h, /run/
+      assert.notMatch h, /yer walking/
+
+  detailedHelp: ->
+    test "getCommandDetails" ->
+      h = getCommandDetails :walk, help.commands.walk
+      assert.match h, /walk/
+      assert.notMatch h, description
+      assert.match h, /gate/
+      assert.match h, /option/
+      assert.match h, /yer walking/
+
+    test "getHelp specific command" ->
+      h = getHelp :myCommand help, :walk
+      assert.match h, /walk/
+      assert.match h, /gate/
+      assert.match h, /option/
+      assert.notMatch h, /run/
+      assert.match h, /yer walking/
+
+  regressions: ->
+    test "getHelp on a command with no options should still show details" ->
+      h = stripAnsi getHelp :myCommand help, :info
+      assert.match h, /usage/
+
+    test "getHelp only returns on copy of the description" ->
+      h = stripAnsi getHelp :myCommand help
+      assert.eq
+        h.match ///g #{description}
+        .length
+        1
+
+    test "multi-word commands" ->
+      assert.match
+        stripAnsi getHelp
+          :myCli
+          commands: list-buckets: details = description: "" Just give me some fun.
+          :list-buckets
+        /myCli/i
+
+      assert.match
+        stripAnsi getHelp
+          :myCli
+          commands: list-buckets: details
+          :listBuckets
+        /myCli/i
+
+      assert.match
+        stripAnsi getHelp
+          :myCli
+          commands: listBuckets: details
+          :list-buckets
+        /myCli/i
+
+      assert.match
+        stripAnsi getHelp
+          :myCli
+          commands: listBuckets: details
+          :listBuckets
+        /myCli/i

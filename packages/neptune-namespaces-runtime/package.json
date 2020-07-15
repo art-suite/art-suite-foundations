@@ -1,0 +1,23 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-standard-lib": "^1.69.4",
+    "coffee-script": "^1.12.7"
+  },
+  "description": "Neptune.Namespaces.Runtime",
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "neptune-namespaces-runtime",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "webpack --progress",
+    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "test": "nn -s;mocha -u tdd",
+    "testInBrowser": "webpack-dev-server --progress --env.devServer"
+  },
+  "version": "3.2.3"
+}

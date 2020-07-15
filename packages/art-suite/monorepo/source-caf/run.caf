@@ -1,0 +1,5 @@
+import &ArtStandardLib
+
+(options) ->
+  &runLib merge options,
+    verb: :run

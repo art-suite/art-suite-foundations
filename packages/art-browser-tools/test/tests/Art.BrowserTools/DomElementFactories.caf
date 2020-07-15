@@ -1,0 +1,53 @@
+import &StandardImport
+import Neptune.Art.BrowserTools.DomElementFactories
+
+global extract HTMLDivElement
+
+if self.document
+  suite "Art.Foundation.Browser.DomElementFactories", ->
+    test "Div()", ->
+      el = Div()
+      assert.eq el.constructor, HTMLDivElement
+
+    test "Div class: 'foo', id: '123'", ->
+      el = Div
+        class: "foo"
+        id:    "123"
+      assert.eq el.className, "foo"
+      assert.eq el.id, "123"
+
+    test "text children", ->
+      el = Span
+        class: "dude"
+        "This is some really"
+        B "bold"
+        "text."
+        "Also, here is some"
+        Em "emphasized"
+        "text."
+
+      assert.eq el.innerHTML, "This is some really<b>bold</b>text.Also, here is some<em>emphasized</em>text."
+
+    test "text child with newline", ->
+      el = Span
+        class: "dude"
+        "one\ntwo"
+      assert.eq el.innerHTML, "one<br>two"
+
+    test "Span innerHTML: ...", ->
+      el = Span innerHTML: myInnerHTML = "This is some really<b>bold</b>text.Also, here is some<em>emphasized</em>text."
+      assert.eq el.innerHTML, myInnerHTML
+
+    test "style property", ->
+      el = Div style: padding: "20px"
+      assert.eq el.style.padding, "20px"
+
+    test "multiple styles merge correctly", ->
+      mySharedTextStyle =
+        style:
+          fontSize: "123pt"
+
+      el = Div mySharedTextStyle, style: fontFamily: "MyPenguin"
+      assert.eq el.style.fontSize, "123pt"
+      assert.eq el.style.fontFamily, "MyPenguin"
+

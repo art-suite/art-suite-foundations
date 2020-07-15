@@ -1,0 +1,142 @@
+import &StandardImport, {} &colors
+
+class Help extends BaseClass
+  @classProperty :cliName
+
+  @toHelpString: (args...) ->
+    compactFlatten args
+    .join "\n"
+    .trim()
+
+  @classGetter
+    coloredCliName: -> colors.bold colors.blue @cliName
+
+  @getCommandSummary: (commandName, {description, options}) ->
+    commandName = dashCase commandName
+    @toHelpString
+      @getCommandUsage commandName, options
+      "  #{description}" if present description
+
+  @getOptionDetails: (option, details) ->
+    switch
+    when details is String  then description = details
+    when (details is Array) && details.length == 2  then [argument, description] = details
+    when details is Object                          then {argument, description, advanced, required} = details
+    else
+      log.warn {} option, details
+      throw new Error "expecting options details to be string, 2-length array or object"
+    @toHelpString
+      compactFlatten []
+        colors.green "  --#{option}"
+        if argument then colors.yellow argument
+        if required then colors.brightWhite "(REQUIRED)"
+        if advanced then colors.grey "(advanced)"
+      .join ' '
+      "    " + description
+
+  @getCommandUsage: (command, options) =>
+    command = dashCase command
+    compactFlatten []
+      @coloredCliName
+      colors.bold colors.brightWhite command
+      @getOptionsList (object o from options when o.required), true
+      @getOptionsList object o from options when !o.required
+    .join ' '
+
+
+  @getOptionsList: (options, required) =>
+    if objectHasKeys options
+      l =
+        array k from-array Object.keys(options).sort() with colors.green "--#{k}" when !options[k].advanced
+        .sort()
+        .join if required then ' ' else ', '
+      if required then l else "[#{l}]"
+
+  @getCommandDetails: (command, {description, options, examples}) =>
+    @toHelpString
+      "" usage: #{@getCommandUsage command, options}
+      "\n#{description}" if present description
+      ""
+      colors.blue "options:\n" if options
+      if options
+        array option in Object.keys(options).sort() with @getOptionDetails option, options[option]
+        .join :\n\n
+
+      colors.blue "\nexamples:\n" if examples?.length > 0
+      if examples?.length > 0
+        array example, i from examples by 2
+          description = examples[i+1]
+          []
+            "  #{@coloredCliName} #{colors.brightWhite command} "
+            + if example is Object
+              array value, option from example
+                colors.green "--#{option}"
+                + if value != undefined && value != true
+                  colors.yellow " " + value
+                else ''
+              .join ' '
+            else example
+            "    " + description.replace /\n/g, "\n    "
+            ""
+
+  ## getHelp
+    IN:
+      startFile: <String> name of the CLI app
+      help:
+        description: <String>
+        commands:
+          command1Name:
+            description:
+            options: {} option-name to option-help
+
+            examples: []
+              cli-example <string>
+              cli-example-description <string>
+              ...
+      commandName: <String> (optional)
+        If provided, show detailed help about this command derived from input help[commandName]
+
+    NOTE: all commandNames are normalized to lowerCamelCaser, so you can pass in a mix.
+
+    option-help:
+        description <String>
+      OR
+        [] argument-name <String>, description <String>
+      OR
+        argument: <String>
+        description: <String>
+        advanced: t/f
+          If true, hidden except on command-specific help
+          Also gets note as "advanced" in help when listed.
+
+  @getHelp: (startFile, help, commandName) =>
+    if help?
+      help extract description
+      commands = object v, k from help.commands with-key lowerCamelCase k
+
+    @cliName = &path.basename startFile
+    commandSpecificHelp = commands?[lowerCamelCase commandName]
+
+    @toHelpString
+      @getGeneralInfo description unless commandSpecificHelp
+
+      if commands
+        commands = object v, k from commands with-key lowerCamelCase k
+        if commandSpecificHelp
+          @getCommandDetails commandName, commandSpecificHelp
+        else
+          array commandName from Object.keys(commands).sort()
+            @getCommandSummary commandName, commands[commandName]
+          .join "\n\n"
+
+
+  @getGeneralInfo: (description) =>
+    compactFlatten []
+      "" usage: #{@coloredCliName} #{colors.brightWhite :command} #{colors.blue "[options]"}
+      + "" \nhelp:\_
+      + @coloredCliName
+      + colors.brightWhite " command"
+      + colors.green " --help"
+      description
+    .join "\n\n"
+    + :\n

@@ -1,0 +1,3 @@
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &ArtFilebuilder

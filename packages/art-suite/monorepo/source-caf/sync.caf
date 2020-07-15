@@ -1,0 +1,3 @@
+(options) ->
+  &updateSubPackages options
+  .then -> &updateMonoPackage options
