@@ -1,0 +1,20 @@
+import &ArtStandardLib
+target: node: true
+
+package: (abcPackage) -> merge &package,
+  description:  :Art.Cli
+  name:         :@art-suite/cli
+
+  scripts:
+    test:         :jest
+    build:        "" caf -p -c source-source -o source; nn -s
+    build-clean:  "" npm run clean; npm run build
+    clean:        "" rm -rf source/*
+    watch:        :npm-watch
+
+webpack:
+  # common properties are merged into each target's properties
+  common: {}
+
+  # each target's individual properties
+  targets: index: {}

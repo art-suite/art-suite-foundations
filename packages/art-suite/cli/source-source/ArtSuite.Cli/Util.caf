@@ -1,0 +1,29 @@
+import &StandardImport
+{}
+
+  normalizeCommandName = lowerCamelCase
+
+  normalizeCommands: (commands, help) ->
+    commands = object v, k from commands with-key normalizeCommandName k
+      if isFunction v
+        run: v
+
+      else unless isFunction v?.run
+        throw new Error """
+          #{k}'s run value is not a plain function. Details:
+
+          #{formattedInspect [k]: v}
+
+      else v
+
+    if help?
+      log.warn "ArtSuite/cli: 'help' option is deprecated. Use the new, improved commands option."
+      description ?= help.description
+      each commandHelp, rawK in help.commands
+        k = normalizeCommandName rawK
+        if commands[k]
+          mergeInto commands[k], commandHelp
+        else
+          throw new Error "No matching command for help: commands: #{rawK}: {}}"
+
+    commands

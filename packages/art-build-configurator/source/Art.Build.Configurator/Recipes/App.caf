@@ -1,0 +1,58 @@
+import &StandardImport
+
+class App extends &Recipe
+  @description: "" A minimal ArtSuiteJS app. (base: core)
+  @getter files: ->
+    @options extract clientFiles
+    deepMerge
+      @recipe
+        &Core
+        deepMerge
+          targets: :Client
+          dependencies: art-suite-app: :*
+          @options
+
+      Client.caf:
+        """
+          &source/#{@cafRequireFriendlyNamespaceDirPath}/Client
+
+      index.caf:
+        """
+          &source
+
+      index.html:
+        """
+          <html><body>
+            <h1>Development</h1>
+            <ul>
+              <li><a href="/Client?dev=true">Client</a></li>
+            </ul>
+            <h1>Production</h1>
+            <ul>
+              <li><a href="/Client">Client</a></li>
+            </ul>
+          </body></html>
+
+      source: [@namespaceDirPath]: _Client: merge
+        StandardImport.caf:
+          """
+            &ArtSuite
+
+        Main.caf:
+          """
+            import &StandardImport
+
+            &ArtSuiteApp.initArtSuiteClient
+              title:         :#{@packageDotName}
+              MainComponent:
+                class CanvasComponent extends Component
+
+                  render: ->
+                    CanvasElement
+                      draw:       #eee
+
+                      TextElement
+                        padding:  10
+                        text:     "" 'Hello world!' - #{@packageDotName}
+
+        clientFiles

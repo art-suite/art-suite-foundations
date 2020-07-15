@@ -1,0 +1,7 @@
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &Data
+  Configurator: &namespace
+  {}
+    fs: &fsExtra
+    &path

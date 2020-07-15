@@ -1,0 +1,72 @@
+import &StandardImport
+
+Path = &Path
+mockFs = &ExtendedMockFs
+
+pathJoin = (args...) ->
+  Path.join compactFlatten(args)...
+
+allJsFilesParse = (dir = mockFs.getTree(), path)->
+  each data, entryName in dir
+    switch
+    when /\.js$/.test entryName
+      try
+        eval
+          testString = """
+            (function(){
+              #{data}
+            });
+      catch error
+        log.error invalidJsFile: {}
+          file: pathJoin path, entryName
+          contents: data
+          testString
+        throw error
+    when data is Object
+      allJsFilesParse
+        data
+        pathJoin path, entryName
+
+  dir
+
+suite:
+  basic: ->
+    setup ->
+      mockFs
+        source:
+          Foo:
+            file.js: "" // js file
+      assert.eq
+        Object.keys mockFs.getTree().source.Foo
+        .sort()
+        [] :file.js
+
+    teardown -> mockFs.restore()
+
+    test :basic_js ->
+      Generator.generate :source/Foo quiet: true js: true
+      .then ->
+        assert.eq
+          Object.keys allJsFilesParse(mockFs.getTree()).source.Foo
+          .sort()
+          :file.js :index.js :namespace.js
+
+  all: ->
+    setup ->
+      mockFs
+        source:
+          Foo:
+            Module1.js:   "" // js file
+            Module2.js:   "" // js file
+            Foo.js:       "" // js file
+            _ignored.js:  "" // js file
+
+          Bar.Baz:
+            file.js:      "" // js file
+
+    teardown -> mockFs.restore()
+
+    test :basic ->
+      Generator.generate :source quiet: true js: true
+      .then ->
+        Object.keys allJsFilesParse(mockFs.getTree())

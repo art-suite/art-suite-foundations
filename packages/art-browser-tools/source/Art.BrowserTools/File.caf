@@ -1,0 +1,49 @@
+import &StandardImport, &Dom
+
+class File
+
+  ## request
+    IN: options:
+      accept: the HTML file input accept options. I.E. <input type="file" accept="...">
+        HTML "accept" values:
+          [valid MIME types]
+          audio/*
+          video/*
+          image/*
+      multiple: if set to true, allow the user to select multiple files
+      onChange: ([files]) -> ... # function called when the user makes a selection. Returns an array of HTML File objects
+        https://developer.mozilla.org/en-US/docs/Web/API/File
+
+  @request: (options = {}) =>
+    new Promise (resolvePromise, reject) =>
+      options extract accept, multiple, onChange
+
+      @hiddenDivForFileInput?.parentNode.removeChild @hiddenDivForFileInput
+      @hiddenDivForFileInput = createElementFromHtml
+        ""
+          <div style='height: 0px;width: 0px; overflow:hidden; position:absolute;'/>
+
+      global.document extract body
+
+      fileInput = createElementFromHtml
+        ""
+          <input type='file'
+          #{'accept='+accept if accept}
+          #{'multiple=true' if multiple}
+          />
+
+      @hiddenDivForFileInput.appendChild fileInput
+      body.appendChild @hiddenDivForFileInput
+      fileInput.onchange = (e) ->
+        fileList = array from-array fileInput.files # NOTE: fileInput.files is not really an array, but if we force it with "from-array", it works
+        # fileTypes = (file.type for file in fileList)
+        # fileSizes = (file.size for file in fileList)
+
+        if fileList.length > 0 && fileList[0]
+          onChange && onChange fileList
+          resolvePromise fileList
+
+        else
+          reject "" no files returned
+
+      fileInput.click()

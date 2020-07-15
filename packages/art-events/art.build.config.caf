@@ -1,0 +1,25 @@
+import &ArtStandardLib
+
+target: node: true
+package: (abcPackage) ->
+  sourceDir = :source-coffee-caf
+  merge abcPackage,
+    description: 'Epoched event system'
+    dependencies:     &package.dependencies
+    devDependencies:  &package.devDependencies
+    scripts: merge abcPackage.scripts,
+      build:
+        """
+          coffee --output source --compile #{sourceDir} &
+          caf -p -c #{sourceDir} -o source &
+          wait
+          nn -s
+
+      build-clean:  "" rm -rf source/*; npm run build
+      watch:        "" watch 'npm run build' ./#{sourceDir}
+
+
+webpack:
+  common: {}
+  targets:
+    index: {}

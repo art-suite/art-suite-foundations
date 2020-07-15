@@ -1,0 +1,176 @@
+import &StandardImport, &Configurators
+
+class Main
+
+  @realRequire:             eval 'require'
+
+  @configFilename:          :art.build.config.caf
+  @configBasename:          :art.build.config
+  @registerLoadersFilename: :register.js
+
+  @log: (args...) =>
+    log args... unless @quiet
+
+  @go: (npmRoot, options) =>
+    options extract pretend, configure, init, force, quiet, git
+
+    @quiet ?= quiet
+
+    @log "PRETEND".green if pretend
+
+    Promise.then ->
+      @init init, npmRoot, options if init
+
+    .then -> unless pretend && init
+      @loadAndWriteConfig npmRoot, options
+
+    .then -> unless pretend && init
+      @runNeptuneNamespaces npmRoot
+
+    .then -> if git
+      if &fs.existsSync :.git
+        @log "git already initialized. Not touching it. Cheers!".yellow
+
+      else
+        @log "initializing git...".yellow
+        &shellExecSimple 'git init'
+        .then -> &shellExecSimple 'git add .'
+        .then -> &shellExecSimple 'git commit -m "initial checkin by art-build-configurator#{if init then " --init #{init}" else ''}"'
+        .then -> @log "git initialized".yellow
+
+  @shellExec: (command) ->
+    &shellExecSimple command, {} @quiet
+
+  @registerLoaders: (npmRoot, vivify = false) =>
+    file = path.join npmRoot, @registerLoadersFilename
+    fs.exists file
+    .then (exists) ->
+      if exists
+        Main.realRequire file
+      else
+        if vivify
+          @init :core, npmRoot, verbose: true, select: /register.js/
+          Main.realRequire file
+        {}
+
+  @loadConfig: (npmRoot, vivifyConfigFile = false)=>
+    @registerLoaders npmRoot, vivifyConfigFile
+    .then =>
+      configFilepath = path.join process.cwd(), @configBasename
+      &GlobPromise configFilepath + "*"
+      .then (results) =>
+        if results.length > 0
+          Main.realRequire configFilepath
+        else
+          if vivifyConfigFile
+            @init :core, npmRoot, verbose: true, select: /art.build.config/
+          {}
+
+      .then (config) =>
+        config.npm ||= config.package
+        p = if config.npm
+          Promise.resolve config.npm
+        else
+          fs.exists packageFile = path.join npmRoot, ConfigurePackageJson.outFileName
+          .then (exists) =>
+            if exists
+              Main.realRequire packageFile
+            else
+              {}
+        p.then (finalNpm) =>
+          merge config, npm: finalNpm
+
+  @init: (recipeName, npmRoot, options) ->
+    options extract pretend, verbose
+    if pretend && !verbose
+      options = merge options, verbose: true
+
+    recipeName = null if recipeName == true
+    recipeName = dashCase recipeName ? :core
+
+    if recipeName == :Help
+      log
+        """
+          Please select a valid recipe name:
+
+            #{&Recipes.getModuleNames().join '\n  '}
+
+          Ex: abc -i node
+
+      Promise.reject "exiting"
+
+    else
+      @log "\n#{if pretend then :PRETEND-}INIT-#{recipeName}: #{npmRoot}"
+      unless recipe = &RecipeRegistry.recipes[recipeName]
+        log recipes: object recipe, name in &RecipeRegistry.recipes
+          recipe.description ? "" (no description)
+
+        Promise.reject
+          "Please provide a valid recipe name."
+
+      else
+        recipe.writeFiles npmRoot, options
+
+        @log "#{if pretend then :PRETEND-}INIT-#{recipeName}: done"
+
+  @pretendWriteConfig: (npmRoot, abcConfig) ->
+
+    Promise.deepAll merge {}
+      abcConfig
+      npm:
+        out: "package.json": ConfigurePackageJson.get npmRoot, abcConfig
+
+      indexHtml: if abcConfig.indexHtml
+        """
+          <html>
+          </html>
+
+      webpack:
+        configGeneratedOnDemand:  ConfigureWebpack.get npmRoot, abcConfig
+        out: "webpack.config.js": ConfigureWebpack.getFileContents()
+
+    .then @log
+
+  @runNeptuneNamespaces: (npmRoot, options) ->
+    [executable, firstArg] = process.argv
+    isWebpackDevServer = !!(executable.match(/\/node$/) && firstArg?.match /webpack-dev-server/)
+    @log "" \nNeptuneNamespaces: #{npmRoot}
+    &RunNeptuneNamespaces npmRoot, isWebpackDevServer
+
+  @loadAndWriteConfig: (npmRoot, options) ->
+    {pretend, configure, init} = options
+    @log "" \nCONFIGURE: #{npmRoot}
+
+    @loadConfig npmRoot, configure
+    .then (abcConfig) =>
+      if pretend
+        @pretendWriteConfig npmRoot, abcConfig
+      else
+        @writeConfig npmRoot, abcConfig
+
+  @writeConfig: (npmRoot, abcConfig) ->
+    Promise
+    .then -> ConfigurePackageJson.writeConfig npmRoot, abcConfig
+    .then -> ConfigureWebpack.writeConfig npmRoot, abcConfig
+
+  # called by webpack to get config
+  @getWebpackConfig: (npmRoot, env, argv) =>
+    @loadConfig npmRoot
+    .then (abcConfig) ->
+      @writeConfig npmRoot, abcConfig
+      .then ->
+        @runNeptuneNamespaces npmRoot
+        .then ->
+          ConfigureWebpack.get npmRoot, abcConfig, {} env, argv
+
+  # DEPRICATED
+  @updateFile: (fileName, contents) ->
+    if fs.existsSync fileName
+      oldContents = fs.readFileSync(fileName).toString()
+
+    if oldContents != contents
+      @log "writing: ".gray + fileName.green
+      fs.writeFileSync fileName, contents
+    else
+      @log "same:    #{fileName}".gray
+

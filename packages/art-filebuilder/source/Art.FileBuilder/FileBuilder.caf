@@ -1,0 +1,11 @@
+import &StandardImport
+
+fileBuilder: fileBuilder = (name, contents) ->
+  switch
+  when isPlainObject name
+    &Dir :. array contents, n from name with fileBuilder n, contents
+  when isString contents then &File name, contents
+  when isBinary contents then &File name, contents
+  when isPlainObject contents then &Dir  name, fileBuilder contents
+  when contents == null || contents == undefined || contents == false then null
+  else throw new Error "" expecting string, Art.Binary string, or plain object. got: #{formattedInspect {name, contents}}

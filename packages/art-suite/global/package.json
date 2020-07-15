@@ -1,0 +1,18 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "devDependencies": {
+    "jest": "^26.1.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "@art-suite/global",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "version": "1.0.3"
+}

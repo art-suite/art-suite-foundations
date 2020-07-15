@@ -1,0 +1,6 @@
+import &ArtStandardLib
+
+(options) ->
+  &runLib merge options,
+    command: "npm test"
+    verb: :test

@@ -1,0 +1,45 @@
+import &StandardImport
+
+class UriBrowserTools
+
+  @encodeUriQuery: encodeUriQuery = (query) ->
+    return '' unless hasProperties query
+    array v, k in query when v? && present v
+      "" #{k}=#{encodeURIComponent v}
+    .join :&
+
+  @stripLeadingSlash:   stripLeadingSlash  = (a) -> a.match(/^\/?(.*)/)[1]
+  @stripTrailingSlash:  stripTrailingSlash = (a) -> a.match(/(^.*[^\/])\/?$/)[1]
+
+  @uriPathJoin: uriPathJoin = (a, b) ->
+    a = null unless present a
+    b = null unless present b
+    if a && b
+      if /\:$/.test a
+            "" #{a}#{stripLeadingSlash b}
+      else  "" #{stripTrailingSlash a}/#{stripLeadingSlash b}
+    else a || b || ''
+
+  @encodeUri: encodeUri = (options) ->
+    options extract host, path, port, uri, protocol, query
+    unless present uri
+      protocol  = if present protocol then protocol else ''
+      host      = if present host     then host     else ''
+
+      protocolHost = switch
+        when host     then "" #{protocol}://#{host}
+        when protocol then "" #{protocol}:
+        else               ''
+
+      port = if present port
+        throw new Error "host required when specifying port" unless host
+        "" :#{port}
+      else ''
+
+      uri = "#{protocolHost}#{port}"
+
+    query = encodeUriQuery query
+
+    query = if present query then "?#{query}" else ''
+
+    "" #{uriPathJoin uri, path}#{query}
