@@ -1,1 +1,1 @@
-packages/art-monorepo/git-merge.sh
+packages/art-suite/monorepo/git-merge.sh
