@@ -57,8 +57,9 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     style: true
 
   @setter
+    style: (style) -> @props = merge @props, {} style
     props: (props) -> @_props =
-      if props extract? style
+      if @_style = props extract? style
         props = merge props, style:
           array value, name from style
             "#{name}: #{value}"
@@ -71,6 +72,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
   @getter
     :props
+    :style
     preserveRawText: -> rawHtmlTags[@name]
     isRawHtml: -> @name == :rawhtml
     isPre:  -> @name == :pre

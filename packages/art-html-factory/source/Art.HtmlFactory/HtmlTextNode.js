@@ -96,11 +96,14 @@ Caf.defMod(module, () => {
           };
           rawHtmlTags = { rawhtml: true, pre: true, script: true, style: true };
           this.setter({
+            style: function(style) {
+              return (this.props = merge(this.props, { style }));
+            },
             props: function(props) {
               let style;
-              return (this._props = (Caf.exists(props)
-              ? (style = props.style)
-              : undefined)
+              return (this._props = (this._style = Caf.exists(props)
+                ? (style = props.style)
+                : undefined)
                 ? (props = merge(props, {
                     style: Caf.array(
                       style,
@@ -113,7 +116,7 @@ Caf.defMod(module, () => {
                 : null);
             }
           });
-          this.getter("props", {
+          this.getter("props", "style", {
             preserveRawText: function() {
               return rawHtmlTags[this.name];
             },

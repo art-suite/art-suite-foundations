@@ -20,5 +20,5 @@ describe
   updateProps: ->
     test "style" ->
       node = new HtmlTextNode :div, {style: fontSize: 10pt color: #f00}
-      node.props = merge node.props, style: fontSize: 5pt
-      assert.eq node.toString(), """ <div style="fontSize: 5pt"></div>
+      node.style = merge node.style, fontSize: 5pt
+      assert.eq node.toString(), """ <div style="fontSize: 5pt; color: #f00"></div>

@@ -34,10 +34,10 @@ Caf.defMod(module, () => {
             node = new HtmlTextNode("div", {
               style: { fontSize: "10pt", color: "#f00" }
             });
-            node.props = merge(node.props, { style: { fontSize: "5pt" } });
+            node.style = merge(node.style, { fontSize: "5pt" });
             return assert.eq(
               node.toString(),
-              '<div style="fontSize: 5pt"></div>'
+              '<div style="fontSize: 5pt; color: #f00"></div>'
             );
           });
         }
