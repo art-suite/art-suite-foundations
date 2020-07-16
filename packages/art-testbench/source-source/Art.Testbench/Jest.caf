@@ -1,0 +1,12 @@
+{}
+  test:         (args...) -> global.test args...
+
+  describe = (map) ->
+    each v, k in map
+      if v is Function
+        global.describe k, -> v(); undefined
+      else
+        global.describe k, ->
+          describe v
+
+    undefined

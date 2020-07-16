@@ -8,8 +8,13 @@
     "npm-watch": "^0.6.0"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
-  "devDependencies": {},
+  "devDependencies": {
+    
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "license": "ISC",
   "name": "art-testbench",
   "repository": {
@@ -17,7 +22,7 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee --output source --compile source-source &\ncaf -p -c source-source -o source &\nwait\nnn -sq",
+    "build": "coffee --output source --compile --map source-source &\ncaf -p -c source-source -o source &\nwait\nnn -sq",
     "build-clean": "rm -rf source/*; npm run build",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
     "test": "jest",
@@ -27,7 +32,7 @@
   "version": "2.1.0",
   "watch": {
     "build": {
-      "extensions": "caf",
+      "extensions": "caf,coffee",
       "patterns": [
         "source-source"
       ],

@@ -1,0 +1,7 @@
+&ArtStandardLib.merge
+  &Jest
+  {test, setup, initTesting} = &Mocha
+
+  {}
+    &ChainedTest.chainedTest
+    &ArtChai.assert

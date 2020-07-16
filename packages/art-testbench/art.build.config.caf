@@ -7,7 +7,7 @@ package: (abcPackage) ->
       test: "jest"
       build:
         """
-          coffee --output source --compile #{sourceDir} &
+          coffee --output source --compile --map #{sourceDir} &
           caf -p -c #{sourceDir} -o source &
           wait
           nn -sq
