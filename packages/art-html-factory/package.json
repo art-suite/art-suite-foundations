@@ -27,7 +27,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "0.3.3",
+  "version": "1.0.0",
   "watch": {
     "build": {
       "extensions": "caf",
