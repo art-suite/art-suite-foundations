@@ -81,19 +81,22 @@ Caf.defMod(module, () => {
               {
                 dependency: name,
                 conflictingPackages: {
-                  [subPackage.path + "/package.json"]: version,
-                  [previousSubPackage.path + "/package.json"]: previousVersion
+                  [(subPackage != null ? subPackage.path : "package") +
+                  "/package.json"]: version,
+                  [(previousSubPackage != null
+                    ? previousSubPackage.path
+                    : "previous_package") + "/package.json"]: previousVersion
                 }
               }
             );
             throw new HandledError(
               `Missmatch conflict:\n  ${Caf.toString(
-                subPackage.path
+                Caf.exists(subPackage) && subPackage.path
               )}: ${Caf.toString(name)}: '${Caf.toString(
                 intoPackageSet[name]
-              )}'\n  ${Caf.toString(previousSubPackage.path)}: ${Caf.toString(
-                name
-              )}: '${Caf.toString(version)}'`
+              )}'\n  ${Caf.toString(
+                Caf.exists(previousSubPackage) && previousSubPackage.path
+              )}: ${Caf.toString(name)}: '${Caf.toString(version)}'`
             );
           } else {
             if (!alreadyFileDep) {
@@ -105,12 +108,24 @@ Caf.defMod(module, () => {
         };
         return loadAllPackages()
           .then(packages => {
+            let packageFolderByPackageName;
+            packageFolderByPackageName = {};
             Caf.each2(packages, (_package, packageFolder) => {
               let name, dependencies, devDependencies;
               _package.path = packageFolder;
               name = _package.name;
               dependencies = _package.dependencies;
               devDependencies = _package.devDependencies;
+              if (packageFolderByPackageName[name]) {
+                log.error(
+                  `Two different packages have the same name in their package.json file:\n\n  ${Caf.toString(
+                    packageFolder
+                  )}\n  ${Caf.toString(packageFolderByPackageName[name])}`
+                );
+                throw new HandledError("Two packages have the same name");
+              } else {
+                packageFolderByPackageName[name] = packageFolder;
+              }
               Caf.each2(dependencies, (v, k) =>
                 addDep("dependencies", k, v, _package)
               );

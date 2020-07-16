@@ -43,14 +43,14 @@ updateMonoPackage = ({quiet}) ->
         {}
           dependency: name
           conflictingPackages:
-            [subPackage.path + :/package.json]: version
-            [previousSubPackage.path + :/package.json]: previousVersion
+            [(if subPackage? then subPackage.path else :package) + :/package.json]: version
+            [(if previousSubPackage? then previousSubPackage.path else :previous_package) + :/package.json]: previousVersion
 
       throw new HandledError
         """
           Missmatch conflict:
-            #{subPackage.path}: #{name}: '#{intoPackageSet[name]}'
-            #{previousSubPackage.path}: #{name}: '#{version}'
+            #{subPackage?.path}: #{name}: '#{intoPackageSet[name]}'
+            #{previousSubPackage?.path}: #{name}: '#{version}'
 
     else if !alreadyFileDep
       intoPackageSet[name] = version;
@@ -60,9 +60,21 @@ updateMonoPackage = ({quiet}) ->
 
   loadAllPackages()
   .then (packages) ->
+    packageFolderByPackageName = {}
     each _package, packageFolder from packages
       _package.path = packageFolder
       _package extract name, dependencies, devDependencies
+      if packageFolderByPackageName[name]
+        log.error
+          """
+            Two different packages have the same name in their package.json file:
+
+              #{packageFolder}
+              #{packageFolderByPackageName[name]}
+        throw new HandledError "" Two packages have the same name
+
+      else packageFolderByPackageName[name] = packageFolder
+
       # log "package: #{packageFolder}"
 
       each v, k in dependencies     with addDep :dependencies, k, v, _package

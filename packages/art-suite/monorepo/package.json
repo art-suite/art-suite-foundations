@@ -9,7 +9,7 @@
     "colors": "^1.4.0"
   },
   "devDependencies": {
-    
+
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
@@ -19,9 +19,20 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -p -c source-caf -o source; nn -s",
+    "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",
-    "clean": "rm -rf source/*"
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
   },
-  "version": "1.3.0"
+  "version": "1.3.0",
+  "watch": {
+    "build": {
+      "extensions": "caf",
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }
