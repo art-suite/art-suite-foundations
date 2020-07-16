@@ -3,10 +3,10 @@ let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
-      "hasProperties",
       "String",
-      "Object",
       "merge",
+      "hasProperties",
+      "Object",
       "compactFlatten",
       "compactFlattenJoin",
       "wrapAnsi",
@@ -14,10 +14,10 @@ Caf.defMod(module, () => {
     ],
     [global, require("art-standard-lib"), { wrapAnsi: require("wrap-ansi") }],
     (
-      hasProperties,
       String,
-      Object,
       merge,
+      hasProperties,
+      Object,
       compactFlatten,
       compactFlattenJoin,
       wrapAnsi,
@@ -33,7 +33,6 @@ Caf.defMod(module, () => {
             this.props = props;
             this.children = children;
             this.name = this.name.toLocaleLowerCase();
-            this._normalizeProps();
             this._normalizeChildren();
           }
         },
@@ -45,18 +44,6 @@ Caf.defMod(module, () => {
             emptyOptions,
             htmlFriendlyTextWrap,
             applyIndent;
-          this.prototype._normalizeProps = function() {
-            return hasProperties(this.props)
-              ? this.props.style
-                ? ((this.style = this.props.style),
-                  (this.props.style = Caf.array(
-                    this.style,
-                    (value, name) =>
-                      `${Caf.toString(name)}: ${Caf.toString(value)}`
-                  ).join("; ")))
-                : undefined
-              : (this.props = null);
-          };
           this.prototype._normalizeChildren = function() {
             let temp;
             this._haveStringChildrenWithNewLines = false;
@@ -108,7 +95,25 @@ Caf.defMod(module, () => {
               : string;
           };
           rawHtmlTags = { rawhtml: true, pre: true, script: true, style: true };
-          this.getter({
+          this.setter({
+            props: function(props) {
+              let style;
+              return (this._props = (Caf.exists(props)
+              ? (style = props.style)
+              : undefined)
+                ? (props = merge(props, {
+                    style: Caf.array(
+                      style,
+                      (value, name) =>
+                        `${Caf.toString(name)}: ${Caf.toString(value)}`
+                    ).join("; ")
+                  }))
+                : hasProperties(props)
+                ? props
+                : null);
+            }
+          });
+          this.getter("props", {
             preserveRawText: function() {
               return rawHtmlTags[this.name];
             },

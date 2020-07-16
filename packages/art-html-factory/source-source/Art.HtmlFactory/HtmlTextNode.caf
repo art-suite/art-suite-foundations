@@ -9,20 +9,7 @@ noCloseTag =
 class HtmlTextNode extends &ArtClassSystem.BaseClass
   constructor: (@name, @props, @children) ->
     @name = @name.toLocaleLowerCase()
-    @_normalizeProps()
     @_normalizeChildren()
-
-  _normalizeProps: ->
-    if hasProperties @props
-      if @props.style
-        @style = @props.style
-        @props.style =
-          array value, name from @style
-            "#{name}: #{value}"
-          .join '; '
-
-    else
-      @props = null
 
   _normalizeChildren: ->
     @_haveStringChildrenWithNewLines = false
@@ -69,7 +56,21 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     script: true
     style: true
 
+  @setter
+    props: (props) -> @_props =
+      if props extract? style
+        props = merge props, style:
+          array value, name from style
+            "#{name}: #{value}"
+          .join '; '
+
+      else if hasProperties props
+        props
+      else
+        null
+
   @getter
+    :props
     preserveRawText: -> rawHtmlTags[@name]
     isRawHtml: -> @name == :rawhtml
     isPre:  -> @name == :pre
