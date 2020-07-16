@@ -17,9 +17,10 @@ Caf.defMod(module, () => {
       "Body",
       "RawHtml",
       "Br",
-      "Img",
       "Html",
       "Head",
+      "Style",
+      "Img",
       "Meta",
       "Link",
       "Pre",
@@ -41,9 +42,10 @@ Caf.defMod(module, () => {
       Body,
       RawHtml,
       Br,
-      Img,
       Html,
       Head,
+      Style,
+      Img,
       Meta,
       Link,
       Pre,
@@ -157,6 +159,25 @@ Caf.defMod(module, () => {
             return testFactoryToString(
               () => Div("one", Br(), "line"),
               "<div>\n  one\n  <br>\n  line\n</div>"
+            );
+          },
+          script: function() {
+            return testFactoryToString(
+              () => Html(Head(Script('var tag = "<something>";'))),
+              '<html><head><script>var tag = "<something>";</script></head></html>'
+            );
+          },
+          style: function() {
+            return testFactoryToString(
+              () =>
+                Html(
+                  Head(
+                    Style(
+                      "@font-face {\n  font-family: proxima nova light;\n  font-style: normal;\n  font-weight: 400;\n}"
+                    )
+                  )
+                ),
+              "<html>\n  <head>\n    <style>\n      @font-face {\n        font-family: proxima nova light;\n        font-style: normal;\n        font-weight: 400;\n      }\n    </style>\n  </head>\n</html>"
             );
           },
           img: function() {

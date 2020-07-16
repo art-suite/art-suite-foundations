@@ -41,6 +41,7 @@ Caf.defMod(module, () => {
           let htmlEscapes,
             getHtmlEscape,
             escapeHtmlString,
+            rawHtmlTags,
             emptyOptions,
             htmlFriendlyTextWrap,
             applyIndent;
@@ -80,7 +81,7 @@ Caf.defMod(module, () => {
               : undefined;
           };
           this.prototype._getNormalizedText = function(text) {
-            return !(this.isPre || this.isRawHtml)
+            return !this.preserveRawText
               ? escapeHtmlString(
                   /\n *\n/.test(text)
                     ? Caf.array(
@@ -106,7 +107,11 @@ Caf.defMod(module, () => {
               ? string.replace(/["<>&]/g, getHtmlEscape)
               : string;
           };
+          rawHtmlTags = { rawhtml: true, pre: true, script: true, style: true };
           this.getter({
+            preserveRawText: function() {
+              return rawHtmlTags[this.name];
+            },
             isRawHtml: function() {
               return this.name === "rawhtml";
             },
@@ -237,7 +242,13 @@ Caf.defMod(module, () => {
                 Caf.array(this.children, child =>
                   isString(child)
                     ? this.name !== "pre"
-                      ? applyIndent(indent, child, options.textWordWrap)
+                      ? applyIndent(
+                          indent,
+                          child,
+                          !this.preserveRawText
+                            ? options.textWordWrap
+                            : undefined
+                        )
                       : child
                     : child._compile(indent, options)
                 ))

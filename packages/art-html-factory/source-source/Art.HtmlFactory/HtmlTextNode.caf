@@ -39,7 +39,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
         ? @children
 
   _getNormalizedText: (text) ->
-    unless @isPre || @isRawHtml
+    unless @preserveRawText
       escapeHtmlString
         if /\n *\n/.test text
           array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
@@ -63,7 +63,14 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
     else string
 
+  rawHtmlTags =
+    rawhtml: true
+    pre: true
+    script: true
+    style: true
+
   @getter
+    preserveRawText: -> rawHtmlTags[@name]
     isRawHtml: -> @name == :rawhtml
     isPre:  -> @name == :pre
     childRequiresMultipleLines: ->
@@ -158,6 +165,6 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       array child from @children
         if isString child
           if @name != :pre
-            applyIndent indent, child, options.textWordWrap
+            applyIndent indent, child, unless @preserveRawText then options.textWordWrap
           else child
         else child._compile indent, options

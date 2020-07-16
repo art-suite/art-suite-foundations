@@ -137,6 +137,33 @@ describe
           line
         </div>
 
+    script: -> testFactoryToString
+      -> Html Head Script
+        """
+          var tag = "<something>";
+      """ <html><head><script>var tag = "<something>";</script></head></html>
+
+    style: -> testFactoryToString
+      -> Html Head Style
+        """
+          @font-face {
+            font-family: proxima nova light;
+            font-style: normal;
+            font-weight: 400;
+          }
+      """
+        <html>
+          <head>
+            <style>
+              @font-face {
+                font-family: proxima nova light;
+                font-style: normal;
+                font-weight: 400;
+              }
+            </style>
+          </head>
+        </html>
+
     img: -> testFactoryToString
       -> Div Img src: :https://my.url.com/wonder_woman.jpg
       """ <div><img src="https://my.url.com/wonder_woman.jpg"></div>
