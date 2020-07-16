@@ -4,15 +4,21 @@
   "dependencies": {
     "art-build-configurator": "^1.26.14",
     "art-object-tree-factory": "^2.1.11",
+    "wrap-ansi": "^7.0.0"
+  },
+  "description": "Build HTML from code in the most elegant way possible",
+  "devDependencies": {
     "npm-watch": "^0.6.0"
   },
-  "description": "Art.Cli",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
-  "name": "@art-suite/cli",
+  "name": "art-html-factory",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "scripts": {
     "build": "caf -p -c source-source -o source; nn -s",
@@ -21,5 +27,14 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "0.3.3"
+  "version": "0.3.3",
+  "watch": {
+    "build": {
+      "extensions": "caf",
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }

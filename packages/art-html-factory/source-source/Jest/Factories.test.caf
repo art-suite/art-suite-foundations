@@ -1,0 +1,196 @@
+import &StandardImport
+
+testFactoryToString = (args...) ->
+  each nodeF, i in args by 2
+    expectedOutput = args[i+1]
+
+    unless expectedOutput is String
+      throw new Error "Expecting a string at index #{i+1}! Make sure to pass an even number of pairs alternating between nodes and strings"
+
+    test
+      expectedOutput
+      .replace /\n/g, "\\n"
+      ->
+        assert.eq
+          nodeF().toString()
+          expectedOutput
+          FactoryToStringTestNumber: 1 + i/2
+
+testFactoryToString
+  -> Div
+    class: :fooClass
+    "" string child
+  """ <div class="fooClass">string child</div>
+
+  -> Div {class: :fooClass}, {id: :barId}
+  """ <div class="fooClass" id="barId"></div>
+
+  -> Div {style: fontSize: 10pt}, {style: color: #f00}
+  """ <div style="fontSize: 10pt; color: #f00"></div>
+
+  -> Div [] null, Div(), undefined
+  """ <div><div></div></div>
+
+  -> Script
+    async: true
+    "alert(1);"
+  """ <script async>alert(1);</script>
+
+  -> Header
+    H1 "" The most Amazing Page Ever
+    H2 "" You simply have to read it.
+
+  """
+    <header>
+      <h1>The most Amazing Page Ever</h1>
+      <h2>You simply have to read it.</h2>
+    </header>
+
+  -> P "" Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding liquorice.
+  """
+    <p>
+      Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut
+      gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake
+      cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread
+      icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies
+      marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi
+      bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon
+      drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar
+      plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding
+      liquorice.
+    </p>
+
+describe
+  textWordWrappingDefaultBehavior: -> testFactoryToString
+    -> Div
+      """
+        one line
+        two line
+    "<div>one line two line</div>"
+
+    -> Div
+      """
+        one line
+
+        two line
+
+    """
+      <div>
+        one line
+
+        two line
+      </div>
+
+    -> Body Div
+      """
+        one line
+
+        two line
+
+    """
+      <body>
+        <div>
+          one line
+
+          two line
+        </div>
+      </body>
+
+    -> Div
+      "" one
+      "" line
+    """
+      <div>
+        one
+        line
+      </div>
+
+  escape: -> testFactoryToString
+    -> Div "" one<br>line
+    "" <div>one&lt;br&gt;line</div>
+
+  specialTags:
+    rawHtml: -> testFactoryToString
+      -> RawHtml
+        """
+          <!-- RawHtml is here to escape in whatever you want -->
+          <html>
+        Body "" With some children
+        """ </html>
+      """
+        <!-- RawHtml is here to escape in whatever you want -->
+        <html>
+        <body>
+          With some children
+        </body>
+        </html>
+
+    br: -> testFactoryToString
+      -> Div
+        "" one
+        Br()
+        "" line
+      """
+        <div>
+          one
+          <br>
+          line
+        </div>
+
+    img: -> testFactoryToString
+      -> Div Img src: :https://my.url.com/wonder_woman.jpg
+      """ <div><img src="https://my.url.com/wonder_woman.jpg"></div>
+
+    meta: -> testFactoryToString
+      -> Html Head Meta myProp: :fine
+      "" <html><head><meta myProp="fine"></head></html>
+
+    link: -> testFactoryToString
+      -> Html Head Link myProp: :fine
+      "" <html><head><link myProp="fine"></head></html>
+
+    pre: -> testFactoryToString
+      -> Div Pre
+        """
+          Pre tags can have HTML in them:
+
+          <html><body>
+            Hello, world!
+          </body></html>
+      """
+        <div>
+          <pre>
+        Pre tags can have HTML in them:
+
+        <html><body>
+          Hello, world!
+        </body></html>
+          </pre>
+        </div>
+
+  length: ->
+    testLength = (name, f) ->
+      test name, ->
+        assert.eq
+          node = f()
+          .length
+          node.toCompactString().length
+          node.toCompactString()
+
+    testLength "P", -> P()
+    testLength "P width: 10", -> P width: 10
+    testLength "P :hello", -> P :hello
+    testLength "P :hello B :bye", -> P :hello B :bye
+
+  toString: ->
+    test "with options" ->
+      assert.eq
+        Div "Sweet donut biscuit tiramisu tart. Chocolate powder lollipop."
+        .toString indent: true tagWrap: 20 textWordWrap: 20
+        """
+          <div>
+            Sweet donut biscuit
+            tiramisu tart.
+            Chocolate powder
+            lollipop.
+          </div>
