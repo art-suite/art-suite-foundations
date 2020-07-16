@@ -8,9 +8,7 @@
     "npm-watch": "^0.6.0"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "testEnvironment": "node"
@@ -29,7 +27,7 @@
     "testInBrowser": "webpack-dev-server --progress --env.devServer",
     "watch": "npm-watch"
   },
-  "version": "2.1.0",
+  "version": "2.2.0",
   "watch": {
     "build": {
       "extensions": "caf,coffee",
