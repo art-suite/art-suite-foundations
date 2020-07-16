@@ -6,7 +6,7 @@
   },
   "description": "Simplified system of statuses for HTTP and any other network protocol",
   "devDependencies": {
-    "art-testbench": "^2.1.0",
+    "art-testbench": "^2.2.1",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
