@@ -3,21 +3,23 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-build-configurator": "^1.26.14",
-    "art-object-tree-factory": "^2.1.11"
+    "art-object-tree-factory": "^2.1.11",
+    "npm-watch": "^0.6.0"
   },
-  "description": "Generate HTML with an easy, declarative syntax.",
+  "description": "Art.Cli",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
-  "name": "art-html-factory",
+  "name": "@art-suite/cli",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "webpack --progress",
-    "start": "webpack-dev-server --hot --inline --progress",
-    "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress"
+    "build": "caf -p -c source-source -o source; nn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
   },
   "version": "0.3.3"
 }
