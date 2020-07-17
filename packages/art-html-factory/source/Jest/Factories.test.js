@@ -101,7 +101,7 @@ Caf.defMod(module, () => {
             { style: { color: "#f00" } }
           );
         },
-        '<div style="fontSize: 10pt; color: #f00"></div>',
+        '<div style="color: #f00; fontSize: 10pt"></div>',
         function() {
           return Div([null, Div(), undefined]);
         },
@@ -236,7 +236,7 @@ Caf.defMod(module, () => {
             ));
         },
         regressions: function() {
-          return test("with options", () => {
+          return test("merging styles", () => {
             let style;
             style = { color: "#ffbbcc" };
             return assert.eq(

@@ -17,19 +17,19 @@ Caf.defMod(module, () => {
               '<div class="fooClass">\n  string child\n</div>'
             );
           });
-          return test("style", () => {
+          return test("style is stringified", () => {
             let node;
             node = new HtmlTextNode("div", {
               style: { fontSize: "10pt", color: "#f00" }
             });
             return assert.eq(
               node.toString(),
-              '<div style="fontSize: 10pt; color: #f00"></div>'
+              '<div style="color: #f00; fontSize: 10pt"></div>'
             );
           });
         },
         updateProps: function() {
-          return test("style", () => {
+          return test("update style", () => {
             let node;
             node = new HtmlTextNode("div", {
               style: { fontSize: "10pt", color: "#f00" }
@@ -37,7 +37,7 @@ Caf.defMod(module, () => {
             node.style = merge(node.style, { fontSize: "5pt" });
             return assert.eq(
               node.toString(),
-              '<div style="fontSize: 5pt; color: #f00"></div>'
+              '<div style="color: #f00; fontSize: 5pt"></div>'
             );
           });
         }

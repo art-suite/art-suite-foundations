@@ -5,8 +5,8 @@ Caf.defMod(module, () => {
     [
       "String",
       "merge",
-      "hasProperties",
       "Object",
+      "hasProperties",
       "compactFlatten",
       "compactFlattenJoin",
       "wrapAnsi",
@@ -16,15 +16,15 @@ Caf.defMod(module, () => {
     (
       String,
       merge,
-      hasProperties,
       Object,
+      hasProperties,
       compactFlatten,
       compactFlattenJoin,
       wrapAnsi,
       isString
     ) => {
       let noCloseTag, HtmlTextNode;
-      noCloseTag = { link: true, meta: true, img: true, br: true };
+      noCloseTag = { link: true, meta: true, img: true, br: true, wbr: true };
       return (HtmlTextNode = Caf.defClass(
         class HtmlTextNode extends require("art-class-system").BaseClass {
           constructor(name, props, children) {
@@ -106,9 +106,9 @@ Caf.defMod(module, () => {
                 : undefined)
                 ? (props = merge(props, {
                     style: Caf.array(
-                      style,
-                      (value, name) =>
-                        `${Caf.toString(name)}: ${Caf.toString(value)}`
+                      Object.keys(style).sort(),
+                      name =>
+                        `${Caf.toString(name)}: ${Caf.toString(style[name])}`
                     ).join("; ")
                   }))
                 : hasProperties(props)

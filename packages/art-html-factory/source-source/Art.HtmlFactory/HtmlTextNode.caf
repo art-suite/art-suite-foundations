@@ -5,6 +5,7 @@ noCloseTag =
   meta: true
   img: true
   br: true
+  wbr: true
 
 class HtmlTextNode extends &ArtClassSystem.BaseClass
   constructor: (@name, @props, @children) ->
@@ -61,8 +62,8 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     props: (props) -> @_props =
       if @_style = props extract? style
         props = merge props, style:
-          array value, name from style
-            "#{name}: #{value}"
+          array name from Object.keys(style).sort()
+            "#{name}: #{style[name]}"
           .join '; '
 
       else if hasProperties props

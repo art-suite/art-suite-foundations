@@ -26,7 +26,7 @@ testFactoryToString
   """ <div class="fooClass" id="barId"></div>
 
   -> Div {style: fontSize: 10pt}, {style: color: #f00}
-  """ <div style="fontSize: 10pt; color: #f00"></div>
+  """ <div style="color: #f00; fontSize: 10pt"></div>
 
   -> Div [] null, Div(), undefined
   """ <div><div></div></div>
@@ -223,7 +223,7 @@ describe
           </div>
 
   regressions: ->
-    test "with options" ->
+    test "merging styles" ->
       style = color: :#ffbbcc
       assert.eq
         Div

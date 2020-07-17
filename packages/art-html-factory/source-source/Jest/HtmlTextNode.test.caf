@@ -13,12 +13,12 @@ describe
             string child
           </div>
 
-    test "style" ->
-      node = new HtmlTextNode :div, {style: fontSize: 10pt color: #f00}
-      assert.eq node.toString(), """ <div style="fontSize: 10pt; color: #f00"></div>
+    test "style is stringified" ->
+      node = new HtmlTextNode :div, style: fontSize: 10pt color: #f00
+      assert.eq node.toString(), """ <div style="color: #f00; fontSize: 10pt"></div>
 
   updateProps: ->
-    test "style" ->
+    test "update style" ->
       node = new HtmlTextNode :div, {style: fontSize: 10pt color: #f00}
       node.style = merge node.style, fontSize: 5pt
-      assert.eq node.toString(), """ <div style="fontSize: 5pt; color: #f00"></div>
+      assert.eq node.toString(), """ <div style="color: #f00; fontSize: 5pt"></div>
