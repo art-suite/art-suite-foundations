@@ -234,6 +234,19 @@ Caf.defMod(module, () => {
               ).toString({ indent: true, tagWrap: 20, textWordWrap: 20 }),
               "<div>\n  Sweet donut biscuit\n  tiramisu tart.\n  Chocolate powder\n  lollipop.\n</div>"
             ));
+        },
+        regressions: function() {
+          return test("with options", () => {
+            let style;
+            style = { color: "#ffbbcc" };
+            return assert.eq(
+              Div(
+                { style },
+                Div({ style }, { style: { "font-weight": 300 } })
+              ).toString(),
+              '<div style="color: #ffbbcc">\n  <div style="color: #ffbbcc; font-weight: 300"></div>\n</div>'
+            );
+          });
         }
       });
     }

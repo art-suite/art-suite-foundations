@@ -9,7 +9,7 @@ createObjectTreeFactories
   mergePropsInto: (dest, source) ->
     object v, k from source into dest
       if k == :style
-        mergeInto dest.style, v
+        merge dest.style, v
       else
         v
 

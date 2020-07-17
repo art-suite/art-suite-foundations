@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["createObjectTreeFactories", "mergeInto"],
+    ["createObjectTreeFactories", "merge"],
     [global, require("art-standard-lib"), require("art-object-tree-factory")],
-    (createObjectTreeFactories, mergeInto) => {
+    (createObjectTreeFactories, merge) => {
       let HtmlTextNode;
       HtmlTextNode = require("./HtmlTextNode");
       return createObjectTreeFactories(
@@ -12,7 +12,7 @@ Caf.defMod(module, () => {
           mergePropsInto: function(dest, source) {
             return Caf.object(
               source,
-              (v, k) => (k === "style" ? mergeInto(dest.style, v) : v),
+              (v, k) => (k === "style" ? merge(dest.style, v) : v),
               null,
               dest
             );

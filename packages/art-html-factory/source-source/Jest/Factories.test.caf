@@ -221,3 +221,18 @@ describe
             Chocolate powder
             lollipop.
           </div>
+
+  regressions: ->
+    test "with options" ->
+      style = color: :#ffbbcc
+      assert.eq
+        Div
+          {} style
+          Div
+            {} style
+            {} style: font-weight: 300
+        .toString()
+        """
+          <div style="color: #ffbbcc">
+            <div style="color: #ffbbcc; font-weight: 300"></div>
+          </div>
