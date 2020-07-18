@@ -1,6 +1,0 @@
-import &StandardImport
-
-class TestClass extends BaseObject
-  constructor: (@name, @props, @children) ->
-  @getter inspectedObjects: ->
-    merge {} @name, @props, children: if @children then toInspectedObjects @children

@@ -1,9 +1,18 @@
-import &StandardImport, {} &TestClass
+import &StandardImport
 
 testNames = :Alice :Bill :John :SallyMae
 testNamesLowerCamelCased = array name in testNames with lowerCamelCase name
 
-suite:
+class TestClass extends BaseObject
+  constructor: (@name, @props, @children) ->
+  @getter
+    inspectedObjects: ->
+      merge {}
+        @name
+        @props
+        children: if @children then toInspectedObjects @children
+
+describe
   createCorrectFactories: ->
     test "createObjectTreeFactories testNamesString", ->
       keys = Object.keys createObjectTreeFactories testNames.join(' '), ->

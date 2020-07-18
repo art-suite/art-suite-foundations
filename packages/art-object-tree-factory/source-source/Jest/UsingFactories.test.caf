@@ -14,7 +14,7 @@ class MyObject extends BaseObject
         @props
         children: if @children then array child in @children with toPlainObjects child
 
-suite:
+describe
   basics: ->
 
     {Alice, Bill, John, SallyMae} = createObjectTreeFactories testNamesLowerCamelCased, (name, props, children) ->

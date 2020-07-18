@@ -1,0 +1,14 @@
+
+
+
+npm:
+  description:  :Source.Source
+  dependencies: art-build-configurator: :*
+
+
+webpack:
+  # common properties are merged into each target's properties
+  common: {}
+
+  # each target's individual properties
+  targets: index: {}

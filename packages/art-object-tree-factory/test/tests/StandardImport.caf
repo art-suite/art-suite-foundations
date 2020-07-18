@@ -1,5 +1,0 @@
-&ArtStandardLib.mergeWithSelf
-  &ArtClassSystem
-  &source/ArtObjectTreeFactory
-  &ArtTestbench
-  test: (args...) -> global.test args...
