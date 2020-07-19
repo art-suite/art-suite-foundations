@@ -46,6 +46,7 @@
     "npm-watch": "^0.6.0",
     "pluralize": "^8.0.0",
     "script-loader": "^0.7.2",
+    "source-source": "file:packages/art-object-tree-factory/source-source",
     "style-loader": "^1.2.1",
     "watch": "^1.0.0",
     "webpack": "^4.39.1",
