@@ -111,3 +111,55 @@ describe
         .myClassFunction()
 
         :MyTestClass
+
+  mergePropsIntoOnlyRunsOfTwoOrMore: ->
+    f = createObjectTreeFactory
+      (props, children) -> merge {props, children}
+      mergePropsInto: (_into, props) ->
+        object v, k from props into _into with-key lowerCamelCase k
+
+    assert.eq
+      f
+        Fun: :123
+        {} Funner: 456
+      props: fun: :123 funner: 456
+
+    assert.eq
+      f
+        Fun: :123
+      props: Fun: :123
+
+  preprocessElement: ->
+    f = createObjectTreeFactory
+      (props, children) -> merge {props, children}
+      preprocessElement: (element, Factory) ->
+        assert.same f, Factory
+        switch
+        when element == null
+          "Nullification Nation"
+        when element == undefined
+          "Power to the UnDefed!"
+        when element is Object
+          object v, k from element with-key lowerCamelCase k
+        else element
+
+    assert.eq
+      f
+        Fun: :123
+        {} Funner: 456
+      props: fun: :123 funner: 456
+
+    assert.eq
+      f
+        Fun: :123
+      props: fun: :123
+
+    assert.eq
+      f
+        null
+      children: [] "Nullification Nation"
+
+    assert.eq
+      f
+        undefined
+      children: [] "Power to the UnDefed!"

@@ -142,11 +142,10 @@ createObjectTreeFactory = (...inputs) => objectTreeFactory
 
   * mergePropsInto: `(intoProps <Object>, fromProps <Object>) ->`
     custom function to merge `fromProps` into `intoProps`. This function
-    will be called for every props object passed into the factory, so
-    it can be used to preprocess all props.
+    is only called if there are two or more props-objects. If so, it will be called for every props object passed into the factory. However, since it won't be called if there is exactly one props object, it should not be relied upon to preprocess props. Note: it's safe to mutate intoProps, but NOT safe to mutate fromProps.
 
-  * preprocessElement: `(element, Factory) -> element`
-    can do custom preprocessing of each argument to the factory.
+  * preprocessElement: `(inputElement, Factory) -> inputElement`
+    called on every input element, whether props, null, undefined or any other value. Note: you can return any value you wish, but don't mutate inputElement.
 
 Example:
 ```coffeescript

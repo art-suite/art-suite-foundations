@@ -203,6 +203,55 @@ Caf.defMod(module, () => {
             assert.eq(f.class, MyTestClass);
             return assert.eq(f.myClassFunction(), "MyTestClass");
           });
+        },
+        mergePropsIntoOnlyRunsOfTwoOrMore: function() {
+          let f;
+          f = createObjectTreeFactory(
+            (props, children) => merge({ props, children }),
+            {
+              mergePropsInto: (_into, props) =>
+                Caf.object(props, null, null, _into, (v, k) =>
+                  lowerCamelCase(k)
+                )
+            }
+          );
+          assert.eq(f({ Fun: "123" }, { Funner: 456 }), {
+            props: { fun: "123", funner: 456 }
+          });
+          return assert.eq(f({ Fun: "123" }), { props: { Fun: "123" } });
+        },
+        preprocessElement: function() {
+          let f;
+          f = createObjectTreeFactory(
+            (props, children) => merge({ props, children }),
+            {
+              preprocessElement: (element, Factory) => {
+                assert.same(f, Factory);
+                return (() => {
+                  switch (false) {
+                    case !(element === null):
+                      return "Nullification Nation";
+                    case !(element === undefined):
+                      return "Power to the UnDefed!";
+                    case !Caf.is(element, Object):
+                      return Caf.object(element, null, null, null, (v, k) =>
+                        lowerCamelCase(k)
+                      );
+                    default:
+                      return element;
+                  }
+                })();
+              }
+            }
+          );
+          assert.eq(f({ Fun: "123" }, { Funner: 456 }), {
+            props: { fun: "123", funner: 456 }
+          });
+          assert.eq(f({ Fun: "123" }), { props: { fun: "123" } });
+          assert.eq(f(null), { children: ["Nullification Nation"] });
+          return assert.eq(f(undefined), {
+            children: ["Power to the UnDefed!"]
+          });
         }
       });
     }
