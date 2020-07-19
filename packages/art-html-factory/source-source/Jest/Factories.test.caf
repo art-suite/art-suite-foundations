@@ -1,20 +1,4 @@
-import &StandardImport
-
-testFactoryToString = (args...) ->
-  each nodeF, i in args by 2
-    expectedOutput = args[i+1]
-
-    unless expectedOutput is String
-      throw new Error "Expecting a string at index #{i+1}! Make sure to pass an even number of pairs alternating between nodes and strings"
-
-    test
-      expectedOutput
-      .replace /\n/g, "\\n"
-      ->
-        assert.eq
-          nodeF().toString()
-          expectedOutput
-          FactoryToStringTestNumber: 1 + i/2
+import &StandardImport, &Lib
 
 testFactoryToString
   -> Div
@@ -25,8 +9,8 @@ testFactoryToString
   -> Div {class: :fooClass}, {id: :barId}
   """ <div class="fooClass" id="barId"></div>
 
-  -> Div {style: fontSize: 10pt}, {style: color: #f00}
-  """ <div style="color: #f00; fontSize: 10pt"></div>
+  -> Div {style: font-size: 10pt}, {style: color: #f00}
+  """ <div style="color: #f00; font-size: 10pt"></div>
 
   -> Div [] null, Div(), undefined
   """ <div><div></div></div>
@@ -61,6 +45,43 @@ testFactoryToString
     </p>
 
 describe
+  merging:
+    caseSensativity: -> testFactoryToString
+      -> Div
+        {} style: Color: #abc123
+      "" <div style="Color: #abc123"></div>
+
+      -> Div
+        {} class: :FooBar
+      "" <div class="FooBar"></div>
+
+    style: -> testFactoryToString
+      -> Div
+        {} style: color: #abc123
+        {} style: height: 100px
+      "" <div style="color: #abc123; height: 100px"></div>
+
+    style-reset: -> testFactoryToString
+      -> Div
+        {} style: color: #abc123
+        {} style: null
+        {} style: height: 100px
+      "" <div style="height: 100px"></div>
+
+    class: -> testFactoryToString
+      -> Div
+        {} class: :ROW
+        {} class: :border-1px
+      "" <div class="ROW border-1px"></div>
+
+    class-reset: -> testFactoryToString
+      -> Div
+        {} class: :row
+        {} class: null
+        {} class: :border-1px
+      "" <div class="border-1px"></div>
+
+
   textWordWrappingDefaultBehavior: -> testFactoryToString
     -> Div
       """

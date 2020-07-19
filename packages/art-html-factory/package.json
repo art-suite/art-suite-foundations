@@ -13,7 +13,11 @@
   "description": "Build HTML from code in the most elegant way possible",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/Jest/**/*.js"
+    ]
   },
   "license": "ISC",
   "name": "art-html-factory",

@@ -20,11 +20,11 @@ Caf.defMod(module, () => {
           return test("style is stringified", () => {
             let node;
             node = new HtmlTextNode("div", {
-              style: { fontSize: "10pt", color: "#f00" }
+              style: { "font-size": "10pt", color: "#f00" }
             });
             return assert.eq(
               node.toString(),
-              '<div style="color: #f00; fontSize: 10pt"></div>'
+              '<div style="color: #f00; font-size: 10pt"></div>'
             );
           });
         },
@@ -32,12 +32,12 @@ Caf.defMod(module, () => {
           return test("update style", () => {
             let node;
             node = new HtmlTextNode("div", {
-              style: { fontSize: "10pt", color: "#f00" }
+              style: { "font-size": "10pt", color: "#f00" }
             });
-            node.style = merge(node.style, { fontSize: "5pt" });
+            node.style = merge(node.style, { "font-size": "5pt" });
             return assert.eq(
               node.toString(),
-              '<div style="color: #f00; fontSize: 5pt"></div>'
+              '<div style="color: #f00; font-size: 5pt"></div>'
             );
           });
         }

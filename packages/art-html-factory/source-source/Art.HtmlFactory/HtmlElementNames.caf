@@ -6,8 +6,13 @@
     DataList Dd Del Details Dfn Dialog Dir Div Dl Dt Em Embed FieldSet FigCaption
     Figure Font Footer Form Frame FrameSet H1 H2 H3 H4 H5 H6 Head Header Hr Html I IFrame Img Input
     Ins Kbd KeyGen Label Legend Li Link Main Map Mark Menu MenuItem Meta Meter Nav
-    NoFrames NoScript Object Ol OptGroup Option Output P Param Pre Progress Q Rp Rt
+    NoFrames NoScript Ol OptGroup Option Output P Param Pre Progress Q Rp Rt
     Ruby S Samp Script Section Select Small Source Span Strike Strong Style Sub
     Summary Sup Table TBody Td TextArea TFoot Th THead Time Title Tr Track Tt U Ul
     Var Video Wbr
     RawHtml
+
+##
+  Omitted tags:
+
+    <object> - because "Object" is an important, global JavaScript entity.

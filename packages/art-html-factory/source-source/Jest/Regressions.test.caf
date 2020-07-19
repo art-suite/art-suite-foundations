@@ -1,0 +1,32 @@
+import &StandardImport
+
+test "should be no prop named Object eported" ->
+  assert.doesNotExist &ArtHtmlFactory.Object
+
+test "demo" ->
+  assert.eq
+    Html
+      Head
+        Meta name: "viewport"                               content: "user-scalable=no, width=device-width, initial-scale=1.0, viewport-fit=cover"
+        Meta name: "apple-mobile-web-app-capable"           content: "yes"
+        Meta name: "apple-mobile-web-app-status-bar-style"  content: "black"
+        Meta name: "format-detection"                       content: "telephone=no"
+
+      Body
+        H1 "Art.ObjectTreeFactory"
+        P "simple, elegant, fast declarative tree generation library"
+
+    .toString()
+    """
+      <html>
+        <head>
+          <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, viewport-fit=cover">
+          <meta name="apple-mobile-web-app-capable" content="yes">
+          <meta name="apple-mobile-web-app-status-bar-style" content="black">
+          <meta name="format-detection" content="telephone=no">
+        </head>
+        <body>
+          <h1>Art.ObjectTreeFactory</h1>
+          <p>simple, elegant, fast declarative tree generation library</p>
+        </body>
+      </html>

@@ -3,11 +3,8 @@ let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
+      "testFactoryToString",
       "describe",
-      "String",
-      "Error",
-      "test",
-      "assert",
       "Div",
       "Script",
       "Header",
@@ -24,15 +21,14 @@ Caf.defMod(module, () => {
       "Meta",
       "Link",
       "Pre",
+      "test",
+      "assert",
       "B"
     ],
-    [global, require("./StandardImport")],
+    [global, require("./StandardImport"), require("./Lib")],
     (
+      testFactoryToString,
       describe,
-      String,
-      Error,
-      test,
-      assert,
       Div,
       Script,
       Header,
@@ -49,43 +45,10 @@ Caf.defMod(module, () => {
       Meta,
       Link,
       Pre,
+      test,
+      assert,
       B
     ) => {
-      let testFactoryToString;
-      testFactoryToString = function(...args) {
-        let from, into, to, i1, temp;
-        return (
-          (from = args),
-          (into = from),
-          from != null
-            ? ((to = from.length),
-              (i1 = 0),
-              (() => {
-                while (i1 < to) {
-                  let nodeF, i, expectedOutput;
-                  nodeF = from[i1];
-                  i = i1;
-                  expectedOutput = args[i + 1];
-                  if (!Caf.is(expectedOutput, String)) {
-                    throw new Error(
-                      `Expecting a string at index ${Caf.toString(
-                        i + 1
-                      )}! Make sure to pass an even number of pairs alternating between nodes and strings`
-                    );
-                  }
-                  test(expectedOutput.replace(/\n/g, "\\n"), () =>
-                    assert.eq(nodeF().toString(), expectedOutput, {
-                      FactoryToStringTestNumber: 1 + i / 2
-                    })
-                  );
-                  temp = i1 += 2;
-                }
-                return temp;
-              })())
-            : undefined,
-          into
-        );
-      };
       testFactoryToString(
         function() {
           return Div({ class: "fooClass" }, "string child");
@@ -97,11 +60,11 @@ Caf.defMod(module, () => {
         '<div class="fooClass" id="barId"></div>',
         function() {
           return Div(
-            { style: { fontSize: "10pt" } },
+            { style: { "font-size": "10pt" } },
             { style: { color: "#f00" } }
           );
         },
-        '<div style="color: #f00; fontSize: 10pt"></div>',
+        '<div style="color: #f00; font-size: 10pt"></div>',
         function() {
           return Div([null, Div(), undefined]);
         },
@@ -125,6 +88,50 @@ Caf.defMod(module, () => {
         "<p>\n  Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut\n  gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake\n  cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread\n  icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies\n  marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi\n  bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon\n  drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar\n  plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding\n  liquorice.\n</p>"
       );
       return describe({
+        merging: {
+          caseSensativity: function() {
+            return testFactoryToString(
+              () => Div({ style: { Color: "#abc123" } }),
+              '<div style="Color: #abc123"></div>',
+              () => Div({ class: "FooBar" }),
+              '<div class="FooBar"></div>'
+            );
+          },
+          style: function() {
+            return testFactoryToString(
+              () =>
+                Div(
+                  { style: { color: "#abc123" } },
+                  { style: { height: "100px" } }
+                ),
+              '<div style="color: #abc123; height: 100px"></div>'
+            );
+          },
+          "style-reset": function() {
+            return testFactoryToString(
+              () =>
+                Div(
+                  { style: { color: "#abc123" } },
+                  { style: null },
+                  { style: { height: "100px" } }
+                ),
+              '<div style="height: 100px"></div>'
+            );
+          },
+          class: function() {
+            return testFactoryToString(
+              () => Div({ class: "ROW" }, { class: "border-1px" }),
+              '<div class="ROW border-1px"></div>'
+            );
+          },
+          "class-reset": function() {
+            return testFactoryToString(
+              () =>
+                Div({ class: "row" }, { class: null }, { class: "border-1px" }),
+              '<div class="border-1px"></div>'
+            );
+          }
+        },
         textWordWrappingDefaultBehavior: function() {
           return testFactoryToString(
             () => Div("one line\ntwo line"),
