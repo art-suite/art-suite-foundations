@@ -69,14 +69,12 @@ Caf.defMod(module, () => {
           };
           this.prototype._getNormalizedText = function(text) {
             return !this.preserveRawText
-              ? escapeHtmlString(
-                  /\n *\n/.test(text)
-                    ? Caf.array(
-                        text.replace(/\ *\n( *\n)+/g, "\n\n").split("\n\n"),
-                        p => p.replace(/\ *\n\ */g, " ")
-                      ).join("\n\n")
-                    : text.replace(/\n/, " ")
-                )
+              ? /\n *\n/.test(text)
+                ? Caf.array(
+                    text.replace(/\ *\n( *\n)+/g, "\n\n").split("\n\n"),
+                    p => p.replace(/\ *\n\ */g, " ")
+                  ).join("\n\n")
+                : text.replace(/\n/, " ")
               : text;
           };
           this.htmlEscapes = htmlEscapes = {

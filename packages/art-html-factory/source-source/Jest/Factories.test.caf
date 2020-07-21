@@ -45,6 +45,11 @@ testFactoryToString
     </p>
 
 describe
+  escaping: -> testFactoryToString
+    -> Div
+      prop: "<foo>"
+    "" <div prop="&lt;foo&gt;"></div>
+
   merging:
     caseSensativity: -> testFactoryToString
       -> Div
@@ -127,8 +132,8 @@ describe
       </div>
 
   escape: -> testFactoryToString
-    -> Div "" one<br>line
-    "" <div>one&lt;br&gt;line</div>
+    -> Div "" one<br>&nbsp;line
+    "" <div>one<br>&nbsp;line</div>
 
   specialTags:
     rawHtml: -> testFactoryToString
@@ -242,6 +247,23 @@ describe
             Chocolate powder
             lollipop.
           </div>
+
+  createHtmlFactories: ->
+    test "custom Svg tags" ->
+      {Svg, Path} = createHtmlFactories :svg :path
+      assert.eq
+        Svg
+          version: "1.1"
+          xmlns: "http://www.w3.org/2000/svg"
+          width: "64"
+          height: "64"
+          viewBox: "0 0 64 64"
+          Path d: "M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"
+        .toString()
+        """
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+            <path d="M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"></path>
+          </svg>
 
   regressions: ->
     test "merging styles" ->

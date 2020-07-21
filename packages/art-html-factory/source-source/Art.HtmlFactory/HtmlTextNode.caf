@@ -28,12 +28,11 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
   _getNormalizedText: (text) ->
     unless @preserveRawText
-      escapeHtmlString
-        if /\n *\n/.test text
-          array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
-            p.replace /\ *\n\ */g, ' '
-          .join "\n\n"
-        else text.replace /\n/, ' '
+      if /\n *\n/.test text
+        array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
+          p.replace /\ *\n\ */g, ' '
+        .join "\n\n"
+      else text.replace /\n/, ' '
     else text
 
   @htmlEscapes: htmlEscapes =

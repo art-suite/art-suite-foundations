@@ -23,7 +23,8 @@ Caf.defMod(module, () => {
       "Pre",
       "test",
       "assert",
-      "B"
+      "B",
+      "createHtmlFactories"
     ],
     [global, require("./StandardImport"), require("./Lib")],
     (
@@ -47,7 +48,8 @@ Caf.defMod(module, () => {
       Pre,
       test,
       assert,
-      B
+      B,
+      createHtmlFactories
     ) => {
       testFactoryToString(
         function() {
@@ -88,6 +90,12 @@ Caf.defMod(module, () => {
         "<p>\n  Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut\n  gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake\n  cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread\n  icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies\n  marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi\n  bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon\n  drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar\n  plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding\n  liquorice.\n</p>"
       );
       return describe({
+        escaping: function() {
+          return testFactoryToString(
+            () => Div({ prop: "<foo>" }),
+            '<div prop="&lt;foo&gt;"></div>'
+          );
+        },
         merging: {
           caseSensativity: function() {
             return testFactoryToString(
@@ -146,8 +154,8 @@ Caf.defMod(module, () => {
         },
         escape: function() {
           return testFactoryToString(
-            () => Div("one<br>line"),
-            "<div>one&lt;br&gt;line</div>"
+            () => Div("one<br>&nbsp;line"),
+            "<div>one<br>&nbsp;line</div>"
           );
         },
         specialTags: {
@@ -241,6 +249,25 @@ Caf.defMod(module, () => {
               ).toString({ indent: true, tagWrap: 20, textWordWrap: 20 }),
               "<div>\n  Sweet donut biscuit\n  tiramisu tart.\n  Chocolate powder\n  lollipop.\n</div>"
             ));
+        },
+        createHtmlFactories: function() {
+          return test("custom Svg tags", () => {
+            let Svg, Path;
+            ({ Svg, Path } = createHtmlFactories("svg", "path"));
+            return assert.eq(
+              Svg(
+                {
+                  version: "1.1",
+                  xmlns: "http://www.w3.org/2000/svg",
+                  width: "64",
+                  height: "64",
+                  viewBox: "0 0 64 64"
+                },
+                Path({ d: "M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z" })
+              ).toString(),
+              '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">\n  <path d="M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"></path>\n</svg>'
+            );
+          });
         },
         regressions: function() {
           return test("merging styles", () => {
