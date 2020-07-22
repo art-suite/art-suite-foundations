@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["describe", "test", "HtmlTextNode", "assert", "Div", "merge", "P"],
+    ["describe", "test", "HtmlTextNode", "assert", "Div", "P", "merge"],
     [global, require("./StandardImport")],
-    (describe, test, HtmlTextNode, assert, Div, merge, P) => {
+    (describe, test, HtmlTextNode, assert, Div, P, merge) => {
       return describe({
         basics: function() {
           test("new", () => {
@@ -27,6 +27,27 @@ Caf.defMod(module, () => {
               '<div style="color: #f00; font-size: 10pt"></div>'
             );
           });
+        },
+        styleString: function() {
+          return test("styleString with no style should be undefined", () =>
+            assert.equal(Div().styleString, undefined));
+        },
+        inspect: function() {
+          return test("indect", () =>
+            assert.eq(
+              Div({ class: "colored" }, "hi", P("About-me"), P("Details"))
+                .inspectedObjects,
+              {
+                div: {
+                  props: { class: "colored" },
+                  children: [
+                    "hi",
+                    { p: { children: ["About-me"] } },
+                    { p: { children: ["Details"] } }
+                  ]
+                }
+              }
+            ));
         },
         clone: function() {
           test("update style", () => {

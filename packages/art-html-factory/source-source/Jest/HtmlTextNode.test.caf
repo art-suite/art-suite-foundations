@@ -16,6 +16,29 @@ describe
     test "style is stringified" ->
       node = new HtmlTextNode :div, style: font-size: 10pt color: #f00
       assert.eq node.toString(), """ <div style="color: #f00; font-size: 10pt"></div>
+  styleString: ->
+    test "styleString with no style should be undefined" ->
+      assert.equal
+        Div().styleString
+        undefined
+
+  inspect: ->
+    test "indect" ->
+      assert.eq
+        Div
+          class: :colored
+          :hi
+          P :About-me
+          P :Details
+        .inspectedObjects
+
+        div:
+          props:    class: :colored
+          children: []
+            :hi
+            {} p: children: [] :About-me
+            {} p: children: [] :Details
+
 
   clone: ->
     test "update style" ->

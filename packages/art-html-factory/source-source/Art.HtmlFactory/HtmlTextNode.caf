@@ -70,7 +70,6 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     style:            -> @_props?.style
     preserveRawText:  -> rawHtmlTags[@_name]
     isRawHtml:        -> @_name == :rawhtml
-    isPre:            -> @_name == :pre
 
     childRequireMultipleLines: ->
       !!@_children &&
@@ -84,8 +83,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       + reduce total, v from @_children inject 0 with total + v.length
 
     styleString: ->
-      @ extract style
-      @_styleString ?=
+      @_styleString ?= if @ extract style
         array name from-array Object.keys(style).sort()
           "#{name}: #{style[name]}"
         .join '; '

@@ -169,9 +169,6 @@ Caf.defMod(module, () => {
             isRawHtml: function() {
               return this._name === "rawhtml";
             },
-            isPre: function() {
-              return this._name === "pre";
-            },
             childRequireMultipleLines: function() {
               return (
                 !!this._children &&
@@ -202,29 +199,30 @@ Caf.defMod(module, () => {
             },
             styleString: function() {
               let style, temp, from, into, to, i, temp1;
-              style = this.style;
               return (temp = this._styleString) != null
                 ? temp
-                : (this._styleString = ((from = Object.keys(style).sort()),
-                  (into = []),
-                  from != null
-                    ? ((to = from.length),
-                      (i = 0),
-                      (() => {
-                        while (i < to) {
-                          let name;
-                          name = from[i];
-                          into.push(
-                            `${Caf.toString(name)}: ${Caf.toString(
-                              style[name]
-                            )}`
-                          );
-                          temp1 = i++;
-                        }
-                        return temp1;
-                      })())
-                    : undefined,
-                  into).join("; "));
+                : (this._styleString = (style = this.style)
+                    ? ((from = Object.keys(style).sort()),
+                      (into = []),
+                      from != null
+                        ? ((to = from.length),
+                          (i = 0),
+                          (() => {
+                            while (i < to) {
+                              let name;
+                              name = from[i];
+                              into.push(
+                                `${Caf.toString(name)}: ${Caf.toString(
+                                  style[name]
+                                )}`
+                              );
+                              temp1 = i++;
+                            }
+                            return temp1;
+                          })())
+                        : undefined,
+                      into).join("; ")
+                    : undefined);
             },
             propsString: function() {
               let temp, temp1;
