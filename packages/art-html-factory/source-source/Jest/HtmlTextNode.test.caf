@@ -17,8 +17,76 @@ describe
       node = new HtmlTextNode :div, style: font-size: 10pt color: #f00
       assert.eq node.toString(), """ <div style="color: #f00; font-size: 10pt"></div>
 
-  updateProps: ->
+  clone: ->
     test "update style" ->
-      node = new HtmlTextNode :div, {style: font-size: 10pt color: #f00}
-      node.style = merge node.style, font-size: 5pt
-      assert.eq node.toString(), """ <div style="color: #f00; font-size: 5pt"></div>
+      node = Div style: font-size: 10pt color: #f00
+      node2 = node.clone props: merge node.props, style: merge node.style, font-size: 5pt
+      assert.eq node.toString(),  """ <div style="color: #f00; font-size: 10pt"></div>
+      assert.eq node2.toString(), """ <div style="color: #f00; font-size: 5pt"></div>
+      # REGRESSION: test twice to ensure they stay distinct (toString is cached; make sure no exposed mutations)
+      assert.eq node.toString(),  """ <div style="color: #f00; font-size: 10pt"></div>
+
+    test "clone understands empty props and children" ->
+      node =
+        Div()
+        .clone
+          props: {}
+          children: []
+
+      assert.equal node.props,    undefined
+      assert.equal node.children, undefined
+
+    test "clone clears props and children when null passed" ->
+      node =
+        Div
+          foo: :bar
+          P :hi
+
+        .clone
+          props:    null
+          children: null
+
+      assert.equal node.props,    undefined
+      assert.equal node.children, undefined
+
+    test "clone makes full clone when undefined passed" ->
+      node =
+        Div
+          rawProps = foo: :bar
+          P :hi
+
+      node2 =
+        node
+        .clone
+          props:    undefined
+          children: undefined
+
+      assert.equal  node2.props,    rawProps
+      assert.equal  node2.props,    node.props
+      assert.equal  node2.children, node.children
+
+    test "update children" ->
+      node = Div
+        P "some text"
+        P "some other text"
+
+      node2 = node.clone children: array child in node.children
+        child.clone props: merge child.props, style: merge child.style, font-size: 5pt
+
+      assert.notSame node.children, node2.children
+
+      assert.eq
+        node.toString()
+        """
+          <div>
+            <p>some text</p>
+            <p>some other text</p>
+          </div>
+
+      assert.eq
+        node2.toString()
+        """
+          <div>
+            <p style="font-size: 5pt">some text</p>
+            <p style="font-size: 5pt">some other text</p>
+          </div>

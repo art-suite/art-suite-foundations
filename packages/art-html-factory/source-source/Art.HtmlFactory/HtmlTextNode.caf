@@ -1,64 +1,52 @@
-import &ArtStandardLib, {} &wrapAnsi
-
-noCloseTag =
-  link: true
-  meta: true
-  img: true
-  br: true
-  wbr: true
+import &ArtStandardLib, &HtmlLib, {} &wrapAnsi
 
 class HtmlTextNode extends &ArtClassSystem.BaseClass
-  constructor: (@name, @props, @children) ->
-    @name = @name.toLocaleLowerCase()
+  constructor: (@_name, @_props, @_children) ->
+    @_name = @_name.toLocaleLowerCase()
     @_normalizeChildren()
+
+  clone: (withNewValues) ->
+    withNewValues extract? name, props, children
+    props ?= @_props unless props == null
+    children ?= @_children unless children == null
+
+    new @class
+      name ? @_name
+      if props? && objectHasKeys props then props
+      if children?.length > 0 then children
 
   _normalizeChildren: ->
     @_haveStringChildrenWithNewLines = false
 
-    if @children?
-      @children =
-        find child in @children when child is String
-          array child in @children
+    if @_children?
+      @_children =
+        find child in @_children when child is String
+          array child in @_children
             if child is String
               child = @_getNormalizedText child
               @_haveStringChildrenWithNewLines = true if /\n/.test child
 
             child
-        ? @children
+        ? @_children
+
+  reformatTextForNiceHtmlSource = (text) ->
+    if /\n *\n/.test text
+      array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
+        p.replace /\ *\n\ */g, ' '
+      .join "\n\n"
+    else text.replace /\n/, ' '
 
   _getNormalizedText: (text) ->
-    unless @preserveRawText
-      if /\n *\n/.test text
-        array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
-          p.replace /\ *\n\ */g, ' '
-        .join "\n\n"
-      else text.replace /\n/, ' '
-    else text
-
-  @htmlEscapes: htmlEscapes =
-    '"': "" &quot;
-    '&': "" &amp;
-    '<': "" &lt;
-    '>': "" &gt;
-
-  getHtmlEscape = (e) -> htmlEscapes[e]
-
-  @escapeHtmlString: escapeHtmlString = (string) ->
-    string = "#{string}"
-    if /["<>&]/.test string
-      string.replace /["<>&]/g, getHtmlEscape
-
-    else string
-
-  rawHtmlTags =
-    rawhtml: true
-    pre: true
-    script: true
-    style: true
+    if @preserveRawText then text
+    else reformatTextForNiceHtmlSource text
 
   @setter
-    style: (style) -> @props = merge @props, {} style
+    style: (style) ->
+      log.warn "" HtmlTextNode#style setter is DEPRICATED - use @clone to create a new object with new style
+      @_props = merge @_props, {} style
+
     props: (props) -> @_props =
+      log.warn "" HtmlTextNode#props setter is DEPRICATED - use @clone to create a new object with new props
       if @_style = props extract? style
         props = merge props, style:
           array name from Object.keys(style).sort()
@@ -70,31 +58,49 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       else
         null
 
+  emptyString = ''
   @getter
     :props
-    :style
-    preserveRawText: -> rawHtmlTags[@name]
-    isRawHtml: -> @name == :rawhtml
-    isPre:  -> @name == :pre
-    childRequiresMultipleLines: ->
-      !!@children &&
-        @children.length > 1 || @children[0].onelinerOk == false
+    :name
+    :children
+    inspectedObjects: -> [@name]: merge
+      props:    @props
+      children: if @children then array child in @children with child.inspectedObjects ? child
 
-    onelinerOk: -> !@_haveStringChildrenWithNewLines && !@childRequiresMultipleLines
-    length: ->
-      5 + @name.length * 2 # <name></name>
-      + reduce total, v, k from @props inject 0 with total + 4 + k.length + "#{v}".length
-      + reduce total, v from @children inject 0 with total + v.length
+    style:            -> @_props?.style
+    preserveRawText:  -> rawHtmlTags[@_name]
+    isRawHtml:        -> @_name == :rawhtml
+    isPre:            -> @_name == :pre
+
+    childRequireMultipleLines: ->
+      !!@_children &&
+        @_children.length > 1 || @_children[0].onelinerOk == false
+
+    onelinerOk: -> !@_haveStringChildrenWithNewLines && !@childRequireMultipleLines
+
+    length: -> @_length ?=
+      5 + @_name.length * 2 # <name></name>
+      + @propsString.length
+      + reduce total, v from @_children inject 0 with total + v.length
+
+    styleString: ->
+      @ extract style
+      @_styleString ?=
+        array name from-array Object.keys(style).sort()
+          "#{name}: #{style[name]}"
+        .join '; '
 
     propsString: ->
-      if @props
-        ' ' +
-          array propValue, propName from @props
-            if propValue == true
-              propName
-            else
-              "" #{propName}="#{escapeHtmlString propValue}"
-          .join ' '
+      @_propsString ?=
+        if @_props
+          ' ' +
+            array propValue, propName from @_props
+              propValue = @styleString if propName == :style
+              if propValue == true then propName
+              else "" #{propName}="#{escapeHtmlString propValue}"
+
+            .join ' '
+        ? emptyString
 
   @defaultCompileOptions:
     tagWrap: 80
@@ -143,7 +149,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
   ## OUT: String or Array of Strings, possibly nested
   _compile: (indent, options) ->
-    if @isRawHtml && @children
+    if @isRawHtml && @_children
       @_getCompiledChildren indent, emptyOptions
 
     else if indent? && indent.length + @length <= options.tagWrap && @onelinerOk
@@ -152,22 +158,22 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     else
       if compiledChildren = @_getCompiledChildren indent, options
         []
-          applyIndent indent, "" <#{@name}#{@propsString}>
+          applyIndent indent, "" <#{@_name}#{@propsString}>
           compiledChildren
-          applyIndent indent, "" </#{@name}>
+          applyIndent indent, "" </#{@_name}>
 
-      else if noCloseTag[@name]
-        applyIndent indent, "" <#{@name}#{@propsString}>
+      else if noCloseTags[@_name]
+        applyIndent indent, "" <#{@_name}#{@propsString}>
 
       else
-        applyIndent indent, "" <#{@name}#{@propsString}></#{@name}>
+        applyIndent indent, "" <#{@_name}#{@propsString}></#{@_name}>
 
   _getCompiledChildren: (indent, options) ->
-    if @children
+    if @_children
       indent = indent + '  ' if indent? && !@isRawHtml
-      array child from @children
+      array child from @_children
         if isString child
-          if @name != :pre
+          if @_name != :pre
             applyIndent indent, child, unless @preserveRawText then options.textWordWrap
           else child
         else child._compile indent, options

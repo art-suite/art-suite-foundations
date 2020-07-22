@@ -2,9 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["describe", "test", "HtmlTextNode", "assert", "merge"],
+    ["describe", "test", "HtmlTextNode", "assert", "Div", "merge", "P"],
     [global, require("./StandardImport")],
-    (describe, test, HtmlTextNode, assert, merge) => {
+    (describe, test, HtmlTextNode, assert, Div, merge, P) => {
       return describe({
         basics: function() {
           test("new", () => {
@@ -28,16 +28,71 @@ Caf.defMod(module, () => {
             );
           });
         },
-        updateProps: function() {
-          return test("update style", () => {
-            let node;
-            node = new HtmlTextNode("div", {
-              style: { "font-size": "10pt", color: "#f00" }
+        clone: function() {
+          test("update style", () => {
+            let node, node2;
+            node = Div({ style: { "font-size": "10pt", color: "#f00" } });
+            node2 = node.clone({
+              props: merge(node.props, {
+                style: merge(node.style, { "font-size": "5pt" })
+              })
             });
-            node.style = merge(node.style, { "font-size": "5pt" });
+            assert.eq(
+              node.toString(),
+              '<div style="color: #f00; font-size: 10pt"></div>'
+            );
+            assert.eq(
+              node2.toString(),
+              '<div style="color: #f00; font-size: 5pt"></div>'
+            );
             return assert.eq(
               node.toString(),
-              '<div style="color: #f00; font-size: 5pt"></div>'
+              '<div style="color: #f00; font-size: 10pt"></div>'
+            );
+          });
+          test("clone understands empty props and children", () => {
+            let node;
+            node = Div().clone({ props: {}, children: [] });
+            assert.equal(node.props, undefined);
+            return assert.equal(node.children, undefined);
+          });
+          test("clone clears props and children when null passed", () => {
+            let node;
+            node = Div({ foo: "bar" }, P("hi")).clone({
+              props: null,
+              children: null
+            });
+            assert.equal(node.props, undefined);
+            return assert.equal(node.children, undefined);
+          });
+          test("clone makes full clone when undefined passed", () => {
+            let node, rawProps, node2;
+            node = Div((rawProps = { foo: "bar" }), P("hi"));
+            node2 = node.clone({ props: undefined, children: undefined });
+            assert.equal(node2.props, rawProps);
+            assert.equal(node2.props, node.props);
+            return assert.equal(node2.children, node.children);
+          });
+          return test("update children", () => {
+            let node, node2;
+            node = Div(P("some text"), P("some other text"));
+            node2 = node.clone({
+              children: Caf.array(node.children, child =>
+                child.clone({
+                  props: merge(child.props, {
+                    style: merge(child.style, { "font-size": "5pt" })
+                  })
+                })
+              )
+            });
+            assert.notSame(node.children, node2.children);
+            assert.eq(
+              node.toString(),
+              "<div>\n  <p>some text</p>\n  <p>some other text</p>\n</div>"
+            );
+            return assert.eq(
+              node2.toString(),
+              '<div>\n  <p style="font-size: 5pt">some text</p>\n  <p style="font-size: 5pt">some other text</p>\n</div>'
             );
           });
         }
