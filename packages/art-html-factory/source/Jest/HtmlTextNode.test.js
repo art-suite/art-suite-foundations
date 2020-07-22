@@ -50,6 +50,8 @@ Caf.defMod(module, () => {
             ));
         },
         clone: function() {
+          test("just clone", () =>
+            assert.eq(Div().clone().inspectedObjects, { div: {} }));
           test("update style", () => {
             let node, node2;
             node = Div({ style: { "font-size": "10pt", color: "#f00" } });
@@ -94,7 +96,7 @@ Caf.defMod(module, () => {
             assert.equal(node2.props, node.props);
             return assert.equal(node2.children, node.children);
           });
-          return test("update children", () => {
+          test("update children", () => {
             let node, node2;
             node = Div(P("some text"), P("some other text"));
             node2 = node.clone({
@@ -116,6 +118,41 @@ Caf.defMod(module, () => {
               '<div>\n  <p style="font-size: 5pt">some text</p>\n  <p style="font-size: 5pt">some other text</p>\n</div>'
             );
           });
+          test("with", () =>
+            assert.eq(
+              Div().with({ props: { class: "myClass" } }).inspectedObjects,
+              { div: { props: { class: "myClass" } } }
+            ));
+          test("withProps", () =>
+            assert.eq(
+              Div().withProps({ class: "myClass" }, { class: "foo" })
+                .inspectedObjects,
+              { div: { props: { class: "myClass foo" } } }
+            ));
+          test("withProps replaces", () =>
+            assert.eq(
+              Div({ class: "myClass" }).withProps({ class: "foo" })
+                .inspectedObjects,
+              { div: { props: { class: "foo" } } }
+            ));
+          test("withMergedProps merges", () =>
+            assert.eq(
+              Div({ class: "myClass" }).withMergedProps({ class: "foo" })
+                .inspectedObjects,
+              { div: { props: { class: "myClass foo" } } }
+            ));
+          test("withChildren replaces", () =>
+            assert.eq(
+              Div("wasBefore").withChildren("wasAfter", "andMore")
+                .inspectedObjects,
+              { div: { children: ["wasAfter", "andMore"] } }
+            ));
+          return test("withAppendedChildren concats", () =>
+            assert.eq(
+              Div("wasBefore").withAppendedChildren("wasAfter", "andMore")
+                .inspectedObjects,
+              { div: { children: ["wasBefore", "wasAfter", "andMore"] } }
+            ));
         }
       });
     }

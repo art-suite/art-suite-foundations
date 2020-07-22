@@ -2,7 +2,9 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return [
-    { createHtmlFactories: require("./createHtmlFactories") },
-    require("./createHtmlFactories")(require("./HtmlLib").supportedTagsList)
+    require("./HtmlFactoryLib"),
+    require("./HtmlFactoryLib").createHtmlFactories(
+      require("./HtmlLib").supportedTagsList
+    )
   ];
 });

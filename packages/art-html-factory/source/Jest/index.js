@@ -4,10 +4,9 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  FactoriesTest:       require('./Factories.test'),
-  HtmlTextNodeTest:    require('./HtmlTextNode.test'),
-  Lib:                 require('./Lib'),
-  RegressionsTest:     require('./Regressions.test'),
-  StandardImport:      require('./StandardImport'),
-  TestFactoryToString: require('./testFactoryToString')
+  FactoriesTest:    require('./Factories.test'),
+  HtmlTextNodeTest: require('./HtmlTextNode.test'),
+  Lib:              require('./Lib'),
+  RegressionsTest:  require('./Regressions.test'),
+  StandardImport:   require('./StandardImport')
 });

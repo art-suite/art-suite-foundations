@@ -41,6 +41,12 @@ describe
 
 
   clone: ->
+    test "just clone" ->
+      assert.eq
+        Div().clone()
+        .inspectedObjects
+        div: {}
+
     test "update style" ->
       node = Div style: font-size: 10pt color: #f00
       node2 = node.clone props: merge node.props, style: merge node.style, font-size: 5pt
@@ -58,6 +64,7 @@ describe
 
       assert.equal node.props,    undefined
       assert.equal node.children, undefined
+
 
     test "clone clears props and children when null passed" ->
       node =
@@ -113,3 +120,51 @@ describe
             <p style="font-size: 5pt">some text</p>
             <p style="font-size: 5pt">some other text</p>
           </div>
+
+    test "with" ->
+      assert.eq
+        Div().with props: class: :myClass
+        .inspectedObjects
+        div: props: class: :myClass
+
+    test "withProps" ->
+      assert.eq
+        Div().withProps
+          {} class: :myClass
+          {} class: :foo
+        .inspectedObjects
+        div: props: class: "myClass foo"
+
+    test "withProps replaces" ->
+      assert.eq
+        Div
+          class: :myClass
+        .withProps
+          class: :foo
+        .inspectedObjects
+        div: props: class: "foo"
+
+    test "withMergedProps merges" ->
+      assert.eq
+        Div
+          class: :myClass
+        .withMergedProps
+          class: :foo
+        .inspectedObjects
+        div: props: class: "myClass foo"
+
+    test "withChildren replaces" ->
+      assert.eq
+        Div
+          :wasBefore
+        .withChildren :wasAfter :andMore
+        .inspectedObjects
+        div: children: [] :wasAfter :andMore
+
+    test "withAppendedChildren concats" ->
+      assert.eq
+        Div
+          :wasBefore
+        .withAppendedChildren :wasAfter :andMore
+        .inspectedObjects
+        div: children: [] :wasBefore :wasAfter :andMore

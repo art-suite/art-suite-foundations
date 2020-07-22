@@ -3,13 +3,12 @@ let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
-      "objectHasKeys",
+      "mergeProps",
+      "concatChildren",
       "String",
-      "log",
       "merge",
-      "Object",
-      "hasProperties",
       "rawHtmlTags",
+      "Object",
       "escapeHtmlString",
       "compactFlatten",
       "compactFlattenJoin",
@@ -21,16 +20,16 @@ Caf.defMod(module, () => {
       global,
       require("art-standard-lib"),
       require("./HtmlLib"),
+      require("./HtmlFactoryLib"),
       { wrapAnsi: require("wrap-ansi") }
     ],
     (
-      objectHasKeys,
+      mergeProps,
+      concatChildren,
       String,
-      log,
       merge,
-      Object,
-      hasProperties,
       rawHtmlTags,
+      Object,
       escapeHtmlString,
       compactFlatten,
       compactFlattenJoin,
@@ -56,26 +55,32 @@ Caf.defMod(module, () => {
             emptyOptions,
             htmlFriendlyTextWrap,
             applyIndent;
-          this.prototype.clone = function(withNewValues) {
-            let name, props, children;
-            if (Caf.exists(withNewValues)) {
-              name = withNewValues.name;
-              props = withNewValues.props;
-              children = withNewValues.children;
-            }
-            if (!(props === null)) {
-              props != null ? props : (props = this._props);
-            }
-            if (!(children === null)) {
-              children != null ? children : (children = this._children);
+          this.prototype.clone = function(options) {
+            let props, children;
+            if (Caf.exists(options)) {
+              props = options.props;
+              children = options.children;
             }
             return new this.class(
-              name != null ? name : this._name,
-              props != null && objectHasKeys(props) ? props : undefined,
-              (Caf.exists(children) && children.length) > 0
-                ? children
-                : undefined
+              this._name,
+              props !== undefined ? mergeProps(props) : this._props,
+              children !== undefined ? concatChildren(children) : this._children
             );
+          };
+          this.prototype.with = function(fields) {
+            return this.clone(fields);
+          };
+          this.prototype.withProps = function(...props) {
+            return this.clone({ props });
+          };
+          this.prototype.withMergedProps = function(...props) {
+            return this.clone({ props: [this.props, props] });
+          };
+          this.prototype.withChildren = function(...children) {
+            return this.clone({ children });
+          };
+          this.prototype.withAppendedChildren = function(...children) {
+            return this.clone({ children: [this.children, children] });
           };
           this.prototype._normalizeChildren = function() {
             let temp;
@@ -113,35 +118,6 @@ Caf.defMod(module, () => {
               ? text
               : reformatTextForNiceHtmlSource(text);
           };
-          this.setter({
-            style: function(style) {
-              log.warn(
-                "HtmlTextNode#style setter is DEPRICATED - use @clone to create a new object with new style"
-              );
-              return (this._props = merge(this._props, { style }));
-            },
-            props: function(props) {
-              let style;
-              return (this._props = [
-                log.warn(
-                  "HtmlTextNode#props setter is DEPRICATED - use @clone to create a new object with new props"
-                ),
-                (this._style = Caf.exists(props)
-                  ? (style = props.style)
-                  : undefined)
-                  ? (props = merge(props, {
-                      style: Caf.array(
-                        Object.keys(style).sort(),
-                        name =>
-                          `${Caf.toString(name)}: ${Caf.toString(style[name])}`
-                      ).join("; ")
-                    }))
-                  : hasProperties(props)
-                  ? props
-                  : null
-              ]);
-            }
-          });
           emptyString = "";
           this.getter("props", "name", "children", {
             inspectedObjects: function() {

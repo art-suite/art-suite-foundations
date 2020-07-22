@@ -1,19 +1,34 @@
-import &ArtStandardLib, &HtmlLib, {} &wrapAnsi
+import &ArtStandardLib, &HtmlLib, &HtmlFactoryLib, {} &wrapAnsi
 
 class HtmlTextNode extends &ArtClassSystem.BaseClass
   constructor: (@_name, @_props, @_children) ->
     @_name = @_name.toLocaleLowerCase()
     @_normalizeChildren()
 
-  clone: (withNewValues) ->
-    withNewValues extract? name, props, children
-    props ?= @_props unless props == null
-    children ?= @_children unless children == null
+  ##
+    IN: options
+      props:    with replaced props (optional)
+        can be props object or nested arrays of props objects
+        nulls and undefineds are ignored
+
+      children: with replaced children (optional)
+        can be nested arrays of children
+        children are either strings or HtmlTextNodes
+        nulls and undefineds are ignored
+
+  clone: (options) ->
+    options extract? props, children
 
     new @class
-      name ? @_name
-      if props? && objectHasKeys props then props
-      if children?.length > 0 then children
+      @_name
+      if props != undefined     then mergeProps props else @_props
+      if children != undefined  then concatChildren children else @_children
+
+  with:                 (fields)      -> @clone fields
+  withProps:            (props...)    -> @clone props: props
+  withMergedProps:      (props...)    -> @clone props: @props, props
+  withChildren:         (children...) -> @clone children: children
+  withAppendedChildren: (children...) -> @clone children: @children, children
 
   _normalizeChildren: ->
     @_haveStringChildrenWithNewLines = false
@@ -39,24 +54,6 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
   _getNormalizedText: (text) ->
     if @preserveRawText then text
     else reformatTextForNiceHtmlSource text
-
-  @setter
-    style: (style) ->
-      log.warn "" HtmlTextNode#style setter is DEPRICATED - use @clone to create a new object with new style
-      @_props = merge @_props, {} style
-
-    props: (props) -> @_props =
-      log.warn "" HtmlTextNode#props setter is DEPRICATED - use @clone to create a new object with new props
-      if @_style = props extract? style
-        props = merge props, style:
-          array name from Object.keys(style).sort()
-            "#{name}: #{style[name]}"
-          .join '; '
-
-      else if hasProperties props
-        props
-      else
-        null
 
   emptyString = ''
   @getter

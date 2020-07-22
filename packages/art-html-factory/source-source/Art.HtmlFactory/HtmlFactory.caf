@@ -1,3 +1,3 @@
 []
-  {} &createHtmlFactories
-  &createHtmlFactories &HtmlLib.supportedTagsList
+  &HtmlFactoryLib
+  &HtmlFactoryLib.createHtmlFactories &HtmlLib.supportedTagsList

@@ -4,9 +4,7 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./HtmlFactory'))
 .addModules({
-  CreateHtmlFactories:    require('./createHtmlFactories'),
-  HtmlElementNames:       require('./HtmlElementNames'),
-  HtmlLib:                require('./HtmlLib'),
-  HtmlTagsWithoutEndTags: require('./HtmlTagsWithoutEndTags'),
-  HtmlTextNode:           require('./HtmlTextNode')
+  HtmlFactoryLib: require('./HtmlFactoryLib'),
+  HtmlLib:        require('./HtmlLib'),
+  HtmlTextNode:   require('./HtmlTextNode')
 });
