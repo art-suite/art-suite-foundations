@@ -314,23 +314,23 @@ Caf.defMod(module, () => {
           this.prototype._getCompiledChildrenSpan = function(indent, options) {
             let compiledChildren;
             return this._children
-              ? ((compiledChildren = Caf.array(this._children, child =>
-                  isString(child)
-                    ? this._name !== "pre"
-                      ? applyIndent(
-                          "",
-                          child,
-                          !this.preserveRawText
-                            ? options.textWordWrap
-                            : undefined
-                        )
-                      : child
-                    : child._compile("", options)
-                )),
+              ? ((compiledChildren = compactFlatten(
+                  Caf.array(this._children, child =>
+                    isString(child)
+                      ? this._name !== "pre"
+                        ? applyIndent(
+                            "",
+                            child,
+                            !this.preserveRawText
+                              ? options.textWordWrap
+                              : undefined
+                          )
+                        : child
+                      : child._compile("", options)
+                  )
+                ).join("\n")),
                 !this.isRawHtml
-                  ? compiledChildren
-                      .join("\n")
-                      .replace(/\n/g, `\n${Caf.toString(indent)}`)
+                  ? compiledChildren.replace(/\n/g, `\n${Caf.toString(indent)}`)
                   : compiledChildren)
               : undefined;
           };

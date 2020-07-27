@@ -184,17 +184,20 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
   _getCompiledChildrenSpan: (indent, options) ->
     if @_children
-      compiledChildren = array child from @_children
-        if isString child
-          if @_name != :pre
-            applyIndent '', child, unless @preserveRawText then options.textWordWrap
+      compiledChildren =
+        compactFlatten array child from @_children
+          if isString child
+            if @_name != :pre
+              applyIndent '', child, unless @preserveRawText then options.textWordWrap
 
-          else child
+            else child
 
-        else child._compile '', options
+          else child._compile '', options
+        .join "\n"
 
       unless @isRawHtml
         compiledChildren
-        .join "\n"
         .replace  /\n/g, "\n#{indent}"
-      else compiledChildren
+
+      else
+        compiledChildren

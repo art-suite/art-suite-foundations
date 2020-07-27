@@ -282,67 +282,77 @@ describe
 
   regressions: ->
 
-  spanning: -> testFactoryToString
-    -> Div
-      A
-        "" This is some text, right?
-        Img src: "with-source-image"
+  spanning:
+    basics: -> testFactoryToString
+      -> Div
+        A
+          "" This is some text, right?
+          Img src: "with-source-image"
 
-    """
-      <div>
-        <a>This is some text, right?
-        <img src="with-source-image"></a>
-      </div>
-
-    -> Div
-      A
-        "" This is some text, right?
-        Img src: "with-source-image"
-        "" This is some text, right!
-        B "" Then why are you reading this?
-        "" That's OK?
-        Img src: "with-source-image"
-
-    """
-      <div>
-        <a>This is some text, right?
-        <img src="with-source-image">
-        This is some text, right!
-        <b>Then why are you reading this?</b>
-        That's OK?
-        <img src="with-source-image"></a>
-      </div>
-
-    -> Div Div
-      A
-        "" This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!
-
-    """
-      <div>
+      """
         <div>
-          <a>This is some text, right, This is some text, right. This is some text, right!
-          This is some text, right!!!</a>
+          <a>This is some text, right?
+          <img src="with-source-image"></a>
         </div>
-      </div>
 
-    ->
-      Div
-        id: :pageMenu class: :pageMenu-3
-        Div
-          class: "container position-z-4"
-          Div
-            class: :color-display-font-padding-position-right-text-top-5
-            Span
-              class: :font-padding-6
-              A
-                href: :services class: :background-border-color-padding-7
-                :SERVICES
+      -> Div
+        A
+          "" This is some text, right?
+          Img src: "with-source-image"
+          "" This is some text, right!
+          B "" Then why are you reading this?
+          "" That's OK?
+          Img src: "with-source-image"
 
-    """
-      <div id="pageMenu" class="pageMenu-3">
-        <div class="container position-z-4">
-          <div class="color-display-font-padding-position-right-text-top-5">
-            <span class="font-padding-6"><a href="services" class="background-border-color-padding-7">SERVICES</a></span>
+      """
+        <div>
+          <a>This is some text, right?
+          <img src="with-source-image">
+          This is some text, right!
+          <b>Then why are you reading this?</b>
+          That's OK?
+          <img src="with-source-image"></a>
+        </div>
+
+      -> Div Div
+        A
+          "" This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!
+
+      """
+        <div>
+          <div>
+            <a>This is some text, right, This is some text, right. This is some text, right!
+            This is some text, right!!!</a>
           </div>
         </div>
-      </div>
+
+    regressions: -> testFactoryToString
+      ->
+        Div
+          id: :pageMenu class: :pageMenu-3
+          Div
+            class: "container position-z-4"
+            Div
+              class: :color-display-font-padding-position-right-text-top-5
+              Span
+                class: :font-padding-6
+                A
+                  href: :services class: :background-border-color-padding-7
+                  :SERVICES
+
+      """
+        <div id="pageMenu" class="pageMenu-3">
+          <div class="container position-z-4">
+            <div class="color-display-font-padding-position-right-text-top-5">
+              <span class="font-padding-6"><a href="services" class="background-border-color-padding-7">SERVICES</a></span>
+            </div>
+          </div>
+        </div>
+
+      ->
+        A Div :one
+
+      """
+        <a><div>
+          one
+        </div></a>
