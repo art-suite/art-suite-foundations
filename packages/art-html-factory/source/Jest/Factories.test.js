@@ -24,7 +24,8 @@ Caf.defMod(module, () => {
       "test",
       "assert",
       "B",
-      "createHtmlFactories"
+      "createHtmlFactories",
+      "A"
     ],
     [global, require("./StandardImport"), require("./Lib")],
     (
@@ -49,7 +50,8 @@ Caf.defMod(module, () => {
       test,
       assert,
       B,
-      createHtmlFactories
+      createHtmlFactories,
+      A
     ) => {
       testFactoryToString(
         function() {
@@ -281,6 +283,16 @@ Caf.defMod(module, () => {
               '<div style="color: #ffbbcc">\n  <div style="color: #ffbbcc; font-weight: 300"></div>\n</div>'
             );
           });
+        },
+        regressions: function() {},
+        spanning: function() {
+          return testFactoryToString(
+            () =>
+              Div(
+                A("This is some text, right", Img({ src: "with-source-image" }))
+              ),
+            '<div>\n  <a>\n    This is some text, right\n    <img src="with-source-image"></a>\n</div>'
+          );
         }
       });
     }

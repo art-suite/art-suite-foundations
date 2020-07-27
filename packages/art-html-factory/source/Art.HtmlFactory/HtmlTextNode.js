@@ -13,6 +13,8 @@ Caf.defMod(module, () => {
       "compactFlatten",
       "compactFlattenJoin",
       "wrapAnsi",
+      "spanningTags",
+      "peek",
       "noCloseTags",
       "isString"
     ],
@@ -34,6 +36,8 @@ Caf.defMod(module, () => {
       compactFlatten,
       compactFlattenJoin,
       wrapAnsi,
+      spanningTags,
+      peek,
       noCloseTags,
       isString
     ) => {
@@ -261,37 +265,46 @@ Caf.defMod(module, () => {
               : line;
           };
           this.prototype._compile = function(indent, options) {
-            let compiledChildren;
+            let indentedStartTag, endTag, compiledChildren, lastChild;
             return this.isRawHtml && this._children
               ? this._getCompiledChildren(indent, emptyOptions)
               : indent != null &&
                 indent.length + this.length <= options.tagWrap &&
                 this.onelinerOk
               ? indent + this.toCompactString()
-              : (compiledChildren = this._getCompiledChildren(indent, options))
-              ? [
-                  applyIndent(
-                    indent,
-                    `<${Caf.toString(this._name)}${Caf.toString(
-                      this.propsString
-                    )}>`
-                  ),
-                  compiledChildren,
-                  applyIndent(indent, `</${Caf.toString(this._name)}>`)
-                ]
-              : noCloseTags[this._name]
-              ? applyIndent(
+              : ((indentedStartTag = applyIndent(
                   indent,
                   `<${Caf.toString(this._name)}${Caf.toString(
                     this.propsString
                   )}>`
-                )
-              : applyIndent(
-                  indent,
-                  `<${Caf.toString(this._name)}${Caf.toString(
-                    this.propsString
-                  )}></${Caf.toString(this._name)}>`
-                );
+                )),
+                (endTag = `</${Caf.toString(this._name)}>`),
+                this._children
+                  ? ((compiledChildren = this._getCompiledChildren(
+                      indent,
+                      options
+                    )),
+                    spanningTags[this.name]
+                      ? ((lastChild = peek(compiledChildren)),
+                        compiledChildren.length > 1
+                          ? ((compiledChildren = compiledChildren.slice(
+                              0,
+                              compiledChildren.length - 1
+                            )),
+                            [
+                              indentedStartTag,
+                              compiledChildren,
+                              lastChild + endTag
+                            ])
+                          : [indentedStartTag, lastChild + endTag])
+                      : [
+                          indentedStartTag,
+                          compiledChildren,
+                          applyIndent(indent, endTag)
+                        ])
+                  : noCloseTags[this._name]
+                  ? indentedStartTag
+                  : indentedStartTag + endTag);
           };
           this.prototype._getCompiledChildren = function(indent, options) {
             return this._children

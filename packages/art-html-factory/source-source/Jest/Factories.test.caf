@@ -279,3 +279,17 @@ describe
           <div style="color: #ffbbcc">
             <div style="color: #ffbbcc; font-weight: 300"></div>
           </div>
+
+  regressions: ->
+
+  spanning: -> testFactoryToString
+    -> Div
+      A
+        "" This is some text, right
+        Img src: "with-source-image"
+    """
+      <div>
+        <a>
+          This is some text, right
+          <img src="with-source-image"></a>
+      </div>

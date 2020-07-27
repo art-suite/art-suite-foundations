@@ -22,11 +22,9 @@
     br:       true
     wbr:      true
 
-  rawHtmlTags:
-    rawhtml:  true
-    pre:      true
-    script:   true
-    style:    true
+  rawHtmlTags:  object :rawhtml :pre :script :style with true
+  # blockTags:    object :div :p :h1 :h2 :h3 :h4 :h5 :h6 :head :body :style :script :iframe :input :ul :pre :textarea with true
+  spanningTags: object :span :a :b :u :i :q :s :abbr :em :strike :strong with true
 
   htmlEscapes =
     '"': "" &quot;
