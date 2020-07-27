@@ -14,7 +14,6 @@ Caf.defMod(module, () => {
       "compactFlattenJoin",
       "wrapAnsi",
       "spanningTags",
-      "peek",
       "noCloseTags",
       "isString"
     ],
@@ -37,7 +36,6 @@ Caf.defMod(module, () => {
       compactFlattenJoin,
       wrapAnsi,
       spanningTags,
-      peek,
       noCloseTags,
       isString
     ) => {
@@ -265,7 +263,7 @@ Caf.defMod(module, () => {
               : line;
           };
           this.prototype._compile = function(indent, options) {
-            let indentedStartTag, endTag, compiledChildren, lastChild;
+            let indentedStartTag, endTag;
             return this.isRawHtml && this._children
               ? this._getCompiledChildren(indent, emptyOptions)
               : indent != null &&
@@ -280,28 +278,15 @@ Caf.defMod(module, () => {
                 )),
                 (endTag = `</${Caf.toString(this._name)}>`),
                 this._children
-                  ? ((compiledChildren = this._getCompiledChildren(
-                      indent,
-                      options
-                    )),
-                    spanningTags[this.name]
-                      ? ((lastChild = peek(compiledChildren)),
-                        compiledChildren.length > 1
-                          ? ((compiledChildren = compiledChildren.slice(
-                              0,
-                              compiledChildren.length - 1
-                            )),
-                            [
-                              indentedStartTag,
-                              compiledChildren,
-                              lastChild + endTag
-                            ])
-                          : [indentedStartTag, lastChild + endTag])
-                      : [
-                          indentedStartTag,
-                          compiledChildren,
-                          applyIndent(indent, endTag)
-                        ])
+                  ? spanningTags[this.name]
+                    ? indentedStartTag +
+                      this._getCompiledChildrenSpan(indent, options) +
+                      endTag
+                    : [
+                        indentedStartTag,
+                        this._getCompiledChildren(indent, options),
+                        applyIndent(indent, endTag)
+                      ]
                   : noCloseTags[this._name]
                   ? indentedStartTag
                   : indentedStartTag + endTag);
@@ -324,6 +309,29 @@ Caf.defMod(module, () => {
                       : child
                     : child._compile(indent, options)
                 ))
+              : undefined;
+          };
+          this.prototype._getCompiledChildrenSpan = function(indent, options) {
+            let compiledChildren;
+            return this._children
+              ? ((compiledChildren = Caf.array(this._children, child =>
+                  isString(child)
+                    ? this._name !== "pre"
+                      ? applyIndent(
+                          "",
+                          child,
+                          !this.preserveRawText
+                            ? options.textWordWrap
+                            : undefined
+                        )
+                      : child
+                    : child._compile("", options)
+                )),
+                !this.isRawHtml
+                  ? compiledChildren
+                      .join("\n")
+                      .replace(/\n/g, `\n${Caf.toString(indent)}`)
+                  : compiledChildren)
               : undefined;
           };
         }

@@ -155,25 +155,15 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       endTag = "" </#{@_name}>
 
       if @_children
-        compiledChildren = @_getCompiledChildren indent, options
         if spanningTags[@name]
-          lastChild = peek compiledChildren
-          if compiledChildren.length > 1
-            compiledChildren = compiledChildren.slice 0, compiledChildren.length - 1
-            []
-              indentedStartTag
-              compiledChildren
-              lastChild + endTag
-
-          else
-            []
-              indentedStartTag
-              lastChild + endTag
+          indentedStartTag
+          + @_getCompiledChildrenSpan indent, options
+          + endTag
 
         else
           []
             indentedStartTag
-            compiledChildren
+            @_getCompiledChildren indent, options
             applyIndent indent, endTag
 
       else if noCloseTags[@_name]
@@ -191,3 +181,20 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
             applyIndent indent, child, unless @preserveRawText then options.textWordWrap
           else child
         else child._compile indent, options
+
+  _getCompiledChildrenSpan: (indent, options) ->
+    if @_children
+      compiledChildren = array child from @_children
+        if isString child
+          if @_name != :pre
+            applyIndent '', child, unless @preserveRawText then options.textWordWrap
+
+          else child
+
+        else child._compile '', options
+
+      unless @isRawHtml
+        compiledChildren
+        .join "\n"
+        .replace  /\n/g, "\n#{indent}"
+      else compiledChildren

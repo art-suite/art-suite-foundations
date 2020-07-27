@@ -25,7 +25,8 @@ Caf.defMod(module, () => {
       "assert",
       "B",
       "createHtmlFactories",
-      "A"
+      "A",
+      "Span"
     ],
     [global, require("./StandardImport"), require("./Lib")],
     (
@@ -51,7 +52,8 @@ Caf.defMod(module, () => {
       assert,
       B,
       createHtmlFactories,
-      A
+      A,
+      Span
     ) => {
       testFactoryToString(
         function() {
@@ -289,16 +291,57 @@ Caf.defMod(module, () => {
           return testFactoryToString(
             () =>
               Div(
-                A("This is some text, right", Img({ src: "with-source-image" }))
+                A(
+                  "This is some text, right?",
+                  Img({ src: "with-source-image" })
+                )
               ),
-            '<div>\n  <a>\n    This is some text, right\n    <img src="with-source-image"></a>\n</div>',
+            '<div>\n  <a>This is some text, right?\n  <img src="with-source-image"></a>\n</div>',
             () =>
               Div(
                 A(
-                  "This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!"
+                  "This is some text, right?",
+                  Img({ src: "with-source-image" }),
+                  "This is some text, right!",
+                  B("Then why are you reading this?"),
+                  "That's OK?",
+                  Img({ src: "with-source-image" })
                 )
               ),
-            "<div>\n  <a>\n    This is some text, right, This is some text, right. This is some text, right!\n    This is some text, right!!!</a>\n</div>"
+            '<div>\n  <a>This is some text, right?\n  <img src="with-source-image">\n  This is some text, right!\n  <b>Then why are you reading this?</b>\n  That\'s OK?\n  <img src="with-source-image"></a>\n</div>',
+            () =>
+              Div(
+                Div(
+                  A(
+                    "This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!"
+                  )
+                )
+              ),
+            "<div>\n  <div>\n    <a>This is some text, right, This is some text, right. This is some text, right!\n    This is some text, right!!!</a>\n  </div>\n</div>",
+            () =>
+              Div(
+                { id: "pageMenu", class: "pageMenu-3" },
+                Div(
+                  { class: "container position-z-4" },
+                  Div(
+                    {
+                      class:
+                        "color-display-font-padding-position-right-text-top-5"
+                    },
+                    Span(
+                      { class: "font-padding-6" },
+                      A(
+                        {
+                          href: "services",
+                          class: "background-border-color-padding-7"
+                        },
+                        "SERVICES"
+                      )
+                    )
+                  )
+                )
+              ),
+            '<div id="pageMenu" class="pageMenu-3">\n  <div class="container position-z-4">\n    <div class="color-display-font-padding-position-right-text-top-5">\n      <span class="font-padding-6"><a href="services" class="background-border-color-padding-7">SERVICES</a></span>\n    </div>\n  </div>\n</div>'
           );
         }
       });
