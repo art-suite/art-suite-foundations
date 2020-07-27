@@ -287,9 +287,21 @@ describe
       A
         "" This is some text, right
         Img src: "with-source-image"
+
     """
       <div>
         <a>
           This is some text, right
           <img src="with-source-image"></a>
+      </div>
+
+    -> Div
+      A
+        "" This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!
+
+    """
+      <div>
+        <a>
+          This is some text, right, This is some text, right. This is some text, right!
+          This is some text, right!!!</a>
       </div>

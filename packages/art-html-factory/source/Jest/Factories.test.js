@@ -291,7 +291,14 @@ Caf.defMod(module, () => {
               Div(
                 A("This is some text, right", Img({ src: "with-source-image" }))
               ),
-            '<div>\n  <a>\n    This is some text, right\n    <img src="with-source-image"></a>\n</div>'
+            '<div>\n  <a>\n    This is some text, right\n    <img src="with-source-image"></a>\n</div>',
+            () =>
+              Div(
+                A(
+                  "This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!"
+                )
+              ),
+            "<div>\n  <a>\n    This is some text, right, This is some text, right. This is some text, right!\n    This is some text, right!!!</a>\n</div>"
           );
         }
       });
