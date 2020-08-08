@@ -1,11 +1,8 @@
 &colors
 
-ArtBuildConfigurator = Neptune.Art.Build.Configurator
+ArtBuildConfigurator = &ArtBuildConfigurator
 
 realRequire = eval :require
-
-unless &useBuild then console.log "\nDEV-WARNING: use-build == false".yellow
-
 
 {git, pv, pretend, configure, init, force, verbose, app, require: requireOption} = commander =
   &commander
