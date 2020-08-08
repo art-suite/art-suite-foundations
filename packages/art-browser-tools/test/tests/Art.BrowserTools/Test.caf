@@ -1,3 +1,0 @@
-import &StandardImport
-suite: ->
-  test 'Tools' -> assert.eq 1, 1

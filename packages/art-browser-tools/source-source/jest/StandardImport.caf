@@ -1,5 +1,4 @@
 &ArtStandardLib.merge
-  &ArtStandardLib
   &ArtClassSystem
+  &ArtTestbench
   &ArtBrowserTools
-  test: (args...) -> global.test args...
