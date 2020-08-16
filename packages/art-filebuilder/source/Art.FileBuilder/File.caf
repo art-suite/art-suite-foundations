@@ -1,5 +1,6 @@
 import &StandardImport, &ArtObjectTreeFactory
 Path = &Path
+fs = &fsExtra
 
 createObjectTreeFactory
   class FileClass extends BaseClass
@@ -14,7 +15,7 @@ createObjectTreeFactory
 
     write: (options = {}) ->
       {filename, contents} = @props
-      {path, pretend, force, verbose, select, fs = &fs-extra} = options
+      {path, pretend, force, verbose, select, fs} = options
       path = Path.join path || '.', filename
 
       selected = if select?
