@@ -1,7 +1,33 @@
-import &StandardImport
+import &StandardImport, {} &ansiWordwrap
 {}
 
   normalizeCommandName = lowerCamelCase
+
+  wrap = (text, indent, maxWidth = 160) ->
+    if present text
+      if indent is Number && indent > 0
+        indent = repeat ' ', indent
+      if /\n/.test text
+        array line in text.split "\n"
+          wrap line, indent, maxWidth
+
+        .join "\n"
+      else
+        if m = text.match /^ +/
+          indent = "#{indent}#{m[0]}"
+        res = ansiWordwrap
+          text
+          width: min maxWidth,
+            process.stdout.columns
+            - 1
+            - if indent then indent.length else 0
+
+        if indent?.length > 0
+          indent + res.replace /\n/g, "\n#{indent}"
+        else
+          res
+
+  wrapProse = (text, indent) -> wrap text, indent, 100
 
   normalizeCommands: (commands, help) ->
     commands = object v, k from commands with-key normalizeCommandName k
@@ -9,10 +35,11 @@ import &StandardImport
         run: v
 
       else unless isFunction v?.run
-        throw new Error """
-          #{k}'s run value is not a plain function. Details:
+        throw new Error
+          """
+            #{k}'s run value is not a plain function. Details:
 
-          #{formattedInspect [k]: v}
+            #{formattedInspect [k]: v}
 
       else v
 

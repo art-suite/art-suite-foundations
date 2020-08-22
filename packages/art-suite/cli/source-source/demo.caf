@@ -5,7 +5,18 @@ import &ArtStandardLib
     """
       A demo of the art-suite/cli library.
 
+      PirateIpsum.me Heave down stern heave to hearties crack Jennys tea cup topgallant snow reef sails belaying pin haul wind. Strike colors mizzenmast nipper draft scurvy skysail gangplank ye list interloper. Squiffy bring a spring upon her cable line chandler execution dock plunder topgallant scourge of the seven seas crimp ahoy.
+
+      Jack Ketch Yellow Jack main sheet list black spot spyglass hearties barque sutler fathom. Stern gally crimp run a rig execution dock lugsail hogshead boatswain Davy Jones' Locker jolly boat. Tender Pieces of Eight league matey mizzenmast take a caulk nipperkin capstan furl chantey.
+
   commands:
+    crazy:
+      run: (options) -> options
+      options: object k in w "measured fer yer chains fluke jack ketch grapple belay gally blow the man down lateen sail topgallant chantey" with-key k
+        advanced: /[a-j]$/.test k
+        required: /[s-z]$/.test k
+        description: "" How do you think #{k} should work?
+
     sing:
       run: ({song, args}) -> "" ♫ #{song ? args?.join ' '} ♫!
       description: "Sing any name you choose"

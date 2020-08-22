@@ -20,7 +20,9 @@ class Main
         args:     undefined or array of arguments not part of options
 
     options: object mapping lowerCamelCase option names to values parsed from the argv array
-  @start: ({commands, default: _default, description, help, argv = process.argv, output = log}) =>
+  @start: ({commands, default: _default, description, help, argv, output}) =>
+    output ?= log
+    argv ?= process.argv
     [nodeJs, startFile, args...] = argv
 
     {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand

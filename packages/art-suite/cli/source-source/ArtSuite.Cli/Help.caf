@@ -1,9 +1,9 @@
-import &StandardImport, {} &colors
+import &StandardImport, &Util, {} &colors
 
 class Help extends BaseClass
   @classProperty :cliName
 
-  @toHelpString: (args...) ->
+  @toHelpString: (args...) -> wrap
     compactFlatten args
     .join "\n"
     .trim()
@@ -15,7 +15,7 @@ class Help extends BaseClass
     commandName = dashCase commandName
     @toHelpString
       @getCommandUsage commandName, options
-      "  #{description}" if present description
+      wrapProse description, 2
 
   @getOptionDetails: (option, details) ->
     switch
@@ -30,9 +30,9 @@ class Help extends BaseClass
         colors.green "  --#{option}"
         if argument then colors.yellow argument
         if required then colors.brightWhite "(REQUIRED)"
-        if advanced then colors.grey "(advanced)"
+        if advanced then colors.grey "(ADVANCED)"
       .join ' '
-      "    " + description
+      wrapProse description, 4
 
   @getCommandUsage: (command, options) =>
     command = dashCase command
@@ -42,7 +42,6 @@ class Help extends BaseClass
       @getOptionsList (object o from options when o.required), true
       @getOptionsList object o from options when !o.required
     .join ' '
-
 
   @getOptionsList: (options, required) =>
     if objectHasKeys options
@@ -55,11 +54,21 @@ class Help extends BaseClass
   @getCommandDetails: (command, {description, options, examples}) =>
     @toHelpString
       "" usage: #{@getCommandUsage command, options}
-      "\n#{description}" if present description
+      wrapProse description
       ""
       colors.blue "options:\n" if options
       if options
-        array option in Object.keys(options).sort() with @getOptionDetails option, options[option]
+        keys = Object.keys(options).sort()
+        compactFlatten []
+          array option in keys when options[option].required && !options[option].advanced
+            @getOptionDetails option, options[option]
+
+          array option in keys when !options[option].required && !options[option].advanced
+            @getOptionDetails option, options[option]
+
+          array option in keys when options[option].advanced
+            @getOptionDetails option, options[option]
+
         .join :\n\n
 
       colors.blue "\nexamples:\n" if examples?.length > 0
@@ -76,7 +85,7 @@ class Help extends BaseClass
                 else ''
               .join ' '
             else example
-            "    " + description.replace /\n/g, "\n    "
+            wrapProse description, 4
             ""
 
   ## getHelp
@@ -137,6 +146,6 @@ class Help extends BaseClass
       + @coloredCliName
       + colors.brightWhite " command"
       + colors.green " --help"
-      description
+      wrapProse description
     .join "\n\n"
     + :\n

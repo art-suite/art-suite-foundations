@@ -4,10 +4,11 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
       "BaseClass",
+      "wrap",
       "compactFlatten",
       "colors",
       "dashCase",
-      "present",
+      "wrapProse",
       "String",
       "Array",
       "Object",
@@ -16,13 +17,19 @@ Caf.defMod(module, () => {
       "objectHasKeys",
       "lowerCamelCase"
     ],
-    [global, require("./StandardImport"), { colors: require("colors") }],
+    [
+      global,
+      require("./StandardImport"),
+      require("./Util"),
+      { colors: require("colors") }
+    ],
     (
       BaseClass,
+      wrap,
       compactFlatten,
       colors,
       dashCase,
-      present,
+      wrapProse,
       String,
       Array,
       Object,
@@ -39,9 +46,11 @@ Caf.defMod(module, () => {
       ) {
         this.classProperty("cliName");
         this.toHelpString = function(...args) {
-          return compactFlatten(args)
-            .join("\n")
-            .trim();
+          return wrap(
+            compactFlatten(args)
+              .join("\n")
+              .trim()
+          );
         };
         this.classGetter({
           coloredCliName: function() {
@@ -55,7 +64,7 @@ Caf.defMod(module, () => {
           commandName = dashCase(commandName);
           return this.toHelpString(
             this.getCommandUsage(commandName, options),
-            present(description) ? `  ${Caf.toString(description)}` : undefined
+            wrapProse(description, 2)
           );
         };
         this.getOptionDetails = function(option, details) {
@@ -81,9 +90,9 @@ Caf.defMod(module, () => {
               colors.green(`  --${Caf.toString(option)}`),
               argument ? colors.yellow(argument) : undefined,
               required ? colors.brightWhite("(REQUIRED)") : undefined,
-              advanced ? colors.grey("(advanced)") : undefined
+              advanced ? colors.grey("(ADVANCED)") : undefined
             ]).join(" "),
-            "    " + description
+            wrapProse(description, 4)
           );
         };
         this.getCommandUsage = (command, options) => {
@@ -128,16 +137,33 @@ Caf.defMod(module, () => {
           command,
           { description, options, examples }
         ) => {
-          let from, into, to, i1, temp;
+          let keys, from, into, to, i1, temp;
           return this.toHelpString(
             `usage: ${Caf.toString(this.getCommandUsage(command, options))}`,
-            present(description) ? `\n${Caf.toString(description)}` : undefined,
+            wrapProse(description),
             "",
             options ? colors.blue("options:\n") : undefined,
             options
-              ? Caf.array(Object.keys(options).sort(), option =>
-                  this.getOptionDetails(option, options[option])
-                ).join("\n\n")
+              ? ((keys = Object.keys(options).sort()),
+                compactFlatten([
+                  Caf.array(
+                    keys,
+                    option => this.getOptionDetails(option, options[option]),
+                    option =>
+                      options[option].required && !options[option].advanced
+                  ),
+                  Caf.array(
+                    keys,
+                    option => this.getOptionDetails(option, options[option]),
+                    option =>
+                      !options[option].required && !options[option].advanced
+                  ),
+                  Caf.array(
+                    keys,
+                    option => this.getOptionDetails(option, options[option]),
+                    option => options[option].advanced
+                  )
+                ]).join("\n\n"))
               : undefined,
             (Caf.exists(examples) && examples.length) > 0
               ? colors.blue("\nexamples:\n")
@@ -171,7 +197,7 @@ Caf.defMod(module, () => {
                                         : "")
                                   ).join(" ")
                                 : example),
-                            "    " + description.replace(/\n/g, "\n    "),
+                            wrapProse(description, 4),
                             ""
                           ])
                         );
@@ -218,7 +244,7 @@ Caf.defMod(module, () => {
               this.coloredCliName +
               colors.brightWhite(" command") +
               colors.green(" --help"),
-            description
+            wrapProse(description)
           ]).join("\n\n") + "\n";
       }));
     }
