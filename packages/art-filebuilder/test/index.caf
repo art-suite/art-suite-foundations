@@ -1,4 +1,4 @@
-require '../index.caf'
+require '../source'
 &art-testbench/testing
 .init
   synchronous: true
