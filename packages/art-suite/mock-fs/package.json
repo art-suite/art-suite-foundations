@@ -2,10 +2,10 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "mock-fs": "^4.10.0"
+    "mock-fs": "^4.13.0"
   },
   "devDependencies": {
-    "art-testbench": "^2.2.1"
+    "art-testbench": "^2.2.3"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
@@ -17,5 +17,5 @@
   "scripts": {
     "test": "jest --env node"
   },
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

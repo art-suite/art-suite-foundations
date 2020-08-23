@@ -3,29 +3,18 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "bluebird": "^3.5.5",
+    "caffeine-script-runtime": "^1.13.3",
     "dateformat": "^3.0.3",
     "detect-node": "^2.0.4",
+    "neptune-namespaces-runtime": "^3.2.4",
     "pluralize": "^8.0.0"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
-    "art-build-configurator": "^1.26.14",
-    "art-testbench": "^2.2.2",
-    "case-sensitive-paths-webpack-plugin": "^2.2.0",
-    "chai": "^4.2.0",
-    "coffee-loader": "^0.7.3",
-    "css-loader": "^3.6.0",
-    "json-loader": "^0.5.7",
+    "art-build-configurator": "^1.26.15",
+    "art-testbench": "^2.2.3",
     "mocha": "^7.2.0",
-    "mock-fs": "^4.10.0",
-    "script-loader": "^0.7.2",
-    "style-loader": "^1.2.1",
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.1",
-    "webpack-node-externals": "^1.7.2",
-    "webpack-stylish": "^0.1.8"
+    "mock-fs": "^4.13.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
@@ -40,5 +29,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "1.69.5"
+  "version": "1.69.6"
 }

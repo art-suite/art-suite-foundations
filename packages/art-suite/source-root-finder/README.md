@@ -1,5 +1,8 @@
 # ArtSuite.SourceRootFinder
 
+* Purpose: given a path to a directory or file, find the root directory of that containing project.
+* Strategy: look in the specified directory and each parent directory for files matching the names of one of the indicatory files/directories (default: `package.json` and `.git`)
+
 ### Install
 
 ```coffeescript

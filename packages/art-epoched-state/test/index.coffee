@@ -1,4 +1,4 @@
-require '../index.coffee'
+require '../index'
 require 'art-testbench/testing'
 .init
   synchronous: true

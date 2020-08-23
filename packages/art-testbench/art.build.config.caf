@@ -1,10 +1,10 @@
 import &ArtStandardLib
-target: node: true
+
 package: (abcPackage) ->
   sourceDir = :source-source
   merge &package,
     scripts: merge &package.scripts,
-      test: "jest"
+      test:   :jest
       build:
         """
           coffee --output source --compile --map #{sourceDir} &
@@ -15,7 +15,10 @@ package: (abcPackage) ->
       build-clean:  "" rm -rf source/*; npm run build
       watch:        "" npm-watch
 
-webpack:
-  common: {}
-  targets:
-    index: {}
+    jest: testEnvironment: :node
+
+    watch:
+      build:
+        extensions: "" caf coffee
+        patterns:   [] sourceDir
+        quiet:      false

@@ -5,10 +5,12 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/cli": "^1.3.3",
+    "@art-suite/cli": "^1.3.5",
     "colors": "^1.4.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "@art-suite/monorepo",
@@ -20,10 +22,9 @@
     "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
-    "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.3.1",
+  "version": "1.3.2",
   "watch": {
     "build": {
       "extensions": "caf",

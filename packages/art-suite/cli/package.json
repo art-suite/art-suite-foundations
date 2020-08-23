@@ -3,25 +3,25 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "ansi-wordwrap": "^1.0.2",
-    "art-class-system": "^1.11.6",
-    "art-standard-lib": "^1.69.4",
+    "art-class-system": "^1.11.8",
+    "art-standard-lib": "^1.69.6",
     "colors": "^1.4.0"
   },
   "description": "Art.Cli",
   "devDependencies": {
-    "art-testbench": "^2.2.2",
-    "art-build-configurator": "^1.26.14",
+    "art-build-configurator": "^1.26.15",
+    "art-testbench": "^2.2.3",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
     "css-loader": "^3.6.0",
     "json-loader": "^0.5.7",
     "mocha": "^7.2.0",
-    "mock-fs": "^4.10.0",
-    "npm-watch": "^0.6.0",
+    "mock-fs": "^4.13.0",
+    "npm-watch": "^0.7.0",
     "script-loader": "^0.7.2",
     "style-loader": "^1.2.1",
-    "webpack": "^4.39.1",
+    "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.1",
@@ -45,7 +45,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.3.4",
+  "version": "1.3.5",
   "watch": {
     "build": {
       "extensions": "caf",

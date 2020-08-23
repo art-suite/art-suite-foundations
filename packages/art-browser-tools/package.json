@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "^1.26.14"
+    "art-build-configurator": "^1.26.15"
   },
   "description": "Art.Browser.Tools",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -26,7 +26,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.2.4",
+  "version": "1.2.5",
   "watch": {
     "build": {
       "extensions": [
