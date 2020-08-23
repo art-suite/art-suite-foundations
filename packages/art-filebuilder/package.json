@@ -2,12 +2,12 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-binary": "^1.1.7",
-    "art-build-configurator": "^1.26.14"
+    "art-binary": "^1.1.8",
+    "art-build-configurator": "^1.26.15"
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
-    "art-testbench": "^2.2.2",
+    "art-testbench": "^2.2.3",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -42,7 +42,7 @@
     "testInBrowser": "webpack-dev-server --progress --env.devServer",
     "watch": "npm-watch"
   },
-  "version": "2.1.5",
+  "version": "2.1.6",
   "watch": {
     "build": {
       "extensions": "caf coffee",

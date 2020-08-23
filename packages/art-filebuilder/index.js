@@ -1,1 +1,1 @@
-require("./source");
+module.exports = require("./source");
