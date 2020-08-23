@@ -1,12 +1,10 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
-  "dependencies": {
-    "art-build-configurator": "^1.26.16"
-  },
   "description": "Simplified system of statuses for HTTP and any other network protocol",
   "devDependencies": {
-    "art-testbench": "^2.2.4",
+    "art-build-configurator": "^1.26.17",
+    "art-testbench": "^2.2.5",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -36,5 +34,5 @@
     "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer"
   },
-  "version": "1.5.8"
+  "version": "1.5.9"
 }
