@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "^1.26.15"
+    "art-build-configurator": "^1.26.16"
   },
   "description": "Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -22,7 +22,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "2.2.3",
+  "version": "2.2.4",
   "watch": {
     "build": {
       "extensions": "caf",

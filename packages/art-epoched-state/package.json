@@ -2,11 +2,11 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "^1.26.15"
+    "art-build-configurator": "^1.26.16"
   },
   "description": "Art.Epoch",
   "devDependencies": {
-    "art-testbench": "^2.2.3",
+    "art-testbench": "^2.2.4",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
@@ -33,10 +33,10 @@
   "scripts": {
     "build": "coffee --output source --compile source-coffee-caf &\ncaf -p -c source-coffee-caf -o source &\nwait\nnn -s",
     "build-clean": "rm -rf source/*; npm run build",
-    "test": "nn -s;mocha -u tdd",
     "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "test": "nn -s;mocha -u tdd",
     "testInBrowser": "webpack-dev-server --progress --env.devServer",
     "watch": "watch 'npm run build' ./source-coffee-caf"
   },
-  "version": "1.2.6"
+  "version": "1.2.7"
 }
