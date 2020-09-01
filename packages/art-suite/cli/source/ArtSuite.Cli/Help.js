@@ -15,13 +15,13 @@ Caf.defMod(module, () => {
       "log",
       "Error",
       "objectHasKeys",
-      "lowerCamelCase"
+      "lowerCamelCase",
     ],
     [
       global,
       require("./StandardImport"),
       require("./Util"),
-      { colors: require("colors") }
+      { colors: require("colors") },
     ],
     (
       BaseClass,
@@ -39,25 +39,21 @@ Caf.defMod(module, () => {
       lowerCamelCase
     ) => {
       let Help;
-      return (Help = Caf.defClass(class Help extends BaseClass {}, function(
+      return (Help = Caf.defClass(class Help extends BaseClass {}, function (
         Help,
         classSuper,
         instanceSuper
       ) {
         this.classProperty("cliName");
-        this.toHelpString = function(...args) {
-          return wrap(
-            compactFlatten(args)
-              .join("\n")
-              .trim()
-          );
+        this.toHelpString = function (...args) {
+          return wrap(compactFlatten(args).join("\n").trim());
         };
         this.classGetter({
-          coloredCliName: function() {
+          coloredCliName: function () {
             return colors.bold(colors.blue(this.cliName));
-          }
+          },
         });
-        this.getCommandSummary = function(
+        this.getCommandSummary = function (
           commandName,
           { description, options }
         ) {
@@ -67,7 +63,7 @@ Caf.defMod(module, () => {
             wrapProse(description, 2)
           );
         };
-        this.getOptionDetails = function(option, details) {
+        this.getOptionDetails = function (option, details) {
           let description, argument, advanced, required;
           switch (false) {
             case !Caf.is(details, String):
@@ -90,7 +86,7 @@ Caf.defMod(module, () => {
               colors.green(`  --${Caf.toString(option)}`),
               argument ? colors.yellow(argument) : undefined,
               required ? colors.brightWhite("(REQUIRED)") : undefined,
-              advanced ? colors.grey("(ADVANCED)") : undefined
+              advanced ? colors.grey("(ADVANCED)") : undefined,
             ]).join(" "),
             wrapProse(description, 4)
           );
@@ -101,10 +97,10 @@ Caf.defMod(module, () => {
             this.coloredCliName,
             colors.bold(colors.brightWhite(command)),
             this.getOptionsList(
-              Caf.object(options, null, o => o.required),
+              Caf.object(options, null, (o) => o.required),
               true
             ),
-            this.getOptionsList(Caf.object(options, null, o => !o.required))
+            this.getOptionsList(Caf.object(options, null, (o) => !o.required)),
           ]).join(" ");
         };
         this.getOptionsList = (options, required) => {
@@ -148,21 +144,21 @@ Caf.defMod(module, () => {
                 compactFlatten([
                   Caf.array(
                     keys,
-                    option => this.getOptionDetails(option, options[option]),
-                    option =>
+                    (option) => this.getOptionDetails(option, options[option]),
+                    (option) =>
                       options[option].required && !options[option].advanced
                   ),
                   Caf.array(
                     keys,
-                    option => this.getOptionDetails(option, options[option]),
-                    option =>
+                    (option) => this.getOptionDetails(option, options[option]),
+                    (option) =>
                       !options[option].required && !options[option].advanced
                   ),
                   Caf.array(
                     keys,
-                    option => this.getOptionDetails(option, options[option]),
-                    option => options[option].advanced
-                  )
+                    (option) => this.getOptionDetails(option, options[option]),
+                    (option) => options[option].advanced
+                  ),
                 ]).join("\n\n"))
               : undefined,
             (Caf.exists(examples) && examples.length) > 0
@@ -198,7 +194,7 @@ Caf.defMod(module, () => {
                                   ).join(" ")
                                 : example),
                             wrapProse(description, 4),
-                            ""
+                            "",
                           ])
                         );
                         temp = i1 += 2;
@@ -229,13 +225,13 @@ Caf.defMod(module, () => {
                 )),
                 commandSpecificHelp
                   ? this.getCommandDetails(commandName, commandSpecificHelp)
-                  : Caf.array(Object.keys(commands).sort(), commandName =>
+                  : Caf.array(Object.keys(commands).sort(), (commandName) =>
                       this.getCommandSummary(commandName, commands[commandName])
                     ).join("\n\n"))
               : undefined
           );
         };
-        this.getGeneralInfo = description =>
+        this.getGeneralInfo = (description) =>
           compactFlatten([
             `usage: ${Caf.toString(this.coloredCliName)} ${Caf.toString(
               colors.brightWhite("command")
@@ -244,7 +240,7 @@ Caf.defMod(module, () => {
               this.coloredCliName +
               colors.brightWhite(" command") +
               colors.green(" --help"),
-            wrapProse(description)
+            wrapProse(description),
           ]).join("\n\n") + "\n";
       }));
     }

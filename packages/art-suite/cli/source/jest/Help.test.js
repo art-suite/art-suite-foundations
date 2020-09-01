@@ -5,7 +5,7 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["ArtCli"],
     (parentImports = [global, require("./StandardImport")]),
-    ArtCli => {
+    (ArtCli) => {
       return Caf.importInvoke(
         [
           "describe",
@@ -13,7 +13,7 @@ Caf.defMod(module, () => {
           "stripAnsi",
           "getHelp",
           "assert",
-          "getCommandDetails"
+          "getCommandDetails",
         ],
         [parentImports, ArtCli.Help],
         (describe, test, stripAnsi, getHelp, assert, getCommandDetails) => {
@@ -24,7 +24,7 @@ Caf.defMod(module, () => {
               walk: {
                 description: "walk about",
                 examples: "walk",
-                options: { gate: ["mph", "estimated mph for yer walking"] }
+                options: { gate: ["mph", "estimated mph for yer walking"] },
               },
               run: {
                 description: "run about",
@@ -33,16 +33,16 @@ Caf.defMod(module, () => {
                     argument: "mph",
                     description: "estimated mph for yer walking",
                     advanced: true,
-                    required: true
-                  }
-                }
+                    required: true,
+                  },
+                },
               },
               info: { description: "show info" },
-              cartewheel: { description: "this stuff is hard", advanced: true }
-            }
+              cartewheel: { description: "this stuff is hard", advanced: true },
+            },
           };
           return describe({
-            basic: function() {
+            basic: function () {
               return test("getHelp", () => {
                 let h;
                 h = stripAnsi(getHelp("myCommand", help));
@@ -52,7 +52,7 @@ Caf.defMod(module, () => {
                 return assert.notMatch(h, /yer walking/);
               });
             },
-            detailedHelp: function() {
+            detailedHelp: function () {
               test("getCommandDetails", () => {
                 let h;
                 h = getCommandDetails("walk", help.commands.walk);
@@ -72,7 +72,7 @@ Caf.defMod(module, () => {
                 return assert.match(h, /yer walking/);
               });
             },
-            regressions: function() {
+            regressions: function () {
               test("getHelp on a command with no options should still show details", () => {
                 let h;
                 h = stripAnsi(getHelp("myCommand", help, "info"));
@@ -95,9 +95,9 @@ Caf.defMod(module, () => {
                       {
                         commands: {
                           "list-buckets": (details = {
-                            description: "Just give me some fun."
-                          })
-                        }
+                            description: "Just give me some fun.",
+                          }),
+                        },
                       },
                       "list-buckets"
                     )
@@ -135,7 +135,7 @@ Caf.defMod(module, () => {
                   /myCli/i
                 );
               });
-            }
+            },
           });
         }
       );

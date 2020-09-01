@@ -5,7 +5,7 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["ArtCli"],
     (parentImports = [global, require("./StandardImport")]),
-    ArtCli => {
+    (ArtCli) => {
       return Caf.importInvoke(
         [
           "describe",
@@ -16,7 +16,7 @@ Caf.defMod(module, () => {
           "parseArgs",
           "JSON",
           "Error",
-          "selectCommand"
+          "selectCommand",
         ],
         [parentImports, ArtCli.Parse, ArtCli.Util],
         (
@@ -31,21 +31,21 @@ Caf.defMod(module, () => {
           selectCommand
         ) => {
           return describe({
-            parseAndSelectCommand: function() {
+            parseAndSelectCommand: function () {
               test("parseAndSelectCommand", () => {
                 let foo, bar;
                 return assert.eq(
                   parseAndSelectCommand(
                     normalizeCommands({
                       foo: (foo = () => {}),
-                      bar: (bar = () => {})
+                      bar: (bar = () => {}),
                     }),
                     ["foo", "bar"]
                   ),
                   {
                     commandFunction: foo,
                     commandName: "foo",
-                    options: { args: ["bar"] }
+                    options: { args: ["bar"] },
                   }
                 );
               });
@@ -59,99 +59,99 @@ Caf.defMod(module, () => {
                         description: "walk about",
                         examples: "walk",
                         options: {
-                          gate: ["mph", "estimated mph for yer walking"]
-                        }
+                          gate: ["mph", "estimated mph for yer walking"],
+                        },
                       },
-                      bar: (bar = () => {})
+                      bar: (bar = () => {}),
                     },
                     ["foo", "bar"]
                   ),
                   {
                     commandFunction: foo,
                     commandName: "foo",
-                    options: { args: ["bar"] }
+                    options: { args: ["bar"] },
                   }
                 );
               });
             },
             parseArgs: {
-              options: function() {
+              options: function () {
                 return test("empty args", () =>
                   assert.eq(parseArgs([]), { commands: [], options: {} }));
               },
               dataTypes: {
-                boolean: function() {
+                boolean: function () {
                   test("boolean value", () =>
                     assert.eq(parseArgs(["--verbose"]), {
                       commands: [],
-                      options: { verbose: true }
+                      options: { verbose: true },
                     }));
                   test('boolean true from "true"', () =>
                     assert.eq(parseArgs(["--verbose", "true"]), {
                       commands: [],
-                      options: { verbose: true }
+                      options: { verbose: true },
                     }));
                   return test('boolean true from "true"', () =>
                     assert.eq(parseArgs(["--verbose", "false"]), {
                       commands: [],
-                      options: { verbose: false }
+                      options: { verbose: false },
                     }));
                 },
-                number: function() {
+                number: function () {
                   return test("number value", () =>
                     assert.eq(parseArgs(["--num", "123"]), {
                       commands: [],
-                      options: { num: 123 }
+                      options: { num: 123 },
                     }));
                 },
-                string: function() {
+                string: function () {
                   test("simple string", () =>
                     assert.eq(parseArgs(["--foo", "bar"]), {
                       commands: [],
-                      options: { foo: "bar" }
+                      options: { foo: "bar" },
                     }));
                   test("string:true", () =>
                     assert.eq(parseArgs(["--foo", "string:true"]), {
                       commands: [],
-                      options: { foo: "true" }
+                      options: { foo: "true" },
                     }));
                   test("string:false", () =>
                     assert.eq(parseArgs(["--foo", "string:false"]), {
                       commands: [],
-                      options: { foo: "false" }
+                      options: { foo: "false" },
                     }));
                   return test("string:10", () =>
                     assert.eq(parseArgs(["--foo", "string:10"]), {
                       commands: [],
-                      options: { foo: "10" }
+                      options: { foo: "10" },
                     }));
                 },
-                lists: function() {
+                lists: function () {
                   return test("list", () =>
                     assert.eq(parseArgs(["--foo", "bar", "baz"]), {
                       commands: [],
-                      options: { foo: ["bar", "baz"] }
+                      options: { foo: ["bar", "baz"] },
                     }));
                 },
-                json: function() {
+                json: function () {
                   return test("regexp", () => {
                     let data;
                     data = {
                       alpha: null,
                       beta: true,
                       gamma: ["a", "b", "c"],
-                      delta: "foo"
+                      delta: "foo",
                     };
                     return assert.eq(
                       parseArgs([
                         "--my-json",
-                        `json:${Caf.toString(JSON.stringify(data))}`
+                        `json:${Caf.toString(JSON.stringify(data))}`,
                       ]).options.myJson,
                       data
                     );
                   });
                 },
-                js: function() {
+                js: function () {
                   test("regexp", () =>
                     assert.eq(
                       parseArgs(["--regex", "js:/[a-z]+/"]).options.regex.exec(
@@ -161,7 +161,7 @@ Caf.defMod(module, () => {
                     ));
                   test("function", () => {
                     let f;
-                    f = v => v * 123;
+                    f = (v) => v * 123;
                     return assert.eq(
                       parseArgs(["--f", `js:${Caf.toString(f)}`]).options.f(10),
                       1230
@@ -169,7 +169,7 @@ Caf.defMod(module, () => {
                   });
                   return test("function throws error", () => {
                     let f;
-                    f = v =>
+                    f = (v) =>
                       (() => {
                         throw new Error();
                       })();
@@ -177,23 +177,23 @@ Caf.defMod(module, () => {
                       .rejects(() =>
                         parseArgs(["--f", "js:(() => {throw new Error();})()"])
                       )
-                      .then(error => assert.instanceof(Error, error));
+                      .then((error) => assert.instanceof(Error, error));
                   });
-                }
+                },
               },
-              commands: function() {
+              commands: function () {
                 test("one command", () =>
                   assert.eq(parseArgs(["myCommand"]), {
                     commands: ["myCommand"],
-                    options: {}
+                    options: {},
                   }));
                 return test("multiple command", () =>
                   assert.eq(parseArgs(["myCommand1", "myCommand2"]), {
                     commands: ["myCommand1", "myCommand2"],
-                    options: {}
+                    options: {},
                   }));
               },
-              mixed: function() {
+              mixed: function () {
                 return test("multiple commands and options", () =>
                   assert.eq(
                     parseArgs([
@@ -203,20 +203,20 @@ Caf.defMod(module, () => {
                       "one.json",
                       "two.json",
                       "--output",
-                      "out.json"
+                      "out.json",
                     ]),
                     {
                       commands: ["myCommand1", "myCommand2"],
                       options: {
                         files: ["one.json", "two.json"],
-                        output: "out.json"
-                      }
+                        output: "out.json",
+                      },
                     }
                   ));
-              }
+              },
             },
             selectCommand: {
-              defaults: function() {
+              defaults: function () {
                 test("no commandName, but default was provided", () => {
                   let commandFunctions;
                   return assert.eq(
@@ -227,7 +227,7 @@ Caf.defMod(module, () => {
                     ),
                     {
                       commandFunction: commandFunctions.foo.run,
-                      commandName: "foo"
+                      commandName: "foo",
                     }
                   );
                 });
@@ -243,7 +243,7 @@ Caf.defMod(module, () => {
                   );
                 });
               },
-              basics: function() {
+              basics: function () {
                 test("foo is a command", () => {
                   let commandFunctions;
                   return assert.eq(
@@ -253,7 +253,7 @@ Caf.defMod(module, () => {
                     ),
                     {
                       commandFunction: commandFunctions.foo.run,
-                      commandName: "foo"
+                      commandName: "foo",
                     }
                   );
                 });
@@ -262,13 +262,13 @@ Caf.defMod(module, () => {
                   return assert.eq(
                     selectCommand(
                       (commands = normalizeCommands({
-                        "foo-bar": { run: () => {} }
+                        "foo-bar": { run: () => {} },
                       })),
                       ["foo-bar"]
                     ),
                     {
                       commandFunction: commands.fooBar.run,
-                      commandName: "foo-bar"
+                      commandName: "foo-bar",
                     }
                   );
                 });
@@ -282,8 +282,8 @@ Caf.defMod(module, () => {
                     { commandName: "foo" }
                   );
                 });
-              }
-            }
+              },
+            },
           });
         }
       );

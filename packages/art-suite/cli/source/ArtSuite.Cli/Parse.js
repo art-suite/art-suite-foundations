@@ -6,7 +6,7 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport"), require("./Util")],
     (lowerCamelCase, JSON, log, Error, normalizeCommandName, merge) => {
       let Parse;
-      return (Parse = Caf.defClass(class Parse extends Object {}, function(
+      return (Parse = Caf.defClass(class Parse extends Object {}, function (
         Parse,
         classSuper,
         instanceSuper
@@ -15,7 +15,7 @@ Caf.defMod(module, () => {
         this.evalJsRegExp = /^js:(.*)$/;
         this.typedArgumentRegExp = /^([a-z]+):(.*)$/;
         this.numberRegExp = /^[-+]?([0-9]*\.[0-9]+|[0-9]+)([eE][-+]?[0-9]+)?$/i;
-        this.parseArgs = args => {
+        this.parseArgs = (args) => {
           let currentOptionName, commands, currentOption, parsedOptions;
           currentOptionName = "argument";
           commands = currentOption = [];
@@ -56,8 +56,8 @@ Caf.defMod(module, () => {
                                         type,
                                         value,
                                         argument,
-                                        error: error.message
-                                      }
+                                        error: error.message,
+                                      },
                                     });
                                     return (() => {
                                       throw error;
@@ -75,8 +75,8 @@ Caf.defMod(module, () => {
                                         option: currentOptionName,
                                         type,
                                         value,
-                                        argument
-                                      }
+                                        argument,
+                                      },
                                     };
                                     return (() => {
                                       throw error;
@@ -117,10 +117,10 @@ Caf.defMod(module, () => {
                     return o;
                 }
               })()
-            )
+            ),
           };
         };
-        this.getCommandFunction = function(commands, commandName) {
+        this.getCommandFunction = function (commands, commandName) {
           let command;
           return (command = commands[normalizeCommandName(commandName)])
             ? command.run
@@ -137,7 +137,7 @@ Caf.defMod(module, () => {
                 : (commandName = defaultCommandName)
             )),
             commandName,
-            args: args.length > 0 ? args : undefined
+            args: args.length > 0 ? args : undefined,
           });
         };
         this.parseAndSelectCommand = (commands, args, defaultCommandName) => {
@@ -154,7 +154,7 @@ Caf.defMod(module, () => {
             options:
               (Caf.exists(args) && args.length) > 0
                 ? merge(options, { args })
-                : options
+                : options,
           };
         };
       }));

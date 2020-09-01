@@ -6,7 +6,7 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport"), require("./Util")],
     (log, process, normalizeCommands, Promise, merge) => {
       let Main;
-      return (Main = Caf.defClass(class Main extends Object {}, function(
+      return (Main = Caf.defClass(class Main extends Object {}, function (
         Main,
         classSuper,
         instanceSuper
@@ -17,7 +17,7 @@ Caf.defMod(module, () => {
           description,
           help,
           argv,
-          output
+          output,
         }) => {
           let nodeJs, startFile, args, options, commandFunction, commandName;
           output != null ? output : (output = log);
@@ -27,7 +27,7 @@ Caf.defMod(module, () => {
             options,
             commandFunction,
             commandName,
-            args
+            args,
           } = require("./Parse").parseAndSelectCommand(
             (commands = normalizeCommands(commands, help)),
             args,
@@ -43,7 +43,7 @@ Caf.defMod(module, () => {
                         args:
                           (Caf.exists(args) && args.length) > 0
                             ? args
-                            : undefined
+                            : undefined,
                       })
                     )
                   : undefined,
@@ -53,7 +53,7 @@ Caf.defMod(module, () => {
                   { commands, description },
                   commandName
                 )
-          ).tap(result => result != null && output(result));
+          ).tap((result) => result != null && output(result));
         };
       }));
     }

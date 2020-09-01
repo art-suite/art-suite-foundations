@@ -5,38 +5,38 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["ArtCli"],
     (parentImports = [global, require("./StandardImport")]),
-    ArtCli => {
+    (ArtCli) => {
       return Caf.importInvoke(
         ["test", "start", "assert", "stripAnsi"],
         [parentImports, ArtCli.Main],
         (test, start, assert, stripAnsi) => {
           let expectedGoOutput;
           expectedGoOutput = "myCommand-myCommand-myCommand";
-          test("start + myCommand", function() {
+          test("start + myCommand", function () {
             let myCommandRan;
             myCommandRan = false;
             return start({
               commands: { myCommand: () => (myCommandRan = true) },
               argv: ["nodeJs", "startFile", "myCommand"],
-              output: assert.true
-            }).then(out => {
+              output: assert.true,
+            }).then((out) => {
               assert.true(out);
               return assert.eq({ myCommandRan }, { myCommandRan: true });
             });
           });
-          test("start + myCommand --verbose", function() {
+          test("start + myCommand --verbose", function () {
             let myCommandRan;
             myCommandRan = false;
             return start({
               commands: { myCommand: () => (myCommandRan = true) },
               argv: ["nodeJs", "startFile", "myCommand", "anArg", "--verbose"],
-              output: assert.jsTrue
-            }).then(out => {
+              output: assert.jsTrue,
+            }).then((out) => {
               assert.true(out);
               return assert.eq({ myCommandRan }, { myCommandRan: true });
             });
           });
-          test("start + myCommand + --help", function() {
+          test("start + myCommand + --help", function () {
             let myCommandRan, description, more;
             myCommandRan = false;
             return start({
@@ -44,46 +44,46 @@ Caf.defMod(module, () => {
                 myCommand: {
                   description: (description = "xyz123 description"),
                   options: { more: (more = "abc123 --more description") },
-                  run: () => (myCommandRan = true)
-                }
+                  run: () => (myCommandRan = true),
+                },
               },
               argv: ["nodeJs", "startFile", "myCommand", "--help"],
-              output: assert.jsTrue
+              output: assert.jsTrue,
             })
               .then(stripAnsi)
-              .then(out => {
+              .then((out) => {
                 assert.false(myCommandRan);
                 assert.match(out, description);
                 return assert.match(out, more);
               });
           });
-          test("start with no args", function() {
+          test("start with no args", function () {
             let myCommandRan;
             myCommandRan = false;
             return start({
               commands: { myCommand: () => (myCommandRan = true) },
               argv: ["nodeJs", "startFile"],
-              output: () => {}
+              output: () => {},
             })
               .then(stripAnsi)
-              .then(output => {
+              .then((output) => {
                 assert.match(output, "startFile my-command");
                 return assert.eq({ myCommandRan }, { myCommandRan: false });
               });
           });
-          test("start with no args and default", function() {
+          test("start with no args and default", function () {
             let myCommandOutput;
             myCommandOutput = undefined;
             return start({
               commands: {
-                myCommand: () => (myCommandOutput = expectedGoOutput)
+                myCommand: () => (myCommandOutput = expectedGoOutput),
               },
               default: "myCommand",
               argv: ["nodeJs", "startFile"],
-              output: assert.jsTrue
+              output: assert.jsTrue,
             })
               .then(stripAnsi)
-              .then(output => {
+              .then((output) => {
                 assert.match(output, expectedGoOutput);
                 return assert.eq(
                   { myCommandOutput },
@@ -91,16 +91,16 @@ Caf.defMod(module, () => {
                 );
               });
           });
-          return test("start + noGo", function() {
+          return test("start + noGo", function () {
             let myCommandRan;
             myCommandRan = false;
             return start({
               commands: { myCommand: () => (myCommandRan = true) },
               argv: ["nodeJs", "startFile", "noGo"],
-              output: () => {}
+              output: () => {},
             })
               .then(stripAnsi)
-              .then(output => {
+              .then((output) => {
                 assert.match(output, "startFile my-command");
                 return assert.eq({ myCommandRan }, { myCommandRan: false });
               });
