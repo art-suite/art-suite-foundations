@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.10",
-    "art-communication-status": "^1.5.9",
+    "art-communication-status": "^1.5.10",
     "art-standard-lib": "^1.69.8",
     "xhr2": "^0.2.0"
   },
