@@ -1,6 +1,1 @@
-if (true) {
-  module.exports = require("./build");
-} else {
-  require("./register");
-  module.exports = require("./index.coffee");
-}
+module.exports = require("./source/Art.Config");
