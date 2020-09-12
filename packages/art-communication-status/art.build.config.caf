@@ -1,10 +1,19 @@
-target:
-  node: true
-
-package:
-  description: "Simplified system of statuses for HTTP and any other network protocol"
-
-webpack:
-  common: target: "node"
-  targets:
-    index: {}
+import &ArtStandardLib
+package: (abcPackage) -> merge &package,
+  scripts:
+    test:         "" nn -s;mocha -u tdd
+    # test: :jest
+    build:        "" coffee --output source --compile source-source; caf -p -c source-source -o source; nn -s
+    build-clean:  "" npm run clean; npm run build
+    clean:        "" rm -rf source/*
+    watch:        :npm-watch
+  jest:
+    testEnvironment: :node
+    collectCoverageFrom:
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+  watch:
+    build:
+      extensions: [] :caf
+      patterns:   [] :source-source
+      quiet:      false

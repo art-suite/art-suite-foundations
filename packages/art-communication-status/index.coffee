@@ -1,1 +1,0 @@
-module.exports = Neptune?.Art?.CommunicationStatus ? require './source/Art/CommunicationStatus'

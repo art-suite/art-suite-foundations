@@ -1,2 +1,2 @@
 require('../register');
-require('./index.coffee')
+require('./index.caf')
