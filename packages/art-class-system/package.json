@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.69.8"
+    "art-standard-lib": "^1.69.9"
   },
   "description": "Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.",
   "devDependencies": {
