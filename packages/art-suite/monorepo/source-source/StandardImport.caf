@@ -1,0 +1,3 @@
+&ArtStandardLib.mergeWithSelf
+  {blue, yellow, green} = &chalk
+  &Lib

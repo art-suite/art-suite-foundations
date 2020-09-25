@@ -1,4 +1,4 @@
-import &ArtStandardLib, &Lib, &colors
+import &StandardImport
 
 updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDeps?
   object fromVersion, packageName in fromDeps

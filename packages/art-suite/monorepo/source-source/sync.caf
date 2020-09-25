@@ -1,3 +1,8 @@
+import &StandardImport
+
 (options) ->
   &updateSubPackages options
   .then -> &updateMonoPackage options
+  .then -> removePackageLocks()
+  .then -> removeNodeModules()
+  .then -> green "" All package.json files synced.

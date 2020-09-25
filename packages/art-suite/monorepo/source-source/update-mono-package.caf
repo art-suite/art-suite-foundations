@@ -1,4 +1,4 @@
-import &ArtStandardLib, &Lib, &colors
+import &StandardImport
 
 addArtMonorepoFeatures = (rootPackage) ->
   rootPackage.dependencies[&package.name] ?= :^ + &package.version

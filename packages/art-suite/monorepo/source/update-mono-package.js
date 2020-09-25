@@ -11,9 +11,9 @@ Caf.defMod(module, () => {
       "Error",
       "loadAllPackages",
       "neq",
-      "writeJson"
+      "writeJson",
     ],
-    [global, require("art-standard-lib"), require("./lib"), require("colors")],
+    [global, require("./StandardImport")],
     (
       merge,
       log,
@@ -26,7 +26,7 @@ Caf.defMod(module, () => {
       writeJson
     ) => {
       let addArtMonorepoFeatures, updateMonoPackage;
-      addArtMonorepoFeatures = function(rootPackage) {
+      addArtMonorepoFeatures = function (rootPackage) {
         let temp, base;
         (temp = (base = rootPackage.dependencies)[
           require("../package").name
@@ -40,7 +40,7 @@ Caf.defMod(module, () => {
         );
         return rootPackage;
       };
-      return (updateMonoPackage = function({ quiet }) {
+      return (updateMonoPackage = function ({ quiet }) {
         let rootPackage,
           originalRootPackage,
           previousSubPackages,
@@ -85,8 +85,8 @@ Caf.defMod(module, () => {
                   "/package.json"]: version,
                   [(previousSubPackage != null
                     ? previousSubPackage.path
-                    : "previous_package") + "/package.json"]: previousVersion
-                }
+                    : "previous_package") + "/package.json"]: previousVersion,
+                },
               }
             );
             throw new HandledError(
@@ -107,7 +107,7 @@ Caf.defMod(module, () => {
           return (previousSubPackages[type][name] = subPackage);
         };
         return loadAllPackages()
-          .then(packages => {
+          .then((packages) => {
             let packageFolderByPackageName;
             packageFolderByPackageName = {};
             Caf.each2(packages, (_package, packageFolder) => {
@@ -147,7 +147,7 @@ Caf.defMod(module, () => {
             }
             return null;
           })
-          .catch(error =>
+          .catch((error) =>
             !Caf.is(error, HandledError)
               ? (() => {
                   throw error;

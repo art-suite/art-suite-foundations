@@ -1,13 +1,13 @@
-import &ArtStandardLib
+import &ArtStandardLib, &chalk, &fs, &fs.promises
 
 {}
   readJson = (file) ->
-    if &fsExtra.existsSync file
-      JSON.parse &fsExtra.readFileSync file
+    if existsSync file
+      JSON.parse readFileSync file
     else {}
 
   writeJson: (file, data) ->
-    &fsExtra.writeFileSync
+    writeFileSync
       file
       consistentJsonStringify data, '  '
       + :\n
@@ -19,11 +19,34 @@ import &ArtStandardLib
           !/node_modules\//.test file # don't read into node_modules/
         readJson file
 
+  removePackageLocks: ->
+    &globPromise "!(node_modules)/*/**/package-lock.json"
+    .then (results) ->
+      if results.length > 0
+        log blue "Removing #{pluralize results.length, "package-specific package-lock.json file"}..."
+      Promise.all array packageLock in results
+        log rm: packageLock
+        unlink packageLock
+      .then -> if results.length > 0
+        log blue "Removed #{pluralize results.length, "package-specific package-lock.json file"}."
+
+
+  removeNodeModules: ->
+    &globPromise "!(node_modules)/*/**/node_modules"
+    .then (results) ->
+      if results.length > 0
+        log blue "Removing #{pluralize results.length, "package-specific node_modules/ directory"}..."
+      Promise.all array nodeModules in results
+        log yellow cmd = "rm -rf #{nodeModules}"
+        execShellCommand cmd
+      .then -> if results.length > 0
+        log blue "Removed #{pluralize results.length, "package-specific node_modules/ directory"}."
+
   # /** Executes a shell command and return it as a Promise.
   #   * @param cmd {string}
   #   * @return {Promise<string>}
   #   */
-  execShellCommand: (cmd) ->
+  execShellCommand = (cmd) ->
     new Promise (resolve, reject) ->
       &child_process.exec cmd, (error, stdout, stderr) =>
         if error then reject {} stderr, stdout

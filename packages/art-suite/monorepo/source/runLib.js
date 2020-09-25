@@ -15,9 +15,9 @@ Caf.defMod(module, () => {
       "red",
       "present",
       "yellow",
-      "process"
+      "process",
     ],
-    [global, require("art-standard-lib"), require("./lib"), require("colors")],
+    [global, require("./StandardImport")],
     (
       log,
       blue,
@@ -34,23 +34,23 @@ Caf.defMod(module, () => {
       process
     ) => {
       let indent, logRun;
-      indent = function(str, amount = "   ") {
+      indent = function (str, amount = "   ") {
         return amount + str.replace(/\n/g, `\n${Caf.toString(amount)}`);
       };
-      logRun = function(verb, packagePath) {
+      logRun = function (verb, packagePath) {
         return log(blue(`${Caf.toString(verb)}: `) + packagePath);
       };
-      return function({ command, verb, verbose }) {
+      return function ({ command, verb, verbose }) {
         verb = upperCase(verb);
         return loadAllPackages()
-          .then(packages =>
+          .then((packages) =>
             Caf.array(
               packages,
               ({ scripts }, packagePath) => packagePath,
               ({ scripts }, packagePath) => scripts.test
             )
           )
-          .then(packagePaths => {
+          .then((packagePaths) => {
             let passed, failed;
             logRun(
               `${Caf.toString(verb)}ING`,
@@ -59,12 +59,12 @@ Caf.defMod(module, () => {
             passed = [];
             failed = [];
             return Promise.all(
-              Caf.array(packagePaths, packagePath => {
+              Caf.array(packagePaths, (packagePath) => {
                 logRun(verb, grey(packagePath));
                 return execShellCommand(
                   `cd ${Caf.toString(packagePath)};${Caf.toString(command)}`
                 ).then(
-                  stdout => {
+                  (stdout) => {
                     passed.push(packagePath);
                     if (verbose) {
                       log(
@@ -111,7 +111,7 @@ Caf.defMod(module, () => {
               log(blue("\nRESULTS:"));
               log(blue("  succeeded: " + yellow(passed.length)));
               if (failed.length > 0) {
-                Caf.each2(failed, f => log(blue("  failed: " + red(f))));
+                Caf.each2(failed, (f) => log(blue("  failed: " + red(f))));
               }
               if (failed > 1) {
                 process.exit(1);

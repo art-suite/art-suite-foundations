@@ -1,4 +1,4 @@
-import &ArtStandardLib, &Lib, &colors
+import &StandardImport
 indent = (str, amount = "   ") ->
   amount + str.replace /\n/g "\n#{amount}"
 

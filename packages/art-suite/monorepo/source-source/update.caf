@@ -1,4 +1,4 @@
-import &ArtStandardLib
+import &StandardImport
 
 (options) ->
   Promise

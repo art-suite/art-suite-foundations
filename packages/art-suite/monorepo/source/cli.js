@@ -9,8 +9,8 @@ Caf.defMod(module, () => {
         run: require("./run"),
         update: require("./update"),
         "update-mono-package": require("./update-mono-package"),
-        "update-sub-packages": require("./update-sub-packages")
-      }
+        "update-sub-packages": require("./update-sub-packages"),
+      },
     });
   })();
 });

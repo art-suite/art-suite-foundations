@@ -12,9 +12,9 @@ Caf.defMod(module, () => {
       "loadAllPackages",
       "readJson",
       "objectKeyCount",
-      "pluralize"
+      "pluralize",
     ],
-    [global, require("art-standard-lib"), require("./lib"), require("colors")],
+    [global, require("./StandardImport")],
     (
       merge,
       objectHasKeys,
@@ -30,7 +30,7 @@ Caf.defMod(module, () => {
       let updateDependencyVersions,
         updateAllPackageDependencies,
         updateSubPackages;
-      updateDependencyVersions = function(packages, fromDeps, toDeps) {
+      updateDependencyVersions = function (packages, fromDeps, toDeps) {
         return toDeps != null && fromDeps != null
           ? Caf.object(fromDeps, (fromVersion, packageName) => {
               let toVersion, fileRefMatch;
@@ -43,7 +43,7 @@ Caf.defMod(module, () => {
             })
           : undefined;
       };
-      updateAllPackageDependencies = function(
+      updateAllPackageDependencies = function (
         rootPackage,
         packages,
         dependencySetName = "dependencies",
@@ -65,7 +65,7 @@ Caf.defMod(module, () => {
               changed = newDeps && neq(newDeps, deps);
               if (changed) {
                 _package = packages[packageRoot] = merge(_package, {
-                  [dependencySetName]: newDeps
+                  [dependencySetName]: newDeps,
                 });
               }
             }
@@ -83,9 +83,9 @@ Caf.defMod(module, () => {
           updatedMap
         );
       };
-      return (updateSubPackages = function({ quiet }) {
+      return (updateSubPackages = function ({ quiet }) {
         !quiet && log(blue("Updating ./package.json >> **/package.json..."));
-        return loadAllPackages().then(packages => {
+        return loadAllPackages().then((packages) => {
           let rootPackage,
             updatedMap,
             author,
