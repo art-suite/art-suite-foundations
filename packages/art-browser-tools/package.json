@@ -9,7 +9,8 @@
   },
   "description": "Art.Browser.Tools",
   "devDependencies": {
-    "art-build-configurator": "^1.26.17"
+    "art-build-configurator": "^1.26.17",
+    "jest": "^26.4.2"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
