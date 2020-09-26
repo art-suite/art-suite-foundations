@@ -12,7 +12,7 @@ logRun = (verb, packagePath) ->
 
   loadAllPackages()
   .then (packages) ->
-    array {scripts}, packagePath in packages when scripts.test
+    array {scripts}, packagePath in packages when scripts?.test
       packagePath
 
   .then (packagePaths) ->

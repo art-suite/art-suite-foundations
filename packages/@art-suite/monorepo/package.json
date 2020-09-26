@@ -22,7 +22,7 @@
     "clean": "rm -rf source/*",
     "watch": "npm-watch"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "watch": {
     "build": {
       "extensions": "caf",

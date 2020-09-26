@@ -47,7 +47,7 @@ Caf.defMod(module, () => {
             Caf.array(
               packages,
               ({ scripts }, packagePath) => packagePath,
-              ({ scripts }, packagePath) => scripts.test
+              ({ scripts }, packagePath) => Caf.exists(scripts) && scripts.test
             )
           )
           .then((packagePaths) => {
