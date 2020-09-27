@@ -4,14 +4,14 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["deepMerge"],
     [global, require("../StandardImport")],
-    deepMerge => {
+    (deepMerge) => {
       let Demo;
       return (Demo = Caf.defClass(
         class Demo extends require("../Recipe") {},
-        function(Demo, classSuper, instanceSuper) {
+        function (Demo, classSuper, instanceSuper) {
           this.description = "A demo ArtSuiteJS app (base: app)";
           this.getter({
-            files: function() {
+            files: function () {
               return deepMerge(this.recipe(require("./App")), {
                 source: {
                   [this.namespaceDirPath]: {
@@ -29,7 +29,7 @@ Caf.defMod(module, () => {
                           this.packageDotName
                         )}\n\n          &Button\n            text:   if @descending then :descending else :ascending\n            action: @models.viewState.toggleDescending\n\n          &Button\n            text:   :add-user\n            action: @addUser\n\n        &Users()`,
                         "Button.caf":
-                          "import &StandardImport\n\nclass Button extends PointerActionsMixin Component\n\n  render: ->\n    Element\n      on:         @pointerHandlers\n      size:       cs: 1\n      padding:    10\n      cursor:     :pointer\n      animators:  :draw\n      draw:\n        rectangle: radius: 5\n        &Palette[if @hover then :secondary else :primary]\n\n      TextElement\n        &TextStyles.text\n        :childrenSize\n        color:  &TextPalette.white.primary\n        text:   @props.text"
+                          "import &StandardImport\n\nclass Button extends PointerActionsMixin Component\n\n  render: ->\n    Element\n      on:         @pointerHandlers\n      size:       cs: 1\n      padding:    10\n      cursor:     :pointer\n      animators:  :draw\n      draw:\n        rectangle: radius: 5\n        &Palette[if @hover then :secondary else :primary]\n\n      TextElement\n        &TextStyles.text\n        :childrenSize\n        color:  &TextPalette.white.primary\n        text:   @props.text",
                       },
                       "StyleProps.caf":
                         "import &StandardImport\nclass StyleProps extends HotStyleProps\n  @background: draw: #f7f7f7",
@@ -41,17 +41,17 @@ Caf.defMod(module, () => {
                         "import &StandardImport\nclass TextStyles extends HotStyleProps\n  @text:\n    fontFamily: :sans-serif\n    color: &TextPalette.black.secondary\n\n  @titleText:\n    fontSize:   24\n    fontWeight: :bold\n    fontFamily: :sans-serif\n    color: &TextPalette.black.primary",
                       Models: {
                         "ViewState.caf":
-                          "import &StandardImport\n\nclass ViewState extends ApplicationState\n  @stateFields\n    descending: true"
-                      }
+                          "import &StandardImport\n\nclass ViewState extends ApplicationState\n  @stateFields\n    descending: true",
+                      },
                     },
                     Pipelines: {
                       "User.caf":
-                        "import &StandardImport\n\nclass User extends Pipeline\n  @publicRequestTypes :get :create :update :delete :allUsers\n  @query\n    allUsers: (request) -> array request.pipeline.db\n\n  constructor: ->\n    super\n    @db =\n      abc123: id: :abc123 name: :Alice\n      efg456: id: :efg456 name: :Bill\n\n  @handlers\n    get: ({key}) ->\n      @db[key]\n\n    create: ({data}) ->\n      @db[id = randomString()] = merge data, {} id\n\n    update: ({data, key}) ->\n      if @db[key]\n        @db[key] = merge @db[key], data\n\n    delete: ({key}) ->\n      if @db[key]\n        @db = objectWithout @db, key\n        true"
-                    }
-                  }
-                }
+                        "import &StandardImport\n\nclass User extends Pipeline\n  @publicRequestTypes :get :create :update :delete :allUsers\n  @query\n    allUsers: (request) -> array request.pipeline.db\n\n  constructor: ->\n    super\n    @db =\n      abc123: id: :abc123 name: :Alice\n      efg456: id: :efg456 name: :Bill\n\n  @handlers\n    get: ({key}) ->\n      @db[key]\n\n    create: ({data}) ->\n      @db[id = randomString()] = merge data, {} id\n\n    update: ({data, key}) ->\n      if @db[key]\n        @db[key] = merge @db[key], data\n\n    delete: ({key}) ->\n      if @db[key]\n        @db = objectWithout @db, key\n        true",
+                    },
+                  },
+                },
               });
-            }
+            },
           });
         }
       ));

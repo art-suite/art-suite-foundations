@@ -8,15 +8,15 @@ Caf.defMod(module, () => {
       let RecipeRegistry;
       return (RecipeRegistry = Caf.defClass(
         class RecipeRegistry extends BaseClass {},
-        function(RecipeRegistry, classSuper, instanceSuper) {
+        function (RecipeRegistry, classSuper, instanceSuper) {
           this.recipes = {};
-          this.register = function(recipeClass) {
+          this.register = function (recipeClass) {
             return (this.recipes[dashCase(recipeClass.name)] = recipeClass);
           };
           this.classGetter({
-            recipeNames: function() {
+            recipeNames: function () {
               return Object.keys(this.recipes);
-            }
+            },
           });
         }
       ));

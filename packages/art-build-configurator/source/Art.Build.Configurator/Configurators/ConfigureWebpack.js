@@ -13,7 +13,7 @@ Caf.defMod(module, () => {
       "isPlainObject",
       "Error",
       "String",
-      "Promise"
+      "Promise",
     ],
     [global, require("../StandardImport"), require("../Data")],
     (
@@ -34,7 +34,7 @@ Caf.defMod(module, () => {
       Configurator = require("./namespace");
       return (ConfigureWebpack = Caf.defClass(
         class ConfigureWebpack extends require("./ConfigureBase") {},
-        function(ConfigureWebpack, classSuper, instanceSuper) {
+        function (ConfigureWebpack, classSuper, instanceSuper) {
           this.outFileName = "webpack.config.js";
           this.get = (npmRoot, abcConfig, webpackConfigOptions) => {
             let env,
@@ -72,7 +72,7 @@ Caf.defMod(module, () => {
             targets || (targets = { index: {} });
             entriesWithNoOverrides = null;
             return compactFlatten(
-              Caf.array(this.normalizeTargets(targets), targetConfig => {
+              Caf.array(this.normalizeTargets(targets), (targetConfig) => {
                 let includeNpms, keys, webpackEntry;
                 ({ includeNpms } = targetConfig);
                 if (includeNpms) {
@@ -101,8 +101,8 @@ Caf.defMod(module, () => {
               })
             );
           };
-          this.getTargets = function() {};
-          this.normalizeTargetConfig = function(targetConfig, includeNpms) {
+          this.getTargets = function () {};
+          this.normalizeTargetConfig = function (targetConfig, includeNpms) {
             return targetConfig.target === "node"
               ? require("webpack-merge")(
                   {
@@ -131,8 +131,8 @@ Caf.defMod(module, () => {
                                     )}' /* ABC - not inlining fellow NPM */)`
                                   ))
                             : callback();
-                        })
-                    ]
+                        }),
+                    ],
                   },
                   targetConfig
                 )
@@ -141,7 +141,7 @@ Caf.defMod(module, () => {
                   targetConfig
                 );
           };
-          this.normalizeTargets = function(targets = {}) {
+          this.normalizeTargets = function (targets = {}) {
             let from, into, temp;
             if (!isPlainObject(targets)) {
               throw new Error("targets must be an object");
@@ -169,8 +169,8 @@ Caf.defMod(module, () => {
                                   [targetName]:
                                     entry != null
                                       ? entry
-                                      : `./${Caf.toString(targetName)}`
-                                }
+                                      : `./${Caf.toString(targetName)}`,
+                                },
                               },
                               targetConfig
                             )))
@@ -182,7 +182,7 @@ Caf.defMod(module, () => {
               into
             );
           };
-          this.getFileContents = function() {
+          this.getFileContents = function () {
             return Promise.then(() => StandardWebpackConfig.js);
           };
         }

@@ -6,19 +6,19 @@ Caf.defMod(module, () => {
     [
       global,
       require("../StandardImport"),
-      require("art-browser-tools").DomElementFactories
+      require("art-browser-tools").DomElementFactories,
     ],
     (Html, Body, Ul, Li, A) => {
       let ConfigureIndexHtml;
       return (ConfigureIndexHtml = Caf.defClass(
         class ConfigureIndexHtml extends require("./ConfigureBase") {},
-        function(ConfigureIndexHtml, classSuper, instanceSuper) {
+        function (ConfigureIndexHtml, classSuper, instanceSuper) {
           this.outFileName = "index.html";
           this.get = (npmRoot, abcConfig) =>
             Html(
               Body(
                 Ul(
-                  Caf.array(["Client", "Admin"], target =>
+                  Caf.array(["Client", "Admin"], (target) =>
                     Li(
                       A({ href: `./${Caf.toString(target)}` }, target),
                       "(",

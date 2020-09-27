@@ -17,6 +17,6 @@ Caf.defMod(module, () => {
     mocha: "^7.0.0",
     chai: "^4.2.0",
     "mock-fs": "^4.10.0",
-    "art-testbench": "*"
+    "art-testbench": "^1.0.0",
   };
 });

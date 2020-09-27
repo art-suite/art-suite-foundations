@@ -8,15 +8,13 @@ Caf.defMod(module, () => {
       let Versioning;
       return (Versioning = Caf.defClass(
         class Versioning extends BaseClass {},
-        function(Versioning, classSuper, instanceSuper) {
+        function (Versioning, classSuper, instanceSuper) {
           this.classGetter({
-            current: function() {
+            current: function () {
               return JSON.parse(
-                require("fs")
-                  .readFileSync("package.json")
-                  .toString()
+                require("fs").readFileSync("package.json").toString()
               ).version;
-            }
+            },
           });
         }
       ));

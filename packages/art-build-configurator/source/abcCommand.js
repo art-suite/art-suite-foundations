@@ -28,7 +28,7 @@ Caf.defMod(module, () => {
     force,
     verbose,
     app,
-    require: requireOption
+    require: requireOption,
   } = commander = require("commander")
     .option("-c, --configure", "configure and update all")
     .option("-v, --verbose", "verbose")
@@ -48,7 +48,7 @@ Caf.defMod(module, () => {
     .option("--git", "init git (unless .git is already present)")
     .option("--pv", "show YOUR package's current version")
     .version(require("../package").version)
-    .on("--help", function() {
+    .on("--help", function () {
       return console.log(
         `\n${Caf.toString(
           "art-build-configurator (abc) - initialize and configure ArtSuiteJS projects"
@@ -79,12 +79,12 @@ Caf.defMod(module, () => {
           force,
           verbose,
           app,
-          git
+          git,
         })
-          .tap(function() {
+          .tap(function () {
             return console.log("success".green);
           })
-          .catch(function(e) {
+          .catch(function (e) {
             return require("art-standard-lib").log.error(e);
           });
       default:

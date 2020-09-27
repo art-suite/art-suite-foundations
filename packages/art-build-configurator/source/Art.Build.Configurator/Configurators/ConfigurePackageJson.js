@@ -7,7 +7,7 @@ Caf.defMod(module, () => {
       "StandardPackageJson",
       "isFunction",
       "deepMerge",
-      "consistentJsonStringify"
+      "consistentJsonStringify",
     ],
     [global, require("../StandardImport")],
     (
@@ -20,20 +20,20 @@ Caf.defMod(module, () => {
       let ConfigurePackageJson;
       return (ConfigurePackageJson = Caf.defClass(
         class ConfigurePackageJson extends require("./ConfigureBase") {},
-        function(ConfigurePackageJson, classSuper, instanceSuper) {
+        function (ConfigurePackageJson, classSuper, instanceSuper) {
           this.outFileName = "package.json";
           this.get = (npmRoot, abcConfig) =>
             Promise.then(() => StandardPackageJson.get(abcConfig)).then(
-              baseConfig => {
+              (baseConfig) => {
                 let npmConfig;
                 return isFunction((npmConfig = abcConfig.npm))
                   ? npmConfig(baseConfig)
                   : deepMerge(baseConfig, npmConfig);
               }
             );
-          this.getFileContents = function(npmRoot, abcConfig) {
+          this.getFileContents = function (npmRoot, abcConfig) {
             return this.get(npmRoot, abcConfig).then(
-              contents => consistentJsonStringify(contents, "  ") + "\n"
+              (contents) => consistentJsonStringify(contents, "  ") + "\n"
             );
           };
         }

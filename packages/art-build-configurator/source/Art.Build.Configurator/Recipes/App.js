@@ -8,10 +8,10 @@ Caf.defMod(module, () => {
       let App;
       return (App = Caf.defClass(
         class App extends require("../Recipe") {},
-        function(App, classSuper, instanceSuper) {
+        function (App, classSuper, instanceSuper) {
           this.description = "A minimal ArtSuiteJS app. (base: core)";
           this.getter({
-            files: function() {
+            files: function () {
               let clientFiles;
               clientFiles = this.options.clientFiles;
               return deepMerge(
@@ -20,7 +20,7 @@ Caf.defMod(module, () => {
                   deepMerge(
                     {
                       targets: "Client",
-                      dependencies: { "art-suite-app": "*" }
+                      dependencies: { "art-suite-app": "*" },
                     },
                     this.options
                   )
@@ -41,15 +41,15 @@ Caf.defMod(module, () => {
                             this.packageDotName
                           )}\n  MainComponent:\n    class CanvasComponent extends Component\n\n      render: ->\n        CanvasElement\n          draw:       #eee\n\n          TextElement\n            padding:  10\n            text:     "" 'Hello world!' - ${Caf.toString(
                             this.packageDotName
-                          )}`
+                          )}`,
                         },
                         clientFiles
-                      )
-                    }
-                  }
+                      ),
+                    },
+                  },
                 }
               );
-            }
+            },
           });
         }
       ));

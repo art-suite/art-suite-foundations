@@ -7,17 +7,17 @@ Caf.defMod(module, () => {
     (Promise, log) => {
       let NeptuneNamespacesGenerator;
       NeptuneNamespacesGenerator = require("neptune-namespaces/generator");
-      return function(dirname, watch) {
+      return function (dirname, watch) {
         let existingRoots, workers;
         existingRoots = Caf.array(
           NeptuneNamespacesGenerator.standardRoots,
-          root => root,
-          root =>
+          (root) => root,
+          (root) =>
             require("fs").existsSync(
               `${Caf.toString(dirname)}/${Caf.toString(root)}`
             )
         );
-        Caf.array(existingRoots, root =>
+        Caf.array(existingRoots, (root) =>
           log(
             "neptune-namespaces scanning: ".grey +
               `${Caf.toString(
@@ -25,7 +25,7 @@ Caf.defMod(module, () => {
               )}/${Caf.toString(root)}/*`.green
           )
         );
-        workers = Caf.array(existingRoots, root =>
+        workers = Caf.array(existingRoots, (root) =>
           NeptuneNamespacesGenerator.generate(
             `${Caf.toString(dirname)}/${Caf.toString(root)}/*`,
             { watch }

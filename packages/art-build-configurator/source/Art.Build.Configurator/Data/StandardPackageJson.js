@@ -8,13 +8,13 @@ Caf.defMod(module, () => {
       let StandardPackageJson;
       return (StandardPackageJson = Caf.defClass(
         class StandardPackageJson extends Object {},
-        function(StandardPackageJson, classSuper, instanceSuper) {
-          this.getGitInfo = function() {
+        function (StandardPackageJson, classSuper, instanceSuper) {
+          this.getGitInfo = function () {
             return require("../ShellExecSimple")("git remote -v")
-              .then(lines => {
+              .then((lines) => {
                 let match, _1, _2, domain, path, extension, bugs, homepage;
                 return merge(
-                  (match = Caf.find(lines.split(/\n/g), line =>
+                  (match = Caf.find(lines.split(/\n/g), (line) =>
                     line
                       .trim()
                       .match(
@@ -31,10 +31,10 @@ Caf.defMod(module, () => {
                       {
                         repository: {
                           url: homepage + `.${Caf.toString(extension)}`,
-                          type: extension
+                          type: extension,
                         },
                         homepage,
-                        bugs
+                        bugs,
                       })
                     : undefined
                 );
@@ -43,8 +43,8 @@ Caf.defMod(module, () => {
                 return {};
               });
           };
-          this.get = function(abcConfig) {
-            return this.getGitInfo().then(gitInfo => {
+          this.get = function (abcConfig) {
+            return this.getGitInfo().then((gitInfo) => {
               let temp, base, base1;
               return merge(gitInfo, {
                 license: "ISC",
@@ -53,9 +53,7 @@ Caf.defMod(module, () => {
                   (temp =
                     require("fs").existsSync("package.json") &&
                     JSON.parse(
-                      require("fs")
-                        .readFileSync("package.json")
-                        .toString()
+                      require("fs").readFileSync("package.json").toString()
                     ).version) != null
                     ? temp
                     : "0.0.1",
@@ -65,18 +63,20 @@ Caf.defMod(module, () => {
                 scripts: merge({
                   test:
                     Caf.exists(abcConfig) &&
-                    Caf.exists((base = abcConfig.target)) && base.node
+                    Caf.exists((base = abcConfig.target)) &&
+                    base.node
                       ? "nn -s;mocha -u tdd"
                       : "webpack-dev-server  --progress --env.devServer",
                   start:
                     "webpack-dev-server --hot --inline --progress --env.devServer",
                   testInBrowser:
                     Caf.exists(abcConfig) &&
-                    Caf.exists((base1 = abcConfig.target)) && base1.node
+                    Caf.exists((base1 = abcConfig.target)) &&
+                    base1.node
                       ? "webpack-dev-server --progress --env.devServer"
                       : undefined,
-                  build: "webpack --progress"
-                })
+                  build: "webpack --progress",
+                }),
               });
             });
           };

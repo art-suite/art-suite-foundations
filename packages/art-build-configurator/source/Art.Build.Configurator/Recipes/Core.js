@@ -8,10 +8,10 @@ Caf.defMod(module, () => {
       let Core;
       return (Core = Caf.defClass(
         class Core extends require("../Recipe") {},
-        function(Core, classSuper, instanceSuper) {
+        function (Core, classSuper, instanceSuper) {
           this.description = "Basics for buliding any app with the ArtSuiteJS";
           this.getter({
-            files: function() {
+            files: function () {
               let targets, dependencies, temp;
               temp = this.options;
               targets = temp.targets;
@@ -36,13 +36,13 @@ Caf.defMod(module, () => {
                       dependencies: merge(
                         { "art-build-configurator": "*" },
                         dependencies
-                      )
-                    }
+                      ),
+                    },
                   })
                 )}\n\nwebpack:\n  # common properties are merged into each target's properties\n  common: {}\n\n  # each target's individual properties\n  targets: ${Caf.toString(
                   Caf.array(
                     targets,
-                    target => `${Caf.toString(target)}: {}`
+                    (target) => `${Caf.toString(target)}: {}`
                   ).join(", ")
                 )}`,
                 "README.md": `# ${Caf.toString(
@@ -62,9 +62,9 @@ Caf.defMod(module, () => {
                     [this.namespaceDirPath]: {
                       "Test.caf": `import &StandardImport\nsuite: ->\n  test '${Caf.toString(
                         this.mostSpecificName
-                      )}' -> assert.eq 1, 1`
-                    }
-                  }
+                      )}' -> assert.eq 1, 1`,
+                    },
+                  },
                 },
                 source: {
                   "index.js": `module.exports = require('./${Caf.toString(
@@ -72,11 +72,11 @@ Caf.defMod(module, () => {
                   )}');`,
                   [this.namespaceDirPath]: {
                     "StandardImport.caf":
-                      "&ArtStandardLib.mergeWithSelf\n  &ArtClassSystem"
-                  }
-                }
+                      "&ArtStandardLib.mergeWithSelf\n  &ArtClassSystem",
+                  },
+                },
               };
-            }
+            },
           });
         }
       ));

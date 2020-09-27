@@ -6,7 +6,7 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport")],
     (Promise, process, merge, log, present, Error) => {
       let shellExec;
-      shellExec = function(cmd, opts) {
+      shellExec = function (cmd, opts) {
         return Promise.then(() => {
           let child, isWin;
           child = require("child_process").spawn(
@@ -14,26 +14,28 @@ Caf.defMod(module, () => {
             [isWin ? "/C" : "-c", cmd],
             merge({ stdio: "pipe", cwd: process.cwd() }, opts)
           );
-          return new Promise(resolve => {
+          return new Promise((resolve) => {
             let stdout, stderr, base, base1;
             stdout = stderr = "";
             Caf.exists((base = child.stdout)) &&
-              base.on("data", data => (stdout += data));
+              base.on("data", (data) => (stdout += data));
             Caf.exists((base1 = child.stderr)) &&
-              base1.on("data", data => (stderr += data));
-            child.on("error", error => resolve({ stdout, stderr, cmd, error }));
-            return child.on("close", code =>
+              base1.on("data", (data) => (stderr += data));
+            child.on("error", (error) =>
+              resolve({ stdout, stderr, cmd, error })
+            );
+            return child.on("close", (code) =>
               resolve({ stdout, stderr, cmd, code })
             );
           });
         });
       };
-      return function(command, options) {
+      return function (command, options) {
         let verbose;
         if (Caf.exists(options) ? (verbose = options.verbose) : undefined) {
           log(`> ${Caf.toString(command)}`.green);
         }
-        return shellExec(command).then(result => {
+        return shellExec(command).then((result) => {
           let out;
           return present(result.stderr)
             ? Promise.reject(

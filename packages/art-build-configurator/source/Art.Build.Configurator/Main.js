@@ -11,7 +11,7 @@ Caf.defMod(module, () => {
       "ConfigurePackageJson",
       "merge",
       "dashCase",
-      "ConfigureWebpack"
+      "ConfigureWebpack",
     ],
     [global, require("./StandardImport"), require("./Configurators")],
     (
@@ -26,7 +26,7 @@ Caf.defMod(module, () => {
       ConfigureWebpack
     ) => {
       let Main;
-      return (Main = Caf.defClass(class Main extends Object {}, function(
+      return (Main = Caf.defClass(class Main extends Object {}, function (
         Main,
         classSuper,
         instanceSuper
@@ -81,7 +81,7 @@ Caf.defMod(module, () => {
                 : undefined
             );
         };
-        this.shellExec = function(command) {
+        this.shellExec = function (command) {
           return require("./ShellExecSimple")(command, { quiet: this.quiet });
         };
         this.registerLoaders = (npmRoot, vivify = false) => {
@@ -89,13 +89,13 @@ Caf.defMod(module, () => {
           file = path.join(npmRoot, this.registerLoadersFilename);
           return fs
             .exists(file)
-            .then(exists =>
+            .then((exists) =>
               exists
                 ? Main.realRequire(file)
                 : (vivify
                     ? (this.init("core", npmRoot, {
                         verbose: true,
-                        select: /register.js/
+                        select: /register.js/,
                       }),
                       Main.realRequire(file))
                     : undefined,
@@ -107,18 +107,18 @@ Caf.defMod(module, () => {
             let configFilepath;
             configFilepath = path.join(process.cwd(), this.configBasename);
             return require("glob-promise")(configFilepath + "*")
-              .then(results =>
+              .then((results) =>
                 results.length > 0
                   ? Main.realRequire(configFilepath)
                   : (vivifyConfigFile
                       ? this.init("core", npmRoot, {
                           verbose: true,
-                          select: /art.build.config/
+                          select: /art.build.config/,
                         })
                       : undefined,
                     {})
               )
-              .then(config => {
+              .then((config) => {
                 let p, packageFile;
                 config.npm || (config.npm = config.package);
                 p = config.npm
@@ -130,13 +130,13 @@ Caf.defMod(module, () => {
                           ConfigurePackageJson.outFileName
                         ))
                       )
-                      .then(exists =>
+                      .then((exists) =>
                         exists ? Main.realRequire(packageFile) : {}
                       );
-                return p.then(finalNpm => merge(config, { npm: finalNpm }));
+                return p.then((finalNpm) => merge(config, { npm: finalNpm }));
               });
           });
-        this.init = function(recipeName, npmRoot, options) {
+        this.init = function (recipeName, npmRoot, options) {
           let pretend, verbose, recipe;
           pretend = options.pretend;
           verbose = options.verbose;
@@ -150,9 +150,7 @@ Caf.defMod(module, () => {
           return recipeName === "Help"
             ? (log(
                 `Please select a valid recipe name:\n\n  ${Caf.toString(
-                  require("./Recipes")
-                    .getModuleNames()
-                    .join("\n  ")
+                  require("./Recipes").getModuleNames().join("\n  ")
                 )}\n\nEx: abc -i node`
               ),
               Promise.reject("exiting"))
@@ -171,7 +169,7 @@ Caf.defMod(module, () => {
                           ? temp
                           : "(no description)";
                       }
-                    )
+                    ),
                   }),
                   Promise.reject("Please provide a valid recipe name."))
                 : (recipe.writeFiles(npmRoot, options),
@@ -181,14 +179,14 @@ Caf.defMod(module, () => {
                     )}INIT-${Caf.toString(recipeName)}: done`
                   )));
         };
-        this.pretendWriteConfig = function(npmRoot, abcConfig) {
+        this.pretendWriteConfig = function (npmRoot, abcConfig) {
           return Promise.deepAll(
             merge({
               abcConfig,
               npm: {
                 out: {
-                  "package.json": ConfigurePackageJson.get(npmRoot, abcConfig)
-                }
+                  "package.json": ConfigurePackageJson.get(npmRoot, abcConfig),
+                },
               },
               indexHtml: abcConfig.indexHtml ? "<html>\n</html>" : undefined,
               webpack: {
@@ -196,45 +194,48 @@ Caf.defMod(module, () => {
                   npmRoot,
                   abcConfig
                 ),
-                out: { "webpack.config.js": ConfigureWebpack.getFileContents() }
-              }
+                out: {
+                  "webpack.config.js": ConfigureWebpack.getFileContents(),
+                },
+              },
             })
           ).then(this.log);
         };
-        this.runNeptuneNamespaces = function(npmRoot, options) {
+        this.runNeptuneNamespaces = function (npmRoot, options) {
           let executable, firstArg, isWebpackDevServer;
           [executable, firstArg] = process.argv;
           isWebpackDevServer = !!(
             executable.match(/\/node$/) &&
-            Caf.exists(firstArg) && firstArg.match(/webpack-dev-server/)
+            Caf.exists(firstArg) &&
+            firstArg.match(/webpack-dev-server/)
           );
           this.log(`\nNeptuneNamespaces: ${Caf.toString(npmRoot)}`);
           return require("./RunNeptuneNamespaces")(npmRoot, isWebpackDevServer);
         };
-        this.loadAndWriteConfig = function(npmRoot, options) {
+        this.loadAndWriteConfig = function (npmRoot, options) {
           let pretend, configure, init;
           ({ pretend, configure, init } = options);
           this.log(`\nCONFIGURE: ${Caf.toString(npmRoot)}`);
-          return this.loadConfig(npmRoot, configure).then(abcConfig =>
+          return this.loadConfig(npmRoot, configure).then((abcConfig) =>
             pretend
               ? this.pretendWriteConfig(npmRoot, abcConfig)
               : this.writeConfig(npmRoot, abcConfig)
           );
         };
-        this.writeConfig = function(npmRoot, abcConfig) {
+        this.writeConfig = function (npmRoot, abcConfig) {
           return Promise.then(() =>
             ConfigurePackageJson.writeConfig(npmRoot, abcConfig)
           ).then(() => ConfigureWebpack.writeConfig(npmRoot, abcConfig));
         };
         this.getWebpackConfig = (npmRoot, env, argv) =>
-          this.loadConfig(npmRoot).then(abcConfig =>
+          this.loadConfig(npmRoot).then((abcConfig) =>
             this.writeConfig(npmRoot, abcConfig).then(() =>
               this.runNeptuneNamespaces(npmRoot).then(() =>
                 ConfigureWebpack.get(npmRoot, abcConfig, { env, argv })
               )
             )
           );
-        this.updateFile = function(fileName, contents) {
+        this.updateFile = function (fileName, contents) {
           let oldContents;
           if (fs.existsSync(fileName)) {
             oldContents = fs.readFileSync(fileName).toString();
