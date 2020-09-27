@@ -5,24 +5,24 @@ Caf.defMod(module, () => {
     [
       "log",
       "Promise",
-      "path",
       "fs",
+      "path",
       "process",
-      "ConfigurePackageJson",
       "merge",
       "dashCase",
+      "ConfigurePackageJson",
       "ConfigureWebpack",
     ],
     [global, require("./StandardImport"), require("./Configurators")],
     (
       log,
       Promise,
-      path,
       fs,
+      path,
       process,
-      ConfigurePackageJson,
       merge,
       dashCase,
+      ConfigurePackageJson,
       ConfigureWebpack
     ) => {
       let Main;
@@ -32,7 +32,6 @@ Caf.defMod(module, () => {
         instanceSuper
       ) {
         this.realRequire = eval("require");
-        this.configFilename = "art.build.config.caf";
         this.configBasename = "art.build.config";
         this.registerLoadersFilename = "register.js";
         this.log = (...args) => (!this.quiet ? log(...args) : undefined);
@@ -54,11 +53,6 @@ Caf.defMod(module, () => {
             .then(() =>
               !(pretend && init)
                 ? this.loadAndWriteConfig(npmRoot, options)
-                : undefined
-            )
-            .then(() =>
-              !(pretend && init)
-                ? this.runNeptuneNamespaces(npmRoot)
                 : undefined
             )
             .then(() =>
@@ -84,56 +78,35 @@ Caf.defMod(module, () => {
         this.shellExec = function (command) {
           return require("./ShellExecSimple")(command, { quiet: this.quiet });
         };
-        this.registerLoaders = (npmRoot, vivify = false) => {
+        this.registerLoaders = (npmRoot) => {
           let file;
-          file = path.join(npmRoot, this.registerLoadersFilename);
           return fs
-            .exists(file)
+            .exists((file = path.join(npmRoot, this.registerLoadersFilename)))
             .then((exists) =>
               exists
                 ? Main.realRequire(file)
-                : (vivify
-                    ? (this.init("core", npmRoot, {
-                        verbose: true,
-                        select: /register.js/,
-                      }),
-                      Main.realRequire(file))
-                    : undefined,
-                  {})
+                : (Main.realRequire("caffeine-script/register"), {})
             );
         };
-        this.loadConfig = (npmRoot, vivifyConfigFile = false) =>
-          this.registerLoaders(npmRoot, vivifyConfigFile).then(() => {
+        this.loadConfig = (npmRoot) =>
+          this.registerLoaders(npmRoot).then(() => {
             let configFilepath;
             configFilepath = path.join(process.cwd(), this.configBasename);
             return require("glob-promise")(configFilepath + "*")
-              .then((results) =>
-                results.length > 0
+              .then(([configFilepath]) =>
+                configFilepath != null
                   ? Main.realRequire(configFilepath)
-                  : (vivifyConfigFile
-                      ? this.init("core", npmRoot, {
-                          verbose: true,
-                          select: /art.build.config/,
-                        })
-                      : undefined,
-                    {})
+                  : undefined
               )
               .then((config) => {
-                let p, packageFile;
-                config.npm || (config.npm = config.package);
-                p = config.npm
-                  ? Promise.resolve(config.npm)
-                  : fs
-                      .exists(
-                        (packageFile = path.join(
-                          npmRoot,
-                          ConfigurePackageJson.outFileName
-                        ))
-                      )
-                      .then((exists) =>
-                        exists ? Main.realRequire(packageFile) : {}
-                      );
-                return p.then((finalNpm) => merge(config, { npm: finalNpm }));
+                let temp;
+                return config
+                  ? Promise.resolve(
+                      (temp = config.package) != null ? temp : config.npm
+                    ).then((packageConfig) =>
+                      merge(config, { package: packageConfig })
+                    )
+                  : undefined;
               });
           });
         this.init = function (recipeName, npmRoot, options) {
@@ -215,17 +188,36 @@ Caf.defMod(module, () => {
         this.loadAndWriteConfig = function (npmRoot, options) {
           let pretend, configure, init;
           ({ pretend, configure, init } = options);
-          this.log(`\nCONFIGURE: ${Caf.toString(npmRoot)}`);
-          return this.loadConfig(npmRoot, configure).then((abcConfig) =>
-            pretend
-              ? this.pretendWriteConfig(npmRoot, abcConfig)
-              : this.writeConfig(npmRoot, abcConfig)
+          return this.loadConfig(npmRoot).then((abcConfig) =>
+            abcConfig
+              ? pretend
+                ? this.pretendWriteConfig(npmRoot, abcConfig)
+                : this.writeConfig(npmRoot, abcConfig)
+              : (this.log(
+                  `No ${Caf.toString(this.configBasename)} found. Aborting...`
+                    .yellow
+                ),
+                this.log(
+                  `Create ${Caf.toString(
+                    this.configBasename
+                  )}.caf or ${Caf.toString(
+                    this.configBasename
+                  )}.js and export your config object.\nIf you want to use a custom config loader, create ${Caf.toString(
+                    this.registerLoadersFilename
+                  )} to register your NodeJS file loader.`.grey
+                ))
           );
         };
         this.writeConfig = function (npmRoot, abcConfig) {
           return Promise.then(() =>
-            ConfigurePackageJson.writeConfig(npmRoot, abcConfig)
-          ).then(() => ConfigureWebpack.writeConfig(npmRoot, abcConfig));
+            abcConfig.package
+              ? ConfigurePackageJson.writeConfig(npmRoot, abcConfig)
+              : undefined
+          ).then(() =>
+            abcConfig.webpack
+              ? ConfigureWebpack.writeConfig(npmRoot, abcConfig)
+              : undefined
+          );
         };
         this.getWebpackConfig = (npmRoot, env, argv) =>
           this.loadConfig(npmRoot).then((abcConfig) =>
@@ -243,7 +235,7 @@ Caf.defMod(module, () => {
           return oldContents !== contents
             ? (this.log("writing: ".gray + fileName.green),
               fs.writeFileSync(fileName, contents))
-            : this.log(`same:    ${Caf.toString(fileName)}`.gray);
+            : undefined;
         };
       }));
     }

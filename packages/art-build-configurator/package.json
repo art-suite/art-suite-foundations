@@ -46,6 +46,13 @@
     "webpack-stylish": "^0.1.8"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
   "license": "ISC",
   "name": "art-build-configurator",
   "repository": {
@@ -56,8 +63,19 @@
     "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
-    "test": "nn -s;mocha -u tdd",
+    "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.27.0"
+  "version": "1.27.0",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }

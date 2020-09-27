@@ -5,8 +5,20 @@ package: (abcPackage) -> merge &package,
     art-build-configurator: :./art-build-configurator
 
   scripts:
-    test:         :jest
+    test:         "" mocha -u tdd
     build:        "" caf -p -c source-source -o source; nn -s
     build-clean:  "" npm run clean; npm run build
     clean:        "" rm -rf source/*
     watch:        :npm-watch
+
+  jest:
+    testEnvironment: :node
+    collectCoverageFrom:
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+
+  watch:
+    build:
+      extensions: [] :caf
+      patterns:   [] :source-source
+      quiet:      false

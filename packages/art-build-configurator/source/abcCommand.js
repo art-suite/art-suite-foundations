@@ -82,7 +82,18 @@ Caf.defMod(module, () => {
           git,
         })
           .tap(function () {
-            return console.log("success".green);
+            return console.log(
+              (() => {
+                switch (false) {
+                  case !configure:
+                    return "abc-configure success";
+                  case !init:
+                    return "abc-init success";
+                  default:
+                    return "done";
+                }
+              })().green
+            );
           })
           .catch(function (e) {
             return require("art-standard-lib").log.error(e);

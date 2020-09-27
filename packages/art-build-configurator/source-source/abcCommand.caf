@@ -41,7 +41,14 @@ when pretend || configure || init || git
     process.cwd()
     {} pretend, configure, init, force, verbose, app, git
 
-  .tap -> console.log "success".green
+  .tap ->
+    console.log
+      switch
+      when configure then "" abc-configure success
+      when init then "" abc-init success
+      else :done
+      .green
+
   .catch (e) -> &ArtStandardLib.log.error e
 
 else

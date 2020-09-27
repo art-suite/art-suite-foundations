@@ -8,10 +8,10 @@ class ConfigurePackageJson extends &ConfigureBase
     .then ->
       StandardPackageJson.get abcConfig
     .then (baseConfig) ->
-      if isFunction npmConfig = abcConfig.npm
-        npmConfig baseConfig
+      if isFunction packageConfig = abcConfig.package
+        packageConfig baseConfig
       else
-        deepMerge baseConfig, npmConfig
+        deepMerge baseConfig, packageConfig
 
   ## getFileContents
     NOTE: consistentJsonStringify is there to guarantee a consistently formatted output for git.

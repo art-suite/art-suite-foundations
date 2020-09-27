@@ -25,10 +25,10 @@ Caf.defMod(module, () => {
           this.get = (npmRoot, abcConfig) =>
             Promise.then(() => StandardPackageJson.get(abcConfig)).then(
               (baseConfig) => {
-                let npmConfig;
-                return isFunction((npmConfig = abcConfig.npm))
-                  ? npmConfig(baseConfig)
-                  : deepMerge(baseConfig, npmConfig);
+                let packageConfig;
+                return isFunction((packageConfig = abcConfig.package))
+                  ? packageConfig(baseConfig)
+                  : deepMerge(baseConfig, packageConfig);
               }
             );
           this.getFileContents = function (npmRoot, abcConfig) {
