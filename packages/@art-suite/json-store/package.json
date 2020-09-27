@@ -1,0 +1,37 @@
+{
+  "author": "Shane Brinkman-Davis Delamore",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "description": "Art.JsonStore",
+  "devDependencies": {
+    "art-build-configurator": "^1.26.17",
+    "art-testbench": "^1.0.0",
+    "npm-watch": "^0.7.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "@art-suite/json-store",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -p -c source-source -o source; nn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
+  },
+  "version": "1.0.0",
+  "watch": {
+    "build": {
+      "extensions": "caf",
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+}
