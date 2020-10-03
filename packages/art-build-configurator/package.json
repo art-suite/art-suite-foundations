@@ -7,7 +7,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-browser-tools": "^1.2.7",
-    "art-build-configurator": "^1.26.17",
+    "art-build-configurator": "^1.28.0",
     "art-class-system": "^1.11.10",
     "art-config": "^1.13.11",
     "art-filebuilder": "^2.1.8",
@@ -63,10 +63,10 @@
     "build": "caf -p -c source-source -o source; nn -s",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
-    "test": "jest",
+    "test": "mocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "1.27.0",
+  "version": "1.28.0",
   "watch": {
     "build": {
       "extensions": [

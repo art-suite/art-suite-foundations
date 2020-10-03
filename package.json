@@ -4,6 +4,7 @@
   "dependencies": {
     "@art-suite/cli": "file:packages/@art-suite/cli",
     "@art-suite/global": "file:packages/@art-suite/global",
+    "@art-suite/json-store": "file:packages/@art-suite/json-store",
     "@art-suite/mock-fs": "file:packages/@art-suite/mock-fs",
     "@art-suite/monorepo": "file:packages/@art-suite/monorepo",
     "@art-suite/source-root-finder": "file:packages/@art-suite/source-root-finder",

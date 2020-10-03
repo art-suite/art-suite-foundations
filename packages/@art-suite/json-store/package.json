@@ -1,10 +1,10 @@
 {
-  "author": "Shane Brinkman-Davis Delamore",
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "description": "Art.JsonStore",
   "devDependencies": {
-    "art-build-configurator": "^1.26.17",
-    "art-testbench": "^1.0.0",
+    "art-build-configurator": "^1.28.0",
+    "art-testbench": "^2.2.5",
     "npm-watch": "^0.7.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
