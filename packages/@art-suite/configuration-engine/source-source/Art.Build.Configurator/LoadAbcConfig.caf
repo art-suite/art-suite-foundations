@@ -1,0 +1,38 @@
+import &StandardImport,
+  {}
+    &Initialization
+    fs: &fsExtra
+    &path
+    &GlobPromise
+
+class LoadConfig
+
+  @configBasename:          :art.build.config
+
+  @registerLoaders: (npmRoot, vivify = false) =>
+    file = path.join npmRoot, @registerLoadersFilename
+    fs.exists file
+    .then (exists) ->
+      if exists
+        Main.realRequire file
+
+      else
+        if vivify
+          Initialization.init :core, npmRoot, verbose: !@quiet, select: /register.js/
+          Main.realRequire file
+
+        {}
+
+  @loadAbcConfig: (npmRoot, vivifyConfigFile = false) =>
+    @registerLoaders npmRoot, vivifyConfigFile
+    .then ->
+      configFilepath = path.join process.cwd(), @configBasename
+      GlobPromise configFilepath + "*"
+      .then (results) ->
+        if results.length > 0
+          Main.realRequire configFilepath
+
+        else
+          if vivifyConfigFile
+            @init :core, npmRoot, verbose: !@quiet, select: /art.build.config/
+          {}

@@ -1,0 +1,20 @@
+import &StandardImport, {}
+  fs: &fsExtra
+
+class FsEasy
+  @mkdir: (dir) -> fs.mkdirSync dir unless fs.existsSync dir
+  @readFileAsString: (file, defaultValue) ->
+    if fs.existsSync file
+      fs.readFileSync file
+      .toString()
+    else defaultValue
+
+  @readFileAsStringASync: (file, defaultValue) ->
+    fs.exists file
+    .then (exists)
+      if exists
+        fs.readFile file
+        .then (contents) -> contents.toString()
+      else defaultValue
+
+  @writeFile: (file, string) -> fs.writeFileSync file, string

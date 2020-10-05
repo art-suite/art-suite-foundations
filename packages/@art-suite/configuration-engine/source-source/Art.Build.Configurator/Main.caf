@@ -1,0 +1,19 @@
+import
+  &StandardImport
+  &Lib
+  &Configuration
+  &Initialization
+
+class Main
+
+  @go: (npmRoot, options) =>
+    options extract pretend, init, quiet, git
+
+    silenceLog() if quiet
+
+    abcLog "PRETEND".green if pretend
+
+    Promise
+    .then -> initPackage init, npmRoot, options if init
+    .then -> configurePackage npmRoot, options
+    .then -> initGit() if git
