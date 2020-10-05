@@ -1,6 +1,7 @@
 import &ArtStandardLib
 
-&ArtSuiteCli.start
+require :@art-suite/cli
+.start
   description:
     """
       A demo of the art-suite/cli library.

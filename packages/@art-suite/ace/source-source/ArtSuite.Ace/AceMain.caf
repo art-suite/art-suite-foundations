@@ -4,5 +4,5 @@ import &StandardImport, &LoadAceConfig
   @realRequire: eval :require
 
   @aceUpdate: (options) ->
-    loadAceConfig options.package
-    .then (aceConfig) ->
+    loadAceConfig options?.package ? process.cwd()
+    .tap (aceConfig) ->

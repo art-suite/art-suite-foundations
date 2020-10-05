@@ -10,11 +10,14 @@ class LoadAceConfig
     @AceMain.realRequire :caffeine-script/register
 
   @loadAceConfig: (npmRoot) =>
-    @registerLoaders()
+    configFilepath = path.join npmRoot, @configBasename
 
-    globPromise
-      configFilepath = path.join npmRoot, @configBasename
-      + "*"
+    Promise
+    .then -> @registerLoaders()
+    .then ->
+      globPromise
+        configFilepath
+        + "*"
 
     .then (results) ->
       if results.length > 0

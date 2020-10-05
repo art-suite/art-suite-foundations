@@ -1,4 +1,0 @@
-&ArtStandardLib.mergeWithSelf
-  &ArtClassSystem
-  &ArtTestbench
-  {} &mockFs

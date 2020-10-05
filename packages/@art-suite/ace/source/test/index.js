@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  AceMainTest:       require('./AceMain.test'),
   LoadAceConfigTest: require('./LoadAceConfig.test'),
   StandardImport:    require('./StandardImport')
 });
