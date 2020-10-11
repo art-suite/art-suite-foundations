@@ -1,0 +1,88 @@
+import &StandardImport
+
+defaultSourceRootFinder = new SourceRootFinder
+customSourceRootFinder = new SourceRootFinder
+  indicatorFiles: [] :README.txt
+
+cwd = &process.cwd()
+
+stripTrailingSlash = (s) -> s.replace /[\/\\]$/ ''
+
+beforeEach ->
+  &mockFs
+    package.json: "" {}
+    myRoot:
+      package.json: "" {}
+      subPackages:
+        funnel: package.json: "" {}
+      source:
+        Widgets:
+          Button.caf: "" ...
+
+        Main.caf: "" ...
+    gitRooted:
+      .git: config: "" ...
+      source: foo: "" ...
+    noRoot: foo: "" ...
+
+    customRoot:
+      README.txt: "" hello
+      notReallyRoot:
+        package.json: "" {}
+
+afterEach ->
+  &mockFs.restore()
+
+testOne = (input, output, sourceRootFinder = defaultSourceRootFinder) ->
+  output = stripTrailingSlash &path.join cwd, output if output
+
+  test "sync: #{input}" ->
+    sourceRootFinder.resetKnownSourceRoots()
+
+    first = sourceRootFinder.findSourceRootSync input
+    second = sourceRootFinder.findSourceRootSync input
+    assert.eq first, second
+    assert.eq first, output
+
+  test "async: #{input}" ->
+    sourceRootFinder.resetKnownSourceRoots()
+
+    sourceRootFinder.findSourceRoot input
+    .then (first) ->
+      sourceRootFinder.findSourceRoot input
+      .then (second) ->
+        assert.eq first, second
+        assert.eq first, output
+
+tester = (sourceRootFinder, tests) ->
+  each output, input in tests
+    testOne input, output, sourceRootFinder
+
+describe
+  defaults: ->
+    testOne null, "./"
+
+  defaultIndicatorFiles: ->
+    tester
+      defaultSourceRootFinder
+      myRoot/source:              :myRoot
+      myRoot/source/:             :myRoot
+      myRoot/source/Main.caf:     :myRoot
+      myRoot/source/Widgets:      :myRoot
+      myRoot/subPackages:         :myRoot
+      myRoot/subPackages/funnel:  :myRoot/subPackages/funnel
+
+      gitRooted:                  :gitRooted
+      gitRooted/source:           :gitRooted
+
+      ../:                        false
+      noRoot:                     './'
+      customRoot:                 './'
+      customRoot/notReallyRoot:   :customRoot/notReallyRoot
+
+  customIndicatorFiles: ->
+    tester
+      customSourceRootFinder
+      noRoot:                     false
+      customRoot:                 :customRoot
+      customRoot/notReallyRoot:   :customRoot

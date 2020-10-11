@@ -1,0 +1,19 @@
+import &StandardImport
+
+class TestSuite extends BaseClass
+  @abstractClass()
+
+  @postCreateConcreteClass: ->
+    global.suite @getName(), ->
+      each key in Object.keys @ when /^(test|setup)/.test key
+        tester = @[key]
+        wrappedTester = @[key] = => @["_"+key] ||= if true
+          Promise.then -> tester()
+          .tap => log "" pass: #{@getName()}.#{key}
+          .catch (e) ->
+            log "" fail: #{@getName()}.#{key}
+            throw e
+
+        test key, -> wrappedTester()
+
+    undefined

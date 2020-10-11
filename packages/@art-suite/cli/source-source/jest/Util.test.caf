@@ -1,0 +1,10 @@
+import &StandardImport
+import ArtCli.Parse, ArtCli.Util
+
+describe
+  normalizeCommands: ->
+    test "bad commands: string instead of function 1" ->
+      assert.rejects -> normalizeCommands foo: "hi"
+
+    test "bad commands: string instead of function 2" ->
+      assert.rejects -> normalizeCommands foo: run: "hi"

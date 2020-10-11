@@ -1,0 +1,203 @@
+import &ArtStandardLib, &HtmlLib, &HtmlFactoryLib, {} &wrapAnsi
+
+class HtmlTextNode extends &ArtClassSystem.BaseClass
+  constructor: (@_name, @_props, @_children) ->
+    @_name = @_name.toLocaleLowerCase()
+    @_normalizeChildren()
+
+  ##
+    IN: options
+      props:    with replaced props (optional)
+        can be props object or nested arrays of props objects
+        nulls and undefineds are ignored
+
+      children: with replaced children (optional)
+        can be nested arrays of children
+        children are either strings or HtmlTextNodes
+        nulls and undefineds are ignored
+
+  clone: (options) ->
+    options extract? props, children
+
+    new @class
+      @_name
+      if props != undefined     then mergeProps props else @_props
+      if children != undefined  then concatChildren children else @_children
+
+  with:                 (fields)      -> @clone fields
+  withProps:            (props...)    -> @clone props: props
+  withMergedProps:      (props...)    -> @clone props: @props, props
+  withChildren:         (children...) -> @clone children: children
+  withAppendedChildren: (children...) -> @clone children: @children, children
+
+  _normalizeChildren: ->
+    @_haveStringChildrenWithNewLines = false
+
+    if @_children?
+      @_children =
+        find child in @_children when child is String
+          array child in @_children
+            if child is String
+              child = @_getNormalizedText child
+              @_haveStringChildrenWithNewLines = true if /\n/.test child
+
+            child
+        ? @_children
+
+  reformatTextForNiceHtmlSource = (text) ->
+    if /\n *\n/.test text
+      array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
+        p.replace /\ *\n\ */g, ' '
+      .join "\n\n"
+    else text.replace /\n/, ' '
+
+  _getNormalizedText: (text) ->
+    if @preserveRawText then text
+    else reformatTextForNiceHtmlSource text
+
+  emptyString = ''
+  @getter
+    :props
+    :name
+    :children
+    inspectedObjects: -> [@name]: merge
+      props:    @props
+      children: if @children then array child in @children with child.inspectedObjects ? child
+
+    style:            -> @_props?.style
+    preserveRawText:  -> rawHtmlTags[@_name]
+    isRawHtml:        -> @_name == :rawhtml
+
+    childRequireMultipleLines: ->
+      !!@_children &&
+        @_children.length > 1 || @_children[0].onelinerOk == false
+
+    onelinerOk: -> !@_haveStringChildrenWithNewLines && !@childRequireMultipleLines
+
+    length: -> @_length ?=
+      5 + @_name.length * 2 # <name></name>
+      + @propsString.length
+      + reduce total, v from @_children inject 0 with total + v.length
+
+    styleString: ->
+      @_styleString ?= if @ extract style
+        array name from-array Object.keys(style).sort()
+          "#{name}: #{style[name]}"
+        .join '; '
+
+    propsString: ->
+      @_propsString ?=
+        if @_props
+          ' ' +
+            array propValue, propName from @_props
+              propValue = @styleString if propName == :style
+              if propValue == true then propName
+              else "" #{propName}="#{escapeHtmlString propValue}"
+
+            .join ' '
+        ? emptyString
+
+  @defaultCompileOptions:
+    tagWrap: 80
+    textWordWrap: 80
+
+  compile: (indentOrOptions) ->
+    if indentOrOptions is String
+      indent = indentOrOptions
+      options = HtmlTextNode.defaultCompileOptions
+
+    else if indentOrOptions is Object
+      indentOrOptions extract indent
+      {indent} = options = merge
+        HtmlTextNode.defaultCompileOptions
+        indentOrOptions
+
+    indent = '' if indent == true
+
+    compactFlatten @_compile indent, options
+
+  toString: (options = '')->
+    @compile options
+    .join "\n"
+
+  emptyOptions = {}
+  toCompactString: ->
+    compactFlattenJoin '' @_compile null, emptyOptions
+
+  ##################
+  # PRIVATE
+  ##################
+
+  htmlFriendlyTextWrap = (line, columns) ->
+    wrapAnsi
+      line.replace /\ *\n( *\n)/g, "\n\n"
+      columns
+
+  applyIndent = (indent, line, columns) ->
+    if columns > 0
+      line = htmlFriendlyTextWrap line, columns
+
+    if indent?
+      indent + line.replace /\n(?!\n)/g, "\n#{indent}"
+    else
+      line
+
+  ## OUT: String or Array of Strings, possibly nested
+  _compile: (indent, options) ->
+    if @isRawHtml && @_children
+      @_getCompiledChildren indent, emptyOptions
+
+    else if indent? && indent.length + @length <= options.tagWrap && @onelinerOk
+      indent + @toCompactString()
+
+    else
+      indentedStartTag = applyIndent indent, "" <#{@_name}#{@propsString}>
+      endTag = "" </#{@_name}>
+
+      if @_children
+        if spanningTags[@name]
+          indentedStartTag
+          + @_getCompiledChildrenSpan indent, options
+          + endTag
+
+        else
+          []
+            indentedStartTag
+            @_getCompiledChildren indent, options
+            applyIndent indent, endTag
+
+      else if noCloseTags[@_name]
+        indentedStartTag
+
+      else
+        indentedStartTag + endTag
+
+  _getCompiledChildren: (indent, options) ->
+    if @_children
+      indent = indent + '  ' if indent? && !@isRawHtml
+      array child from @_children
+        if isString child
+          if @_name != :pre
+            applyIndent indent, child, unless @preserveRawText then options.textWordWrap
+          else child
+        else child._compile indent, options
+
+  _getCompiledChildrenSpan: (indent, options) ->
+    if @_children
+      compiledChildren =
+        compactFlatten array child from @_children
+          if isString child
+            if @_name != :pre
+              applyIndent '', child, unless @preserveRawText then options.textWordWrap
+
+            else child
+
+          else child._compile '', options
+        .join "\n"
+
+      unless @isRawHtml
+        compiledChildren
+        .replace  /\n/g, "\n#{indent}"
+
+      else
+        compiledChildren

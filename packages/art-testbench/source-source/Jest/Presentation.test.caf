@@ -1,0 +1,36 @@
+import &StandardImport
+import Presentation
+
+test "generateFailedMessage string context" ->
+  assert.match
+    generateFailedMessage :myContext :a :b :myLines
+    /myContext(.|\n)*myLines/
+
+test "generateFailedMessage function context" ->
+  assert.match
+    generateFailedMessage ((a, b, c)-> a + b + c), :abc :123 :myLines
+    /abc123myLines/
+
+test "generateFailedMessage object context" ->
+  assert.match
+    generateFailedMessage {foo: 123, bar: [true, 'string']}, :abc :123 :myLines
+    /foo: 123/
+
+test "function context not invoked until failure" ->
+  invokedCount = 0
+  fContext = ->
+    invokedCount++
+    {} invokedCount
+
+  # not invoked here
+  assert.eq 1, 1, fContext
+
+  assert.eq invokedCount, 0
+
+  try
+    # YES invoked here
+    assert.eq 1, 2, fContext
+  catch error
+    :whatever
+
+  assert.eq invokedCount, 1

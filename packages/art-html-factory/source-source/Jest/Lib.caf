@@ -1,0 +1,17 @@
+import &StandardImport
+
+testFactoryToString: (args...) ->
+  each nodeF, i in args by 2
+    expectedOutput = args[i+1]
+
+    unless expectedOutput is String
+      throw new Error "Expecting a string at index #{i+1}! Make sure to pass an even number of pairs alternating between nodes and strings"
+
+    test
+      expectedOutput
+      .replace /\n/g, "\\n"
+      ->
+        assert.eq
+          nodeF().toString()
+          expectedOutput
+          FactoryToStringTestNumber: 1 + i/2

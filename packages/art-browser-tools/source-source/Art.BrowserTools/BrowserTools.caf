@@ -1,0 +1,11 @@
+import &StandardImport
+
+[]
+  &Download
+  &Dom
+  &EmailBrowserTools
+  &UriBrowserTools
+  &BrowserDetection
+  &UseragentRegExp
+
+  iPhoneDeviceInformation: &iPhoneDeviceInformation

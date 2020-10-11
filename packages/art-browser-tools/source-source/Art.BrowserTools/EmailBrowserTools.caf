@@ -1,0 +1,12 @@
+import &StandardImport, &UriBrowserTools, &Dom
+
+class EmailBrowserTools
+  @encodeMailto: encodeMailto = (options) ->
+    options extract cc, bcc, subject, body, to as toField = ''
+    encodeUri
+      protocol: :mailto
+      path:   toField
+      query:  {} cc, bcc, subject, body
+
+  @sendEmail: (options) ->
+    openLink encodeMailto options

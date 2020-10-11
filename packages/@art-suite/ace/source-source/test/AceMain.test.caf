@@ -1,0 +1,10 @@
+import &StandardImport
+
+beforeAll mockAceForTesting
+afterEach -> mockFs.restore()
+
+test :aceUpdate ->
+  mockFs {}
+  aceUpdate()
+  .then (aceConfig) ->
+    assert.eq aceConfig, {}

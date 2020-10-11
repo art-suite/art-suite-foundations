@@ -1,0 +1,23 @@
+import &StandardImport
+
+chainedTest ->
+  123
+
+.tapTest :tapTest -> 3
+.thenTest :thenTest (val) ->
+  assert.eq val, 123
+
+chainedTest 'start' ->
+  123
+
+.tapTest
+  :one (val) -> assert.eq val, 123; 1
+  :two (val) -> assert.eq val, 123; 2
+
+.softTapTest
+  :one (val) -> assert.eq val, 123; 1
+  :two (val) -> assert.eq val, 123; 2
+
+.thenTest
+  :should_be_123 (val) -> assert.eq val, 123; 456
+  :should_be_456 (val) -> assert.eq val, 456

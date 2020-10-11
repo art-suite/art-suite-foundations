@@ -1,0 +1,49 @@
+import &StandardImport, &Lib, &LoadAbcConfig, {} &path
+
+class Configuration
+  noopLoader = (current, generators) -> generators currentDir
+  @defaultLoaders:
+    .json: (rawJsonString, generator) ->
+      consistentJsonStringify merge
+        current = if rawJsonString then JSON.parse rawJsonString else {}
+        generator current
+
+  @writeConfig: (npmRoot, abcConfig, options) =>
+
+  @generateConfig: (npmRoot, abcConfig, options) =>
+    abcConfig extract loaders, generators
+
+    @_generateFilesR
+      npmRoot
+      loaders = merge @defaultLoaders, loaders
+      generators
+      options
+
+  @configurePackage: (npmRoot, options) ->
+    abcLog "" \nCONFIGURE: #{npmRoot}
+    loadAbcConfig npmRoot, options.configure
+    .then (abcConfig) -> @writeConfig npmRoot, abcConfig, options
+
+  ###########
+    PRIVATE
+  ###########
+  @_generateFilesR: (currentDir, generators, loaders, options) ->
+    each v, k in generators
+      itemPath = path.join currentDir, k
+      if v is Object
+        mkdir k
+        @_generateFilesR
+          itemPath
+          v
+          loaders
+          options
+
+      else
+        writeFile
+          itemPath
+          if v is String
+            v
+          else
+            current = readFileAsString itemPath
+            loader = loaders[extension = path.extname k] ? noopLoader
+            loader current, v

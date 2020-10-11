@@ -1,0 +1,49 @@
+import &StandardImport
+realRequire = null
+
+testAll = (configString, expectedFiles) ->
+  chainedTest ->
+    ArtBuildConfigurator.Main extract realRequire
+    ArtBuildConfigurator.Main.realRequire = (file) ->
+      if /^[\/.]/.test file
+        JSON.parse
+          &fs.readFileSync file
+
+      else {}
+
+    mockFs my-package:
+      if configString
+        art.build.config.caf: JSON.stringify configString
+      else {}
+
+  .thenTest "chdir :my-package" ->
+    process.chdir :my-package
+
+  .thenTest "configure once" ->
+    ArtBuildConfigurator.go
+      process.cwd()
+      configure: true
+      quiet: true
+
+  .thenTest "verify output" ->
+    assert.eq
+      Object.keys mockFs.getTree()
+      .sort()
+      expectedFiles
+
+  .thenTest "configure twice" ->
+    ArtBuildConfigurator.go
+      process.cwd()
+      configure: true
+      quiet: true
+
+  .thenTest :teardown ->
+    ArtBuildConfigurator.Main.realRequire = realRequire
+    mockFs.restore()
+
+suite:
+  noConfig: -> testAll null, []
+  emptyConfig: -> testAll {}, [] :art.build.config.caf
+  packageConfig: -> testAll {package: {}}, [] :art.build.config.caf :package.json
+  webpackConfig: -> testAll {webpack: {}}, [] :art.build.config.caf :webpack.config.js
+  allConfig: -> testAll {package: {}, webpack: {}}, [] :art.build.config.caf :package.json :webpack.config.js

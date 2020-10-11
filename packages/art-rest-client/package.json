@@ -1,0 +1,48 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-class-system": "^1.11.10",
+    "art-communication-status": "^1.5.10",
+    "art-standard-lib": "^1.69.9",
+    "xhr2": "^0.2.0"
+  },
+  "description": "Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.",
+  "devDependencies": {
+    "art-build-configurator": "^1.28.0",
+    "art-testbench": "^2.2.5",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "chai": "^4.2.0",
+    "coffee-loader": "^0.7.3",
+    "css-loader": "^3.6.0",
+    "json-loader": "^0.5.7",
+    "mocha": "^7.2.0",
+    "mock-fs": "^4.13.0",
+    "script-loader": "^0.7.2",
+    "style-loader": "^1.2.1",
+    "watch": "^1.0.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-stylish": "^0.1.8"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "art-rest-client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -p -c source-caf -o source;nn -s",
+    "build-test": "npm run build; npm run test --silent; echo",
+    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "test": "nn -s;mocha -u tdd",
+    "testInBrowser": "webpack-dev-server --progress --env.devServer",
+    "watch": "watch 'npm run build' ./source-caf",
+    "watch-test": "watch 'npm run build-test' ./source-caf ./test"
+  },
+  "version": "1.8.8"
+}

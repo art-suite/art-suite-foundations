@@ -1,0 +1,95 @@
+import &StandardImport
+
+addArtMonorepoFeatures = (rootPackage) ->
+  rootPackage.dependencies[&package.name] ?= :^ + &package.version
+  rootPackage.scripts = merge
+    test: "" art-monorepo test
+    sync: "" art-monorepo sync
+
+    rootPackage.scripts
+
+  rootPackage
+
+updateMonoPackage = ({quiet}) ->
+  unless quiet
+    log blue "" Updating **/package.json >> ./package.json...
+
+  rootPackage = readJson :package.json
+  originalRootPackage = clone rootPackage
+  rootPackage.dependencies = {}
+
+  previousSubPackages = {}
+
+  class HandledError extends Error
+
+  addDep = (type, name, version, subPackage) ->
+    intoPackageSet = rootPackage[type];
+
+    existingDep = intoPackageSet[name]
+    alreadyHaveDep = !!existingDep
+    alreadyFileDep = alreadyHaveDep && /^file:/.test existingDep
+    settingFileDep = /^file:/.test version
+    conflict = alreadyHaveDep && existingDep != version && alreadyFileDep == settingFileDep
+
+    if (conflict)
+      previousSubPackage = previousSubPackages[type][name]
+      previousVersion = intoPackageSet[name]
+
+      log.warn "" CONFLICTING PACKAGE VERSIONS:
+      log.withOptions
+        color: true
+        unquoted: true
+        maxLineLength: 78
+        {}
+          dependency: name
+          conflictingPackages:
+            [(if subPackage? then subPackage.path else :package) + :/package.json]: version
+            [(if previousSubPackage? then previousSubPackage.path else :previous_package) + :/package.json]: previousVersion
+
+      throw new HandledError
+        """
+          Missmatch conflict:
+            #{subPackage?.path}: #{name}: '#{intoPackageSet[name]}'
+            #{previousSubPackage?.path}: #{name}: '#{version}'
+
+    else if !alreadyFileDep
+      intoPackageSet[name] = version;
+
+    previousSubPackages[type] = previousSubPackages[type] || {}
+    previousSubPackages[type][name] = subPackage;
+
+  loadAllPackages()
+  .then (packages) ->
+    packageFolderByPackageName = {}
+    each _package, packageFolder from packages
+      _package.path = packageFolder
+      _package extract name, dependencies, devDependencies
+      if packageFolderByPackageName[name]
+        log.error
+          """
+            Two different packages have the same name in their package.json file:
+
+              #{packageFolder}
+              #{packageFolderByPackageName[name]}
+        throw new HandledError "" Two packages have the same name
+
+      else packageFolderByPackageName[name] = packageFolder
+
+      # log "package: #{packageFolder}"
+
+      each v, k in dependencies     with addDep :dependencies, k, v, _package
+      each v, k in devDependencies  with addDep :dependencies, k, v, _package
+      addDep :dependencies, name, "file:#{packageFolder}"
+
+    addArtMonorepoFeatures rootPackage
+
+    if neq originalRootPackage, rootPackage
+      writeJson :package.json rootPackage
+      log "Updated ./package.json"
+    else
+      log "Everything up to date."
+
+    null
+
+  .catch (error) ->
+    throw error unless error is HandledError

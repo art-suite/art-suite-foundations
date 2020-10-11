@@ -1,0 +1,27 @@
+import &StandardImport
+
+suite: ->
+  testComprehension undefined   _each, null returning:  undefined
+  testComprehension null        _each, null returning:  null
+  testComprehension null        _each, null inject:     null
+  testComprehension null        _each, null into:       null
+  testComprehension null        _each, null null                    ->
+
+  testComprehension false       _each, null returning:  false
+  testComprehension false       _each, null inject:     false
+  testComprehension false       _each, null into:       false
+  testComprehension false       _each, null false                   ->
+
+  testComprehension 123,        _each, null inject:     123
+  testComprehension 123,        _each, null returning:  123
+  testComprehension 123,        _each, null into:       123
+
+  test "each [1 2 3]", ->
+    count = 0
+    _each [1 2 3] (v, k) -> count++
+    assert.eq 3 count
+
+  test "each {a:1 b:2 c:3}", ->
+    count = 0
+    _each {a:1 b:2 c:3}, (v, k) -> count++
+    assert.eq 3 count

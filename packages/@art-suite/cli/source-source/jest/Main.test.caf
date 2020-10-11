@@ -1,0 +1,98 @@
+import &StandardImport
+import ArtCli.Main
+
+expectedGoOutput = :myCommand-myCommand-myCommand
+
+test "start + myCommand" ->
+  myCommandRan = false
+  start
+    commands: myCommand: -> myCommandRan = true
+    argv: :nodeJs :startFile :myCommand
+    output: assert.true
+
+  .then (out) ->
+    assert.true out
+
+    assert.eq
+      {} myCommandRan
+      myCommandRan: true
+
+
+test "start + myCommand --verbose" ->
+  myCommandRan = false
+  start
+    commands: myCommand: -> myCommandRan = true
+    argv: :nodeJs :startFile :myCommand :anArg :--verbose
+    output: assert.jsTrue
+
+  .then (out) ->
+    assert.true out
+
+    assert.eq
+      {} myCommandRan
+      myCommandRan: true
+
+
+
+test "start + myCommand + --help" ->
+  myCommandRan = false
+  start
+    commands: myCommand: {}
+      description = "" xyz123 description
+      options: {}
+        more = "" abc123 --more description
+      run: -> myCommandRan = true
+    argv: :nodeJs :startFile :myCommand :--help
+    output: assert.jsTrue
+
+  .then stripAnsi
+  .then (out) ->
+    assert.false myCommandRan
+    assert.match out, description
+    assert.match out, more
+
+test "start with no args" ->
+  myCommandRan = false
+  start
+    commands: myCommand: -> myCommandRan = true
+    argv: :nodeJs :startFile
+    output: ->
+
+  .then stripAnsi
+  .then (output) ->
+    assert.match output, "startFile my-command"
+    assert.eq
+      {} myCommandRan
+      myCommandRan: false
+
+test "start with no args and default" ->
+  myCommandOutput = undefined
+
+  start
+    commands:
+      myCommand: -> myCommandOutput = expectedGoOutput
+    default: :myCommand
+    argv: :nodeJs :startFile
+    output: assert.jsTrue
+
+  .then stripAnsi
+  .then (output) ->
+    assert.match output, expectedGoOutput
+    assert.eq
+      {} myCommandOutput
+      myCommandOutput: expectedGoOutput
+
+test "start + noGo" ->
+  myCommandRan = false
+  start
+    commands: myCommand: -> myCommandRan = true
+    argv: :nodeJs :startFile :noGo
+    output: ->
+
+  .then stripAnsi
+  .then (output) ->
+    assert.match output, "startFile my-command"
+    assert.eq
+      {} myCommandRan
+      myCommandRan: false
+
