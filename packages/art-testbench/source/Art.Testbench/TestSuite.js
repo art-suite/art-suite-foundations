@@ -8,13 +8,13 @@ Caf.defMod(module, () => {
       let TestSuite;
       return (TestSuite = Caf.defClass(
         class TestSuite extends BaseClass {},
-        function(TestSuite, classSuper, instanceSuper) {
+        function (TestSuite, classSuper, instanceSuper) {
           this.abstractClass();
-          this.postCreateConcreteClass = function() {
+          this.postCreateConcreteClass = function () {
             global.suite(this.getName(), () =>
               Caf.each2(
                 Object.keys(this),
-                key => {
+                (key) => {
                   let tester, wrappedTester;
                   tester = this[key];
                   wrappedTester = this[key] = () => {
@@ -30,7 +30,7 @@ Caf.defMod(module, () => {
                                 )}.${Caf.toString(key)}`
                               )
                             )
-                            .catch(e => {
+                            .catch((e) => {
                               log(
                                 `fail: ${Caf.toString(
                                   this.getName()
@@ -45,7 +45,7 @@ Caf.defMod(module, () => {
                   };
                   return test(key, () => wrappedTester());
                 },
-                key => /^(test|setup)/.test(key)
+                (key) => /^(test|setup)/.test(key)
               )
             );
             return undefined;

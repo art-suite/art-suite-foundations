@@ -13,13 +13,13 @@ Caf.defMod(module, () => {
         failWithExpectedMessageBase;
       return {
         maxLength: (maxLength = 80),
-        indent: (indent = function(str) {
+        indent: (indent = function (str) {
           return "  " + str.replace(/\n/g, "\n  ");
         }),
-        format: (format = function(val) {
+        format: (format = function (val) {
           return formattedInspect(val, maxLength);
         }),
-        failWithExpectedMessage: (failWithExpectedMessage = function(
+        failWithExpectedMessage: (failWithExpectedMessage = function (
           context,
           a,
           verb,
@@ -31,10 +31,10 @@ Caf.defMod(module, () => {
             indent(format(a)),
             verb,
             indent(format(b)),
-            verb2 ? [verb2, indent(format(c))] : undefined
+            verb2 ? [verb2, indent(format(c))] : undefined,
           ]);
         }),
-        generateFailedMessage: (generateFailedMessage = function(
+        generateFailedMessage: (generateFailedMessage = function (
           context,
           a,
           b,
@@ -52,7 +52,7 @@ Caf.defMod(module, () => {
                         } catch (error1) {
                           error = error1;
                           return {
-                            getContextFunctionError: { context, error }
+                            getContextFunctionError: { context, error },
                           };
                         }
                       })())
@@ -65,7 +65,7 @@ Caf.defMod(module, () => {
             ).join("\n\n")
           );
         }),
-        failWithExpectedMessageBase: (failWithExpectedMessageBase = function(
+        failWithExpectedMessageBase: (failWithExpectedMessageBase = function (
           context,
           a,
           b,
@@ -76,7 +76,7 @@ Caf.defMod(module, () => {
             b,
             generateFailedMessage(context, a, b, lines)
           );
-        })
+        }),
       };
     }
   );

@@ -8,7 +8,7 @@ Caf.defMod(module, () => {
     { test, setup, initTesting }),
     {
       chainedTest: require("./ChainedTest").chainedTest,
-      assert: require("./ArtChai").assert
+      assert: require("./ArtChai").assert,
     }
   );
 });

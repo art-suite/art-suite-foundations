@@ -5,63 +5,63 @@ Caf.defMod(module, () => {
     ["chainedTest", "assert"],
     [global, require("./StandardImport")],
     (chainedTest, assert) => {
-      chainedTest(function() {
+      chainedTest(function () {
         return 123;
       })
-        .tapTest("tapTest", function() {
+        .tapTest("tapTest", function () {
           return 3;
         })
-        .thenTest("thenTest", function(val) {
+        .thenTest("thenTest", function (val) {
           return assert.eq(val, 123);
         });
-      return chainedTest("start", function() {
+      return chainedTest("start", function () {
         return 123;
       })
         .tapTest(
           [
             "one",
-            function(val) {
+            function (val) {
               assert.eq(val, 123);
               return 1;
-            }
+            },
           ],
           [
             "two",
-            function(val) {
+            function (val) {
               assert.eq(val, 123);
               return 2;
-            }
+            },
           ]
         )
         .softTapTest(
           [
             "one",
-            function(val) {
+            function (val) {
               assert.eq(val, 123);
               return 1;
-            }
+            },
           ],
           [
             "two",
-            function(val) {
+            function (val) {
               assert.eq(val, 123);
               return 2;
-            }
+            },
           ]
         )
         .thenTest(
           [
             "should_be_123",
-            function(val) {
+            function (val) {
               assert.eq(val, 123);
               return 456;
-            }
+            },
           ],
           [
             "should_be_456",
-            function(val) {
+            function (val) {
               return assert.eq(val, 456);
-            }
+            },
           ]
         );
     }

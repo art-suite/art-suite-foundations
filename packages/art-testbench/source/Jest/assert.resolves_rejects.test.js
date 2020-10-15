@@ -5,12 +5,12 @@ Caf.defMod(module, () => {
     ["test", "assert", "Promise", "Error"],
     [global, require("./StandardImport")],
     (test, assert, Promise, Error) => {
-      test("assert.resolves", function() {
+      test("assert.resolves", function () {
         assert.resolves("anything");
         assert.resolves(() => "function");
         return assert.resolves(Promise.resolve());
       });
-      test("assert.rejects", function() {
+      test("assert.rejects", function () {
         assert.rejects(() =>
           (() => {
             throw new Error("should_fail_here");
@@ -18,7 +18,7 @@ Caf.defMod(module, () => {
         );
         return assert.rejects(Promise.reject());
       });
-      test("assert.resolves fails correctly", function() {
+      test("assert.resolves fails correctly", function () {
         return Promise.all([
           assert.rejects(() =>
             assert.resolves(() =>
@@ -27,14 +27,14 @@ Caf.defMod(module, () => {
               })()
             )
           ),
-          assert.rejects(() => assert.resolves(Promise.reject()))
+          assert.rejects(() => assert.resolves(Promise.reject())),
         ]);
       });
-      return test("assert.rejects fails correctly", function() {
+      return test("assert.rejects fails correctly", function () {
         return Promise.all([
           assert.rejects(() => assert.rejects("anything")),
           assert.rejects(() => assert.rejects(() => "function")),
-          assert.rejects(() => assert.rejects(Promise.resolve()))
+          assert.rejects(() => assert.rejects(Promise.resolve())),
         ]);
       });
     }

@@ -8,21 +8,21 @@ Caf.defMod(module, () => {
       let wasSetup;
       benchmark(
         "sync",
-        function() {
+        function () {
           return 1 + 2 + 3;
         },
         { testDuration: 0.1, loopUnrolling: 64 }
       );
       benchmark(
         "async_promise",
-        function() {
+        function () {
           return timeout(1);
         },
         { testDuration: 0.1 }
       );
       benchmark(
         "async_callback",
-        function(callback) {
+        function (callback) {
           return setTimeout(callback, 10);
         },
         { testDuration: 0.1 }
@@ -30,60 +30,60 @@ Caf.defMod(module, () => {
       wasSetup = false;
       benchmark(
         "all-options",
-        function() {
+        function () {
           return 1 + 2 + 3;
         },
         {
           testDuration: 0.1,
           warmUpDuration: 0.1,
           loopUnrolling: 1,
-          setup: function() {
+          setup: function () {
             return (wasSetup = true);
           },
           logTestOutput: true,
-          postProcessesResults: function(results) {
+          postProcessesResults: function (results) {
             assert.true(wasSetup);
             assert.isObject(results);
             assert.gt(results.duration, 0);
             return null;
-          }
+          },
         }
       );
       benchmark(
         "postProcessesResults_alt",
-        function() {
+        function () {
           return 1 + 2 + 3;
         },
         {
           testDuration: 0.1,
-          postProcessesResults: function(results) {
+          postProcessesResults: function (results) {
             return {
               name: "hi",
               testUnits: "greetings",
               totalTests: 10,
               duration: 1,
-              gcIncludedDuration: 1.1
+              gcIncludedDuration: 1.1,
             };
-          }
+          },
         }
       );
       benchmark(
         "loopUnrolling: 1",
-        function() {
+        function () {
           return 1 + 2 + 3;
         },
         { testDuration: 0.1, loopUnrolling: 1 }
       );
       benchmark(
         "loopUnrolling: 2",
-        function() {
+        function () {
           return 1 + 2 + 3;
         },
         { testDuration: 0.1, loopUnrolling: 2 }
       );
       return benchmark(
         "loopUnrolling: 4",
-        function() {
+        function () {
           return 1 + 2 + 3;
         },
         { testDuration: 0.1, loopUnrolling: 4 }

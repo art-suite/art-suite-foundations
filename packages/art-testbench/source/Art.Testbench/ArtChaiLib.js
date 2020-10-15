@@ -12,13 +12,13 @@ Caf.defMod(module, () => {
       "log",
       "inspectLean",
       "isPlainArray",
-      "inspect"
+      "inspect",
     ],
     [
       global,
       require("art-standard-lib"),
       require("./Presentation"),
-      require("chai")
+      require("chai"),
     ],
     (
       assert,
@@ -35,7 +35,7 @@ Caf.defMod(module, () => {
       let getTesterFor, addTester;
       assert.test = {};
       return {
-        getTesterFor: (getTesterFor = function(name, a, b) {
+        getTesterFor: (getTesterFor = function (name, a, b) {
           let tester, options;
           tester = isFunction(a)
             ? a
@@ -73,7 +73,7 @@ Caf.defMod(module, () => {
             }
           })();
         }),
-        addTester: (addTester = function(name, a, b) {
+        addTester: (addTester = function (name, a, b) {
           let testerFor;
           assert[name] = testerFor = getTesterFor(name, a, b);
           return (assert.test[name] =
@@ -124,7 +124,7 @@ Caf.defMod(module, () => {
                     () => testerFor(func(...args), testValue, context)
                   );
                 });
-        })
+        }),
       };
     }
   );

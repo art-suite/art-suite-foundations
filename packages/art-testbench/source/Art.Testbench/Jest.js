@@ -7,10 +7,10 @@ Caf.defMod(module, () => {
     Error = global.Error,
     describe;
   return {
-    test: function(...args) {
+    test: function (...args) {
       return global.test(...args);
     },
-    describe: (describe = function(a, b) {
+    describe: (describe = function (a, b) {
       if (Caf.is(a, Object)) {
         Caf.each2(a, (v, k) =>
           Caf.is(v, Function)
@@ -33,6 +33,6 @@ Caf.defMod(module, () => {
         }
       }
       return undefined;
-    })
+    }),
   };
 });

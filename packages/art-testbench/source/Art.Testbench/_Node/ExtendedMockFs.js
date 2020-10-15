@@ -5,15 +5,15 @@ Caf.defMod(module, () => {
     ["mockFs", "fs", "Path"],
     [
       global,
-      { fs: require("fs"), mockFs: require("mock-fs"), Path: require("path") }
+      { fs: require("fs"), mockFs: require("mock-fs"), Path: require("path") },
     ],
     (mockFs, fs, Path) => {
       let isDirectory, readFsTree;
-      isDirectory = function(file) {
+      isDirectory = function (file) {
         return fs.statSync(file).isDirectory();
       };
-      mockFs.getTree = readFsTree = function(path = "") {
-        return Caf.object(fs.readdirSync(path), fileName => {
+      mockFs.getTree = readFsTree = function (path = "") {
+        return Caf.object(fs.readdirSync(path), (fileName) => {
           let pathedFilename;
           pathedFilename = Path.join(path, fileName);
           return isDirectory(pathedFilename)

@@ -7,6 +7,8 @@
   AssertMatchTest:           require('./assert.match.test'),
   AssertResolvesRejectsTest: require('./assert.resolves_rejects.test'),
   AssertSameTest:            require('./assert.same.test'),
+  AssertSelectedEq:          require('./assert.selectedEq'),
+  AssertSelectedEqTest:      require('./assert.selectedEq.test'),
   AssertTruthTest:           require('./assert.truth.test'),
   AssertWithin:              require('./assert.within'),
   ChainedTestTest:           require('./ChainedTest.test'),

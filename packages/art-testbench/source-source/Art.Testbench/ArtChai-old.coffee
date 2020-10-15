@@ -20,6 +20,8 @@
 } = StandardLib = require 'art-standard-lib'
 {
   failWithExpectedMessage,
+  failWithExpectedMessageBase,
+  format,
   indent
 } = require './Presentation'
 {

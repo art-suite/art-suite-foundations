@@ -6,13 +6,13 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport")],
     (describe, test, assert, Promise) => {
       return describe({
-        exactTruth: function() {
+        exactTruth: function () {
           test("assert.true", () => {
             assert.true(true);
             return Promise.all(
               Caf.array(
                 [null, undefined, false, 1, "true", "false", "", 0, 1, {}],
-                v => assert.rejects(() => assert.true(v))
+                (v) => assert.rejects(() => assert.true(v))
               )
             );
           });
@@ -21,12 +21,12 @@ Caf.defMod(module, () => {
             return Promise.all(
               Caf.array(
                 [null, undefined, true, 1, "true", "false", "", 0, 1, {}],
-                v => assert.rejects(() => assert.false(v))
+                (v) => assert.rejects(() => assert.false(v))
               )
             );
           });
         },
-        jsTruth: function() {
+        jsTruth: function () {
           test("assert.jsTrue", () => {
             assert.jsTrue(true);
             assert.jsTrue(1);
@@ -34,7 +34,7 @@ Caf.defMod(module, () => {
             assert.jsTrue("false");
             assert.jsTrue({});
             return Promise.all(
-              Caf.array([false, null, undefined, "", 0], v =>
+              Caf.array([false, null, undefined, "", 0], (v) =>
                 assert.rejects(() => assert.jsTrue(v), { v })
               )
             );
@@ -46,13 +46,13 @@ Caf.defMod(module, () => {
             assert.jsFalse(null);
             assert.jsFalse(undefined);
             return Promise.all(
-              Caf.array([true, 1, "true", "false", 1, {}], v =>
+              Caf.array([true, 1, "true", "false", 1, {}], (v) =>
                 assert.rejects(() => assert.jsFalse(v), { v })
               )
             );
           });
         },
-        rubyTruth: function() {
+        rubyTruth: function () {
           test("assert.rubyTrue", () => {
             assert.rubyTrue(true);
             assert.rubyTrue("true");
@@ -62,7 +62,7 @@ Caf.defMod(module, () => {
             assert.rubyTrue(0);
             assert.rubyTrue(1);
             return Promise.all(
-              Caf.array([null, undefined, false], v =>
+              Caf.array([null, undefined, false], (v) =>
                 assert.rejects(() => assert.rubyTrue(v), { v })
               )
             );
@@ -72,12 +72,12 @@ Caf.defMod(module, () => {
             assert.rubyFalse(null);
             assert.rubyFalse(undefined);
             return Promise.all(
-              Caf.array([true, 1, "true", "false", 1, 0, "", {}], v =>
+              Caf.array([true, 1, "true", "false", 1, 0, "", {}], (v) =>
                 assert.rejects(() => assert.rubyFalse(v), { v })
               )
             );
           });
-        }
+        },
       });
     }
   );

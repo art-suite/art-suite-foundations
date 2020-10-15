@@ -5,18 +5,18 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     ["Presentation"],
     (parentImports = [global, require("./StandardImport")]),
-    Presentation => {
+    (Presentation) => {
       return Caf.importInvoke(
         ["test", "assert", "generateFailedMessage"],
         [parentImports, Presentation],
         (test, assert, generateFailedMessage) => {
-          test("generateFailedMessage string context", function() {
+          test("generateFailedMessage string context", function () {
             return assert.match(
               generateFailedMessage("myContext", "a", "b", "myLines"),
               /myContext(.|\n)*myLines/
             );
           });
-          test("generateFailedMessage function context", function() {
+          test("generateFailedMessage function context", function () {
             return assert.match(
               generateFailedMessage(
                 (a, b, c) => a + b + c,
@@ -27,7 +27,7 @@ Caf.defMod(module, () => {
               /abc123myLines/
             );
           });
-          test("generateFailedMessage object context", function() {
+          test("generateFailedMessage object context", function () {
             return assert.match(
               generateFailedMessage(
                 { foo: 123, bar: [true, "string"] },
@@ -38,7 +38,7 @@ Caf.defMod(module, () => {
               /foo: 123/
             );
           });
-          return test("function context not invoked until failure", function() {
+          return test("function context not invoked until failure", function () {
             let invokedCount, fContext, error;
             invokedCount = 0;
             fContext = () => {

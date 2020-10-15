@@ -5,7 +5,7 @@ Caf.defMod(module, () => {
     ["test", "assert"],
     [global, require("./StandardImport")],
     (test, assert) => {
-      test("assert.same", function() {
+      test("assert.same", function () {
         let a;
         assert.same(0, 0);
         a = {};
@@ -15,7 +15,7 @@ Caf.defMod(module, () => {
           return assert.same(a, {});
         });
       });
-      return test("assert.notSame", function() {
+      return test("assert.notSame", function () {
         let a;
         assert.notSame(0, 1);
         a = {};
