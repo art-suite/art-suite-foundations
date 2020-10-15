@@ -9,7 +9,7 @@
   "description": "Epoched event system",
   "devDependencies": {
     "art-build-configurator": "^1.28.0",
-    "art-testbench": "^2.2.5",
+    "art-testbench": "^2.2.8",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",

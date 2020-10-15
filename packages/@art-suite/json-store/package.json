@@ -4,7 +4,7 @@
   "description": "Art.JsonStore",
   "devDependencies": {
     "art-build-configurator": "^1.28.0",
-    "art-testbench": "^2.2.5",
+    "art-testbench": "^2.2.8",
     "npm-watch": "^0.7.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
