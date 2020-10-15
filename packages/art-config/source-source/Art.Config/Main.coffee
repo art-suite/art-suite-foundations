@@ -19,11 +19,13 @@
 ConfigRegistry = require './ConfigRegistry'
 {normalizeArtConfigName, getExternalEnvironment} = require './Lib'
 
+ArtConfig = require("./namespace")
+
 defineModule module, class Main
 
-  @getArtConfigName       : getArtConfigName        = -> Neptune.Art.Config.configName
-  @getArtConfig           : getArtConfig            = -> Neptune.Art.Config.config
-  @getDefaultArtConfigName: getDefaultArtConfigName = -> Neptune.Art.Config.defaultArtConfigName
+  @getArtConfigName       : getArtConfigName        = ->  ArtConfig.configName
+  @getArtConfig           : getArtConfig            = ->  ArtConfig.config
+  @getDefaultArtConfigName: getDefaultArtConfigName = ->  ArtConfig.defaultArtConfigName
 
   ### getArtConfigSave
     OUT: artConfig, but only the non-default values
@@ -36,7 +38,7 @@ defineModule module, class Main
 
     out
 
-  setArtConfigName        = (name) -> Neptune.Art.Config.configName = name
+  setArtConfigName        = (name) -> ArtConfig.configName = name
   ###
   IN: configureOptions:
     artConfigName: string

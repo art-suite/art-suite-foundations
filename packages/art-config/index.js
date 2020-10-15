@@ -1,1 +1,1 @@
-module.exports = require("./source/Art.Config");
+module.exports = require("./source");

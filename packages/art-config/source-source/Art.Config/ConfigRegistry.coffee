@@ -18,6 +18,8 @@
 } = require 'art-standard-lib'
 {BaseObject} = require 'art-class-system'
 
+ArtConfig = require './namespace'
+
 defineModule module, class ConfigRegistry extends BaseObject
 
   @configurables: []
@@ -31,4 +33,4 @@ defineModule module, class ConfigRegistry extends BaseObject
 
   @configure: (args...) ->
     console.error "DEPRICATED: use Art.Config.configure"
-    Neptune.Art.Config.configure args...
+    ArtConfig.configure args...
