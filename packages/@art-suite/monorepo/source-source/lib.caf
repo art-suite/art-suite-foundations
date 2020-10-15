@@ -19,7 +19,7 @@ import &ArtStandardLib, &chalk, &fs, &fs.promises
           !/node_modules\//.test file # don't read into node_modules/
         readJson file
 
-  removePackageLocks: ->
+  removePackageLocks = ->
     &globPromise "!(node_modules)/*/**/package-lock.json"
     .then (results) ->
       if results.length > 0
@@ -31,7 +31,7 @@ import &ArtStandardLib, &chalk, &fs, &fs.promises
         log blue "Removed #{pluralize results.length, "package-specific package-lock.json file"}."
 
 
-  removeNodeModules: ->
+  removeNodeModules = ->
     &globPromise "!(node_modules)/*/**/node_modules"
     .then (results) ->
       if results.length > 0
@@ -41,6 +41,10 @@ import &ArtStandardLib, &chalk, &fs, &fs.promises
         execShellCommand cmd
       .then -> if results.length > 0
         log blue "Removed #{pluralize results.length, "package-specific node_modules/ directory"}."
+
+  cleanMonorepo: ->
+    removePackageLocks()
+    .then -> removeNodeModules()
 
   # /** Executes a shell command and return it as a Promise.
   #   * @param cmd {string}

@@ -35,7 +35,7 @@ Caf.defMod(module, () => {
       unlink,
       yellow
     ) => {
-      let readJson, execShellCommand;
+      let readJson, removePackageLocks, removeNodeModules, execShellCommand;
       return {
         readJson: (readJson = function (file) {
           return existsSync(file) ? JSON.parse(readFileSync(file)) : {};
@@ -73,7 +73,7 @@ Caf.defMod(module, () => {
             );
           });
         },
-        removePackageLocks: function () {
+        removePackageLocks: (removePackageLocks = function () {
           return require("glob-promise")(
             "!(node_modules)/*/**/package-lock.json"
           ).then((results) => {
@@ -109,8 +109,8 @@ Caf.defMod(module, () => {
                 : undefined
             );
           });
-        },
-        removeNodeModules: function () {
+        }),
+        removeNodeModules: (removeNodeModules = function () {
           return require("glob-promise")(
             "!(node_modules)/*/**/node_modules"
           ).then((results) => {
@@ -147,6 +147,9 @@ Caf.defMod(module, () => {
                 : undefined
             );
           });
+        }),
+        cleanMonorepo: function () {
+          return removePackageLocks().then(() => removeNodeModules());
         },
         execShellCommand: (execShellCommand = function (cmd) {
           return new Promise((resolve, reject) =>

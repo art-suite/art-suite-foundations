@@ -7,6 +7,7 @@ Caf.defMod(module, () => {
         test: require("./test"),
         sync: require("./sync"),
         run: require("./run"),
+        clean: require("./clean"),
         update: require("./update"),
         "update-mono-package": require("./update-mono-package"),
         "update-sub-packages": require("./update-sub-packages"),

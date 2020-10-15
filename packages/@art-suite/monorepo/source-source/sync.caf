@@ -1,8 +1,7 @@
 import &StandardImport
 
 (options) ->
-  &updateSubPackages options
+  cleanMonorepo()
+  .then -> &updateSubPackages options
   .then -> &updateMonoPackage options
-  .then -> removePackageLocks()
-  .then -> removeNodeModules()
   .then -> green "" All package.json files synced.

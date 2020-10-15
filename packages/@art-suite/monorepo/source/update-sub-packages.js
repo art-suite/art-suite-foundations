@@ -29,6 +29,7 @@ Caf.defMod(module, () => {
     ) => {
       let updateDependencyVersions,
         updateAllPackageDependencies,
+        addSubPackagesToDependencies,
         updateSubPackages;
       updateDependencyVersions = function (packages, fromDeps, toDeps) {
         return toDeps != null && fromDeps != null
@@ -83,6 +84,15 @@ Caf.defMod(module, () => {
           updatedMap
         );
       };
+      addSubPackagesToDependencies = function (packages, dependencies) {
+        return Caf.object(
+          packages,
+          ({ name }, packageFolder) => `file:${Caf.toString(packageFolder)}`,
+          null,
+          dependencies,
+          ({ name }, packageFolder) => name
+        );
+      };
       return (updateSubPackages = function ({ quiet }) {
         !quiet && log(blue("Updating ./package.json >> **/package.json..."));
         return loadAllPackages().then((packages) => {
@@ -93,8 +103,15 @@ Caf.defMod(module, () => {
             homepage,
             license,
             repository,
-            updateCount;
+            updateCount,
+            temp;
           rootPackage = readJson("package.json");
+          addSubPackagesToDependencies(
+            packages,
+            (temp = rootPackage.dependencies) != null
+              ? temp
+              : (rootPackage.dependencies = {})
+          );
           updatedMap = updateAllPackageDependencies(rootPackage, packages);
           updateAllPackageDependencies(
             rootPackage,

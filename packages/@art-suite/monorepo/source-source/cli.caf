@@ -5,6 +5,7 @@ require :@art-suite/cli
   &test
   &sync
   &run
+  &clean
   &update
   &update-mono-package
   &update-sub-packages

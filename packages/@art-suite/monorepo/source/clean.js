@@ -6,10 +6,7 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport")],
     (cleanMonorepo, green) => {
       return function (options) {
-        return cleanMonorepo()
-          .then(() => require("./update-sub-packages")(options))
-          .then(() => require("./update-mono-package")(options))
-          .then(() => green("All package.json files synced."));
+        return cleanMonorepo().then(() => green("Monorepo is clean."));
       };
     }
   );

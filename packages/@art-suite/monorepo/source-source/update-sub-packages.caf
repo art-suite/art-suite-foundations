@@ -34,12 +34,18 @@ updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :depe
       log {} update: file
       writeJson file, merge _package, universalUpdates
 
+addSubPackagesToDependencies = (packages, dependencies) ->
+  object {name}, packageFolder from packages into dependencies with-key name
+    "file:#{packageFolder}"
+
 updateSubPackages = ({quiet}) ->
   !quiet && log blue "" Updating ./package.json >> **/package.json...
 
   loadAllPackages()
   .then (packages) ->
     rootPackage = readJson :package.json
+
+    addSubPackagesToDependencies packages, rootPackage.dependencies ?= {}
 
     updatedMap = updateAllPackageDependencies
       rootPackage
