@@ -1,0 +1,48 @@
+import &StandardImport
+
+suite:
+  maxLength: ->
+    test "maxLength" ->
+      v = new Validator id:
+        fieldType: 'trimmedString'
+        maxLength: 5
+      assert.throws -> v.validateCreate id: "  too long man"
+
+    test "maxLength: 3000" ->
+      v = new Validator caption:
+        fieldType: 'trimmedString'
+        maxLength: 3000
+      v.validateCreate caption: randomString 2999
+
+    test "maxLength is after preprocess" ->
+      v = new Validator id:
+        fieldType: 'trimmedString'
+        maxLength: 5
+      assert.eq
+        id: "123"
+        v.validateCreate id: "   123   "
+
+  minLength: ->
+    test "minLength" ->
+      v = new Validator id:
+        fieldType: 'trimmedString'
+        minLength: 5
+      assert.throws -> v.validateCreate id: "shrt"
+      v.validateCreate id: "long enough"
+
+    test "minLength is after preprocess" ->
+      v = new Validator id:
+        fieldType: 'trimmedString'
+        minLength: 5
+      assert.throws -> v.validateCreate id: "   123   "
+
+  both: ->
+    test "minLength and maxLength" ->
+      v = new Validator id:
+        fieldType: 'trimmedString'
+        minLength: 5
+        maxLength: 10
+      assert.throws -> v.validateCreate id: "1234"
+      assert.throws -> v.validateCreate id: "1234567890-"
+      v.validateCreate id: "12345"
+      v.validateCreate id: "1234567890"

@@ -1,0 +1,59 @@
+import &StandardImport
+indent = (str, amount = "   ") ->
+  amount + str.replace /\n/g "\n#{amount}"
+
+logRun = (verb, packagePath) ->
+  log
+    blue "#{verb}: "
+    + packagePath
+
+({command, verb, verbose}) ->
+  verb = upperCase verb
+
+  loadAllPackages()
+  .then (packages) ->
+    array {scripts}, packagePath in packages when scripts?.test
+      packagePath
+
+  .then (packagePaths) ->
+    logRun "#{verb}ING" pluralize :package packagePaths.length
+    passed = []
+    failed = []
+    Promise.all array packagePath in packagePaths
+      logRun verb, grey packagePath
+
+      execShellCommand "" cd #{packagePath};#{command}
+      .then
+        (stdout) ->
+          passed.push packagePath;
+          if verbose
+            log blue "#{packagePath} > #{command} (stdout)"
+            log indent
+              stdout.trim()
+              "  "
+
+          logRun :SUCCESS green packagePath
+          if verbose
+            log ""
+
+        ({stdout, stderr}) ->
+          failed.push packagePath
+          logRun :FAILED red packagePath
+          if present stdout
+            log blue "  #{packagePath} > #{command} (stdout)"
+            log indent stdout.trim()
+            log ""
+          if present stderr
+            log blue "  #{packagePath} > #{command} (stderr)"
+            log red indent stderr.trim()
+            log ""
+
+    .then ->
+      log blue "" \nRESULTS:
+      log blue "  succeeded: " + yellow passed.length
+      if failed.length > 0
+        each f in failed
+          log blue "  failed: " + red f
+
+      process.exit 1 if failed > 1
+      null

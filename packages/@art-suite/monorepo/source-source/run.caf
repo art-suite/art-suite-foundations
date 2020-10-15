@@ -1,0 +1,5 @@
+import &StandardImport
+
+(options) ->
+  &runLib merge options,
+    verb: :run

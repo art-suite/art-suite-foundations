@@ -1,0 +1,59 @@
+## ExtendableEventedMixin
+
+  A simple way to add an event system
+  to a class, singleton or instance.
+
+  NOTE: It is NOT epoched. Events fire immediately.
+
+  This uses Art.ClassSystem's "declarable" which is an extendablePropery.
+  This means you can add handlers at the class level OR at the instance
+  level. You can even inherit handlers from up the hierarchy.
+  The one thing to understand is as soon as you add a handler at a level
+  of the hierachy (or the instance) that level (or instance) will not
+  ineherit any handlers ADD AFTER somewhere up the hierarchy.
+
+
+  IN: superClass
+    superClass must inherit from Art.ClassSystem.BaseClass
+
+  Example:
+    # declaration / trigger event
+    class MyClass extends ExtendableEventedMixin BaseClass
+      constructor: ->
+        @handleEvent :init, created: @
+
+      something: ->
+        @handleEvent :something, instance: @
+
+    # add handlers at the class level
+    MyClass.on init: ({created}) -> log MyClass: {} created
+
+    # add handlers to an instance; these will only fire on this one instance
+    myInstance = new MyClass
+    # logs: MyClass: created: ...
+
+    myOtherInstance = new MyClass
+    # logs: MyClass: created: ...
+
+    myInstance.on something: ({instance}) -> log myInstance: {} instance
+
+    myInstance.something()
+    # logs: myInstance: created: ...
+
+    myOtherInstance.something()
+    # (nothing is logged)
+
+(superClass) -> class ExtendableEventedMixin extends superClass
+  @declarable
+    {} eventHandlers: {}
+    {} extend: (extendable, handlers) ->
+        each v, k in handlers
+          (extendable[k] ?= []).push v
+
+        extendable
+
+  @on: @eventHandlers
+
+  @handleEvent: (type, event) ->
+    each handler in @getEventHandlers()[type]
+      handler event

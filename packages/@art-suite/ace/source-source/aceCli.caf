@@ -1,0 +1,18 @@
+import &ArtStandardLib
+
+require :@art-suite/cli
+.start
+  description:
+    """
+      ArtSuite Configuration Engine
+
+      Initialize & Maintain Auto-Generated Package Files
+
+  commands:
+    init:
+      run: (options) -> "" Not supported yet.
+      description: "" Initialize new ACE managed package. COMING SOON.
+
+    update:
+      run: (options) -> updatePackage process.cwd(), options
+      description: "" Update package files

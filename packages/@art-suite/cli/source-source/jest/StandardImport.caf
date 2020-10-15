@@ -1,0 +1,16 @@
+import &ArtStandardLib
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &ArtTestbench
+  {}
+    describe = (map) ->
+      each v, k in map
+        if v is Function
+          global.describe k, -> v(); undefined
+        else
+          global.describe k, ->
+            describe v
+
+      undefined
+
+  ArtCli: &ArtSuiteCli

@@ -1,0 +1,17 @@
+import &ArtStandardLib, &ArtSuiteAce, {} &globPromise, &ArtSuiteAce
+
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &ArtTestbench
+  &ArtTestbench/Node
+  &ArtSuiteAce
+
+  mockAceForTesting: ->
+    AceMain.realRequire = (path) ->
+      if /register/.test path then ""
+      else
+        globPromise path + ".*"
+        .then ([filePath]) ->
+          JSON.parse
+            &fs.readFileSync filePath
+            .toString()

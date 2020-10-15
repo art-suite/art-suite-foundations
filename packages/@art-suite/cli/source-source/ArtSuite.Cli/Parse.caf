@@ -1,0 +1,96 @@
+import &StandardImport, &Util
+
+class Parse
+  @optionRegExp: /^--(.+)$/
+  @evalJsRegExp: /^js:(.*)$/
+  @typedArgumentRegExp: /^([a-z]+):(.*)$/
+  @numberRegExp:
+    ///i
+      ^
+      [-+]?
+      ( # floating point
+        [0-9]*
+        \.
+        [0-9]+
+      | # integer
+        [0-9]+
+      )
+
+      # exponent
+      ([eE][-+]?[0-9]+)?
+      $
+
+  @parseArgs: (args)=>
+    currentOptionName = :argument
+    commands = currentOption = []
+    each argument, i in args into parsedOptions = {}
+      if option = argument.match @optionRegExp
+        currentOption = parsedOptions[currentOptionName = lowerCamelCase option[1]] = []
+      else
+        currentOption.push
+          switch
+          when argument == :true then true
+          when argument == :false then false
+          when @numberRegExp.test argument then argument / 1
+          when typedMatch = @typedArgumentRegExp.exec argument
+            [__, type, value] = typedMatch
+            switch type
+            when :string
+              value
+            when :json
+              try JSON.parse value
+              catch error
+                log.error
+                  JsonParseError: {}
+                    option: currentOptionName
+                    type
+                    value
+                    argument
+                    error: error.message
+                throw error
+
+            when :js
+              try eval value
+              catch error
+                error.info =
+                  JavaScriptEvalError: {}
+                    option: currentOptionName
+                    type
+                    value
+                    argument
+
+                throw error
+
+            else throw new Error "invalid data-type '#{type}:' in: #{argument}\nExpecting: 'string:' or 'js:'"
+          else argument
+
+    {}
+      commands
+      options: object o, k in parsedOptions
+        switch o.length
+        when 0 then true
+        when 1 then o[0]
+        else o
+
+  @getCommandFunction: (commands, commandName) ->
+    if command = commands[normalizeCommandName commandName]
+      command.run
+
+  @selectCommand: (commands, commandNames, defaultCommandName) =>
+    [commandName, args...] = commandNames
+
+    merge {}
+      commandFunction = @getCommandFunction commands, commandName ?= defaultCommandName
+      commandName
+      args: if args.length > 0 then args
+
+  @parseAndSelectCommand: (commands, args, defaultCommandName) =>
+    {options, commands: commandNames} = @parseArgs args
+    {commandFunction, commandName, args} = @selectCommand commands, commandNames, defaultCommandName
+    {}
+      commandFunction
+      commandName
+      options:
+        if args?.length > 0
+          merge options, {} args
+        else options

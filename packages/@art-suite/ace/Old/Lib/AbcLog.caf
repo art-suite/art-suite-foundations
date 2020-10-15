@@ -1,0 +1,8 @@
+import &ArtStandardImport
+
+class AbcLog extends BaseClass
+
+  @classProperty :quiet
+
+  @silenceLog: -> @quiet = true
+  @abcLog: (args...) ->  log args... unless @quiet

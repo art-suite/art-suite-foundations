@@ -1,0 +1,165 @@
+import &StandardImport
+
+testNames = :Alice :Bill :John :SallyMae
+testNamesLowerCamelCased = array name in testNames with lowerCamelCase name
+
+class TestClass extends BaseObject
+  constructor: (@name, @props, @children) ->
+  @getter
+    inspectedObjects: ->
+      merge {}
+        @name
+        @props
+        children: if @children then toInspectedObjects @children
+
+describe
+  createCorrectFactories: ->
+    test "createObjectTreeFactories testNamesString", ->
+      keys = Object.keys createObjectTreeFactories testNames.join(' '), ->
+      assert.eq keys, testNames
+
+    test "createObjectTreeFactories testNames", ->
+      keys = Object.keys createObjectTreeFactories testNames, ->
+      assert.eq keys, testNames
+
+    test "createObjectTreeFactories testNamesLowerCamelCased", ->
+      keys = Object.keys createObjectTreeFactories testNamesLowerCamelCased, ->
+      assert.eq keys, testNames
+
+    test 'createObjectTreeFactories ["Alice", "Bill John", ["SallyMae"]]', ->
+      keys = Object.keys createObjectTreeFactories ["Alice", "Bill John", ["SallyMae"]], ->
+      assert.eq keys, testNames
+
+  fullTests: ->
+    class TestClass extends BaseObject
+      constructor: (@name, @props, @children) ->
+      @getter inspectedObjects: ->
+        merge {} @name, @props, children: @children && toInspectedObjects @children
+
+    test 'createObjectTreeFactories :Alice', ->
+      {Alice} = createObjectTreeFactories :Alice,
+        (nodeName, props, children) -> new TestClass nodeName, props, children
+
+      assert.eq
+        Alice
+          myProp: :myPropValue
+          Alice()
+
+        .inspectedObjects
+
+        name: :Alice
+        props: myProp: :myPropValue
+        children: [] name: :Alice
+
+    test 'createObjectTreeFactoriesFromFactoryFactories :Alice', ->
+
+      {Alice} = createObjectTreeFactories :Alice,
+        (nodeName) -> (props, children) -> new TestClass nodeName, props, children
+
+      assert.eq
+        Alice
+          myProp: :myPropValue
+          Alice()
+
+        .inspectedObjects
+
+        name: :Alice
+        props: myProp: :myPropValue
+        children: [] name: :Alice
+
+  more: ->
+    test "function", ->
+      f = createObjectTreeFactory (props, children) -> merge {props, children}
+      assert.eq (f foo: 123), props: {foo: 123}
+      assert.eq
+        f
+          foo: 123
+          f bar: 456 # NOTE: this returns a plain object, so it becomes props, not a child
+
+        props:
+          foo:        123
+          props: bar: 456
+
+    test "class basic", ->
+      f = createObjectTreeFactory class MyTestClass extends BaseClass
+        constructor: (@props, @children) ->
+
+        @getter
+          inspectedObjects: ->
+            merge {} @props, children: if @children then toInspectedObjects @children
+
+      assert.eq f.class, MyTestClass
+      assert.eq (f foo: 123).inspectedObjects, props: {foo: 123}
+      assert.eq
+        f
+          foo: 123
+          f bar: 456
+        .inspectedObjects
+
+        props:              foo: 123
+        children: [] props: bar: 456
+
+    test "auto bind class methods to factory", ->
+      class MyTestClass extends TestClass
+        @myClassFunction: -> @getName()
+
+      f = createObjectTreeFactory class: MyTestClass
+
+      assert.eq f.class, MyTestClass
+      assert.eq
+        f
+        .myClassFunction()
+
+        :MyTestClass
+
+  mergePropsIntoOnlyRunsOfTwoOrMore: ->
+    f = createObjectTreeFactory
+      (props, children) -> merge {props, children}
+      mergePropsInto: (_into, props) ->
+        object v, k from props into _into with-key lowerCamelCase k
+
+    assert.eq
+      f
+        Fun: :123
+        {} Funner: 456
+      props: fun: :123 funner: 456
+
+    assert.eq
+      f
+        Fun: :123
+      props: Fun: :123
+
+  preprocessElement: ->
+    f = createObjectTreeFactory
+      (props, children) -> merge {props, children}
+      preprocessElement: (element, Factory) ->
+        assert.same f, Factory
+        switch
+        when element == null
+          "Nullification Nation"
+        when element == undefined
+          "Power to the UnDefed!"
+        when element is Object
+          object v, k from element with-key lowerCamelCase k
+        else element
+
+    assert.eq
+      f
+        Fun: :123
+        {} Funner: 456
+      props: fun: :123 funner: 456
+
+    assert.eq
+      f
+        Fun: :123
+      props: fun: :123
+
+    assert.eq
+      f
+        null
+      children: [] "Nullification Nation"
+
+    assert.eq
+      f
+        undefined
+      children: [] "Power to the UnDefed!"

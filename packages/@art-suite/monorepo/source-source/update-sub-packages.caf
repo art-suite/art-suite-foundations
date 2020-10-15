@@ -1,0 +1,60 @@
+import &StandardImport
+
+updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDeps?
+  object fromVersion, packageName in fromDeps
+    if (toVersion = toDeps[packageName]) && fromVersion != toVersion
+      if fileRefMatch = toVersion.match /// ^file:(.*)$
+        "" ^#{packages[fileRefMatch[1]].version}
+      else
+        toVersion
+    else
+      fromVersion
+
+updateAllPackageDependencies = (rootPackage, packages, dependencySetName = :dependencies, updatedMap = {}, universalUpdates) ->
+  rootDeps = merge rootPackage.dependencies, rootPackage.devDependencies
+  return unless objectHasKeys rootDeps
+
+  each _package, packageRoot in packages into updatedMap
+    originalPackage = _package
+
+    if objectHasKeys deps = _package[dependencySetName]
+
+      newDeps = updateDependencyVersions packages, deps, rootDeps
+      changed = newDeps && neq(newDeps, deps)
+
+      if changed
+        _package = packages[packageRoot] = merge _package, [dependencySetName]: newDeps
+
+    if universalUpdates
+      _package = merge _package, universalUpdates
+
+    if neq originalPackage, _package
+      updatedMap[packageRoot] = true
+      file = packageRoot + :/package.json
+      log {} update: file
+      writeJson file, merge _package, universalUpdates
+
+updateSubPackages = ({quiet}) ->
+  !quiet && log blue "" Updating ./package.json >> **/package.json...
+
+  loadAllPackages()
+  .then (packages) ->
+    rootPackage = readJson :package.json
+
+    updatedMap = updateAllPackageDependencies
+      rootPackage
+      packages
+
+    updateAllPackageDependencies
+      rootPackage
+      packages
+      :devDependencies
+      updatedMap
+      {author, bugs, homepage, license, repository} = rootPackage
+
+    if 0 < updateCount = objectKeyCount updatedMap
+      log "" Updated #{pluralize :package, updateCount}
+    else
+      log "Everything up to date."
+
+    null

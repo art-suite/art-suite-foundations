@@ -1,0 +1,27 @@
+import &StandardImport, {} &path, &globPromise
+
+class LoadAceConfig
+
+  @AceMain: null # gets set by AceMain
+
+  @configBasename:          :ace.config
+
+  @registerLoaders: =>
+    @AceMain.realRequire :caffeine-script/register
+
+  @loadAceConfig: (npmRoot) =>
+    configFilepath = path.join npmRoot, @configBasename
+
+    Promise
+    .then -> @registerLoaders()
+    .then ->
+      globPromise
+        configFilepath
+        + "*"
+
+    .then (results) ->
+      if results.length > 0
+        @AceMain.realRequire configFilepath
+
+      else
+        {}

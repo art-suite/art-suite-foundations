@@ -1,0 +1,42 @@
+
+{}
+  ## supportedTagsList
+    Omitted tags: <object> - because "Object" is an important, global JavaScript entity.
+  supportedTagsList: &ArtStandardLib.w
+    ""
+      A Abbr Acronym Address Applet Area Article Aside Audio B Base BaseFont Bdi Bdo
+      Big BlockQuote Body Br Button Canvas Caption Center Cite Code Col ColGroup
+      DataList Dd Del Details Dfn Dialog Dir Div Dl Dt Em Embed FieldSet FigCaption
+      Figure Font Footer Form Frame FrameSet H1 H2 H3 H4 H5 H6 Head Header Hr Html I IFrame Img Input
+      Ins Kbd KeyGen Label Legend Li Link Main Map Mark Menu MenuItem Meta Meter Nav
+      NoFrames NoScript Ol OptGroup Option Output P Param Pre Progress Q Rp Rt
+      Ruby S Samp Script Section Select Small Source Span Strike Strong Style Sub
+      Summary Sup Table TBody Td TextArea TFoot Th THead Time Title Tr Track Tt U Ul
+      Var Video Wbr
+      RawHtml
+
+  noCloseTags:
+    link:     true
+    meta:     true
+    img:      true
+    br:       true
+    wbr:      true
+
+  rawHtmlTags:  object :rawhtml :pre :script :style with true
+  # blockTags:    object :div :p :h1 :h2 :h3 :h4 :h5 :h6 :head :body :style :script :iframe :input :ul :pre :textarea with true
+  spanningTags: object :span :a :b :u :i :q :s :abbr :em :strike :strong with true
+
+  htmlEscapes =
+    '"': "" &quot;
+    '&': "" &amp;
+    '<': "" &lt;
+    '>': "" &gt;
+
+  getHtmlEscape = (e) -> htmlEscapes[e]
+
+  escapeHtmlString = (string) ->
+    string = "#{string}"
+    if /["<>&]/.test string
+      string.replace /["<>&]/g, getHtmlEscape
+
+    else string

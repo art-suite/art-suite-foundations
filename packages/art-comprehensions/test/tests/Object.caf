@@ -1,0 +1,44 @@
+import &StandardImport
+
+suite:
+  fromObjects: ->
+    test "no function, empty _object", ->
+      b = _object a = {}
+      assert.eq a, b
+      assert.notSame a, b
+
+    test "no function, non-empty _object", ->
+      b = _object a = {a: 1, b: 2}
+      assert.eq a, b
+      assert.notSame a, b
+
+    testComprehension {a:2 b:4 c:6 d:8} _object, {a:1 b:2 c:3 d:4}  x2
+    testComprehension {a:2 b:4 c:6 d:8} _object, {a:1 b:2 c:3 d:4}  with: x2
+    testComprehension {a:2 b:4 c:6 d:8} _object, {a:1 b:2 c:3 d:4}  map:  x2
+    testComprehension {b:2 d:4}         _object, {a:1 b:2 c:3 d:4}  when: even
+    testComprehension {a::a1 b::b2}     _object, {a:1 b:2}          (v, k) -> k + v
+
+    testComprehension
+      11: 1 22: 2 33: 3 44: 4
+      _object
+      a: 1 b: 2 c: 3 d: 4
+      key: (v) -> v * 11
+
+  fromArrays: ->
+    testComprehension {1:1    2:2}    _object, [1 2]
+    testComprehension {1:true 2:true} _object, [1 2] -> true
+    testComprehension {1:2    2:4}    _object, [1 2] x2
+    testComprehension {a::aa  b::bb}  _object, [:a :b] x2
+    testComprehension {a:0a   b:1b}   _object, [:a :b] (v, k) -> k + v
+
+  fromMaps: ->
+    myMap = new Map []
+      :a 1
+      :b 2
+      :c 3
+      :d 4
+
+    testComprehension {a:2 b:4 c:6 d:8} _object, myMap, x2
+
+  fromGenerators: ->
+    testComprehension {1:2 2:4 3:6} _object, generate3(), x2

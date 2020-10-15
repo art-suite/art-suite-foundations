@@ -1,0 +1,115 @@
+import &StandardImport
+
+test "createObjectTreeFactory example" ->
+  class TreeNode
+    constructor: (@props, @children) ->
+    toObjects: ->
+      TreeNode: {}
+        @props
+        children: @children && array child in @children
+          child.toObjects?() || child
+
+  Node = createObjectTreeFactory (props, children) ->
+    new TreeNode props, children
+
+  commonProps = color: "black"
+
+  assert.eq
+    Node
+      commonProps
+      height: "100"
+      width: "200"
+
+      "Does this work for you?"
+
+      Node commonProps, source: "images/piglet.png"
+
+      "This works for me!"
+
+      Node "Ka-blam!"
+
+    .toObjects()
+
+    TreeNode:
+      props:
+        color:  :black
+        height: :100
+        width:  :200
+
+      children: []
+        "Does this work for you?"
+
+        TreeNode:
+          props:
+            color:  :black
+            source: :images/piglet.png
+
+          children: undefined
+
+        "This works for me!"
+
+        TreeNode: props: undefined, children: [] :Ka-blam!
+
+test "createObjectTreeFactories example" ->
+  class TagNode
+    constructor: (@tag, @props, @children) ->
+    toString: (indent = '')->
+      "<#{@tag}"
+      + if @props
+        ' ' +
+          array v, k in @props
+            "#{k}='#{v}'"
+          .join ' '
+      else ''
+      + ">"
+      + if @children
+        indent2 = indent + '  '
+        "\n" + indent2 +
+          array child in @children
+            child.toString indent2
+          .join "\n#{indent2}"
+        + "\n"
+      else ''
+      + "#{indent}</#{@tag}>"
+
+  {Html, Head, Body, Div, P, B} = createObjectTreeFactories
+    :html :head :body :div :p :b
+    TagNode
+
+  assert.eq
+    Html Head Body
+      Div
+        class: :row
+        Div
+          class: :col
+          P
+            "This is truely "
+            B "fantastic"
+            "!"
+        Div
+          class: :col
+          P "What do you think?"
+    .toString()
+    """
+      <html>
+        <head>
+          <body>
+            <div class='row'>
+              <div class='col'>
+                <p>
+                  This is truely\_
+                  <b>
+                    fantastic
+                  </b>
+                  !
+                </p>
+              </div>
+              <div class='col'>
+                <p>
+                  What do you think?
+                </p>
+              </div>
+            </div>
+          </body>
+        </head>
+      </html>

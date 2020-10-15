@@ -1,0 +1,36 @@
+import &StandardImport, &AbcLog
+
+class Initialization
+
+  @initPackage: (recipeName, npmRoot, options) ->
+    options extract pretend, verbose
+    if pretend && !verbose
+      options = merge options, verbose: true
+
+    recipeName = null if recipeName == true
+    recipeName = dashCase recipeName ? :core
+
+    if recipeName == :Help
+      abcLog
+        """
+          Please select a valid recipe name:
+
+            #{Recipes.getModuleNames().join '\n  '}
+
+          Ex: abc -i node
+
+      Promise.reject "exiting"
+
+    else
+      abcLog "\n#{if pretend then :PRETEND-}INIT-#{recipeName}: #{npmRoot}"
+      unless recipe = RecipeRegistry.recipes[recipeName]
+        abcLog recipes: object recipe, name in RecipeRegistry.recipes
+          recipe.description ? "" (no description)
+
+        Promise.reject
+          "Please provide a valid recipe name."
+
+      else
+        recipe.writeFiles npmRoot, options
+
+        abcLog "#{if pretend then :PRETEND-}INIT-#{recipeName}: done"

@@ -1,0 +1,67 @@
+import &ArtStandardLib
+
+mapFileStructure = (fileStructure, mapper, path = []) ->
+  object value, key in fileStructure
+    if value is Object
+      mapFileStructure value, mapper, arrayWith path, key
+
+    else mapper value, key, path
+
+resolvePath = (path, name) -> &path.join path..., name
+resolveConfigData = (currentData, configData) -> Promise.then ->
+  if isFunction configData
+    configData currentData
+  else configData
+
+mergeJsonFile = (path, file, configData) ->
+  readFileAsStringASync
+    resolvePath path, file
+    "{}"
+
+  .then JSON.parse
+  .then (currentData) ->
+    resolveConfigData currentData, configData
+    .then (resolvedConfigData) ->
+      merge
+        currentData
+        resolvedConfigData
+
+mergeJsonFiles = (files) ->
+  Promise.deepAll mapFileStructure files, (configData, name, path) ->
+    switch
+    when /\.json/i.test
+      File mergeJsonFile path, name, plainConfigData
+
+    when configData is Function
+      readFileAsStringAsync
+        resolvePath path, name
+      .then (current) ->
+        configData current
+
+    else configData
+
+buildArtSuiteFoundationStandardPackage = ->
+  scripts:
+    test:         :jest
+    build:        "" caf -p -c source-source -o source; nn -s
+    build-clean:  "" npm run clean; npm run build
+    clean:        "" rm -rf source/*
+    watch:        :npm-watch
+
+  jest:
+    testEnvironment: :node
+    collectCoverageFrom:
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+
+  watch:
+    build:
+      extensions: [] :caf
+      patterns:   [] :source-source
+      quiet:      false
+
+files: mergeJsonFiles
+  package.json: -> buildArtSuiteFoundationStandardPackage
+    bin:
+      abc: :./abc
+      art-build-configurator: :./art-build-configurator

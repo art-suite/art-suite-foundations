@@ -1,0 +1,49 @@
+import &StandardImport, &Util
+
+class Main
+
+  ##
+    IN: config:
+      commands:
+        default: command-function (optional)
+        command1Name: command-function
+        command2Name: command-function
+        command3Name: command-function
+
+      help: see Help.getHelp
+
+      argv: [<String>] - defaults to process.argv; provided primarilly for testing
+
+    command-function: (options, args) -> result, optionally a Promise
+      IN:
+        options:  are the parsed options - see Parse.parseArgs
+        args:     undefined or array of arguments not part of options
+
+    options: object mapping lowerCamelCase option names to values parsed from the argv array
+  @start: ({commands, default: _default, description, help, argv, output}) =>
+    output ?= log
+    argv ?= process.argv
+    [nodeJs, startFile, args...] = argv
+
+    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand
+      commands = normalizeCommands commands, help
+      args
+      _default
+
+    Promise.then ->
+      if commandFunction && !options.help
+        if options.verbose
+          output merge {}
+            options
+            command:  commandName
+            args:     if args?.length > 0 then args
+
+        commandFunction options, args
+
+      else
+        &Help.getHelp
+          startFile
+          {} commands, description
+          commandName
+
+    .tap (result) -> result? && output result

@@ -1,0 +1,62 @@
+import &StandardImport
+
+benchmark
+  :sync
+  -> 1 + 2 + 3
+  testDuration: .1
+  loopUnrolling: 64
+
+benchmark
+  :async_promise
+  -> timeout 1
+  testDuration: .1
+
+benchmark
+  :async_callback
+  (callback) -> setTimeout callback, 10
+  testDuration: .1
+
+wasSetup = false
+benchmark
+  :all-options
+  -> 1 + 2 + 3
+  testDuration: .1
+  warmUpDuration: .1
+  loopUnrolling: 1
+  setup: -> wasSetup = true
+  logTestOutput: true
+  postProcessesResults: (results) ->
+    assert.true wasSetup
+    assert.isObject results
+    assert.gt results.duration, 0
+    null
+
+benchmark
+  :postProcessesResults_alt
+  -> 1 + 2 + 3
+  testDuration: .1
+  postProcessesResults: (results) ->
+    name: :hi
+    testUnits: :greetings
+    totalTests: 10
+    duration: 1
+    gcIncludedDuration: 1.1
+
+benchmark
+  "" loopUnrolling: 1
+  -> 1 + 2 + 3
+  testDuration: .1
+  loopUnrolling: 1
+
+benchmark
+  "" loopUnrolling: 2
+  -> 1 + 2 + 3
+  testDuration: .1
+  loopUnrolling: 2
+
+benchmark
+  "" loopUnrolling: 4
+  -> 1 + 2 + 3
+  testDuration: .1
+  loopUnrolling: 4
+

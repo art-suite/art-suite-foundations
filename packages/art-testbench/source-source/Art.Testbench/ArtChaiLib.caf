@@ -1,0 +1,72 @@
+import &ArtStandardLib, &Presentation, &Chai
+
+assert.test = {}
+
+{}
+  ###
+    IN:
+      options:
+        customFailure:
+          (name, value, context) ->
+          (name, value1, value2, context) ->
+
+      tester:
+        (a) -> true/false
+        (a, b) -> true/false
+  getTesterFor = (name, a, b) ->
+    tester = if isFunction a
+      a
+    else if isPlainObject a
+      options = a
+      b
+    else
+      throw new Error "expected object or function"
+
+    throw new Error "expected tester function" unless isFunction tester
+
+    switch tester.length
+    when 1
+      (testValue, context) ->
+        unless tester testValue
+          if options?.customFailure
+            options?.customFailure name, testValue, context
+
+          else
+            failWithExpectedMessage
+              context
+              inspectedObjectLiteral name
+              "to be true for"
+              testValue
+
+    else
+      (value1, value2, context) ->
+        unless tester value1, value2
+          if options?.customFailure
+            options?.customFailure name, value1, value2, context
+          else
+            failWithExpectedMessage
+              context
+              value1
+              name
+              value2
+
+  addTester = (name, a, b) ->
+    assert[name] = testerFor = getTesterFor name, a, b
+    assert.test[name] =
+      if testerFor.length == 2
+        (func, args, context) ->
+          log.warn "" DEPRICATED: assert.test.* (no alternative provided, sorry!)
+          args = [] unless args?
+          invoke = if args.length == 0 then "#{func.getName()}()" else "#{func.getName()} #{inspectLean(args, forArgs:true)}"
+          args = [args] unless isPlainArray args
+          global.test "#{name} #{invoke}", ->
+            testerFor func(args...), context
+
+      else
+        (func, args, testValue, context) ->
+          log.warn "" DEPRICATED: assert.test.* (no alternative provided, sorry!)
+          args = [] unless args?
+          invoke = if args.length == 0 then "#{func.getName()}()" else "(#{func.getName()} #{inspectLean(args, forArgs:true)})"
+          args = [args] unless isPlainArray args
+          global.test "#{name} #{invoke}, #{inspect testValue}", ->
+            testerFor func(args...), testValue, context

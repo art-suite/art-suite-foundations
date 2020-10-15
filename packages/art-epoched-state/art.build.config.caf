@@ -1,0 +1,32 @@
+import &ArtStandardLib
+target:
+  ##
+    configures for standard node-targeted library
+    NOTE: node-targeted libraries can also be built into broswer-targeted libraries.
+      They just can't be used *directly* in the browser
+  node: true
+
+package: (abcPackage) ->
+  sourceDir = :source-coffee-caf
+  merge abcPackage,
+    description: "" Art.Epoch
+    dependencies:     &package.dependencies
+    devDependencies:  &package.devDependencies
+    scripts: merge abcPackage.scripts,
+      test: "jest"
+      build:
+        """
+          coffee --output source --compile #{sourceDir} &
+          caf -p -c #{sourceDir} -o source &
+          wait
+          nn -s
+
+      build-clean:  "" rm -rf source/*; npm run build
+      watch:        "" watch 'npm run build' ./#{sourceDir}
+
+webpack:
+  # common properties are merged into each target's properties
+  common: {}
+
+  # each target's individual properties
+  targets: index: {}

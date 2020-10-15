@@ -1,0 +1,123 @@
+import &StandardImport
+# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Input
+
+global extract document, HTMLElement, window
+
+class Dom
+  @createElementFromHtml: (html) ->
+    div = document.createElement :div
+    div.innerHTML = html
+    div.firstChild
+
+  @getDevicePixelRatio: -> (self.devicePixelRatio? && self.devicePixelRatio) || 1
+
+  @setDomElementProp: (element, prop, value, oldValue) =>
+    switch prop
+    when :class       then element.className = value || ""
+    when :id          then element.id        = value || ""
+    when :innerHTML   then element.innerHTML = value || ""
+    when :on
+      throw new Error "object expected for 'on' property" unless isPlainObject value
+      setStyle    = (eventType, newEventListener) -> element.addEventListener eventType, newEventListener
+      clearStyle  = (eventType, oldEventListener) -> element.removeEventListner eventType, oldEventListener
+      objectDiff value, oldValue, setStyle, clearStyle, setStyle
+
+    when :style
+      throw new Error "object expected for 'style' property" unless isPlainObject value
+      {style} = element
+      setStyle    = (k, v) -> style[k] = v
+      clearStyle  = (k)    -> style[k] = ""
+      objectDiff value, oldValue, setStyle, clearStyle, setStyle
+
+    else element.setAttribute prop, value
+
+  @setDomElementProps: (element, props) =>
+    each v, k in props
+      @setDomElementProp element, k, v
+
+  @setDomElementChildren: (element, children) ->
+    each oldChild, i in-array element.childNodes
+      break if i >= children.length
+      if newChild is String && newChild != oldChild.textContent
+        element.replaceChild document.createTextNode(newChild), oldChild
+
+      else if oldChild != newChild = children[i]
+        element.replaceChild newChild, oldChild
+
+    oldChildrenLength = element.childNodes.length
+    newChildrenLength = children.length
+
+    while oldChildrenLength > newChildrenLength
+      oldChildrenLength--
+      element.removeChild element.lastChild
+
+    while newChildrenLength > oldChildrenLength
+      element.appendChild
+        if (newChild = children[oldChildrenLength++]) is String
+          document.createTextNode newChild
+        else
+          newChild
+
+  @zIndex: ( target, setZIndex ) ->
+    target = document.getElementById target unless target instanceof HTMLElement
+    return target.style.zIndex = setZIndex if setZIndex != undefined
+
+    element = target
+    while element && element != document
+      ##
+        Ignore z-index if position is set to a value where z-index is ignored by the browser
+        This makes behavior of this function consistent across browsers
+        WebKit always returns auto if the element is positioned
+
+      switch element.style.position
+        when :absolute :relative :fixed
+          ## IE returns 0 when zIndex is not specified
+            other browsers return a string
+            we ignore the case of nested elements with an explicit value of 0
+            <div style="z-index: -10;"><div style="z-index: 0;"></div></div>
+
+          value = parseInt element.style.zIndex
+          return value if value < 0 || value > 0
+
+      element = element.parentElement
+
+    0
+
+  @domElementOffset: (element) ->
+    try
+      box = element.getBoundingClientRect()
+
+      document extract body, documentElement
+
+      scrollTop  = window.pageYOffset || documentElement.scrollTop  || body.scrollTop
+      scrollLeft = window.pageXOffset || documentElement.scrollLeft || body.scrollLeft
+
+      clientTop  = documentElement.clientTop  || body.clientTop  || 0
+      clientLeft = documentElement.clientLeft || body.clientLeft || 0
+
+      top  = box.top  + scrollTop  - clientTop
+      left = box.left + scrollLeft - clientLeft
+
+      top:  Math.round top
+      left: Math.round left
+
+    catch e
+      # if the element has not been added yet, IE11 throws an error
+      top:  0
+      left: 0
+
+
+  # resolves when the DOM is anything other than 'loading'
+  @getDomReadyPromise: ->
+    new Promise (resolvePromise) =>
+      if !document || document.readyState != :loading
+        resolvePromise()
+      else
+        document.addEventListener
+          :readystatechange
+          ->
+            if document.readyState == :interactive
+              resolvePromise()
+
+  @openLink: openLink = (link) ->
+    global.open link, :_blank
