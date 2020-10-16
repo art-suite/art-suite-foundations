@@ -1,0 +1,2 @@
+import &ArtTestbench
+test :foo -> assert.eq 1, 1
