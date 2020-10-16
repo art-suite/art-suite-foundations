@@ -86,7 +86,7 @@ module.exports = suite:
       test "firstOfWeek firstOfWeek foo", ->
         start = 1537142400 - 100
         end = start + 3600 * 24 * 7
-        for seconds in [start..end]
+        for seconds in [start..end] by 61
           first = firstOfWeek seconds
           second = firstOfWeek seconds
           if first != second
