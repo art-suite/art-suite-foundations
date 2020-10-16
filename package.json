@@ -72,6 +72,7 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
+    "clean": "art-monorepo clean",
     "sync": "art-monorepo sync",
     "test": "art-monorepo test",
     "update": "art-monorepo update"

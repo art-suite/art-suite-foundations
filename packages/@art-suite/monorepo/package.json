@@ -8,7 +8,9 @@
     "@art-suite/cli": "^1.3.7",
     "chalk": "^4.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",
   "name": "@art-suite/monorepo",
