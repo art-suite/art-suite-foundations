@@ -55,5 +55,6 @@ logRun = (verb, packagePath) ->
         each f in failed
           log blue "  failed: " + red f
 
-      process.exit 1 if failed > 1
+        process.exit 1
+
       null

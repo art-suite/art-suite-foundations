@@ -112,8 +112,6 @@ Caf.defMod(module, () => {
               log(blue("  succeeded: " + yellow(passed.length)));
               if (failed.length > 0) {
                 Caf.each2(failed, (f) => log(blue("  failed: " + red(f))));
-              }
-              if (failed > 1) {
                 process.exit(1);
               }
               return null;
