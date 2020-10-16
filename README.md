@@ -1,5 +1,7 @@
 # Art-Suite-Foundations
 
+[![Actions Status](https://github.com/art-suite/art-suite-foundations/workflows/test/badge.svg)](https://github.com/art-suite/art-suite-foundations/actions)
+
 Foundational Mono-Repo
 
 This time, only going to include the foundations CaffeineSuite requires.
