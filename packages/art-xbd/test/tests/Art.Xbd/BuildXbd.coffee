@@ -1,7 +1,5 @@
-Xbd = require 'art-xbd'
-{Binary, log, RestClient} = require 'art-foundation'
-{XbdTag, fromXbd, createTagFactories} = Xbd
-{stream} = Binary
+{XbdTag, fromXbd, createTagFactories} = Xbd = require 'art-xbd'
+{stream} = require 'art-binary'
 
 {
   Foo

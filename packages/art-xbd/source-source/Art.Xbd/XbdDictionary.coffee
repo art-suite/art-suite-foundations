@@ -1,5 +1,5 @@
 {log, inspect} = require 'art-standard-lib'
-{Binary} = require 'art-foundation'
+Binary = require 'art-binary'
 {binary, WriteStream, stream} = Binary
 
 {BaseClass} = require 'art-class-system'

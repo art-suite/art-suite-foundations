@@ -1,7 +1,5 @@
 Xbd = require 'art-xbd'
-{Binary, log, RestClient} = require 'art-foundation'
 {XbdTag, indentString, fromXbd, createTagFactories} = Xbd
-{stream} = Binary
 fs = require 'fs-extra'
 path = require 'path'
 

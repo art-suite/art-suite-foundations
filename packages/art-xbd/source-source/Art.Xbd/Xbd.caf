@@ -1,0 +1,6 @@
+XbdTag = &XbdTag
+{}
+  XbdTag.createTagFactories
+  XbdTag.fromXbd # DEPRICATED
+  parse:    XbdTag.fromXbd # DEPRICATED
+  xbd:      XbdTag.fromXbd

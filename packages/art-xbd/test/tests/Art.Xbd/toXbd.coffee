@@ -1,9 +1,5 @@
-Foundation = require 'art-foundation'
-Xbd = require 'art-xbd'
-
-{Binary, log, RestClient} = Foundation
-{XbdTag, fromXbd, createTagFactories} = Xbd
-{binary} = Binary
+{XbdTag, fromXbd, createTagFactories} = require 'art-xbd'
+{binary} = require 'art-binary'
 
 testWriteReadXbd = (testName, tagFactory) ->
   test testName, ->
