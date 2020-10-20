@@ -1,6 +1,6 @@
-{Lib, formattedInspect} = require '../../StandardImport'
+import &StandardImport
 
-module.exports = suite:
+describe
   getExternalEnvironment: ->
     test "artConfig with JSON string", ->
       assert.eq
@@ -27,37 +27,31 @@ module.exports = suite:
         Lib.getExternalEnvironment "artConfig.Art.Foo.bar": 123, artConfig: '{"foo": 1}'
 
     test "normal evaluation doesn't crash", ->
-      Lib.getExternalEnvironment()
+      assert.isObject Lib.getExternalEnvironment()
 
   smartJsonDecode: ->
     tests =
-      '123': 123
-      'Hi': 'Hi'
-      '"Hi"': 'Hi'
-      '[1]': [1]
-      '[]': []
+      123:    123
+      Hi:     :Hi
+      '"Hi"': :Hi
+      '[1]':  [1]
+      '[]':   []
       '{"hi":true}': hi: true
-      '{}': {}
-      'null': null
-      'false': false
-      'true': true
-      'true2': "true2"
+      '{}':   {}
+      null:   null
+      false:  false
+      true:   true
+      true2:  "true2"
 
-    for k, v of tests
-      test(
+    each v, k from tests
+      test
         formattedInspect k
         ->
           assert.eq v,
             Lib.smartJsonDecode k
-      )
 
-    test "123", ->
-      assert.eq 123,
-        Lib.smartJsonDecode 123
-
-    test "undefined", ->
-      assert.eq null,
-        Lib.smartJsonDecode undefined
+    test "123"        -> assert.eq 123  Lib.smartJsonDecode 123
+    test "undefined"  -> assert.eq null Lib.smartJsonDecode undefined
 
   normalizeArtConfigName: ->
     test "normalizeArtConfigName 'prod'",         -> assert.eq "Production",    Lib.normalizeArtConfigName "prod"

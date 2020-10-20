@@ -1,4 +1,4 @@
-{configure,ConfigRegistry, getArtConfig,getArtConfigName,merge} = require '../../StandardImport'
+import &StandardImport
 
 resetGlobals = ->
   global.artConfig = null
@@ -8,13 +8,13 @@ testArtConfigGlobalConfig = (name, f) ->
   test name, ->
     value = f()
     assert.eq getArtConfig(), merge
-      Tests: Art: Config: name: "TestName", verbose: false
+      Test: Art: Config: name: "TestName", verbose: false
       value
 
-module.exports = suite:
+describe
   globalArtConfig: ->
-    setup ->
-      configure()
+    beforeAll ->
+      configure configName: :Test
 
     test "Art.Config.config",     ->
       assert.isObject getArtConfig()
@@ -25,38 +25,37 @@ module.exports = suite:
       assert.eq Neptune.Art.Config.configName, getArtConfigName()
 
   artConfigSources: ->
-    setup resetGlobals
-    teardown resetGlobals
+    beforeAll resetGlobals
 
     testArtConfigGlobalConfig "args", ->
-      configure artConfig: foo: "argsBar"
+      configure artConfigName: :Test artConfig: foo: "argsBar"
       foo: "argsBar"
 
     testArtConfigGlobalConfig "global.artConfig", ->
       global.artConfig = foo: "globalBar"
-      configure()
+      configure artConfigName: :Test
       foo: "globalBar"
 
     testArtConfigGlobalConfig "env", ->
-      configure artConfig: {}, __testEnv: artConfig: foo: "envBar"
+      configure artConfigName: :Test artConfig: {}, __testEnv: artConfig: foo: "envBar"
       foo: "envBar"
 
   pathedConfigProps: ->
-    setup resetGlobals
-    teardown resetGlobals
+    beforeAll resetGlobals
+    afterAll resetGlobals
 
     testArtConfigGlobalConfig "foo.bar: 'globalBar'", ->
       global.artConfig = "foo.bar": "globalBar"
-      configure()
+      configure artConfigName: :Test
       foo: bar: "globalBar"
 
   artConfigNameSources: ->
-    setup resetGlobals
-    teardown resetGlobals
+    beforeAll resetGlobals
+    afterAll resetGlobals
 
     testArtConfigGlobalConfig "baseline", ->
       configure()
-      assert.eq getArtConfigName(), "Development"
+      assert.eq getArtConfigName(), :Development
       {}
 
     testArtConfigGlobalConfig "args", ->

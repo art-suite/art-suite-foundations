@@ -111,8 +111,9 @@ defineModule module, class Main
 
     configName = if normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
       configName = normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
-      if configName && !ConfigRegistry.configs[configName]
-        log.warn "ArtConfig.configure: no config registered with name: '#{configName}'"
+      if configName && !ConfigRegistry.configs[configName] && configName != "Test"
+        log.warn "ArtConfig.configure: no config registered with name: '#{configName}-'"
+
       configName
     else
       defaultArtConfigName

@@ -122,7 +122,7 @@
       externalEnvironment = getExternalEnvironment(__testEnv);
       config = getArtConfig();
       defaultArtConfigName = getDefaultArtConfigName();
-      configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName) ? (configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName), configName && !ConfigRegistry.configs[configName] ? log.warn("ArtConfig.configure: no config registered with name: '" + configName + "'") : void 0, configName) : defaultArtConfigName;
+      configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName) ? (configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName), configName && !ConfigRegistry.configs[configName] && configName !== "Test" ? log.warn("ArtConfig.configure: no config registered with name: '" + configName + "-'") : void 0, configName) : defaultArtConfigName;
       setArtConfigName(configName);
       Main.resetCurrentConfig();
       ref3 = compactFlatten([
