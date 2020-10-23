@@ -66,18 +66,20 @@
     };
 
     ParseUrl.urlJoin = function() {
-      var path, paths, uri;
+      var paths, uri;
       uri = arguments[0], paths = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-      return (uri.replace(/\/$/, '')) + "/" + (((function() {
-        var j, len, ref1, results;
-        ref1 = compactFlatten(paths);
-        results = [];
-        for (j = 0, len = ref1.length; j < len; j++) {
-          path = ref1[j];
-          results.push(path.replace(/^\/|\/$/g, ''));
-        }
-        return results;
-      })()).join('/'));
+      return uri.replace(/\/+$/, '') + '/' + (paths.join('/').replace(/\/\/+/, '\/')).replace(/^\/+/, '');
+    };
+
+    ParseUrl.urlResolve = function() {
+      var concatPaths, paths, uri;
+      uri = arguments[0], paths = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      concatPaths = paths.join('/').replace(/\/\/+/, '\/');
+      if (/^\//.test(paths[0])) {
+        return new URL(concatPaths, uri).href;
+      } else {
+        return (uri.replace(/\/$/, '')) + "/" + concatPaths;
+      }
     };
 
     ParseUrl.appendQuery = function(uri, o) {

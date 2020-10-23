@@ -1,9 +1,6 @@
-{
-  urlJoin, parseUrl, parseQuery, sameOrigin
-  generateQuery
-} = Neptune.Art.StandardLib
+import &source
 
-module.exports = suite:
+suite:
   parseQuery: ->
     testParseQuery = (input, expected) ->
       test input, ->
@@ -17,29 +14,60 @@ module.exports = suite:
 
   generateQuery: ->
     test "generateQuery", ->
-      assert.eq generateQuery({
-          isNull: null, isUndefined: undefined,
-          isFalse: false,
-          isTrue: true, isEmpty: '',
+      assert.eq
+        generateQuery
+          isNull: null
+          isUndefined: undefined
+          isFalse: false
+          isTrue: true
+          isEmpty: ''
           isNotEmpty: 'abc'
-        }),
-        "isFalse=false&isTrue=true&isEmpty=&isNotEmpty=abc"
 
-  urlJoin: ->
-    tests = [
-      ['http://foo.com/bob',     'http://foo.com/', 'bob' ]
-      ['http://foo.com/bob',     'http://foo.com/', '/bob']
-      ['http://foo.com/bob',     'http://foo.com',  '/bob']
-      ['http://foo.com/bob',     'http://foo.com',  'bob' ]
-      ['http://foo.com/bob/',    'http://foo.com',  'bob/' ]
-      ['http://foo.com/bob/foo', 'http://foo.com',  'bob/foo' ]
-    ]
+        "" isFalse=false&isTrue=true&isEmpty=&isNotEmpty=abc
 
-    for [out, uri, path] in tests
+  "urlJoin and urlResolve are the same": ->
+    tests = []
+      [] 'http://foo.com/bob',      'http://foo.com/',    'bob'
+      [] 'http://foo.com/bob',      'http://foo.com/',    '/bob'
+      [] 'http://foo.com/bob',      'http://foo.com',     '/bob'
+      [] 'http://foo.com/bob',      'http://foo.com',     'bob'
+      [] 'http://foo.com/bob/',     'http://foo.com',     'bob/'
+      [] 'http://foo.com/bob/foo',  'http://foo.com',     'bob/foo'
+      [] 'http://foo.com/foo/bob',  'http://foo.com/foo', 'bob'
+
+    each [out, uri, path] in tests
+      test "#{uri} + #{path} = #{out}", ->
+        assert.eq out, urlJoin uri, path
+        assert.eq out, urlResolve uri, path
+
+  "urlJoin differs": ->
+    tests = []
+      [] 'http://foo.com/foo/bob',  'http://foo.com/foo', '/bob'
+      [] 'http://foo.com/foo/bob',  'http://foo.com/foo/', '/bob'
+
+    each [out, uri, path] in tests
       test "#{uri} + #{path} = #{out}", ->
         assert.eq out, urlJoin uri, path
 
+  "urlResolve differs": ->
+    tests = []
+      [] 'http://foo.com/bob',      'http://foo.com/foo', '/bob'
+      [] 'http://foo.com/bob',      'http://foo.com/foo/', '/bob'
+
+    each [out, uri, path] in tests
+      test "#{uri} + #{path} = #{out}", ->
+        assert.eq out, urlResolve uri, path
+
   parseUrl: ->
+    # fixing this changes parseUrl too much, though I think it probably should be changed...
+    # What to do???
+    # test "start with slash is NOT a domain", ->
+    #   assert.eq
+    #     merge parseUrl "/foo.bar"
+    #     pathName: "/foo.bar"
+    #     path:     "/"
+
+
     test "just domain", ->
       a = parseUrl "myDomain.com"
       assert.eq a,
@@ -73,7 +101,7 @@ module.exports = suite:
         anchor: "myAnchor"
 
   sameOrigin: ->
-    tests = [
+    tests = []
       [true,  "/",                        "http://foo.com"]
       [true,  "/foo",                     "http://foo.com"]
       [true,  "/",                        "http://foo.com:8080"]
@@ -84,7 +112,6 @@ module.exports = suite:
       [false, 'http://foo.com/anything',  'http://bar.com']
       [false, 'http://foo.com/anything',  'http://foo.com:8080']
       [false, 'http://foo.com/anything',  'http://bar.com']
-    ]
-    for [result, url, origin] in tests
+    each [result, url, origin] in tests
       test "#{result}: sameOrigin '#{url}', '#{origin}'", ->
         assert.eq result, sameOrigin url, origin

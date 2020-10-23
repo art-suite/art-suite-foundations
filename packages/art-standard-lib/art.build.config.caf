@@ -1,26 +1,18 @@
-
 import &ArtStandardLib
-
-target: node: true
-package: (abcPackage) -> merge abcPackage,
-  description: "The Standard Library for JavaScript that aught to be."
-  dependencies:     &package.dependencies
-  devDependencies:  &package.devDependencies
-  scripts: merge abcPackage.scripts,
-    build: "coffee --output source --compile source-coffee;nn -s"
-
-webpack:
-  targets:
-    index:  {}
-    Types:  {}
-    Core:   {}
-
-##
-  package.json: ({packageRoot, gitRoot, current}) ->
-    deepMerge
-      current
-      description: "The Standard Library for JavaScript that aught to be."
-      scripts:
-        build: "coffee --output source --compile source-coffee; nn -s --quiet"
-        clean: "rm -rf source/*"
-        build-clean: "npm run clean; npm run build"
+package: (abcPackage) -> merge &package,
+  scripts:
+    test:         "" nn -s;mocha -u tdd
+    build:        "" coffee --output source --compile source-source; caf -p -c source-source -o source; nn -s
+    build-clean:  "" npm run clean; npm run build
+    clean:        "" rm -rf source/*
+    watch:        :npm-watch
+  jest:
+    testEnvironment: :node
+    collectCoverageFrom:
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+  watch:
+    build:
+      extensions: [] :caf :coffee
+      patterns:   [] :source-source
+      quiet:      false

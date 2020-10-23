@@ -17,6 +17,13 @@
     "mock-fs": "^4.13.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
   "license": "ISC",
   "name": "art-standard-lib",
   "repository": {
@@ -24,10 +31,23 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee --output source --compile source-coffee;nn -s",
-    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "build": "coffee --output source --compile source-source; caf -p -c source-source -o source; nn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
     "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress --env.devServer"
+    "watch": "npm-watch"
   },
-  "version": "1.69.9"
+  "version": "1.69.9",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }

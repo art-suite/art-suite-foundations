@@ -37,7 +37,15 @@ module.exports = class ParseUrl
       "#{encodeURIComponent k}=#{encodeURIComponent v}"
     parts.join "&"
 
-  @urlJoin: (uri, paths...) -> "#{uri.replace /\/$/, ''}/#{(path.replace /^\/|\/$/g, '' for path in compactFlatten paths).join '/'}"
+  @urlJoin: (uri, paths...) ->
+    uri.replace(/\/+$/, '') + '/' + (paths.join('/').replace /\/\/+/, '\/').replace /^\/+/, ''
+
+  @urlResolve: (uri, paths...) =>
+    concatPaths = paths.join('/').replace /\/\/+/, '\/'
+    if /^\//.test paths[0]
+      new URL(concatPaths, uri).href
+    else
+      "#{uri.replace /\/$/, ''}/#{concatPaths}"
 
   @appendQuery: (uri, o) ->
     if o? && (str = generateQuery o).length > 0

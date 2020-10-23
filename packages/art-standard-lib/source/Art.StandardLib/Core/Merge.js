@@ -36,11 +36,13 @@
       return mergeIntoWithNullDeletes({}, all);
     };
 
-    Merge.mergeWithSelf = function() {
+    Merge.mergeWith = function() {
       var all;
       all = 1 <= arguments.length ? slice.call(arguments, 0) : [];
       return mergeInto({}, this, all);
     };
+
+    Merge.mergeWithSelf = Merge.mergeWith;
 
 
     /*
