@@ -53,3 +53,5 @@
   })(BaseObject));
 
 }).call(this);
+
+//# sourceMappingURL=Configuration.js.map

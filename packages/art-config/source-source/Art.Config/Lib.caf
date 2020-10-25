@@ -1,0 +1,78 @@
+import &ArtStandardLib
+jsonParsableRegexp =
+  ///
+    ^
+    (
+      # array
+      \[ .* \] |
+
+      # object
+      \{ .* \} |
+
+      # string
+      \" .* \" |
+
+      (
+        # number
+        (-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?)
+        |
+
+        # constants
+        true | false | null
+      )
+    )
+    $
+
+externalEnvironmentRegExp = /^artConfig([\._])(.+)$/
+
+class Lib
+
+  # if value is a string and it looks like JSON, decode it as JSON
+  @smartJsonDecode: smartJsonDecode = (value) ->
+    if isString(value) && jsonParsableRegexp.test value
+      JSON.parse value
+    else
+      value ? null
+
+  # arguments are there for testing purposes
+  @getExternalEnvironment: (externalEnvironment = getEnv())->
+    externalEnvironment extract artConfig, artConfigName
+
+    artConfig = switch
+      when isPlainObject artConfig then artConfig
+      when isString artConfig
+        try
+          JSON.parse artConfig
+        catch e
+          log.error
+            """
+
+              Invalid 'artConfig' from externalEnvironment. Must be valid JSON.
+
+              #{formattedInspect externalEnvironment: externalEnvironment}
+
+              artConfig: #{formattedInspect artConfig}
+
+              error: #{e}
+
+          null
+
+      else {}
+
+    each v, k in externalEnvironment when externalEnvironmentRegExp.test k
+      m = k.match externalEnvironmentRegExp
+      if m[1] == :_
+            artConfig[m[2].replace /_/g, '.'] = smartJsonDecode v
+      else  artConfig[m[2]] = smartJsonDecode v
+
+    {} artConfig, artConfigName
+
+  ###
+    normalized:
+      map standard aliases (dev and prod)
+      upperCamelCase
+  @normalizeArtConfigName: (artConfigName)->
+    switch artConfigName
+    when :dev   then :Development
+    when :prod  then :Production
+    else artConfigName && upperCamelCase artConfigName

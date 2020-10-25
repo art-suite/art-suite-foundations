@@ -7,6 +7,7 @@
   ConfigRegistry: require('./ConfigRegistry'),
   Configurable:   require('./Configurable'),
   Configuration:  require('./Configuration'),
+  Configure:      require('./Configure'),
   Lib:            require('./Lib'),
-  Main:           require('./Main')
+  PublicLib:      require('./PublicLib')
 });

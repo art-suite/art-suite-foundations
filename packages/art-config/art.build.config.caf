@@ -2,7 +2,7 @@ import &ArtStandardLib
 package: (abcPackage) -> merge &package,
   scripts:
     test:         :jest
-    build:        "" coffee --output source --compile source-source; caf -p -c source-source -o source; nn -s
+    build:        "" coffee -m --output source --compile source-source; caf -m -c source-source -o source; nn -s
     build-clean:  "" npm run clean; npm run build
     clean:        "" rm -rf source/*
     watch:        :npm-watch

@@ -20,13 +20,13 @@ ConfigRegistry = require './ConfigRegistry'
 #####################################
 ###
 
-TO USE:
-1) Inherit from Configurable and
-2) OPTIONAL: call @defaults to set configuration defaults
-3) OPTIONAL, override one of:
-  @configure
-  @preprocessConfig
-  @configured
+  TO USE:
+  1) Inherit from Configurable and
+  2) OPTIONAL: call @defaults to set configuration defaults
+  3) OPTIONAL, override one of:
+    @configure
+    @preprocessConfig
+    @configured
 
 ###
 #####################################

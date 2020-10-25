@@ -1,0 +1,86 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for source/Art.Config/Configure.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">source/Art.Config</a> Configure.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">73.47% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>36/49</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">82.61% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>19/23</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">70.59% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>12/17</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>2/2</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+    </div>
+    <div class='status-line medium'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">33x</span></td><td class="text"><pre class="prettyprint lang-js">"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () =&gt; {return Caf.importInvoke(["deepMerge", "getExternalEnvironment", "getArtConfig", "getDefaultArtConfigName", "normalizeArtConfigName", "ConfigRegistry", "log", "setArtConfigName", "compactFlatten", "Object", "expandPathedProperties"], [global, require('art-standard-lib'), require('./Lib'), require('./PublicLib'), {ConfigRegistry: require('./ConfigRegistry')}], (deepMerge, getExternalEnvironment, getArtConfig, getDefaultArtConfigName, normalizeArtConfigName, ConfigRegistry, log, setArtConfigName, compactFlatten, Object, expandPathedProperties) =&gt; {let Configure; return Configure = Caf.defClass(class Configure extends Object {}, function(Configure, classSuper, instanceSuper) {this._lastConfigurationOptions = null; this.configure = (...configureOptions) =&gt; {let artConfigNameArgument, artConfigArgument, __testEnv, onConfig, externalEnvironment, config, defaultArtConfigName, configName, verbose, base; ({artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv, onConfig} = this._lastConfigurationOptions = deepMerge(...configureOptions)); externalEnvironment = getExternalEnvironment(__testEnv); config = getArtConfig(); defaultArtConfigName = getDefaultArtConfigName(); configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName) ? (configName = normalizeArtConfigName(externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName), (configName &amp;&amp; !ConfigRegistry.configs[configName] &amp;&amp; configName !== "Test") ? <span class="branch-0 cbranch-no" title="branch not covered" >log.warn(`ArtConfig.configure: no config registered with name: '${Caf.toString(configName)}-'`) </span>: undefined, configName) : defaultArtConfigName; setArtConfigName(configName); this._eraseAllConfiguration(); Caf.each2(compactFlatten([Caf.array(ConfigRegistry.configurables, (configurable) =&gt; configurable.getPathedDefaultConfig()), ConfigRegistry.configs[configName], global.artConfig, artConfigArgument, externalEnvironment.artConfig]), (conf) =&gt; expandPathedProperties(conf, config)); ({verbose} = config); verbose || (verbose = Caf.exists(base = this._lastConfigurationOptions) &amp;&amp; base.verbose); <span class="missing-if-branch" title="if path not taken" >I</span>if (verbose) {<span class="cstat-no" title="statement not covered" >log("------------- ConfigRegistry: inputs"); <span class="cstat-no" title="statement not covered" ></span>log({ConfigRegistry: {configNames: Object.keys(ConfigRegistry.configs), configurables: Caf.array(ConfigRegistry.configurables, <span class="fstat-no" title="function not covered" >(c</span>) =&gt; <span class="cstat-no" title="statement not covered" >c.namespacePath)</span>, setConfigName: {algorithm: "select LAST non-null", inputs: {defaultArtConfigName, "global.artConfigName": global.artConfigName, "arguments.artConfigName": artConfigNameArgument, "environment.artConfigName": externalEnvironment.artConfigName}}, setConfig: {algorithm: "deep, pathed merge-all, LAST has priority", inputs: {defaultConfigs: Caf.array(ConfigRegistry.configurables, <span class="fstat-no" title="function not covered" >(c</span>onfigurable) =&gt; <span class="cstat-no" title="statement not covered" >configurable.getPathedDefaultConfig())</span>, [`configs.${Caf.toString(configName)}`]: ConfigRegistry.configs[configName], "global.artConfig": global.artConfig, "arguments.artConfig": artConfigArgument, "environment.artConfig": externalEnvironment.artConfig}}}}); <span class="cstat-no" title="statement not covered" ></span>log("------------- ConfigRegistry: configuring Configurables...");}</span>; this._configureAllConfigurables(); <span class="missing-if-branch" title="if path not taken" >I</span>if (verbose) {<span class="cstat-no" title="statement not covered" >log("------------- ConfigRegistry: configured"); <span class="cstat-no" title="statement not covered" ></span>log({Art: {configName, config}}); <span class="cstat-no" title="statement not covered" ></span>log("------------- ConfigRegistry: done");}</span>; Caf.isF(onConfig) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >onConfig(config);</span> return config;}; this.resetCurrentConfig = <span class="fstat-no" title="function not covered" >()</span> =&gt; {<span class="cstat-no" title="statement not covered" >log.warn("DEPRICATED: resetCurrentConfig will be removed; call 'configure'"); <span class="cstat-no" title="statement not covered" ></span>return this._eraseAllConfiguration();}</span>; this.reload = <span class="fstat-no" title="function not covered" >()</span> =&gt; {<span class="cstat-no" title="statement not covered" >log.warn("DEPRICATED: reload will be removed; call 'configure'"); <span class="cstat-no" title="statement not covered" ></span>return this._reconfigure();}</span>; this._reconfigure = <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.configure(this._lastConfigurationOptions);</span> this._eraseAllConfiguration = () =&gt; {let config; return Caf.each2(config = getArtConfig(), (v, k) =&gt; delete config[k]);}; this._configureAllConfigurables = function() {Caf.each2(ConfigRegistry.configurables, (configurable) =&gt; configurable.configure(getArtConfig())); return this._notifyConfigurablesConfigured();}; this._notifyConfigurablesConfigured = function() {return Caf.each2(ConfigRegistry.configurables, (configurable) =&gt; configurable.configured());};});});});</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+                at Sat Oct 24 2020 09:59:25 GMT-0700 (Pacific Daylight Time)
+            </div>
+        </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "PublicLib.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/Art.Config/PublicLib.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,4FAAO,+IAIP,QAAQ,gBAER,6BAAY,oCAAgB,iBAAI,+BACvB,oCAAO,kCACP,wCAAW,uBAAI,uBAExB,uBAAuB,uBAGrB,yCAAkB,YAAW,oCAC7B,0BAA6B,2BAC7B,8BAA6B,+BAC7B,qCAA6B,+BAE7B,0BAA0B,CAAC,OAAS,OAAS,uBAAc,QAE3D,uCACE,SAAW,4EACU,8EAA2C,OAC3D,cAAa,gCACd,UAAU,KAAK"
+}

@@ -1,0 +1,25 @@
+import &ArtStandardLib
+
+# ensure Neptune.Art.Config is loaded
+# NOTE - if NPM/Node loads more than one version of ArtConfig, the first one will be the official data-store
+require :./namespace
+
+ArtConfig = global.ArtConfig ?= Neptune.Art.Config
+ArtConfig.config ?= {}
+ArtConfig.configName ?= defaultArtConfigName
+
+defaultArtConfigName = :Development
+
+{}
+  getGlobalArtConfig =      -> global.Neptune.Art.Config
+  getArtConfig:             -> ArtConfig.config
+  getArtConfigName:         -> ArtConfig.configName
+  getDefaultArtConfigName:  -> defaultArtConfigName
+
+  setArtConfigName:         (name) -> ArtConfig.configName = name
+
+  getArtConfigSave: ->
+    log.warn "" DEPRICATED: ArtConfig.getArtSaveConfig will be removed
+    each configurable in &ConfigRegistry.configurables into out = {}
+      if saveConfig = configurable.getConfigSave()
+        mergeInto out, saveConfig
