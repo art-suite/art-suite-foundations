@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.69.9",
+    "art-standard-lib": "^1.70.0",
     "detect-node": "^2.0.4"
   },
   "description": "Neptune.Namespaces.Runtime",

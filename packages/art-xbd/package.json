@@ -3,8 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-binary": "^1.1.11",
-    "art-standard-lib": "^1.69.9",
-    "caffeine-script-runtime": "^1.13.7",
+    "art-standard-lib": "^1.70.0",
+    "caffeine-script-runtime": "^1.13.8",
     "neptune-namespaces-runtime": "^3.2.6"
   },
   "description": "Art.Xbd",
