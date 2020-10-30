@@ -111,7 +111,7 @@
         l = 16;
       }
       return randomString(l, c);
-    })) : (crypto = require('crypto'), function(l, c) {
+    })) : (realRequire = eval('require'), crypto = realRequire("crypto"), function(l, c) {
       return randomString(l, c, crypto.randomBytes(l));
     });
 

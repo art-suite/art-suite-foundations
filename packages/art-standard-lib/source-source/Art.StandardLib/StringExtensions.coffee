@@ -76,7 +76,8 @@ module.exports = class StringExtensions
       (l = 16, c) -> randomString l, c
 
   else
-    crypto = require 'crypto'
+    realRequire = eval('require')
+    crypto = realRequire "crypto"
     (l, c) -> randomString l, c, crypto.randomBytes l
 
   @randomBase62Character: -> base62Characters[intRand 62]
