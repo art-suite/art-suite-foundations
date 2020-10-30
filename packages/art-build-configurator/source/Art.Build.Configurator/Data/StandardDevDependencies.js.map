@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardDevDependencies.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/Art.Build.Configurator/Data/StandardDevDependencies.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;kCACA,SAAsC,WACtC,eAAsC,KACtC,sBAAsC,UACtC,mBAAsC,UAGtC,uCAAsC,UACtC,iBAAsC,UACtC,0BAAsC,UAGtC,iBAAsC,UACtC,cAAsC,UACtC,eAAsC,UACtC,iBAAsC,UACtC,gBAAsC,UAGtC,OAAsC,UACtC,MAAsC,UACtC,WAAsC,WAEtC,iBAAsC"
+}

@@ -4,7 +4,7 @@
   "dependencies": {
     "art-binary": "^1.1.11",
     "art-standard-lib": "^1.70.1",
-    "caffeine-script-runtime": "^1.13.8",
+    "caffeine-script-runtime": "^1.14.0",
     "neptune-namespaces-runtime": "^3.2.6"
   },
   "description": "Art.Xbd",

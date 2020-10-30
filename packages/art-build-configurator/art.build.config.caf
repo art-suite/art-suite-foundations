@@ -6,7 +6,7 @@ package: (abcPackage) -> merge &package,
 
   scripts:
     test:         "" mocha -u tdd
-    build:        "" caf -p -c source-source -o source; nn -s
+    build:        "" caf -m -c source-source -o source; nn -s
     build-clean:  "" npm run clean; npm run build
     clean:        "" rm -rf source/*
     watch:        :npm-watch

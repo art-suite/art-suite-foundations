@@ -1,4 +1,5 @@
-&ArtStandardLib.mergeWithSelf
+[]
+  &ArtStandardLib
   &ArtClassSystem
   &ArtTestbench
   ArtBuildConfigurator: &source/ArtBuildConfigurator

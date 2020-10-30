@@ -1,0 +1,16 @@
+import &StandardImport
+
+realRequire = null
+suite: ->
+  chainedTest ->
+    ArtBuildConfigurator.Main extract realRequire
+    ArtBuildConfigurator.Main.realRequire = (file) -> {}
+
+  .thenTest
+    "getWebpackConfig" ->
+      require :art-build-configurator
+      .getWebpackConfig __dirname, {}, []
+
+    :teardown ->
+      ArtBuildConfigurator.Main.realRequire = realRequire
+      mockFs.restore()

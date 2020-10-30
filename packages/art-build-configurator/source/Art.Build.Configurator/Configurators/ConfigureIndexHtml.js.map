@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ConfigureIndexHtml.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/Art.Build.Configurator/Configurators/ConfigureIndexHtml.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8FAAO,8BAAiB,uGAExB,0EAAiC,2GACjB,yBAER,CAAC,SAAS,cACd,KAAK,KAAK,aACQ,WAAQ,sBACtB,GACE,GACE,wBAAW,YACX,SAEF,KACA,GACE,wBAAW,gBACX,QACF"
+}

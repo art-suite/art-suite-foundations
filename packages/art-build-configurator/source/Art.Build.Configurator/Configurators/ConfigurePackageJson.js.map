@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ConfigurePackageJson.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/Art.Build.Configurator/Configurators/ConfigurePackageJson.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,qJAAO,4IAEP,8EAAmC,6GACnB,2BAER,CAAC,SAAS,cACd,aACK,MACH,wBAAwB,iBACpB,CAAC,mCAAc,OAChB,WAAW,gBAAgB,qBAC5B,cAAc,cAEd,UAAU,YAAY,0CAI5B,QAAkB,CAAC,SAAS,YAAa,OACvC,SAAK,SAAS,gBACR,CAAC,aACL,wBACE,UACA,QACA"
+}
