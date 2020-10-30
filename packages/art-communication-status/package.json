@@ -3,8 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "description": "Simplified system of statuses for HTTP and any other network protocol",
   "devDependencies": {
-    "art-build-configurator": "^1.28.0",
-    "art-testbench": "^2.2.9",
+    "art-build-configurator": "^1.28.2",
+    "art-testbench": "^2.2.11",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -28,7 +28,7 @@
     "test": "nn -s;mocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "1.5.11",
+  "version": "1.5.12",
   "watch": {
     "build": {
       "extensions": [

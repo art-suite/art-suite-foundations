@@ -5,13 +5,13 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-browser-tools": "^1.2.7",
-    "art-build-configurator": "^1.28.0",
-    "art-class-system": "^1.11.10",
-    "art-config": "^1.14.1",
-    "art-filebuilder": "^2.1.8",
-    "art-object-tree-factory": "^2.2.5",
-    "art-standard-lib": "^1.70.1",
+    "art-browser-tools": "^1.2.9",
+    "art-build-configurator": "^1.28.2",
+    "art-class-system": "^1.11.12",
+    "art-config": "^1.14.3",
+    "art-filebuilder": "^2.1.10",
+    "art-object-tree-factory": "^2.2.7",
+    "art-standard-lib": "^1.70.3",
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.72.12",
     "caffeine-script-runtime": "^1.14.0",
@@ -23,12 +23,12 @@
     "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
-    "neptune-namespaces": "^4.2.6",
+    "neptune-namespaces": "^4.2.8",
     "simple-git": "^2.20.1"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
-    "art-testbench": "^2.2.9",
+    "art-testbench": "^2.2.11",
     "jest": "^26.6.1",
     "mocha": "^7.2.0",
     "mock-fs": "^4.13.0"
@@ -59,7 +59,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.26.18",
+  "version": "1.26.19",
   "watch": {
     "build": {
       "extensions": [

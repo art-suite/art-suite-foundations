@@ -2,11 +2,11 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.70.1"
+    "art-standard-lib": "^1.70.3"
   },
   "description": "Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.",
   "devDependencies": {
-    "art-build-configurator": "^1.28.0"
+    "art-build-configurator": "^1.28.2"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -24,7 +24,7 @@
     "test": "nn -s;mocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "1.11.11",
+  "version": "1.11.12",
   "watch": {
     "build": {
       "extensions": "caf coffee",

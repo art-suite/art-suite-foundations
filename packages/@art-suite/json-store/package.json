@@ -3,8 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "description": "Art.JsonStore",
   "devDependencies": {
-    "art-build-configurator": "^1.28.0",
-    "art-testbench": "^2.2.9",
+    "art-build-configurator": "^1.28.2",
+    "art-testbench": "^2.2.11",
     "npm-watch": "^0.7.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -24,7 +24,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "watch": {
     "build": {
       "extensions": "caf",
