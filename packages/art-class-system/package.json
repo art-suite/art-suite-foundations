@@ -21,9 +21,7 @@
   "scripts": {
     "build": "coffee --output source --compile --map source-source &\ncaf -p -c source-source -o source &\nwait\nnn -sq",
     "build-clean": "rm -rf source/*; npm run build",
-    "start": "webpack-dev-server --hot --inline --progress",
     "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress",
     "watch": "npm-watch"
   },
   "version": "1.11.10",
