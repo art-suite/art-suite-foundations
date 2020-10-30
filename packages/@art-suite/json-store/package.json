@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "description": "Art.JsonStore",
   "devDependencies": {
-    "art-build-configurator": "^1.28.2",
+    "art-build-configurator": "^1.28.3",
     "art-testbench": "^2.2.11",
     "npm-watch": "^0.7.0"
   },

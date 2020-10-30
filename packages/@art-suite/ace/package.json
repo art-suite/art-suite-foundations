@@ -6,7 +6,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-browser-tools": "^1.2.9",
-    "art-build-configurator": "^1.28.2",
+    "art-build-configurator": "^1.28.3",
     "art-class-system": "^1.11.12",
     "art-config": "^1.14.3",
     "art-filebuilder": "^2.1.10",

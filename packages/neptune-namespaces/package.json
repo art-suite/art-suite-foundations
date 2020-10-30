@@ -12,7 +12,7 @@
   },
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "devDependencies": {
-    "art-build-configurator": "^1.28.2",
+    "art-build-configurator": "^1.28.3",
     "art-testbench": "^2.2.11",
     "mocha": "^7.2.0",
     "mock-fs": "^4.13.0"
