@@ -1,2 +1,3 @@
-require("coffee-script/register");
-require('./Tests.coffee');
+require("caffeine-script/register");
+require('./Tests.caf');
+test("foo", () => 1)
