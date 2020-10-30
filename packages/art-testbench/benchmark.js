@@ -1,2 +1,2 @@
-require("./source/Art/Testbench/Perf");
+require("./source/Art.Testbench/Perf");
 module.exports = require("./testing");
