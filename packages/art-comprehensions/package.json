@@ -1,9 +1,7 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
-  "dependencies": {
-    
-  },
+  "dependencies": {},
   "description": "Simple, powerful iteration comprehensions for JavaScript.",
   "devDependencies": {
     "art-testbench": "^2.2.9",
@@ -21,5 +19,5 @@
   "scripts": {
     "test": "nn -s;mocha -u tdd"
   },
-  "version": "3.0.3"
+  "version": "3.0.4"
 }

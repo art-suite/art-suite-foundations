@@ -24,7 +24,7 @@
     "test": "nn -s;mocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "1.11.10",
+  "version": "1.11.11",
   "watch": {
     "build": {
       "extensions": "caf coffee",
