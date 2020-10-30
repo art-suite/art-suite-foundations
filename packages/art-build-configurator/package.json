@@ -12,7 +12,7 @@
     "art-config": "^1.14.1",
     "art-filebuilder": "^2.1.8",
     "art-object-tree-factory": "^2.2.5",
-    "art-standard-lib": "^1.70.0",
+    "art-standard-lib": "^1.70.1",
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.72.12",
     "caffeine-script-runtime": "^1.13.8",
@@ -28,7 +28,7 @@
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
-    "art-testbench": "^2.2.8",
+    "art-testbench": "^2.2.9",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",

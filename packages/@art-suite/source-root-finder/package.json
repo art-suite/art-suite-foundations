@@ -3,12 +3,12 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.10",
-    "art-standard-lib": "^1.70.0"
+    "art-standard-lib": "^1.70.1"
   },
   "description": "ArtSuite.SourceRootFinder",
   "devDependencies": {
     "art-build-configurator": "^1.28.0",
-    "art-testbench": "^2.2.8",
+    "art-testbench": "^2.2.9",
     "jest": "^26.6.1",
     "npm-watch": "^0.7.0"
   },

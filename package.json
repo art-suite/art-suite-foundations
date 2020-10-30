@@ -30,7 +30,7 @@
     "art-xbd": "file:packages/art-xbd",
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.72.12",
-    "caffeine-script-runtime": "^1.13.8",
+    "caffeine-script-runtime": "^1.14.0",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",

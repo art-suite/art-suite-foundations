@@ -5,7 +5,7 @@
     "mock-fs": "^4.13.0"
   },
   "devDependencies": {
-    "art-testbench": "^2.2.8"
+    "art-testbench": "^2.2.9"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",

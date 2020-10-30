@@ -5,12 +5,12 @@
     "art-binary": "^1.1.11",
     "art-class-system": "^1.11.10",
     "art-object-tree-factory": "^2.2.5",
-    "art-standard-lib": "^1.70.0"
+    "art-standard-lib": "^1.70.1"
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
     "art-build-configurator": "^1.28.0",
-    "art-testbench": "^2.2.8",
+    "art-testbench": "^2.2.9",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "coffee-loader": "^0.7.3",
