@@ -1,0 +1,35 @@
+import &ArtStandardLib
+
+(currentPackage, options = {}) -> (abcPackage) ->
+  options extract?
+    sourceDir = "source-source"
+    coffeeScript
+
+  merge currentPackage,
+    scripts:
+      test:         :jest
+      build:
+        if coffeeScript
+          """
+            coffee -m --output source --compile #{sourceDir} &
+            caf -m -c #{sourceDir} -o source &
+            wait
+            nn -s
+        else
+          """
+            caf -m -c #{sourceDir} -o source
+            nn -s
+
+      build-clean:  "" npm run clean; npm run build
+      clean:        "" rm -rf source/*
+      watch:        :npm-watch
+    jest:
+      testEnvironment: :node
+      collectCoverageFrom:
+        "source/**/*.js",
+        "!source/_?[Jjt]est/**/*.js"
+    watch:
+      build:
+        extensions: [] :caf :coffee
+        patterns:   [] sourceDir
+        quiet:      false
