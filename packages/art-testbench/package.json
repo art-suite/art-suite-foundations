@@ -34,7 +34,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "2.2.11",
+  "version": "2.2.12",
   "watch": {
     "build": {
       "extensions": [
