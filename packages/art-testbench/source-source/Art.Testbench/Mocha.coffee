@@ -1,7 +1,8 @@
-{isArray, isNode, log, isFunction, isPlainObject, merge, Promise} = require 'art-standard-lib'
+{isArray, isNode, log, isFunction, isPlainObject, merge, Promise, isPromise} = require 'art-standard-lib'
 {configure} = require 'art-config'
 chai = require './ArtChai'
 global.assert = chai.assert
+{cleanErrorStack} = require './ErrorExtensions'
 
 if global.document
   document.write "<div id=\"mocha\"></div>" unless document.getElementById "mocha"
@@ -115,7 +116,24 @@ defineSuitesByObjectStructure = (object, namespacePath) ->
 module.exports = class Mocha
   @assert:        chai.assert
 
-  @test:          (args...) -> global.test args...
+  @test:          (name, test, rest...) ->
+    global.test(
+      name
+
+      ->
+        p = try
+          test()
+        catch error
+          throw cleanErrorStack error, /art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
+
+        if isPromise p
+          p.catch (error) ->
+            throw cleanErrorStack error, /art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
+        else undefined
+
+      rest...
+    )
+
   @setup:         (args...) -> global.setup args...
   @initTesting:   (options) => @init options
 
