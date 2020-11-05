@@ -8,6 +8,7 @@
   ArtChai:              require('./ArtChai'),
   ArtChaiLib:           require('./ArtChaiLib'),
   ChainedTest:          require('./ChainedTest'),
+  ErrorExtensions:      require('./ErrorExtensions'),
   Jest:                 require('./Jest'),
   Mocha:                require('./Mocha'),
   MochaBrowserReporter: require('./MochaBrowserReporter'),

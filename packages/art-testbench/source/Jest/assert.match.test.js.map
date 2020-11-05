@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "assert.match.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/Jest/assert.match.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,+EAAO,iDAEP,KAAK,4BACH,aAAa,YAAY,cACzB,eAAc,MAAI,aAAa,YAAY,mBAE7C,KAAK,+BACH,gBAAgB,YAAY,eAC5B,eAAc,MAAI,gBAAgB,YAAY"
+}
