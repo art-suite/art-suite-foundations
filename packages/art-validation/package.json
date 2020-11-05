@@ -11,6 +11,13 @@
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
   "license": "ISC",
   "name": "art-validation",
   "repository": {
@@ -18,10 +25,23 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "webpack --progress",
-    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
-    "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress --env.devServer"
+    "build": "coffee -m --output source --compile source-source &\ncaf -m -c source-source -o source &\nwait\nnn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
   },
-  "version": "1.9.3"
+  "version": "1.9.3",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }

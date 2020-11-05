@@ -6,12 +6,18 @@ assertIsTrimmedString = (ft) ->
   assert.isFunction ft.validate
   assert.isFunction ft.preprocess
 
-suite:
+testEq = (f, a, b) ->
+  test "#{f.name} #{formattedInspect a} should-eq #{formattedInspect b}" ->
+    assert.eq
+      f(a)
+      b
+
+describe
   normalizeFieldProps:
     basic: ->
-      assert.test.eq normalizeFieldProps, {required: true}, required: true
-      assert.test.eq normalizeFieldProps, {dood: 'trimmedString'}, dood: 'trimmedString'
-      assert.test.eq normalizeFieldProps, {required: ['trimmedString']}, required: ['trimmedString']
+      testEq normalizeFieldProps, {required: true}, required: true
+      testEq normalizeFieldProps, {dood: 'trimmedString'}, dood: 'trimmedString'
+      testEq normalizeFieldProps, {required: ['trimmedString']}, required: ['trimmedString']
 
     depricated: ->
       test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
@@ -19,17 +25,17 @@ suite:
       test "present: 'foo'", -> assert.throws -> normalizeFieldProps present: 'foo'
 
     objectValues: ->
-      assert.test.eq normalizeFieldProps, {required: foobar: true}, required: true, foobar: true
-      assert.test.eq normalizeFieldProps, {foobar: required: true}, required: true, foobar: true
+      testEq normalizeFieldProps, {required: foobar: true}, required: true, foobar: true
+      testEq normalizeFieldProps, {foobar: required: true}, required: true, foobar: true
 
     topLevelArrayValues: ->
-      assert.test.eq normalizeFieldProps, [w 'foobar'                   ], foobar: true
-      assert.test.eq normalizeFieldProps, [w 'required foobar'          ], required: true, foobar: true
-      assert.test.eq normalizeFieldProps, [w 'required foobar', fad: 123], required: true, foobar: true, fad: 123
+      testEq normalizeFieldProps, [w 'foobar'                   ], foobar: true
+      testEq normalizeFieldProps, [w 'required foobar'          ], required: true, foobar: true
+      testEq normalizeFieldProps, [w 'required foobar', fad: 123], required: true, foobar: true, fad: 123
 
     topLevelStringValues: ->
-      assert.test.eq normalizeFieldProps, 'foobar', foobar: true
-      assert.test.eq normalizeFieldProps, 'foo bar', foo: true, bar: true
+      testEq normalizeFieldProps, 'foobar', foobar: true
+      testEq normalizeFieldProps, 'foo bar', foo: true, bar: true
 
       test "'trimmedString'", ->
         assertIsTrimmedString normalizeFieldProps 'trimmedString'

@@ -1,6 +1,6 @@
 import &StandardImport
 
-suite:
+describe
   maxLength: ->
     test "maxLength" ->
       v = new Validator id:
