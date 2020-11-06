@@ -1,5 +1,4 @@
 &colors
-
 ArtBuildConfigurator = &ArtBuildConfigurator
 
 realRequire = eval :require
@@ -20,8 +19,6 @@ realRequire = eval :require
       """
 
         #{} "art-build-configurator (abc) - initialize and configure ArtSuiteJS projects".white
-
-        Config: #{ArtBuildConfigurator.configFilename.green}
 
         Managed: (don't edit directly, edit abc's config)
         - #{} "package.json".green

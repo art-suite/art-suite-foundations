@@ -1,24 +1,4 @@
-import &ArtStandardLib
-package: (abcPackage) -> merge &package,
-  bin:
-    abc: :./abc
-    art-build-configurator: :./art-build-configurator
-
-  scripts:
-    test:         "" mocha -u tdd
-    build:        "" caf -m -c source-source -o source; nn -s
-    build-clean:  "" npm run clean; npm run build
-    clean:        "" rm -rf source/*
-    watch:        :npm-watch
-
-  jest:
-    testEnvironment: :node
-    collectCoverageFrom:
-      "source/**/*.js",
-      "!source/_?[Jjt]est/**/*.js"
-
-  watch:
-    build:
-      extensions: [] :caf
-      patterns:   [] :source-source
-      quiet:      false
+package:
+  require(:../standard-package-builder)
+    &package
+    mocha: true
