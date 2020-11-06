@@ -3,11 +3,17 @@ import &ArtStandardLib
 (currentPackage, options = {}) -> (abcPackage) ->
   options extract?
     sourceDir = "source-source"
+    mocha
     coffeeScript
 
   merge currentPackage,
     scripts:
-      test:         :jest
+      test:
+        if mocha
+          "" mocha -u tdd
+        else
+          :jest
+
       build:
         if coffeeScript
           """
@@ -30,6 +36,9 @@ import &ArtStandardLib
         "!source/_?[Jjt]est/**/*.js"
     watch:
       build:
-        extensions: [] :caf :coffee
+        extensions: compactFlattenAll
+          :caf
+          coffeeScript && :coffee
+
         patterns:   [] sourceDir
         quiet:      false
