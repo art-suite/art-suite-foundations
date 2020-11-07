@@ -1,9 +1,0 @@
-import &StandardImport
-
-test 'assert.match' ->
-  assert.match "hi frank", /fr/
-  assert.rejects -> assert.match "hi frank", /fri/
-
-test 'assert.notMatch' ->
-  assert.notMatch "hi frank", /fri/
-  assert.rejects -> assert.notMatch "hi frank", /fr/

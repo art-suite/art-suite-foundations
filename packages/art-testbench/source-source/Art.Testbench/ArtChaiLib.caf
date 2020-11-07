@@ -50,6 +50,9 @@ assert.test = {}
               name
               value2
 
+  depricated = (depricatedName, useName) ->
+    log.warn "Art.Testbench DEPRICATED: #{depricatedName}; USE: #{useName}"
+
   addTester = (name, a, b) ->
     assert[name] = testerFor = getTesterFor name, a, b
     assert.test[name] =

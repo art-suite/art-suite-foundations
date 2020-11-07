@@ -1,5 +1,4 @@
 import &ArtStandardLib, &Presentation, &Chai, &ArtChaiLib
-&ArtChaiOld
 
 promisify = (a) ->
   if isFunction a
@@ -7,6 +6,27 @@ promisify = (a) ->
   else if isPromise a
     a
   else Promise.resolve a
+
+array tester, name in Types when name.match /^is/
+  addTester name, tester
+
+array name in :gt :gte :lte :lt :eq :neq :floatEq
+  addTester name, &ArtStandardLib[name]
+
+assert.rejectsWithStatus = (status, _promise, context) ->
+  assert.rejects _promise, context
+  .then (error) -> assert.selectedEq {status}, error, context
+
+assert.rejectsWith = (_promise, rejectValue, context) ->
+  depricated "assert.rejectsWith(...)", "assert.rejects(...).then (rejectValue) -> assert.eq rejectValue, expectedRejectValue"
+  assert.rejects _promise
+  .then (value) -> assert.eq value, rejectValue, "rejects with: #{context}"
+
+addTester :instanceof,
+  customFailure: (name, v1, v2, context) -> failWithExpectedMessage context, v2, name, v1
+  (klass, obj) -> obj instanceof klass
+
+addTester :is     (a, b) -> a is b
 
 assert.resolves = (a, context) ->
   promisify a
@@ -41,15 +61,93 @@ assert.within = (a, b, c, context) ->
     failWithExpectedMessage context, a, "to be >=",  b, "to be <=" , c unless a >= b and a <= c
 
 # Exact Truth
-addTester "true",         (a) -> a == true
-addTester "false",        (a) -> a == false
+addTester :true         (a) -> a == true
+addTester :false        (a) -> a == false
 
 # JavaScript Truth
-addTester "jsTrue",       (a) -> !!a
-addTester "jsFalse",      (a) -> !a
+addTester :jsTrue       (a) -> !!a
+addTester :jsFalse      (a) -> !a
 
 # Ruby Truth
-addTester "rubyTrue",     (a) -> a != false && a?
-addTester "rubyFalse",    (a) -> a == false || !a?
+addTester :rubyTrue     (a) -> a != false && a?
+addTester :rubyFalse    (a) -> a == false || !a?
+
+# match / doesNotMatch
+addTester :match        (a, b) -> a.match  if isString b then escapeRegExp b else b
+addTester :notMatch     notMatch = (a, b) -> !a.match if isString b then escapeRegExp b else b
+addTester :doesNotMatch notMatch
+
+# exists / doesNotExist
+addTester :exists       (a) -> a?
+addTester :notExists    notExists = (a) -> !a?
+addTester :doesNotExist notExists
+
+# same / notSame
+addTester :same         (a, b) -> a == b
+addTester :notSame      (a, b) -> a != b
+
+# present / notPresent
+addTester :present      (a) -> present a
+addTester :notPresent   (a) -> !present a
+addTester :isNotPresent (a) -> depricated(:isNotPresent :notPresent ); !present a  # DEPRICATED
+addTester :isPresent    (a) -> depricated(:isPresent    :present    ); present a   # DEPRICATED
+
+# hasKeys / hasNoKeys
+addTester :hasKeys      (a) -> isPlainObject(a) && objectHasKeys(a)
+addTester :hasNoKeys    (a) -> isPlainObject(a) && !objectHasKeys(a)
+
+# ArtCommunicationStatus tests
+each status in :missing :clientFailure :clientFailureNotAuthorized
+  assert[status] =
+  assert[name = lowerCamelCase "is #{status}"] = (promiseOrString, context) ->
+    if isPromise promiseOrString
+      assert.rejects -> promiseOrString
+      .then (response) ->
+        if response.status != status
+          log [name]: expected: status, got: response.status, response: response
+        assert.eq response.status, status, context
+        response
+
+    else
+      assert.eq
+        promiseOrString?.status ? promiseOrString
+        status
+        context
+
+
+# TODO: selectedPropsEq needs a better error message - I ALSO want to see what the actual selected values look like
+addTester :selectedPropsEq,
+  customFailure: (name, expectedProps, testObject, context) ->
+    failWithExpectedMessageBase context, expectedProps, testObject, []
+      indent format expectedProps
+      "" to equal selected props:
+      indent format object expectedProps, (v, k) -> testObject[k]
+      "" test object:
+      indent format testObject
+
+  (expectedProps, testObject) ->
+    failures = null
+    each v, k in expectedProps
+      if !eq v, v2 = testObject[k]
+        (failures ?= {})[k] = expected: v, actual: v2
+
+    if failures
+      log.warn "assert.selectedPropsEq failureInfo": {}
+          failures
+          expectedProps
+          actualProps: (object expectedProps, (v, k) -> testObject[k])
+
+      false
+    else true
+
+assert.selectedEq = assert.selectedPropsEq
+
+
+# create a version of all tests functions that resolves all inputs first
+assert.resolved = {}
+each v, k in assert when v is Function
+  assert.resolved[k] = (args...)->
+    Promise.all args
+    .then (resolvedArgs) -> v resolvedArgs...
 
 &Chai
