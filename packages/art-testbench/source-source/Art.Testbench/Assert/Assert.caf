@@ -150,4 +150,4 @@ each v, k in assert when v is Function
     Promise.all args
     .then (resolvedArgs) -> v resolvedArgs...
 
-&Chai
+{} assert

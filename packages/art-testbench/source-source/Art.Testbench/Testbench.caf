@@ -4,4 +4,4 @@
 
   {}
     &ChainedTest.chainedTest
-    &ArtChai.assert
+    &Assert.assert

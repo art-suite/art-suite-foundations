@@ -4,9 +4,6 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./Testbench'))
 .addModules({
-  ArtChaiOld:           require('./ArtChai-old'),
-  ArtChai:              require('./ArtChai'),
-  ArtChaiLib:           require('./ArtChaiLib'),
   ChainedTest:          require('./ChainedTest'),
   ErrorExtensions:      require('./ErrorExtensions'),
   Jest:                 require('./Jest'),
@@ -17,3 +14,4 @@
   StandardImport:       require('./StandardImport'),
   TestSuite:            require('./TestSuite')
 });
+require('./Assert');
