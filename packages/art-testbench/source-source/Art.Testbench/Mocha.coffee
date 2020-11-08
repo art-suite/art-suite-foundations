@@ -1,6 +1,6 @@
 {isArray, isNode, log, isFunction, isPlainObject, merge, Promise, isPromise} = require 'art-standard-lib'
 {configure} = require 'art-config'
-chai = require './ArtChai'
+chai = require './Assert'
 global.assert = chai.assert
 {cleanErrorStack} = require './ErrorExtensions'
 

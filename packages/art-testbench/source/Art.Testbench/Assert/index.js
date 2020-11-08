@@ -4,5 +4,6 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./Assert'))
 .addModules({
-  ArtChaiLib: require('./ArtChaiLib')
+  ArtChaiLib:                 require('./ArtChaiLib'),
+  CommunicationStatusAsserts: require('./CommunicationStatusAsserts')
 });

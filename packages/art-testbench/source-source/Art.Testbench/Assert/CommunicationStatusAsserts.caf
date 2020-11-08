@@ -1,0 +1,22 @@
+import &ArtStandardLib, &Presentation, &Chai, &ArtChaiLib
+
+# ArtCommunicationStatus tests
+each status in :missing :clientFailure :clientFailureNotAuthorized
+  assert[status] =
+  assert[name = lowerCamelCase "is #{status}"] = (communicationPromise, context) ->
+    if isPromise(communicationPromise) or isFunction communicationPromise
+      assert.rejects communicationPromise
+      .then
+        (response) ->
+          assert.eq response.status, status, (contextArgs...) -> merge {}
+            response
+            context: if context is Function then context contextArgs... else context
+
+          response
+
+    else
+      communicationResult = communicationPromise
+      assert.eq
+        communicationResult?.status ? communicationResult
+        status
+        context

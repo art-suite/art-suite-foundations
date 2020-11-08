@@ -1,5 +1,8 @@
 import &ArtStandardLib, &Presentation, &Chai, &ArtChaiLib
 
+
+&CommunicationStatusAsserts
+
 promisify = (a) ->
   if isFunction a
     Promise.then -> a()
@@ -95,24 +98,6 @@ addTester :isPresent    (a) -> depricated(:isPresent    :present    ); present a
 # hasKeys / hasNoKeys
 addTester :hasKeys      (a) -> isPlainObject(a) && objectHasKeys(a)
 addTester :hasNoKeys    (a) -> isPlainObject(a) && !objectHasKeys(a)
-
-# ArtCommunicationStatus tests
-each status in :missing :clientFailure :clientFailureNotAuthorized
-  assert[status] =
-  assert[name = lowerCamelCase "is #{status}"] = (promiseOrString, context) ->
-    if isPromise promiseOrString
-      assert.rejects -> promiseOrString
-      .then (response) ->
-        if response.status != status
-          log [name]: expected: status, got: response.status, response: response
-        assert.eq response.status, status, context
-        response
-
-    else
-      assert.eq
-        promiseOrString?.status ? promiseOrString
-        status
-        context
 
 
 # TODO: selectedPropsEq needs a better error message - I ALSO want to see what the actual selected values look like

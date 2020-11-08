@@ -18,3 +18,4 @@
   PresentationTest:          require('./Presentation.test'),
   StandardImport:            require('./StandardImport')
 });
+require('./Assert');

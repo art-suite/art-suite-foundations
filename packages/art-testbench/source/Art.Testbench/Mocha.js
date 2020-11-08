@@ -7,7 +7,7 @@
 
   configure = require('art-config').configure;
 
-  chai = require('./ArtChai');
+  chai = require('./Assert');
 
   global.assert = chai.assert;
 
