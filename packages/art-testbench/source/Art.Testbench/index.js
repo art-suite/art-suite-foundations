@@ -10,7 +10,6 @@
   Mocha:                require('./Mocha'),
   MochaBrowserReporter: require('./MochaBrowserReporter'),
   Perf:                 require('./Perf'),
-  Presentation:         require('./Presentation'),
   StandardImport:       require('./StandardImport'),
   TestSuite:            require('./TestSuite')
 });

@@ -5,5 +5,6 @@
 .includeInNamespace(require('./Assert'))
 .addModules({
   ArtChaiLib:                 require('./ArtChaiLib'),
-  CommunicationStatusAsserts: require('./CommunicationStatusAsserts')
+  CommunicationStatusAsserts: require('./CommunicationStatusAsserts'),
+  Presentation:               require('./Presentation')
 });

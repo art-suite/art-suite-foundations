@@ -1,5 +1,4 @@
-import &StandardImport
-import Presentation
+import &StandardImport, &ArtTestbench/Assert/Presentation
 
 test "generateFailedMessage string context" ->
   assert.match
