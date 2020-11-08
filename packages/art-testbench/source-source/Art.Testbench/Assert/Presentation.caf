@@ -1,7 +1,8 @@
 import &ArtStandardLib
 
+maxLength = 80
+
 {}
-  maxLength = 80
   indent = (str) -> '  ' + str.replace /\n/g, "\n  "
   format = (val) ->
     formattedInspect val, maxLength
