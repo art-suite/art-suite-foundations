@@ -18,8 +18,11 @@ import &ArtStandardLib
         if coffeeScript
           """
             coffee -m --output source --compile #{sourceDir} &
+            COFFEE_PID=$!
             caf -m -c #{sourceDir} -o source &
-            wait
+            CAF_PID=$!
+            wait $COFFEE_PID || exit 1
+            wait $CAF_PID || exit 1
             nn -s
         else
           """
