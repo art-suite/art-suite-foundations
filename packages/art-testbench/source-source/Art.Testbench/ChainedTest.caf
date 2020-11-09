@@ -1,26 +1,32 @@
-{currentSecond, compactFlatten, isArray, isFunction, isString, isObject, present, Promise, defineModule, log, array} = require 'art-standard-lib'
-{BaseClass} = require 'art-class-system'
+import &ArtStandardLib, &ArtClassSystem
 
-module.exports = class ChainedTest extends BaseClass
+class ChainedTest extends BaseClass
+  ###
+    IN:
+      PATTERN 1:
+        (setupFunciton) ->
+
+      PATTERN 2:
+        (setupTestName, setupFunction) ->
+
+      setupTestName
+        String
+        If present, appended to the Mocha setup-test's name
+
+      setupFunction
+        Result: any arbitrary function.
+        Result is resolved if it's a promise before passing to tests.
+        The result is passed to every test as the test's 2nd argument.
+        The result is ALSO passed to the very first test as the test's 1st argument.
   @chainedTest: (args...) -> ChainedTest.setup args...
 
-  ###
-  IN:
-    PATTERN 1:
-      (setupFunciton) ->
+  thenTest:     (args...)-> @_applySequence :_thenTest    compactFlatten args
+  tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
+  softTapTest:  (args...)-> @_applySequence :_softTapTest compactFlatten args
 
-    PATTERN 2:
-      (setupTestName, setupFunction) ->
-
-    setupTestName
-      String
-      If present, appended to the Mocha setup-test's name
-    setupFunction
-      Result: any arbitrary function.
-      Result is resolved if it's a promise before passing to tests.
-      The result is passed to every test as the test's 2nd argument.
-      The result is ALSO passed to the very first test as the test's 1st argument.
-  ###
+  ##########################
+    PRIVATE
+  ##########################
   @setup: (a, b) ->
     setupFunction = b ? a
     setupName = a if b?
@@ -38,35 +44,22 @@ module.exports = class ChainedTest extends BaseClass
 
     new ChainedTest setupOnceFunction, setupOnceFunction
 
-  @test:  (testName, testFunction) ->
-    log.warn "DEPRECATED - use: chainedTest(...)"
-    new ChainedTest null, null, testName, testFunction
-
   ###
-  IN:
-    setupOnceFunction: [optional] ->
-      OUT: promise result will be resolved and passed to every @testFunction
-        as the second argument
-        AND, as the first argument for the first test
-      REQUIREMENT: should be re-invokable without additional side-effects
-        and should always return the same thing
+    IN:
+      setupOnceFunction: [optional] ->
+        OUT: promise result will be resolved and passed to every @testFunction
+          as the second argument
+          AND, as the first argument for the first test
+        REQUIREMENT: should be re-invokable without additional side-effects
+          and should always return the same thing
 
-    testName: [optional] string
-      if present, a mocha test is created
+      testName: [optional] string
+        if present, a mocha test is created
 
-    testFunction: [optional] (setupOnceFunctionResult) ->
-      IN: resolved result from @setupOnceFunction
-      OUT: result will be resolved and passed to any thenTest tests
-
-  ###
-  constructor: (
-      @setupOnceFunction = ->
-      @previousTestFunction = ->
-      @testName
-      @testFunction
-      @shouldTap
-      @shouldSkipIfNotSelected
-    ) ->
+      testFunction: [optional] (setupOnceFunctionResult) ->
+        IN: resolved result from @setupOnceFunction
+        OUT: result will be resolved and passed to any thenTest tests
+  constructor: (@setupOnceFunction = (->), @previousTestFunction = (->), @testName, @testFunction, @shouldTap, @shouldSkipIfNotSelected) ->
     test @testName, @testFunction && @setupAndTestOnceFunction if @testName
 
   @getter
@@ -89,12 +82,12 @@ module.exports = class ChainedTest extends BaseClass
             @resolvedSetup
 
     setupAndTestOnceFunctionForChain: ->
-      =>
-        (if @shouldSkipIfNotSelected
+      ->
+        if @shouldSkipIfNotSelected
           Promise.then @previousTestFunction
         else
           @setupAndTestOnceFunction()
-        ).catch (error) =>
+        .catch (error) =>
           unless /failed in/.test error.message
             error.message = "(ChainedTest failed in: " + if @testName
               @testName
@@ -111,8 +104,6 @@ module.exports = class ChainedTest extends BaseClass
 
     remove "setupOnceFunction" - there's nothing special about it, it's just the first test
       -possibly- its a tad special in that it gets the name 'setup' automatically
-  ###
-
   _thenTest: (nextTestName, nextTestFunction)->
     new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction
 
@@ -121,10 +112,6 @@ module.exports = class ChainedTest extends BaseClass
 
   _softTapTest: (nextTestName, nextTestFunction)->
     new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction, true, true
-
-  thenTest:     (args...)-> @_applySequence "_thenTest",    compactFlatten args
-  tapTest:      (args...)-> @_applySequence "_tapTest",     compactFlatten args
-  softTapTest:  (args...)-> @_applySequence "_softTapTest", compactFlatten args
 
   _applySequence: (applyMemberName, sequence) ->
     i = 0
