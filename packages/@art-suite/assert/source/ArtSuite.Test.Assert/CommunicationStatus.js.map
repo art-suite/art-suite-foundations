@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "CommunicationStatus.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/ArtSuite.Test.Assert/CommunicationStatus.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,yIAAO,mGAGP,UAAe,YAAS,iBAAe,sDAA2B,OAC1D,OAAC,UACD,OAAC,OAAO,kCAAqB,cAAS,QAAG,CAAC,sBAAsB,yCAAW,OAC5E,WAAU,yBAAyB,WAAW,yBAC/C,eAAe,2BAEb,CAAC,cACC,UAAU,iBAAiB,QAAQ,CAAC,mBAAmB,MAAK,CAC1D,UACA,SAAY,iBAAW,aAAc,QAAQ,kBAAoB,mBAEnE,cAEF,CACF,sBAAsB,sBACtB,UACE,yFAA8B,sBAC9B,QACA,uBAEF,2BAAkB,QAAG,CAAC,QAAQ,UAAU,UAAW,OACvD,eAAe,UAAU,cACnB,CAAC,UAAU,mBAAmB,SAAS,OAAO"
+}

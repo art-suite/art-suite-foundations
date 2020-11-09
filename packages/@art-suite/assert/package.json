@@ -1,0 +1,45 @@
+{
+  "author": "Shane Brinkman-Davis Delamore",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "chai": "*"
+  },
+  "description": "ArtSuite.Assert",
+  "devDependencies": {
+    "art-build-configurator": "^1.29.2",
+    "jest": "^26.6.1"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/test/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "@art-suite/assert",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -m -c source-source -o source\nnn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
+  },
+  "version": "1.0.0",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+}

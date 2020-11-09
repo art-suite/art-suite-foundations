@@ -1,0 +1,40 @@
+import &StandardImport, &ArtCommunicationStatus
+
+each status in supportedStatuses = :missing :clientFailure :clientFailureNotAuthorized
+  assertName = lowerCamelCase "is #{status}"
+  test
+    "" #{assertName} succeeds for: '#{status}'
+    -> assert[assertName] status
+
+  test
+    "" #{assertName} succeeds for: {status: '#{status}'}
+    -> assert[assertName] {} status
+
+  test
+    "" #{assertName} succeeds for: Promise.reject {status: '#{status}'}
+    -> assert[assertName] Promise.reject {} status
+
+  test
+    "" #{assertName} fails for: Promise.reject '#{status}'
+    -> assert.rejects -> assert[assertName] Promise.reject status
+
+  test
+    "" #{assertName} fails for: Promise.resolve {status: '#{status}'}
+    -> assert.rejects -> assert[assertName] Promise.resolve {} status
+
+  test
+    "" #{assertName} fails for: -> {status: '#{status}'}
+    -> assert.rejects -> assert[assertName] -> {} status
+
+  test
+    "" assert.rejectsWithStatus #{status}
+    ->
+      assert.rejectsWithStatus status, Promise.reject {} status
+      assert.rejects -> assert.rejectsWithStatus status, Promise.reject status: failure
+      assert.rejects -> assert.rejectsWithStatus status, Promise.resolve status: success
+
+  each s2 in supportedStatuses when s2 != status
+    test
+      "" #{assertName} fails for: '#{s2}'
+      -> assert.rejects -> assert[assertName] s2
+

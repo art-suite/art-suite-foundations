@@ -1,0 +1,39 @@
+import &StandardImport
+
+array name in :gt :gte :lte :lt :eq :neq :floatEq
+  addTester name, &ArtStandardLib[name]
+
+# generalize this if we have more assert functions with TWO binary tests
+assert.within = (a, b, c, context) ->
+  if a? && a.gte? && a.lte?
+        failWithExpectedMessage context, a, "to be gte", b, "to be lte", c unless a.gte(b) and a.lte(c)
+  else  failWithExpectedMessage context, a, "to be >=",  b, "to be <=" , c unless a >= b and a <= c
+
+# match / doesNotMatch
+addTester :match        (a, b) -> a.match  if isString b then escapeRegExp b else b
+addTester :notMatch     notMatch = (a, b) -> !a.match if isString b then escapeRegExp b else b
+addTester :doesNotMatch notMatch
+
+# same / notSame
+addTester :same         (a, b) -> a == b
+addTester :notSame      (a, b) -> a != b
+
+# compare only part of two objects
+addTester :selectedPropsEq,
+  customFailure: (name, expectedProps, testObject, context) ->
+    failWithExpectedMessageBase context, expectedProps, testObject, []
+      indent format expectedProps
+      "" to equal selected props:
+      indent format object v, k in expectedProps with testObject[k]
+      "" test object:
+      indent format testObject
+
+  (expectedProps, testObject) ->
+    failures = null
+    each v, k in expectedProps
+      if !eq v, v2 = testObject[k]
+        (failures ?= {})[k] = expected: v, actual: v2
+
+    !failures
+
+assert.selectedEq = assert.selectedPropsEq

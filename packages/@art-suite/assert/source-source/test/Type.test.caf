@@ -1,0 +1,15 @@
+import &StandardImport
+
+class RootClass
+class OtherRootClass
+class ChildClass extends RootClass
+
+test "instanceof" ->
+  assert.instanceof
+    RootClass
+    new ChildClass
+
+  assert.rejects ->
+    assert.instanceof
+      OtherRootClass
+      new ChildClass

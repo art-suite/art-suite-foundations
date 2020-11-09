@@ -1,0 +1,23 @@
+import &StandardImport
+
+array tester, name in Types when name.match /^is/
+  addTester name, tester
+
+addTester :instanceof,
+  customFailure: (name, v1, v2, context) -> failWithExpectedMessage context, v2, name, v1
+  (klass, obj) -> obj instanceof klass
+
+addTester :is (a, b) -> a is b
+
+# exists / doesNotExist
+addTester :exists       (a) -> a?
+addTester :notExists    notExists = (a) -> !a?
+addTester :doesNotExist notExists
+
+# present / notPresent
+addTester :present      (a) -> present a
+addTester :notPresent   (a) -> !present a
+
+# hasKeys / hasNoKeys
+addTester :hasKeys      (a) -> isPlainObject(a) && objectHasKeys(a)
+addTester :hasNoKeys    (a) -> isPlainObject(a) && !objectHasKeys(a)
