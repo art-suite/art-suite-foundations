@@ -1,8 +1,8 @@
 {
-  "author": "Shane Brinkman-Davis Delamore",
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "chai": "*"
+    "chai": "^4.2.0"
   },
   "description": "ArtSuite.Assert",
   "devDependencies": {
@@ -30,7 +30,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "watch": {
     "build": {
       "extensions": [
