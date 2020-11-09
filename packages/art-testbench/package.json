@@ -11,7 +11,7 @@
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
   "devDependencies": {
-    "art-build-configurator": "^1.28.3"
+    "art-build-configurator": "^1.29.2"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

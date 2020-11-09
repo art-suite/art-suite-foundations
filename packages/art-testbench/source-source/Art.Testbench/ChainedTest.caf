@@ -119,13 +119,11 @@ class ChainedTest extends BaseClass
     while i < sequence.length
       if isString v = sequence[i++]
         unless isFunction f = sequence[i++]
-          log.error ChainedTestError: name: v, shouldBeFunction: f
-          throw new Error "expecting <Function> after <String> got: #{f}"
+          throw new Error "ChainedTestError: expecting <Function> after <String>(#{formattedInspect v}) got: #{formattedInspect f}"
 
         ct = ct[applyMemberName] v, f
 
       else
-        log.error ChainedTestError: name: shouldBeString: v
-        throw new Error "expecting <String> got: #{v}"
+        throw new Error "ChainedTestError: expecting <String> got: #{formattedInspect v}"
 
     ct

@@ -3,5 +3,5 @@
   {test, setup, initTesting} = &Mocha
 
   {}
-    &ChainedTest.chainedTest
+    require(:@art-suite/chained-test).chainedTest
     &Assert.assert
