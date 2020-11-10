@@ -3,21 +3,21 @@ import &ArtStandardLib, &ArtSuiteTestChainedTest, require :@art-suite/assert
 testsActuallyRan = []
 ran = (key) -> testsActuallyRan.push key
 
-chainedTest ->
-  123
-
-.tapTest :tapTest -> 3
-.thenTest :thenTest (val) ->
-  assert.eq val, 123
+chainedTest -> 123
+.tapTest :tapTest3 ->  3
+.thenTest :thenTestStill3 (val) -> assert.eq val, 123
 
 chainedTest 'start' ->
+  ran :start
   :setupValue
 
 .thenTest "initial values passed to thenTest" (args...) ->
+  ran :thenTestSetupValues
   assert.eq  args, [] :setupValue :setupValue
   :newValue
 
 .thenTest "newValue is passed to second thenTest; setupValue still in second arg" (args...) ->
+  ran :thenTestNewValue
   assert.eq args, [] :newValue :setupValue
   123
 
@@ -34,6 +34,18 @@ chainedTest 'start' ->
   :thenTest_should_now_be_456 (val) -> assert.eq val, 456
 
   :second_param_should_still_hold_setups_value (_, b) -> assert.eq b, :setupValue
+
+.thenTest
+  "final" -> assert.eq
+    testsActuallyRan
+    []
+      :start
+      :thenTestSetupValues
+      :thenTestNewValue
+      :tapTest-1
+      :tapTest-2
+      :softTapTest-1
+      :softTapTest-2
 
   # I have no idea how to actually test that softTapTest isn't run if JEST/Mocha skips them,
   # but everything else is run... So for now, just uncomment the following line

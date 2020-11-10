@@ -1,5 +1,12 @@
 import &ArtStandardLib, &ArtClassSystem
 
+cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
+  error.stack =
+    array line in error.stack?.split :\n when !stackTraceIgnoreLineRegExp.test line
+    .join :\n
+
+  error
+
 {chainedTest} = class ChainedTest extends BaseClass
   ###
     IN:
@@ -18,7 +25,15 @@ import &ArtStandardLib, &ArtClassSystem
         Result is resolved if it's a promise before passing to tests.
         The result is passed to every test as the test's 2nd argument.
         The result is ALSO passed to the very first test as the test's 1st argument.
-  @chainedTest: (args...) -> ChainedTest.setup args...
+  @chainedTest: (a, b) ->
+    setupFunction = b ? a
+    setupName = a if b?
+
+    throw new Error "expected test/setup function" unless setupFunction is Function
+
+    new ChainedTest
+      setupName ? "" ChainedTest setup
+      setupFunction
 
   thenTest:     (args...)-> @_applySequence :_thenTest    compactFlatten args
   tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
@@ -27,103 +42,73 @@ import &ArtStandardLib, &ArtClassSystem
   ##########################
     PRIVATE
   ##########################
-  @setup: (a, b) ->
-    setupFunction = b ? a
-    setupName = a if b?
-
-    setupOncePromise = null
-    setupOnceFunction = ->
-      setupOncePromise ?= Promise.then setupFunction ? ->
-
-    if setupFunction
-      setupName = if setupName
-        "ChainedTest setup: #{setupName}"
-      else
-        "ChainedTest setup"
-      global.test setupName, setupOnceFunction
-
-    new ChainedTest setupOnceFunction, setupOnceFunction
-
   ###
     IN:
-      setupOnceFunction: [optional] ->
-        OUT: promise result will be resolved and passed to every @testFunction
+      name: [optional] string
+        if present, a mocha test is created
+
+      test: [optional] (runSetupOnceResult) ->
+        IN: resolved result from @runSetupOnce
+        OUT: result will be resolved and passed to any thenTest tests
+
+      runSetupOnce: [optional] ->
+        OUT: promise result will be resolved and passed to every @test
           as the second argument
           AND, as the first argument for the first test
         REQUIREMENT: should be re-invokable without additional side-effects
           and should always return the same thing
 
-      testName: [optional] string
-        if present, a mocha test is created
+      runDependencyChainOnce:
 
-      testFunction: [optional] (setupOnceFunctionResult) ->
-        IN: resolved result from @setupOnceFunction
-        OUT: result will be resolved and passed to any thenTest tests
-  constructor: (@setupOnceFunction = (->), @previousTestFunction = (->), @testName, @testFunction, @shouldTap, @shouldSkipIfNotSelected) ->
-    global.test @testName, @testFunction && @setupAndTestOnceFunction if @testName
+      options:
+        tap: <boolean> ignore the result of this test
+        soft: <boolean> skip this test if not explicitly run by the test framework (Jest/Mocha)
+
+  constructor: (@name, @test, @_runSetupOnce, @runDependencyChainOnce, @options) ->
+    throw new Error "test required" unless @test is Function
+    throw new Error "name required" unless @name is String
+    global.test @name, @runThisTestOnce
 
   @getter
-    resolvedSetup: -> Promise.then @setupOnceFunction
-    setupAndTestOnceFunction: ->
-      @_setupAndTestOnceFunction ?= =>
-        # this is where we start executing with Mocha chooses the test named @testName
-        @_testOncePromise ?=
-          if @testFunction
-            Promise.then @previousTestFunction
-            .then (previousTestResult) =>
-              startTime = currentSecond()
-              @resolvedSetup.then (setupResult) =>
-                @testFunction previousTestResult, setupResult
-              .then (out) =>
-                # NOTE: this spews in pure-node tests; what I really want is to log this IFF it WASN'T run by mocha
-                # log "ChainedTest (#{1000 * (currentSecond() - startTime) | 0}ms): #{@testName}"
-                if @shouldTap then previousTestResult else out
-          else
-            @resolvedSetup
+    runSetupOnce: -> @_runSetupOnce ? @runDependencyChainOnce
+    runThisTestOnce: ->
+      @_runThisTestOnce ?= ->
+        @_setupAndTestOncePromise ?=
+          Promise.all []
+            Promise.then @runDependencyChainOnce ? ->
+            Promise.then @runSetupOnce ? ->
+          .then ([previousTestResult, setupResult]) ->
+            Promise.then -> @test previousTestResult, setupResult
+            .then (out) -> if @options?.tap then previousTestResult else out
+          .catch (error) ->
+            throw cleanErrorStack
+              error
+              /ArtSuite.Test|caffeine-script-runtime|processImmediate|art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
 
-    setupAndTestOnceFunctionForChain: ->
+    runDependencyChainPlusThisOnce: ->
       ->
-        if @shouldSkipIfNotSelected
-          Promise.then @previousTestFunction
-        else
-          @setupAndTestOnceFunction()
-        .catch (error) =>
+        if @options?.soft
+              Promise.then @runDependencyChainOnce
+        else  @runThisTestOnce()
+        .catch (error) ->
           unless /failed in/.test error.message
-            error.message = "(ChainedTest failed in: " + if @testName
-              @testName
-            else
-              "setup"
-            error.message += ")\n\n"
-          throw error
+            # error.message = "" (ChainedTest failed in: #{if @name then @name else :setup})\n\n
+            throw error
 
-  ### TODO:
-    All tapTest and thenTest steps leading up to any selected-to-run test WILL BE RUN,
-    even if they aren't run directly by the test framework.
-
-    softTapTests, howevver, won't get run at all unless they are selected by the test framework to run
-
-    remove "setupOnceFunction" - there's nothing special about it, it's just the first test
-      -possibly- its a tad special in that it gets the name 'setup' automatically
-  _thenTest: (nextTestName, nextTestFunction)->
-    new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction
-
-  _tapTest: (nextTestName, nextTestFunction)->
-    new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction, true
-
-  _softTapTest: (nextTestName, nextTestFunction)->
-    new ChainedTest @setupOnceFunction, @setupAndTestOnceFunctionForChain, nextTestName, nextTestFunction, true, true
+  _thenTest:    (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupOnce, @runDependencyChainPlusThisOnce
+  _tapTest:     (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupOnce, @runDependencyChainPlusThisOnce, tap: true
+  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupOnce, @runDependencyChainPlusThisOnce, tap: true, soft: true
 
   _applySequence: (applyMemberName, sequence) ->
-    i = 0
-    ct = @
-    while i < sequence.length
-      if isString v = sequence[i++]
-        unless isFunction f = sequence[i++]
-          throw new Error "ChainedTestError: expecting <Function> after <String>(#{formattedInspect v}) got: #{formattedInspect f}"
+    lastChainedTest = @
+    each name, i in sequence by 2
 
-        ct = ct[applyMemberName] v, f
+      unless isString name
+        throw new Error "" ChainedTestError: expecting <String> got: #{formattedInspect name}
 
-      else
-        throw new Error "ChainedTestError: expecting <String> got: #{formattedInspect v}"
+      unless isFunction f = sequence[i + 1]
+        throw new Error "" ChainedTestError: expecting <Function> after <String>(#{formattedInspect name}) got: #{formattedInspect f}
 
-    ct
+      lastChainedTest = lastChainedTest[applyMemberName] name, f
+
+    lastChainedTest
