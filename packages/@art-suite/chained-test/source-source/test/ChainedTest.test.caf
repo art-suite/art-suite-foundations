@@ -25,9 +25,17 @@ chainedTest 'start' ->
   :tapTest_passes_through_passed_in_value--part_one (val) -> ran("tapTest-1");assert.eq val, 123; 1
   :tapTest_passes_through_passed_in_value--part_two (val) -> ran("tapTest-2");assert.eq val, 123; 2
 
+  # TODO: this test is too meta; how do we actually test it?!?
+  #   Right now, manually uncomment and make sure it works as described.
+  # :normal-failures-will-break-the-rest-of-the-chain -> throw new Error :hrm
+
 .softTapTest
   :softTapTest_is_a_skippable_tapTest--part_one (val) -> ran("softTapTest-1");assert.eq val, 123; 1
   :softTapTest_is_a_skippable_tapTest--part_two (val) -> ran("softTapTest-2");assert.eq val, 123; 2
+
+  # TODO: this test is too meta; how do we actually test it?!?
+  #   Right now, manually uncomment and make sure it works as described.
+  # :soft-fail-shouldnt-break-the-rest-of-the-chain -> throw new Error :hrm
 
 .thenTest
   :thenTest_should_still_be_123 (val) -> assert.eq val, 123; 456
@@ -47,7 +55,8 @@ chainedTest 'start' ->
       :softTapTest-1
       :softTapTest-2
 
+  # TODO: this test is too meta; how do we actually test it?!?
   # I have no idea how to actually test that softTapTest isn't run if JEST/Mocha skips them,
   # but everything else is run... So for now, just uncomment the following line
   # and run with and without filter/grep for "final_ran". As-of-now, it works (2020-11-8)
-  # :final_ran -> log {} testsActuallyRan
+  # :finally_filter_just_this_test_and_see_if_soft_tests_are_skipped -> log {} testsActuallyRan

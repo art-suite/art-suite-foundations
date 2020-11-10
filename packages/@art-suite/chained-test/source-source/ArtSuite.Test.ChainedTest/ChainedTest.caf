@@ -2,9 +2,8 @@ import &ArtStandardLib, &ArtClassSystem
 
 cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
   error.stack =
-    array line in error.stack?.split :\n when !stackTraceIgnoreLineRegExp.test line
+    array line in error.stack.split :\n when !stackTraceIgnoreLineRegExp.test line
     .join :\n
-
   error
 
 {chainedTest} = class ChainedTest extends BaseClass
@@ -16,24 +15,15 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
       PATTERN 2:
         (setupTestName, setupFunction) ->
 
-      setupTestName
-        String
-        If present, appended to the Mocha setup-test's name
-
       setupFunction
         Result: any arbitrary function.
         Result is resolved if it's a promise before passing to tests.
         The result is passed to every test as the test's 2nd argument.
         The result is ALSO passed to the very first test as the test's 1st argument.
   @chainedTest: (a, b) ->
-    setupFunction = b ? a
-    setupName = a if b?
-
-    throw new Error "expected test/setup function" unless setupFunction is Function
-
     new ChainedTest
-      setupName ? "" ChainedTest setup
-      setupFunction
+      if b? then a else "" ChainedTest setup
+      b ? a
 
   thenTest:     (args...)-> @_applySequence :_thenTest    compactFlatten args
   tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
@@ -42,41 +32,41 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
   ##########################
     PRIVATE
   ##########################
-  ###
+  ### constructor()
     IN:
       name: [optional] string
         if present, a mocha test is created
 
       test: [optional] (runSetupOnceResult) ->
-        IN: resolved result from @runSetupOnce
+        IN: resolved result from @setupResultPromise
         OUT: result will be resolved and passed to any thenTest tests
 
-      runSetupOnce: [optional] ->
-        OUT: promise result will be resolved and passed to every @test
-          as the second argument
-          AND, as the first argument for the first test
-        REQUIREMENT: should be re-invokable without additional side-effects
-          and should always return the same thing
+      _runSetupOnce: [optional] ->
+        IN: (nothing)
+        OUT: Promise.then -> setup result
 
-      runDependencyChainOnce:
+      _runDependencyChainOnce: [optional] ->
+        IN: (nothing)
+        OUT: Promise.then -> dependency chain result
 
       options:
         tap: <boolean> ignore the result of this test
-        soft: <boolean> skip this test if not explicitly run by the test framework (Jest/Mocha)
+        soft: <boolean> don't run this test if not explicitly run by the test framework (Jest/Mocha)
+          NOTE: Normally, a failure in a test will cause the rest of the chain to fail.
+          However, a failure in a soft-test will not cause the rest of the chain to fail.
 
-  constructor: (@name, @test, @_runSetupOnce, @runDependencyChainOnce, @options) ->
-    throw new Error "test required" unless @test is Function
-    throw new Error "name required" unless @name is String
+  constructor: (@name, @test, @_runSetupOnce, @_runDependencyChainOnce, @options) ->
+    throw new Error "test required (got: #{formattedInspect @test})" unless @test is Function
+    throw new Error "name required (got: #{formattedInspect @name})" unless @name is String
     global.test @name, @runThisTestOnce
 
   @getter
-    runSetupOnce: -> @_runSetupOnce ? @runDependencyChainOnce
+    previousTestResultPromise: -> Promise.then @_runDependencyChainOnce ? ->
+    setupResultPromise: -> Promise.then @_runSetupOnce ? @_runDependencyChainOnce ? ->
     runThisTestOnce: ->
       @_runThisTestOnce ?= ->
         @_setupAndTestOncePromise ?=
-          Promise.all []
-            Promise.then @runDependencyChainOnce ? ->
-            Promise.then @runSetupOnce ? ->
+          Promise.all [] @previousTestResultPromise, @setupResultPromise
           .then ([previousTestResult, setupResult]) ->
             Promise.then -> @test previousTestResult, setupResult
             .then (out) -> if @options?.tap then previousTestResult else out
@@ -85,30 +75,23 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
               error
               /ArtSuite.Test|caffeine-script-runtime|processImmediate|art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
 
-    runDependencyChainPlusThisOnce: ->
+    runSetupForNextLink: -> @_runSetupOnce ? @runThisTestOnce
+    runChainForNextLink: ->
       ->
-        if @options?.soft
-              Promise.then @runDependencyChainOnce
-        else  @runThisTestOnce()
+        if @options?.soft then  @previousTestResultPromise
+        else                    @runThisTestOnce()
         .catch (error) ->
           unless /failed in/.test error.message
-            # error.message = "" (ChainedTest failed in: #{if @name then @name else :setup})\n\n
-            throw error
+            error.message = "" (ChainedTest failed in: #{if @name then @name else :setup})\n\n
+          throw error
 
-  _thenTest:    (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupOnce, @runDependencyChainPlusThisOnce
-  _tapTest:     (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupOnce, @runDependencyChainPlusThisOnce, tap: true
-  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupOnce, @runDependencyChainPlusThisOnce, tap: true, soft: true
+  _thenTest:    (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink
+  _tapTest:     (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true
+  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true, soft: true
 
   _applySequence: (applyMemberName, sequence) ->
     lastChainedTest = @
     each name, i in sequence by 2
-
-      unless isString name
-        throw new Error "" ChainedTestError: expecting <String> got: #{formattedInspect name}
-
-      unless isFunction f = sequence[i + 1]
-        throw new Error "" ChainedTestError: expecting <Function> after <String>(#{formattedInspect name}) got: #{formattedInspect f}
-
-      lastChainedTest = lastChainedTest[applyMemberName] name, f
+      lastChainedTest = lastChainedTest[applyMemberName] name, sequence[i + 1]
 
     lastChainedTest
