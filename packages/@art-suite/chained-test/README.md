@@ -1,8 +1,12 @@
-# ArtSuite.Test.ChainedTest
+# ArtSuite/ChainedTest
 
+Smaller tests are easier to write, maintain, and use to ensure code correctness.
 ChainedTest lets you break up large tests into a sequence fo smaller tests. This is particularly helpful for integration tests, user-story tests, or tests with more than one asynchronous step.
 
-JEST and Mocha are supported.
+- **Accelerate test-suite development:** Break up large, slow tests into a sequence of smaller tests. Decrease total test-suite code-size through improved code re-use.
+- **Accelerate test-suite runtime:** Reduce overall run-time of the test suite with generalized shared-setup.
+
+Supported test-frameworks: JEST and Mocha
 
 ### Install
 
@@ -41,7 +45,7 @@ const commentBody = "Brilliant!";
 
 // the return-result of this first test will be passed as the second argument
 // to all subsequent tests in the chain.
-chainedTest("setup", () => auth(aliceEmail))
+chainedTest("auth alice", () => auth(aliceEmail))
 
 // softTapTests: ignores the test's return value. Instead it passes lastTestValue through.
 // skipped: if not selected by test framework
@@ -77,19 +81,20 @@ This will create 7 tests in the test framework. With no filters, each will get e
 
 For example:
 
-- If only `logOut` is selected, only `"setup", "create a post", "create a comment", "get post's comments", and "logOut"` are executed.
-- If only `validate alice is returned` is selected, only `"setup" and "validate alice is returned"` are executed.
+- If only `logOut` is selected, `"auth alice", "create a post", "create a comment", "get post's comments", and "logOut"` are executed.
+- If only `validate alice is returned` is selected, only `"auth alice" and "validate alice is returned"` are executed.
 
 ### API
 
-Start a chained test:
 
-#### chainedTest
+#### chainedTest()
+
+Start a chained test.
 
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
 
-chainedTest(name, test)   // => new ChainedTest instance
+chainedTest(name, test)   // returns new ChainedTest instance
 ```
 
 - **IN:**
@@ -100,18 +105,20 @@ chainedTest(name, test)   // => new ChainedTest instance
 - **EFFECT:**
   - registers the named test with the test framework
 
-#### chainedTestInstance.thenTest / .tapTest / .softTapTest
+#### chainedTestInstance.thenTest() / .tapTest() / .softTapTest()
+
+Add additional tests to the test-chain.
 
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
 
 chainedTest(name, test)
-.thenTest(name, test)     // => new ChainedTest instance
-.tapTest(name, test)      // => new ChainedTest instance
-.softTapTest(name, test)  // => new ChainedTest instance
+.thenTest(name, test)     // returns new ChainedTest instance
+.tapTest(name, test)      // returns new ChainedTest instance
+.softTapTest(name, test)  // returns new ChainedTest instance
 ```
 
-All three methods have the same signature, but have slightly different effects:
+All three methods have the same signature but have slightly different effects:
 
 - **IN:**
   - name(*): string
