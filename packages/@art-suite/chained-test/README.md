@@ -3,12 +3,12 @@
 Smaller tests are easier to write, maintain, and use to ensure code correctness.
 ChainedTest lets you break up large tests into a sequences of small tests. This is particularly helpful for **integration tests**, **user-story tests**, or tests with **more than one asynchronous step**.
 
-### Benefits
+# Benefits
 
 - **Accelerate test-suite development:** Break up large, slow tests into a sequence of smaller tests. Decrease total test-suite code-size through improved code re-use.
 - **Accelerate test-suite runtime:** Reduce overall run-time of the test suite with generalized shared-setup.
 
-### Supported Frameworks
+# Supported Frameworks
 
 Supported test-frameworks: [JEST](https://www.npmjs.com/package/jest) and [Mocha](https://www.npmjs.com/package/mocha)
 
@@ -93,7 +93,7 @@ For example:
 # API
 
 
-#### chainedTest()
+### chainedTest()
 
 Start a chained test.
 
@@ -111,7 +111,7 @@ chainedTest(name, test)   // returns new ChainedTest instance
 - **EFFECT:**
   - registers the named test with the test framework
 
-#### chainedTestInstance.thenTest() / .tapTest() / .softTapTest()
+### chainedTestInstance.thenTest() / .tapTest() / .softTapTest()
 
 Add additional tests to the test-chain.
 
@@ -165,6 +165,6 @@ When filtering tests it all works as expected. The `commonRoot` is only excuted 
 - If only `test2` is selected, `mySetup, test1 and test2` will be executed.
 - If only `test3` is selected, `mySetup, test1 and test3` will be executed.
 
-### Failures
+# How Failures are Handled
 
 If a test fails, all downstream, dependent tests automatically fail as well. The downstream tests will not be executed, and they will be marked as failed in the test suite.
