@@ -1,8 +1,8 @@
 # ArtSuite.Test.ChainedTest
 
-ChainedTest lets you break up large tests into a sequence fo smaller tests. This is particularly helpful for integration tests, user-story tests, or tests with more than one asynchrounous step.
+ChainedTest lets you break up large tests into a sequence fo smaller tests. This is particularly helpful for integration tests, user-story tests, or tests with more than one asynchronous step.
 
-JEST or Mocha are supported.
+JEST and Mocha are supported.
 
 ### Install
 
@@ -10,7 +10,26 @@ JEST or Mocha are supported.
 npm install @art-suite/chained-test
 ```
 
-### EXAMPLE USAGE
+### BASIC USAGE
+
+```javascript
+let { chainedTest } = require("@art-suite/chained-test");
+
+chainedTest("setup", () => 123)
+
+.thenTest("is it 123?", (value) => {
+  expect(value).toEqual(123)
+  return 456;
+})
+
+.thenTest("is it 456?", (value) => {
+  expect(value).toEqual(456)
+})
+```
+
+You may notice this looks a lot like a chain of Promises. That is the intention. It works very similarly.
+
+### FULL EXAMPLE
 
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
@@ -20,7 +39,9 @@ const aliceEmail = "alice@test.com";
 const postBody = "The quick brown fox jumped over the lazy dog.";
 const commentBody = "Brilliant!";
 
-chainedTest("setup", () => auth(aliceEmail))   // => ChainedTest instance
+// the return-result of this first test will be passed as the second argument
+// to all subsequent tests in the chain.
+chainedTest("setup", () => auth(aliceEmail))
 
 // softTapTests: ignores the test's return value. Instead it passes lastTestValue through.
 // skipped: if not selected by test framework
