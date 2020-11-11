@@ -89,7 +89,7 @@ Start a chained test:
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
 
-chainedTest(name, test)   // => ChainedTest instance
+chainedTest(name, test)   // => new ChainedTest instance
 ```
 
 - **IN:**
@@ -106,9 +106,9 @@ chainedTest(name, test)   // => ChainedTest instance
 let { chainedTest } = require("@art-suite/chained-test");
 
 chainedTest(name, test)
-.thenTest(name, test)     // => ChainedTest instance
-.tapTest(name, test)      // => ChainedTest instance
-.softTapTest(name, test)  // => ChainedTest instance
+.thenTest(name, test)     // => new ChainedTest instance
+.tapTest(name, test)      // => new ChainedTest instance
+.softTapTest(name, test)  // => new ChainedTest instance
 ```
 
 All three methods have the same signature, but have slightly different effects:
@@ -120,7 +120,7 @@ All three methods have the same signature, but have slightly different effects:
     - firstTestResult: the value returned from the first test established in the chainedTest call.
   - (*) The `thenTest/tapTest/softTapTest` methods can accept any number of arguments as long as they are arranged as name-test pairs. There must be at least one pair. If there is more than one pair, each pair is treated as-if they were independently called with a sequence of calls to the same method-type.
 - **OUT:**
-  - ChainedTest instance
+  - a new ChainedTest instance
 - **EFFECT:**
   - each register their named test(s) with the test framework
   - `.thenTest`: will pass the returned value from the test function to the next test in the chain as its `lastTestResult`.
