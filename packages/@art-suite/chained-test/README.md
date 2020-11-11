@@ -1,20 +1,26 @@
 # ArtSuite/ChainedTest
 
 Smaller tests are easier to write, maintain, and use to ensure code correctness.
-ChainedTest lets you break up large tests into a sequence fo smaller tests. This is particularly helpful for integration tests, user-story tests, or tests with more than one asynchronous step.
+ChainedTest lets you break up large tests into a sequences of small tests. This is particularly helpful for **integration tests**, **user-story tests**, or tests with **more than one asynchronous step**.
+
+### Benefits
 
 - **Accelerate test-suite development:** Break up large, slow tests into a sequence of smaller tests. Decrease total test-suite code-size through improved code re-use.
 - **Accelerate test-suite runtime:** Reduce overall run-time of the test suite with generalized shared-setup.
 
-Supported test-frameworks: JEST and Mocha
+### Supported Frameworks
 
-### Install
+Supported test-frameworks: [JEST](https://www.npmjs.com/package/jest) and [Mocha](https://www.npmjs.com/package/mocha)
+
+# Install
 
 ```coffeescript
-npm install @art-suite/chained-test
+npm install @art-suite/chained-test --save-dev
 ```
 
-### BASIC USAGE
+# Usage
+
+### Basics
 
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
@@ -33,7 +39,7 @@ chainedTest("setup", () => 123)
 
 You may notice this looks a lot like a chain of Promises. That is the intention. It works very similarly.
 
-### FULL EXAMPLE
+### Full Example
 
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
@@ -84,7 +90,7 @@ For example:
 - If only `logOut` is selected, `"auth alice", "create a post", "create a comment", "get post's comments", and "logOut"` are executed.
 - If only `validate alice is returned` is selected, only `"auth alice" and "validate alice is returned"` are executed.
 
-### API
+# API
 
 
 #### chainedTest()
