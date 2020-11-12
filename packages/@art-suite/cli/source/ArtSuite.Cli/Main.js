@@ -20,7 +20,7 @@ Caf.defMod(module, () => {
           output,
         }) => {
           let nodeJs, startFile, args, options, commandFunction, commandName;
-          output != null ? output : (output = log);
+          output != null ? output : (output = log.unquoted);
           argv != null ? argv : (argv = process.argv);
           [nodeJs, startFile, ...args] = argv;
           ({
@@ -36,16 +36,16 @@ Caf.defMod(module, () => {
           return Promise.then(() =>
             commandFunction && !options.help
               ? (options.verbose
-                  ? output(
-                      merge({
-                        options,
+                  ? output({
+                      "parsed-command-line": merge({
                         command: commandName,
                         args:
                           (Caf.exists(args) && args.length) > 0
                             ? args
                             : undefined,
-                      })
-                    )
+                        options,
+                      }),
+                    })
                   : undefined,
                 commandFunction(options, args))
               : require("./Help").getHelp(

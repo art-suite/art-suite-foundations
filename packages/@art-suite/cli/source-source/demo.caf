@@ -69,5 +69,5 @@ require :@art-suite/cli
       run: ({ args }) ->
         object arg in args
           stat = &fs.statSync arg
-          object k from Object.keys stat with-key k
+          object k from Object.keys stat
             stat[k]

@@ -5,7 +5,7 @@ Caf.defMod(module, () => {
     ["w", "compactFlatten", "repeat", "Object"],
     [global, require("art-standard-lib")],
     (w, compactFlatten, repeat, Object) => {
-      return require("./ArtSuite.Cli").start({
+      return require("@art-suite/cli").start({
         description:
           "A demo of the art-suite/cli library.\n\nPirateIpsum.me Heave down stern heave to hearties crack Jennys tea cup topgallant snow reef sails belaying pin haul wind. Strike colors mizzenmast nipper draft scurvy skysail gangplank ye list interloper. Squiffy bring a spring upon her cable line chandler execution dock plunder topgallant scourge of the seven seas crimp ahoy.\n\nJack Ketch Yellow Jack main sheet list black spot spyglass hearties barque sutler fathom. Stern gally crimp run a rig execution dock lugsail hogshead boatswain Davy Jones' Locker jolly boat. Tender Pieces of Eight league matey mizzenmast take a caulk nipperkin capstan furl chantey.",
         commands: {
@@ -77,13 +77,7 @@ Caf.defMod(module, () => {
               return Caf.object(args, (arg) => {
                 let stat;
                 stat = require("fs").statSync(arg);
-                return Caf.object(
-                  Object.keys(stat),
-                  (k) => stat[k],
-                  null,
-                  null,
-                  (k) => k
-                );
+                return Caf.object(Object.keys(stat), (k) => stat[k]);
               });
             },
           },
