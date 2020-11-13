@@ -6,7 +6,7 @@
   },
   "description": "Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.",
   "devDependencies": {
-    "art-build-configurator": "^1.28.3"
+    "art-build-configurator": "^1.29.2"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

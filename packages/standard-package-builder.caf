@@ -36,7 +36,8 @@ import &ArtStandardLib
       testEnvironment: :node
       collectCoverageFrom:
         "source/**/*.js",
-        "!source/_?[Jjt]est/**/*.js"
+        "!source/test/**/*.js"
+
     watch:
       build:
         extensions: compactFlattenAll

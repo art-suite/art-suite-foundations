@@ -11,8 +11,8 @@
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
-    "art-build-configurator": "^1.28.3",
-    "art-testbench": "^2.2.11",
+    "art-build-configurator": "^1.29.2",
+    "art-testbench": "^3.1.2",
     "mocha": "^7.2.0",
     "mock-fs": "^4.13.0"
   },

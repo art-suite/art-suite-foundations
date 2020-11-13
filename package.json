@@ -2,6 +2,8 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
+    "@art-suite/assert": "file:packages/@art-suite/assert",
+    "@art-suite/chained-test": "file:packages/@art-suite/chained-test",
     "@art-suite/cli": "file:packages/@art-suite/cli",
     "@art-suite/configuration-engine": "file:packages/@art-suite/ace",
     "@art-suite/global": "file:packages/@art-suite/global",
@@ -54,7 +56,7 @@
     "simple-git": "^2.20.1",
     "style-loader": "^2.0.0",
     "watch": "^1.0.0",
-    "webpack-merge": "^5.3.0",
+    "webpack-merge": "^5.4.0",
     "wrap-ansi": "^7.0.0",
     "xhr2": "^0.2.0"
   },
