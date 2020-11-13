@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &Test
 
 class TestSuite extends BaseClass
   @abstractClass()

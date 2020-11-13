@@ -1,7 +1,7 @@
 import &StandardImport, &ErrorExtensions, &@ArtSuite/assert
 
 test: (name, test, rest...) ->
-  global.test
+  (global.it ? global.test)
     name
 
     ->
@@ -20,5 +20,5 @@ test: (name, test, rest...) ->
 
 skipKnownFailingTest: (name, f) ->
   message = "SKIPPING KNOWN-FAILING TEST: #{name}"
-  test message, ->
+  (global.it ? global.test) message, ->
     assert.rejects f, "This test is passing now, yay! Switch to a normal test."
