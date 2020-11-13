@@ -6,8 +6,8 @@
   },
   "description": "Simple, powerful iteration comprehensions for JavaScript.",
   "devDependencies": {
-    "art-testbench": "^3.1.2",
-    "caffeine-script": "^0.72.12",
+    "art-testbench": "^3.1.3",
+    "caffeine-script": "^0.73.0",
     "chai": "^4.2.0",
     "mocha": "^7.2.0"
   },
