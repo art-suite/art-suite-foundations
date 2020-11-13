@@ -1,5 +1,4 @@
 {}
-  test:         (args...) -> global.test args...
 
   describe = (a, b) ->
     if a is Object

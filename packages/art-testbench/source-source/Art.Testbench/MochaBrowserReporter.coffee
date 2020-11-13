@@ -1,5 +1,5 @@
 if global.document
-  {log, fastBind, Promise, findSourceReferenceUrlRegexp} = require 'art-foundation'
+  {log, fastBind, Promise, findSourceReferenceUrlRegexp} = require 'art-standard-lib'
 
   # {mapStackTrace} = require 'sourcemapped-stacktrace'
 

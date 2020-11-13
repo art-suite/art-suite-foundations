@@ -1,8 +1,5 @@
 {isArray, isNode, log, isFunction, isPlainObject, merge, Promise, isPromise} = require 'art-standard-lib'
 {configure} = require 'art-config'
-chai = require './Assert'
-global.assert = chai.assert
-{cleanErrorStack} = require './ErrorExtensions'
 
 if global.document
   document.write "<div id=\"mocha\"></div>" unless document.getElementById "mocha"
@@ -114,25 +111,6 @@ defineSuitesByObjectStructure = (object, namespacePath) ->
       defineSuitesByObjectStructure v, "#{namespacePath}.#{k}"
 
 module.exports = class Mocha
-  @assert:        chai.assert
-
-  @test:          (name, test, rest...) ->
-    global.test(
-      name
-
-      ->
-        p = try
-          test()
-        catch error
-          throw cleanErrorStack error, /art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
-
-        if isPromise p
-          p.catch (error) ->
-            throw cleanErrorStack error, /art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
-        else undefined
-
-      rest...
-    )
 
   @setup:         (args...) -> global.setup args...
   @initTesting:   (options) => @init options
@@ -163,11 +141,6 @@ module.exports = class Mocha
 
   @defineGlobals: ->
     global.testAssetRoot = "/test/assets"
-
-    global.skipKnownFailingTest = (name, f) ->
-      message = "SKIPPING KNOWN-FAILING TEST: #{name}"
-      test message, ->
-        assert.rejects f, "This test is passing now, yay! Switch to a normal test."
 
   @_run: (defineAllTests)=>
     (new NestedSuites).groupTestSuites defineAllTests

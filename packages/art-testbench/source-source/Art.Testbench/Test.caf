@@ -1,0 +1,24 @@
+import &StandardImport, &ErrorExtensions, require "@art-suite/assert"
+
+test: (name, test, rest...) ->
+  global.test
+    name
+
+    ->
+      p = try
+        test()
+      catch error
+        throw cleanErrorStack error, /art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
+
+      if isPromise p
+        p.catch (error) ->
+          throw cleanErrorStack error, /art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
+      else undefined
+
+    rest...
+
+
+skipKnownFailingTest: (name, f) ->
+  message = "SKIPPING KNOWN-FAILING TEST: #{name}"
+  test message, ->
+    assert.rejects f, "This test is passing now, yay! Switch to a normal test."

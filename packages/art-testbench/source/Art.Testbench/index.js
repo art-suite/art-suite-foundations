@@ -4,13 +4,12 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./Testbench'))
 .addModules({
-  ChainedTest:          require('./ChainedTest'),
   ErrorExtensions:      require('./ErrorExtensions'),
-  Jest:                 require('./Jest'),
+  JestExtensions:       require('./JestExtensions'),
   Mocha:                require('./Mocha'),
   MochaBrowserReporter: require('./MochaBrowserReporter'),
   Perf:                 require('./Perf'),
   StandardImport:       require('./StandardImport'),
+  Test:                 require('./Test'),
   TestSuite:            require('./TestSuite')
 });
-require('./Assert');

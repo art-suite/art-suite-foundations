@@ -4,9 +4,9 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  ChainedTestTest:  require('./ChainedTest.test'),
-  PerfTest:         require('./Perf.test'),
-  PresentationTest: require('./Presentation.test'),
-  StandardImport:   require('./StandardImport')
+  ChainedTestTest: require('./ChainedTest.test'),
+  PerfTest:        require('./Perf.test'),
+  StandardImport:  require('./StandardImport'),
+  TestTest:        require('./Test.test')
 });
 require('./Assert');

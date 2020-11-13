@@ -1,7 +1,10 @@
-&ArtStandardLib.merge
-  &Jest
-  {test, setup, initTesting} = &Mocha
+[]
+  &ArtStandardLib
+  &JestExtensions
+  {setup, initTesting} = &Mocha
+
+  &Test
 
   {}
     require(:@art-suite/chained-test).chainedTest
-    &Assert.assert
+    require(:@art-suite/assert).assert

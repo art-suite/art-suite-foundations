@@ -3,7 +3,7 @@
   var Promise, Reporter, SuiteReporter, fastBind, findSourceReferenceUrlRegexp, log, ref;
 
   if (global.document) {
-    ref = require('art-foundation'), log = ref.log, fastBind = ref.fastBind, Promise = ref.Promise, findSourceReferenceUrlRegexp = ref.findSourceReferenceUrlRegexp;
+    ref = require('art-standard-lib'), log = ref.log, fastBind = ref.fastBind, Promise = ref.Promise, findSourceReferenceUrlRegexp = ref.findSourceReferenceUrlRegexp;
     SuiteReporter = (function() {
       function SuiteReporter(suite1) {
         this.suite = suite1;
