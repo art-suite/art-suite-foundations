@@ -43,8 +43,9 @@ You may notice this looks a lot like a chain of Promises. That is the intention.
 
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
-let { auth, createPost, createComment, getComments, logOut } = require("../myApp");
+let { auth, createPost, createComment, getComments, logOut } = require("./TestApp");
 
+// CONSTANTS FOR TESTS
 const aliceEmail = "alice@test.com";
 const postBody = "The quick brown fox jumped over the lazy dog.";
 const commentBody = "Brilliant!";
@@ -61,18 +62,18 @@ chainedTest("Alice's user story", () => auth(aliceEmail))
 
 // "then" tests: passes the test's return value through as the lastTestValue for the next test
 // skipped: if neither this nor any dependent tests are selected by test framework
-.thenIt("needs to create a post", (_, alice) =>
-  createPost(alice, postBody)
+.thenIt("needs to create a post", () =>
+  createPost(postBody)
 )
 
 // "tap" tests: ignores the test's return value. Instead it passes lastTestValue through.
 // skipped: if neither this nor any dependent tests are selected by test framework
 .tapIt("needs to create a comment", (post, alice) =>
-  createComment(post, commentBody)
+  createComment(post.id, commentBody)
 )
 
 .thenIt("can get the created comment from the post", (post, alice) =>
-  getComments(post)
+  getComments(post.id)
 )
 
 .softTapIt("should have one comment by alice", (comments, alice) => {
