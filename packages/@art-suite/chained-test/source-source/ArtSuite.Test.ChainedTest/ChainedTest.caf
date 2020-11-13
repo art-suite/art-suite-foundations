@@ -65,7 +65,7 @@ uniqueErrorsReported = {}
     throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless @name is String
     throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless @test is Function
     self = @
-    (global.test ? global.it) @name, ~>
+    (global.it ? global.test) @name, ~>
       self.runThisTestOnce()
       .catch (error) ->
         if uniqueErrorsReported[error.message]
