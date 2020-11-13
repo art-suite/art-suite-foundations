@@ -27,12 +27,12 @@ let { chainedTest } = require("@art-suite/chained-test");
 
 chainedTest("setup", () => 123)
 
-.thenTest("is it 123?", (value) => {
+.thenIt("should be 123", (value) => {
   expect(value).toEqual(123)
   return 456;
 })
 
-.thenTest("is it 456?", (value) => {
+.thenIt("should be 456", (value) => {
   expect(value).toEqual(456)
 })
 ```
@@ -51,36 +51,36 @@ const commentBody = "Brilliant!";
 
 // the return-result of this first test will be passed as the second argument
 // to all subsequent tests in the chain.
-chainedTest("auth alice", () => auth(aliceEmail))
+chainedTest("Alice's user story", () => auth(aliceEmail))
 
-// softTapTests: ignores the test's return value. Instead it passes lastTestValue through.
+// "softTap" tests: ignores the test's return value. Instead it passes lastTestValue through.
 // skipped: if not selected by test framework
-.softTapTest("validate alice is returned", (_, alice) => {
+.softTapIt("should have returned alice", (_, alice) => {
   expect(alice.email).toEqual(aliceEmail)
 })
 
-// thenTests: passes the test's return value through as the lastTestValue for the next test
+// "then" tests: passes the test's return value through as the lastTestValue for the next test
 // skipped: if neither this nor any dependent tests are selected by test framework
-.thenTest("create a post", (_, alice) =>
+.thenIt("needs to create a post", (_, alice) =>
   createPost(alice, postBody)
 )
 
-// tapTests: ignores the test's return value. Instead it passes lastTestValue through.
+// "tap" tests: ignores the test's return value. Instead it passes lastTestValue through.
 // skipped: if neither this nor any dependent tests are selected by test framework
-.tapTest("create a comment", (post, alice) =>
+.tapIt("needs to create a comment", (post, alice) =>
   createComment(post, commentBody)
 )
 
-.thenTest("get post's comments", (post, alice) =>
+.thenIt("can get the created comment from the post", (post, alice) =>
   getComments(post)
 )
 
-.softTapTest("should have one comment by alice", (comments, alice) => {
+.softTapIt("should have one comment by alice", (comments, alice) => {
   expect(comments.length).toEqual(1);
   expect(comments[0].userId).toEqual(alice.id);
 })
 
-.tapTest("logOut", logOut)
+.tapIt("should be able to logOut", logOut)
 ```
 
 This will create 7 tests in the test framework. With no filters, each will get executed in order exactly once. If the test framework's filters select none of these tests, none of them will execute. If the test framework selects some, but not all of the tests, only the required tests will be run.
@@ -100,7 +100,7 @@ Start a chained test.
 ```javascript
 let { chainedTest } = require("@art-suite/chained-test");
 
-chainedTest(name, test)   // returns new ChainedTest instance
+chainedTest(name, test)
 ```
 
 - **IN:**
@@ -119,9 +119,17 @@ Add additional tests to the test-chain.
 let { chainedTest } = require("@art-suite/chained-test");
 
 chainedTest(name, test)
-.thenTest(name, test)     // returns new ChainedTest instance
-.tapTest(name, test)      // returns new ChainedTest instance
-.softTapTest(name, test)  // returns new ChainedTest instance
+
+// aliases
+.thenIt(name, test)     // test and pass return-value to next test
+.tapIt(name, test)      // test and pass previous return-value through to next test
+.softTapIt(name, test)  // test, pass previous return-value through to next test,
+                        //  and skip if not requested by test runner.
+
+// aliases
+.thenTest(name, test)
+.tapTest(name, test)
+.softTapTest(name, test)
 ```
 
 All three methods have the same signature but have slightly different effects:

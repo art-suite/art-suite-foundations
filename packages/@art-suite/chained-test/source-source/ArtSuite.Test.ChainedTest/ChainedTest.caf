@@ -6,6 +6,8 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
     .join :\n
   error
 
+uniqueErrorsReported = {}
+
 {chainedTest} = class ChainedTest extends BaseClass
   ###
     IN:
@@ -28,6 +30,10 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
   thenTest:     (args...)-> @_applySequence :_thenTest    compactFlatten args
   tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
   softTapTest:  (args...)-> @_applySequence :_softTapTest compactFlatten args
+
+  thenIt:       (args...)-> @_applySequence :_thenTest    compactFlatten args
+  tapIt:        (args...)-> @_applySequence :_tapTest     compactFlatten args
+  softTapIt:    (args...)-> @_applySequence :_softTapTest compactFlatten args
 
   ##########################
     PRIVATE
@@ -58,7 +64,15 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
   constructor: (@name, @test, @_runSetupOnce, @_runDependencyChainOnce, @options) ->
     throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless @name is String
     throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless @test is Function
-    global.test @name, @runThisTestOnce
+    global.test @name, ->
+      @runThisTestOnce()
+      .catch (error) ->
+        if uniqueErrorsReported[error.message]
+          this?.skip() # MOCHA, and possibly future JEST
+          # JEST 'skip' request pending as-of 2020/11/13: https://github.com/facebook/jest/issues/8604
+        else
+          uniqueErrorsReported[error.message] = true # "" (ChainedTest failed in: #{if @name then @name else :setup})
+          throw error
 
   @getter
     previousTestResultPromise: -> Promise.then @_runDependencyChainOnce ? ->
@@ -80,10 +94,6 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
       ->
         if @options?.soft then  @previousTestResultPromise
         else                    @runThisTestOnce()
-        .catch (error) ->
-          unless /failed in/.test error.message
-            error.message = "" (ChainedTest failed in: #{if @name then @name else :setup})\n\n
-          throw error
 
   _thenTest:    (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink
   _tapTest:     (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true

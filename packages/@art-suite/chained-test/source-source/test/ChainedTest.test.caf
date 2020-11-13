@@ -16,13 +16,16 @@ chainedTest 'start' ->
   assert.eq  args, [] :setupValue :setupValue
   :newValue
 
-.thenTest "newValue is passed to second thenTest; setupValue still in second arg" (args...) ->
-  ran :thenTestNewValue
-  assert.eq args, [] :newValue :setupValue
-  123
+.thenIt # alias testing
+  "has newValue passed as the first argument; setupValue still the second arg" (args...) ->
+    ran :thenTestNewValue
+    assert.eq args, [] :newValue :setupValue
+    123
 
-.tapTest
+.tapIt
   :tapTest_passes_through_passed_in_value--part_one (val) -> ran("tapTest-1");assert.eq val, 123; 1
+
+.tapTest # alias testing
   :tapTest_passes_through_passed_in_value--part_two (val) -> ran("tapTest-2");assert.eq val, 123; 2
 
   # TODO: this test is too meta; how do we actually test it?!?
@@ -31,6 +34,7 @@ chainedTest 'start' ->
 
 .softTapTest
   :softTapTest_is_a_skippable_tapTest--part_one (val) -> ran("softTapTest-1");assert.eq val, 123; 1
+.softTapIt # alias testing
   :softTapTest_is_a_skippable_tapTest--part_two (val) -> ran("softTapTest-2");assert.eq val, 123; 2
 
   # TODO: this test is too meta; how do we actually test it?!?
