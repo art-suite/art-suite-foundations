@@ -1,4 +1,4 @@
-import &StandardImport, &ErrorExtensions, require "@art-suite/assert"
+import &StandardImport, &ErrorExtensions, &@ArtSuite/assert
 
 test: (name, test, rest...) ->
   global.test

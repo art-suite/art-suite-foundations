@@ -1,8 +1,8 @@
-import &ArtStandardLib, &sourceSource, require "@art-suite/assert"
+import &ArtStandardLib, &sourceSource, &@art-suite/assert
 
 []
   &ArtStandardLib
-  require "@art-suite/assert"
+  &@art-suite/assert
   &sourceSource
   pairedAssertTests: (trueAssertName, notTrueAssertName, truthToValueTuples) ->
     each [truth, args...] in truthToValueTuples

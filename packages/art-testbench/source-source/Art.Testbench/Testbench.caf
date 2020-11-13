@@ -6,5 +6,5 @@
   &Test
 
   {}
-    require(:@art-suite/chained-test).chainedTest
-    require(:@art-suite/assert).assert
+    &@art-suite/chained-test.chainedTest
+    &@art-suite/assert.assert
