@@ -1,5 +1,6 @@
 {isArray, isNode, log, isFunction, isPlainObject, merge, Promise, isPromise} = require 'art-standard-lib'
 {configure} = require 'art-config'
+assertLib = require "@art-suite/assert"
 
 if global.document
   document.write "<div id=\"mocha\"></div>" unless document.getElementById "mocha"
@@ -59,7 +60,7 @@ class NestedSuites
     global.suite = (name, f) =>
       @addSuite name, f
 
-    Promise.resolve defineAllTests chai
+    Promise.resolve defineAllTests assertLib
     .then defineSuitesByNamespaces
     .then =>
       global.suite = oldSuite
@@ -72,7 +73,7 @@ class NestedSuites
     global.suite = (name, f) =>
       @addSuite name, f
 
-    defineSuitesByNamespaces defineAllTests chai
+    defineSuitesByNamespaces defineAllTests assertLib
     global.suite = oldSuite
     mocha?.setup 'tdd'
 
