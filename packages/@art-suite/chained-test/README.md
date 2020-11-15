@@ -44,7 +44,7 @@ chainedTest("setup", () => 123)
 })
 ```
 
-You may notice this looks a lot like a chain of Promises. That is the intention. It works very similarly.
+You may notice this looks a lot like a chain of promises. That is intentional.
 
 ### Full Example
 
@@ -200,7 +200,7 @@ Logically, if a test fails, all downstream tests can no longer complete. Therefo
 
 - **Mocha:** [Mocha supports dynamically skipping tests with `this.skip()`](https://mochajs.org/#inclusive-tests). Chained-test takes advantage of this and skips any test which cannot be completed due to an earlier failure.
 
-- **Jest:** Unfortunately, as-of November 2020, there is only an [open feature-request for Jest to support dynamically skipped tests](https://github.com/facebook/jest/issues/8604). Until Jest adds support, chained-test cannot handle this perfectly. Chained-test will skip the dependent tests, but Jest only allows a test to be marked as succeed or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are marked as succeeded. <br><br>Marking untested tests as successful is clearly less than ideal, but it does hit the key requirement of surfacing the actual failure and causing the overall test-suite to fail. The alternative option would be to mark all dependent tests as failed, but that creates an excessive amount of noise. It is also incorrect to mark untested tests as failed when they may be just fine.
+- **Jest:** Unfortunately, as-of November 2020, there is only an [open feature-request for Jest to support dynamically skipped tests](https://github.com/facebook/jest/issues/8604). Until Jest adds support, chained-test cannot handle this perfectly. Chained-test will skip the dependent tests, but Jest only allows a test to be marked as successful or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are marked as successful. <br><br>Marking untested tests as successful is clearly less than ideal, but it does hit the key requirement of surfacing the actual failure and causing the overall test-suite to fail. The alternative option would be to mark all dependent tests as failed, but that creates an excessive amount of noise. It is also incorrect to mark untested tests as failed when they may be just fine.
 
   > I encourage you to add your support to the feature request if you enjoy using chained-test with Jest, as I do. - SBD
 
