@@ -17,7 +17,7 @@ In fact, chained-test should work with any testing framework that:
 1. declares tests with either `test(name, testFunction)` or `it(name, testFunction)`, and
 1. supports promise-based asynchronous tests
 
-> (*) Jest does not currently support dynamically skipping tests. Everything works, but reporting when a test fails before the end of the chain is less than ideal. For more information on how failures are handled, see below.
+> (*) Jest does not currently support dynamically skipping tests. Everything works in Jest, but Mocha's reporting is somewhat better when a chained-test fails in the middle. See below for more information on how failures are handled.
 
 # Install
 
@@ -94,7 +94,7 @@ For example:
 - If only `logOut` is selected, `"auth alice", "create a post", "create a comment", "get post's comments", and "logOut"` are executed.
 - If only `validate alice is returned` is selected, only `"auth alice" and "validate alice is returned"` are executed.
 
-### When to Use .thenTest, .tapTest or .softTapTest?
+### When to Use .thenTest, .tapTest or .softTapTest
 
 - Use `.then*` whenever you need to pass a result from one test down the chain to other tests.
 - Use `.tap*` when you want to use the same, passed-in value for multiple tests. `.tap*` tests are also helpful when downstream tests care about the side-effects of a test but don't care about its direct result.
