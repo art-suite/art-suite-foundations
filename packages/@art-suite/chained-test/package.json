@@ -1,7 +1,9 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
-  "dependencies": {},
+  "dependencies": {
+    
+  },
   "description": "@art-suite/chained-test lets you break up large Jest or Mocha tests into a sequences of smaller tests. This is particularly helpful for integration tests, user-story tests, and tests with more than one asynchronous step.",
   "devDependencies": {
     "@art-suite/assert": "^1.0.2",

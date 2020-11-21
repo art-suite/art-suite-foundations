@@ -10,14 +10,12 @@ ChainedTest lets you break up large tests into a sequences of small tests. This 
 
 # Supported Frameworks: Jest & Mocha
 
-Chained-test works equally well with either [JestJs](https://www.npmjs.com/package/jest)(*) or [MochaJs](https://www.npmjs.com/package/mocha).
+Chained-test works equally well with either [JestJs](https://www.npmjs.com/package/jest) or [MochaJs](https://www.npmjs.com/package/mocha).
 
 In fact, chained-test should work with any testing framework that:
 
 1. declares tests with either `test(name, testFunction)` or `it(name, testFunction)`, and
 1. supports promise-based asynchronous tests
-
-> (*) Jest does not currently support dynamically skipping tests. Everything works in Jest, but Mocha's reporting is somewhat better when a chained-test fails in the middle. See below for more information on how failures are handled.
 
 # Install
 
