@@ -33,7 +33,7 @@
     "test": "jest",
     "watch": "npm-watch"
   },
-  "version": "1.0.6",
+  "version": "1.0.7",
   "watch": {
     "build": {
       "extensions": [
