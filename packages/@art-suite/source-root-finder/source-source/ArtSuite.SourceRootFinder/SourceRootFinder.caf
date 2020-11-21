@@ -31,7 +31,7 @@ class SourceRootFinder extends BaseClass
     if known = @_knownSourceRoots[directory = path.resolve directory ? :.]
       known
     else
-      unless fs.statSync(directory).isDirectory()
+      unless fs.existsSync(directory) && fs.statSync(directory).isDirectory()
         directory = path.dirname directory
 
       @_knownSourceRoots[directory] =

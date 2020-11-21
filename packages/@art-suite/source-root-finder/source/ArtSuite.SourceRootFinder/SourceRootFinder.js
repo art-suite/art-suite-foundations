@@ -11,13 +11,13 @@ Caf.defMod(module, () => {
       "isArray",
       "Error",
       "formattedInspect",
-      "isString"
+      "isString",
     ],
     [
       global,
       require("art-standard-lib"),
       require("art-class-system"),
-      { path: require("path"), fs: require("fs-extra") }
+      { path: require("path"), fs: require("fs-extra") },
     ],
     (
       BaseClass,
@@ -44,50 +44,53 @@ Caf.defMod(module, () => {
             this.resetKnownSourceRoots();
           }
         },
-        function(SourceRootFinder, classSuper, instanceSuper) {
+        function (SourceRootFinder, classSuper, instanceSuper) {
           this.singletonClass();
-          this.findSourceRoot = directory =>
+          this.findSourceRoot = (directory) =>
             this.singleton.findSourceRoot(directory);
-          this.findSourceRootSync = directory =>
+          this.findSourceRootSync = (directory) =>
             this.singleton.findSourceRootSync(directory);
           this.property("indicatorFiles", "knownSourceRoots");
           this.classGetter("sourceRootIndicatorFiles knownSourceRoots", {
-            caffeineInitFileName: function() {
+            caffeineInitFileName: function () {
               return "caffeine-mc.config.caf";
-            }
+            },
           });
-          this.prototype.findSourceRoot = function(directory) {
+          this.prototype.findSourceRoot = function (directory) {
             let known;
             return (known = this._knownSourceRoots[
               (directory = path.resolve(directory != null ? directory : "."))
             ])
               ? Promise.resolve(known)
-              : fs.stat(directory).then(stat => {
+              : fs.stat(directory).then((stat) => {
                   if (!stat.isDirectory()) {
                     directory = path.dirname(directory);
                   }
                   return this._findRootR(directory).then(
-                    sourceRoot =>
+                    (sourceRoot) =>
                       (this._knownSourceRoots[directory] = sourceRoot || false)
                   );
                 });
           };
-          this.prototype.findSourceRootSync = function(directory) {
+          this.prototype.findSourceRootSync = function (directory) {
             let known;
             return (known = this._knownSourceRoots[
               (directory = path.resolve(directory != null ? directory : "."))
             ])
               ? known
-              : (!fs.statSync(directory).isDirectory()
+              : (!(
+                  fs.existsSync(directory) &&
+                  fs.statSync(directory).isDirectory()
+                )
                   ? (directory = path.dirname(directory))
                   : undefined,
                 (this._knownSourceRoots[directory] =
                   this._findRootSyncR(directory) || false));
           };
-          this.prototype.resetKnownSourceRoots = function() {
+          this.prototype.resetKnownSourceRoots = function () {
             return (this._knownSourceRoots = {});
           };
-          this.prototype._findRootR = function(directory) {
+          this.prototype._findRootR = function (directory) {
             let from, into, to, i, temp;
             return Promise.all(
               ((from = this._indicatorFiles),
@@ -106,15 +109,15 @@ Caf.defMod(module, () => {
                   })())
                 : undefined,
               into)
-            ).then(rootFileExistResults =>
-              Caf.find(rootFileExistResults, null, bool => bool)
+            ).then((rootFileExistResults) =>
+              Caf.find(rootFileExistResults, null, (bool) => bool)
                 ? directory
                 : directory !== "/" && present(directory)
                 ? this._findRootR(path.dirname(directory))
                 : undefined
             );
           };
-          this.prototype._findRootSyncR = function(directory) {
+          this.prototype._findRootSyncR = function (directory) {
             let from, into, to, i, temp;
             return ((from = this._indicatorFiles),
             (into = null),
@@ -140,15 +143,15 @@ Caf.defMod(module, () => {
               ? this._findRootSyncR(path.dirname(directory))
               : undefined;
           };
-          this.prototype._validatedIndicatorFiles = function() {
+          this.prototype._validatedIndicatorFiles = function () {
             return !(
               isArray(this.indicatorFiles) &&
               this.indicatorFiles.length > 0 &&
-                !Caf.find(
-                  this.indicatorFiles,
-                  i => true,
-                  i => !isString(i) || !present(i)
-                )
+              !Caf.find(
+                this.indicatorFiles,
+                (i) => true,
+                (i) => !isString(i) || !present(i)
+              )
             )
               ? (() => {
                   throw new Error(
@@ -164,7 +167,7 @@ Caf.defMod(module, () => {
       return {
         SourceRootFinder,
         findSourceRoot: SourceRootFinder.findSourceRoot,
-        findSourceRootSync: SourceRootFinder.findSourceRootSync
+        findSourceRootSync: SourceRootFinder.findSourceRootSync,
       };
     }
   );

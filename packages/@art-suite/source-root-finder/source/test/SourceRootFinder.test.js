@@ -8,7 +8,7 @@ Caf.defMod(module, () => {
       "afterEach",
       "describe",
       "test",
-      "assert"
+      "assert",
     ],
     [global, require("./StandardImport")],
     (SourceRootFinder, beforeEach, afterEach, describe, test, assert) => {
@@ -20,32 +20,32 @@ Caf.defMod(module, () => {
         tester;
       defaultSourceRootFinder = new SourceRootFinder();
       customSourceRootFinder = new SourceRootFinder({
-        indicatorFiles: ["README.txt"]
+        indicatorFiles: ["README.txt"],
       });
       cwd = require("process").cwd();
-      stripTrailingSlash = function(s) {
+      stripTrailingSlash = function (s) {
         return s.replace(/[\/\\]$/, "");
       };
-      beforeEach(function() {
+      beforeEach(function () {
         return require("mock-fs")({
           "package.json": "{}",
           myRoot: {
             "package.json": "{}",
             subPackages: { funnel: { "package.json": "{}" } },
-            source: { Widgets: { "Button.caf": "..." }, "Main.caf": "..." }
+            source: { Widgets: { "Button.caf": "..." }, "Main.caf": "..." },
           },
           gitRooted: { ".git": { config: "..." }, source: { foo: "..." } },
           noRoot: { foo: "..." },
           customRoot: {
             "README.txt": "hello",
-            notReallyRoot: { "package.json": "{}" }
-          }
+            notReallyRoot: { "package.json": "{}" },
+          },
         });
       });
-      afterEach(function() {
+      afterEach(function () {
         return require("mock-fs").restore();
       });
-      testOne = function(
+      testOne = function (
         input,
         output,
         sourceRootFinder = defaultSourceRootFinder
@@ -63,24 +63,24 @@ Caf.defMod(module, () => {
         });
         return test(`async: ${Caf.toString(input)}`, () => {
           sourceRootFinder.resetKnownSourceRoots();
-          return sourceRootFinder.findSourceRoot(input).then(first =>
-            sourceRootFinder.findSourceRoot(input).then(second => {
+          return sourceRootFinder.findSourceRoot(input).then((first) =>
+            sourceRootFinder.findSourceRoot(input).then((second) => {
               assert.eq(first, second);
               return assert.eq(first, output);
             })
           );
         });
       };
-      tester = function(sourceRootFinder, tests) {
+      tester = function (sourceRootFinder, tests) {
         return Caf.each2(tests, (output, input) =>
           testOne(input, output, sourceRootFinder)
         );
       };
       return describe({
-        defaults: function() {
+        defaults: function () {
           return testOne(null, "./");
         },
-        defaultIndicatorFiles: function() {
+        defaultIndicatorFiles: function () {
           return tester(defaultSourceRootFinder, {
             "myRoot/source": "myRoot",
             "myRoot/source/": "myRoot",
@@ -93,16 +93,16 @@ Caf.defMod(module, () => {
             "../": false,
             noRoot: "./",
             customRoot: "./",
-            "customRoot/notReallyRoot": "customRoot/notReallyRoot"
+            "customRoot/notReallyRoot": "customRoot/notReallyRoot",
           });
         },
-        customIndicatorFiles: function() {
+        customIndicatorFiles: function () {
           return tester(customSourceRootFinder, {
             noRoot: false,
             customRoot: "customRoot",
-            "customRoot/notReallyRoot": "customRoot"
+            "customRoot/notReallyRoot": "customRoot",
           });
-        }
+        },
       });
     }
   );
