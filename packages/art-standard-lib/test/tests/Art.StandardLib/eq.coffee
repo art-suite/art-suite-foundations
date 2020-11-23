@@ -59,6 +59,8 @@ module.exports = suite:
 
     testEq 1, 1
     testNeq 1, 2
+    testEq (new Date "2020"), (new Date "2020")
+    testNeq (new Date "2020"), (new Date "2021")
     testEq {a:1}, {a:1}
     testEq [1], [1]
     testEq null, null

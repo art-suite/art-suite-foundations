@@ -1,4 +1,4 @@
-import &source
+import &StandardImport
 
 suite:
   parseQuery: ->

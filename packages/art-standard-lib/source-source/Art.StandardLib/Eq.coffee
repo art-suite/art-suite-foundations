@@ -2,6 +2,7 @@
 {objectKeyCount}      = require './ObjectExtensions'
 {floatTrue0}          = require './MathExtensions'
 {isString, isNumber}  = require './TypesExtended'
+{isDate} = require './Core/Types'
 {min} = Math
 
 # TODO: (BUG?) I think that just "returning true" if a or b is in testing will have some false positives.
@@ -104,7 +105,7 @@ module.exports = class Eq
 
     if a? && b? && a.constructor == _constructor = b.constructor
       return a.localeCompare b if isString a
-      return floatTrue0 a - b if isNumber a
+      return floatTrue0 a - b if isNumber(a) or isDate(a)
 
       # recursion block
       if recursionBlockArray
