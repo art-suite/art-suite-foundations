@@ -8,7 +8,7 @@
   toSeconds
   lowerCase
   emailRegexp
-  urlRegexp
+  urlWithOptionalProtocolRegExp
   log
   normalizeUrl
 } = require 'art-standard-lib'
@@ -101,7 +101,7 @@ module.exports = FieldTypes =
     preprocess: (v) -> lowerCase v.trim()
 
   url:
-    validate: (v) -> isString(v) && v.match urlRegexp
+    validate: (v) -> isString(v) && v.match urlWithOptionalProtocolRegExp
     preprocess: (v) -> normalizeUrl v # downcase protocol and domain name
 
   communicationStatus:

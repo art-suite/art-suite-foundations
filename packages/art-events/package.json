@@ -4,12 +4,12 @@
   "dependencies": {
     "art-class-system": "^1.11.12",
     "art-epoched-state": "^1.2.10",
-    "art-standard-lib": "^1.70.3"
+    "art-standard-lib": "^1.70.5"
   },
   "description": "Epoched event system",
   "devDependencies": {
     "art-build-configurator": "^1.29.2",
-    "art-testbench": "^3.1.3",
+    "art-testbench": "^3.2.1",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",

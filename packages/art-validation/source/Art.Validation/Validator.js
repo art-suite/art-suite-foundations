@@ -421,7 +421,7 @@
         errors[f] = "missing";
         return "missing " + f;
       });
-      message = ((ref2 = options != null ? options.context : void 0) != null ? ref2 : this.context) + " " + (forCreate ? 'Create' : 'Update') + "-Validation failed. Invalid fields: " + (messageFields.join(', '));
+      message = ((ref2 = options != null ? options.context : void 0) != null ? ref2 : this.context) + " " + (forCreate ? 'create' : 'update') + "-validation failed. Invalid fields: " + (messageFields.join(', '));
       info.fields = fields;
       throw new ErrorWithInfo(message.trim(), info);
     };

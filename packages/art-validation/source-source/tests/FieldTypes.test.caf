@@ -14,9 +14,18 @@ each tests, type in
       # abc:        null
 
     url:
-      www.bar.com: null
-      http://www.bar.com: :http://www.bar.com
-      http://www.BAR.com: :http://www.bar.com
+      www:                                  null
+      128.4:                                null
+      128.4.4:                              null
+      128.4.4.4:                            :http://128.4.4.4
+
+      www.barracuda:                        :http://www.barracuda
+      www.bar:                              :http://www.bar
+      www.bar.com:                          :http://www.bar.com
+      www.bar.com:8000:                     :http://www.bar.com:8000
+      www.gravatar.com/avatar/c72792601425: :http://www.gravatar.com/avatar/c72792601425
+      http://www.bar.com:                   :http://www.bar.com
+      http://www.BAR.com:                   :http://www.bar.com
 
   each output, input in tests
     test "#{type}: #{input} >> #{if output? then formattedInspect output else "(invalid)"}" ->
