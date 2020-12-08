@@ -7,4 +7,4 @@
 
   {}
     &@art-suite/chained-test.chainedTest
-    &@art-suite/assert.assert
+    assert: global.assert = &@art-suite/assert.assert
