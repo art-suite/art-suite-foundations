@@ -134,9 +134,12 @@ module.exports = suite: ->
 
   test "urlRegexp matches return all matched characters", ->
     tester = (url) ->
-      assert.eq url, compactFlatten((url.match urlRegexp).slice(1)).join ''
+      assert.eq url, compactFlatten((url.match urlRegexp)?.slice(1))?.join ''
 
+    tester "http://1.1.1.1"
     tester "http://foo.com"
+    tester "http://FOO.com"
+    tester "http://foo.COM"
     tester "http://foo.com#hi"
     tester "http://foo.com/here"
     tester "http://foo.com?this=that"

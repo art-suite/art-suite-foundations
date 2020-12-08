@@ -4,7 +4,12 @@ module.exports = class RegExpExtensions
 
 
   @findUrlProtocolRegExp: /([\w-]+)(:\/\/)/
-  @findDomainRegExp:      /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/
+  @findDomainRegExp:      ///
+    localhost
+    | [\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})
+    | \d+ \. \d+ \. \d+ \. \d+
+    ///i
+
   @urlQueryParamsRegExp:  ///(?:[-+=&*._\w]|%[a-f\d]{2})* (?!\.) (?:[-+=&*._\w]|%[a-f\d]{2})///i
 
   # https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
