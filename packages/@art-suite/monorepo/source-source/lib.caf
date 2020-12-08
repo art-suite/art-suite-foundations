@@ -3,7 +3,15 @@ import &ArtStandardLib, &chalk, &fs, &fs.promises
 {}
   readJson = (file) ->
     if existsSync file
-      JSON.parse readFileSync file
+      try
+        JSON.parse readFileSync file
+      catch error
+        log.error
+          """
+            Failed to parse: #{file}
+
+            #{error.message}
+        process.exit 1
     else {}
 
   writeJson: (file, data) ->

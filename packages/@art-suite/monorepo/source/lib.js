@@ -6,9 +6,10 @@ Caf.defMod(module, () => {
       "existsSync",
       "JSON",
       "readFileSync",
+      "log",
+      "process",
       "writeFileSync",
       "consistentJsonStringify",
-      "log",
       "blue",
       "pluralize",
       "Promise",
@@ -26,9 +27,10 @@ Caf.defMod(module, () => {
       existsSync,
       JSON,
       readFileSync,
+      log,
+      process,
       writeFileSync,
       consistentJsonStringify,
-      log,
       blue,
       pluralize,
       Promise,
@@ -38,7 +40,22 @@ Caf.defMod(module, () => {
       let readJson, removePackageLocks, removeNodeModules, execShellCommand;
       return {
         readJson: (readJson = function (file) {
-          return existsSync(file) ? JSON.parse(readFileSync(file)) : {};
+          let error;
+          return existsSync(file)
+            ? (() => {
+                try {
+                  return JSON.parse(readFileSync(file));
+                } catch (error1) {
+                  error = error1;
+                  log.error(
+                    `Failed to parse: ${Caf.toString(file)}\n\n${Caf.toString(
+                      error.message
+                    )}`
+                  );
+                  return process.exit(1);
+                }
+              })()
+            : {};
         }),
         writeJson: function (file, data) {
           return writeFileSync(
