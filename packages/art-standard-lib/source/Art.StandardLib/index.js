@@ -24,6 +24,7 @@
   ObjectDiff:         require('./ObjectDiff'),
   ObjectExtensions:   require('./ObjectExtensions'),
   ParseUrl:           require('./ParseUrl'),
+  Pluralize:          require('./Pluralize'),
   Promise:            require('./Promise'),
   PromisedFileReader: require('./PromisedFileReader'),
   PromiseWorkerPool:  require('./PromiseWorkerPool'),

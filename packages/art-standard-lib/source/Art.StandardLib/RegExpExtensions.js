@@ -14,7 +14,7 @@
 
     RegExpExtensions.findUrlProtocolRegExp = /([\w-]+)(:\/\/)/;
 
-    RegExpExtensions.findDomainRegExp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})/;
+    RegExpExtensions.findDomainRegExp = /localhost|[\w]+(?:-[\w]+)*(?:\.[\w]+(?:-[\w]+)*)*(?:\.[a-z]{2,20})|\d+\.\d+\.\d+\.\d+/i;
 
     RegExpExtensions.urlQueryParamsRegExp = /(?:[-+=&*._\w]|%[a-f\d]{2})*(?!\.)(?:[-+=&*._\w]|%[a-f\d]{2})/i;
 

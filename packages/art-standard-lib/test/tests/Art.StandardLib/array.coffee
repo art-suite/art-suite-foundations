@@ -19,7 +19,12 @@
   w
   a
   leftOf, rightOf, leftOfIndex, rightOfIndex, splitArray
-} = Neptune.Art.StandardLib
+  assert
+  formattedInspect
+} = require "../../StandardImport"
+
+testEq = (f, input, output) ->
+  test "#{f} #{formattedInspect input} >> #{formattedInspect output}"
 
 module.exports = suite:
   move: ->
@@ -266,17 +271,17 @@ module.exports = suite:
 
 
   w: ->
-    assert.test.eq w, "this", ['this']
-    assert.test.eq w, "this ~!@#$%^&*()_+{}|:<>? stinks", ['this', "~!@#$%^&*()_+{}|:<>?", "stinks"]
-    assert.test.eq w, "this is it", ['this', 'is', 'it']
-    assert.test.eq w, ["this is", "it also"], ['this', 'is', 'it', 'also']
-    assert.test.eq w, [123, "it also", foo: 'baz it', ["keep together"]], [123, "it", "also", foo: 'baz it', ["keep together"]]
+    testEq w, "this", ['this']
+    testEq w, "this ~!@#$%^&*()_+{}|:<>? stinks", ['this', "~!@#$%^&*()_+{}|:<>?", "stinks"]
+    testEq w, "this is it", ['this', 'is', 'it']
+    testEq w, ["this is", "it also"], ['this', 'is', 'it', 'also']
+    testEq w, [123, "it also", foo: 'baz it', ["keep together"]], [123, "it", "also", foo: 'baz it', ["keep together"]]
 
   a: ->
-    assert.test.eq a, [], []
-    assert.test.eq a, [null], [null]
-    assert.test.eq a, [undefined], [undefined]
-    assert.test.eq a, [0], [0]
-    assert.test.eq a, [false], [false]
-    assert.test.eq a, [1, 2 ,3], [1, 2, 3]
-    assert.test.eq a, [1, [2 ,3]], [1, [2, 3]]
+    testEq a, [], []
+    testEq a, [null], [null]
+    testEq a, [undefined], [undefined]
+    testEq a, [0], [0]
+    testEq a, [false], [false]
+    testEq a, [1, 2 ,3], [1, 2, 3]
+    testEq a, [1, [2 ,3]], [1, [2, 3]]

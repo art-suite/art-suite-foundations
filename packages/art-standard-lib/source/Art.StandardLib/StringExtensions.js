@@ -21,7 +21,7 @@
   floor = Math.floor;
 
   module.exports = StringExtensions = (function() {
-    var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, npmPluralize, patchedNpmPluralize, pluralize, randomString, realRequire, ref, repeat, standardIndent;
+    var base62Characters, consistentJsonStringify, crypto, escapeDoubleQuoteJavascriptString, escapeJavascriptString, getPadding, jsStringifyR, randomString, realRequire, repeat, standardIndent;
 
     function StringExtensions() {}
 
@@ -119,112 +119,6 @@
       return base62Characters[intRand(62)];
     };
 
-
-    /* pluralize
-      Examples:
-         * just, always, pluralize:
-        pluralize "food" >> "foods"
-    
-         * pluralize and output number
-        pluralize -1, "food" -> "-1 foods"
-        pluralize 0, "food" -> "0 foods"
-        pluralize 1, "food" -> "1 food"
-        pluralize 2, "food" -> "2 foods"
-    
-         * order of the first 2 params doesn't matter
-        pluralize 1, "food" -> "1 food"
-        pluralize "food", 1 -> "1 food"
-    
-         * custom pluralForms
-        pluralize 1, "dragon", "frogs" -> "1 dragon"
-        pluralize 3, "dragon", "frogs" -> "2 frogs"
-    
-      IN:
-        various signatures:
-          pluralize singleForm
-          pluralize singleForm, number
-          pluralize number, singleForm
-          pluralize singleForm, number, pluralForm
-          pluralize number, singleForm, pluralForm
-    
-        number:     <Number>
-        singleForm: <String> singular noun
-          NOTE: if pluralForm is not provided, it's ok
-            if this is a plural nown, it'll still
-            'do the right thing'
-    
-        pluralForm: <String> plural noun
-    
-      OUT:
-    
-        unless number == 0
-          pluralForm ?=
-    
-        if a number was provided
-          "#{number} #{correct singleForm or pluralForm}"
-        else
-          pluralForm
-    
-      NOTE:
-        Now using: https://www.npmjs.com/package/pluralize
-        It provides nice functionality and knows about all the odd
-        english words.
-    
-        Compatibility:
-          ArtStandardLib's pluralize always outputs the number
-          if the number is given, unlike npm-pluralize, which
-          requires a 'true' in the 3rd argument to enable outputting
-          the number.
-    
-          ArtStandardLib let's you provide your own, custom pluralForm.
-          npm-pluralize requires you to 'register' it first via addIrregularRule.
-          You can still do that, if you wish, but it's renamed 'addPluralizeRule'
-          in ArtStandardLib since it's expected you'll import it 'bare' and
-          'addIrregularRule' could mean anything out-of-context.
-    
-        It's an extra 2.1k payload minimized and brotli-zipped for client-side.
-    
-        It also allows us to provide:
-          {@plural, @singular, @isSingular, @isPlural, @addPluralizeRule}
-     */
-
-    ref = npmPluralize = require('pluralize'), StringExtensions.plural = ref.plural, StringExtensions.singular = ref.singular, StringExtensions.isSingular = ref.isSingular, StringExtensions.isPlural = ref.isPlural, StringExtensions.addPluralizeRule = ref.addIrregularRule;
-
-    patchedNpmPluralize = function(noun, a, b) {
-      var __, append, match, out;
-      if (match = /^(.*)(_|[^\w])+$/.exec(noun)) {
-        __ = match[0], noun = match[1], append = match[2];
-      }
-      out = npmPluralize(noun, a, b);
-      if (append) {
-        return out + append;
-      } else {
-        return out;
-      }
-    };
-
-    StringExtensions.pluralize = pluralize = function(a, b, pluralForm) {
-      var newPluralize, number, singleForm;
-      number = (b != null) && isNumber(b) ? (singleForm = a, b) : isNumber(a) ? (singleForm = b, a) : (singleForm = stringIsPresent(a) ? a : stringIsPresent(b) ? b : void 0, null);
-      if (!isString(singleForm) || (pluralForm && !isString(pluralForm))) {
-        throw new Error("singleForm and pluralForm(optional) should be non-empty strings (inputs: " + (Neptune.Art.StandardLib.formattedInspect({
-          a: a,
-          b: b,
-          pluralForm: pluralForm
-        })) + ")");
-      }
-      return newPluralize = (function() {
-        switch (false) {
-          case pluralForm == null:
-            return number + " " + (number === 1 ? singleForm : pluralForm);
-          case number == null:
-            return patchedNpmPluralize(singleForm, number, true);
-          default:
-            return patchedNpmPluralize(singleForm);
-        }
-      })();
-    };
-
     StringExtensions.replaceLast = function(str, find, replaceWith) {
       var index;
       index = str.lastIndexOf(find);
@@ -236,12 +130,12 @@
     };
 
     StringExtensions.getPadding = getPadding = function(length, padding) {
-      var i, j, out, ref1;
+      var i, j, out, ref;
       if (padding == null) {
         padding = " ";
       }
       out = "";
-      for (i = j = 0, ref1 = length; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
+      for (i = j = 0, ref = length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
         out += padding;
       }
       return out;
@@ -415,7 +309,7 @@
     StringExtensions.consistentJsonStringify = consistentJsonStringify = function(object, indent) {
       var closeArray, closeObject, error, indentObject, joiner, k, lastTotalIndent, openArray, openObject, out, totalIndent, v;
       return out = (function() {
-        var ref1;
+        var ref;
         if (object === false || object === true || object === null || isNumber(object)) {
           return "" + object;
         } else if (isString(object)) {
@@ -438,14 +332,14 @@
             closeArray: "\n" + lastTotalIndent + "]",
             indent: indent.indent
           } : void 0;
-          ref1 = indentObject || standardIndent, joiner = ref1.joiner, openObject = ref1.openObject, openArray = ref1.openArray, closeObject = ref1.closeObject, closeArray = ref1.closeArray;
+          ref = indentObject || standardIndent, joiner = ref.joiner, openObject = ref.openObject, openArray = ref.openArray, closeObject = ref.closeObject, closeArray = ref.closeArray;
           if (isPlainObject(object)) {
             return openObject + ((function() {
-              var j, len, ref2, results;
-              ref2 = (Object.keys(object)).sort();
+              var j, len, ref1, results;
+              ref1 = (Object.keys(object)).sort();
               results = [];
-              for (j = 0, len = ref2.length; j < len; j++) {
-                k = ref2[j];
+              for (j = 0, len = ref1.length; j < len; j++) {
+                k = ref1[j];
                 if (object[k] !== void 0) {
                   results.push(JSON.stringify(k) + ": " + consistentJsonStringify(object[k], indentObject));
                 }
@@ -471,14 +365,14 @@
     };
 
     StringExtensions.splitRuns = function(str) {
-      var ch, chCount, i, j, lastCh, ref1, result;
+      var ch, chCount, i, j, lastCh, ref, result;
       if (str.length === 0) {
         return [];
       }
       lastCh = str[0];
       chCount = 1;
       result = [];
-      for (i = j = 1, ref1 = str.length; j < ref1; i = j += 1) {
+      for (i = j = 1, ref = str.length; j < ref; i = j += 1) {
         ch = str[i];
         if (ch === lastCh) {
           chCount++;
@@ -493,10 +387,10 @@
     };
 
     StringExtensions.eachRunAsCharCodes = function(str, f) {
-      var ch, chCount, i, j, lastCh, ref1;
+      var ch, chCount, i, j, lastCh, ref;
       lastCh = str.charCodeAt(0);
       chCount = 1;
-      for (i = j = 1, ref1 = str.length; j < ref1; i = j += 1) {
+      for (i = j = 1, ref = str.length; j < ref; i = j += 1) {
         ch = str.charCodeAt(i);
         if (ch === lastCh) {
           chCount++;

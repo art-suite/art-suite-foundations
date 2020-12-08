@@ -22,6 +22,7 @@
   ObjectExtensions:             require('./ObjectExtensions'),
   ParseUrl:                     require('./parse_url'),
   PlainData:                    require('./plain_data'),
+  PlurlizeTest:                 require('./Plurlize.test'),
   Promise:                      require('./promise'),
   PromiseWorkerPool:            require('./PromiseWorkerPool'),
   RegExpExtensions:             require('./RegExpExtensions'),

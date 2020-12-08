@@ -26,6 +26,7 @@ module.exports = [
   require "./Clone"
   require "./Log"
   require "./CallStack"
+  require "./Pluralize"
 
   require './DateExtensions'
 
