@@ -1,0 +1,31 @@
+import &StandardImport
+
+
+each tests, type in
+    id:
+      '': null
+      anything:     :anything
+      pReSeRVEcAse: :pReSeRVEcAse
+      " no space":  null
+      "no space":   null
+
+    date:
+      2020-10-29: new Date :2020-10-29
+      # abc:        null
+
+    url:
+      www.bar.com: null
+      http://www.bar.com: :http://www.bar.com
+      http://www.BAR.com: :http://www.bar.com
+
+  each output, input in tests
+    test "#{type}: #{input} >> #{if output? then formattedInspect output else "(invalid)"}" ->
+      if output?
+        assert.eq
+          new Validator myField: type
+          .validate myField: input
+          myField: output
+      else
+        assert.rejects ->
+          new Validator myField: type
+          .validate myField: input

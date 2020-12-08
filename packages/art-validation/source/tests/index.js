@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  FieldTypesTest:     require('./FieldTypes.test'),
   Limits:             require('./Limits'),
   LimitsTest:         require('./Limits.test'),
   PostValidationTest: require('./PostValidation.test'),

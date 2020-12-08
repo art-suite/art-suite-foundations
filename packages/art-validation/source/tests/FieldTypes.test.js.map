@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "FieldTypes.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/tests/FieldTypes.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wHAAO,oFAGP,iBAAmB,CACf,KACE,IAAI,MACJ,UAAc,YACd,cAAc,gBACd,aAAc,MACd,YAAc,OAEhB,OACE,cAAY,IAAI,KAAK,gBAGvB,MACE,eAAa,MACb,sBAAoB,sBACpB,sBAAoB,mDAEF,0BACpB,KAAI,gBAAI,uBAAS,0BAAY,CAAG,kBAAa,iBAAiB,UAAY,4BAAgB,OACxF,CAAG,kBACD,UACE,KAAI,WAAU,SAAS,kBACb,SAAS,UACnB,SAAS,WAEX,eAAc,MACZ,KAAI,WAAU,SAAS,kBACb,SAAS"
+}

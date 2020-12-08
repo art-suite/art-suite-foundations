@@ -10,6 +10,7 @@
   emailRegexp
   urlRegexp
   log
+  normalizeUrl
 } = require 'art-standard-lib'
 {
   booleanDataType
@@ -62,7 +63,11 @@ module.exports = FieldTypes =
 
   date:
     fromString:  (v) -> Date.parse v
-    validate:   (v) -> isString(v) || (v instanceof Date)
+    validate:   (v) ->
+      if v instanceof Date
+        !isNaN v - 0
+      else isString v
+
     preprocess: (v) -> if isString(v) then new Date v else v
     dataType: dateDataType
 

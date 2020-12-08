@@ -316,7 +316,7 @@ module.exports = class Validator extends BaseClass
       errors[f] = "missing"
       "missing #{f}"
 
-    message = "#{options?.context ? @context} #{if forCreate then 'Create' else 'Update'}-Validation failed. Invalid fields: #{messageFields.join ', '}"
+    message = "#{options?.context ? @context} #{if forCreate then 'create' else 'update'}-validation failed. Invalid fields: #{messageFields.join ', '}"
     info.fields = fields
     throw new ErrorWithInfo message.trim(), info
 
