@@ -44,7 +44,6 @@ describe
       TestConfigurable.reset()
 
       configure artConfig: merge
-        # verbose: true
         novelProp: "cool"
         pathedConfig
 
@@ -70,3 +69,15 @@ describe
             novelProp: "cool"
             pathedConfig
 
+
+
+    test "getConfigSave" ->
+      TestConfigurable.reset()
+
+      configure artConfig: merge
+        novelProp: "cool"
+        pathedConfig
+
+      assert.eq
+        TestConfigurable.getConfigSave()
+        Test.Art.Config: foo: 1

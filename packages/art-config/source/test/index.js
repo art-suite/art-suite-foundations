@@ -5,9 +5,10 @@
 
 .addModules({
   ConfigRegistryTest:           require('./ConfigRegistry.test'),
+  ConfigurableTest:             require('./Configurable.test'),
   ConfigurationInheritanceTest: require('./ConfigurationInheritance.test'),
+  ConfigureTest:                require('./Configure.test'),
   LibTest:                      require('./Lib.test'),
-  StandardImport:               require('./StandardImport'),
-  TestConfigurableTest:         require('./TestConfigurable.test')
+  StandardImport:               require('./StandardImport')
 });
 require('./Art.Config');

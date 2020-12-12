@@ -14,15 +14,39 @@ testArtConfigGlobalConfig = (name, f) ->
 describe
   globalArtConfig: ->
     beforeAll ->
-      configure configName: :Test
+      configure artConfigName: :Test
 
-    test "Art.Config.config",     ->
+    test "global artConfig location",     ->
       assert.isObject getArtConfig()
-      assert.eq Neptune.Art.Config.config, getArtConfig()
+      assert.eq global.ArtConfig._artConfig, getArtConfig()
 
-    test "Art.Config.configName", ->
+    test "global artConfigName location", ->
       assert.isString getArtConfigName()
-      assert.eq Neptune.Art.Config.configName, getArtConfigName()
+      assert.eq global.ArtConfig._artConfigName, getArtConfigName()
+
+  isEnvTests: ->
+    class Production extends Configuration
+    class Production extends Configuration
+    test :isDev ->
+      configure configName: :Development
+      assert.eq getArtConfigName(), :Development
+      assert.true isDev()
+      assert.false isProd()
+      assert.false isTest()
+
+    test :isProd ->
+      configure artConfigName: :Production
+      assert.eq getArtConfigName(), :Production
+      assert.false isDev()
+      assert.true isProd()
+      assert.false isTest()
+
+    test :isTest ->
+      configure artConfigName: :Test
+      assert.eq getArtConfigName(), :Test
+      assert.false isDev()
+      assert.false isProd()
+      assert.true isTest()
 
   artConfigSources: ->
     beforeAll resetGlobals

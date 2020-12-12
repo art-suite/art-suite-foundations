@@ -1,0 +1,6 @@
+import &StandardImport
+
+test "configure verbose" ->
+  logEntries = []
+  configure verbose: true log: (args...) -> logEntries.push args
+  assert.gt logEntries.length, 0
