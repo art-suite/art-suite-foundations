@@ -1,7 +1,7 @@
 # import &StandardImport, Neptune.Art.EpochedState
 import &StandardImport
 
-epoch = new &source.EpochClass
+epoch = new EpochClass
 
 suite: ->
   test "queue function", -> new Promise (resolve) ->
