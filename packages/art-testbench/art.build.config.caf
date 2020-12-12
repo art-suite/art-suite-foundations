@@ -1,1 +1,4 @@
-package: require("../standard-package-builder") &package, coffeeScript: true
+package:
+  require("../standard-package-builder")
+    &package
+    coffeeScript: true

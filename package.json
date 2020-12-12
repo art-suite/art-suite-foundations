@@ -53,10 +53,10 @@
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "npm-watch": "^0.7.0",
     "pluralize": "^8.0.0",
-    "simple-git": "^2.22.0",
+    "simple-git": "^2.27.0",
     "style-loader": "^2.0.0",
     "watch": "^1.0.0",
-    "webpack-merge": "^5.4.0",
+    "webpack-merge": "^5.7.0",
     "wrap-ansi": "^7.0.0",
     "xhr2": "^0.2.0"
   },
