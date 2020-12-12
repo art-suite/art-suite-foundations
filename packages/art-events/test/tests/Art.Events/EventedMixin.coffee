@@ -1,4 +1,4 @@
-{nextTick, defineModule, Event, BaseClass, EventedMixin, log, merge} = require '../../StandardImport'
+{assert, nextTick, defineModule, Event, BaseClass, EventedMixin, log, merge} = require '../../StandardImport'
 
 defineModule module, suite: ->
   class MyEventedObject extends EventedMixin BaseClass

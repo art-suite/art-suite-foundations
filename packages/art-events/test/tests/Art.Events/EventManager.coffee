@@ -1,17 +1,16 @@
-{inspect} = require '../../StandardImport'
-Events = require 'art-events'
+{assert, inspect, EventManager, Event} = require '../../StandardImport'
 
 module.exports = suite: ->
   test "add handler, fire event and handle event", (done)->
-    em = new Events.EventManager
+    em = new EventManager
     em.on birthday:(e)->
       assert.equal e.props.present, "legos"
       done()
 
-    em.handleEvent new Events.Event "birthday", present:"legos"
+    em.handleEvent new Event "birthday", present:"legos"
 
   test "add exception handler", (done)->
-    em = new Events.EventManager
+    em = new EventManager
 
     success = false
     finalize = ->
@@ -26,10 +25,10 @@ module.exports = suite: ->
         throw new Error "fail"
         finalize()
 
-    em.handleEvent new Events.Event "birthday"
+    em.handleEvent new Event "birthday"
 
   test "add oneTime handler", (done)->
-    em = new Events.EventManager
+    em = new EventManager
 
     count = 0
     em.onNext
@@ -40,12 +39,12 @@ module.exports = suite: ->
         done()
 
     assert.ok em.hasHandler "birthday"
-    em.handleEvent new Events.Event "birthday"
-    em.handleEvent new Events.Event "birthday"
-    em.handleEvent new Events.Event "reallyDone"
+    em.handleEvent new Event "birthday"
+    em.handleEvent new Event "birthday"
+    em.handleEvent new Event "reallyDone"
 
   test "add normal, everytime handler", (done)->
-    em = new Events.EventManager
+    em = new EventManager
 
     count = 0
     em.on
@@ -56,6 +55,6 @@ module.exports = suite: ->
         done()
 
     assert.ok em.hasHandler "birthday"
-    em.handleEvent new Events.Event "birthday"
-    em.handleEvent new Events.Event "birthday"
-    em.handleEvent new Events.Event "reallyDone"
+    em.handleEvent new Event "birthday"
+    em.handleEvent new Event "birthday"
+    em.handleEvent new Event "reallyDone"
