@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &ArtMyLib
 
 expectedPath = :Test :Art :Config
 
@@ -73,11 +73,26 @@ describe
 
     test "getConfigSave" ->
       TestConfigurable.reset()
+      MyLibConfigurable.reset()
 
-      configure artConfig: merge
-        novelProp: "cool"
-        pathedConfig
+      configure artConfig: Test.Art.Config: foo: 1
 
       assert.eq
         TestConfigurable.getConfigSave()
         Test.Art.Config: foo: 1
+
+    test "getArtConfigSave" ->
+      TestConfigurable.reset()
+      MyLibConfigurable.reset()
+
+      configure artConfig: merge
+        Test.Ignored:     whacha: :Harry
+        Test.Art.Config:  foo: 1
+        Test.Art.MyLib:
+          name:     :MyLib  # same as default, won't be saved
+          level:    2       # different, will be saved
+
+      assert.eq
+        getArtConfigSave()
+        Test.Art.Config:  foo: 1
+        Test.Art.MyLib:   level: 2
