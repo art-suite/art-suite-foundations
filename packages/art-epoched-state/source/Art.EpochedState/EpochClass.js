@@ -161,3 +161,5 @@
   })(BaseClass));
 
 }).call(this);
+
+//# sourceMappingURL=EpochClass.js.map

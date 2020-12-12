@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "..",
+  "sources": [
+    "source-source/index.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;"
+}

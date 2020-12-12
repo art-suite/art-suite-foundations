@@ -1,18 +1,18 @@
 # import &StandardImport, Neptune.Art.EpochedState
-{EpochClass} = require '../../StandardImport'
+import &StandardImport
 
-epoch = new EpochClass
+epoch = new &source.EpochClass
 
-module.exports = suite: ->
-  test "queue function", (done)->
+suite: ->
+  test "queue function", -> new Promise (resolve) ->
     epoch.queueItem ->
-      done()
+      resolve()
 
-  test "function handled on nextTick", (done)->
+  test "function handled on nextTick", -> new Promise (resolve) ->
     count = 0
     epoch.queueItem ->
       assert.eq count, 1
-      done()
+      resolve()
     count++
     assert.eq epoch.epochLength, 1
 
@@ -20,10 +20,10 @@ module.exports = suite: ->
     # call twice in case there are some channgingElements
     assert.eq epoch.epochLength, 0
 
-    promise = epoch.onNextReady()
+    _promise = epoch.onNextReady()
     assert.eq epoch._epochQueued, true
     assert.eq epoch.epochLength, 0
-    promise
+    _promise
 
   test "onNextReady forceNextEpoch = false: shouldn't force an epoch", ->
     # call twice in case there are some channgingElements
