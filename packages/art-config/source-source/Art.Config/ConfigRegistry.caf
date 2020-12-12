@@ -12,7 +12,3 @@ class ConfigRegistry
     @configs[name] = config
 
   @registerConfigurable: (configurable) => pushIfNotPresent @configurables, configurable
-
-  @configure: (args...) ->
-    console.error "DEPRICATED: use Art.Config.configure"
-    ArtConfig.configure args...

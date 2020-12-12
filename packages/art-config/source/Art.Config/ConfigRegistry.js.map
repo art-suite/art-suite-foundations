@@ -6,5 +6,5 @@
     "source-source/Art.Config/ConfigRegistry.caf"
   ],
   "names": [],
-  "mappings": "AAAA;;AAAA,sHAAO,mHAEP,YAAY,QAAQ,oNAOD,CAAC,MAAM,YAAU,KACuB,cAAc,qEAC7D,aAAC,QAAQ,sCAEI,CAAC,iBAAiB,iBAAiB,oBAAgB,gCAE1E,QAAY,CAAC,UACX,cAAc,gDACd,oBAAoB"
+  "mappings": "AAAA;;AAAA,2GAAO,0GAEP,YAAY,QAAQ,oNAOD,CAAC,MAAM,YAAU,KACuB,cAAc,qEAC7D,aAAC,QAAQ,sCAEI,CAAC,iBAAiB,iBAAiB,oBAAgB"
 }

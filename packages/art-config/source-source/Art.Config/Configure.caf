@@ -147,15 +147,6 @@ class Configure
         "arguments.artConfig":        configOptions.artConfig
         "environment.artConfig":      externalEnvironment.artConfig
 
-
-  @resetCurrentConfig: =>
-    log.warn "" DEPRICATED: resetCurrentConfig will be removed; call 'configure'
-    @_eraseAllConfiguration()
-
-  @reload: =>
-    log.warn "" DEPRICATED: reload will be removed; call 'configure'
-    @_reconfigure()
-
   ###############################
   # PRIVATE
   ###############################

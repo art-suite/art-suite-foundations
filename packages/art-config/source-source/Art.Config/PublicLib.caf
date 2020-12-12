@@ -38,7 +38,5 @@ ArtConfig._artConfigName ?= unconfiguredArtConfigName
   setArtConfigName:         (name) -> ArtConfig._artConfigName = name
 
   getArtConfigSave: ->
-    log.warn "" DEPRICATED: ArtConfig.getArtSaveConfig will be removed
     each configurable in &ConfigRegistry.configurables into out = {}
-      if saveConfig = configurable.getConfigSave()
-        mergeInto out, saveConfig
+      mergeInto out, configurable.getConfigSave()
