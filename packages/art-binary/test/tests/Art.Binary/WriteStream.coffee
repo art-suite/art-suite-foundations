@@ -1,4 +1,4 @@
-{WriteStream, Stream, binary, log, inspect, isString} = require './StandardImport'
+{assert, WriteStream, Stream, binary, log, inspect, isString} = require '../StandardImport'
 
 testWriting = (name, actions) ->
   test name, ->

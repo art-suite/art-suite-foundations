@@ -1,4 +1,4 @@
-{inspect, log, binary, BinaryString} = require './StandardImport'
+{assert, inspect, log, binary, BinaryString} = require '../StandardImport'
 
 self.atob ||= require 'atob'
 

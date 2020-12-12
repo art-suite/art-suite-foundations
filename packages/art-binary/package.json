@@ -15,7 +15,7 @@
   "jest": {
     "collectCoverageFrom": [
       "source/**/*.js",
-      "!source/_?[Jjt]est/**/*.js"
+      "!source/test/**/*.js"
     ],
     "testEnvironment": "node"
   },
@@ -26,17 +26,18 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee --output source --compile source-source; caf -p -c source-source -o source; nn -s",
+    "build": "coffee -m --output source --compile source-source &\nCOFFEE_PID=$!\ncaf -m -c source-source -o source &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnn -s",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
-    "test": "nn -s;mocha -u tdd",
+    "test": "mocha -u tdd",
     "watch": "npm-watch"
   },
   "version": "1.1.13",
   "watch": {
     "build": {
       "extensions": [
-        "caf"
+        "caf",
+        "coffee"
       ],
       "patterns": [
         "source-source"

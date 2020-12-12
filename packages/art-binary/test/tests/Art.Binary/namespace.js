@@ -3,6 +3,5 @@
 
 module.exports = require('../namespace').addNamespace(
   'Art.Binary',
-  (class Binary extends Neptune.PackageNamespace {})
-  ._configureNamespace(require('../../../package.json'))
+  class Binary extends Neptune.PackageNamespace {}
 );

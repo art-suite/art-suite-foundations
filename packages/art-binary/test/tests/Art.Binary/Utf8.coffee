@@ -1,5 +1,5 @@
 
-{Utf8, log} = require './StandardImport'
+{assert, Utf8, log} = require '../StandardImport'
 
 pairs = [
   {s:"✓",  a:[0xE2, 0x9C, 0x93]},

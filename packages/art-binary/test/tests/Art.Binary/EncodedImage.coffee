@@ -1,4 +1,4 @@
-{EncodedImage, log, binary} = require './StandardImport'
+{assert, EncodedImage, log, binary} = require '../StandardImport'
 {RestClient} = Neptune.Art
 
 isTainted = (image)->
