@@ -2,11 +2,22 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["merge"],
+    ["process", "merge"],
     [global, require("./StandardImport")],
-    (merge) => {
-      return function (options) {
-        return require("./runLib")(merge(options, { verb: "run" }));
+    (process, merge) => {
+      return {
+        options: {
+          command: "Shell command to run.",
+          verbose: "true/false",
+          path: 'find all packages in this path. default: "."',
+        },
+        run: function (options) {
+          let path;
+          if ((path = options.path)) {
+            process.chdir(path);
+          }
+          return require("./runLib")(merge(options, { verb: "run" }));
+        },
       };
     }
   );

@@ -21,14 +21,14 @@ import &ArtStandardLib, &chalk, &fs, &fs.promises
       + :\n
 
   loadAllPackages: ->
-    &globPromise "!(node_modules)/*/**/package.json"
+    &globPromise "!(node_modules)/**/package.json"
     .then (results) ->
       object file from-array results with-key file.split(/\/package.json$/)[0] when
           !/node_modules\//.test file # don't read into node_modules/
         readJson file
 
   removePackageLocks = ->
-    &globPromise "!(node_modules)/*/**/package-lock.json"
+    &globPromise "!(node_modules)/**/package-lock.json"
     .then (results) ->
       if results.length > 0
         log blue "Removing #{pluralize results.length, "package-specific package-lock.json file"}..."
@@ -40,7 +40,7 @@ import &ArtStandardLib, &chalk, &fs, &fs.promises
 
 
   removeNodeModules = ->
-    &globPromise "!(node_modules)/*/**/node_modules"
+    &globPromise "!(node_modules)/**/node_modules"
     .then (results) ->
       if results.length > 0
         log blue "Removing #{pluralize results.length, "package-specific node_modules/ directory"}..."

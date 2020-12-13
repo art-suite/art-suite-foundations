@@ -65,7 +65,7 @@ Caf.defMod(module, () => {
         },
         loadAllPackages: function () {
           return require("glob-promise")(
-            "!(node_modules)/*/**/package.json"
+            "!(node_modules)/**/package.json"
           ).then((results) => {
             let from, into, to, i, temp;
             return (
@@ -92,7 +92,7 @@ Caf.defMod(module, () => {
         },
         removePackageLocks: (removePackageLocks = function () {
           return require("glob-promise")(
-            "!(node_modules)/*/**/package-lock.json"
+            "!(node_modules)/**/package-lock.json"
           ).then((results) => {
             if (results.length > 0) {
               log(
@@ -129,7 +129,7 @@ Caf.defMod(module, () => {
         }),
         removeNodeModules: (removeNodeModules = function () {
           return require("glob-promise")(
-            "!(node_modules)/*/**/node_modules"
+            "!(node_modules)/**/node_modules"
           ).then((results) => {
             if (results.length > 0) {
               log(
