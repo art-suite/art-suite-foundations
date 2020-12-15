@@ -1,0 +1,5 @@
+import &StandardImport
+
+pairedAssertTests :match :notMatch []
+  [] true "hi frank" /fr/
+  [] false "hi frank", /fri/

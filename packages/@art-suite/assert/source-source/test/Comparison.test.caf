@@ -1,0 +1,49 @@
+import &StandardImport
+
+class Scaler
+
+  constructor: (@x) ->
+
+  lte: (p2) -> @x <= p2.x
+  gte: (p2) -> @x >= p2.x
+  eq:  (p2) -> @x == p2.x
+
+scaler = (x) -> new Scaler x
+test "match" ->
+  assert.match "hi there", /t.*e/
+  assert.match "hi there", "hi"
+  assert.doesNotMatch "hi there", /j.*e/
+  assert.doesNotMatch "hi there", "ji"
+  assert.rejects -> assert.match "hi there", /j.*e/
+  assert.rejects -> assert.match "hi there", "ji"
+
+test "within" ->
+  assert.within 5, 0, 10
+  assert.rejects ->   assert.within -5, 0, 10
+  assert.rejects ->   assert.within 50, 0, 10
+
+test "within using .lte and .gte" ->
+  assert.within
+    scaler 5
+    scaler 0
+    scaler 10
+  assert.rejects ->
+    assert.within
+      scaler -5
+      scaler 0
+      scaler 10
+  assert.rejects ->
+    assert.within
+      scaler 50
+      scaler 0
+      scaler 10
+
+test "selectedEq" ->
+  assert.selectedEq
+    a: 123
+    {} a: 123, b: 456
+
+  assert.rejects ->
+    assert.selectedEq
+      a: 124
+      {} a: 123, b: 456

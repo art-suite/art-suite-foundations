@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+require('./index');
+require('source-map-support');
+require('./source/abcCommand');

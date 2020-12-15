@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ConfigureBase.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/Art.Build.Configurator/Configurators/ConfigureBase.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,6FAAO,iFAEP,gEAA4B,qFACZ,qCAEd,QAAkB,CAAC,SAAS,YAAa,OACvC,aAAY,MACV,SAAK,SAAS,iBACV,CAAC,MACL,IAAI,4BAGR,QAAc,CAAC,SAAS,YAAa,OACnC,qBAAiB,SAAS,gBACpB,CAAC,aACL,8BACE,UAAU,SAAS,mBACnB"
+}

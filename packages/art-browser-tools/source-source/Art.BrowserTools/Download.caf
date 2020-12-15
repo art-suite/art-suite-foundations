@@ -1,0 +1,46 @@
+import &StandardImport
+global extract window, document
+
+class Download
+
+  @downloadBinaryData: (filename, binaryData, mimeType) ->
+    binaryData = binary binaryData
+    # IE
+    if global.navigator.msSaveOrOpenBlob?
+      blob = binaryData.toBlob mimeType
+      window.navigator.msSaveOrOpenBlob blob, filename
+
+    # everything else
+    else
+      binaryData.toDataUri mimeType
+      .then (uri) -> Download.downloadFromUrl uri, filename
+
+  @downloadFromUrl: (url, filename) ->
+    e = document.createElement :a
+    e.setAttribute :href      url
+    e.setAttribute :download  filename
+    e.setAttribute :target    :_blank
+    document.body.appendChild e
+    e.click()
+    document.body.removeChild e
+
+
+  ## startHtmlFileDownload
+    the 'download' attribute doesn't seem to be well supported
+    It may work better if it is the same-domain
+      https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#Attributes
+    CanIUse has a slightly different take - see known-issues
+      https://caniuse.com/#search=download
+    Currently, only Chrome seems to automatically start a download
+
+  @startHtmlFileDownload: (filename, url) ->
+    element = document.createElement :a
+    element.setAttribute :target    :_blank
+    element.setAttribute :href      url
+    element.setAttribute :download  filename
+
+    element.style.display = :none
+    document.body.appendChild element
+    element.click()
+    document.body.removeChild element
+    console.log {element}

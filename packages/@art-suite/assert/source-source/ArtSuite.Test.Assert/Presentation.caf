@@ -1,0 +1,43 @@
+import &ArtStandardLib
+
+maxLength = 80
+
+{}
+  indent = (str) -> '  ' + str.replace /\n/g, "\n  "
+  format = (val) -> formattedInspect val, maxLength
+
+  failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
+    failWithExpectedMessageBase context, a, b, []
+      indent format a
+      verb
+      indent format b
+      [verb2, indent format c] if verb2
+
+  generateFailedMessage = (context, a, b, lines) ->
+    :\n +
+      compactFlattenAll
+        if context
+          if isFunction context
+            context = try
+              context a, b, lines
+            catch error
+              getContextFunctionError: {} context, error
+
+          if isString context
+            context
+          else
+            formattedInspect context
+
+        :expected
+
+        lines
+
+        :\n
+
+      .join :\n\n
+
+  failWithExpectedMessageBase = (context, a, b, lines) ->
+    &Chai.assert.fail
+      a
+      b
+      generateFailedMessage context, a, b, lines

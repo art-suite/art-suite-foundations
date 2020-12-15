@@ -1,0 +1,46 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-object-tree-factory": "^2.2.8",
+    "art-standard-lib": "^1.70.6",
+    "wrap-ansi": "^7.0.0"
+  },
+  "description": "Build HTML from code in the most elegant way possible",
+  "devDependencies": {
+    "art-build-configurator": "^1.29.3",
+    "npm-watch": "^0.7.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/Jest/**/*.js",
+      "!source/test/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "art-html-factory",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -p -c source-source -o source; nn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
+  },
+  "version": "2.1.9",
+  "watch": {
+    "build": {
+      "extensions": "caf",
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+}

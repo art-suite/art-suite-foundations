@@ -1,0 +1,73 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bin": {
+    "abc": "./abc",
+    "art-build-configurator": "./art-build-configurator"
+  },
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-browser-tools": "^1.2.10",
+    "art-build-configurator": "^1.29.3",
+    "art-class-system": "^1.11.13",
+    "art-config": "^2.0.1",
+    "art-filebuilder": "^2.1.11",
+    "art-object-tree-factory": "^2.2.8",
+    "art-standard-lib": "^1.70.6",
+    "bluebird": "^3.5.5",
+    "caffeine-script": "^0.73.0",
+    "caffeine-script-runtime": "^1.14.0",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "coffee-loader": "^0.7.3",
+    "coffee-script": "^1.12.7",
+    "colors": "^1.4.0",
+    "commander": "^5.0.0",
+    "css-loader": "^5.0.0",
+    "dateformat": "^3.0.3",
+    "detect-node": "^2.0.4",
+    "fs-extra": "^9.0.0",
+    "glob": "^7.1.6",
+    "glob-promise": "^3.4.0",
+    "neptune-namespaces": "^4.2.9",
+    "style-loader": "^2.0.0",
+    "webpack-merge": "^5.7.0"
+  },
+  "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
+  "devDependencies": {
+    "art-testbench": "^3.2.2",
+    "mocha": "^7.2.0",
+    "mock-fs": "^4.13.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "art-build-configurator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -m -c source-source -o source\nnn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "mocha -u tdd",
+    "watch": "npm-watch"
+  },
+  "version": "1.29.3",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-class-system": "^1.11.13",
+    "art-communication-status": "^1.5.13",
+    "art-standard-lib": "^1.70.6",
+    "xhr2": "^0.2.0"
+  },
+  "description": "Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.",
+  "devDependencies": {
+    "art-build-configurator": "^1.29.3",
+    "art-testbench": "^3.2.2",
+    "mocha": "^7.2.0",
+    "watch": "^1.0.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "art-rest-client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -p -c source-caf -o source;nn -s",
+    "build-test": "npm run build; npm run test --silent; echo",
+    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
+    "test": "nn -s;mocha -u tdd",
+    "testInBrowser": "webpack-dev-server --progress --env.devServer",
+    "watch": "watch 'npm run build' ./source-caf",
+    "watch-test": "watch 'npm run build-test' ./source-caf ./test"
+  },
+  "version": "1.8.11"
+}

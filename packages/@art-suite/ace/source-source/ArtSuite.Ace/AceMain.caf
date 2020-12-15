@@ -1,0 +1,8 @@
+import &StandardImport, &LoadAceConfig
+
+&LoadAceConfig.AceMain = class AceMain extends BaseClass
+  @realRequire: eval :require
+
+  @aceUpdate: (options) ->
+    loadAceConfig options?.package ? process.cwd()
+    .tap (aceConfig) ->

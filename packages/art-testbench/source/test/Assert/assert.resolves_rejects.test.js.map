@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "assert.resolves_rejects.test.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/test/Assert/assert.resolves_rejects.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mGAAO,kEAEP,KAAK,+BACH,gBAAgB,aAChB,sBAAmB,oBACnB,gBAAgB,uBAElB,KAAK,8BACH,eAAc,MAAI,cAAM,IAAI,MAAM,kCAClC,eAAe,sBAEjB,KAAK,+CAAqC,oBACxC,eAAc,MAAI,gBAAe,MAAI,cAAM,IAAI,MAAM,4BACrD,eAAc,MAAI,gBAAgB,gCAEpC,KAAK,8CAAoC,oBACvC,eAAc,MAAI,eAAe,cACjC,eAAc,MAAI,qBAAkB,cACpC,eAAc,MAAI,eAAe"
+}

@@ -1,0 +1,8 @@
+import &StandardImport
+
+class TestConfigurable extends Configurable
+  @defaultConfig:
+    name:     "TestName"
+    verbose:  false
+
+  @defaults @defaultConfig

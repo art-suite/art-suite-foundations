@@ -1,0 +1,48 @@
+import &ArtStandardLib
+
+(currentPackage, options = {}) -> (abcPackage) ->
+  options extract?
+    sourceDir = "source-source"
+    mocha
+    coffeeScript
+
+  merge currentPackage,
+    scripts:
+      test:
+        if mocha
+          "" mocha -u tdd
+        else
+          :jest
+
+      build:
+        if coffeeScript
+          """
+            coffee -m --output source --compile #{sourceDir} &
+            COFFEE_PID=$!
+            caf -m -c #{sourceDir} -o source &
+            CAF_PID=$!
+            wait $COFFEE_PID || exit 1
+            wait $CAF_PID || exit 1
+            nn -s
+        else
+          """
+            caf -m -c #{sourceDir} -o source
+            nn -s
+
+      build-clean:  "" npm run clean; npm run build
+      clean:        "" rm -rf source/*
+      watch:        :npm-watch
+    jest:
+      testEnvironment: :node
+      collectCoverageFrom:
+        "source/**/*.js",
+        "!source/test/**/*.js"
+
+    watch:
+      build:
+        extensions: compactFlattenAll
+          :caf
+          coffeeScript && :coffee
+
+        patterns:   [] sourceDir
+        quiet:      false

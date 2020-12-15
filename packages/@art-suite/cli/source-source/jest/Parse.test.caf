@@ -1,0 +1,202 @@
+import &StandardImport
+import ArtCli.Parse, ArtCli.Util
+
+describe
+  parseAndSelectCommand: ->
+    test 'parseAndSelectCommand' ->
+      assert.eq
+        parseAndSelectCommand
+          normalizeCommands {}
+            foo = ->
+            bar = ->
+          [] :foo :bar
+
+        commandFunction: foo
+        commandName:     :foo
+        options:         args: [] :bar
+
+    test 'parseAndSelectCommand commands with help' ->
+      assert.eq
+        parseAndSelectCommand
+          {}
+            foo:
+              run:       foo = ->
+              description:  "walk about"
+              examples:     "" walk
+              options:
+                gate: :mph "" estimated mph for yer walking
+
+            bar = ->
+          [] :foo :bar
+
+        commandFunction: foo
+        commandName:     :foo
+        options:         args: [] :bar
+
+  parseArgs:
+    options: ->
+      test 'empty args' ->
+        assert.eq
+          parseArgs []
+          commands: []
+          options: {}
+
+    dataTypes:
+      boolean: ->
+        test 'boolean value' ->
+          assert.eq
+            parseArgs [] "" --verbose
+            commands: []
+            options: verbose: true
+
+        test 'boolean true from "true"' ->
+          assert.eq
+            parseArgs [] :--verbose :true
+            commands: []
+            options: verbose: true
+
+        test 'boolean true from "true"' ->
+          assert.eq
+            parseArgs [] :--verbose :false
+            commands: []
+            options: verbose: false
+
+      number: ->
+        test 'number value' ->
+          assert.eq
+            parseArgs [] :--num :123
+            commands: []
+            options: num: 123
+
+      string: ->
+        test 'simple string' ->
+          assert.eq
+            parseArgs [] :--foo :bar
+            commands: []
+            options: foo: :bar
+
+        test 'string:true' ->
+          assert.eq
+            parseArgs [] :--foo :string:true
+            commands: []
+            options: foo: :true
+
+        test 'string:false' ->
+          assert.eq
+            parseArgs [] :--foo :string:false
+            commands: []
+            options: foo: :false
+
+        test 'string:10' ->
+          assert.eq
+            parseArgs [] :--foo :string:10
+            commands: []
+            options: foo: :10
+
+      lists: ->
+        test 'list' ->
+          assert.eq
+            parseArgs [] :--foo :bar :baz
+            commands: []
+            options: foo: :bar :baz
+
+      json: ->
+        test 'regexp' ->
+          data =
+            alpha: null
+            beta: true
+            gamma: :a :b :c
+            delta: :foo
+
+          assert.eq
+            parseArgs [] :--my-json "" json:#{} JSON.stringify data
+            .options.myJson
+            data
+
+      js: ->
+        test 'regexp' ->
+          assert.eq
+            parseArgs [] :--regex "js:/[a-z]+/"
+            .options.regex.exec "123 frank %"
+            [] :frank
+
+        test 'function' ->
+          f = (v) => v * 123
+          assert.eq
+            parseArgs [] :--f "js:#{f}"
+            .options.f 10
+            1230
+
+        test 'function throws error' ->
+          f = (v) => throw new Error
+          assert.rejects -> parseArgs [] :--f "js:(() => {throw new Error();})()"
+          .then (error) ->
+            assert.instanceof
+              Error
+              error
+
+    commands: ->
+      test 'one command' ->
+        assert.eq
+          parseArgs [] :myCommand
+          commands: [] :myCommand
+          options: {}
+
+      test 'multiple command' ->
+        assert.eq
+          parseArgs [] :myCommand1 :myCommand2
+          commands: [] :myCommand1 :myCommand2
+          options: {}
+
+    mixed: ->
+      test 'multiple commands and options' ->
+        assert.eq
+          parseArgs [] :myCommand1 :myCommand2 :--files :one.json :two.json :--output :out.json
+          commands: [] :myCommand1 :myCommand2
+          options:
+            files:  [] :one.json, :two.json
+            output: :out.json
+
+  selectCommand:
+    defaults: ->
+      test 'no commandName, but default was provided' ->
+        assert.eq
+          selectCommand
+            commandFunctions = foo: run: ->
+            []
+            :foo
+          commandFunction: commandFunctions.foo.run
+          commandName: :foo
+
+      test 'one commandName which isnt a command with default' ->
+        assert.eq
+          selectCommand
+            commandFunctions = foo: run: ->
+            [] :bar
+            :foo
+
+          commandName: :bar
+
+    basics: ->
+      test 'foo is a command' ->
+        assert.eq
+          selectCommand
+            commandFunctions = foo: run: ->
+            [] :foo
+          commandFunction: commandFunctions.foo.run
+          commandName: :foo
+
+      test 'foo-bar is a command' ->
+        assert.eq
+          selectCommand
+            commands = normalizeCommands foo-bar: run: ->
+            [] :foo-bar
+          commandFunction: commands.fooBar.run
+          commandName: :foo-bar
+
+      test 'foo is not a command' ->
+        assert.eq
+          selectCommand
+            commandFunctions = bar: run: ->
+            [] :foo
+          commandName: :foo

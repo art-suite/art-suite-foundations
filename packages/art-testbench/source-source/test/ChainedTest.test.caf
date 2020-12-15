@@ -1,0 +1,41 @@
+import &StandardImport
+
+testsActuallyRan = []
+ran = (key) -> testsActuallyRan.push key
+
+chainedTest ->
+  123
+
+.tapTest :tapTest -> 3
+.thenTest :thenTest (val) ->
+  assert.eq val, 123
+
+chainedTest 'start' ->
+  :setupValue
+
+.thenTest "initial values passed to thenTest" (args...) ->
+  assert.eq  args, [] :setupValue :setupValue
+  :newValue
+
+.thenTest "newValue is passed to second thenTest; setupValue still in second arg" (args...) ->
+  assert.eq args, [] :newValue :setupValue
+  123
+
+.tapTest
+  :tapTest_passes_through_passed_in_value--part_one (val) -> ran("tapTest-1");assert.eq val, 123; 1
+  :tapTest_passes_through_passed_in_value--part_two (val) -> ran("tapTest-2");assert.eq val, 123; 2
+
+.softTapTest
+  :softTapTest_is_a_skippable_tapTest--part_one (val) -> ran("softTapTest-1");assert.eq val, 123; 1
+  :softTapTest_is_a_skippable_tapTest--part_two (val) -> ran("softTapTest-2");assert.eq val, 123; 2
+
+.thenTest
+  :thenTest_should_still_be_123 (val) -> assert.eq val, 123; 456
+  :thenTest_should_now_be_456 (val) -> assert.eq val, 456
+
+  :second_param_should_still_hold_setups_value (_, b) -> assert.eq b, :setupValue
+
+  # I have no idea how to actually test that softTapTest isn't run if JEST/Mocha skips them,
+  # but everything else is run... So for now, just uncomment the following line
+  # and run with and without filter/grep for "final_ran". As-of-now, it works (2020-11-8)
+  # :final_ran -> log {} testsActuallyRan

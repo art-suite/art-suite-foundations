@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "App.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/Art.Build.Configurator/Recipes/App.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mFAAO,+DAEP,4CAAkB,sFACA,0CAChB,YAAO,CAAC,oCAAS,cACf,iCACA,UACE,YACE,mBACA,WACE,SAAS,UACT,eAAc,iBAAe,OAC7B,iBAEJ,sCAEc,mDAEd,aACK,WAGL,cACK,gNAYL,SAAQ,CAAC,yBAAoB,SAAS,OACpC,sBACK,aAGL,yGAKwB,yQAUwB,yBAEhD"
+}

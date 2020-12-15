@@ -1,0 +1,20 @@
+import &ArtStandardLib, &sourceSource, &@art-suite/assert
+
+[]
+  &ArtStandardLib
+  &@art-suite/assert
+  &sourceSource
+  pairedAssertTests: (trueAssertName, notTrueAssertName, truthToValueTuples) ->
+    each [truth, args...] in truthToValueTuples
+      vString = if args.length == 1 then formattedInspect args[0] else formattedInspect args
+
+      test "#{truth}: assert.#{trueAssertName}(#{vString})" ->
+        [acceptsTest, rejectsTest] = [runTrueAsset, runNotTrueAssert] = []
+          -> assert[trueAssertName] args..., "expected assert.#{trueAssertName}(#{vString}) to be #{truth}"
+          -> assert[notTrueAssertName] args..., "expected assert.#{notTrueAssertName}(#{vString}) to be #{!truth}"
+
+        unless truth
+          [acceptsTest, rejectsTest] = [runNotTrueAssert, runTrueAsset]
+
+        acceptsTest()
+        assert.rejects rejectsTest

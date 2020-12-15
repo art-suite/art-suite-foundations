@@ -1,0 +1,15 @@
+{}
+
+  describe = (a, b) ->
+    if a is Object
+      each v, k in a
+        if v is Function
+          global.describe k, -> v(); undefined
+        else
+          global.describe k, ->
+            describe v
+    else if a is String and b is Function
+      global.describe a, -> b(); undefined
+    else throw new Error "describe was expecting an object structure or a string & function"
+
+    undefined

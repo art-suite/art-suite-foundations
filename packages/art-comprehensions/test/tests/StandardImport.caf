@@ -1,0 +1,49 @@
+import &ArtStandardLib
+
+&ArtComprehensions extract
+  array   as _array
+  each    as _each
+  object  as _object
+  reduce  as _reduce
+  find    as _find
+  inject  as _inject
+
+
+
+toS = (el) ->
+  switch
+  when el == null then :null
+  when el == undefined then :undefined
+  when el.name then el.name
+  when el is Function then "#{el}"
+  when el is Array
+    "" [#{(array v from el with toS v).join ', '}]
+
+  when el is Object
+    "" {#{(array v, k from el with "#{k}: #{toS v}").join ', '}}
+
+  else "#{el}"
+
+&ArtStandardLib.mergeWithSelf &generators, {}
+  _array
+  _each
+  _object
+  _reduce
+  _find
+  _inject
+
+  testComprehension = (expected, f, source, a, b) ->
+    args = [] source, a, b
+    while peek(args) == undefined
+      args.pop()
+
+    test "#{f.name} #{(array arg in args with toS arg).join ', '} => #{toS expected}" ->
+      assert.eq
+        expected
+        f source, a, b
+        {} expected, source, a, b
+
+  add = (a, b) -> a + b
+  mul = (a, b) -> a * b
+  x2 = (a) -> a + a
+  even = (a) -> a % 2 == 0

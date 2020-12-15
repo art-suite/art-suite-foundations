@@ -1,0 +1,358 @@
+import &StandardImport, &Lib
+
+testFactoryToString
+  -> Div
+    class: :fooClass
+    "" string child
+  """ <div class="fooClass">string child</div>
+
+  -> Div {class: :fooClass}, {id: :barId}
+  """ <div class="fooClass" id="barId"></div>
+
+  -> Div {style: font-size: 10pt}, {style: color: #f00}
+  """ <div style="color: #f00; font-size: 10pt"></div>
+
+  -> Div [] null, Div(), undefined
+  """ <div><div></div></div>
+
+  -> Script
+    async: true
+    "alert(1);"
+  """ <script async>alert(1);</script>
+
+  -> Header
+    H1 "" The most Amazing Page Ever
+    H2 "" You simply have to read it.
+
+  """
+    <header>
+      <h1>The most Amazing Page Ever</h1>
+      <h2>You simply have to read it.</h2>
+    </header>
+
+  -> P "" Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding liquorice.
+  """
+    <p>
+      Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut
+      gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake
+      cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread
+      icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies
+      marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi
+      bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon
+      drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar
+      plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding
+      liquorice.
+    </p>
+
+describe
+  escaping: -> testFactoryToString
+    -> Div
+      prop: "<foo>"
+    "" <div prop="&lt;foo&gt;"></div>
+
+  merging:
+    caseSensativity: -> testFactoryToString
+      -> Div
+        {} style: Color: #abc123
+      "" <div style="Color: #abc123"></div>
+
+      -> Div
+        {} class: :FooBar
+      "" <div class="FooBar"></div>
+
+    style: -> testFactoryToString
+      -> Div
+        {} style: color: #abc123
+        {} style: height: 100px
+      "" <div style="color: #abc123; height: 100px"></div>
+
+    style-reset: -> testFactoryToString
+      -> Div
+        {} style: color: #abc123
+        {} style: null
+        {} style: height: 100px
+      "" <div style="height: 100px"></div>
+
+    class: -> testFactoryToString
+      -> Div
+        {} class: :ROW
+        {} class: :border-1px
+      "" <div class="ROW border-1px"></div>
+
+    class-reset: -> testFactoryToString
+      -> Div
+        {} class: :row
+        {} class: null
+        {} class: :border-1px
+      "" <div class="border-1px"></div>
+
+
+  textWordWrappingDefaultBehavior: -> testFactoryToString
+    -> Div
+      """
+        one line
+        two line
+    "<div>one line two line</div>"
+
+    -> Div
+      """
+        one line
+
+        two line
+
+    """
+      <div>
+        one line
+
+        two line
+      </div>
+
+    -> Body Div
+      """
+        one line
+
+        two line
+
+    """
+      <body>
+        <div>
+          one line
+
+          two line
+        </div>
+      </body>
+
+    -> Div
+      "" one
+      "" line
+    """
+      <div>
+        one
+        line
+      </div>
+
+  escape: -> testFactoryToString
+    -> Div "" one<br>&nbsp;line
+    "" <div>one<br>&nbsp;line</div>
+
+  specialTags:
+    rawHtml: -> testFactoryToString
+      -> RawHtml
+        """
+          <!-- RawHtml is here to escape in whatever you want -->
+          <html>
+        Body "" With some children
+        """ </html>
+      """
+        <!-- RawHtml is here to escape in whatever you want -->
+        <html>
+        <body>
+          With some children
+        </body>
+        </html>
+
+    br: -> testFactoryToString
+      -> Div
+        "" one
+        Br()
+        "" line
+      """
+        <div>
+          one
+          <br>
+          line
+        </div>
+
+    script: -> testFactoryToString
+      -> Html Head Script
+        """
+          var tag = "<something>";
+      """ <html><head><script>var tag = "<something>";</script></head></html>
+
+    style: -> testFactoryToString
+      -> Html Head Style
+        """
+          @font-face {
+            font-family: proxima nova light;
+            font-style: normal;
+            font-weight: 400;
+          }
+      """
+        <html>
+          <head>
+            <style>
+              @font-face {
+                font-family: proxima nova light;
+                font-style: normal;
+                font-weight: 400;
+              }
+            </style>
+          </head>
+        </html>
+
+    img: -> testFactoryToString
+      -> Div Img src: :https://my.url.com/wonder_woman.jpg
+      """ <div><img src="https://my.url.com/wonder_woman.jpg"></div>
+
+    meta: -> testFactoryToString
+      -> Html Head Meta myProp: :fine
+      "" <html><head><meta myProp="fine"></head></html>
+
+    link: -> testFactoryToString
+      -> Html Head Link myProp: :fine
+      "" <html><head><link myProp="fine"></head></html>
+
+    pre: -> testFactoryToString
+      -> Div Pre
+        """
+          Pre tags can have HTML in them:
+
+          <html><body>
+            Hello, world!
+          </body></html>
+      """
+        <div>
+          <pre>
+        Pre tags can have HTML in them:
+
+        <html><body>
+          Hello, world!
+        </body></html>
+          </pre>
+        </div>
+
+  length: ->
+    testLength = (name, f) ->
+      test name, ->
+        assert.eq
+          node = f()
+          .length
+          node.toCompactString().length
+          node.toCompactString()
+
+    testLength "P", -> P()
+    testLength "P width: 10", -> P width: 10
+    testLength "P :hello", -> P :hello
+    testLength "P :hello B :bye", -> P :hello B :bye
+
+  toString: ->
+    test "with options" ->
+      assert.eq
+        Div "Sweet donut biscuit tiramisu tart. Chocolate powder lollipop."
+        .toString indent: true tagWrap: 20 textWordWrap: 20
+        """
+          <div>
+            Sweet donut biscuit
+            tiramisu tart.
+            Chocolate powder
+            lollipop.
+          </div>
+
+  createHtmlFactories: ->
+    test "custom Svg tags" ->
+      {Svg, Path} = createHtmlFactories :svg :path
+      assert.eq
+        Svg
+          version: "1.1"
+          xmlns: "http://www.w3.org/2000/svg"
+          width: "64"
+          height: "64"
+          viewBox: "0 0 64 64"
+          Path d: "M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"
+        .toString()
+        """
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+            <path d="M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"></path>
+          </svg>
+
+  regressions: ->
+    test "merging styles" ->
+      style = color: :#ffbbcc
+      assert.eq
+        Div
+          {} style
+          Div
+            {} style
+            {} style: font-weight: 300
+        .toString()
+        """
+          <div style="color: #ffbbcc">
+            <div style="color: #ffbbcc; font-weight: 300"></div>
+          </div>
+
+  regressions: ->
+
+  spanning:
+    basics: -> testFactoryToString
+      -> Div
+        A
+          "" This is some text, right?
+          Img src: "with-source-image"
+
+      """
+        <div>
+          <a>This is some text, right?
+          <img src="with-source-image"></a>
+        </div>
+
+      -> Div
+        A
+          "" This is some text, right?
+          Img src: "with-source-image"
+          "" This is some text, right!
+          B "" Then why are you reading this?
+          "" That's OK?
+          Img src: "with-source-image"
+
+      """
+        <div>
+          <a>This is some text, right?
+          <img src="with-source-image">
+          This is some text, right!
+          <b>Then why are you reading this?</b>
+          That's OK?
+          <img src="with-source-image"></a>
+        </div>
+
+      -> Div Div
+        A
+          "" This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!
+
+      """
+        <div>
+          <div>
+            <a>This is some text, right, This is some text, right. This is some text, right!
+            This is some text, right!!!</a>
+          </div>
+        </div>
+
+    regressions: -> testFactoryToString
+      ->
+        Div
+          id: :pageMenu class: :pageMenu-3
+          Div
+            class: "container position-z-4"
+            Div
+              class: :color-display-font-padding-position-right-text-top-5
+              Span
+                class: :font-padding-6
+                A
+                  href: :services class: :background-border-color-padding-7
+                  :SERVICES
+
+      """
+        <div id="pageMenu" class="pageMenu-3">
+          <div class="container position-z-4">
+            <div class="color-display-font-padding-position-right-text-top-5">
+              <span class="font-padding-6"><a href="services" class="background-border-color-padding-7">SERVICES</a></span>
+            </div>
+          </div>
+        </div>
+
+      ->
+        A Div :one
+
+      """
+        <a><div>
+          one
+        </div></a>

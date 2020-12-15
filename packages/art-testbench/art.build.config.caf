@@ -1,0 +1,4 @@
+package:
+  require("../standard-package-builder")
+    &package
+    coffeeScript: true

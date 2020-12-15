@@ -1,0 +1,11 @@
+import &StandardImport
+
+options:
+  command:  "" Shell command to run.
+  verbose:  "" true/false
+  path:     "" find all packages in this path. default: "."
+run: (options) ->
+  if options extract path
+    process.chdir path
+  &runLib merge options,
+    verb: :run

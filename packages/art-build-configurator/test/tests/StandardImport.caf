@@ -1,0 +1,6 @@
+[]
+  &ArtStandardLib
+  &ArtClassSystem
+  &ArtTestbench
+  ArtBuildConfigurator: &source/ArtBuildConfigurator
+  mockFs: require :@art-suite/mock-fs

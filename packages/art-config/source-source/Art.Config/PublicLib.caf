@@ -1,0 +1,42 @@
+import &ArtStandardLib
+
+# ensure Neptune.Art.Config is loaded
+# NOTE - if NPM/Node loads more than one version of ArtConfig, the first one will be the official data-store
+require :./namespace
+
+defaultArtConfigName = :Development
+unconfiguredArtConfigName = :unconfigured
+
+getGlobalArtConfig = -> global.ArtConfig ?= Neptune.Art.Config
+
+# in case mutiple copies of ArtConfig are loaded,
+# they will all use the same artConfig and artConfigName
+ArtConfig = getGlobalArtConfig()
+ArtConfig._artConfig ?= {}
+ArtConfig._artConfigName ?= unconfiguredArtConfigName
+
+{}
+  getGlobalArtConfig
+  getDefaultArtConfigName:      -> defaultArtConfigName
+  _getArtConfig =               -> ArtConfig._artConfig
+  _getArtConfigName =           -> ArtConfig._artConfigName
+  _resetArtConfigName =         -> ArtConfig._artConfigName = unconfiguredArtConfigName
+  getArtConfigConfigured =      -> _getArtConfigName() != unconfiguredArtConfigName
+
+  validateArtConfigConfigured = ->
+    unless getArtConfigConfigured()
+      throw new Error "" ArtConfig has not been configured. Run: ArtConfig.configure()
+    true
+
+  getArtConfig:             -> validateArtConfigConfigured() && _getArtConfig()
+  getArtConfigName =        -> validateArtConfigConfigured() && _getArtConfigName()
+
+  isDev:                    -> getArtConfigName() == :Development
+  isProd:                   -> getArtConfigName() == :Production
+  isTest:                   -> getArtConfigName() == :Test
+
+  setArtConfigName:         (name) -> ArtConfig._artConfigName = name
+
+  getArtConfigSave: ->
+    each configurable in &ConfigRegistry.configurables into out = {}
+      mergeInto out, configurable.getConfigSave()

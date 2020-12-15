@@ -1,0 +1,8 @@
+import &StandardImport
+
+class MyLibConfigurable extends Configurable
+  @defaultConfig:
+    name:     :MyLib
+    level:    1
+
+  @defaults @defaultConfig

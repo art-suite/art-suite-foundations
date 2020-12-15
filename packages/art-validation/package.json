@@ -1,0 +1,48 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-communication-status": "^1.5.13",
+    "art-standard-lib": "^1.70.6"
+  },
+  "description": "Validate object props.",
+  "devDependencies": {
+    "art-build-configurator": "^1.29.3",
+    "art-testbench": "^3.2.2",
+    "mocha": "^7.2.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "art-validation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "coffee -m --output source --compile source-source &\ncaf -m -c source-source -o source &\nwait\nnn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
+  },
+  "version": "1.9.6",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+}

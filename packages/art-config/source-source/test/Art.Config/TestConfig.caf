@@ -1,0 +1,8 @@
+import &StandardImport
+
+# Used by ConfigRegistry tests
+class TestConfig extends Configuration
+  propA:    :propAFromTestConfig
+  MyGrouping: propB: :foo
+  @deepMergeInConfig
+    MyGrouping: propC: :bar

@@ -1,0 +1,5 @@
+require '../index'
+&ArtTestbench/Testing
+.init
+  synchronous: true
+  defineTests: -> &tests

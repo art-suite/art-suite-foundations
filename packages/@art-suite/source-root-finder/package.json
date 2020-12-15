@@ -1,0 +1,48 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-class-system": "^1.11.13",
+    "art-standard-lib": "^1.70.6"
+  },
+  "description": "ArtSuite.SourceRootFinder",
+  "devDependencies": {
+    "art-build-configurator": "^1.29.3",
+    "art-testbench": "^3.2.2",
+    "jest": "^26.6.1",
+    "npm-watch": "^0.7.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/_?[Jjt]est/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "@art-suite/source-root-finder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -p -c source-source -o source; nn -s",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "test": "jest",
+    "watch": "npm-watch"
+  },
+  "version": "1.0.8",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
+}

@@ -1,0 +1,66 @@
+import &ArtStandardLib, &ArtSuiteTestChainedTest, require :@art-suite/assert
+
+testsActuallyRan = []
+ran = (key) -> testsActuallyRan.push key
+
+chainedTest -> 123
+.tapTest :tapTest3 ->  3
+.thenTest :thenTestStill3 (val) -> assert.eq val, 123
+
+chainedTest 'start' ->
+  ran :start
+  :setupValue
+
+.thenTest "initial values passed to thenTest" (args...) ->
+  ran :thenTestSetupValues
+  assert.eq  args, [] :setupValue :setupValue
+  :newValue
+
+.thenIt # alias testing
+  "has newValue passed as the first argument; setupValue still the second arg" (args...) ->
+    ran :thenTestNewValue
+    assert.eq args, [] :newValue :setupValue
+    123
+
+.tapIt
+  :tapTest_passes_through_passed_in_value--part_one (val) -> ran("tapTest-1");assert.eq val, 123; 1
+
+.tapTest # alias testing
+  :tapTest_passes_through_passed_in_value--part_two (val) -> ran("tapTest-2");assert.eq val, 123; 2
+
+  # TODO: this test is too meta; how do we actually test it?!?
+  #   Right now, manually uncomment and make sure it works as described.
+  # :normal-failures-will-break-the-rest-of-the-chain -> throw new Error :hrm
+
+.softTapTest
+  :softTapTest_is_a_skippable_tapTest--part_one (val) -> ran("softTapTest-1");assert.eq val, 123; 1
+.softTapIt # alias testing
+  :softTapTest_is_a_skippable_tapTest--part_two (val) -> ran("softTapTest-2");assert.eq val, 123; 2
+
+  # TODO: this test is too meta; how do we actually test it?!?
+  #   Right now, manually uncomment and make sure it works as described.
+  # :soft-fail-shouldnt-break-the-rest-of-the-chain -> throw new Error :hrm
+
+.thenTest
+  :thenTest_should_still_be_123 (val) -> assert.eq val, 123; 456
+  :thenTest_should_now_be_456 (val) -> assert.eq val, 456
+
+  :second_param_should_still_hold_setups_value (_, b) -> assert.eq b, :setupValue
+
+.thenTest
+  "final" -> assert.eq
+    testsActuallyRan
+    []
+      :start
+      :thenTestSetupValues
+      :thenTestNewValue
+      :tapTest-1
+      :tapTest-2
+      :softTapTest-1
+      :softTapTest-2
+
+  # TODO: this test is too meta; how do we actually test it?!?
+  # I have no idea how to actually test that softTapTest isn't run if JEST/Mocha skips them,
+  # but everything else is run... So for now, just uncomment the following line
+  # and run with and without filter/grep for "final_ran". As-of-now, it works (2020-11-8)
+  # :finally_filter_just_this_test_and_see_if_soft_tests_are_skipped -> log {} testsActuallyRan

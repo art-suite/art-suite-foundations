@@ -1,0 +1,171 @@
+import &StandardImport
+
+assert.selectedMatch = (expected, outputs) ->
+  if key = find pattern, k in expected when !try outputs[k]?.match pattern with k
+    throw new Error
+      """
+        selectedMatch failed:
+
+        #{} formattedInspect {}
+          key
+          output:
+            expected: expected[key]
+            actual: outputs[key]
+
+suite:
+  js: ->
+    test "basic", ->
+      generator = new Generator "source/Foo", pretend: true, quiet: true
+      generator.generateFromFiles []
+          :source/Foo/file.js
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.match generatedFiles[:source/Foo/index.js      ], /File.*require.*\.\/file/
+        assert.match generatedFiles[:source/Foo/namespace.js  ], /class Foo/
+
+    test "file comment should be relative to source/Foo's parent", ->
+      generator = new Generator
+        root = :/Users/alice/dev/src/MyApp
+        pretend: true, quiet: true
+
+      generator.generateFromFiles []
+          "#{root}/Module.js"
+          "#{root}/SubNamespace/SubModule.js"
+
+      .then ({generatedFiles, namespaces}) ->
+        each contents, file in generatedFiles
+          assert.match contents, "file: MyApp", file
+
+    test "file name same as parent namespace", ->
+      generator = new Generator :source/Foo pretend: true, quiet: true
+      generator.generateFromFiles []
+          :source/Foo/MyNamespace/my_namespace.js
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.match generatedFiles[:source/Foo/MyNamespace/index.js], /includeInNamespace.*my_namespace/
+
+    test "special file names", ->
+      generator = new Generator :source/Foo pretend: true, quiet: true
+      generator.generateFromFiles []
+          :source/Foo/.file1.js
+          :source/Foo/Foo.js
+          :source/Foo/file4.js
+          :source/Foo/0file3.js
+          :source/Foo/-file2.js
+          :source/Foo/_file5.js
+          :source/Foo/aSubmodule/foo.js
+
+      .then ({generatedFiles, namespaces}) ->
+        # log generatedFiles
+        assert.match
+          generatedFiles[:source/Foo/index.js],
+          ///
+            file2
+            (.|\n)*
+
+            module.exports .* namespace
+            (.|\n)*
+
+            includeInNamespace .* Foo
+            (.|\n)*
+
+            addModules
+            (.|\n)*
+
+            File3: .* 0file3
+            (.|\n)*
+
+            File4: .* file4
+            (.|\n)*
+
+            \nrequire .* aSubmodule
+
+        # file1 and file5 not included
+        assert.doesNotMatch generatedFiles[:source/Foo/index.js], /file1|file5/
+        assert.eq Object.keys(generatedFiles).sort(), []
+          :source/Foo/aSubmodule/index.js
+          :source/Foo/aSubmodule/namespace.js
+          :source/Foo/index.js
+          :source/Foo/namespace.js
+
+    test "subnamespace", ->
+      generator = new Generator "source/Foo", pretend: true, quiet: true
+      generator.generateFromFiles []
+          "source/Foo/MyNamespace/file.js"
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.eq Object.keys(generatedFiles).sort(), []
+          "source/Foo/MyNamespace/index.js"
+          "source/Foo/MyNamespace/namespace.js"
+          "source/Foo/index.js"
+          "source/Foo/namespace.js"
+
+        assert.match generatedFiles["source/Foo/MyNamespace/namespace.js"], /require.*\.\/namespace/
+        assert.match generatedFiles["source/Foo/namespace.js"], /require.*neptune-namespaces/
+        assert.doesNotMatch generatedFiles["source/Foo/index.js"], "addModules"
+        assert.match generatedFiles["source/Foo/index.js"], "MyNamespace"
+
+    test ".namespaces are optional", ->
+      generator = new Generator "source/Foo", pretend: true, quiet: true
+      generator.generateFromFiles []
+          "source/Foo/.MyNamespace/file.js"
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.eq Object.keys(generatedFiles).sort(), []
+          "source/Foo/.MyNamespace/index.js"
+          "source/Foo/.MyNamespace/namespace.js"
+          "source/Foo/index.js"
+          "source/Foo/namespace.js"
+
+        assert.match generatedFiles["source/Foo/.MyNamespace/namespace.js"], /require.*\.\/namespace/
+        assert.match generatedFiles["source/Foo/namespace.js"], /require.*neptune-namespaces/
+        assert.doesNotMatch generatedFiles["source/Foo/index.js"], "addModules"
+        assert.doesNotMatch generatedFiles["source/Foo/index.js"], "MyNamespace"
+
+
+    test "non-dot-namespaces with same-name-dot-file are not optional", ->
+      generator = new Generator "source/Foo", pretend: true, quiet: true
+      generator.generateFromFiles []
+          "source/Foo/MyNamespace/file.js"
+          "source/Foo/.my_namespace.js"
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.eq Object.keys(generatedFiles).sort(), []
+          "source/Foo/MyNamespace/index.js"
+          "source/Foo/MyNamespace/namespace.js"
+          "source/Foo/index.js"
+          "source/Foo/namespace.js"
+
+        assert.match generatedFiles["source/Foo/MyNamespace/namespace.js"], /require.*\.\/namespace/
+        assert.match generatedFiles["source/Foo/namespace.js"], /require.*neptune-namespaces/
+        assert.doesNotMatch generatedFiles["source/Foo/index.js"], "addModules"
+        assert.match generatedFiles["source/Foo/index.js"], "MyNamespace"
+
+    test "only file is required if directory and file have same name", ->
+      generator = new Generator "source/Foo", pretend: true, quiet: true
+      generator.generateFromFiles []
+          :source/Foo/MyNamespace/file.js
+          :source/Foo/my_namespace.js
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.eq Object.keys(generatedFiles).sort(), []
+          :source/Foo/MyNamespace/index.js
+          :source/Foo/MyNamespace/namespace.js
+          :source/Foo/index.js
+          :source/Foo/namespace.js
+
+        assert.match        generatedFiles[:source/Foo/MyNamespace/namespace.js ], /require.*\.\/namespace/
+        assert.match        generatedFiles[:source/Foo/namespace.js             ], /require.*neptune-namespaces/
+        assert.match        generatedFiles[:source/Foo/index.js                 ], "addModules"
+        assert.doesNotMatch generatedFiles[:source/Foo/index.js                 ], /(^|\n)require.*MyNamespace/
+
+    test "basic", ->
+      generator = new Generator :source/Foo pretend: true quiet: true js: true
+      generator.generateFromFiles []
+          :source/Foo/file.js
+
+      .then ({generatedFiles, namespaces}) ->
+        assert.selectedMatch
+          source/Foo/index.js:      /// //\ generated\ by\ Neptune\ Namespaces
+          source/Foo/namespace.js:  /// //\ generated\ by\ Neptune\ Namespaces
+          generatedFiles

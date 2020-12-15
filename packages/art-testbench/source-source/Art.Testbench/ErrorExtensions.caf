@@ -1,0 +1,9 @@
+import &StandardImport, {} &path
+cleanErrorStack: (error, stackTraceIgnoreLineRegExp) ->
+  error.stack =
+    array line in error.stack.split :\n when !stackTraceIgnoreLineRegExp.test line
+    .slice  0, 30
+    .join   "\n"
+    # .replace new RegExp(escapeRegExp(process.cwd() + "/"), "g"), './'
+    # .replace new RegExp(escapeRegExp(path.dirname(process.cwd()) + "/"), "g"), '../'
+  error

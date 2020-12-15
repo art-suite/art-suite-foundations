@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TestConfigurable.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/test/Art.Config/TestConfigurable.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,6EAAO,uEAEP,sEAA+B,8FAE3B,MAAU,YACV,SAAU,QAEZ,cAAU"
+}

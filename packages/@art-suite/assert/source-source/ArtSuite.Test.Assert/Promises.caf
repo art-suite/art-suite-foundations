@@ -1,0 +1,39 @@
+import &StandardImport
+
+promisify = (a) ->
+  if isFunction a
+    Promise.then -> a()
+  else if isPromise a
+    a
+  else Promise.resolve a
+
+assert.resolves = (a, context) ->
+  promisify a
+  .then
+    (v) -> v
+    (v) ->
+      failWithExpectedMessage
+        context
+        a
+        "" to be resolved. Instead, it rejected with:
+        v
+
+# returns a
+# Either use as last line of test, or follow with .then ->
+assert.rejects = (a, context) ->
+  promisify a
+  .then
+    (v) ->
+      failWithExpectedMessage
+        context
+        a
+        "to be rejected. Instead, it succeeded with:"
+        v
+    (v) -> v
+
+# create a version of all tests functions that resolves all inputs first
+assert.resolved = {}
+each v, k in assert when v is Function
+  assert.resolved[k] = (args...)->
+    Promise.all args
+    .then (resolvedArgs) -> v resolvedArgs...

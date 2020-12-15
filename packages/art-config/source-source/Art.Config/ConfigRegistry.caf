@@ -1,0 +1,14 @@
+import &ArtStandardLib
+
+ArtConfig = require './namespace'
+
+class ConfigRegistry
+
+  @configurables: []
+  @configs: {}
+
+  @registerConfig: (name, config) =>
+    throw new Error "config must be a plain object" unless isPlainObject config
+    @configs[name] = config
+
+  @registerConfigurable: (configurable) => pushIfNotPresent @configurables, configurable

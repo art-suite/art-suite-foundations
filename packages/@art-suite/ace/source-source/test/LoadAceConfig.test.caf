@@ -1,0 +1,17 @@
+import &StandardImport
+
+beforeAll mockAceForTesting
+afterEach -> mockFs.restore()
+
+test :loadAceConfig ->
+  mockFs {}
+  LoadAceConfig.loadAceConfig "."
+  .then (aceConfig) ->
+    assert.eq aceConfig, {}
+
+test "loadAceConfig with config" ->
+  mockFs
+    ace.config.caf: "" {"files": {"foo": "bar"}}
+  LoadAceConfig.loadAceConfig "."
+  .then (aceConfig) ->
+    assert.eq aceConfig, files: foo: :bar

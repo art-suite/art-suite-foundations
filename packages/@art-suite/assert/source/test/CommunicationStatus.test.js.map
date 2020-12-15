@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "CommunicationStatus.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/test/CommunicationStatus.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kIAAO,6BAAiB,2HAExB,iBAAe,qBAAoB,WAAS,iBAAe,4DACzD,aAAa,kCAAqB,YAClC,qBACO,2CAA6B,wBAC/B,cAAO,YAAY,YAExB,qBACO,oDAAsC,yBACxC,cAAO,aAAe,aAE3B,qBACO,mEAAqD,yBACvD,cAAO,YAAY,gBAAkB,cAE1C,qBACO,uDAAyC,wBAC3C,sBAAc,MAAI,OAAO,YAAY,eAAe,cAEzD,qBACO,iEAAmD,yBACrD,sBAAc,MAAI,OAAO,YAAY,iBAAmB,eAE7D,qBACO,oDAAsC,yBACxC,sBAAc,MAAI,OAAO,mBAAe,QAAG,gBAEhD,8CACgC,uBAE5B,yBAAyB,QAAQ,gBAAkB,WACnD,eAAc,MAAI,yBAAyB,QAAQ,gBAAe,QAAQ,oBAC1E,eAAc,MAAI,yBAAyB,QAAQ,iBAAgB,QAAQ,iCAEpE,2BACT,qBACO,wCAA0B,oBAC5B,sBAAc,MAAI,OAAO,YAAY"
+}

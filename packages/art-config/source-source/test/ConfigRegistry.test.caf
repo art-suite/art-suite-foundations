@@ -1,0 +1,110 @@
+import &StandardImport
+
+resetGlobals = ->
+  global.artConfig = null
+  global.artConfigName = null
+
+testArtConfigGlobalConfig = (name, f) ->
+  test name, ->
+    value = f()
+    assert.eq getArtConfig(), merge
+      Test: Art: Config: name: "TestName", verbose: false
+      value
+
+describe
+  globalArtConfig: ->
+    beforeAll ->
+      configure artConfigName: :Test
+
+    test "global artConfig location",     ->
+      assert.isObject getArtConfig()
+      assert.eq global.ArtConfig._artConfig, getArtConfig()
+
+    test "global artConfigName location", ->
+      assert.isString getArtConfigName()
+      assert.eq global.ArtConfig._artConfigName, getArtConfigName()
+
+  isEnvTests: ->
+    class Production extends Configuration
+    class Production extends Configuration
+    test :isDev ->
+      configure configName: :Development
+      assert.eq getArtConfigName(), :Development
+      assert.true isDev()
+      assert.false isProd()
+      assert.false isTest()
+
+    test :isProd ->
+      configure artConfigName: :Production
+      assert.eq getArtConfigName(), :Production
+      assert.false isDev()
+      assert.true isProd()
+      assert.false isTest()
+
+    test :isTest ->
+      configure artConfigName: :Test
+      assert.eq getArtConfigName(), :Test
+      assert.false isDev()
+      assert.false isProd()
+      assert.true isTest()
+
+  artConfigSources: ->
+    beforeAll resetGlobals
+
+    testArtConfigGlobalConfig "args", ->
+      configure artConfigName: :Test artConfig: foo: "argsBar"
+      foo: "argsBar"
+
+    testArtConfigGlobalConfig "global.artConfig", ->
+      global.artConfig = foo: "globalBar"
+      configure artConfigName: :Test
+      foo: "globalBar"
+
+    testArtConfigGlobalConfig "env", ->
+      configure artConfigName: :Test artConfig: {}, __testEnv: artConfig: foo: "envBar"
+      foo: "envBar"
+
+  pathedConfigProps: ->
+    beforeAll resetGlobals
+    afterAll resetGlobals
+
+    testArtConfigGlobalConfig "foo.bar: 'globalBar'", ->
+      global.artConfig = "foo.bar": "globalBar"
+      configure artConfigName: :Test
+      foo: bar: "globalBar"
+
+  artConfigNameSources: ->
+    beforeAll resetGlobals
+    afterAll resetGlobals
+
+    testArtConfigGlobalConfig "baseline", ->
+      configure()
+      assert.eq getArtConfigName(), :Development
+      {}
+
+    testArtConfigGlobalConfig "args", ->
+      configure artConfigName: 'TestConfig'
+      assert.eq getArtConfigName(), 'TestConfig'
+      propA: "propAFromTestConfig"
+      MyGrouping: propB: "foo",  propC: "bar"
+
+    testArtConfigGlobalConfig "global", ->
+      global.artConfigName = 'TestConfig'
+      configure()
+      assert.eq getArtConfigName(), 'TestConfig'
+      propA: "propAFromTestConfig"
+      MyGrouping: propB: "foo",  propC: "bar"
+
+
+    testArtConfigGlobalConfig "env", ->
+      configure artConfig: {}, __testEnv: artConfigName: 'TestConfig'
+      assert.eq getArtConfigName(), 'TestConfig'
+      propA: "propAFromTestConfig"
+      MyGrouping: propB: "foo",  propC: "bar"
+
+  configs: ->
+    test "TestConfig got registered", ->
+      assert.selectedEq
+        propA: "propAFromTestConfig"
+        MyGrouping: propB: "foo",  propC: "bar"
+        ConfigRegistry.configs.TestConfig

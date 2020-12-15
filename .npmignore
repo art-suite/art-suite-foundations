@@ -1,0 +1,5 @@
+# Sadly, npm doesn't look up to the git root for this file,
+# so each package needs its own copy
+coverage/
+test/
+*.tgz

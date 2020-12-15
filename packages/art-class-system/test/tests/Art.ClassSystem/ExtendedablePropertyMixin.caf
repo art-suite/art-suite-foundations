@@ -1,0 +1,252 @@
+import &StandardImport
+
+module.exports = suite:
+  simpleTypes:
+
+    null: ->
+      Foo = null
+      setup ->
+        class Foo extends BaseClass
+          @extendableProperty
+            myAny: null
+
+      test "get", ->
+        assert.eq null, Foo.getMyAny()
+        assert.eq null, (new Foo).getMyAny()
+
+      test "extend", ->
+        Foo.extendMyAny 1
+        foo = new Foo
+        foo.extendMyAny 2
+        assert.eq Foo.getMyAny(), 1
+        assert.eq foo.getMyAny(), 2
+
+      test "extend undefined is ignored", ->
+        Foo.extendMyAny undefined
+        assert.eq Foo.getMyAny(), null
+
+    boolean: ->
+      Foo = null
+      setup ->
+        class Foo extends BaseClass
+          @extendableProperty
+            myFlag: false
+
+      test "get", ->
+        assert.eq false, Foo.getMyFlag()
+        assert.eq false, (new Foo).getMyFlag()
+
+      test "type is not checked", ->
+        Foo.extendMyFlag 1
+        assert.eq Foo.getMyFlag(), 1
+
+      test "extend instance doesn't alter class", ->
+        foo = new Foo
+        foo.extendMyFlag true
+        assert.eq Foo.getMyFlag(), false
+        assert.eq foo.getMyFlag(), true
+
+      test "instance inherits class's value", ->
+        Foo.extendMyFlag true
+        foo = new Foo
+        assert.eq Foo.getMyFlag(), true
+        assert.eq foo.getMyFlag(), true
+
+  declarable: ->
+    test "{}", ->
+      class Foo extends BaseClass
+        @declarable {map: foo: 1}, declarable: true
+        @map bar: 2
+
+      foo = new Foo
+      foo.map baz: 3
+      assert.eq Foo.getMap(), foo:1, bar: 2
+      assert.eq foo.getMap(), foo:1, bar: 2, baz: 3
+
+  "getters don't extend": ->
+    test "[]", ->
+      a = null
+      class Foo extends BaseClass
+        @extendableProperty list: a = ["foo"]
+
+      assert.eq a, Foo.getList()
+      assert.eq a, (new Foo).getList()
+
+    test "{}", ->
+      a = null
+      class Foo extends BaseClass
+        @extendableProperty list: a = foo: 1
+
+      assert.eq a, Foo.getList()
+      assert.eq a, (new Foo).getList()
+
+  "extend methods": ->
+    test "[]", ->
+      class Foo extends BaseClass
+        @extendableProperty list: ["foo"]
+
+      Foo.extendList "bar"
+      assert.eq Foo.getList(), ["foo", "bar"]
+
+      Foo.extendList ["bat"]
+      assert.eq Foo.getList(), ["foo", "bar", "bat"]
+
+      Foo.extendList ["bay", "baz"]
+      assert.eq Foo.getList(), ["foo", "bar", "bat", "bay", "baz"]
+
+      Foo.extendList bazzzz: 1
+      assert.eq Foo.getList(), ["foo", "bar", "bat", "bay", "baz", bazzzz: 1]
+
+    test "{}", ->
+      class Foo extends BaseClass
+        @extendableProperty map: foo: 1
+
+      assert.throws -> Foo.extendMap 1
+      assert.eq Foo.getMap(), foo: 1
+
+      Foo.extendMap bar: 2
+      assert.eq Foo.getMap(), foo: 1, bar: 2
+
+      Foo.extendMap "baz", 3
+      assert.eq Foo.getMap(), foo: 1, bar: 2, baz: 3
+
+  "extend methods on classes": ->
+    test "[]", ->
+      class Foo extends BaseClass
+        @extendableProperty list: ["foo"]
+
+      Foo.list "bar"
+      assert.eq Foo.list(), ["foo", "bar"]
+
+    test "{}", ->
+      class Foo extends BaseClass
+        @extendableProperty map: foo: 1
+
+      Foo.map bar: 2
+      assert.eq Foo.map(), foo: 1, bar: 2
+
+  "extend methods on instances": ->
+    test "[]", ->
+      class Foo extends BaseClass
+        @extendableProperty list: ["foo"]
+
+      Foo.extendList "bar"
+      assert.eq Foo.getList(), ["foo", "bar"]
+
+      foo = new Foo
+      foo.extendList "baz"
+      assert.eq Foo.getList(), ["foo", "bar"]
+      assert.eq foo.getList(), ["foo", "bar", "baz"]
+
+      foo2 = new Foo
+      foo2.extendList "bat"
+      assert.eq Foo.getList(), ["foo", "bar"]
+      assert.eq foo.getList(), ["foo", "bar", "baz"]
+      assert.eq foo2.getList(), ["foo", "bar", "bat"]
+
+    test "{}", ->
+      class Foo extends BaseClass
+        @extendableProperty map: foo: 1
+
+      Foo.extendMap bar: 2
+      assert.eq Foo.getMap(), foo: 1, bar: 2
+
+      foo = new Foo
+      foo.extendMap baz: 3
+      assert.eq Foo.getMap(), foo: 1, bar: 2
+      assert.eq foo.getMap(), foo: 1, bar: 2, baz: 3
+
+      foo2 = new Foo
+      foo2.extendMap bat: 4
+      assert.eq Foo.getMap(), foo: 1, bar: 2
+      assert.eq foo.getMap(), foo: 1, bar: 2, baz: 3
+      assert.eq foo2.getMap(), foo: 1, bar: 2, bat: 4
+
+      foo2.extendMap "bummer", 5
+      assert.eq foo2.getMap(), foo: 1, bar: 2, bat: 4, bummer: 5
+
+  "later changes in parent don't effect children": ->
+    test "[]", ->
+      class Foo extends BaseClass
+        @extendableProperty list: ["foo"]
+
+      class Bar extends Foo
+        @extendList "bar"
+
+      Foo.extendList "baz"
+      assert.eq Foo.getList(), ["foo", "baz"]
+      assert.eq Bar.getList(), ["foo", "bar"]
+
+    test "{}", ->
+      class Foo extends BaseClass
+        @extendableProperty map: foo: 1
+
+      class Bar extends Foo
+        @extendMap bar: 2
+
+      Foo.extendMap baz: 3
+      assert.eq Foo.getMap(), foo: 1, baz: 3
+      assert.eq Bar.getMap(), foo: 1, bar: 2
+
+
+
+  # getPrototypePropertyExtendedByInheritance:
+  #   basic: ->
+  #     test "[]", ->
+  #       class Foo extends BaseClass
+  #         @getList: -> @getPrototypePropertyExtendedByInheritance "list", []
+  #         @getList().push "foo"
+
+  #       class Bar extends Foo
+  #         @getList().push "bar"
+
+  #       assert.eq Foo.getList(), ["foo"]
+  #       assert.eq Bar.getList(), ["foo", "bar"]
+
+  #     test "{}", ->
+  #       class Foo extends BaseClass
+  #         @getMap: -> @getPrototypePropertyExtendedByInheritance "list", {}
+  #         @getMap().foo = 1
+
+  #       class Bar extends Foo
+  #         @getMap().bar = 2
+
+  #       assert.eq Foo.getMap(), foo: 1
+  #       assert.eq Bar.getMap(), foo: 1, bar: 2
+
+  #   "are later changes in parent reflected in children?": ->
+  #     test "alter parent [] DOESN'T affect children", ->
+  #       class Foo extends BaseClass
+  #         @getList: -> @getPrototypePropertyExtendedByInheritance "list", []
+  #         @getList().push "foo"
+
+  #       class Bar extends Foo
+  #         @getList().push "bar"
+
+  #       Foo.getList().push "baz"
+  #       assert.eq Foo.getList(), ["foo", "baz"]
+  #       assert.eq Bar.getList(), ["foo", "bar"]
+
+  #     test "alter parent [] DOES affect children", ->
+  #       class Foo extends BaseClass
+  #         @getMap: -> @getPrototypePropertyExtendedByInheritance "list", {}
+  #         @getMap().foo = 1
+
+  #       class Bar extends Foo
+  #         @getMap().bar = 2
+
+  #       Foo.getMap().baz = 3
+  #       assert.eq Foo.getMap(), foo: 1, baz: 3
+  #       assert.eq Bar.getMap(), foo: 1, bar: 2, baz: 3
+
+  regressions: ->
+    test "declare two at one time of different types", ->
+      class Foo extends BaseClass
+        @extendableProperty
+          list: ["foo"]
+          map: foo: 1
+
+      Foo.list "bar"
+      Foo.map bar: 2
+      assert.eq Foo.list(), ["foo", "bar"]
+      assert.eq Foo.map(), foo: 1, bar: 2

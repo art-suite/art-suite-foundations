@@ -1,0 +1,74 @@
+import &ArtStandardLib, &ArtClassSystem, {} &path, fs: &fsExtra
+
+class SourceRootFinder extends BaseClass
+  @singletonClass()
+
+  @findSourceRoot:     (directory) => @singleton.findSourceRoot directory
+  @findSourceRootSync: (directory) => @singleton.findSourceRootSync directory
+
+  constructor: (options = {}) ->
+    @indicatorFiles = options.indicatorFiles ? [] :package.json :.git
+    @_validatedIndicatorFiles()
+    @resetKnownSourceRoots()
+
+  @property :indicatorFiles :knownSourceRoots
+  @classGetter
+    "" sourceRootIndicatorFiles knownSourceRoots
+    caffeineInitFileName: -> :caffeine-mc.config.caf
+
+  findSourceRoot: (directory) ->
+    if known = @_knownSourceRoots[directory = path.resolve directory ? :.]
+      Promise.resolve known
+    else
+      fs.stat directory
+      .then (stat) ->
+        directory = path.dirname directory unless stat.isDirectory()
+        @_findRootR directory
+        .then (sourceRoot) ->
+          @_knownSourceRoots[directory] = sourceRoot || false
+
+  findSourceRootSync: (directory) ->
+    if known = @_knownSourceRoots[directory = path.resolve directory ? :.]
+      known
+    else
+      unless fs.existsSync(directory) && fs.statSync(directory).isDirectory()
+        directory = path.dirname directory
+
+      @_knownSourceRoots[directory] =
+        @_findRootSyncR directory
+        || false
+
+  # for testing
+  resetKnownSourceRoots: ->
+    @_knownSourceRoots = {}
+
+  ######################
+  # PRIVATE
+  ######################
+
+  _findRootR: (directory) ->
+    Promise.all array file in-array @_indicatorFiles with fs.exists path.join directory, file
+    .then (rootFileExistResults) ->
+      if find bool in rootFileExistResults when bool
+        directory
+      else if directory != "/" && present directory
+        @_findRootR path.dirname directory
+
+  _findRootSyncR: (directory) ->
+    if find file in-array @_indicatorFiles when fs.existsSync path.join directory, file
+      directory
+
+    else if directory != "/" && present directory
+      @_findRootSyncR path.dirname directory
+
+  _validatedIndicatorFiles: ->
+    unless isArray(@indicatorFiles) &&
+        @indicatorFiles.length > 0
+        && !find i in @indicatorFiles when !isString(i) || !present i with true
+      throw new Error "indicatorFiles must be an array of strings:\n#{formattedInspect {@indicatorFiles}}"
+
+
+{}
+  SourceRootFinder
+  SourceRootFinder.findSourceRoot
+  SourceRootFinder.findSourceRootSync

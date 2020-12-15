@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Validation.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/Art.Validation/Validation.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA;;EAAA,MAAyC,OAAA,CAAQ,aAAR,CAAzC,EAAC,6CAAD,EAAsB;;EACtB,MAAM,CAAC,OAAP,GAAiB;IAAC,qBAAA,mBAAD;IAAsB,iBAAA,eAAtB;;AADjB"
+}

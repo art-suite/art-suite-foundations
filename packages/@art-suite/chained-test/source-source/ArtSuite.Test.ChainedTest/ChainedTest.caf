@@ -1,0 +1,108 @@
+import &ArtStandardLib, &ArtClassSystem
+
+cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
+  error.stack =
+    array line in error.stack.split :\n when !stackTraceIgnoreLineRegExp.test line
+    .join :\n
+  error
+
+uniqueErrorsReported = {}
+
+{chainedTest} = class ChainedTest extends BaseClass
+  ###
+    IN:
+      PATTERN 1:
+        (setupFunciton) ->
+
+      PATTERN 2:
+        (setupTestName, setupFunction) ->
+
+      setupFunction
+        Result: any arbitrary function.
+        Result is resolved if it's a promise before passing to tests.
+        The result is passed to every test as the test's 2nd argument.
+        The result is ALSO passed to the very first test as the test's 1st argument.
+  @chainedTest: (a, b) ->
+    new ChainedTest
+      if b? then a else "" ChainedTest setup
+      b ? a
+
+  thenTest:     (args...)-> @_applySequence :_thenTest    compactFlatten args
+  tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
+  softTapTest:  (args...)-> @_applySequence :_softTapTest compactFlatten args
+
+  thenIt:       (args...)-> @_applySequence :_thenTest    compactFlatten args
+  tapIt:        (args...)-> @_applySequence :_tapTest     compactFlatten args
+  softTapIt:    (args...)-> @_applySequence :_softTapTest compactFlatten args
+
+  ##########################
+    PRIVATE
+  ##########################
+  ### constructor()
+    IN:
+      name: [optional] string
+        if present, a mocha test is created
+
+      test: [optional] (runSetupOnceResult) ->
+        IN: resolved result from @setupResultPromise
+        OUT: result will be resolved and passed to any thenTest tests
+
+      _runSetupOnce: [optional] ->
+        IN: (nothing)
+        OUT: Promise.then -> setup result
+
+      _runDependencyChainOnce: [optional] ->
+        IN: (nothing)
+        OUT: Promise.then -> dependency chain result
+
+      options:
+        tap: <boolean> ignore the result of this test
+        soft: <boolean> don't run this test if not explicitly run by the test framework (Jest/Mocha)
+          NOTE: Normally, a failure in a test will cause the rest of the chain to fail.
+          However, a failure in a soft-test will not cause the rest of the chain to fail.
+
+  constructor: (@name, @test, @_runSetupOnce, @_runDependencyChainOnce, @options) ->
+    throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless @name is String
+    throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless @test is Function
+    self = @
+    (global.it ? global.test) @name, ~>
+      self.runThisTestOnce()
+      .catch (error) ->
+        if uniqueErrorsReported[error.message]
+          this.skip?() # MOCHA, and possibly future JEST
+          # JEST 'skip' request pending as-of 2020/11/13: https://github.com/facebook/jest/issues/8604
+        else
+          uniqueErrorsReported[error.message] = true # "" (ChainedTest failed in: #{if @name then @name else :setup})
+          throw error
+
+  @getter
+    previousTestResultPromise: -> Promise.then @_runDependencyChainOnce ? ->
+    setupResultPromise: -> Promise.then @_runSetupOnce ? @_runDependencyChainOnce ? ->
+    runThisTestOnce: ->
+      @_runThisTestOnce ?= ->
+        @_setupAndTestOncePromise ?=
+          Promise.all [] @previousTestResultPromise, @setupResultPromise
+          .then ([previousTestResult, setupResult]) ->
+            Promise.then -> @test previousTestResult, setupResult
+            .then (out) -> if @options?.tap then previousTestResult else out
+          .catch (error) ->
+            throw cleanErrorStack
+              error
+              /ArtSuite.Test|caffeine-script-runtime|processImmediate|art-testbench|caffeine-script-runtime|bluebird|jest-jasmine2/
+
+    runSetupForNextLink: -> @_runSetupOnce ? @runThisTestOnce
+    runChainForNextLink: ->
+      ->
+        if @options?.soft then  @previousTestResultPromise
+        else                    @runThisTestOnce()
+
+  _thenTest:    (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink
+  _tapTest:     (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true
+  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true, soft: true
+
+  _applySequence: (applyMemberName, sequence) ->
+    lastChainedTest = @
+    each name, i in sequence by 2
+      lastChainedTest = lastChainedTest[applyMemberName] name, sequence[i + 1]
+
+    lastChainedTest

@@ -1,0 +1,3 @@
+import &StandardImport
+
+skipKnownFailingTest "foo" -> assert.fail "" add a test which is currently expected to be failing, but eventually should be fixed

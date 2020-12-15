@@ -1,0 +1,10 @@
+[]
+  &ArtStandardLib
+  &JestExtensions
+  {setup, initTesting} = &Mocha
+
+  &Test
+
+  {}
+    &@art-suite/chained-test.chainedTest
+    assert: global.assert = &@art-suite/assert.assert

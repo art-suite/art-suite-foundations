@@ -1,0 +1,164 @@
+import &ArtStandardLib, &Lib, &PublicLib, {} &ConfigRegistry
+
+class Configure
+
+  # when configure is called, the options passed in are kept here:
+  @_lastConfigurationOptions: null
+
+  ###
+    IN: configureOptions:
+      artConfigName: string
+        can be passed in:
+          as an argument
+          via process.env
+          via the browser query string
+
+        default: "Development"
+
+        EFFECT:
+          ArtConfig.artConfigName =
+            externalEnvironment.artConfigName ||
+            artConfigName
+
+      artConfig: JSON string OR plain object structure
+        can be passed in:
+          as an argument
+          via process.env
+          via the browser query string
+
+        default: {}
+
+        EFFECT:
+          mergeInto ArtConfig.artConfig, deepMerge
+            ConfigRegistry.configs[artConfigName]
+            global.artConfig
+            artConfig
+            externalEnvironment.artConfig
+
+      onConfig: (artConfig) ->
+        gets called as soon as artConfig completes with the final artConfig
+
+    EFFECTS:
+      callback @artConfig for callback in ConfigRegistry.configurables
+
+    Note the priority order of artConfig sources:
+
+    Priority:
+      #1. externalEnvironment.artConfig
+      #2. the artConfig passed into configure
+
+
+    EXAMPLES:
+      # artConfig = verbose: true
+      ConfigRegistry.configure
+        verbose: true
+
+      # artConfig = verbose: true
+      # artConfigName = "Production"
+      ConfigRegistry.configure
+        artConfigName: "Production"
+        verbose: true
+
+      # artConfig = verbose: true
+      # artConfigName = "Production"
+      ConfigRegistry.configure
+        artConfigName: "Production"
+        artConfig: verbose: true
+
+    TEST INPUTS: the second and third inputs are env and
+      queryString, and are only there as mocks for testing.
+    ###
+  @configure: (configureOptions...) =>
+    {log = &ArtStandardLib.log, verbose, artConfigName: artConfigNameArgument, artConfig: artConfigArgument, __testEnv, onConfig} = @_lastConfigurationOptions = deepMerge configureOptions...
+
+    externalEnvironment = getExternalEnvironment __testEnv
+    artConfig = _getArtConfig()
+    artConfigName =
+      if normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
+        artConfigName = normalizeArtConfigName externalEnvironment.artConfigName || artConfigNameArgument || global.artConfigName
+        if artConfigName && !ConfigRegistry.configs[artConfigName] && artConfigName != "Test"
+          log "ArtConfig.configure: no artConfig registered with name: '#{artConfigName}'"
+
+        artConfigName
+      ? getDefaultArtConfigName()
+
+    @_eraseAllConfiguration()
+
+    setArtConfigName artConfigName
+
+    each conf in compactFlatten []
+        # Configurables' defaultConfigs
+        array configurable in ConfigRegistry.configurables
+          configurable.getPathedDefaultConfig()
+
+        # Config selected by artConfigName
+        ConfigRegistry.configs[artConfigName]
+
+        # Config from global.artConfig
+        global.artConfig
+
+        # Config passed into this function's params: artConfig: {}
+        artConfigArgument
+
+        # Config from the environment ('artConfig' from: BROWSER: query-string, NODE: shell environment)
+        externalEnvironment.artConfig
+
+      expandPathedProperties conf, artConfig
+
+    if verbose
+      log "------------- ArtConfig.configure: inputs"
+      log ArtConfig.configure: @getVerboseConfigurationInfo()
+      log "------------- ArtConfig.configure: configuring Configurables..."
+
+    @_configureAllConfigurables()
+
+    if verbose
+      log "------------- ArtConfig.configure: configured"
+      log Art: {artConfigName, artConfig}
+      log "------------- ArtConfig.configure: done"
+
+    onConfig? artConfig
+
+    artConfig
+
+  @getVerboseConfigurationInfo: ->
+    # {, artConfig: artConfigArgument, __testEnv, onConfig} =
+    configOptions = @_lastConfigurationOptions
+    externalEnvironment = getExternalEnvironment configOptions.__testEnv
+    artConfigName = _getArtConfigName()
+
+    configNames: Object.keys ConfigRegistry.configs
+    configurables: array c in ConfigRegistry.configurables with c.namespacePath
+
+    setConfigName:
+      algorithm: "select LAST non-null"
+      inputs:
+        defaultArtConfigName:         getDefaultArtConfigName()
+        "global.artConfigName":       global.artConfigName
+        "arguments.artConfigName":    configOptions.artConfigName
+        "environment.artConfigName":  externalEnvironment.artConfigName
+
+    setConfig:
+      algorithm: "deep, pathed merge-all, LAST has priority"
+      inputs:
+        defaultConfigs: array configurable in ConfigRegistry.configurables with configurable.getPathedDefaultConfig()
+        "configs.#{artConfigName}":      ConfigRegistry.configs[artConfigName]
+        "global.artConfig":           global.artConfig
+        "arguments.artConfig":        configOptions.artConfig
+        "environment.artConfig":      externalEnvironment.artConfig
+
+  ###############################
+  # PRIVATE
+  ###############################
+  @_reconfigure:           => @configure @_lastConfigurationOptions
+  @_eraseAllConfiguration: ->
+    _resetArtConfigName()
+    each v, k in artConfig = _getArtConfig() do delete artConfig[k]
+
+  @_configureAllConfigurables: ->
+    each configurable in ConfigRegistry.configurables with configurable.configure _getArtConfig()
+    @_notifyConfigurablesConfigured()
+
+  @_notifyConfigurablesConfigured: ->
+    each configurable in ConfigRegistry.configurables
+      configurable.configured()

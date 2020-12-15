@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Comparison.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/test/Comparison.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;"
+}

@@ -1,0 +1,39 @@
+import &StandardImport, &ArtBinary, &ArtXbd.createTagFactories "A B myRoot"
+
+testXbd = (testName, tagFactory) ->
+  test testName, ->
+    inputTag = tagFactory()
+    inputTag.xbdPromise
+    .then (xbdBinaryString) ->
+      assert.eq true, inputTag.inspectedObjects is Object
+      assert.eq true, inputTag.plainObjects is Object
+      inputTag.inspect()
+      inputTag.find :MyRootTag
+      inputTag.find :A
+      inputTag.find :B
+      outputTag = fromXbd xbdBinaryString
+      assert.eq inputTag.xml, outputTag.xml, "expected input to equal output"
+
+testXbd "MyRootTag"                    -> new XbdTag "MyRootTag"
+testXbd "MyRootTag foo: 'bar'"         -> new XbdTag "MyRootTag", foo: "bar"
+testXbd "MyRootTag binary: binary ..." -> MyRootTag binary: binary [] 0xBE, 0xEF, 0, 1, 2, 3, 0xBE, 0xEF
+testXbd "MyRootTag ATag"               -> MyRootTag ATag()
+testXbd "MyRootTag ATag, ATag"         -> MyRootTag ATag(), ATag()
+testXbd "nested Tags"                  -> MyRootTag ATag ATag()
+
+testXbd "reused tag, attr and value strings" ->
+  MyRootTag
+    foo: "bar"
+    ATag()
+    ATag foo: "far"
+    BTag fab: "bar"
+
+test "eq" ->
+  assert.eq
+    new XbdTag "MyRootTag"
+    new XbdTag "MyRootTag"
+
+test "neq" ->
+  assert.neq
+    new XbdTag "MyRootTag"
+    new XbdTag "MyRootTag2"
