@@ -2,6 +2,7 @@
   "dependencies": {
     "art-standard-lib": "^1.70.6"
   },
+  "name": "@art-suite/instance-function-binding-mixin",
   "devDependencies": {
     "art-build-configurator": "^1.29.3"
   },
@@ -31,5 +32,6 @@
       ],
       "quiet": false
     }
-  }
+  },
+  "version": "1.0.0"
 }
