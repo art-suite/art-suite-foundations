@@ -1,0 +1,51 @@
+import &StandardImport
+
+test "no mixin" ->
+  class MyClass extends BaseClass
+
+    constructor: ->
+      @foo = :bar
+
+    getFoo: -> @foo
+
+  {getFoo} = mine = new MyClass
+  assert.eq :bar mine.getFoo()
+  assert.rejects getFoo
+
+
+test "mixin" ->
+  class MyClass extends InstanceFunctionBindingMixin BaseClass
+
+    constructor: ->
+      @foo = :bar
+
+    getFoo: -> @foo
+
+  {getFoo} = mine = new MyClass
+  assert.eq :bar mine.getFoo()
+  assert.rejects getFoo
+
+  {getFoo} = mine.bindFunctionsToInstance()
+  assert.eq :bar getFoo()
+
+test "mixin hotreload updates bindings for changed functions; deletes bindings for deleted functions" ->
+  class MyClass extends InstanceFunctionBindingMixin BaseClass
+
+    constructor: (string) ->
+      @foo = string
+      @foo2 = string + :2
+
+    getFoo: -> @foo
+    extraF: ->
+
+  mine = new MyClass myString = :bar
+  assert.eq myString, mine.getFoo()
+  {getFoo, extraF} = mine.bindFunctionsToInstance()
+  assert.eq myString, getFoo()
+  assert.isFunction extraF
+
+  MyClass.prototype.getFoo = ~> @foo2
+  delete MyClass.prototype.extraF
+  {getFoo, extraF} = mine; assert.eq myString, getFoo(); assert.isFunction extraF
+  mine.bindFunctionsToInstance true
+  {getFoo, extraF} = mine; assert.eq myString + :2, getFoo(); assert.doesNotExists extraF

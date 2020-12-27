@@ -1,0 +1,6 @@
+import &ArtStandardLib
+package:
+  require(:../standard-package-builder) &package,
+    sourceDir: :source
+    targetDir: :build
+    coffeeScript: true

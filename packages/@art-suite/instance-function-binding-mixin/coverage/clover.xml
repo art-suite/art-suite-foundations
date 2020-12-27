@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1609099875990" clover="3.2.0">
+  <project timestamp="1609099875990" name="All files">
+    <metrics statements="20" coveredstatements="19" conditionals="11" coveredconditionals="9" methods="8" coveredmethods="7" elements="39" coveredelements="35" complexity="0" loc="20" ncloc="20" packages="2" files="3" classes="3"/>
+    <package name="build.ArtSuite.InstanceFunctionBindingMixinNs">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="index.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/@art-suite/instance-function-binding-mixin/build/ArtSuite.InstanceFunctionBindingMixinNs/index.js">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="4" count="1" type="stmt"/>
+      </file>
+      <file name="namespace.js" path="/Users/shanebdavis/dev/art-suite-foundations/packages/@art-suite/instance-function-binding-mixin/build/ArtSuite.InstanceFunctionBindingMixinNs/namespace.js">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="4" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="source.ArtSuite.InstanceFunctionBindingMixinNs">
+      <metrics statements="18" coveredstatements="17" conditionals="11" coveredconditionals="9" methods="8" coveredmethods="7"/>
+      <file name="InstanceFunctionBindingMixin.coffee" path="/Users/shanebdavis/dev/art-suite-foundations/packages/@art-suite/instance-function-binding-mixin/source/ArtSuite.InstanceFunctionBindingMixinNs/InstanceFunctionBindingMixin.coffee">
+        <metrics statements="18" coveredstatements="17" conditionals="11" coveredconditionals="9" methods="8" coveredmethods="7"/>
+        <line num="1" count="277" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="18" count="19" type="cond" truecount="4" falsecount="1"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="34" count="3" type="stmt"/>
+        <line num="35" count="10" type="stmt"/>
+        <line num="38" count="3" type="stmt"/>
+        <line num="39" count="3" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

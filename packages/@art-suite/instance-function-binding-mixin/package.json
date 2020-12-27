@@ -1,0 +1,35 @@
+{
+  "dependencies": {
+    "art-standard-lib": "^1.70.6"
+  },
+  "devDependencies": {
+    "art-build-configurator": "^1.29.3"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "build/**/*.js",
+      "!build/test/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
+  "scripts": {
+    "build": "coffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* ",
+    "test": "npm run nn\njest",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
+      "patterns": [
+        "source"
+      ],
+      "quiet": false
+    }
+  }
+}
