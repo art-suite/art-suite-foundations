@@ -6,6 +6,8 @@ suite:
       constructor: ->
         @bar = 123
 
+      ignoreMe: ->
+
     test 'my Foo class', ->
       assert.eq
         formattedInspect bar: 123

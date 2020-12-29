@@ -4,6 +4,7 @@ Caf.defMod(module, () => {
   return Caf.importInvoke(
     [
       "isPlainObject",
+      "Object",
       "objectName",
       "ansiSafeStringLength",
       "escapeJavascriptString",
@@ -16,6 +17,7 @@ Caf.defMod(module, () => {
     ],
     (
       isPlainObject,
+      Object,
       objectName,
       ansiSafeStringLength,
       escapeJavascriptString
@@ -41,12 +43,14 @@ Caf.defMod(module, () => {
             newLineWithIndent,
             indent,
             inspectedLength,
+            notPlainObject,
+            plainObject,
+            prototype,
             forceMultilineOutput,
             shouldBeOnOwnLine,
             keyCount,
             inspectedValues,
             objectStart,
-            notPlainObject,
             index,
             finalInspectedValues,
             from,
@@ -61,6 +65,9 @@ Caf.defMod(module, () => {
           newLineWithIndent = options.newLineWithIndent;
           indent = options.indent;
           inspectedLength = 0;
+          if ((notPlainObject = !(plainObject = isPlainObject(m)))) {
+            prototype = Object.getPrototypeOf(m);
+          }
           forceMultilineOutput = false;
           shouldBeOnOwnLine = false;
           keyCount = 0;
@@ -73,45 +80,53 @@ Caf.defMod(module, () => {
                     let value, key, inspected;
                     value = from[k];
                     key = k;
-                    temp = into.push(
-                      (keyCount++,
-                      (inspected = formattedInspectRecursive(
-                        value,
-                        maxLineLength - indent.length,
-                        options
-                      )),
-                      /\n/.test(inspected)
-                        ? (!/^\[\]/.test(inspected)
-                            ? (inspected =
-                                newLineWithIndent +
-                                inspected.replace(/\n/g, newLineWithIndent))
-                            : undefined,
-                          !/\n\s*$/.test(inspected)
-                            ? (inspected += "\n")
-                            : undefined)
-                        : ansiSafeStringLength(inspected) >
-                          maxLineLength - (key.length + 2)
-                        ? (inspected = `${Caf.toString(
-                            newLineWithIndent
-                          )}${Caf.toString(inspected)}\n`)
-                        : undefined,
-                      !barePropKeyRegExp.test(key)
-                        ? (key = escapeJavascriptString(key))
-                        : undefined,
-                      (inspectedLength +=
-                        ansiSafeStringLength(inspected) + key.length + 2),
-                      forceMultilineOutput ||
-                        (forceMultilineOutput = shouldBeOnOwnLine),
-                      (shouldBeOnOwnLine = valueShouldBeOnOwnLine(inspected)),
-                      [key, inspected, value])
-                    );
+                    temp =
+                      plainObject || m.hasOwnProperty(key)
+                        ? into.push(
+                            (keyCount++,
+                            (inspected = formattedInspectRecursive(
+                              value,
+                              maxLineLength - indent.length,
+                              options
+                            )),
+                            /\n/.test(inspected)
+                              ? (!/^\[\]/.test(inspected)
+                                  ? (inspected =
+                                      newLineWithIndent +
+                                      inspected.replace(
+                                        /\n/g,
+                                        newLineWithIndent
+                                      ))
+                                  : undefined,
+                                !/\n\s*$/.test(inspected)
+                                  ? (inspected += "\n")
+                                  : undefined)
+                              : ansiSafeStringLength(inspected) >
+                                maxLineLength - (key.length + 2)
+                              ? (inspected = `${Caf.toString(
+                                  newLineWithIndent
+                                )}${Caf.toString(inspected)}\n`)
+                              : undefined,
+                            !barePropKeyRegExp.test(key)
+                              ? (key = escapeJavascriptString(key))
+                              : undefined,
+                            (inspectedLength +=
+                              ansiSafeStringLength(inspected) + key.length + 2),
+                            forceMultilineOutput ||
+                              (forceMultilineOutput = shouldBeOnOwnLine),
+                            (shouldBeOnOwnLine = valueShouldBeOnOwnLine(
+                              inspected
+                            )),
+                            [key, inspected, value])
+                          )
+                        : undefined;
                   }
                   return temp;
                 })()
               : undefined,
             into);
           objectStart = colorize.grey(
-            (notPlainObject = !isPlainObject(m))
+            notPlainObject
               ? `${Caf.toString(objectName(m))} {}`
               : (objectStart = "{}")
           );
