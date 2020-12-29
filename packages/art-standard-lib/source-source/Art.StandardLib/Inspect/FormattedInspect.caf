@@ -6,26 +6,38 @@ import
   &FormattedInspectArray
   &AlignTabs
 
+typeOf = eval "" (x) => typeof x
+
+inspectCount = 0
+
 inspecting = []
 formattedInspectRecursive = (m, maxLineLength, options) ->
+  inspectCount++
   if isObject(m) and m in inspecting
     # generally toInspectedObjects should catch this, but we can't guarantee that as long as we are calling custom "inspect" methods
     "" <<< back reference
+  else if inspecting.length > options.maxDepth
+    "" <<< max depth reached (maxDepth: #{options.maxDepth})
+  else if inspectCount >= options.maxCount
+    "" <<< max count reached (maxCount: #{options.maxCount})
   else
     inspecting.push m
-    out =
+    out = try
       switch
       when isInspectableArray m   then formattedInspectArray  m, maxLineLength, options, formattedInspectRecursive
       when isString m             then formattedInspectString m, options
       when isFunction m?.inspect  then options.colorize.yellow m.inspect()
       when isObject m             then formattedInspectObject m, maxLineLength, options, formattedInspectRecursive
       else options.colorize.yellow '' + m
+    catch error
+      options.colorize.red "" error inspecting value (typeof: #{typeOf m}): #{} error.message
 
     inspecting.pop()
     out
 
 formattedInspectRecursiveWrapper = (m, maxArrayLength, options) ->
   inspecting = []
+  inspectCount = 0
   try # UG - I just need "finally"!
     out = formattedInspectRecursive m, maxArrayLength, options
     inspecting = null
@@ -39,8 +51,6 @@ colorizeFunctions = object c in colorNames with (str) -> str[c] ? str
 
 identity = (s) -> s
 passThroughColorizeFunctions = object colorNames with identity
-
-typeOf = eval "(a) => typeof a"
 
 module.exports = {}
   alignTabs
@@ -59,13 +69,20 @@ module.exports = {}
       if isNumber options
         maxLineLength = options
       else if isPlainObject options
-        options extract indent, unquoted, color as colorizeEnabled, maxLineLength, maxArrayLength
+        options extract
+          indent, unquoted
+          color as colorizeEnabled
+          maxLineLength, maxArrayLength
+          maxDepth, maxCount
+
       else
         console.error invalid: {options}
         throw new Error "invalid options object type: #{typeOf options}"
 
       maxLineLength ?= global.process?.stdout?.columns || 80
       maxArrayLength ?= 100
+      maxDepth ?= 50
+      maxCount ?= 5000
       indent ?= "  "
 
       postWhitespaceFormatting
@@ -74,7 +91,7 @@ module.exports = {}
           toInspectedObjects toInspect
           maxLineLength
           {}
-            unquoted, indent, maxLineLength, maxArrayLength
+            unquoted, indent, maxLineLength, maxArrayLength, maxDepth, maxCount
             newLineWithIndent: "\n#{indent}"
             colorize:
               if colorizeEnabled

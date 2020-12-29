@@ -2,13 +2,13 @@ import &StandardImport
 
 suite:
   unsupportedObjects: ->
-    class Foo
-      constructor: ->
-        @bar = 123
 
-      ignoreMe: ->
+    test 'my Foo class - one property', ->
+      class Foo
+        constructor: ->
+          @bar = 123
 
-    test 'my Foo class', ->
+        ignoreMe: ->
       assert.eq
         formattedInspect bar: 123
         "bar: 123"
@@ -16,6 +16,26 @@ suite:
       assert.eq
         formattedInspect new Foo
         "Foo {} bar: 123"
+
+    test 'my Foo class - multiple property', ->
+      class Foo
+        constructor: ->
+          @bar =
+          @baz =
+          @bom = "" This is just fine, right? Just a little longer.
+
+        ignoreMe: ->
+      assert.eq
+        formattedInspect {bar: 123}, maxLineLength: 80
+        "bar: 123"
+
+      assert.eq
+        formattedInspect (new Foo), maxLineLength: 80
+        """
+          Foo {}
+            bom: "This is just fine, right? Just a little longer."
+            baz: "This is just fine, right? Just a little longer."
+            bar: "This is just fine, right? Just a little longer."
 
   recursion: ->
 

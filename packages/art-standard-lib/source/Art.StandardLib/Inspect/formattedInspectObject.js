@@ -130,6 +130,10 @@ Caf.defMod(module, () => {
               ? `${Caf.toString(objectName(m))} {}`
               : (objectStart = "{}")
           );
+          forceMultilineOutput ||
+            (forceMultilineOutput =
+              inspectedLength + (inspectedValues.length - 1) * 2 >
+              maxLineLength);
           return keyCount === 0
             ? objectStart
             : ((index = 0),
@@ -154,11 +158,13 @@ Caf.defMod(module, () => {
                     })())
                   : undefined,
                 into1)),
-              (notPlainObject ? `${Caf.toString(objectStart)} ` : "") +
+              (notPlainObject
+                ? `${Caf.toString(objectStart)}${Caf.toString(
+                    forceMultilineOutput ? newLineWithIndent : " "
+                  )}`
+                : "") +
                 finalInspectedValues.join(
-                  forceMultilineOutput ||
-                    inspectedLength + (inspectedValues.length - 1) * 2 >
-                      maxLineLength
+                  forceMultilineOutput
                     ? notPlainObject
                       ? newLineWithIndent
                       : "\n"

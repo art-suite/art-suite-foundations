@@ -45,43 +45,66 @@ Caf.defMod(module, () => {
       postWhitespaceFormatting,
       toInspectedObjects
     ) => {
-      let inspecting,
+      let typeOf,
+        inspectCount,
+        inspecting,
         formattedInspectRecursive,
         formattedInspectRecursiveWrapper,
         colorNames,
         colorizeFunctions,
         identity,
         passThroughColorizeFunctions,
-        typeOf,
         failsafeInspect;
+      typeOf = eval("(x) => typeof x");
+      inspectCount = 0;
       inspecting = [];
       formattedInspectRecursive = function (m, maxLineLength, options) {
-        let out;
+        let out, error;
+        inspectCount++;
         return isObject(m) && Caf.in(m, inspecting)
           ? "<<< back reference"
+          : inspecting.length > options.maxDepth
+          ? `<<< max depth reached (maxDepth: ${Caf.toString(
+              options.maxDepth
+            )})`
+          : inspectCount >= options.maxCount
+          ? `<<< max count reached (maxCount: ${Caf.toString(
+              options.maxCount
+            )})`
           : (inspecting.push(m),
             (out = (() => {
-              switch (false) {
-                case !isInspectableArray(m):
-                  return formattedInspectArray(
-                    m,
-                    maxLineLength,
-                    options,
-                    formattedInspectRecursive
-                  );
-                case !isString(m):
-                  return formattedInspectString(m, options);
-                case !isFunction(Caf.exists(m) && m.inspect):
-                  return options.colorize.yellow(m.inspect());
-                case !isObject(m):
-                  return formattedInspectObject(
-                    m,
-                    maxLineLength,
-                    options,
-                    formattedInspectRecursive
-                  );
-                default:
-                  return options.colorize.yellow("" + m);
+              try {
+                return (() => {
+                  switch (false) {
+                    case !isInspectableArray(m):
+                      return formattedInspectArray(
+                        m,
+                        maxLineLength,
+                        options,
+                        formattedInspectRecursive
+                      );
+                    case !isString(m):
+                      return formattedInspectString(m, options);
+                    case !isFunction(Caf.exists(m) && m.inspect):
+                      return options.colorize.yellow(m.inspect());
+                    case !isObject(m):
+                      return formattedInspectObject(
+                        m,
+                        maxLineLength,
+                        options,
+                        formattedInspectRecursive
+                      );
+                    default:
+                      return options.colorize.yellow("" + m);
+                  }
+                })();
+              } catch (error1) {
+                error = error1;
+                return options.colorize.red(
+                  `error inspecting value (typeof: ${Caf.toString(
+                    typeOf(m)
+                  )}): ${Caf.toString(error.message)}`
+                );
               }
             })()),
             inspecting.pop(),
@@ -90,6 +113,7 @@ Caf.defMod(module, () => {
       formattedInspectRecursiveWrapper = function (m, maxArrayLength, options) {
         let out, error;
         inspecting = [];
+        inspectCount = 0;
         return (() => {
           try {
             out = formattedInspectRecursive(m, maxArrayLength, options);
@@ -117,7 +141,6 @@ Caf.defMod(module, () => {
         return s;
       };
       passThroughColorizeFunctions = Caf.object(colorNames, () => identity);
-      typeOf = eval("(a) => typeof a");
       return (module.exports = {
         alignTabs,
         formattedInspectString,
@@ -154,6 +177,8 @@ Caf.defMod(module, () => {
             unquoted,
             colorizeEnabled,
             maxArrayLength,
+            maxDepth,
+            maxCount,
             error,
             out,
             base,
@@ -169,6 +194,8 @@ Caf.defMod(module, () => {
                   colorizeEnabled = options.color;
                   maxLineLength = options.maxLineLength;
                   maxArrayLength = options.maxArrayLength;
+                  maxDepth = options.maxDepth;
+                  maxCount = options.maxCount;
                 } else {
                   console.error({ invalid: { options } });
                   throw new Error(
@@ -186,6 +213,8 @@ Caf.defMod(module, () => {
                       base1.columns) ||
                     80);
               maxArrayLength != null ? maxArrayLength : (maxArrayLength = 100);
+              maxDepth != null ? maxDepth : (maxDepth = 50);
+              maxCount != null ? maxCount : (maxCount = 5000);
               indent != null ? indent : (indent = "  ");
               return postWhitespaceFormatting(
                 maxLineLength,
@@ -197,6 +226,8 @@ Caf.defMod(module, () => {
                     indent,
                     maxLineLength,
                     maxArrayLength,
+                    maxDepth,
+                    maxCount,
                     newLineWithIndent: `\n${Caf.toString(indent)}`,
                     colorize: colorizeEnabled
                       ? colorizeFunctions

@@ -45,6 +45,8 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
       "#{objectName m} {}"
     else objectStart = "{}"
 
+    forceMultilineOutput ||= inspectedLength + (inspectedValues.length - 1) * 2 > maxLineLength
+
     if keyCount == 0
       objectStart
 
@@ -53,9 +55,8 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
       finalInspectedValues = array [k, v, value] from-array inspectedValues
         "#{colorize.blue "#{k}:"}\t#{v}"
 
-      if notPlainObject then "#{objectStart} " else ""
+      if notPlainObject then "#{objectStart}#{if forceMultilineOutput then newLineWithIndent else ' '}" else ""
       + finalInspectedValues.join
-        if forceMultilineOutput || inspectedLength + (inspectedValues.length - 1) * 2 > maxLineLength
-          if notPlainObject then newLineWithIndent
-          else "\n"
+        if forceMultilineOutput
+          if notPlainObject then newLineWithIndent else "\n"
         else ",\t"
