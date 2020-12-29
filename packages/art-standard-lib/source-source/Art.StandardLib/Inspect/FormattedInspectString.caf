@@ -1,0 +1,50 @@
+import &StringExtensions
+
+multilineStringRegExp = /[^\n\s].*\n(.|\n)*[^\n\s]/
+
+cafScriptWordStringRegExp =
+  ///
+    ^(?=[^'":])
+
+    (
+      [^ \# \s \0-\x20 \x7f ; , () [ \] {} \\ ]
+      | \# ([^{]|$)
+    )+
+
+    $
+
+{}
+  escapeForBlockString = (str) =>
+    String str
+    .replace /[\\\0\b\f\r\t\v\u001b\u2028\u2029]/g, (x) ->
+      switch x
+        when '\\'     then '\\\\'
+        when '\0'     then "\\0"
+        when '\b'     then "\\b"
+        when '\f'     then "\\f"
+        # when '\n'     then "\\n"
+        when '\r'     then "\\r"
+        when '\t'     then "\\t"
+        when '\v'     then "\\v"
+        when '\u2028' then "\\u2028"
+        when '\u2029' then "\\u2029"
+        when '\u001b' then '\\u001b'
+
+    # escape leading and trailing spaces
+    .replace /^[\n ]+|[\n ]+$|[ ]+(?=\n)/g, (x) ->
+      escapeJavascriptString x, true
+      .replace /\ /g, '\\s'
+
+  formattedInspectString = (m, {colorize, unquoted, newLineWithIndent}) ->
+    colorize.green switch
+      when unquoted                           then m
+      when cafScriptWordStringRegExp.test m   then ":#{m}"
+      when multilineStringRegExp.test m
+        '"""' + newLineWithIndent + escapeForBlockString(m).replace /\n/g, newLineWithIndent
+        .replace /\ +\n/g, '\n'
+
+      # else if m.length > 10 && m.match / /
+      #   TODO: support ""-block output using a word-wrap strategy if we can do-so isomorphically.
+      #   i.e. the output string would generate exactly the input string in Caffeine-Script
+      else
+        escapeJavascriptString m

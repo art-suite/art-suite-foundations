@@ -1,0 +1,67 @@
+import &Ansi, &TypesExtended, &ObjectExtensions
+
+{}
+  isInspectableArray = (v) -> isPlainArray(v) || isTypedArray v
+
+  formattedInspectArray = (m, maxLineLength, options, formattedInspectRecursive) ->
+    options extract maxArrayLength, colorize, indent, newLineWithIndent
+    lengthOfInspectedValues = 0
+    lastWasObject = false
+    lastWasArray = false
+    objectsMustBeExplicit = false
+    oneLinerOk = true
+    inspectedValuesContainNewlines = false
+
+    each value, i in m
+      if isPlainObject value
+        oneLinerOk = false if i < m.length - 1 # non-tail object
+        objectsMustBeExplicit = true if lastWasObject
+        lastWasObject = true
+      else
+        lastWasObject = false
+
+    inspectedValues = array value in m.slice 0, maxArrayLength
+
+      oneLinerOk = false if lastWasArray
+
+      if isInspectableArray value
+        lastWasArray = true
+
+      inspected = formattedInspectRecursive value, maxLineLength - indent.length, options
+
+      inspectedHasNewlines = /\n/.test inspected
+
+      if objectsMustBeExplicit && isPlainObject(value) && objectKeyCount(value) > 0
+        objectStart = "{}"
+        objectStart = colorize.grey objectStart
+        inspected = if inspectedHasNewlines
+          "#{objectStart}#{newLineWithIndent}#{inspected.replace(/\n/g, newLineWithIndent)}"
+        else
+          "#{objectStart} #{inspected}"
+
+      if inspectedHasNewlines
+        oneLinerOk = false
+        inspected = inspected.replace /\n/g, newLineWithIndent
+        inspected += "\n" unless /\n\s*$/.test inspected
+
+      lengthOfInspectedValues += ansiSafeStringLength inspected
+      inspected
+
+    lengthOfCommas = (inspectedValues.length - 1) * 2
+    lengthOfStartBrackets = 3
+
+    arrayStart = if isTypedArray m then "{#{objectName m}}" else "[]"
+    if m.length > maxArrayLength
+      arrayStart += " <length: #{m.length}>"
+      suffix = "..."
+    arrayStart = colorize.grey arrayStart
+
+    if oneLinerOk && maxLineLength >= lengthOfStartBrackets + lengthOfCommas + lengthOfInspectedValues
+      if inspectedValues.length == 0
+        arrayStart
+      else
+        "#{arrayStart} #{inspectedValues.join ",\t"}#{suffix ? ""}"
+    else
+      """
+        #{arrayStart}
+          #{inspectedValues.join "\n  "}#{if suffix then "\n  #{suffix}" else ''}

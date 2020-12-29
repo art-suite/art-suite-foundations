@@ -4,11 +4,16 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./Inspect'))
 .addModules({
-  FormattedInspect:       require('./FormattedInspect'),
-  InspectedObjectLiteral: require('./InspectedObjectLiteral'),
-  InspectedObjects:       require('./InspectedObjects'),
-  Inspector:              require('./Inspector'),
-  Inspector2:             require('./Inspector2'),
-  PlainObjects:           require('./PlainObjects')
+  AlignTabs:               require('./AlignTabs'),
+  FormattedInspectConvert: require('./FormattedInspect-convert'),
+  FormattedInspect:        require('./FormattedInspect'),
+  FormattedInspectArray:   require('./formattedInspectArray'),
+  FormattedInspectObject:  require('./formattedInspectObject'),
+  FormattedInspectString:  require('./formattedInspectString'),
+  InspectedObjectLiteral:  require('./InspectedObjectLiteral'),
+  InspectedObjects:        require('./InspectedObjects'),
+  Inspector:               require('./Inspector'),
+  Inspector2:              require('./Inspector2'),
+  PlainObjects:            require('./PlainObjects')
 });
 require('./Inspected');
