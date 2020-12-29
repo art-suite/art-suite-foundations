@@ -1,0 +1,43 @@
+import &StandardImport
+
+suite:
+  unsupportedObjects: ->
+    class Foo
+      constructor: ->
+        @bar = 123
+
+    test 'my Foo class', ->
+      assert.eq
+        formattedInspect bar: 123
+        "bar: 123"
+
+      assert.eq
+        formattedInspect new Foo
+        "Foo {} bar: 123"
+
+  recursion: ->
+
+    test :self-reference ->
+      selfR = {}
+      selfR.self = selfR
+      assert.eq formattedInspect(selfR), "self: <<< self reference"
+
+    test :parent-reference ->
+      backR = child: {}
+      backR.child.parent = backR
+      assert.eq formattedInspect(backR), "child: parent: <<< parent reference"
+
+    test :grandparent-reference ->
+      backR = child: grandchild: {}
+      backR.child.grandchild.grandparent = backR
+      assert.eq formattedInspect(backR), "child: grandchild: grandparent: <<< grandparent reference"
+
+    test :grandparent-reference ->
+      backR = child: grandchild: greatgrandchild: {}
+      backR.child.grandchild.greatgrandchild.greatgrandparent = backR
+      assert.eq formattedInspect(backR), "child: grandchild: greatgrandchild: greatgrandparent: <<< great grandparent reference"
+
+    test :grandparent-reference ->
+      backR = child: grandchild: greatgrandchild: greatgreatgrandchild: {}
+      backR.child.grandchild.greatgrandchild.greatgreatgrandchild.greatgreatgrandparent = backR
+      assert.eq formattedInspect(backR), "child: grandchild: greatgrandchild: greatgreatgrandchild: greatgreatgrandparent: <<< 4 generations back reference"

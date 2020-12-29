@@ -597,17 +597,3 @@ module.exports = suite:
       assert.eq out,
         "data:\n  '{\"mappings\":{\"post_search\":{\"_parent\":{\"type\":\"topic\"},\"properties\":{\"topicId\":{\"type\":\"keyword\"},\"userId\":{\"type\":\"keyword\"},\"postOrder\":{\"type\":\"long\"},\"createdAt\":{\"type\":\"long\"},\"updatedAt\":{\"type\":\"long\"},\"isChapterStart\":{\"type\":\"boolean\"},\"caption\":{\"type\":\"text\",\"analyzer\":\"english\"},\"tags\":{\"type\":\"text\"},\"mentions\":{\"type\":\"text\"},\"mediaMimeType\":{\"type\":\"keyword\"},\"mediaAspectRatio\":{\"type\":\"short\"},\"mediaUrl\":{\"type\":\"keyword\",\"index\":false},\"mediaFocus\":{\"type\":\"object\",\"index\":false},\"mediaDimensions\":{\"type\":\"object\",\"index\":false},\"mediaColorInfo\":{\"type\":\"object\",\"index\":false},\"templateUrl\":{\"type\":\"keyword\",\"index\":false},\"templateType\":{\"type\":\"keyword\"},\"templateDropInCount\":{\"type\":\"byte\"},\"templateText\":{\"type\":\"text\",\"analyzer\":\"english\"},\"templateDropInLocations\":{\"type\":\"nested\",\"index\":false},\"templateUses\":{\"type\":\"integer\"},\"activityCount\":{\"type\":\"integer\"},\"lastActivityAt\":{\"type\":\"long\"},\"messageCount\":{\"type\":\"integer\",\"index\":false},\"participantCount\":{\"type\":\"integer\",\"index\":false},\"lastActiveUserId\":{\"type\":\"keyword\",\"index\":false},\"lastMessageId\":{\"type\":\"keyword\",\"index\":false}}},\"topic_search\":{\"_parent\":{\"type\":\"user\"},\"properties\":{\"title\":{\"type\":\"text\",\"analyzer\":\"english\"},\"createdAt\":{\"type\":\"long\"},\"updatedAt\":{\"type\":\"long\"},\"lastPostCreatedAt\":{\"type\":\"long\"},\"lastPostId\":{\"type\":\"keyword\"},\"lastChapterPostId\":{\"type\":\"keyword\"},\"postCount\":{\"type\":\"integer\"},\"followerCount\":{\"type\":\"integer\"},\"activityCount\":{\"type\":\"long\"},\"messageCount\":{\"type\":\"long\"},\"isProfileTopic\":{\"type\":\"boolean\"}}},\"user_search\":{\"properties\":{\"displayName\":{\"type\":\"text\",\"analyzer\":\"english\"},\"postCount\":{\"type\":\"integer\"},\"topicCount\":{\"type\":\"short\"},\"followerCount\":{\"type\":\"integer\"},\"messageCount\":{\"type\":\"integer\"},\"lastTopicCreatedAt\":{\"type\":\"long\"},\"lastPostCreatedAt\":{\"type\":\"long\"},\"profileTopicId\":{\"type\":\"keyword\",\"index\":false}}}},\"settings\":{}}'\n"
 
-  unsupportedObjects: ->
-    class Foo
-      constructor: ->
-        @bar = 123
-
-    test 'my Foo class', ->
-      assert.eq(
-        formattedInspect bar: 123
-        "bar: 123"
-      )
-      assert.eq(
-        formattedInspect new Foo
-        "Foo {} bar: 123"
-      )

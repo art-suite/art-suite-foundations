@@ -1,0 +1,90 @@
+import
+  &TypesExtended
+  &InspectedObjects
+  &FormattedInspectObject
+  &FormattedInspectString
+  &FormattedInspectArray
+  &AlignTabs
+
+inspecting = []
+formattedInspectRecursive = (m, maxLineLength, options) ->
+  if isObject(m) and m in inspecting
+    # generally toInspectedObjects should catch this, but we can't guarantee that as long as we are calling custom "inspect" methods
+    "" <<< back reference
+  else
+    inspecting.push m
+    out =
+      switch
+      when isInspectableArray m   then formattedInspectArray  m, maxLineLength, options, formattedInspectRecursive
+      when isString m             then formattedInspectString m, options
+      when isFunction m?.inspect  then options.colorize.yellow m.inspect()
+      when isObject m             then formattedInspectObject m, maxLineLength, options, formattedInspectRecursive
+      else options.colorize.yellow '' + m
+
+    inspecting.pop()
+    out
+
+formattedInspectRecursiveWrapper = (m, maxArrayLength, options) ->
+  inspecting = []
+  try # UG - I just need "finally"!
+    out = formattedInspectRecursive m, maxArrayLength, options
+    inspecting = null
+    out
+  catch error
+    inspecting = null
+    throw error
+
+colorNames = :red :yellow :green :blue :grey
+colorizeFunctions = object c in colorNames with (str) -> str[c] ? str
+
+identity = (s) -> s
+passThroughColorizeFunctions = object colorNames with identity
+
+typeOf = eval "(a) => typeof a"
+
+module.exports = {}
+  alignTabs
+  formattedInspectString
+
+  failsafeInspect = (toInspect) ->
+    "typeof: #{typeOf toInspect}\n"
+    + "constructor: #{toInspect?.constructor && toInspect?.constructor?.name}\n"
+    + switch
+      when isInspectableArray toInspect then "length: #{toInspect.length}\njoined: [#{toInspect.join(', ')}]"
+      when toInspect? && typeOf toInspect == 'object' then "keys: #{Object.keys(toInspect).join ', '}"
+      else "toString: #{toInspect}"
+
+  formattedInspect: (toInspect, options = {}) ->
+    try
+      if isNumber options
+        maxLineLength = options
+      else if isPlainObject options
+        options extract indent, unquoted, color as colorizeEnabled, maxLineLength, maxArrayLength
+      else
+        console.error invalid: {options}
+        throw new Error "invalid options object type: #{typeOf options}"
+
+      maxLineLength ?= global.process?.stdout?.columns || 80
+      maxArrayLength ?= 100
+      indent ?= "  "
+
+      postWhitespaceFormatting
+        maxLineLength
+        formattedInspectRecursiveWrapper
+          toInspectedObjects toInspect
+          maxLineLength
+          {}
+            unquoted, indent, maxLineLength, maxArrayLength
+            newLineWithIndent: "\n#{indent}"
+            colorize:
+              if colorizeEnabled
+                colorizeFunctions
+              else
+                passThroughColorizeFunctions
+
+      .replace /\n\n$/, "\n"
+
+    catch error
+      out = "Error in formattedInspect: #{error}\n#{failsafeInspect toInspect}"
+      console.error out, {error, toInspect, options}
+      out
