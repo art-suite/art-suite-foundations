@@ -1,21 +1,3 @@
-target:
-  node: true
-
-package:
-  devDependencies:
-    watch: :^1.0.0
-  dependencies:
-    xhr2:                     :^0.1.4
-    art-communication-status: :^1.0.0
-
-  description: "" Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.
-
-  scripts:
-    build: "" caf -p -c source-caf -o source;nn -s
-    build-test: "" npm run build; npm run test --silent; echo
-    watch: "" watch 'npm run build' ./source-caf
-    watch-test: "" watch 'npm run build-test' ./source-caf ./test
-
-webpack:
-  targets:
-    test: {}
+package: require("../standard-package-builder")
+  &package
+  mocha: true

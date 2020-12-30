@@ -154,6 +154,7 @@ class RestClient extends BaseClass
       onProgress
       query
       responseType
+      returnResponseObject
       showProgressAfter
       url
       verb
@@ -188,6 +189,7 @@ class RestClient extends BaseClass
       onProgress
       responseType
       showProgressAfter
+      returnResponseObject
       headers: merge normalizedHeaders, normalizeHeaders headers
 
   restJsonRequest: (options) ->
@@ -218,7 +220,7 @@ class RestClient extends BaseClass
   #######################################
   # no error checking, only normalized options expected
   _normalizedRestRequest: (options) ->
-    options extract method, url, body, headers, onProgress, responseType, showProgressAfter, verbose
+    options extract method, url, body, headers, onProgress, responseType, showProgressAfter, verbose, returnResponseObject
 
     new Promise (resolve, reject) ->
       fail = (props) ->
@@ -254,7 +256,11 @@ class RestClient extends BaseClass
 
       getResponse = ->
         {response} = request
-        if response && responseType == :json
+        if returnResponseObject then merge
+          headers:    object [key, value] from (array line in request.getAllResponseHeaders().split /\s*\r?\n\s*/g with line.split /\:\s*/) with-key key with value
+          body:       response
+          decodeHttpStatus request.status
+        else if response && responseType == :json
           JSON.parse response
         else
           response

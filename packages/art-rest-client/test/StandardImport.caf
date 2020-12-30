@@ -2,5 +2,5 @@
   &ArtStandardLib
   &ArtRestClient
   &ArtCommunicationStatus
+  &ArtTestbench
   RestClient: &ArtRestClient
-  test: (args...) -> global.test args...

@@ -15,6 +15,13 @@
     "watch": "^1.0.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "source/**/*.js",
+      "!source/test/**/*.js"
+    ],
+    "testEnvironment": "node"
+  },
   "license": "ISC",
   "name": "art-rest-client",
   "repository": {
@@ -22,13 +29,23 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -p -c source-caf -o source;nn -s",
-    "build-test": "npm run build; npm run test --silent; echo",
-    "start": "webpack-dev-server --hot --inline --progress --env.devServer",
-    "test": "nn -s;mocha -u tdd",
-    "testInBrowser": "webpack-dev-server --progress --env.devServer",
-    "watch": "watch 'npm run build' ./source-caf",
-    "watch-test": "watch 'npm run build-test' ./source-caf ./test"
+    "build": "caf -m -c source-source -o source\nnpm run nn",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf source/*",
+    "nn": "nn source/* test/tests",
+    "test": "npm run nn\nmocha -u tdd",
+    "watch": "npm-watch"
   },
-  "version": "1.8.11"
+  "version": "1.8.11",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf"
+      ],
+      "patterns": [
+        "source-source"
+      ],
+      "quiet": false
+    }
+  }
 }
