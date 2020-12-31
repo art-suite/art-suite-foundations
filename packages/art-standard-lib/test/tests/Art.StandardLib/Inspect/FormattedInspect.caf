@@ -25,6 +25,7 @@ suite:
           @bom = "" This is just fine, right? Just a little longer.
 
         ignoreMe: ->
+
       assert.eq
         formattedInspect {bar: 123}, maxLineLength: 80
         "bar: 123"
@@ -36,6 +37,119 @@ suite:
             bom: "This is just fine, right? Just a little longer."
             baz: "This is just fine, right? Just a little longer."
             bar: "This is just fine, right? Just a little longer."
+
+    test 'my Foo class - with nesting 1', ->
+      class Foo
+        constructor: ->
+          @bom = boo: :bar
+
+      assert.eq
+        formattedInspect (new Foo), maxLineLength: 80
+        """ Foo {} bom: boo: :bar
+
+    test 'my Foo class - with nesting 2', ->
+      class Foo
+        constructor: ->
+          @bom = boo: :bar
+          @bat = bow: :bay
+
+      assert.eq
+        formattedInspect (new Foo), maxLineLength: 80
+        """
+          Foo {}
+            bom: boo: :bar
+            bat: bow: :bay
+
+    test 'my Foo class - with nesting 3', ->
+      class Foo
+        constructor: ->
+          @justOne =
+            boo: :bar
+            bow: :bay
+
+      assert.eq
+        formattedInspect (new Foo), maxLineLength: 20
+        """
+          Foo {} justOne:
+            boo: :bar
+            bow: :bay\n
+
+    test 'my Foo class - with nesting 4', ->
+      class Foo
+        constructor: ->
+          @bom =
+            boo: :bar
+            bow: :bay
+          @bom2 =
+            boo: :bar
+            bow: :bay
+
+      assert.eq
+        formattedInspect (new Foo), maxLineLength: 20
+        """
+          Foo {}
+            bom:
+              boo: :bar
+              bow: :bay
+
+            bom2:
+              boo: :bar
+              bow: :bay\n
+
+  stackedSinglePropObjects: ->
+    test 'simple' ->
+      assert.eq
+        formattedInspect
+          a: b: c: (c1: 1 c2: 2), d: 3
+        """
+          a: b:
+            c: c1: 1, c2: 2
+            d: 3\n
+
+    test 'withArray' ->
+      assert.eq
+        formattedInspect
+          a: b: c: [] 1 2 3 4
+          {} maxLineLength: 10
+        """
+          a: b: c: []
+            1
+            2
+            3
+            4\n
+
+    test 'more' ->
+      assert.eq
+        formattedInspect
+          a:
+            b:
+              b1: b11: 11 b12: b121: 121 b122: 122
+              b2: b21: 21 b22: 22
+
+        """
+          a: b:
+            b1: b11: 11, b12: b121: 121, b122: 122
+            b2: b21: 21, b22: 22\n
+
+    test 'too many' ->
+      assert.eq
+        formattedInspect
+          a: b: c: d: e: f: g: h: i: j: k: l: m: n: o: 0
+          {} maxLineLength: 10
+        """
+          a: b: c: d: e: f: g: h: i: j: k: l: m: n: o:
+            0\n
+
+        """
+          Really, this should look more like this:
+          a: b: c: d: e:
+            f: g: h: i:
+              j: k: l:
+                m: n: o:
+                  0
+
+          (due to maxLineLength: 10)
+          But that would require a larger refactor
 
   recursion: ->
 

@@ -1,13 +1,13 @@
-import &TypesExtended, &Ansi, &StringExtensions
+import &TypesExtended, &Ansi, &StringExtensions, &ObjectExtensions
 
+typeOf = eval "" (v) => typeof v
 ## valueShouldBeOnOwnLine
   NOTE: This regexp can cause Chrome's RegExp engine to become extraordinarily inefficient.
     SEE: https://jsperf.com/pathological-regexp
     This string causes the provlem with this regexp: """'{"mappings":{"post_search":{"_parent":{"type":"topic"},"properties":{"topicId":{"type":"keyword"},"userId":{"type":"keyword"},"postOrder":{"type":"long"},"createdAt":{"type":"long"},"updatedAt":{"type":"long"},"isChapterStart":{"type":"boolean"},"caption":{"type":"text","analyzer":"english"},"tags":{"type":"text"},"mentions":{"type":"text"},"mediaMimeType":{"type":"keyword"},"mediaAspectRatio":{"type":"short"},"mediaUrl":{"type":"keyword","index":false},"mediaFocus":{"type":"object","index":false},"mediaDimensions":{"type":"object","index":false},"mediaColorInfo":{"type":"object","index":false},"templateUrl":{"type":"keyword","index":false},"templateType":{"type":"keyword"},"templateDropInCount":{"type":"byte"},"templateText":{"type":"text","analyzer":"english"},"templateDropInLocations":{"type":"nested","index":false},"templateUses":{"type":"integer"},"activityCount":{"type":"integer"},"lastActivityAt":{"type":"long"},"messageCount":{"type":"integer","index":false},"participantCount":{"type":"integer","index":false},"lastActiveUserId":{"type":"keyword","index":false},"lastMessageId":{"type":"keyword","index":false}}},"topic_search":{"_parent":{"type":"user"},"properties":{"title":{"type":"text","analyzer":"english"},"createdAt":{"type":"long"},"updatedAt":{"type":"long"},"lastPostCreatedAt":{"type":"long"},"lastPostId":{"type":"keyword"},"lastChapterPostId":{"type":"keyword"},"postCount":{"type":"integer"},"followerCount":{"type":"integer"},"activityCount":{"type":"long"},"messageCount":{"type":"long"},"isProfileTopic":{"type":"boolean"}}},"user_search":{"properties":{"displayName":{"type":"text","analyzer":"english"},"postCount":{"type":"integer"},"topicCount":{"type":"short"},"followerCount":{"type":"integer"},"messageCount":{"type":"integer"},"lastTopicCreatedAt":{"type":"long"},"lastPostCreatedAt":{"type":"long"},"profileTopicId":{"type":"keyword","index":false}}}},"settings":{}}'"""
     HACK - right now I'm just assuming any string longer than 100 chars should be on its own line
 valueShouldBeOnOwnLine = (value) ->
-  value.length > 100
-  || !value.match /// ^ ([^,:()\[\]'"]+ | \(.*\) | (\w+\s)? \{.*\} | \".*\" | \'.*\' | \[.*\]) $
+  value? && :object == typeOf value
 
 barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
 
@@ -18,8 +18,8 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
     if notPlainObject = !plainObject = isPlainObject m
       prototype = Object.getPrototypeOf m
 
-    forceMultilineOutput = false
-    shouldBeOnOwnLine = false
+    valuesRequireMultilineOutput = false
+    lastLineMustEndTheLine = false
     keyCount = 0
 
     inspectedValues = array value, key from-object m when plainObject || m.hasOwnProperty key
@@ -27,7 +27,8 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
       inspected = formattedInspectRecursive value, maxLineLength - indent.length, options
 
       if /\n/.test inspected
-        inspected = newLineWithIndent + inspected.replace /\n/g, newLineWithIndent unless /^\[\]/.test inspected
+        unless isArray(value) || (isPlainObject(value) && objectKeyCount(value) == 1)
+          inspected = newLineWithIndent + inspected.replace /\n/g, newLineWithIndent
         inspected += "\n" unless /\n\s*$/.test inspected
 
       else if ansiSafeStringLength(inspected) > maxLineLength - (key.length + 2)
@@ -35,28 +36,34 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
 
       key = escapeJavascriptString key unless barePropKeyRegExp.test key
       inspectedLength += ansiSafeStringLength(inspected) + key.length + 2
-      forceMultilineOutput ||= shouldBeOnOwnLine # if previous entry should be on own line, force all on own line
+      valuesRequireMultilineOutput ||= lastLineMustEndTheLine # if previous entry should be on own line, force all on own line
 
-      shouldBeOnOwnLine = valueShouldBeOnOwnLine inspected
+      lastLineMustEndTheLine = valueShouldBeOnOwnLine value
 
       [key, inspected, value]
 
-    objectStart = colorize.grey if notPlainObject
-      "#{objectName m} {}"
-    else objectStart = "{}"
+    objectStart = colorize.grey
+      if notPlainObject
+        "#{objectName m} {}"
+      else objectStart = "{}"
 
-    forceMultilineOutput ||= inspectedLength + (inspectedValues.length - 1) * 2 > maxLineLength
+    valuesCouldFitOnOneLine = inspectedLength + (inspectedValues.length - 1) * 2 <= maxLineLength
+    forceMultilineOutput = valuesRequireMultilineOutput || !valuesCouldFitOnOneLine
+    firstLineOnNewLine = keyCount > 1 && forceMultilineOutput
 
     if keyCount == 0
       objectStart
 
     else
-      index = 0
       finalInspectedValues = array [k, v, value] from-array inspectedValues
+        if notPlainObject && firstLineOnNewLine
+          v = v.replace /\n/g, newLineWithIndent
         "#{colorize.blue "#{k}:"}\t#{v}"
 
-      if notPlainObject then "#{objectStart}#{if forceMultilineOutput then newLineWithIndent else ' '}" else ""
+      if notPlainObject then "#{objectStart}#{if firstLineOnNewLine then newLineWithIndent else ' '}" else ""
       + finalInspectedValues.join
         if forceMultilineOutput
-          if notPlainObject then newLineWithIndent else "\n"
+          if notPlainObject then newLineWithIndent
+          else "\n"
+
         else ",\t"
