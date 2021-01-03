@@ -10,8 +10,7 @@ merge
   &ArtClassSystem
   &ArtEmailValidator
   &ArtCommunicationStatus
-
-  test: (args...) -> global.test args...
+  &ArtTestbench
 
   newTestSocket: (failureResponseString, delay = 0) ->
     unless getEnv().REAL_SMTP
