@@ -25,6 +25,7 @@ class Help extends BaseClass
     else
       log.warn {} option, details
       throw new Error "expecting options details to be string, 2-length array or object"
+
     @toHelpString
       compactFlatten []
         colors.green "  --#{option}"
@@ -49,7 +50,7 @@ class Help extends BaseClass
         array k from-array Object.keys(options).sort() with colors.green "--#{k}" when !options[k].advanced
         .sort()
         .join if required then ' ' else ', '
-      if required then l else "[#{l}]"
+      if required then l else if l.length > 0 then "[#{l}]"
 
   @getCommandDetails: (command, {description, options, examples}) =>
     @toHelpString

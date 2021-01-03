@@ -11,12 +11,17 @@ require :@art-suite/cli
       Jack Ketch Yellow Jack main sheet list black spot spyglass hearties barque sutler fathom. Stern gally crimp run a rig execution dock lugsail hogshead boatswain Davy Jones' Locker jolly boat. Tender Pieces of Eight league matey mizzenmast take a caulk nipperkin capstan furl chantey.
 
   commands:
-    crazy:
+    simplestCommandDefinition: -> "" This command demos the easiest way to define a command - using just a function. Non-null/undefined return values are output at the end of execution. In this case, this string is presented.
+    simplestOptionsDefinition:
+      description: "" This command demos the easiest way to define your options as an array of strings.
+      options: :color :length
+      run: ({color, length}) -> log {} color, length
+
+    advanced-and-required-options:
       run: (options) -> options
-      options: object k in w "measured fer yer chains fluke jack ketch grapple belay gally blow the man down lateen sail topgallant chantey" with-key k
-        advanced: /[a-j]$/.test k
-        required: /[s-z]$/.test k
-        description: "" How do you think #{k} should work?
+      options:
+        myExpertOption:   advanced: true
+        myRequiredOption: required: true
 
     sing:
       run: ({song, args}) -> "" ♫ #{song ? args?.join ' '} ♫!

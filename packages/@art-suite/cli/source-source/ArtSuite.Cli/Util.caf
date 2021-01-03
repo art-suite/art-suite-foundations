@@ -30,6 +30,7 @@ import &StandardImport, {} &ansiWordwrap
   wrapProse = (text, indent) -> wrap text, indent, 100
 
   normalizeCommands: (commands, help) ->
+    throw new Error "Commands should be an object (got: #{formattedInspect commands})" unless commands is Object
     commands = object v, k from commands with-key normalizeCommandName k
       if isFunction v
         run: v
