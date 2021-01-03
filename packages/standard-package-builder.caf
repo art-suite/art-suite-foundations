@@ -3,40 +3,44 @@ import &ArtStandardLib
 (currentPackage, options = {}) -> (abcPackage) ->
   options extract?
     sourceDir = "source-source"
+    targetDir = "source"
     mocha
     coffeeScript
 
   merge currentPackage,
     scripts:
+      nn:
+        "" nn #{targetDir}/* #{if mocha then :test/tests}
       test:
-        if mocha
-          "" mocha -u tdd
-        else
-          :jest
+        """
+          npm run nn
+          #{}
+            if mocha then "" mocha -u tdd
+            else          :jest
 
       build:
         if coffeeScript
           """
-            coffee -m --output source --compile #{sourceDir} &
+            coffee -m --output #{targetDir} --compile #{sourceDir} &
             COFFEE_PID=$!
-            caf -m -c #{sourceDir} -o source &
+            caf -m -c #{sourceDir} -o #{targetDir} &
             CAF_PID=$!
             wait $COFFEE_PID || exit 1
             wait $CAF_PID || exit 1
-            nn -s
+            npm run nn
         else
           """
-            caf -m -c #{sourceDir} -o source
-            nn -s
+            caf -m -c #{sourceDir} -o #{targetDir}
+            npm run nn
 
       build-clean:  "" npm run clean; npm run build
-      clean:        "" rm -rf source/*
+      clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch
     jest:
       testEnvironment: :node
       collectCoverageFrom:
-        "source/**/*.js",
-        "!source/test/**/*.js"
+        "#{targetDir}/**/*.js",
+        "!#{targetDir}/test/**/*.js"
 
     watch:
       build:
