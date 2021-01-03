@@ -48,4 +48,4 @@ test "mixin hotreload updates bindings for changed functions; deletes bindings f
   delete MyClass.prototype.extraF
   {getFoo, extraF} = mine; assert.eq myString, getFoo(); assert.isFunction extraF
   mine.bindFunctionsToInstance true
-  {getFoo, extraF} = mine; assert.eq myString + :2, getFoo(); assert.doesNotExists extraF
+  {getFoo, extraF} = mine; assert.eq myString + :2, getFoo(); assert.doesNotExist extraF

@@ -25,19 +25,6 @@
           }
         };
 
-        InstanceFunctionBindingMixin._getFunctionsToBindList = function() {
-          var k, ref1, results, v;
-          ref1 = this.prototype;
-          results = [];
-          for (k in ref1) {
-            v = ref1[k];
-            if (k !== "constructor" && isFunction(v) && this.propertyIsConcrete(k) && (!this.nonBindingFunctions || indexOf.call(this.nonBindingFunctions, k) < 0)) {
-              results.push(k);
-            }
-          }
-          return results;
-        };
-
         InstanceFunctionBindingMixin.prototype.getBoundFunctionList = function() {
           return this._boundFunctionList;
         };
@@ -61,6 +48,19 @@
           }
           this._boundFunctionList = functionsToBindList;
           return this;
+        };
+
+        InstanceFunctionBindingMixin._getFunctionsToBindList = function() {
+          var k, ref1, results, v;
+          ref1 = this.prototype;
+          results = [];
+          for (k in ref1) {
+            v = ref1[k];
+            if (k !== "constructor" && isFunction(v) && this.propertyIsConcrete(k) && (!this.nonBindingFunctions || indexOf.call(this.nonBindingFunctions, k) < 0)) {
+              results.push(k);
+            }
+          }
+          return results;
         };
 
         return InstanceFunctionBindingMixin;
