@@ -166,14 +166,14 @@ suite:
     test :grandparent-reference ->
       backR = child: grandchild: {}
       backR.child.grandchild.grandparent = backR
-      assert.eq formattedInspect(backR), "child: grandchild: grandparent: <<< grandparent reference"
+      assert.eq formattedInspect(backR, maxLineLength: 1000), "child: grandchild: grandparent: <<< grandparent reference"
 
     test :grandparent-reference ->
       backR = child: grandchild: greatgrandchild: {}
       backR.child.grandchild.greatgrandchild.greatgrandparent = backR
-      assert.eq formattedInspect(backR), "child: grandchild: greatgrandchild: greatgrandparent: <<< great grandparent reference"
+      assert.eq formattedInspect(backR, maxLineLength: 1000), "child: grandchild: greatgrandchild: greatgrandparent: <<< great grandparent reference"
 
     test :grandparent-reference ->
       backR = child: grandchild: greatgrandchild: greatgreatgrandchild: {}
       backR.child.grandchild.greatgrandchild.greatgreatgrandchild.greatgreatgrandparent = backR
-      assert.eq formattedInspect(backR), "child: grandchild: greatgrandchild: greatgreatgrandchild: greatgreatgrandparent: <<< 4 generations back reference"
+      assert.eq formattedInspect(backR, maxLineLength: 1000), "child: grandchild: greatgrandchild: greatgreatgrandchild: greatgreatgrandparent: <<< 4 generations back reference"

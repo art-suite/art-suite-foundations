@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+require('@art-suite/cli').start({
+  commands: {
+    hello: props => `Hello ${(props.args && props.args[0]) ?? require("os").userInfo().username}.`,
+    bye: () => "Bye bye, now!"
+  }
+})

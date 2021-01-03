@@ -32,7 +32,15 @@ test "start + myCommand --verbose" ->
       {} myCommandRan
       myCommandRan: true
 
+test "extra args past as args" ->
+  start
+    commands: myCommand: ({args}) -> assert.eq args, [] :arg
+    argv: :nodeJs :startFile :myCommand :arg
 
+test "args undefined if there are no extra args" ->
+  start
+    commands: myCommand: ({args}) -> assert.eq args, undefined
+    argv: :nodeJs :startFile :myCommand
 
 test "start + myCommand + --help" ->
   myCommandRan = false
