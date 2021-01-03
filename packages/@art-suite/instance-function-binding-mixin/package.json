@@ -1,17 +1,25 @@
 {
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.70.6"
+    "art-standard-lib": "^1.70.10"
   },
-  "name": "@art-suite/instance-function-binding-mixin",
   "devDependencies": {
     "art-build-configurator": "^1.29.3"
   },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
       "build/**/*.js",
       "!build/test/**/*.js"
     ],
     "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "name": "@art-suite/instance-function-binding-mixin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
     "build": "coffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
@@ -21,6 +29,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
+  "version": "1.0.1",
   "watch": {
     "build": {
       "extensions": [
@@ -32,6 +41,5 @@
       ],
       "quiet": false
     }
-  },
-  "version": "1.0.0"
+  }
 }

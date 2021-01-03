@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.13",
-    "art-standard-lib": "^1.70.6"
+    "art-standard-lib": "^1.70.10"
   },
   "description": "Art.Epoch",
   "devDependencies": {
