@@ -28,11 +28,11 @@ npm install @art-suite/chained-test --save-dev
 ### Basics
 
 ```javascript
-let { chainedTest } = require("@art-suite/chained-test");
+let { firstIt } = require("@art-suite/chained-test");
 
-chainedTest("setup", () => 123)
+firstIt("should initialize to 123", () => 123)
 
-.thenIt("should be 123", (value) => {
+.thenIt("should still be 123", (value) => {
   expect(value).toEqual(123)
   return 456;
 })
@@ -47,7 +47,7 @@ chainedTest("setup", () => 123)
 ### Full Example
 
 ```javascript
-let { chainedTest } = require("@art-suite/chained-test");
+let { firstIt } = require("@art-suite/chained-test");
 let { auth, createPost, createComment, getComments, logOut } = require("./TestApp");
 
 const aliceEmail = "alice@test.com";
@@ -56,7 +56,7 @@ const commentBody = "Brilliant!";
 
 // The return-result of this first test will be passed as the
 // second argument to all subsequent tests in the chain.
-chainedTest("Alice's user story", () => auth(aliceEmail))
+firstIt("Alice's user story", () => auth(aliceEmail))
 
 // In "then" tests, the test's return value is passed to the next test.
 // skipped: if neither this nor any dependent tests are selected by test framework
@@ -105,14 +105,14 @@ Otherwise, choose `.tap*` or `.then*` based on how you need your return-values p
 # API
 
 
-### chainedTest()
+### firstIt()<br>chainedTest() (alias)
 
 Start a chained test.
 
 ```javascript
-let { chainedTest } = require("@art-suite/chained-test");
+let { firstIt } = require("@art-suite/chained-test");
 
-chainedTest(name, test)
+firstIt(name, test)
 ```
 
 - **IN:**
@@ -128,15 +128,14 @@ chainedTest(name, test)
 Add additional tests to the test-chain.
 
 ```javascript
-let { chainedTest } = require("@art-suite/chained-test");
+let { firstIt } = require("@art-suite/chained-test");
 
-chainedTest(name, test)
+firstIt(name, test)
 
-// aliases
-.thenIt(name, test)     // test and pass return-value to next test
+.thenIt(name, test)     // test and pass return-value to the next test
 .tapIt(name, test)      // test and pass previous return-value through to next test
 .softTapIt(name, test)  // test, pass previous return-value through to next test,
-                        //  and skip if not requested by test runner.
+                        //   and skip if not requested by test runner.
 
 // aliases
 .thenTest(name, test)
@@ -150,7 +149,7 @@ All three methods have the same signature but have slightly different effects:
   - name(*): string
   - test(*): (lastTestResult, firstTestResult) => testResult can be anything
     - lastTestResult: the returned value from the last non-"tap" test.
-    - firstTestResult: the value returned from the first test established in the chainedTest call.
+    - firstTestResult: the value returned from the first test established in the firstIt call.
   > (*) The `thenTest/tapTest/softTapTest` methods can accept any number of arguments as long as they are arranged as name-test pairs. There must be at least one pair. If there is more than one pair, each pair is treated as-if they were independently called with a sequence of calls to the same method-type.
 - **OUT:**
   - a new ChainedTest instance
@@ -167,17 +166,17 @@ All three methods have the same signature but have slightly different effects:
   - `.then*` and `.tap*` tests will still run if, and only if, a downstream test (of any sort) *is* selected by the test-runner.
   - `.softTap*` tests will not run unless explicitly selected by the test-runner.
 
-# How Failures and Skipped Tests are Handled
+# How Failures and Skipped-Tests are Handled
 
-Logically, if a test fails, all downstream tests can no longer complete. Therefor, those down-stream tests should be skipped. Here's how chained-test handles this in each test framework:
+Logically, if step in a chained fails, all downstream tests can no longer complete (*). Therefor, those down-stream tests should be skipped. Here's how chained-test handles this in each test framework:
 
 - **Mocha:** [Mocha supports dynamically skipping tests with `this.skip()`](https://mochajs.org/#inclusive-tests). Chained-test takes advantage of this and skips any test which cannot be completed due to an earlier failure.
 
-- **Jest:** In Jest, chained-test will skip the dependent tests, but Jest only allows a test to be marked as successful or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are not executed and marked as successful.
+- **Jest:** In Jest, chained-test will skip the dependent tests, but Jest only allows a test to be marked as successful or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are not executed, *but they are marked as successful in Jest's reporting*.
 
   > As-of November 2020, there is an [open feature-request for Jest to support dynamically skipped tests](https://github.com/facebook/jest/issues/8604) identical to Mocha's `this.skip()` capability. <br><br>Please add your support to the feature request if you enjoy using chained-test with Jest, as I do. - SBD
 
-Note: When a `.softTap*` test fails, dependent tests will still be executed.
+> (*): The exceptions are `.softTapIt/.softTestIt` tests. The "soft" signals it's ok to continue testing even if this test fails.
 
 # Getting Fancy: Test Trees
 
@@ -188,7 +187,7 @@ It may make sense to share some root set of tests, and their results, across mul
 For example:
 ```javascript
 let commonRoot =
-  chainedTest(mySetup)
+  firstIt(mySetup)
   .thenTest(test1Name, test1);
 
 commonRoot
