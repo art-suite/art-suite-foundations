@@ -3,6 +3,11 @@ import &ArtStandardLib, &ArtSuiteTestChainedTest, require :@art-suite/assert
 testsActuallyRan = []
 ran = (key) -> testsActuallyRan.push key
 
+firstIt     :firstIt            -> 123
+.tapIt      :firstIt-tapIt      -> 3
+.softTapIt  :firstIt-softTapIt  -> 3
+.thenIt     :firstIt-thenIt     (val) -> assert.eq val, 123
+
 chainedTest -> 123
 .tapTest :tapTest3 ->  3
 .thenTest :thenTestStill3 (val) -> assert.eq val, 123

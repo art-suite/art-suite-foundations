@@ -8,7 +8,7 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
 
 uniqueErrorsReported = {}
 
-{chainedTest} = class ChainedTest extends BaseClass
+{chainedTest, firstIt} = class ChainedTest extends BaseClass
   ###
     IN:
       PATTERN 1:
@@ -31,6 +31,8 @@ uniqueErrorsReported = {}
   tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
   softTapTest:  (args...)-> @_applySequence :_softTapTest compactFlatten args
 
+  # ALIASES
+  @firstIt:     @chainedTest
   thenIt:       (args...)-> @_applySequence :_thenTest    compactFlatten args
   tapIt:        (args...)-> @_applySequence :_tapTest     compactFlatten args
   softTapIt:    (args...)-> @_applySequence :_softTapTest compactFlatten args
