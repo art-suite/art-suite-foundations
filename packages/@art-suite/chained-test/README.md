@@ -42,7 +42,7 @@ chainedTest("setup", () => 123)
 })
 ```
 
-You may notice this looks a lot like a chain of promises. That is intentional.
+> You may notice this looks a lot like a chain of promises. That is intentional!
 
 ### Full Example
 
@@ -92,7 +92,7 @@ For example:
 - If only `logOut` is selected, `"auth alice", "create a post", "create a comment", "get post's comments", and "logOut"` are executed.
 - If only `validate alice is returned` is selected, only `"auth alice" and "validate alice is returned"` are executed.
 
-### When to Use .thenTest, .tapTest or .softTapTest
+### When to Use .thenTest/.thenIt, .tapTest/.tapIt or .softTapTest/.softTapIt
 
 - Use `.then*` whenever you need to pass a result from one test down the chain to other tests.
 - Use `.tap*` when you want to use the same, passed-in value for multiple tests. `.tap*` tests are also helpful when downstream tests care about the side-effects of a test but don't care about its direct result.
@@ -123,7 +123,7 @@ chainedTest(name, test)
 - **EFFECT:**
   - registers the named test with the test framework
 
-### chainedTestInstance.thenTest() / .tapTest() / .softTapTest()
+### .thenIt() / .tapIt() / .softTapIt()<br>.thenTest() / .tapTest() / .softTapTest() (aliases)
 
 Add additional tests to the test-chain.
 
@@ -167,7 +167,19 @@ All three methods have the same signature but have slightly different effects:
   - `.then*` and `.tap*` tests will still run if, and only if, a downstream test (of any sort) *is* selected by the test-runner.
   - `.softTap*` tests will not run unless explicitly selected by the test-runner.
 
-# Getting Fancy: Chains can become Trees
+# How Failures and Skipped Tests are Handled
+
+Logically, if a test fails, all downstream tests can no longer complete. Therefor, those down-stream tests should be skipped. Here's how chained-test handles this in each test framework:
+
+- **Mocha:** [Mocha supports dynamically skipping tests with `this.skip()`](https://mochajs.org/#inclusive-tests). Chained-test takes advantage of this and skips any test which cannot be completed due to an earlier failure.
+
+- **Jest:** In Jest, chained-test will skip the dependent tests, but Jest only allows a test to be marked as successful or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are not executed and marked as successful.
+
+  > As-of November 2020, there is an [open feature-request for Jest to support dynamically skipped tests](https://github.com/facebook/jest/issues/8604) identical to Mocha's `this.skip()` capability. <br><br>Please add your support to the feature request if you enjoy using chained-test with Jest, as I do. - SBD
+
+Note: When a `.softTap*` test fails, dependent tests will still be executed.
+
+# Getting Fancy: Test Trees
 
 You may be asking yourself, can I only do a simple sequence of tests? Can I, maybe, branch out a little? Oh yes you can!
 
@@ -191,18 +203,6 @@ When filtering tests it all works as expected. The `commonRoot` is only excuted 
 - If only `test1` is selected, `mySetup, test1` will be executed.
 - If only `test2` is selected, `mySetup, test1 and test2` will be executed.
 - If only `test3` is selected, `mySetup, test1 and test3` will be executed.
-
-# How Failures and Skipped Tests are Handled
-
-Logically, if a test fails, all downstream tests can no longer complete. Therefor, those down-stream tests should be skipped. Here's how chained-test handles this in each test framework:
-
-- **Mocha:** [Mocha supports dynamically skipping tests with `this.skip()`](https://mochajs.org/#inclusive-tests). Chained-test takes advantage of this and skips any test which cannot be completed due to an earlier failure.
-
-- **Jest:** Unfortunately, as-of November 2020, there is only an [open feature-request for Jest to support dynamically skipped tests](https://github.com/facebook/jest/issues/8604). Until Jest adds support, chained-test cannot handle this perfectly. Chained-test will skip the dependent tests, but Jest only allows a test to be marked as successful or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are marked as successful. <br><br>Marking untested tests as successful is clearly less than ideal, but it does hit the key requirement of surfacing the actual failure and causing the overall test-suite to fail. The alternative option would be to mark all dependent tests as failed, but that creates an excessive amount of noise. It is also incorrect to mark untested tests as failed when they may be just fine.
-
-  > I encourage you to add your support to the feature request if you enjoy using chained-test with Jest, as I do. - SBD
-
-Note: When a `.softTap*` test fails, dependent tests will still be executed.
 
 # Developed
 
