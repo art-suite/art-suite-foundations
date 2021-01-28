@@ -1,7 +1,9 @@
 # ArtSuite/ChainedTest
 
+> Chained-Test is a Jest/MochaJS extension for breaking up large tests into sequences of smaller tests
+
 Smaller tests are easier to write, maintain, and use to ensure code correctness.
-ChainedTest lets you break up large tests into a sequences of small tests. This is particularly helpful for **integration tests**, **user-story tests**, and any tests with **more than one asynchronous step**.
+ChainedTest lets you break up large tests into a sequences of small tests. This is particularly helpful for **user-story tests**, **integration tests**, and any test with **more than one asynchronous step**.
 
 # Benefits
 
