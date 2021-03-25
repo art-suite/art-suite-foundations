@@ -4,7 +4,7 @@
   "dependencies": {
     "art-class-system": "^1.11.13",
     "art-epoched-state": "^1.2.12",
-    "art-standard-lib": "^1.70.10"
+    "art-standard-lib": "^1.70.12"
   },
   "description": "Epoched event system",
   "devDependencies": {

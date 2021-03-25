@@ -5,7 +5,7 @@
     "art-binary": "^1.1.14",
     "art-class-system": "^1.11.13",
     "art-object-tree-factory": "^2.2.8",
-    "art-standard-lib": "^1.70.10"
+    "art-standard-lib": "^1.70.12"
   },
   "description": "Art.Browser.Tools",
   "devDependencies": {

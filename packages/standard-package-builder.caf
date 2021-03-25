@@ -36,6 +36,7 @@ import &ArtStandardLib
       build-clean:  "" npm run clean; npm run build
       clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch
+
     jest:
       testEnvironment: :node
       collectCoverageFrom:

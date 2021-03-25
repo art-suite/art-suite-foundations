@@ -62,17 +62,17 @@ class StandardPackageJson
         test:
           if abcConfig?.target?.node
                         "" nn -s;mocha -u tdd
-          else          "" webpack-dev-server  --progress --env.devServer
-        start:          "" webpack-dev-server --hot --inline --progress --env.devServer
+          else          "" webpack serve  --progress --env.devServer
+        start:          "" webpack serve --hot --inline --progress --env.devServer
 
         testInBrowser: if abcConfig?.target?.node
-                        "" webpack-dev-server --progress --env.devServer
+                        "" webpack serve --progress --env.devServer
 
         build:          "" webpack --progress
 
         # ArtSuite scripts
         # nodeTest: 'nn -s; mocha -u tdd --compilers coffee:coffee-script/register'
-        # dev:      'nn -s; webpack-dev-server -d --progress'
-        # hot:      'nn -s; webpack-dev-server --hot --inline --progress'
+        # dev:      'nn -s; webpack serve -d --progress'
+        # hot:      'nn -s; webpack serve --hot --inline --progress'
         # nn:       'nn -s'
 

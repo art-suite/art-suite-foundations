@@ -61,12 +61,14 @@ inspecting = []
       inspecting.pop()
       out
 
+  # NOTE: "oldInspecting = inspecting" makes this safe to be re-entered even from outside this library
   toInspectedObjects: (m) ->
+    oldInspecting = inspecting
     inspecting = []
     try
       out = toInspectedObjectsR m
-      inspecting = null
+      inspecting = oldInspecting
       out
     catch error
-      inspecting = null
+      inspecting = oldInspecting
       throw error

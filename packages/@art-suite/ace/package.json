@@ -11,7 +11,7 @@
     "art-config": "^2.0.1",
     "art-filebuilder": "^2.1.11",
     "art-object-tree-factory": "^2.2.8",
-    "art-standard-lib": "^1.70.10",
+    "art-standard-lib": "^1.70.12",
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.73.0",
     "caffeine-script-runtime": "^1.14.0",
@@ -24,7 +24,7 @@
     "glob": "^7.1.6",
     "glob-promise": "^3.4.0",
     "neptune-namespaces": "^4.2.9",
-    "simple-git": "^2.27.0"
+    "simple-git": "^2.31.0"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
