@@ -1,4 +1,5 @@
 import &StandardImport, &Configurators
+glob = &GlobPromise
 
 class Main
 
@@ -54,7 +55,7 @@ class Main
     @registerLoaders npmRoot
     .then ->
       configFilepath = path.join process.cwd(), @configBasename
-      &GlobPromise configFilepath + "*"
+      glob configFilepath + "*"
       .then ([configFilepath]) ->
         if configFilepath?
           Main.realRequire configFilepath

@@ -8,7 +8,7 @@
   "dependencies": {
     "art-class-system": "^1.11.13",
     "art-standard-lib": "^1.70.12",
-    "glob-promise": "^3.4.0",
+    "glob-promise": "^4.1.0",
     "neptune-namespaces-runtime": "^3.2.9"
   },
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
