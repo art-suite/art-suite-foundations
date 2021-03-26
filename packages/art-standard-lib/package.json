@@ -6,13 +6,13 @@
     "caffeine-script-runtime": "^1.14.0",
     "dateformat": "^4.5.1",
     "detect-node": "^2.0.4",
-    "neptune-namespaces-runtime": "^3.2.9",
+    "neptune-namespaces-runtime": "^3.2.10",
     "pluralize": "^8.0.0"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
-    "art-build-configurator": "^1.29.3",
-    "art-testbench": "^3.2.2",
+    "art-build-configurator": "^1.29.4",
+    "art-testbench": "^3.2.3",
     "mocha": "^7.2.0",
     "mock-fs": "^4.13.0"
   },
@@ -37,7 +37,7 @@
     "test": "nn -s;mocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "1.70.12",
+  "version": "1.70.13",
   "watch": {
     "build": {
       "extensions": [

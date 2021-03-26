@@ -3,14 +3,14 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "ansi-wordwrap": "^1.0.2",
-    "art-class-system": "^1.11.13",
-    "art-standard-lib": "^1.70.12",
+    "art-class-system": "^1.11.14",
+    "art-standard-lib": "^1.70.13",
     "colors": "^1.4.0"
   },
   "description": "Art.Cli",
   "devDependencies": {
-    "art-build-configurator": "^1.29.3",
-    "art-testbench": "^3.2.2",
+    "art-build-configurator": "^1.29.4",
+    "art-testbench": "^3.2.3",
     "mocha": "^7.2.0",
     "mock-fs": "^4.13.0",
     "npm-watch": "^0.9.0"
@@ -37,7 +37,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "1.3.12",
+  "version": "1.3.13",
   "watch": {
     "build": {
       "extensions": [
