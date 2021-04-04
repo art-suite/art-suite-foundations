@@ -1,28 +1,13 @@
-{
-  toSeconds, toMilliseconds, toDate
-  log
-  merge
-  firstOfHour
-  firstOfDay
-  firstOfWeek
-  firstOfMonth
-
-  firstOfDayLocale
-  firstOfWeekLocale
-  firstOfMonthLocale
-  formattedInspect
-  formatDate
-  abs
-} = require './StandardImport'
+import &StandardImport
 
 date = new Date milliseconds = 1497123141167
 roundedIntDiv1000 = (v) -> (v / 1000) + .5 | 0
-seconds = milliseconds/1000
-values = {date, seconds, milliseconds}
+seconds = milliseconds / 1000
+values = {} date, seconds, milliseconds
 
-module.exports = suite:
+describe
   basic: ->
-    for valueName, value of values
+    each value, valueName in values
       test "toSeconds #{valueName}", ->
         assert.isNumber v = toSeconds value
         assert.eq seconds, v
@@ -59,34 +44,59 @@ module.exports = suite:
     testFirstOf = (name, f, m) ->
       test name, ->
         v = f testTime
-        assert.eq (breakOut v),
-          merge(
+        assert.eq
+          breakOut v
+          merge
             breakOut testTime
             m
-          )
 
     testTime = 1528587452531
-    testFirstOf "firstOfHour",   firstOfHour,  min: 0
-    testFirstOf "firstOfDay",    firstOfDay,   hour: 0, min: 0
-    testFirstOf "firstOfWeek",   firstOfWeek,  hour: 0, min: 0, dayOfWeek: 1, day: 4
-    testFirstOf "firstOfMonth",  firstOfMonth, hour: 0, min: 0, dayOfWeek: 5, day: 1
+    testFirstOf :firstOfHour    firstOfHour,  min: 0
+    testFirstOf :firstOfDay     firstOfDay,   hour: 0 min: 0
+    testFirstOf :firstOfWeek    firstOfWeek,  hour: 0 min: 0 dayOfWeek: 1 day: 4
+    testFirstOf :firstOfMonth   firstOfMonth, year: 2018 month: 5 hour: 0 min: 0 dayOfWeek: 5 day: 1
+    testFirstOf :firstOfYear    firstOfYear,  year: 2018 month: 1 hour: 0 min: 0 dayOfWeek: 4 day: 1
+
+  firstOfLocale: ->
+    breakOut = (time) ->
+      d = toDate time
+      year:       d.getFullYear()
+      month:      d.getMonth()
+      day:        d.getDate()
+      hour:       d.getHours()
+      min:        d.getMinutes()
+      dayOfWeek:  d.getDay()
+
+    testFirstOfLocale = (name, f, m) ->
+      test name, ->
+        v = f testTime
+        assert.eq
+          breakOut v
+          merge breakOut(testTime), m
+          "hello, context!"
+
+    testTime = 1528587452531
+    testFirstOfLocale :firstOfDayLocale    firstOfDayLocale,    hour: 0 min: 0
+    testFirstOfLocale :firstOfWeekLocale   firstOfWeekLocale,   hour: 0 min: 0 dayOfWeek: 1 day: 4
+    testFirstOfLocale :firstOfMonthLocale  firstOfMonthLocale,  year: 2018 month: 5 hour: 0 min: 0 dayOfWeek: 5 day: 1
+    testFirstOfLocale :firstOfYearLocale   firstOfYearLocale,   year: 2018 month: 1 hour: 0 min: 0 dayOfWeek: 4 day: 1
 
   regressions:
     firstOfDay: ->
-      test "firstOfDay firstOfDay foo", ->
+      test "firstOfDay firstOfDay *many*", ->
         start = 1537142400 - 100
         end = start + 3600 * 24
-        for seconds in [start..end]
+        each seconds from start to end
           first = firstOfDay seconds
           second = firstOfDay seconds
           if first != second
             assert.eq first, second, "expected a == b for a = firstOfDay b = firstOfDay #{seconds}"
 
     firstOfWeek: ->
-      test "firstOfWeek firstOfWeek foo", ->
+      test "firstOfWeek firstOfWeek *many*", ->
         start = 1537142400 - 100
         end = start + 3600 * 24 * 7
-        for seconds in [start..end] by 61
+        each seconds from start to end by 61
           first = firstOfWeek seconds
           second = firstOfWeek seconds
           if first != second
@@ -102,28 +112,3 @@ module.exports = suite:
         assert.rejects -> firstOfWeek 1 / 0 #  Infinity"
         assert.lte 1537142300, (firstOfWeek undefined), "undefined"
         assert.lte 1537142300, (firstOfWeek null), "null"
-
-  firstOfLocale: ->
-    breakOut = (time) ->
-      d = toDate time
-      year:       d.getFullYear()
-      month:      d.getMonth()
-      day:        d.getDate()
-      hour:       d.getHours()
-      min:        d.getMinutes()
-      dayOfWeek:  d.getDay()
-
-    testFirstOfLocale = (name, f, m) ->
-      test name, ->
-        v = f testTime
-        assert.eq(
-          breakOut v
-          merge breakOut(testTime), m
-          "hello, context!"
-        )
-
-    testTime = 1528587452531
-    testFirstOfLocale "firstOfHour",   firstOfHour,         min:  0
-    testFirstOfLocale "firstOfDay",    firstOfDayLocale,    hour: 0, min: 0
-    testFirstOfLocale "firstOfWeek",   firstOfWeekLocale,   hour: 0, min: 0, dayOfWeek: 1, day: 4
-    testFirstOfLocale "firstOfMonth",  firstOfMonthLocale,  hour: 0, min: 0, dayOfWeek: 5, day: 1

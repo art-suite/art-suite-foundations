@@ -4,6 +4,7 @@
 march1973InMilliseconds = 100000000000
 
 module.exports =
+
   # SEE: https://www.npmjs.com/package/dateformat
   ###
     Mask              | Description
@@ -125,7 +126,10 @@ module.exports =
   firstOfHour:   firstOfHour = (time) ->  ((toSeconds(time)                 / secondsPerHour) | 0) * secondsPerHour
   firstOfDay:     firstOfDay = (time) ->  ((toSeconds(time)                 / secondsPerDay ) | 0) * secondsPerDay
   firstOfWeek:                 (time) ->  firstOfDay(time) - ((toDate(time).getUTCDay() - 1) %% 7) * secondsPerDay  # monday is first day
-  firstOfMonth:                (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
+  firstOfMonth: firstOfMonth = (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
+
+  # firstOfYear: using 3rd day of the month avoids any and all time-zone issues after applying firstOfMonth
+  firstOfYear:                 (time) -> firstOfMonth(new Date(toDate(time).getUTCFullYear(), 1, 3))
 
   firstOfDayLocale: firstOfDayLocale =  (time) ->  firstOfHour(time)     - toDate(time).getHours()            * secondsPerHour
   firstOfWeekLocale: (time, sundayIsFirst) ->
@@ -133,4 +137,10 @@ module.exports =
     day-- unless sundayIsFirst
     firstOfDayLocale(time) - secondsPerDay * (day %% 7)
 
-  firstOfMonthLocale:                   (time) ->  firstOfDayLocale(time) - (toDate(time).getDate() - 1)       * secondsPerDay
+  firstOfMonthLocale: firstOfMonthLocale = (time) ->  firstOfDayLocale(time) - (toDate(time).getDate() - 1)       * secondsPerDay
+  firstOfYearLocale: (time) ->
+    new Date( #takes inputs in the local timezone, so this is easy:
+      toDate(time).getFullYear()
+      1
+      1
+    )

@@ -219,3 +219,5 @@
   })(MinimalBaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=Inspector2.js.map

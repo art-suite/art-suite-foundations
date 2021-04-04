@@ -20,9 +20,14 @@
   "jest": {
     "collectCoverageFrom": [
       "source/**/*.js",
-      "!source/_?[Jjt]est/**/*.js"
+      "!source/test/**/*.js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
   },
   "license": "ISC",
   "name": "art-standard-lib",
@@ -31,10 +36,11 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee --output source --compile source-source; caf -p -c source-source -o source; nn -s",
+    "build": "coffee -m --output source --compile source-source &\nCOFFEE_PID=$!\ncaf -m -c source-source -o source &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
     "build-clean": "npm run clean; npm run build",
     "clean": "rm -rf source/*",
-    "test": "nn -s;mocha -u tdd",
+    "nn": "nn source/* ",
+    "test": "npm run nn\njest\nif [[ $? -ne 0 ]]; then\n  exit 1\nfi\nmocha -u tdd",
     "watch": "npm-watch"
   },
   "version": "1.70.13",

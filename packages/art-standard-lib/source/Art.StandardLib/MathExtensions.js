@@ -318,3 +318,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=MathExtensions.js.map

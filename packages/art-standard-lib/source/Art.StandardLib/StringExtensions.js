@@ -488,3 +488,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=StringExtensions.js.map

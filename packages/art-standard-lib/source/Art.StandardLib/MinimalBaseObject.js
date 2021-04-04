@@ -204,3 +204,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=MinimalBaseObject.js.map

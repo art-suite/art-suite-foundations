@@ -40,3 +40,5 @@
   })(Error));
 
 }).call(this);
+
+//# sourceMappingURL=ErrorWithInfo.js.map

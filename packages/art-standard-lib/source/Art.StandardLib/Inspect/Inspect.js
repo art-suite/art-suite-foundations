@@ -9,3 +9,5 @@ Then, move into StandardLib.
   module.exports = [[require("./Inspector"), "shallowInspect inspectLean inspect"], require('./FormattedInspect'), require('./InspectedObjects'), require('./PlainObjects'), require('./InspectedObjectLiteral')];
 
 }).call(this);
+
+//# sourceMappingURL=Inspect.js.map

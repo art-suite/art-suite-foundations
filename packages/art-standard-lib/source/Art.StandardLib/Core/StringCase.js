@@ -123,3 +123,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=StringCase.js.map

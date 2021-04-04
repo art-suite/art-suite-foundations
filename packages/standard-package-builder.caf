@@ -5,6 +5,7 @@ import &ArtStandardLib
     sourceDir = "source-source"
     targetDir = "source"
     mocha
+    mochaAndJest
     coffeeScript
 
   merge currentPackage,
@@ -15,7 +16,14 @@ import &ArtStandardLib
         """
           npm run nn
           #{}
-            if mocha then "" mocha -u tdd
+            if mochaAndJest then
+              """
+                jest
+                if [[ $? -ne 0 ]]; then
+                  exit 1
+                fi
+                mocha -u tdd
+            else if mocha then "" mocha -u tdd
             else          :jest
 
       build:
@@ -39,9 +47,13 @@ import &ArtStandardLib
 
     jest:
       testEnvironment: :node
+      verbose: true
       collectCoverageFrom:
         "#{targetDir}/**/*.js",
         "!#{targetDir}/test/**/*.js"
+      testPathIgnorePatterns:
+        "/node_modules/"
+        "<rootDir>/test" # so it can ignore our mocha tests
 
     watch:
       build:

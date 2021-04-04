@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TimeConstants.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source-source/Art.StandardLib/TimeConstants.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;8EACA,iBACE,IAAI,eACJ,GAAI,UACJ,GAAI,UACJ,GAAI,QACJ,GAAI,OACJ,IAAI,SACJ,GAAI,QACJ,GAAI,oBAES,yBAAgC,SAAO,mDACvC,yBAAgC,SAAO,sBAEtD,cACE,IAAI,IAAE,MACN,GAAI,GACJ,GAAI,IACJ,GAAI,MACJ,GAAI,KAAK,MACT,GAAM,KAAG,OAAO,GAChB,IAAM,KAAG,OAAO,WAAW,IAC3B,GAAM,KAAG,OAAO,qBAEM,0CACZ,WAAC,QAAQ,WAAW,qBAG9B,qBACA,eACA"
+}

@@ -48,3 +48,5 @@ populateClone would need to take an additional argument - the clone function to 
   })();
 
 }).call(this);
+
+//# sourceMappingURL=ShallowClone.js.map

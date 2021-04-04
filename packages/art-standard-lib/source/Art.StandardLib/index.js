@@ -35,6 +35,7 @@
   ShallowClone:       require('./ShallowClone'),
   StringExtensions:   require('./StringExtensions'),
   Time:               require('./Time'),
+  TimeConstants:      require('./TimeConstants'),
   TypesExtended:      require('./TypesExtended'),
   Unique:             require('./Unique')
 });

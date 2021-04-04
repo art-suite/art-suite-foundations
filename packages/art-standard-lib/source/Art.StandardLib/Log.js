@@ -299,3 +299,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=Log.js.map

@@ -48,3 +48,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=PromisedFileReader.js.map

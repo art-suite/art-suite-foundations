@@ -25,3 +25,5 @@
   })(MinimalBaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=String.js.map

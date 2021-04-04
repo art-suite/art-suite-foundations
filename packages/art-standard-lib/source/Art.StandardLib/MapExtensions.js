@@ -27,3 +27,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=MapExtensions.js.map

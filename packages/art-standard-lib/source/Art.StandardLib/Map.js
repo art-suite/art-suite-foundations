@@ -197,3 +197,5 @@ Arrays and Objects are assigned a unique id using the StandardLib.Unique library
   })(MinimalBaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=Map.js.map

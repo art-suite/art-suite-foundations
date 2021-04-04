@@ -85,3 +85,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=PromiseWorkerPool.js.map

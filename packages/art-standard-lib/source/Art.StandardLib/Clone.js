@@ -239,3 +239,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=Clone.js.map

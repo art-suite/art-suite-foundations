@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "InspectedObjectLiteral.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source-source/Art.StandardLib/Inspect/InspectedObjectLiteral.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA;;EAAC,UAAW,OAAA,CAAQ,OAAR;;EAEZ,MAAM,CAAC,OAAP,GAAuB;IACrB,sBAAC,CAAA,sBAAD,GAAyB,SAAC,OAAD,EAAU,OAAV;aAAsB,IAAI,sBAAJ,CAA2B,OAA3B,EAAoC,OAApC;IAAtB;;IACZ,gCAAC,QAAD,EAAW,QAAX;MAAC,IAAC,CAAA,UAAD;MAAU,IAAC,CAAA,UAAD;IAAX;;qCACb,mBAAA,GAAqB,SAAA;aAAG;IAAH;;qCACrB,OAAA,GAAS,SAAA;aAAG,IAAC,CAAA;IAAJ;;qCACT,OAAA,GAAS,SAAC,CAAD;aAAO,OAAA,CAAQ,IAAC,CAAA,OAAT,EAAkB,CAAC,CAAC,OAApB;IAAP;;;;;AAPX"
+}

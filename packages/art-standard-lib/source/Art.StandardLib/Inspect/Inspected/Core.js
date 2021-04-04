@@ -32,3 +32,5 @@
   })(MinimalBaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=Core.js.map

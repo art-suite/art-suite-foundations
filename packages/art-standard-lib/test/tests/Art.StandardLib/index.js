@@ -11,7 +11,6 @@
   Async:                        require('./Async'),
   CallStack:                    require('./CallStack'),
   Clone:                        require('./clone'),
-  DateExtensions:               require('./DateExtensions'),
   Environment:                  require('./Environment'),
   Eq:                           require('./eq'),
   Iteration:                    require('./Iteration'),

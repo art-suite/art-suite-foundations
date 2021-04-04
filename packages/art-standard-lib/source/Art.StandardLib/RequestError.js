@@ -80,3 +80,5 @@
   })(Error));
 
 }).call(this);
+
+//# sourceMappingURL=RequestError.js.map

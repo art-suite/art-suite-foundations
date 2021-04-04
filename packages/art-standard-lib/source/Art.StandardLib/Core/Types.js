@@ -298,3 +298,5 @@ What is the differences?
   })();
 
 }).call(this);
+
+//# sourceMappingURL=Types.js.map
