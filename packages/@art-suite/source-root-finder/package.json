@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.14",
-    "art-standard-lib": "^1.70.13"
+    "art-standard-lib": "^1.71.0"
   },
   "description": "ArtSuite.SourceRootFinder",
   "devDependencies": {

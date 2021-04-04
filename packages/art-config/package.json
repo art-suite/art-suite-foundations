@@ -4,7 +4,7 @@
   "dependencies": {
     "art-class-system": "^1.11.14",
     "art-events": "^1.3.11",
-    "art-standard-lib": "^1.70.13"
+    "art-standard-lib": "^1.71.0"
   },
   "description": "A powerful yet simple tool for configuring all your libraries consistently.",
   "devDependencies": {
