@@ -99,7 +99,7 @@ module.exports =
         v
     else if isDate v
       v - 0
-    else throw new Error "invalid timestamp value: #{formattedInspect v}"
+    else throw new Error "invalid timestamp value: #{v} (#{formattedInspect v})"
 
   ###
   IN:
@@ -129,7 +129,7 @@ module.exports =
   firstOfMonth: firstOfMonth = (time) ->  firstOfDay(time) - (toDate(time).getUTCDate() - 1)       * secondsPerDay
 
   # firstOfYear: using 3rd day of the month avoids any and all time-zone issues after applying firstOfMonth
-  firstOfYear:                 (time) -> firstOfMonth(new Date(toDate(time).getUTCFullYear(), 1, 3))
+  firstOfYear:                 (time) -> firstOfMonth(new Date(toDate(time).getUTCFullYear(), 0, 3))
 
   firstOfDayLocale: firstOfDayLocale =  (time) ->  firstOfHour(time)     - toDate(time).getHours()            * secondsPerHour
   firstOfWeekLocale: (time, sundayIsFirst) ->
@@ -141,6 +141,6 @@ module.exports =
   firstOfYearLocale: (time) ->
     new Date( #takes inputs in the local timezone, so this is easy:
       toDate(time).getFullYear()
-      1
+      0
       1
     )

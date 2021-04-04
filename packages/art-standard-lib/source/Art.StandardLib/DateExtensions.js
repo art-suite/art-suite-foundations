@@ -105,7 +105,7 @@
       } else if (isDate(v)) {
         return v - 0;
       } else {
-        throw new Error("invalid timestamp value: " + (formattedInspect(v)));
+        throw new Error("invalid timestamp value: " + v + " (" + (formattedInspect(v)) + ")");
       }
     },
 
@@ -148,7 +148,7 @@
       return firstOfDay(time) - (toDate(time).getUTCDate() - 1) * secondsPerDay;
     },
     firstOfYear: function(time) {
-      return firstOfMonth(new Date(toDate(time).getUTCFullYear(), 1, 3));
+      return firstOfMonth(new Date(toDate(time).getUTCFullYear(), 0, 3));
     },
     firstOfDayLocale: firstOfDayLocale = function(time) {
       return firstOfHour(time) - toDate(time).getHours() * secondsPerHour;
@@ -165,7 +165,7 @@
       return firstOfDayLocale(time) - (toDate(time).getDate() - 1) * secondsPerDay;
     },
     firstOfYearLocale: function(time) {
-      return new Date(toDate(time).getFullYear(), 1, 1);
+      return new Date(toDate(time).getFullYear(), 0, 1);
     }
   };
 

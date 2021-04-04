@@ -55,7 +55,15 @@ describe
     testFirstOf :firstOfDay     firstOfDay,   hour: 0 min: 0
     testFirstOf :firstOfWeek    firstOfWeek,  hour: 0 min: 0 dayOfWeek: 1 day: 4
     testFirstOf :firstOfMonth   firstOfMonth, year: 2018 month: 5 hour: 0 min: 0 dayOfWeek: 5 day: 1
-    testFirstOf :firstOfYear    firstOfYear,  year: 2018 month: 1 hour: 0 min: 0 dayOfWeek: 4 day: 1
+    testFirstOf :firstOfYear    firstOfYear,  year: 2018 month: 0 hour: 0 min: 0 dayOfWeek: 1 day: 1
+
+    test "firstOfYear overall" ->
+      year1 = toSeconds firstOfYear testTime
+      year2 = toSeconds firstOfYear toSeconds(testTime) + secondsPer.year + secondsPer.day
+      assert.within
+        (year2 - year1) - secondsPer.year
+        (-secondsPer.day)
+        secondsPer.day
 
   firstOfLocale: ->
     breakOut = (time) ->
@@ -79,7 +87,7 @@ describe
     testFirstOfLocale :firstOfDayLocale    firstOfDayLocale,    hour: 0 min: 0
     testFirstOfLocale :firstOfWeekLocale   firstOfWeekLocale,   hour: 0 min: 0 dayOfWeek: 1 day: 4
     testFirstOfLocale :firstOfMonthLocale  firstOfMonthLocale,  year: 2018 month: 5 hour: 0 min: 0 dayOfWeek: 5 day: 1
-    testFirstOfLocale :firstOfYearLocale   firstOfYearLocale,   year: 2018 month: 1 hour: 0 min: 0 dayOfWeek: 4 day: 1
+    testFirstOfLocale :firstOfYearLocale   firstOfYearLocale,   year: 2018 month: 0 hour: 0 min: 0 dayOfWeek: 1 day: 1
 
   regressions:
     firstOfDay: ->
@@ -112,3 +120,6 @@ describe
         assert.rejects -> firstOfWeek 1 / 0 #  Infinity"
         assert.lte 1537142300, (firstOfWeek undefined), "undefined"
         assert.lte 1537142300, (firstOfWeek null), "null"
+
+      test "today" ->
+        toSeconds new Date()
