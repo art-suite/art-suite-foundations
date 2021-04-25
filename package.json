@@ -35,7 +35,6 @@
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.73.0",
     "caffeine-script-runtime": "^1.14.0",
-    "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "coffee-loader": "^0.7.3",
@@ -59,8 +58,7 @@
     "simple-git": "^2.31.0",
     "style-loader": "^2.0.0",
     "watch": "^1.0.0",
-    "webpack-merge": "^5.7.3",
-    "wrap-ansi": "^7.0.0",
+    "wrap-ansi": "^8.0.0",
     "xhr2": "^0.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",

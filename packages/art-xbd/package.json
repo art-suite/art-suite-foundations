@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-binary": "^1.1.15",
-    "art-standard-lib": "^1.71.0",
+    "art-standard-lib": "^1.71.1",
     "caffeine-script-runtime": "^1.14.0",
     "neptune-namespaces-runtime": "^3.2.10"
   },
