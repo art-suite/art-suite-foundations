@@ -13,7 +13,7 @@ Caf.defMod(module, () => {
       "createObjectTreeFactories",
       "assert",
       "createObjectTreeFactory",
-      "BaseClass"
+      "BaseClass",
     ],
     [global, require("./StandardImport")],
     (
@@ -31,7 +31,7 @@ Caf.defMod(module, () => {
     ) => {
       let testNames, testNamesLowerCamelCased, TestClass;
       testNames = ["Alice", "Bill", "John", "SallyMae"];
-      testNamesLowerCamelCased = Caf.array(testNames, name =>
+      testNamesLowerCamelCased = Caf.array(testNames, (name) =>
         lowerCamelCase(name)
       );
       TestClass = Caf.defClass(
@@ -43,22 +43,22 @@ Caf.defMod(module, () => {
             this.children = children;
           }
         },
-        function(TestClass, classSuper, instanceSuper) {
+        function (TestClass, classSuper, instanceSuper) {
           this.getter({
-            inspectedObjects: function() {
+            inspectedObjects: function () {
               return merge({
                 name: this.name,
                 props: this.props,
                 children: this.children
                   ? toInspectedObjects(this.children)
-                  : undefined
+                  : undefined,
               });
-            }
+            },
           });
         }
       );
       return describe({
-        createCorrectFactories: function() {
+        createCorrectFactories: function () {
           test("createObjectTreeFactories testNamesString", () => {
             let keys;
             keys = Object.keys(
@@ -89,7 +89,7 @@ Caf.defMod(module, () => {
             return assert.eq(keys, testNames);
           });
         },
-        fullTests: function() {
+        fullTests: function () {
           TestClass = Caf.defClass(
             class TestClass extends BaseObject {
               constructor(name, props, children) {
@@ -99,15 +99,16 @@ Caf.defMod(module, () => {
                 this.children = children;
               }
             },
-            function(TestClass, classSuper, instanceSuper) {
+            function (TestClass, classSuper, instanceSuper) {
               this.getter({
-                inspectedObjects: function() {
+                inspectedObjects: function () {
                   return merge({
                     name: this.name,
                     props: this.props,
-                    children: this.children && toInspectedObjects(this.children)
+                    children:
+                      this.children && toInspectedObjects(this.children),
                   });
-                }
+                },
               });
             }
           );
@@ -123,7 +124,7 @@ Caf.defMod(module, () => {
               {
                 name: "Alice",
                 props: { myProp: "myPropValue" },
-                children: [{ name: "Alice" }]
+                children: [{ name: "Alice" }],
               }
             );
           });
@@ -131,7 +132,7 @@ Caf.defMod(module, () => {
             let Alice;
             ({ Alice } = createObjectTreeFactories(
               "Alice",
-              nodeName => (props, children) =>
+              (nodeName) => (props, children) =>
                 new TestClass(nodeName, props, children)
             ));
             return assert.eq(
@@ -139,12 +140,12 @@ Caf.defMod(module, () => {
               {
                 name: "Alice",
                 props: { myProp: "myPropValue" },
-                children: [{ name: "Alice" }]
+                children: [{ name: "Alice" }],
               }
             );
           });
         },
-        more: function() {
+        more: function () {
           test("function", () => {
             let f;
             f = createObjectTreeFactory((props, children) =>
@@ -152,7 +153,7 @@ Caf.defMod(module, () => {
             );
             assert.eq(f({ foo: 123 }), { props: { foo: 123 } });
             return assert.eq(f({ foo: 123 }, f({ bar: 456 })), {
-              props: { foo: 123, props: { bar: 456 } }
+              props: { foo: 123, props: { bar: 456 } },
             });
           });
           test("class basic", () => {
@@ -166,23 +167,23 @@ Caf.defMod(module, () => {
                     this.children = children;
                   }
                 },
-                function(MyTestClass, classSuper, instanceSuper) {
+                function (MyTestClass, classSuper, instanceSuper) {
                   this.getter({
-                    inspectedObjects: function() {
+                    inspectedObjects: function () {
                       return merge({
                         props: this.props,
                         children: this.children
                           ? toInspectedObjects(this.children)
-                          : undefined
+                          : undefined,
                       });
-                    }
+                    },
                   });
                 }
               ))
             );
             assert.eq(f.class, MyTestClass);
             assert.eq(f({ foo: 123 }).inspectedObjects, {
-              props: { foo: 123 }
+              props: { foo: 123 },
             });
             return assert.eq(
               f({ foo: 123 }, f({ bar: 456 })).inspectedObjects,
@@ -193,8 +194,8 @@ Caf.defMod(module, () => {
             let MyTestClass, f;
             MyTestClass = Caf.defClass(
               class MyTestClass extends TestClass {},
-              function(MyTestClass, classSuper, instanceSuper) {
-                this.myClassFunction = function() {
+              function (MyTestClass, classSuper, instanceSuper) {
+                this.myClassFunction = function () {
                   return this.getName();
                 };
               }
@@ -204,7 +205,7 @@ Caf.defMod(module, () => {
             return assert.eq(f.myClassFunction(), "MyTestClass");
           });
         },
-        mergePropsIntoOnlyRunsOfTwoOrMore: function() {
+        mergePropsIntoOnlyRunsOfTwoOrMore: function () {
           let f;
           f = createObjectTreeFactory(
             (props, children) => merge({ props, children }),
@@ -212,15 +213,15 @@ Caf.defMod(module, () => {
               mergePropsInto: (_into, props) =>
                 Caf.object(props, null, null, _into, (v, k) =>
                   lowerCamelCase(k)
-                )
+                ),
             }
           );
           assert.eq(f({ Fun: "123" }, { Funner: 456 }), {
-            props: { fun: "123", funner: 456 }
+            props: { fun: "123", funner: 456 },
           });
           return assert.eq(f({ Fun: "123" }), { props: { Fun: "123" } });
         },
-        preprocessElement: function() {
+        preprocessElement: function () {
           let f;
           f = createObjectTreeFactory(
             (props, children) => merge({ props, children }),
@@ -241,18 +242,18 @@ Caf.defMod(module, () => {
                       return element;
                   }
                 })();
-              }
+              },
             }
           );
           assert.eq(f({ Fun: "123" }, { Funner: 456 }), {
-            props: { fun: "123", funner: 456 }
+            props: { fun: "123", funner: 456 },
           });
           assert.eq(f({ Fun: "123" }), { props: { fun: "123" } });
           assert.eq(f(null), { children: ["Nullification Nation"] });
           return assert.eq(f(undefined), {
-            children: ["Power to the UnDefed!"]
+            children: ["Power to the UnDefed!"],
           });
-        }
+        },
       });
     }
   );

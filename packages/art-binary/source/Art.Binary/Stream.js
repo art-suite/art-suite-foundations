@@ -104,3 +104,5 @@
   })(BaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=Stream.js.map

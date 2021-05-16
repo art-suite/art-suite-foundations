@@ -24,14 +24,14 @@ Caf.defMod(module, () => {
       "generatedByStringBare",
       "String",
       "Error",
-      "getParentPath"
+      "getParentPath",
     ],
     [
       global,
       require("./StandardImport"),
       require("./Generators"),
       require("./PackageRoot"),
-      { NamespaceStructure: require("./NamespaceStructure") }
+      { NamespaceStructure: require("./NamespaceStructure") },
     ],
     (
       getPackageRoot,
@@ -69,28 +69,28 @@ Caf.defMod(module, () => {
             if (options) {
               Caf.each2(
                 ["pretend", "verbose", "lastGenerator", "force", "quiet"],
-                option => (this[option] = options[option])
+                (option) => (this[option] = options[option])
               );
             }
             this.versionFile = this.constructor.findVersionFile(this.root);
             this.rootPrefix = getParentPath(this.root);
           }
         },
-        function(Generator, classSuper, instanceSuper) {
+        function (Generator, classSuper, instanceSuper) {
           this.standardRoots = ["source", "test", "performance", "src", "perf"];
           this.generatedFilenameRegexp = /(^|\/)(namespace|index)\.(coffee|js)$/;
           this.extensions = ["js", "coffee", "caffeine", "caf"];
-          this.findVersionFile = function(path) {
+          this.findVersionFile = function (path) {
             let packageRoot;
             return (packageRoot = getPackageRoot(path))
               ? Path.join(packageRoot, "package.json")
               : undefined;
           };
-          this.infoLog = function(root, ...args) {
+          this.infoLog = function (root, ...args) {
             root = Path.basename(root);
             args = args.join();
             args = args.split("\n");
-            return Caf.each2(args, arg =>
+            return Caf.each2(args, (arg) =>
               console.log(
                 arg === ""
                   ? ""
@@ -98,7 +98,7 @@ Caf.defMod(module, () => {
               )
             );
           };
-          this.watch = function(root, options = {}) {
+          this.watch = function (root, options = {}) {
             let generator;
             this.infoLog(root, "watching...".green);
             generator = null;
@@ -120,14 +120,14 @@ Caf.defMod(module, () => {
                   : undefined
             );
           };
-          this.generate = function(globRoot, options = {}) {
+          this.generate = function (globRoot, options = {}) {
             let Klass;
             Klass = this;
-            return glob(globRoot).then(roots =>
+            return glob(globRoot).then((roots) =>
               promiseSequence(
                 Caf.array(
                   roots,
-                  root => () => {
+                  (root) => () => {
                     let generator;
                     generator = new Klass(root, options);
                     return generator
@@ -140,25 +140,25 @@ Caf.defMod(module, () => {
                             )
                           : undefined
                       )
-                      .catch(error => log(error.stack));
+                      .catch((error) => log(error.stack));
                   },
-                  root => fsp.statSync(root).isDirectory()
+                  (root) => fsp.statSync(root).isDirectory()
                 )
               )
             );
           };
-          this.prototype.infoLog = function(...args) {
+          this.prototype.infoLog = function (...args) {
             return !this.quiet
               ? this.constructor.infoLog(this._getRelativePath(), args.join())
               : undefined;
           };
-          this.prototype.verboseLog = function(...args) {
+          this.prototype.verboseLog = function (...args) {
             return this.verbose ? this.infoLog(...args) : undefined;
           };
-          this.prototype.warningLog = function(...args) {
+          this.prototype.warningLog = function (...args) {
             return this.verbose ? this.infoLog(...args) : undefined;
           };
-          this.prototype.generate = function() {
+          this.prototype.generate = function () {
             let extensions;
             extensions = this.constructor.extensions;
             this.verboseLog(
@@ -169,7 +169,7 @@ Caf.defMod(module, () => {
                 extensions.join(",")
               )}}`,
               { dot: true }
-            ).then(files =>
+            ).then((files) =>
               files.length === 0
                 ? this.warningLog(
                     `no .${Caf.toString(extensions.join(", ."))} files found`
@@ -177,19 +177,22 @@ Caf.defMod(module, () => {
                 : this.generateFromFiles(files)
             );
           };
-          this.prototype.showNamespaceStructure = function(namespaces) {
+          this.prototype.showNamespaceStructure = function (namespaces) {
             this.infoLog("generating namespace structure:");
             this.infoLog("  Neptune".yellow);
-            return Caf.each2(Object.keys(namespaces).sort(), namespacePath => {
-              this.infoLog(`  ${Caf.toString(namespacePath)}`.yellow);
-              return Caf.each2(
-                namespaces[namespacePath].getModuleNames(),
-                moduleName =>
-                  this.infoLog(`    ${Caf.toString(moduleName)}`.grey)
-              );
-            });
+            return Caf.each2(
+              Object.keys(namespaces).sort(),
+              (namespacePath) => {
+                this.infoLog(`  ${Caf.toString(namespacePath)}`.yellow);
+                return Caf.each2(
+                  namespaces[namespacePath].getModuleNames(),
+                  (moduleName) =>
+                    this.infoLog(`    ${Caf.toString(moduleName)}`.grey)
+                );
+              }
+            );
           };
-          this.prototype.generateFiles = function(namespaces) {
+          this.prototype.generateFiles = function (namespaces) {
             this.generatedFiles = {};
             return Caf.each2(namespaces, (namespace, namespacePath) => {
               let path, relativePath, relativeVersionFile;
@@ -208,28 +211,28 @@ Caf.defMod(module, () => {
                 code: this.getNamespaceGenerator().generate(
                   namespace,
                   relativeVersionFile
-                )
+                ),
               });
               return this._generateHelper({
                 relativePath,
                 path,
                 name: "index",
-                code: this.getIndexGenerator().generate(namespace)
+                code: this.getIndexGenerator().generate(namespace),
               });
             });
           };
-          this.prototype.getIndexGenerator = function() {
+          this.prototype.getIndexGenerator = function () {
             return IndexJsGenerator;
           };
-          this.prototype.getNamespaceGenerator = function() {
+          this.prototype.getNamespaceGenerator = function () {
             return NamespaceJsGenerator;
           };
-          this.prototype.generateFromFiles = function(files) {
+          this.prototype.generateFromFiles = function (files) {
             let namespaces;
             this._cleanup(files);
             ({ namespaces } = new NamespaceStructure({
               root: this.root,
-              files
+              files,
             }));
             if (this.verbose) {
               this.showNamespaceStructure(namespaces);
@@ -238,26 +241,26 @@ Caf.defMod(module, () => {
             return this.pretend
               ? Promise.resolve({
                   generatedFiles: this.generatedFiles,
-                  namespaces
+                  namespaces,
                 })
               : this._writeFiles();
           };
-          this.prototype._cleanup = function(files) {
+          this.prototype._cleanup = function (files) {
             let regex;
             regex = /($|\/)(index|namespace).coffee$/;
             return Caf.each2(
               files,
-              file => {
+              (file) => {
                 let contents;
                 contents = fsp.readFileSync(file).toString();
                 return /generated by neptune namespaces/i.test(contents)
                   ? (log(`rm ${Caf.toString(file)}`), fsp.unlinkSync(file))
                   : undefined;
               },
-              file => regex.test(file)
+              (file) => regex.test(file)
             );
           };
-          this.prototype._writeFiles = function() {
+          this.prototype._writeFiles = function () {
             let filesWritten, filesTotal;
             filesWritten = 0;
             filesTotal = 0;
@@ -278,7 +281,7 @@ Caf.defMod(module, () => {
                         ? fsp.readFile(name, "utf8")
                         : undefined
                     )
-                      .then(currentContents =>
+                      .then((currentContents) =>
                         this.force || currentContents !== code
                           ? (filesWritten++,
                             this.infoLog(
@@ -287,7 +290,7 @@ Caf.defMod(module, () => {
                             fsp.writeFile(name, code))
                           : undefined
                       )
-                      .catch(error =>
+                      .catch((error) =>
                         this.infoLog(
                           `error reading ${Caf.toString(logFileString)}`.red,
                           error
@@ -313,17 +316,17 @@ Caf.defMod(module, () => {
                 : undefined;
             });
           };
-          this.prototype._getRelativePath = function(path = this.root) {
+          this.prototype._getRelativePath = function (path = this.root) {
             return getRelativePath(this.rootPrefix, path);
           };
-          this.prototype._getLogFileString = function(file) {
+          this.prototype._getLogFileString = function (file) {
             return getRelativePath(process.cwd(), file);
           };
-          this.prototype._generateHelper = function({
+          this.prototype._generateHelper = function ({
             path,
             relativePath,
             name,
-            code
+            code,
           }) {
             let commentStart;
             name += ".js";

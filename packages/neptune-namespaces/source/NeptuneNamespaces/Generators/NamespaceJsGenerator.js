@@ -8,19 +8,19 @@ Caf.defMod(module, () => {
       let NamespaceJsGenerator;
       return (NamespaceJsGenerator = Caf.defClass(
         class NamespaceJsGenerator extends Object {},
-        function(NamespaceJsGenerator, classSuper, instanceSuper) {
-          this.getClassName = function({ namespaceName }) {
+        function (NamespaceJsGenerator, classSuper, instanceSuper) {
+          this.getClassName = function ({ namespaceName }) {
             return isPathedNamespace(namespaceName)
               ? peek(namespaceName.split("."))
               : namespaceName;
           };
-          this.getParentNamespacePath = function({ parent }) {
+          this.getParentNamespacePath = function ({ parent }) {
             let temp;
             return (temp = parent.parent && "../namespace") != null
               ? temp
               : parent.path;
           };
-          this.generate = function(namespace, versionFile) {
+          this.generate = function (namespace, versionFile) {
             let namespaceName,
               isPathNamespace,
               className,
@@ -65,7 +65,7 @@ Caf.defMod(module, () => {
             )}\n${Caf.toString(
               Caf.array(
                 namespace.getAllNamespacedSubdirRequires(),
-                name => `require('./${Caf.toString(name)}/namespace');`
+                (name) => `require('./${Caf.toString(name)}/namespace');`
               ).join("\n")
             )}`;
           };

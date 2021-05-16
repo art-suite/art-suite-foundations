@@ -26,7 +26,7 @@ Caf.defMod(module, () => {
       "B",
       "createHtmlFactories",
       "A",
-      "Span"
+      "Span",
     ],
     [global, require("./StandardImport"), require("./Lib")],
     (
@@ -56,37 +56,37 @@ Caf.defMod(module, () => {
       Span
     ) => {
       testFactoryToString(
-        function() {
+        function () {
           return Div({ class: "fooClass" }, "string child");
         },
         '<div class="fooClass">string child</div>',
-        function() {
+        function () {
           return Div({ class: "fooClass" }, { id: "barId" });
         },
         '<div class="fooClass" id="barId"></div>',
-        function() {
+        function () {
           return Div(
             { style: { "font-size": "10pt" } },
             { style: { color: "#f00" } }
           );
         },
         '<div style="color: #f00; font-size: 10pt"></div>',
-        function() {
+        function () {
           return Div([null, Div(), undefined]);
         },
         "<div><div></div></div>",
-        function() {
+        function () {
           return Script({ async: true }, "alert(1);");
         },
         "<script async>alert(1);</script>",
-        function() {
+        function () {
           return Header(
             H1("The most Amazing Page Ever"),
             H2("You simply have to read it.")
           );
         },
         "<header>\n  <h1>The most Amazing Page Ever</h1>\n  <h2>You simply have to read it.</h2>\n</header>",
-        function() {
+        function () {
           return P(
             "Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding liquorice."
           );
@@ -94,14 +94,14 @@ Caf.defMod(module, () => {
         "<p>\n  Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut\n  gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake\n  cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread\n  icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies\n  marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi\n  bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon\n  drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar\n  plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding\n  liquorice.\n</p>"
       );
       return describe({
-        escaping: function() {
+        escaping: function () {
           return testFactoryToString(
             () => Div({ prop: "<foo>" }),
             '<div prop="&lt;foo&gt;"></div>'
           );
         },
         merging: {
-          caseSensativity: function() {
+          caseSensativity: function () {
             return testFactoryToString(
               () => Div({ style: { Color: "#abc123" } }),
               '<div style="Color: #abc123"></div>',
@@ -109,7 +109,7 @@ Caf.defMod(module, () => {
               '<div class="FooBar"></div>'
             );
           },
-          style: function() {
+          style: function () {
             return testFactoryToString(
               () =>
                 Div(
@@ -119,7 +119,7 @@ Caf.defMod(module, () => {
               '<div style="color: #abc123; height: 100px"></div>'
             );
           },
-          "style-reset": function() {
+          "style-reset": function () {
             return testFactoryToString(
               () =>
                 Div(
@@ -130,21 +130,21 @@ Caf.defMod(module, () => {
               '<div style="height: 100px"></div>'
             );
           },
-          class: function() {
+          class: function () {
             return testFactoryToString(
               () => Div({ class: "ROW" }, { class: "border-1px" }),
               '<div class="ROW border-1px"></div>'
             );
           },
-          "class-reset": function() {
+          "class-reset": function () {
             return testFactoryToString(
               () =>
                 Div({ class: "row" }, { class: null }, { class: "border-1px" }),
               '<div class="border-1px"></div>'
             );
-          }
+          },
         },
-        textWordWrappingDefaultBehavior: function() {
+        textWordWrappingDefaultBehavior: function () {
           return testFactoryToString(
             () => Div("one line\ntwo line"),
             "<div>one line two line</div>",
@@ -156,14 +156,14 @@ Caf.defMod(module, () => {
             "<div>\n  one\n  line\n</div>"
           );
         },
-        escape: function() {
+        escape: function () {
           return testFactoryToString(
             () => Div("one<br>&nbsp;line"),
             "<div>one<br>&nbsp;line</div>"
           );
         },
         specialTags: {
-          rawHtml: function() {
+          rawHtml: function () {
             return testFactoryToString(
               () =>
                 RawHtml(
@@ -174,19 +174,19 @@ Caf.defMod(module, () => {
               "<!-- RawHtml is here to escape in whatever you want -->\n<html>\n<body>\n  With some children\n</body>\n</html>"
             );
           },
-          br: function() {
+          br: function () {
             return testFactoryToString(
               () => Div("one", Br(), "line"),
               "<div>\n  one\n  <br>\n  line\n</div>"
             );
           },
-          script: function() {
+          script: function () {
             return testFactoryToString(
               () => Html(Head(Script('var tag = "<something>";'))),
               '<html><head><script>var tag = "<something>";</script></head></html>'
             );
           },
-          style: function() {
+          style: function () {
             return testFactoryToString(
               () =>
                 Html(
@@ -199,25 +199,25 @@ Caf.defMod(module, () => {
               "<html>\n  <head>\n    <style>\n      @font-face {\n        font-family: proxima nova light;\n        font-style: normal;\n        font-weight: 400;\n      }\n    </style>\n  </head>\n</html>"
             );
           },
-          img: function() {
+          img: function () {
             return testFactoryToString(
               () => Div(Img({ src: "https://my.url.com/wonder_woman.jpg" })),
               '<div><img src="https://my.url.com/wonder_woman.jpg"></div>'
             );
           },
-          meta: function() {
+          meta: function () {
             return testFactoryToString(
               () => Html(Head(Meta({ myProp: "fine" }))),
               '<html><head><meta myProp="fine"></head></html>'
             );
           },
-          link: function() {
+          link: function () {
             return testFactoryToString(
               () => Html(Head(Link({ myProp: "fine" }))),
               '<html><head><link myProp="fine"></head></html>'
             );
           },
-          pre: function() {
+          pre: function () {
             return testFactoryToString(
               () =>
                 Div(
@@ -227,9 +227,9 @@ Caf.defMod(module, () => {
                 ),
               "<div>\n  <pre>\nPre tags can have HTML in them:\n\n<html><body>\n  Hello, world!\n</body></html>\n  </pre>\n</div>"
             );
-          }
+          },
         },
-        length: function() {
+        length: function () {
           let testLength;
           testLength = (name, f) =>
             test(name, () => {
@@ -245,7 +245,7 @@ Caf.defMod(module, () => {
           testLength("P :hello", () => P("hello"));
           return testLength("P :hello B :bye", () => P("hello", B("bye")));
         },
-        toString: function() {
+        toString: function () {
           return test("with options", () =>
             assert.eq(
               Div(
@@ -254,7 +254,7 @@ Caf.defMod(module, () => {
               "<div>\n  Sweet donut biscuit\n  tiramisu tart.\n  Chocolate powder\n  lollipop.\n</div>"
             ));
         },
-        createHtmlFactories: function() {
+        createHtmlFactories: function () {
           return test("custom Svg tags", () => {
             let Svg, Path;
             ({ Svg, Path } = createHtmlFactories("svg", "path"));
@@ -265,7 +265,7 @@ Caf.defMod(module, () => {
                   xmlns: "http://www.w3.org/2000/svg",
                   width: "64",
                   height: "64",
-                  viewBox: "0 0 64 64"
+                  viewBox: "0 0 64 64",
                 },
                 Path({ d: "M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z" })
               ).toString(),
@@ -273,7 +273,7 @@ Caf.defMod(module, () => {
             );
           });
         },
-        regressions: function() {
+        regressions: function () {
           return test("merging styles", () => {
             let style;
             style = { color: "#ffbbcc" };
@@ -286,9 +286,9 @@ Caf.defMod(module, () => {
             );
           });
         },
-        regressions: function() {},
+        regressions: function () {},
         spanning: {
-          basics: function() {
+          basics: function () {
             return testFactoryToString(
               () =>
                 Div(
@@ -321,7 +321,7 @@ Caf.defMod(module, () => {
               "<div>\n  <div>\n    <a>This is some text, right, This is some text, right. This is some text, right!\n    This is some text, right!!!</a>\n  </div>\n</div>"
             );
           },
-          regressions: function() {
+          regressions: function () {
             return testFactoryToString(
               () =>
                 Div(
@@ -331,14 +331,14 @@ Caf.defMod(module, () => {
                     Div(
                       {
                         class:
-                          "color-display-font-padding-position-right-text-top-5"
+                          "color-display-font-padding-position-right-text-top-5",
                       },
                       Span(
                         { class: "font-padding-6" },
                         A(
                           {
                             href: "services",
-                            class: "background-border-color-padding-7"
+                            class: "background-border-color-padding-7",
                           },
                           "SERVICES"
                         )
@@ -350,8 +350,8 @@ Caf.defMod(module, () => {
               () => A(Div("one")),
               "<a><div>\n  one\n</div></a>"
             );
-          }
-        }
+          },
+        },
       });
     }
   );

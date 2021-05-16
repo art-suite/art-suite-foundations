@@ -17,13 +17,13 @@ Caf.defMod(module, () => {
       iPhoneX: [375, 812],
       iPhone6Plus: [414, 736],
       iPhoneXSMax: [414, 896],
-      iPhoneXR: [414, 896]
+      iPhoneXR: [414, 896],
     }),
     iPhoneNotchSafePadding: (iPhoneNotchSafePadding = { top: 44, bottom: 21 }),
     iPhoneNotchSizes: (iPhoneNotchSizes = {
       iPhoneX: 30,
       iPhoneXSMax: 30,
-      iPhoneXR: 30
+      iPhoneXR: 30,
     }),
     iPhoneDisplayScales: (iPhoneDisplayScales = {
       iPhone4: 2,
@@ -32,7 +32,7 @@ Caf.defMod(module, () => {
       iPhone6Plus: 3,
       iPhoneX: 3,
       iPhoneXSMax: 3,
-      iPhoneXR: 2
+      iPhoneXR: 2,
     }),
     iPhoneDiagonalSizeInches: (iPhoneDiagonalSizeInches = {
       iPhone4: 3.5,
@@ -41,7 +41,7 @@ Caf.defMod(module, () => {
       iPhone6Plus: 5.5,
       iPhoneX: 5.8,
       iPhoneXSMax: 6.5,
-      iPhoneXR: 6.1
+      iPhoneXR: 6.1,
     }),
     iPhonePixelsPerInch: (iPhonePixelsPerInch = {
       iPhone4: 326,
@@ -50,7 +50,7 @@ Caf.defMod(module, () => {
       iPhone6Plus: 401,
       iPhoneX: 458,
       iPhoneXSMax: 458,
-      iPhoneXR: 326
+      iPhoneXR: 326,
     }),
     iPhonePixelSizes: (iPhonePixelSizes = Caf.object(
       iPhoneDisplayScales,
@@ -64,6 +64,6 @@ Caf.defMod(module, () => {
       iPhonePointSizes,
       ([x, y], model) =>
         Math.sqrt(x * x + y * y) / iPhoneDiagonalSizeInches[model]
-    )
+    ),
   };
 });

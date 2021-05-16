@@ -5,7 +5,7 @@ Caf.defMod(module, () => {
     ["test", "createObjectTreeFactory", "assert", "createObjectTreeFactories"],
     [global, require("./StandardImport")],
     (test, createObjectTreeFactory, assert, createObjectTreeFactories) => {
-      test("createObjectTreeFactory example", function() {
+      test("createObjectTreeFactory example", function () {
         let TreeNode, Node, commonProps;
         TreeNode = Caf.defClass(
           class TreeNode extends Object {
@@ -15,8 +15,8 @@ Caf.defMod(module, () => {
               this.children = children;
             }
           },
-          function(TreeNode, classSuper, instanceSuper) {
-            this.prototype.toObjects = function() {
+          function (TreeNode, classSuper, instanceSuper) {
+            this.prototype.toObjects = function () {
               return {
                 TreeNode: {
                   props: this.props,
@@ -24,10 +24,10 @@ Caf.defMod(module, () => {
                     this.children &&
                     Caf.array(
                       this.children,
-                      child =>
+                      (child) =>
                         (Caf.isF(child.toObjects) && child.toObjects()) || child
-                    )
-                }
+                    ),
+                },
               };
             };
           }
@@ -53,17 +53,17 @@ Caf.defMod(module, () => {
                 {
                   TreeNode: {
                     props: { color: "black", source: "images/piglet.png" },
-                    children: undefined
-                  }
+                    children: undefined,
+                  },
                 },
                 "This works for me!",
-                { TreeNode: { props: undefined, children: ["Ka-blam!"] } }
-              ]
-            }
+                { TreeNode: { props: undefined, children: ["Ka-blam!"] } },
+              ],
+            },
           }
         );
       });
-      return test("createObjectTreeFactories example", function() {
+      return test("createObjectTreeFactories example", function () {
         let TagNode, Html, Head, Body, Div, P, B;
         TagNode = Caf.defClass(
           class TagNode extends Object {
@@ -74,8 +74,8 @@ Caf.defMod(module, () => {
               this.children = children;
             }
           },
-          function(TagNode, classSuper, instanceSuper) {
-            this.prototype.toString = function(indent = "") {
+          function (TagNode, classSuper, instanceSuper) {
+            this.prototype.toString = function (indent = "") {
               let indent2;
               return (
                 `<${Caf.toString(this.tag)}` +
@@ -91,7 +91,7 @@ Caf.defMod(module, () => {
                   ? ((indent2 = indent + "  "),
                     "\n" +
                       indent2 +
-                      Caf.array(this.children, child =>
+                      Caf.array(this.children, (child) =>
                         child.toString(indent2)
                       ).join(`\n${Caf.toString(indent2)}`) +
                       "\n")

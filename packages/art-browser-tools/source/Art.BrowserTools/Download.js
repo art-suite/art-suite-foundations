@@ -11,8 +11,8 @@ Caf.defMod(module, () => {
       document = temp.document;
       return (Download = Caf.defClass(
         class Download extends Object {},
-        function(Download, classSuper, instanceSuper) {
-          this.downloadBinaryData = function(filename, binaryData, mimeType) {
+        function (Download, classSuper, instanceSuper) {
+          this.downloadBinaryData = function (filename, binaryData, mimeType) {
             let blob;
             binaryData = binary(binaryData);
             return global.navigator.msSaveOrOpenBlob != null
@@ -20,9 +20,9 @@ Caf.defMod(module, () => {
                 window.navigator.msSaveOrOpenBlob(blob, filename))
               : binaryData
                   .toDataUri(mimeType)
-                  .then(uri => Download.downloadFromUrl(uri, filename));
+                  .then((uri) => Download.downloadFromUrl(uri, filename));
           };
-          this.downloadFromUrl = function(url, filename) {
+          this.downloadFromUrl = function (url, filename) {
             let e;
             e = document.createElement("a");
             e.setAttribute("href", url);
@@ -32,7 +32,7 @@ Caf.defMod(module, () => {
             e.click();
             return document.body.removeChild(e);
           };
-          this.startHtmlFileDownload = function(filename, url) {
+          this.startHtmlFileDownload = function (filename, url) {
             let element;
             element = document.createElement("a");
             element.setAttribute("target", "_blank");

@@ -141,3 +141,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=EncodedImage.js.map

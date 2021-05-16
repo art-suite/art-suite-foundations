@@ -6,7 +6,7 @@ Caf.defMod(module, () => {
       "createObjectTreeFactories",
       "mergeInto",
       "setDomElementProps",
-      "setDomElementChildren"
+      "setDomElementChildren",
     ],
     [global, require("./StandardImport"), require("./Dom")],
     (
@@ -21,7 +21,7 @@ Caf.defMod(module, () => {
       document = temp.document;
       return (DomElementFactories = Caf.defClass(
         class DomElementFactories extends Object {},
-        function(DomElementFactories, classSuper, instanceSuper) {
+        function (DomElementFactories, classSuper, instanceSuper) {
           this.createDomElementFactories = (...list) =>
             createObjectTreeFactories(
               {
@@ -31,7 +31,7 @@ Caf.defMod(module, () => {
                     (v, k) =>
                       (intoArray[k] =
                         k === "style" ? mergeInto(intoArray[k], v) : v)
-                  )
+                  ),
               },
               list,
               (nodeName, props, children) => {

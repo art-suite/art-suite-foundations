@@ -5,6 +5,6 @@ Caf.defMod(module, () => {
     require("./HtmlFactoryLib"),
     require("./HtmlFactoryLib").createHtmlFactories(
       require("./HtmlLib").supportedTagsList
-    )
+    ),
   ];
 });

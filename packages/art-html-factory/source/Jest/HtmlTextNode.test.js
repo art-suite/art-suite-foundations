@@ -6,11 +6,11 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport")],
     (describe, test, HtmlTextNode, assert, Div, P, merge) => {
       return describe({
-        basics: function() {
+        basics: function () {
           test("new", () => {
             let node;
             node = new HtmlTextNode("div", { class: "fooClass" }, [
-              "string child"
+              "string child",
             ]);
             return assert.eq(
               node.toString({ indent: "", tagWrap: 1 }),
@@ -20,7 +20,7 @@ Caf.defMod(module, () => {
           return test("style is stringified", () => {
             let node;
             node = new HtmlTextNode("div", {
-              style: { "font-size": "10pt", color: "#f00" }
+              style: { "font-size": "10pt", color: "#f00" },
             });
             return assert.eq(
               node.toString(),
@@ -28,11 +28,11 @@ Caf.defMod(module, () => {
             );
           });
         },
-        styleString: function() {
+        styleString: function () {
           return test("styleString with no style should be undefined", () =>
             assert.equal(Div().styleString, undefined));
         },
-        inspect: function() {
+        inspect: function () {
           return test("indect", () =>
             assert.eq(
               Div({ class: "colored" }, "hi", P("About-me"), P("Details"))
@@ -43,13 +43,13 @@ Caf.defMod(module, () => {
                   children: [
                     "hi",
                     { p: { children: ["About-me"] } },
-                    { p: { children: ["Details"] } }
-                  ]
-                }
+                    { p: { children: ["Details"] } },
+                  ],
+                },
               }
             ));
         },
-        clone: function() {
+        clone: function () {
           test("just clone", () =>
             assert.eq(Div().clone().inspectedObjects, { div: {} }));
           test("update style", () => {
@@ -57,8 +57,8 @@ Caf.defMod(module, () => {
             node = Div({ style: { "font-size": "10pt", color: "#f00" } });
             node2 = node.clone({
               props: merge(node.props, {
-                style: merge(node.style, { "font-size": "5pt" })
-              })
+                style: merge(node.style, { "font-size": "5pt" }),
+              }),
             });
             assert.eq(
               node.toString(),
@@ -83,7 +83,7 @@ Caf.defMod(module, () => {
             let node;
             node = Div({ foo: "bar" }, P("hi")).clone({
               props: null,
-              children: null
+              children: null,
             });
             assert.equal(node.props, undefined);
             return assert.equal(node.children, undefined);
@@ -100,13 +100,13 @@ Caf.defMod(module, () => {
             let node, node2;
             node = Div(P("some text"), P("some other text"));
             node2 = node.clone({
-              children: Caf.array(node.children, child =>
+              children: Caf.array(node.children, (child) =>
                 child.clone({
                   props: merge(child.props, {
-                    style: merge(child.style, { "font-size": "5pt" })
-                  })
+                    style: merge(child.style, { "font-size": "5pt" }),
+                  }),
                 })
-              )
+              ),
             });
             assert.notSame(node.children, node2.children);
             assert.eq(
@@ -153,7 +153,7 @@ Caf.defMod(module, () => {
                 .inspectedObjects,
               { div: { children: ["wasBefore", "wasAfter", "andMore"] } }
             ));
-        }
+        },
       });
     }
   );

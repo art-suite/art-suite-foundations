@@ -9,7 +9,7 @@ Caf.defMod(module, () => {
       require("./UriBrowserTools"),
       require("./BrowserDetection"),
       require("./UseragentRegExp"),
-      { iPhoneDeviceInformation: require("./iPhoneDeviceInformation") }
+      { iPhoneDeviceInformation: require("./iPhoneDeviceInformation") },
     ];
   })();
 });

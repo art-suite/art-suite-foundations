@@ -7,15 +7,15 @@ Caf.defMod(module, () => {
       global,
       require("./StandardImport"),
       require("./UriBrowserTools"),
-      require("./Dom")
+      require("./Dom"),
     ],
     (encodeUri, openLink) => {
       let EmailBrowserTools;
       return (EmailBrowserTools = Caf.defClass(
         class EmailBrowserTools extends Object {},
-        function(EmailBrowserTools, classSuper, instanceSuper) {
+        function (EmailBrowserTools, classSuper, instanceSuper) {
           let encodeMailto;
-          this.encodeMailto = encodeMailto = function(options) {
+          this.encodeMailto = encodeMailto = function (options) {
             let cc, bcc, subject, body, toField, temp;
             cc = options.cc;
             bcc = options.bcc;
@@ -25,10 +25,10 @@ Caf.defMod(module, () => {
             return encodeUri({
               protocol: "mailto",
               path: toField,
-              query: { cc, bcc, subject, body }
+              query: { cc, bcc, subject, body },
             });
           };
-          this.sendEmail = function(options) {
+          this.sendEmail = function (options) {
             return openLink(encodeMailto(options));
           };
         }

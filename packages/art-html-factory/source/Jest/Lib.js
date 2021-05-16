@@ -6,7 +6,7 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport")],
     (String, Error, test, assert) => {
       return {
-        testFactoryToString: function(...args) {
+        testFactoryToString: function (...args) {
           let from, into, to, i1, temp;
           return (
             (from = args),
@@ -29,7 +29,7 @@ Caf.defMod(module, () => {
                     }
                     test(expectedOutput.replace(/\n/g, "\\n"), () =>
                       assert.eq(nodeF().toString(), expectedOutput, {
-                        FactoryToStringTestNumber: 1 + i / 2
+                        FactoryToStringTestNumber: 1 + i / 2,
                       })
                     );
                     temp = i1 += 2;
@@ -39,7 +39,7 @@ Caf.defMod(module, () => {
               : undefined,
             into
           );
-        }
+        },
       };
     }
   );

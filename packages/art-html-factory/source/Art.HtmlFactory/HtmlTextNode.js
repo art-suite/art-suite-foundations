@@ -15,14 +15,14 @@ Caf.defMod(module, () => {
       "wrapAnsi",
       "spanningTags",
       "noCloseTags",
-      "isString"
+      "isString",
     ],
     [
       global,
       require("art-standard-lib"),
       require("./HtmlLib"),
       require("./HtmlFactoryLib"),
-      { wrapAnsi: require("wrap-ansi") }
+      { wrapAnsi: require("wrap-ansi") },
     ],
     (
       mergeProps,
@@ -51,13 +51,13 @@ Caf.defMod(module, () => {
             this._normalizeChildren();
           }
         },
-        function(HtmlTextNode, classSuper, instanceSuper) {
+        function (HtmlTextNode, classSuper, instanceSuper) {
           let reformatTextForNiceHtmlSource,
             emptyString,
             emptyOptions,
             htmlFriendlyTextWrap,
             applyIndent;
-          this.prototype.clone = function(options) {
+          this.prototype.clone = function (options) {
             let props, children;
             if (Caf.exists(options)) {
               props = options.props;
@@ -69,30 +69,30 @@ Caf.defMod(module, () => {
               children !== undefined ? concatChildren(children) : this._children
             );
           };
-          this.prototype.with = function(fields) {
+          this.prototype.with = function (fields) {
             return this.clone(fields);
           };
-          this.prototype.withProps = function(...props) {
+          this.prototype.withProps = function (...props) {
             return this.clone({ props });
           };
-          this.prototype.withMergedProps = function(...props) {
+          this.prototype.withMergedProps = function (...props) {
             return this.clone({ props: [this.props, props] });
           };
-          this.prototype.withChildren = function(...children) {
+          this.prototype.withChildren = function (...children) {
             return this.clone({ children });
           };
-          this.prototype.withAppendedChildren = function(...children) {
+          this.prototype.withAppendedChildren = function (...children) {
             return this.clone({ children: [this.children, children] });
           };
-          this.prototype._normalizeChildren = function() {
+          this.prototype._normalizeChildren = function () {
             let temp;
             this._haveStringChildrenWithNewLines = false;
             return this._children != null
               ? (this._children =
                   (temp = Caf.find(
                     this._children,
-                    child =>
-                      Caf.array(this._children, child => {
+                    (child) =>
+                      Caf.array(this._children, (child) => {
                         if (Caf.is(child, String)) {
                           child = this._getNormalizedText(child);
                           if (/\n/.test(child)) {
@@ -101,66 +101,66 @@ Caf.defMod(module, () => {
                         }
                         return child;
                       }),
-                    child => Caf.is(child, String)
+                    (child) => Caf.is(child, String)
                   )) != null
                     ? temp
                     : this._children)
               : undefined;
           };
-          reformatTextForNiceHtmlSource = function(text) {
+          reformatTextForNiceHtmlSource = function (text) {
             return /\n *\n/.test(text)
               ? Caf.array(
                   text.replace(/\ *\n( *\n)+/g, "\n\n").split("\n\n"),
-                  p => p.replace(/\ *\n\ */g, " ")
+                  (p) => p.replace(/\ *\n\ */g, " ")
                 ).join("\n\n")
               : text.replace(/\n/, " ");
           };
-          this.prototype._getNormalizedText = function(text) {
+          this.prototype._getNormalizedText = function (text) {
             return this.preserveRawText
               ? text
               : reformatTextForNiceHtmlSource(text);
           };
           emptyString = "";
           this.getter("props", "name", "children", {
-            inspectedObjects: function() {
+            inspectedObjects: function () {
               return {
                 [this.name]: merge({
                   props: this.props,
                   children: this.children
-                    ? Caf.array(this.children, child => {
+                    ? Caf.array(this.children, (child) => {
                         let temp;
                         return (temp = child.inspectedObjects) != null
                           ? temp
                           : child;
                       })
-                    : undefined
-                })
+                    : undefined,
+                }),
               };
             },
-            style: function() {
+            style: function () {
               let base;
               return Caf.exists((base = this._props)) && base.style;
             },
-            preserveRawText: function() {
+            preserveRawText: function () {
               return rawHtmlTags[this._name];
             },
-            isRawHtml: function() {
+            isRawHtml: function () {
               return this._name === "rawhtml";
             },
-            childRequireMultipleLines: function() {
+            childRequireMultipleLines: function () {
               return (
                 !!this._children &&
                 (this._children.length > 1 ||
                   this._children[0].onelinerOk === false)
               );
             },
-            onelinerOk: function() {
+            onelinerOk: function () {
               return (
                 !this._haveStringChildrenWithNewLines &&
                 !this.childRequireMultipleLines
               );
             },
-            length: function() {
+            length: function () {
               let temp;
               return (temp = this._length) != null
                 ? temp
@@ -175,7 +175,7 @@ Caf.defMod(module, () => {
                       0
                     ));
             },
-            styleString: function() {
+            styleString: function () {
               let style, temp, from, into, to, i, temp1;
               return (temp = this._styleString) != null
                 ? temp
@@ -202,7 +202,7 @@ Caf.defMod(module, () => {
                       into).join("; ")
                     : undefined);
             },
-            propsString: function() {
+            propsString: function () {
               let temp, temp1;
               return (temp = this._propsString) != null
                 ? temp
@@ -222,10 +222,10 @@ Caf.defMod(module, () => {
                       : undefined) != null
                       ? temp1
                       : emptyString);
-            }
+            },
           });
           this.defaultCompileOptions = { tagWrap: 80, textWordWrap: 80 };
-          this.prototype.compile = function(indentOrOptions) {
+          this.prototype.compile = function (indentOrOptions) {
             let indent, options;
             if (Caf.is(indentOrOptions, String)) {
               indent = indentOrOptions;
@@ -244,17 +244,17 @@ Caf.defMod(module, () => {
             }
             return compactFlatten(this._compile(indent, options));
           };
-          this.prototype.toString = function(options = "") {
+          this.prototype.toString = function (options = "") {
             return this.compile(options).join("\n");
           };
           emptyOptions = {};
-          this.prototype.toCompactString = function() {
+          this.prototype.toCompactString = function () {
             return compactFlattenJoin("", this._compile(null, emptyOptions));
           };
-          htmlFriendlyTextWrap = function(line, columns) {
+          htmlFriendlyTextWrap = function (line, columns) {
             return wrapAnsi(line.replace(/\ *\n( *\n)/g, "\n\n"), columns);
           };
-          applyIndent = function(indent, line, columns) {
+          applyIndent = function (indent, line, columns) {
             if (columns > 0) {
               line = htmlFriendlyTextWrap(line, columns);
             }
@@ -262,7 +262,7 @@ Caf.defMod(module, () => {
               ? indent + line.replace(/\n(?!\n)/g, `\n${Caf.toString(indent)}`)
               : line;
           };
-          this.prototype._compile = function(indent, options) {
+          this.prototype._compile = function (indent, options) {
             let indentedStartTag, endTag;
             return this.isRawHtml && this._children
               ? this._getCompiledChildren(indent, emptyOptions)
@@ -285,18 +285,18 @@ Caf.defMod(module, () => {
                     : [
                         indentedStartTag,
                         this._getCompiledChildren(indent, options),
-                        applyIndent(indent, endTag)
+                        applyIndent(indent, endTag),
                       ]
                   : noCloseTags[this._name]
                   ? indentedStartTag
                   : indentedStartTag + endTag);
           };
-          this.prototype._getCompiledChildren = function(indent, options) {
+          this.prototype._getCompiledChildren = function (indent, options) {
             return this._children
               ? (indent != null && !this.isRawHtml
                   ? (indent = indent + "  ")
                   : undefined,
-                Caf.array(this._children, child =>
+                Caf.array(this._children, (child) =>
                   isString(child)
                     ? this._name !== "pre"
                       ? applyIndent(
@@ -311,11 +311,11 @@ Caf.defMod(module, () => {
                 ))
               : undefined;
           };
-          this.prototype._getCompiledChildrenSpan = function(indent, options) {
+          this.prototype._getCompiledChildrenSpan = function (indent, options) {
             let compiledChildren;
             return this._children
               ? ((compiledChildren = compactFlatten(
-                  Caf.array(this._children, child =>
+                  Caf.array(this._children, (child) =>
                     isString(child)
                       ? this._name !== "pre"
                         ? applyIndent(

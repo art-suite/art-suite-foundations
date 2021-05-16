@@ -5,7 +5,7 @@ Caf.defMod(module, () => {
   out = {
     glob: require("glob-promise"),
     fsp: require("fs-extra"),
-    Path: require("path")
+    Path: require("path"),
   };
   Caf.object(require("./Helper"), null, null, out);
   Caf.object(require("./MiniFoundation"), null, null, out);

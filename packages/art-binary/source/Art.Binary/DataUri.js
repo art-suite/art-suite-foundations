@@ -54,3 +54,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=DataUri.js.map

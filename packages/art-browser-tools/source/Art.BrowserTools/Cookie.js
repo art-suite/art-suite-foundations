@@ -7,7 +7,7 @@ Caf.defMod(module, () => {
     (isString, isPlainArray, isPlainObject, Error, JSON, Date) => {
       let document, setCookie, Cookie;
       document = global.document;
-      setCookie = function(cookieName, cookieValue, { expires, path }) {
+      setCookie = function (cookieName, cookieValue, { expires, path }) {
         let cookieString, d;
         if (!isString(cookieValue)) {
           if (!(isPlainArray(cookieValue) || isPlainObject(cookieValue))) {
@@ -28,40 +28,39 @@ Caf.defMod(module, () => {
         }
         return (document.cookie = cookieString);
       };
-      return (Cookie = Caf.defClass(class Cookie extends Object {}, function(
-        Cookie,
-        classSuper,
-        instanceSuper
-      ) {
-        this.set = function(name, value, options) {
-          return setCookie(name, value, options);
-        };
-        this.remove = function(name, options) {
-          return setCookie(name, { path: options.path, expires: -1 });
-        };
-        this.get = function(cookieName) {
-          let name, ca, value;
-          name = cookieName + "=";
-          ca = document.cookie.split(";");
-          value = null;
-          Caf.each2(
-            ca,
-            c => {
-              while (" " === c.charAt(0)) {
-                c = c.substring(1);
-              }
-              return 0 === c.indexOf(name)
-                ? ((value = c.substring(name.length, c.length)),
-                  value.match(/^[{[]/)
-                    ? (value = JSON.parse(value))
-                    : undefined)
-                : undefined;
-            },
-            c => !value
-          );
-          return value;
-        };
-      }));
+      return (Cookie = Caf.defClass(
+        class Cookie extends Object {},
+        function (Cookie, classSuper, instanceSuper) {
+          this.set = function (name, value, options) {
+            return setCookie(name, value, options);
+          };
+          this.remove = function (name, options) {
+            return setCookie(name, { path: options.path, expires: -1 });
+          };
+          this.get = function (cookieName) {
+            let name, ca, value;
+            name = cookieName + "=";
+            ca = document.cookie.split(";");
+            value = null;
+            Caf.each2(
+              ca,
+              (c) => {
+                while (" " === c.charAt(0)) {
+                  c = c.substring(1);
+                }
+                return 0 === c.indexOf(name)
+                  ? ((value = c.substring(name.length, c.length)),
+                    value.match(/^[{[]/)
+                      ? (value = JSON.parse(value))
+                      : undefined)
+                  : undefined;
+              },
+              (c) => !value
+            );
+            return value;
+          };
+        }
+      ));
     }
   );
 });

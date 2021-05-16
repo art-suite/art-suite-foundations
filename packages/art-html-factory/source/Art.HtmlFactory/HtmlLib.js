@@ -16,16 +16,16 @@ Caf.defMod(module, () => {
       '"': "&quot;",
       "&": "&amp;",
       "<": "&lt;",
-      ">": "&gt;"
+      ">": "&gt;",
     }),
-    getHtmlEscape: (getHtmlEscape = function(e) {
+    getHtmlEscape: (getHtmlEscape = function (e) {
       return htmlEscapes[e];
     }),
-    escapeHtmlString: (escapeHtmlString = function(string) {
+    escapeHtmlString: (escapeHtmlString = function (string) {
       string = `${Caf.toString(string)}`;
       return /["<>&]/.test(string)
         ? string.replace(/["<>&]/g, getHtmlEscape)
         : string;
-    })
+    }),
   };
 });

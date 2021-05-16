@@ -5,10 +5,8 @@ target:
       They just can't be used *directly* in the browser
   node: true
 
-npm:
-  description: "" Art.Email.Validator
-  dependencies:
-    mailcheck:    :^1.1.1
+npm: ->
+  &package
 
 webpack:
   # common properties are merged into each target's properties

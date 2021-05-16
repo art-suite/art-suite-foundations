@@ -8,14 +8,14 @@ Caf.defMod(module, () => {
       let IndexJsGenerator;
       return (IndexJsGenerator = Caf.defClass(
         class IndexJsGenerator extends Object {},
-        function(IndexJsGenerator, classSuper, instanceSuper) {
-          this.generate = function(namespace) {
+        function (IndexJsGenerator, classSuper, instanceSuper) {
+          this.generate = function (namespace) {
             let includeInNamespace,
               generateNamespacedList,
               modules,
               setExportString;
             ({ includeInNamespace } = namespace);
-            generateNamespacedList = set => {
+            generateNamespacedList = (set) => {
               let list;
               return Caf.array(
                 (list = Caf.array(set.namespaced, (path, namespaceName) => {
@@ -28,7 +28,7 @@ Caf.defMod(module, () => {
                     requirePath(item.path)
                   )}')${Caf.toString(
                     index < list.length - 1 ? "," : undefined
-                  )}`
+                  )}`,
                 ]
               );
             };
@@ -37,7 +37,7 @@ Caf.defMod(module, () => {
             return compactFlatten([
               Caf.array(
                 namespace.getAllNonNamespacedRequires(),
-                name => `require('${Caf.toString(requirePath(name))}');`
+                (name) => `require('${Caf.toString(requirePath(name))}');`
               ),
               includeInNamespace || modules.length > 0
                 ? `(${Caf.toString(setExportString)})\n${Caf.toString(
@@ -56,8 +56,8 @@ Caf.defMod(module, () => {
                 : `${Caf.toString(setExportString)};`,
               Caf.array(
                 namespace.getAllNamespacedSubdirRequires(),
-                name => `require('./${Caf.toString(name)}');`
-              )
+                (name) => `require('./${Caf.toString(name)}');`
+              ),
             ]).join("\n");
           };
         }

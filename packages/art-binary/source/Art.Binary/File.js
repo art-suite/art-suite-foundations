@@ -44,3 +44,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=File.js.map

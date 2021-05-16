@@ -329,3 +329,5 @@
   })(BaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=BinaryString.js.map

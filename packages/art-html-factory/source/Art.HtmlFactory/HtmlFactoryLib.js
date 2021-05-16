@@ -9,7 +9,7 @@ Caf.defMod(module, () => {
       "w",
       "compactFlatten",
       "objectHasKeys",
-      "createObjectTreeFactories"
+      "createObjectTreeFactories",
     ],
     [global, require("art-standard-lib"), require("art-object-tree-factory")],
     (
@@ -23,7 +23,7 @@ Caf.defMod(module, () => {
     ) => {
       let mergePropsInto, concatChildren, mergeProps, createHtmlFactories;
       return {
-        mergePropsInto: (mergePropsInto = function(dest, source) {
+        mergePropsInto: (mergePropsInto = function (dest, source) {
           return Caf.object(
             source,
             (v, k) => {
@@ -59,11 +59,11 @@ Caf.defMod(module, () => {
             dest
           );
         }),
-        concatChildren: (concatChildren = function(...children) {
+        concatChildren: (concatChildren = function (...children) {
           children = compactFlatten(children);
           return children.length > 0 ? children : undefined;
         }),
-        mergeProps: (mergeProps = function(...props) {
+        mergeProps: (mergeProps = function (...props) {
           let out;
           props = compactFlatten(props);
           props =
@@ -71,19 +71,19 @@ Caf.defMod(module, () => {
               ? props[0]
               : Caf.each2(
                   props,
-                  propSet => mergePropsInto(out, propSet),
+                  (propSet) => mergePropsInto(out, propSet),
                   null,
                   (out = {})
                 );
           return objectHasKeys(props) ? props : undefined;
         }),
-        createHtmlFactories: (createHtmlFactories = function(...elementNames) {
+        createHtmlFactories: (createHtmlFactories = function (...elementNames) {
           return createObjectTreeFactories(
             { mergePropsInto },
             compactFlatten(elementNames),
             require("./HtmlTextNode")
           );
-        })
+        }),
       };
     }
   );

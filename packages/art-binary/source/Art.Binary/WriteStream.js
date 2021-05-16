@@ -150,3 +150,5 @@
   })(BaseObject);
 
 }).call(this);
+
+//# sourceMappingURL=WriteStream.js.map

@@ -13,7 +13,7 @@ Caf.defMod(module, () => {
       "compactFlattenAllFast",
       "isString",
       "w",
-      "upperCamelCase"
+      "upperCamelCase",
     ],
     [global, require("art-standard-lib")],
     (
@@ -30,7 +30,7 @@ Caf.defMod(module, () => {
       upperCamelCase
     ) => {
       let mergeIntoBasic, preprocessElementBasic, ObjectTreeFactory;
-      mergeIntoBasic = function(_into, source) {
+      mergeIntoBasic = function (_into, source) {
         let from, into, temp;
         return (
           (from = source),
@@ -48,12 +48,12 @@ Caf.defMod(module, () => {
           into
         );
       };
-      preprocessElementBasic = function(a) {
+      preprocessElementBasic = function (a) {
         return a;
       };
       return (ObjectTreeFactory = Caf.defClass(
         class ObjectTreeFactory extends Object {},
-        function(ObjectTreeFactory, classSuper, instanceSuper) {
+        function (ObjectTreeFactory, classSuper, instanceSuper) {
           let _makeCreateFactory;
           this.createObjectTreeFactory = (...args) => {
             let options,
@@ -68,7 +68,7 @@ Caf.defMod(module, () => {
             options = klass = nodeFactory = null;
             Caf.each2(
               args,
-              a =>
+              (a) =>
                 (() => {
                   switch (false) {
                     case !isClass(a):
@@ -79,7 +79,7 @@ Caf.defMod(module, () => {
                       return (options = a);
                   }
                 })(),
-              a => a != null
+              (a) => a != null
             );
             if (Caf.exists(options)) {
               mergePropsInto = options.mergePropsInto;
@@ -111,12 +111,12 @@ Caf.defMod(module, () => {
             );
           };
           this.createObjectTreeFactories = null;
-          _makeCreateFactory = function() {
+          _makeCreateFactory = function () {
             return eval(
               "(function(e,l,n){let f,u,r,t,i=(e=>{let a,c,s,h;e=l(e,f);if(e!=null&&e!==false){switch(e.constructor){case Object:if(r==null){r=e}else{if(u==null){n(u={},r)}n(u,e)}break;case Array:a=e;c=a;if(a!=null){s=a.length;h=0;while(h<s){let e;e=a[h];i(e);h++}}c;break;default:(t!=null?t:t=[]).push(e)}}return null});return f=((...l)=>{let n,f,a,c;t=u=r=undefined;n=l;f=n;if(n!=null){a=n.length;c=0;while(c<a){let e;e=n[c];i(e);c++}}f;return e(u||r,t)})});"
             );
           };
-          this._bindFactoryInfo = function(Factory, name, klass, bindList) {
+          this._bindFactoryInfo = function (Factory, name, klass, bindList) {
             let abstractClass, from, into, temp;
             if (klass) {
               name != null
@@ -145,12 +145,12 @@ Caf.defMod(module, () => {
                     })()
                   : undefined,
                 into),
-                bindList
+                bindList,
               ]);
               name != null ? name : (name = klass.getName() + "Factory");
               Caf.each2(
                 bindList,
-                k => (Factory[k] = fastBind(klass[k], klass))
+                (k) => (Factory[k] = fastBind(klass[k], klass))
               );
             }
             Factory._name = name != null ? name : (name = "ObjectTreeFactory");
@@ -159,13 +159,13 @@ Caf.defMod(module, () => {
           };
           this.createObjectTreeFactories = this.createObjectTreeFactory(
             {
-              mergePropsInto: function(a, b) {
+              mergePropsInto: function (a, b) {
                 a.names = compactFlattenAllFast(a.names, b.names);
                 return Caf.object(b, null, (v, k) => k !== "names", a);
               },
-              preprocessElement: function(element) {
+              preprocessElement: function (element) {
                 return isString(element) ? { names: w(element) } : element;
-              }
+              },
             },
             (props, children) => {
               let nodeFactory, nodeClass;
@@ -205,8 +205,8 @@ Caf.defMod(module, () => {
             let suffix, out;
             suffix = options.suffix || "";
             out = {};
-            Caf.each2(list, nodeTypeName =>
-              (nodeTypeName => {
+            Caf.each2(list, (nodeTypeName) =>
+              ((nodeTypeName) => {
                 options.inspectedName = nodeTypeName;
                 return (out[
                   upperCamelCase(nodeTypeName) + suffix
@@ -225,7 +225,7 @@ Caf.defMod(module, () => {
             let suffix, out;
             suffix = options.suffix || "";
             out = {};
-            Caf.each2(list, nodeTypeName => {
+            Caf.each2(list, (nodeTypeName) => {
               let nodeFactory, name;
               nodeFactory = nodeFactoryFactory(nodeTypeName);
               name = upperCamelCase(nodeTypeName) + suffix;

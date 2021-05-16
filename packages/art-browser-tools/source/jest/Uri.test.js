@@ -9,7 +9,7 @@ Caf.defMod(module, () => {
       "encodeUriQuery",
       "uriPathJoin",
       "encodeUri",
-      "encodeMailto"
+      "encodeMailto",
     ],
     [global, require("./StandardImport")],
     (
@@ -22,7 +22,7 @@ Caf.defMod(module, () => {
       encodeMailto
     ) => {
       return describe({
-        encodeUriQuery: function() {
+        encodeUriQuery: function () {
           test("a: 1", () => assert.eq("a=1", encodeUriQuery({ a: 1 })));
           test("a: 'hi'", () => assert.eq("a=hi", encodeUriQuery({ a: "hi" })));
           test("a: 'hi', b: 'bye'", () =>
@@ -30,7 +30,7 @@ Caf.defMod(module, () => {
           return test("a: '&?= '", () =>
             assert.eq("a=%26%3F%3D%20", encodeUriQuery({ a: "&?= " })));
         },
-        uriPathJoin: function() {
+        uriPathJoin: function () {
           test("uriPathJoin 'foo', 'bar'", () =>
             assert.eq("foo/bar", uriPathJoin("foo", "bar")));
           test("uriPathJoin 'foo/', 'bar'", () =>
@@ -50,7 +50,7 @@ Caf.defMod(module, () => {
           return test('uriPathJoin null, "bar"', () =>
             assert.eq("bar", uriPathJoin(null, "bar")));
         },
-        encodeUri_: function() {
+        encodeUri_: function () {
           test("host", () =>
             assert.eq("://foo.com", encodeUri({ host: "foo.com" })));
           test("protocol", () =>
@@ -90,7 +90,7 @@ Caf.defMod(module, () => {
                 host: "foo.com",
                 protocol: "http",
                 port: 8080,
-                path: "bar/bam"
+                path: "bar/bam",
               })
             ));
           test("query", () =>
@@ -111,17 +111,17 @@ Caf.defMod(module, () => {
               encodeUri({ protocol: "mailto", path: "shanebdavis@gmail.com" })
             ));
         },
-        regressions: function() {
+        regressions: function () {
           return test("facebook share", () =>
             assert.eq(
               "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fimikimi.com%2Fpost%2F0HWIhYdO9rzg%2F",
               encodeUri({
                 uri: "https://www.facebook.com/sharer/sharer.php",
-                query: { u: "https://imikimi.com/post/0HWIhYdO9rzg/" }
+                query: { u: "https://imikimi.com/post/0HWIhYdO9rzg/" },
               })
             ));
         },
-        encodeMailto: function() {
+        encodeMailto: function () {
           test("nothing", () => assert.eq("mailto:", encodeMailto({})));
           test("to", () =>
             assert.eq(
@@ -147,7 +147,7 @@ Caf.defMod(module, () => {
               "mailto:?bcc=shanebdavis%40gmail.com",
               encodeMailto({ bcc: "shanebdavis@gmail.com" })
             ));
-        }
+        },
       });
     }
   );

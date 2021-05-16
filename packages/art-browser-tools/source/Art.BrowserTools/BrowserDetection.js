@@ -13,13 +13,13 @@ Caf.defMod(module, () => {
       "merge",
       "isWebSpiderRegExp",
       "max",
-      "log"
+      "log",
     ],
     [
       global,
       require("./StandardImport"),
       require("./iPhoneDeviceInformation"),
-      require("./UseragentRegExp")
+      require("./UseragentRegExp"),
     ],
     (
       getEnv,
@@ -64,7 +64,7 @@ Caf.defMod(module, () => {
       smallestTabletDeviceWidth = 600;
       return (BrowserDetection = Caf.defClass(
         class BrowserDetection extends Object {},
-        function(BrowserDetection, classSuper, instanceSuper) {
+        function (BrowserDetection, classSuper, instanceSuper) {
           let getAgent,
             artBrowserUserAgent,
             getIsMobileBrowser,
@@ -72,7 +72,7 @@ Caf.defMod(module, () => {
             simpleBrowserInfo,
             simpleBrowserInfoDepricationWarning;
           this.isBrowser = !!navigator;
-          this.getAgent = getAgent = function() {
+          this.getAgent = getAgent = function () {
             return (
               (Caf.exists(navigator) && navigator.userAgent) ||
               (Caf.exists(navigator) && navigator.vendor) ||
@@ -84,7 +84,7 @@ Caf.defMod(module, () => {
             this.simpleBrowserInfo.os === "iOS"
               ? 16777216
               : 64 * Caf.pow(1024, 2);
-          this.getHasIPhoneXNotch = function(
+          this.getHasIPhoneXNotch = function (
             subDevice = simpleBrowserInfo.subDevice
           ) {
             return iPhoneNotchSizes[subDevice] > 0;
@@ -104,37 +104,38 @@ Caf.defMod(module, () => {
                     ? "top"
                     : this.getOrientationAngle() === 90
                     ? "left"
-                    : "right"
+                    : "right",
                 }
               : undefined;
           };
           artBrowserUserAgent = getAgent();
-          getIsMobileBrowser = function() {
+          getIsMobileBrowser = function () {
             return isMobileBrowserRegExp1.test(artBrowserUserAgent);
           };
-          this.getClientWidth = function() {
+          this.getClientWidth = function () {
             let temp2;
             return ((temp2 = document.documentElement) != null
               ? temp2
               : document.body
             ).clientWidth;
           };
-          this.getClientHeight = function() {
+          this.getClientHeight = function () {
             let temp2;
             return ((temp2 = document.documentElement) != null
               ? temp2
               : document.body
             ).clientWidth;
           };
-          this.getOrientationAngle = function() {
+          this.getOrientationAngle = function () {
             let temp2, base;
             return (temp2 =
               Caf.exists(screen) &&
-              Caf.exists((base = screen.orientation)) && base.angle) != null
+              Caf.exists((base = screen.orientation)) &&
+              base.angle) != null
               ? temp2
               : global.orientation;
           };
-          this.getOrientationIsPortrait = viewSize => {
+          this.getOrientationIsPortrait = (viewSize) => {
             let o;
             return (() => {
               switch (false) {
@@ -147,7 +148,7 @@ Caf.defMod(module, () => {
               }
             })();
           };
-          this.getScreenSize = viewSize => {
+          this.getScreenSize = (viewSize) => {
             let orientationIsLandscape, availWidth, availHeight, temp2;
             orientationIsLandscape = !this.getOrientationIsPortrait(viewSize);
             temp2 = global.screen;
@@ -159,7 +160,7 @@ Caf.defMod(module, () => {
               : { x: availWidth, y: availHeight };
           };
           _safeAreaInsetCssKey = null;
-          this.getSafeAreaInsetCssKey = function() {
+          this.getSafeAreaInsetCssKey = function () {
             return _safeAreaInsetCssKey != null
               ? _safeAreaInsetCssKey
               : (_safeAreaInsetCssKey =
@@ -205,15 +206,15 @@ Caf.defMod(module, () => {
                       top: parseInt(computedStyle.paddingTop) | 0,
                       left: parseInt(computedStyle.paddingLeft) | 0,
                       right: parseInt(computedStyle.paddingRight) | 0,
-                      bottom: parseInt(computedStyle.paddingBottom) | 0
+                      bottom: parseInt(computedStyle.paddingBottom) | 0,
                     }),
                     document.body.removeChild(div))
                   : (result = { top: 0, left: 0, right: 0, bottom: 0 }),
                 result.top === 0 &&
                 simpleBrowserInfo.os === "iOS" &&
-                  simpleBrowserInfo.nativeApp &&
-                  (simpleBrowserInfo.device === "iPad" ||
-                    this.getOrientationIsPortrait())
+                simpleBrowserInfo.nativeApp &&
+                (simpleBrowserInfo.device === "iPad" ||
+                  this.getOrientationIsPortrait())
                   ? merge(result, { top: 20 })
                   : result);
           };
@@ -224,7 +225,7 @@ Caf.defMod(module, () => {
                 ? simpleBrowserInfo
                 : (simpleBrowserInfo = this.getSimpleBrowserInfo()));
           this.getSimpleBrowserInfo = !this.isBrowser
-            ? function() {
+            ? function () {
                 return {};
               }
             : () => {
@@ -348,15 +349,15 @@ Caf.defMod(module, () => {
                     ? deviceMinorScreenSize < smallestTabletDeviceWidth
                       ? "phone"
                       : "tablet"
-                    : "desktop"
+                    : "desktop",
                 });
               };
           this.simpleBrowserInfo = this.getSimpleBrowserInfo();
           this.getIsMobileBrowser = getIsMobileBrowser;
-          simpleBrowserInfoDepricationWarning = function() {
+          simpleBrowserInfoDepricationWarning = function () {
             return log.warn("DEPRICATED - use simpleBrowserInfo directly");
           };
-          this.isSafari = function() {
+          this.isSafari = function () {
             simpleBrowserInfoDepricationWarning();
             return !!simpleBrowserInfo.safari;
           };
@@ -364,31 +365,31 @@ Caf.defMod(module, () => {
             log.warn("isMobileBrowser DEPRICATED - use getIsMobileBrowser");
             return this.getIsMobileBrowser();
           };
-          this.nativeAppDetect = function() {
+          this.nativeAppDetect = function () {
             simpleBrowserInfoDepricationWarning();
             return !!simpleBrowserInfo.nativeApp;
           };
-          this.isTouchDevice = function() {
+          this.isTouchDevice = function () {
             simpleBrowserInfoDepricationWarning();
             return !!simpleBrowserInfo.touch;
           };
-          this.iOSDetect = function() {
+          this.iOSDetect = function () {
             simpleBrowserInfoDepricationWarning();
             return simpleBrowserInfo.os === "iOS";
           };
-          this.androidDetect = function() {
+          this.androidDetect = function () {
             simpleBrowserInfoDepricationWarning();
             return simpleBrowserInfo.os === "android";
           };
-          this.iPhoneDetect = function() {
+          this.iPhoneDetect = function () {
             simpleBrowserInfoDepricationWarning();
             return simpleBrowserInfo.device === "iPhone";
           };
-          this.iPadDetect = function() {
+          this.iPadDetect = function () {
             simpleBrowserInfoDepricationWarning();
             return simpleBrowserInfo.device === "iPad";
           };
-          this.isIe11 = function() {
+          this.isIe11 = function () {
             simpleBrowserInfoDepricationWarning();
             return simpleBrowserInfo.browser === "ie11";
           };

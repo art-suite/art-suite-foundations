@@ -8,13 +8,13 @@ Caf.defMod(module, () => {
       let UriBrowserTools;
       return (UriBrowserTools = Caf.defClass(
         class UriBrowserTools extends Object {},
-        function(UriBrowserTools, classSuper, instanceSuper) {
+        function (UriBrowserTools, classSuper, instanceSuper) {
           let encodeUriQuery,
             stripLeadingSlash,
             stripTrailingSlash,
             uriPathJoin,
             encodeUri;
-          this.encodeUriQuery = encodeUriQuery = function(query) {
+          this.encodeUriQuery = encodeUriQuery = function (query) {
             if (!hasProperties(query)) {
               return "";
             }
@@ -25,13 +25,13 @@ Caf.defMod(module, () => {
               (v, k) => v != null && present(v)
             ).join("&");
           };
-          this.stripLeadingSlash = stripLeadingSlash = function(a) {
+          this.stripLeadingSlash = stripLeadingSlash = function (a) {
             return a.match(/^\/?(.*)/)[1];
           };
-          this.stripTrailingSlash = stripTrailingSlash = function(a) {
+          this.stripTrailingSlash = stripTrailingSlash = function (a) {
             return a.match(/(^.*[^\/])\/?$/)[1];
           };
-          this.uriPathJoin = uriPathJoin = function(a, b) {
+          this.uriPathJoin = uriPathJoin = function (a, b) {
             if (!present(a)) {
               a = null;
             }
@@ -46,7 +46,7 @@ Caf.defMod(module, () => {
                   )}`
               : a || b || "";
           };
-          this.encodeUri = encodeUri = function(options) {
+          this.encodeUri = encodeUri = function (options) {
             let host, path, port, uri, protocol, query, protocolHost;
             host = options.host;
             path = options.path;
