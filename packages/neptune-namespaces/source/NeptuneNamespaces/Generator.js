@@ -78,7 +78,8 @@ Caf.defMod(module, () => {
         },
         function (Generator, classSuper, instanceSuper) {
           this.standardRoots = ["source", "test", "performance", "src", "perf"];
-          this.generatedFilenameRegexp = /(^|\/)(namespace|index)\.(coffee|js)$/;
+          this.generatedFilenameRegexp =
+            /(^|\/)(namespace|index)\.(coffee|js)$/;
           this.extensions = ["js", "coffee", "caffeine", "caf"];
           this.findVersionFile = function (path) {
             let packageRoot;

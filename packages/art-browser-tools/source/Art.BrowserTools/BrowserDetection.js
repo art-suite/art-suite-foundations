@@ -114,16 +114,14 @@ Caf.defMod(module, () => {
           };
           this.getClientWidth = function () {
             let temp2;
-            return ((temp2 = document.documentElement) != null
-              ? temp2
-              : document.body
+            return (
+              (temp2 = document.documentElement) != null ? temp2 : document.body
             ).clientWidth;
           };
           this.getClientHeight = function () {
             let temp2;
-            return ((temp2 = document.documentElement) != null
-              ? temp2
-              : document.body
+            return (
+              (temp2 = document.documentElement) != null ? temp2 : document.body
             ).clientWidth;
           };
           this.getOrientationAngle = function () {
@@ -249,108 +247,112 @@ Caf.defMod(module, () => {
                   deviceMinorScreenSize,
                   temp2;
                 artBrowserUserAgent = getAgent();
-                return (this.simpleBrowserInfo = simpleBrowserInfo = {
-                  devicePixelRatio,
-                  pixelsPerPoint: devicePixelRatio,
-                  os: (detectedOs = (() => {
-                    switch (false) {
-                      case !(iOS = /ipad|ipod|iphone/i.test(
-                        artBrowserUserAgent
-                      )):
-                        return "iOS";
-                      case !(windowsPhone = /Windows Phone/i.test(
-                        artBrowserUserAgent
-                      )):
-                        return "windowsPhone";
-                      case !(windows = /windows/i.test(artBrowserUserAgent)):
-                        return "windows";
-                      case !(osx = /mac os x/i.test(artBrowserUserAgent)):
-                        return "osx";
-                      case !(android = /android/i.test(artBrowserUserAgent)):
-                        return "android";
-                      case !(linux = /linux/.test(artBrowserUserAgent)):
-                        return "linux";
-                      default:
-                        return "other";
-                    }
-                  })()),
-                  browser: (() => {
-                    switch (false) {
-                      case !(webSpider = isWebSpiderRegExp.test(
-                        artBrowserUserAgent
-                      )):
-                        return "webSpider";
-                      case !(ie11 =
-                        !!window.MSInputMethodContext &&
-                        !!document.documentMode):
-                        return "ie11";
-                      case !(firefox = !!window.InstallTrigger):
-                        return "firefox";
-                      case !(safari =
-                        iOS ||
-                        /^((?!chrome|android).)*safari/i.test(
+                return (this.simpleBrowserInfo = simpleBrowserInfo =
+                  {
+                    devicePixelRatio,
+                    pixelsPerPoint: devicePixelRatio,
+                    os: (detectedOs = (() => {
+                      switch (false) {
+                        case !(iOS = /ipad|ipod|iphone/i.test(
                           artBrowserUserAgent
                         )):
-                        return "safari";
-                      case !(edge = /Edge/.test(artBrowserUserAgent)):
-                        return "edge";
-                      case !(opera =
-                        window.opera != null ||
-                        /\ OPR\//.test(artBrowserUserAgent)):
-                        return "opera";
-                      case !(chrome = /Chrome\/\d/i.test(artBrowserUserAgent)):
-                        return "chrome";
-                      default:
-                        return "other";
-                    }
-                  })(),
-                  fakeNativeApp: (fakeNativeApp =
-                    userRequestedFakeNativeApp &&
-                    (detectedOs === "android" || detectedOs === "iOS")),
-                  nativeApp: (nativeApp = !!(fakeNativeApp || global.cordova)),
-                  device: (device = (() => {
-                    switch (false) {
-                      case !/iphone|ipod/i.test(artBrowserUserAgent):
-                        return "iPhone";
-                      case !/ipad/i.test(artBrowserUserAgent):
-                        return "iPad";
-                      default:
-                        return "other";
-                    }
-                  })()),
-                  touch: (touch =
-                    document.documentElement.ontouchstart != null ||
-                    getIsMobileBrowser()),
-                  deviceMajorScreenSize: (deviceMajorScreenSize = max(
-                    screen.availWidth,
-                    screen.availHeight
-                  )),
-                  deviceMinorScreenSize: (deviceMinorScreenSize = min(
-                    screen.availWidth,
-                    screen.availHeight
-                  )),
-                  subDevice:
-                    (temp2 = (() => {
-                      switch (device) {
-                        case "iPhone":
-                          return Caf.find(
-                            require("./iPhoneDeviceInformation")
-                              .iPhonePointSizes,
-                            ([w, h], iPhoneName) => iPhoneName,
-                            ([w, h], iPhoneName) =>
-                              w === deviceMinorScreenSize &&
-                              h === deviceMajorScreenSize
-                          );
+                          return "iOS";
+                        case !(windowsPhone = /Windows Phone/i.test(
+                          artBrowserUserAgent
+                        )):
+                          return "windowsPhone";
+                        case !(windows = /windows/i.test(artBrowserUserAgent)):
+                          return "windows";
+                        case !(osx = /mac os x/i.test(artBrowserUserAgent)):
+                          return "osx";
+                        case !(android = /android/i.test(artBrowserUserAgent)):
+                          return "android";
+                        case !(linux = /linux/.test(artBrowserUserAgent)):
+                          return "linux";
+                        default:
+                          return "other";
                       }
-                    })()) != null
-                      ? temp2
-                      : "other",
-                  deviceType: touch
-                    ? deviceMinorScreenSize < smallestTabletDeviceWidth
-                      ? "phone"
-                      : "tablet"
-                    : "desktop",
-                });
+                    })()),
+                    browser: (() => {
+                      switch (false) {
+                        case !(webSpider =
+                          isWebSpiderRegExp.test(artBrowserUserAgent)):
+                          return "webSpider";
+                        case !(ie11 =
+                          !!window.MSInputMethodContext &&
+                          !!document.documentMode):
+                          return "ie11";
+                        case !(firefox = !!window.InstallTrigger):
+                          return "firefox";
+                        case !(safari =
+                          iOS ||
+                          /^((?!chrome|android).)*safari/i.test(
+                            artBrowserUserAgent
+                          )):
+                          return "safari";
+                        case !(edge = /Edge/.test(artBrowserUserAgent)):
+                          return "edge";
+                        case !(opera =
+                          window.opera != null ||
+                          /\ OPR\//.test(artBrowserUserAgent)):
+                          return "opera";
+                        case !(chrome = /Chrome\/\d/i.test(
+                          artBrowserUserAgent
+                        )):
+                          return "chrome";
+                        default:
+                          return "other";
+                      }
+                    })(),
+                    fakeNativeApp: (fakeNativeApp =
+                      userRequestedFakeNativeApp &&
+                      (detectedOs === "android" || detectedOs === "iOS")),
+                    nativeApp: (nativeApp = !!(
+                      fakeNativeApp || global.cordova
+                    )),
+                    device: (device = (() => {
+                      switch (false) {
+                        case !/iphone|ipod/i.test(artBrowserUserAgent):
+                          return "iPhone";
+                        case !/ipad/i.test(artBrowserUserAgent):
+                          return "iPad";
+                        default:
+                          return "other";
+                      }
+                    })()),
+                    touch: (touch =
+                      document.documentElement.ontouchstart != null ||
+                      getIsMobileBrowser()),
+                    deviceMajorScreenSize: (deviceMajorScreenSize = max(
+                      screen.availWidth,
+                      screen.availHeight
+                    )),
+                    deviceMinorScreenSize: (deviceMinorScreenSize = min(
+                      screen.availWidth,
+                      screen.availHeight
+                    )),
+                    subDevice:
+                      (temp2 = (() => {
+                        switch (device) {
+                          case "iPhone":
+                            return Caf.find(
+                              require("./iPhoneDeviceInformation")
+                                .iPhonePointSizes,
+                              ([w, h], iPhoneName) => iPhoneName,
+                              ([w, h], iPhoneName) =>
+                                w === deviceMinorScreenSize &&
+                                h === deviceMajorScreenSize
+                            );
+                        }
+                      })()) != null
+                        ? temp2
+                        : "other",
+                    deviceType: touch
+                      ? deviceMinorScreenSize < smallestTabletDeviceWidth
+                        ? "phone"
+                        : "tablet"
+                      : "desktop",
+                  });
               };
           this.simpleBrowserInfo = this.getSimpleBrowserInfo();
           this.getIsMobileBrowser = getIsMobileBrowser;

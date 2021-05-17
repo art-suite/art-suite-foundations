@@ -15,18 +15,19 @@ Caf.defMod(module, () => {
       ({ localStorage } = global);
       localStorage != null
         ? localStorage
-        : (localStorage = LocalStorageShimForNode = Caf.defClass(
-            class LocalStorageShimForNode extends Object {},
-            function (LocalStorageShimForNode, classSuper, instanceSuper) {
-              this.store = {};
-              this.getItem = (k) => this.store[k];
-              this.setItem = (k, v) => (this.store[k] = v);
-              this.removeItem = (k) => delete this.store[k];
-              this.clear = () => (this.store = {});
-              this.key = (i) => Object.keys(this.store)[i];
-              this.getLength = () => objectKeyCount(this.store);
-            }
-          ));
+        : (localStorage = LocalStorageShimForNode =
+            Caf.defClass(
+              class LocalStorageShimForNode extends Object {},
+              function (LocalStorageShimForNode, classSuper, instanceSuper) {
+                this.store = {};
+                this.getItem = (k) => this.store[k];
+                this.setItem = (k, v) => (this.store[k] = v);
+                this.removeItem = (k) => delete this.store[k];
+                this.clear = () => (this.store = {});
+                this.key = (i) => Object.keys(this.store)[i];
+                this.getLength = () => objectKeyCount(this.store);
+              }
+            ));
       return isWebWorker
         ? workerRpc.bindWithPromises({
             localStorage: ["getItem", "setItem", "removeItem", "clear", "key"],

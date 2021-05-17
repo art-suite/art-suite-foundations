@@ -58,9 +58,10 @@ Caf.defMod(module, () => {
           });
           this.prototype.findSourceRoot = function (directory) {
             let known;
-            return (known = this._knownSourceRoots[
-              (directory = path.resolve(directory != null ? directory : "."))
-            ])
+            return (known =
+              this._knownSourceRoots[
+                (directory = path.resolve(directory != null ? directory : "."))
+              ])
               ? Promise.resolve(known)
               : fs.stat(directory).then((stat) => {
                   if (!stat.isDirectory()) {
@@ -74,9 +75,10 @@ Caf.defMod(module, () => {
           };
           this.prototype.findSourceRootSync = function (directory) {
             let known;
-            return (known = this._knownSourceRoots[
-              (directory = path.resolve(directory != null ? directory : "."))
-            ])
+            return (known =
+              this._knownSourceRoots[
+                (directory = path.resolve(directory != null ? directory : "."))
+              ])
               ? known
               : (!(
                   fs.existsSync(directory) &&

@@ -208,11 +208,10 @@ Caf.defMod(module, () => {
             Caf.each2(list, (nodeTypeName) =>
               ((nodeTypeName) => {
                 options.inspectedName = nodeTypeName;
-                return (out[
-                  upperCamelCase(nodeTypeName) + suffix
-                ] = this.createObjectTreeFactory(options, (props, children) =>
-                  nodeFactory(nodeTypeName, props, children)
-                ));
+                return (out[upperCamelCase(nodeTypeName) + suffix] =
+                  this.createObjectTreeFactory(options, (props, children) =>
+                    nodeFactory(nodeTypeName, props, children)
+                  ));
               })(nodeTypeName)
             );
             return out;

@@ -6,20 +6,21 @@ Caf.defMod(module, () => {
     [global, require("./StandardImport"), require("./LoadAceConfig")],
     (BaseClass, loadAceConfig, process) => {
       let AceMain;
-      return (require("./LoadAceConfig").AceMain = AceMain = Caf.defClass(
-        class AceMain extends BaseClass {},
-        function (AceMain, classSuper, instanceSuper) {
-          this.realRequire = eval("require");
-          this.aceUpdate = function (options) {
-            let temp;
-            return loadAceConfig(
-              (temp = Caf.exists(options) && options.package) != null
-                ? temp
-                : process.cwd()
-            ).tap((aceConfig) => {});
-          };
-        }
-      ));
+      return (require("./LoadAceConfig").AceMain = AceMain =
+        Caf.defClass(
+          class AceMain extends BaseClass {},
+          function (AceMain, classSuper, instanceSuper) {
+            this.realRequire = eval("require");
+            this.aceUpdate = function (options) {
+              let temp;
+              return loadAceConfig(
+                (temp = Caf.exists(options) && options.package) != null
+                  ? temp
+                  : process.cwd()
+              ).tap((aceConfig) => {});
+            };
+          }
+        ));
     }
   );
 });

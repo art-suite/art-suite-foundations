@@ -98,12 +98,7 @@ Caf.defMod(module, () => {
         },
         incompleteParts: function () {
           let Alice, Bill, John, SallyMae;
-          ({
-            Alice,
-            Bill,
-            John,
-            SallyMae,
-          } = createObjectTreeFactories(
+          ({ Alice, Bill, John, SallyMae } = createObjectTreeFactories(
             testNamesLowerCamelCased,
             (name, props, children) => merge({ props, children })
           ));
