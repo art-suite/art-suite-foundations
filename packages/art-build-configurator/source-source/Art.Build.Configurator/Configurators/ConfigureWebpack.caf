@@ -1,6 +1,6 @@
 import &StandardImport, &Data
 
-webpackMerge = &webpackMerge.merge
+webpackMerge = (args...) -> require("webpack-merge").merge args...
 
 # https://webpack.js.org/concepts/configuration/
 

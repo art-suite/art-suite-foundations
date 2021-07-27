@@ -1,0 +1,18 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "art-standard-lib": "^1.71.1",
+    "caffeine-script-runtime": "^1.14.0"
+  },
+  "devDependencies": {
+    "caffeine-script": "^0.74.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "@art-suite/standard-package-builder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  }
+}

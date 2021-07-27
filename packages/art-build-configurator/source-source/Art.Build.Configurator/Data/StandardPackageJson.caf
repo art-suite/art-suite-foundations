@@ -47,7 +47,8 @@ class StandardPackageJson
       name:         peek process.cwd().split :/
       version:
         &fs.existsSync :package.json
-        && JSON.parse
+        &&
+          JSON.parse
             &fs.readFileSync :package.json
             .toString()
           .version

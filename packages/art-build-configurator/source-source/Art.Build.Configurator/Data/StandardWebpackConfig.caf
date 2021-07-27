@@ -19,7 +19,7 @@ class StandardWebpackConfig
       filename:   "[name].js"
 
     plugins: []
-      new &CaseSensitivePathsWebpackPlugin
+      new require :case-sensitive-paths-webpack-plugin
 
     module:
       rules: []
