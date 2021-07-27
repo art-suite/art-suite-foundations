@@ -10,7 +10,7 @@
     "art-standard-lib": "^1.71.1",
     "chai": "^4.2.0",
     "neptune-namespaces-runtime": "^3.2.10",
-    "npm-watch": "^0.9.0"
+    "npm-watch": "^0.10.0"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
   "devDependencies": {

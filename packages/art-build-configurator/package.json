@@ -20,14 +20,14 @@
     "coffee-script": "^1.12.7",
     "colors": "^1.4.0",
     "commander": "^5.0.0",
-    "css-loader": "^5.0.0",
+    "css-loader": "^6.2.0",
     "dateformat": "^4.5.1",
     "detect-node": "^2.0.4",
     "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "glob-promise": "^4.1.0",
     "neptune-namespaces": "^4.2.10",
-    "style-loader": "^2.0.0"
+    "style-loader": "^3.2.1"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {

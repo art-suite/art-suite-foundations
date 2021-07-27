@@ -12,7 +12,7 @@
     "art-build-configurator": "^1.29.4",
     "art-testbench": "^3.2.3",
     "mocha": "^7.2.0",
-    "watch": "^1.0.0"
+    "npm-watch": "^0.10.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
