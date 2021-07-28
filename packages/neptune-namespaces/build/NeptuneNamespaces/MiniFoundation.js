@@ -175,3 +175,5 @@
   })();
 
 }).call(this);
+
+//# sourceMappingURL=MiniFoundation.js.map

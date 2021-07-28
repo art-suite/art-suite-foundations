@@ -1,1 +1,3 @@
-&ArtStandardLib.mergeWithSelf  &source/NeptuneNamespaces
+&ArtStandardLib.mergeWithSelf
+  &ArtTestbench
+  &build/NeptuneNamespaces
