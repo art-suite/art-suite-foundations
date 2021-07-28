@@ -55,6 +55,8 @@ configure: (options = {}) -> (_package) ->
         + buildScript sourceDir, targetTempDir
         + """
             \n
+            nn #{targetTempDir}/*
+
             # BUILD CLEAN FINIALIZING
             #  - replace old build in:   #{targetDir}
             #  - with new build from:    #{targetTempDir}
@@ -62,7 +64,6 @@ configure: (options = {}) -> (_package) ->
             mv #{targetDir} __build-old__
             mv #{targetTempDir} #{targetDir}
             rm -rf ./__build-old__
-            npm run nn
 
       clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch
