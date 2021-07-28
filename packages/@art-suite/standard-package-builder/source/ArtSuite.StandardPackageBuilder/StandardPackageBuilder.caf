@@ -1,10 +1,5 @@
 import &ArtStandardLib
 
-validatePresent = (val) ->
-  unless val is String && val.length > 0
-    throw new Error "expected value to be present"
-  val
-
 configure: (options = {}) -> (_package) ->
   options extract?
     sourceDir = :source
@@ -55,7 +50,8 @@ configure: (options = {}) -> (_package) ->
         """
           # BUILD CLEAN START
           #   - building into: #{targetTempDir}
-          #\n
+          #
+          rm -rf ./__build-old__\n
         + buildScript sourceDir, targetTempDir
         + """
             \n
@@ -63,9 +59,9 @@ configure: (options = {}) -> (_package) ->
             #  - replace old build in:   #{targetDir}
             #  - with new build from:    #{targetTempDir}
             #
-            mv #{targetDir} build-old
+            mv #{targetDir} __build-old__
             mv #{targetTempDir} #{targetDir}
-            rm -rf ./#{validatePresent targetTempDir}
+            rm -rf ./__build-old__
 
       clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch

@@ -1,6 +1,6 @@
-import &ArtStandardLib, &ArtCommunicationStatus
+import &ArtStandardLib, &ArtTestbench, &ArtCommunicationStatus
 
-suite:
+describe
   decodeHttpStatus: ->
     test "100", -> assert.rejects -> decodeHttpStatus 100
     test "200", -> assert.selectedPropsEq {status: success,                      httpStatus: 200}, decodeHttpStatus 200

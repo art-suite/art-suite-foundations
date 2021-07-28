@@ -1,1 +1,1 @@
-module.exports = require("./source/Art.CommunicationStatus");
+module.exports = require("./build");
