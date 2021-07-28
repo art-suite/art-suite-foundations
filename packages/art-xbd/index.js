@@ -1,1 +1,1 @@
-module.exports = require("./source/Art.Xbd");
+module.exports = require('./build');

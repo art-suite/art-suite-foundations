@@ -362,3 +362,5 @@
   })(BaseClass));
 
 }).call(this);
+
+//# sourceMappingURL=XbdTag.js.map

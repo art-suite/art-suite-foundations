@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "BuildXbd.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/BuildXbd.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,qGAAO,wFAEP,EAAC,KAAK,KAAK,OAAO,mBACb,iBAIH,MAEF,KAAK,kDACH,IAAI,IAAI,eAER,aAAa,cAAc,+BAE7B,KAAK,8CACH,IAAI,KACF,KAAK,GACL,KAAK,YACP,aAAa,cAAc,8BAE7B,KAAK,+DACH,IAAI,IAAI,IAAI,SAEZ,WACK,uDAOL,aAAa,cAAc,qBAE7B,KAAK,8BACH,IAAI,IAAI,MACN,KAAI,GAAG,KACP,KAAI,GAAG,MAET,aAAa,MAAM,aAAa,MAAM,WACtC,aAAa,MAAM,aAAa,MAAM"
+}
