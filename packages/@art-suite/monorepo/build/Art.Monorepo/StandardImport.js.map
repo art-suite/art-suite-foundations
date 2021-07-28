@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardImport.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Monorepo/StandardImport.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,6BACA,wBACA,kBACA"
+}

@@ -14,7 +14,6 @@
   AssertTruthTest:           require('./assert.truth.test'),
   AssertWithin:              require('./assert.within'),
   CommunicationStatusTest:   require('./CommunicationStatus.test'),
-  Comparison:                require('./Comparison'),
   ComparisonTest:            require('./Comparison.test'),
   PresentationTest:          require('./Presentation.test'),
   StandardImport:            require('./StandardImport'),

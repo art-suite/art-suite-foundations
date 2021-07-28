@@ -1,0 +1,36 @@
+import &StandardImport
+
+{}
+  &update-mono-package
+  &update-sub-packages
+
+  test: (options) ->
+    allPackageExec merge options,
+      command: "npm test"
+      verb: :test
+
+  sync: (options) ->
+    cleanMonorepo()
+    .then -> &updateSubPackages options
+    .then -> &updateMonoPackage options
+    .then -> green "" All package.json files synced.
+
+  run:
+    options:
+      command:  "" Shell command to run.
+      verbose:  "" true/false
+      path:     "" find all packages in this path. default: "."
+    run: (options) ->
+      if options extract path
+        process.chdir path
+      allPackageExec merge options,
+        verb: :run
+
+  clean: (options) ->
+    cleanMonorepo()
+    .then -> green "" Monorepo is clean.
+
+  update: (options) ->
+    Promise
+    .then -> &updateSubPackages options
+    .then -> &updateMonoPackage options

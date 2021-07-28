@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Commands.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Monorepo/Commands.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wIAAO,kGAEP,QACE,uDACA,uDAEA,cAAM,CAAC,UAAW,OAChB,eAAe,MAAM,UACnB,SAAS,YACT,MAAM,aAEV,cAAM,CAAC,UAAW,OAChB,qBACK,MAAI,+BAAmB,eACvB,MAAI,+BAAmB,eACvB,MAAI,MAAQ,sCAEnB,MACE,UACE,SAAY,yBACZ,SAAY,cACZ,MAAY,iDACd,aAAK,CAAC,oBACJ,WAAG,eACD,cAAc,gBAChB,eAAe,MAAM,UACnB,MAAM,aAEZ,eAAO,CAAC,UAAW,OACjB,qBACK,MAAI,MAAQ,0BAEnB,gBAAQ,CAAC,UAAW,OAClB,aACK,MAAI,+BAAmB,eACvB,MAAI,+BAAmB"
+}

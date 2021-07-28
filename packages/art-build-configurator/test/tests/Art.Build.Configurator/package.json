@@ -55,14 +55,6 @@
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
-  "scripts": {
-    "build": "caf -m -c source -o build\nnpm run nn",
-    "build-clean": "npm run clean; npm run build",
-    "clean": "rm -rf build/*",
-    "nn": "nn build/* test/tests",
-    "test": "npm run nn\nmocha -u tdd",
-    "watch": "npm-watch"
-  },
   "version": "1.29.4",
   "watch": {
     "build": {

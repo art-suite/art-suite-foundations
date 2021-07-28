@@ -1,5 +1,0 @@
-import &StandardImport
-
-(options) ->
-  cleanMonorepo()
-  .then -> green "" Monorepo is clean.

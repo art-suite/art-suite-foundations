@@ -58,7 +58,7 @@
   },
   "scripts": {
     "build": "caf -m -c source -o build\nnpm run nn",
-    "build-clean": "npm run clean; npm run build",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
     "clean": "rm -rf build/*",
     "nn": "nn build/* test/tests",
     "test": "npm run nn\nmocha -u tdd",
