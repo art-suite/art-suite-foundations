@@ -1,25 +1,3 @@
-import &ArtStandardLib
-
-package: (abcPackage) ->
-  sourceDir = :source-source
-  merge &package,
-    scripts: merge &package.scripts,
-      # test:   :jest
-      test: "" nn -s;mocha -u tdd
-      build:
-        """
-          coffee --output source --compile --map #{sourceDir} &
-          caf -p -c #{sourceDir} -o source &
-          wait
-          nn -sq
-
-      build-clean:  "" rm -rf source/*; npm run build
-      watch:        "" npm-watch
-
-    jest: testEnvironment: :node
-
-    watch:
-      build:
-        extensions: "" caf coffee
-        patterns:   [] sourceDir
-        quiet:      false
+package: &@ArtSuite/StandardPackageBuilder.configure {}
+  mocha: true
+  coffeeScript: true

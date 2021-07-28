@@ -3,7 +3,7 @@
   "file": "BaseObject.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.ClassSystem/BaseObject.coffee"
+    "source/Art.ClassSystem/BaseObject.coffee"
   ],
   "names": [],
   "mappings": ";AACA;AAAA,MAAA,UAAA;IAAA;;;EAAA,MAAM,CAAC,OAAP,GAAuB;;;;;;;;;KAAmB,OAAA,CAAQ,aAAR;AAA1C"

@@ -3,7 +3,7 @@
   "file": "ClassSystem.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.ClassSystem/ClassSystem.coffee"
+    "source/Art.ClassSystem/ClassSystem.coffee"
   ],
   "names": [],
   "mappings": ";AAAA;EAAA,MAAM,CAAC,OAAP,GACE;IAAA,oBAAA,EAAsB,OAAA,CAAQ,aAAR,CAAsB,CAAC,oBAA7C;;AADF"
