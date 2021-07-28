@@ -1,5 +1,5 @@
 package:
-  require("../standard-package-builder")
+  &@ArtSuite/StandardPackageBuilder.configure {}
     &package
     coffeeScript: true
     mochaAndJest: true

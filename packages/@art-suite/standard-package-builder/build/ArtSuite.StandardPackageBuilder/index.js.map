@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtSuite.StandardPackageBuilder/index.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,2FAAO,6DAGP,2BAAW,CAAC,eAAiB,QAAC,+GAAY,eACxC,2EACc,4EACA,+KAIgB,mBAE9B,MAAM,iBACJ,UACE,uBACU,6BAAkB,QAAW,6BACvC,kCAIS,eACE,8DAMG,QAAa,iBACP,WAEpB,OACK,eAAY,mCAEU,qCAAuB,wDAEhC,8BAAgB,iGAK5B,0BAEY,8BAAgB,0BAGlC,eAAgB,gCAChB,8BAA0B,gBAC1B,OAAc,cAEhB,OACE,iBAAiB,QACjB,SAAS,MACT,sCACK,uCACC,4BACN,yBACE,kBACA,oBAEJ,QACE,QACE,YAAY,kBACV,OACA,gBAAgB,WAElB,WAAe,YACf,OAAY"
+}

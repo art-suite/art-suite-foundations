@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TimeConstants.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/TimeConstants.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,qIAAO,iGAEP,iBAAY,CACR,IAAI,IAAE,MACN,GAAI,GACJ,GAAI,IACJ,GAAI,MACJ,GAAI,KAAK,MACT,GAAM,KAAG,OAAO,GAChB,IAAM,KAAG,OAAO,WAAW,IAC3B,GAAM,KAAG,OAAO,qBAElB,KAAI,2BAAe,cAAc,mBAC/B,UAAU,GAAG,WAAW,KACxB,UAAU,GAAG,WAAW,cAAc,aACtC,UAAU,GAAG,WAAW,oBAAoB"
+}

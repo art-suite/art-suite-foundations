@@ -1,0 +1,29 @@
+import &StandardImport
+
+assertLooksLikePackage = (options) ->
+  packageBuilder = standardPackageBuilder.configure options
+
+  builtPackage = packageBuilder()
+
+  assert.present builtPackage.scripts.test
+  assert.present builtPackage.scripts.build
+  assert.present builtPackage.scripts.watch
+
+describe
+  standardPackageBuilder: ->
+    test "basics" -> assertLooksLikePackage {}
+    test "pass in existing package as option" ->
+      packageBuilder = standardPackageBuilder.configure package: foo: :bar
+      builtPackage = packageBuilder foo2: :bar2
+
+      assert.eq builtPackage.foo, :bar
+      assert.doesNotExist builtPackage.foo2
+
+    test "pass in existing package when building package" ->
+      packageBuilder = standardPackageBuilder.configure()
+      builtPackage = packageBuilder foo: :bar
+      assert.eq builtPackage.foo, :bar
+
+    test "coffeeScript" -> assertLooksLikePackage coffeeScript: true
+    test "mocha" -> assertLooksLikePackage mocha: true
+    test "mochaAndJest" -> assertLooksLikePackage mochaAndJest: true

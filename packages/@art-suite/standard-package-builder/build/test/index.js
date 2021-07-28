@@ -4,6 +4,6 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  MainTest:       require('./main.test'),
-  StandardImport: require('./StandardImport')
+  StandardImport:             require('./StandardImport'),
+  StandardPackageBuilderTest: require('./StandardPackageBuilder.test')
 });
