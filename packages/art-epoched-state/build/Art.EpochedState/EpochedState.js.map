@@ -3,7 +3,7 @@
   "file": "EpochedState.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.EpochedState/EpochedState.caf"
+    "source/Art.EpochedState/EpochedState.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,yCAAO"
