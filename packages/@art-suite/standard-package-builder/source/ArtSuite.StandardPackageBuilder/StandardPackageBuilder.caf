@@ -1,5 +1,9 @@
 import &ArtStandardLib
 
+validatePresent = (val) ->
+  unless val is String && val.length > 0
+    throw new Error "expected value to be present"
+  val
 
 configure: (options = {}) -> (_package) ->
   options extract?
@@ -9,6 +13,23 @@ configure: (options = {}) -> (_package) ->
     mochaAndJest
     coffeeScript
     package as currentPackage = _package
+
+  targetTempDir = targetDir + "-temp"
+
+  buildScript = (sourceDir, targetDir) ->
+    if coffeeScript
+      """
+        coffee -m --output #{targetDir} --compile #{sourceDir} &
+        COFFEE_PID=$!
+        caf -m -c #{sourceDir} -o #{targetDir} &
+        CAF_PID=$!
+        wait $COFFEE_PID || exit 1
+        wait $CAF_PID || exit 1
+        npm run nn
+    else
+      """
+        caf -m -c #{sourceDir} -o #{targetDir}
+        npm run nn
 
   merge currentPackage,
     scripts:
@@ -28,22 +49,24 @@ configure: (options = {}) -> (_package) ->
             else if mocha then "" mocha -u tdd
             else          :jest
 
-      build:
-        if coffeeScript
-          """
-            coffee -m --output #{targetDir} --compile #{sourceDir} &
-            COFFEE_PID=$!
-            caf -m -c #{sourceDir} -o #{targetDir} &
-            CAF_PID=$!
-            wait $COFFEE_PID || exit 1
-            wait $CAF_PID || exit 1
-            npm run nn
-        else
-          """
-            caf -m -c #{sourceDir} -o #{targetDir}
-            npm run nn
+      build: buildScript sourceDir, targetDir
 
-      build-clean:  "" npm run clean; npm run build
+      build-clean:
+        """
+          # BUILD CLEAN START
+          #   - building into: #{targetTempDir}
+          #\n
+        + buildScript sourceDir, targetTempDir
+        + """
+            \n
+            # BUILD CLEAN FINIALIZING
+            #  - replace old build in:   #{targetDir}
+            #  - with new build from:    #{targetTempDir}
+            #
+            mv #{targetDir} build-old
+            mv #{targetTempDir} #{targetDir}
+            rm -rf ./#{validatePresent targetTempDir}
+
       clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch
 

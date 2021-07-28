@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "WebpackHotLoader.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.ClassSystem/WebpackHotLoader.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA;;EAAA,MAAM,CAAC,OAAP,GAAuB;;;;AAErB;;;;;;;;;;;;;;;;;;;;;;IAqBA,gBAAC,CAAA,MAAD,GAAS,SAAC,OAAD,EAAU,oBAAV;AACP,UAAA;MAAA,IAAA,oBAAsC,OAAO,CAAE,aAA/C;AAAA,eAAO,oBAAA,CAAqB,EAArB,EAAP;;MAEC,cAAe,UAAA,OAAO,CAAC,IAAG,CAAC,aAAD,CAAC,OAAS;QAAA,WAAA,EAAa,EAAb;SAArB;MAEhB,OAAO,CAAC,GAAG,CAAC,MAAZ,CAAA;MACA,OAAO,CAAC,GAAG,CAAC,OAAZ,CAAoB,SAAC,IAAD;eAAS,IAAI,CAAC,WAAL,GAAmB;MAA5B,CAApB;aAEA,oBAAA,CAAqB,WAArB;IARO;;;;;AAvBX"
+}
