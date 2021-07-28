@@ -1,2 +1,2 @@
-require('../register.js');
+require('caffeine-script/register');
 require('./index.caf');
