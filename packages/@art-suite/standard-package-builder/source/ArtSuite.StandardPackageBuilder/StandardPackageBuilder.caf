@@ -62,6 +62,7 @@ configure: (options = {}) -> (_package) ->
             mv #{targetDir} __build-old__
             mv #{targetTempDir} #{targetDir}
             rm -rf ./__build-old__
+            npm run nn
 
       clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch
