@@ -1,24 +1,39 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "bugs": "https:/github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-binary": "^1.1.15",
-    "art-class-system": "^1.11.14",
-    "art-object-tree-factory": "^2.2.9",
-    "art-standard-lib": "^1.71.1"
+    "art-build-configurator": "^1.0.0"
   },
-  "description": "Art.Browser.Tools",
   "devDependencies": {
-    "art-build-configurator": "^1.29.4",
-    "jest": "^26.6.1"
+    "art-testbench": "^1.0.0",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "chai": "^4.2.0",
+    "coffee-loader": "^0.7.3",
+    "css-loader": "^3.0.0",
+    "json-loader": "^0.5.7",
+    "mocha": "^7.0.0",
+    "mock-fs": "^4.10.0",
+    "script-loader": "^0.7.2",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "*",
+    "webpack-dev-server": "^3.7.2",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-stylish": "^0.1.8"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
-      "source/**/*.js",
-      "!source/_?[Jjt]est/**/*.js"
+      "build/**/*.js",
+      "!build/test/**/*.js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
   },
   "license": "ISC",
   "name": "art-browser-tools",
@@ -27,10 +42,11 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -p -c source-source -o source; nn -s",
+    "build": "caf -m -c source -o build\nnpm run nn",
     "build-clean": "npm run clean; npm run build",
-    "clean": "rm -rf source/*",
-    "test": "jest",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* ",
+    "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
   "version": "1.2.11",
@@ -40,7 +56,7 @@
         "caf"
       ],
       "patterns": [
-        "source-source"
+        "source"
       ],
       "quiet": false
     }

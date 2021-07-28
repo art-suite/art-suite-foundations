@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "EmailBrowserTools.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.BrowserTools/EmailBrowserTools.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sFAAO,6BAAiB,8BAAkB,oEAE1C,iLACiB,eAAY,QAAG,CAAC,qDAAW,KACxC,sIAAwD,WACxD,WACE,UAAU,UACV,MAAQ,SACR,QAAW,IAAI,KAAK,SAAS,4BAEjC,QAAY,CAAC,UAAW,OACtB,SAAS,aAAa"
+}

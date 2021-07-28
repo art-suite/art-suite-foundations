@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "BrowserTools.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.BrowserTools/BrowserTools.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;yCAEA,QACE,uBACA,kBACA,gCACA,8BACA,+BACA,+BAEA,yBAAyB"
+}

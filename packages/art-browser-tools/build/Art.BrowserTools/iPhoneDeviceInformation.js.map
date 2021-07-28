@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "iPhoneDeviceInformation.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.BrowserTools/iPhoneDeviceInformation.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;4MAEA,kBAAkB,oBAChB,UAAe,KAAO,MACtB,UAAe,KAAO,MACtB,UAAe,KAAO,MACtB,UAAe,KAAO,MACtB,cAAe,KAAO,MACtB,cAAe,KAAO,MACtB,WAAe,KAAO,OAExB,wBAAwB,0BACtB,KAAK,IACL,QAAQ,KAEV,kBAAkB,oBAChB,SAAc,IACd,aAAc,IACd,UAAc,KAEhB,qBAAqB,uBACnB,SAAc,GACd,SAAc,GACd,SAAc,GACd,aAAc,GACd,SAAc,GACd,aAAc,GACd,UAAc,IAEhB,0BAA0B,4BACxB,SAAc,KACd,SAAc,GACd,SAAc,KACd,aAAc,KACd,SAAc,KACd,aAAc,KACd,UAAc,MAEhB,qBAAqB,uBACnB,SAAc,KACd,SAAc,KACd,SAAc,KACd,aAAc,KACd,SAAc,KACd,aAAc,KACd,UAAc,MAEhB,kBAAkB,8BAAmD,2DACnE,EAAC,GAAG,KAAK,iBAAiB,iBACzB,IAAI,gBAAgB,IAAI,oBAE3B,gCAA6C,qCAC3C,UAAW,IAAG,IAAI,IAAI,KAAK,yBAAyB"
+}

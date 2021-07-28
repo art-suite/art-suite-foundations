@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "UseragentRegExp.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.BrowserTools/UseragentRegExp.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kNAGI,4WAUA"
+}
