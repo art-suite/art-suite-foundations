@@ -5,7 +5,6 @@
 
 .addModules({
   FieldTypesTest:     require('./FieldTypes.test'),
-  Limits:             require('./Limits'),
   LimitsTest:         require('./Limits.test'),
   PostValidationTest: require('./PostValidation.test'),
   StandardImport:     require('./StandardImport'),
