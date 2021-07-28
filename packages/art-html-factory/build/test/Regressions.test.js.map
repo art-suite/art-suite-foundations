@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Regressions.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Regressions.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0HAAO,gFAEP,KAAK,sDAA2C,OAC9C,oBAAoB,iDAEtB,KAAK,oBAAS,OACZ,UACE,KACE,KACE,MAAK,MAAM,YAAyC,SAAS,iFAC7D,MAAK,MAAM,gCAAyC,SAAS,SAC7D,MAAK,MAAM,yCAAyC,SAAS,WAC7D,MAAK,MAAM,oBAAyC,SAAS,mBAE/D,KACE,GAAG,0BACH,EAAE,2EAGH"
+}
