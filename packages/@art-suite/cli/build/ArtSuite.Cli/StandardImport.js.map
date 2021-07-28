@@ -3,7 +3,7 @@
   "file": "StandardImport.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/ArtSuite.Cli/StandardImport.caf"
+    "source/ArtSuite.Cli/StandardImport.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,2EACE"

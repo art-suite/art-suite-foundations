@@ -3,7 +3,7 @@
   "file": "Cli.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/ArtSuite.Cli/Cli.caf"
+    "source/ArtSuite.Cli/Cli.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,kCAAG"
