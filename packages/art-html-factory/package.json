@@ -2,13 +2,13 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-object-tree-factory": "^2.2.9",
-    "art-standard-lib": "^1.71.1",
+    "art-object-tree-factory": "^2.2.10",
+    "art-standard-lib": "^1.71.2",
     "wrap-ansi": "^7.0.0"
   },
   "description": "Build HTML from code in the most elegant way possible",
   "devDependencies": {
-    "art-build-configurator": "^1.29.4",
+    "art-build-configurator": "^1.29.5",
     "npm-watch": "^0.10.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -38,7 +38,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "2.1.10",
+  "version": "2.1.11",
   "watch": {
     "build": {
       "extensions": [

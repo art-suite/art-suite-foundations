@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/global": "^1.0.10"
+    "@art-suite/global": "^1.0.11"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",

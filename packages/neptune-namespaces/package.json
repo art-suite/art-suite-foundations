@@ -6,15 +6,15 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.14",
-    "art-standard-lib": "^1.71.1",
+    "art-class-system": "^1.11.15",
+    "art-standard-lib": "^1.71.2",
     "glob-promise": "^4.1.0",
-    "neptune-namespaces-runtime": "^3.2.10"
+    "neptune-namespaces-runtime": "^3.2.11"
   },
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "devDependencies": {
-    "art-build-configurator": "^1.29.4",
-    "art-testbench": "^3.2.3",
+    "art-build-configurator": "^1.29.5",
+    "art-testbench": "^3.2.4",
     "mocha": "^7.2.0",
     "mock-fs": "^4.13.0"
   },
@@ -45,7 +45,7 @@
     "test": "npm run nn\nmocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "4.2.10",
+  "version": "4.2.11",
   "watch": {
     "build": {
       "extensions": [

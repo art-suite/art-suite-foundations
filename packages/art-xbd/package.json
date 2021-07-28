@@ -2,14 +2,14 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-binary": "^1.1.15",
-    "art-standard-lib": "^1.71.1",
+    "art-binary": "^1.1.16",
+    "art-standard-lib": "^1.71.2",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.10"
+    "neptune-namespaces-runtime": "^3.2.11"
   },
   "description": "Art.Xbd",
   "devDependencies": {
-    "art-build-configurator": "^1.29.4"
+    "art-build-configurator": "^1.29.5"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -38,7 +38,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "1.1.4",
+  "version": "1.1.5",
   "watch": {
     "build": {
       "extensions": [

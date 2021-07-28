@@ -6,7 +6,7 @@
   },
   "description": "ArtSuite.Assert",
   "devDependencies": {
-    "art-build-configurator": "^1.29.4",
+    "art-build-configurator": "^1.29.5",
     "jest": "^26.6.1"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -36,7 +36,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "watch": {
     "build": {
       "extensions": [
