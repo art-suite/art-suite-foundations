@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Versioning.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Build.Configurator/Versioning.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kFAAO,oEAEP,0DAAyB,+DACvB,iBAAY,CACV,qBAAW,OACT,WACE,2BAAiB"
+}

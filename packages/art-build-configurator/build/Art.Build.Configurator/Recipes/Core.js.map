@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Core.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Build.Configurator/Recipes/Core.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,oGAAO,+EAEP,8CAAmB,uFACD,mDAEhB,YAAO,CACL,oDAAS,OACP,wEACA,IAAG,gBAAW,UACZ,WAAa,iBACV,4BAAO,WAAO,oBAEnB,cAAiB,iBAQjB,eACK,oNAQL,wCACS,oBAAsB,kQAU3B,iBAAgB,CACd,MACE,aAAa,qBACb,cAAc,OACZ,0BAAwB,MACxB,mLAQJ,UAAgB,qCACX,oBACC,UAGZ,+BACM,kIAOU,iCAGhB,OACE,YAAa,oDAIb,aAAc,iGAOd,4GAIO,8BAEP,QACE,CAAC,yBACC,uEAGY,gDAElB,SACE,wDAA4C,6BAC5C,CAAC,yBACC,sBACK"
+}

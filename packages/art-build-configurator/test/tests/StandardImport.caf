@@ -2,5 +2,5 @@
   &ArtStandardLib
   &ArtClassSystem
   &ArtTestbench
-  ArtBuildConfigurator: &source/ArtBuildConfigurator
+  ArtBuildConfigurator: &build
   mockFs: require :@art-suite/mock-fs

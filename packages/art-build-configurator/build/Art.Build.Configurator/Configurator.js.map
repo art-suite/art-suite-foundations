@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Configurator.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Build.Configurator/Configurator.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE"
+}

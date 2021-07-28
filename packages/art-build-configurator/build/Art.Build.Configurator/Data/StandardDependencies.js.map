@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardDependencies.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Build.Configurator/Data/StandardDependencies.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;kCAEA,0BAAsC"
+}

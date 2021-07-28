@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Node.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Build.Configurator/Recipes/Node.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sEAAO,qDAEP,8CAAmB,uFACD,sEAEhB,YAAO,CAAC,mBAAS,OACf,MACE,YAAQ,oBAAO,MAAM,SAErB,YACK,8bAeL,aACK,2HAML,gBACK"
+}

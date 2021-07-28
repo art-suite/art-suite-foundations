@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  Webpack: require('./Webpack')
+  StandardImport: require('./StandardImport'),
+  Webpack:        require('./Webpack')
 });
 require('./Command');

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Recipe.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Build.Configurator/Recipe.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sLAAO,6BAAiB,6BAAoB,iJAE5C,kDAAqB,sBAeN,CAAC,aAAa,+BACzB,oBAAkB,oCAAc,eAChC,gBAAkB,gCAClB,sBAAkB,ofAEpB,QAAQ,CAAC,aAAa,cAAe,OACnC,qBAAqB,kBAAc,MAAM,cAAU,iBAErD,YACE,WACA,gBACA,yBAAyB,qBAAc,qBACvC,kCAAyB,sBAAe,iBACxC,4BAAyB,+BAAoB,QAC7C,6BAAyB,gBAAS,qBAElC,qCAAqB,sDAAe,sBAAI,wBAAwB,kBAChE,8BAAqB,+BAAoB,QACzC,8BAAqB,YAAK,uBAG1B,qBAAqB,2BACrB,qBAAqB,qBAAc,qBAEnC,gDAAuC,+BAAoB,YAAY,KAAK"
+}
