@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "cli.js",
+  "sourceRoot": "..",
+  "sources": [
+    "source/cli.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;yCAEA,wCACO,WACL,yBACA,yBACA,uBACA,2BACA,6BACA,yDACA"
+}

@@ -1,6 +1,6 @@
 import &StandardImport
 
-require :@art-suite/cli
+&@ArtSuite/Cli
 .start commands: {}
   &test
   &sync

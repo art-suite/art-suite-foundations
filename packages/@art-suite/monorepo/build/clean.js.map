@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "clean.js",
+  "sourceRoot": "..",
+  "sources": [
+    "source/clean.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,uFAAO,yDAEP,gBAAC,UAAW,OACV,qBACK,MAAI,MAAQ"
+}
