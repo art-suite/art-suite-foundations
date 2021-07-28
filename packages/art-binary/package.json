@@ -14,10 +14,15 @@
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
-      "source/**/*.js",
-      "!source/test/**/*.js"
+      "build/**/*.js",
+      "!build/test/**/*.js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
   },
   "license": "ISC",
   "name": "art-binary",
@@ -26,10 +31,11 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee -m --output source --compile source-source &\nCOFFEE_PID=$!\ncaf -m -c source-source -o source &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnn -s",
+    "build": "coffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
     "build-clean": "npm run clean; npm run build",
-    "clean": "rm -rf source/*",
-    "test": "mocha -u tdd",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* test/tests",
+    "test": "npm run nn\nmocha -u tdd",
     "watch": "npm-watch"
   },
   "version": "1.1.15",
@@ -40,7 +46,7 @@
         "coffee"
       ],
       "patterns": [
-        "source-source"
+        "source"
       ],
       "quiet": false
     }

@@ -3,7 +3,7 @@
   "file": "Binary.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.Binary/Binary.coffee"
+    "source/Art.Binary/Binary.coffee"
   ],
   "names": [],
   "mappings": ";AAAA;EAAA,OAAA,CAAQ,2BAAR;;EACA,MAAM,CAAC,OAAP,GAAiB;IACf,OAAA,CAAQ,QAAR,CADe,EAEf;MAAA,MAAA,EAAQ,CAAC,OAAA,CAAQ,UAAR,CAAD,CAAoB,CAAC,MAA7B;KAFe,EAGf,CAAE,OAAA,CAAQ,gBAAR,CAAF,EAA6B,8DAA7B,CAHe;;AADjB"
