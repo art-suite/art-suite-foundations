@@ -3,8 +3,8 @@
   "file": "StandardImport.js",
   "sourceRoot": "../../..",
   "sources": [
-    "source-source/test/Art.Config/StandardImport.caf"
+    "source/test/Art.Config/StandardImport.caf"
   ],
   "names": [],
-  "mappings": "AAAA;;AAAA,2EACE"
+  "mappings": "AAAA;;AAAA,kCAAG,6BAAiB"
 }

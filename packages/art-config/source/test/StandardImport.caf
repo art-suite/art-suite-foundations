@@ -1,4 +1,5 @@
-&ArtStandardLib.mergeWithSelf
+[]
+  &ArtStandardLib
   &ArtTestbench
-  &source
+  &build
   require :./Art.Config

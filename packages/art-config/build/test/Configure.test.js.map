@@ -3,7 +3,7 @@
   "file": "Configure.test.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/test/Configure.test.caf"
+    "source/test/Configure.test.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,4FAAO,4DAEP,YAAK,iDACH,iBACA,UAAS,CAAC,SAAS,MAAK,KAAK,CAAC,YAAY,gBAAgB,gBAC1D,UAAU,mBAAmB"

@@ -3,7 +3,7 @@
   "file": "ConfigRegistry.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.Config/ConfigRegistry.caf"
+    "source/Art.Config/ConfigRegistry.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,2GAAO,0GAEP,YAAY,QAAQ,oNAOD,CAAC,MAAM,YAAU,KACuB,cAAc,qEAC7D,aAAC,QAAQ,sCAEI,CAAC,iBAAiB,iBAAiB,oBAAgB"

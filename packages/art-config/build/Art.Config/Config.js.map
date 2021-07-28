@@ -3,7 +3,7 @@
   "file": "Config.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.Config/Config.caf"
+    "source/Art.Config/Config.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,mCACE,QAAQ,6BACR,wBACA"
