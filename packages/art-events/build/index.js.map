@@ -3,7 +3,7 @@
   "file": "index.js",
   "sourceRoot": "..",
   "sources": [
-    "source-source/index.caf"
+    "source/index.caf"
   ],
   "names": [],
   "mappings": "AAAA;;"

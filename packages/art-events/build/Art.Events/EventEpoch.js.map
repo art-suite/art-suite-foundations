@@ -3,7 +3,7 @@
   "file": "EventEpoch.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.Events/EventEpoch.coffee"
+    "source/Art.Events/EventEpoch.coffee"
   ],
   "names": [],
   "mappings": ";AAAA;AAAA,MAAA,8CAAA;IAAA;;;EAAA,MAAsB,OAAA,CAAQ,kBAAR,CAAtB,EAAC,+BAAD,EAAe;;EACd,aAAc,OAAA,CAAQ,mBAAR;;EAEf,YAAA,CAAa,MAAb,EAA2B;;;;;;;IACzB,UAAC,CAAA,cAAD,CAAA;;yBAKA,KAAA,GAAO,SAAC,KAAD;aAAU,IAAC,CAAA,SAAD,CAAW,KAAX;IAAV;;yBAEP,QAAA,GAAU,SAAC,IAAD,EAAO,EAAP,GAAA;;;;KARkC,WAA9C;AAHA"

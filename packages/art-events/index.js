@@ -1,1 +1,1 @@
-module.exports = require("./source/Art/Events");
+module.exports = require("./build");

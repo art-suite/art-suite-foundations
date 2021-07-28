@@ -3,7 +3,7 @@
   "file": "ExtendableEventedMixin.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/Art.Events/ExtendableEventedMixin.caf"
+    "source/Art.Events/ExtendableEventedMixin.caf"
   ],
   "names": [],
   "mappings": "AAAA;;yCA6CA,CAAC,yCAAe,kFAAqC,4EACnD,iBACK,qBACA,gBAAQ,CAAC,YAAY,WAAY,UACnB,+BAAQ,OAClB,UAAU,WAAC,qBAAE,0BAAa,cAE7B,0BAED,uCAEL,QAAc,CAAC,MAAM,QAAS,iBACZ,wBAAoB,oBAClC,QAAQ"
