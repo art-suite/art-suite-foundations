@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Node.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Testbench/_Node/Node.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mCACE,QAAQ"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardImport.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Testbench/StandardImport.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,2EAA8B"
+}

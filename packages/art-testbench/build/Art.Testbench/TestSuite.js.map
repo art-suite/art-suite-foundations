@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TestSuite.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Testbench/TestSuite.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8GAAO,6BAAiB,+EAExB,wDAAwB,8DACtB,qDAEA,YACE,aAAa,gCACC,YAAY,4CACtB,SAAS,KAAE,MACX,gBAAiB,KAAC,OAAI,iBAAM,qBAAE,MAAI,QAAI,mBAAQ,OAC5C,aAAY,MAAI,cACZ,MAAI,IAAG,sBAAY,gCAAc,eAC9B,CAAC,OACN,IAAG,sBAAY,gCAAc,gBAC7B,cAAM,iCAEV,KAAK,WAAQ,iEAEjB"
+}
