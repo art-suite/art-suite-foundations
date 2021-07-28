@@ -3,7 +3,7 @@
   "file": "assert.match.test.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/test/assert.match.test.caf"
+    "source/test/assert.match.test.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,kFAAO,sDAEP,yBAAkB,SAAO,cACpB,MAAK,YAAW,QAChB,OAAM,YAAY"

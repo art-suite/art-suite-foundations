@@ -3,7 +3,7 @@
   "file": "assert.same.test.js",
   "sourceRoot": "../..",
   "sources": [
-    "source-source/test/assert.same.test.caf"
+    "source/test/assert.same.test.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,kFAAO,6DAEP,eACA,kBAAkB,QAAM,aACnB,MAAK,GAAE,KACP,MAAK,GAAG,KACR,OAAM,GAAE,KACR,OAAM"

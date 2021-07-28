@@ -12,10 +12,15 @@
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
-      "source/**/*.js",
-      "!source/test/**/*.js"
+      "build/**/*.js",
+      "!build/test/**/*.js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
   },
   "license": "ISC",
   "name": "@art-suite/assert",
@@ -24,10 +29,11 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -m -c source-source -o source\nnn -s",
-    "build-clean": "npm run clean; npm run build",
-    "clean": "rm -rf source/*",
-    "test": "jest",
+    "build": "caf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* ",
+    "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
   "version": "1.0.4",
@@ -37,7 +43,7 @@
         "caf"
       ],
       "patterns": [
-        "source-source"
+        "source"
       ],
       "quiet": false
     }
