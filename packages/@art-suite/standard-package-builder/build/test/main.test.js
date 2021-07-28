@@ -1,4 +1,0 @@
-"use strict"
-let Caf = require('caffeine-script-runtime');
-Caf.defMod(module, () => {return Caf.importInvoke(["describe", "standardPackageBuilder", "assert", "test"], [global, require('./StandardImport')], (describe, standardPackageBuilder, assert, test) => {let assertLooksLikePackage; assertLooksLikePackage = function(options) {let existingPackage, f, testPackage; existingPackage = {}; f = standardPackageBuilder(existingPackage, options); testPackage = f(); assert.present(testPackage.scripts.test); assert.present(testPackage.scripts.build); return assert.present(testPackage.scripts.watch);}; return describe({standardPackageBuilder: function() {test("basics", () => assertLooksLikePackage({})); test("coffeeScript", () => assertLooksLikePackage({coffeeScript: true})); test("mocha", () => assertLooksLikePackage({mocha: true})); return test("mochaAndJest", () => assertLooksLikePackage({mochaAndJest: true}));}});});});
-//# sourceMappingURL=main.test.js.map

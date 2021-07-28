@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "cli.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Monorepo/cli.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;yCAEA,yBAAO,OACL,iCACU"
+}

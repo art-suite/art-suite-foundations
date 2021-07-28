@@ -1,0 +1,4 @@
+import &ArtTestbench, &ArtMonorepo
+
+test "nothing" ->
+  assert.true true

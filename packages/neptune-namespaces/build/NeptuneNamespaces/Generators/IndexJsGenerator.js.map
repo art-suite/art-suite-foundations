@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "IndexJsGenerator.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/NeptuneNamespaces/Generators/IndexJsGenerator.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8GAAO,qGAEP,wJACE,QAAW,CAAC,sFACV,EAAC,sBAAsB,YAEvB,yBAAyB,CAAC,mBAAO,iBACV,OACjB,UAA6B,0CAAc,QACtC,eAAe,cACd,CAAC,GAAG,MAAM,qBAAqB,4BAGrC,KACA,qBAAqB,8BACT,YAAY,6BAAqB,SAAQ,cAAc,6BAEzE,UAAU,uBAAuB,oBAEjC,kBAAoB,kDAEpB,0BAEgB,mDAAuC,yBACrC,YAAY,cAEzB,uBAAsB,iBAAiB,KAAC,iBAEpC,mCAEE,qBAAkB,6CACe,YAAY,wDAG7C,kBAAiB,KAAC,+BAIf,eAAe,aAAa,eACtB,+BAIZ,gBAAK,+BAEG,iFACE,mBAEZ"
+}

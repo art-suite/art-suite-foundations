@@ -1,6 +1,0 @@
-import &StandardImport
-
-(options) ->
-  Promise
-  .then -> &updateSubPackages options
-  .then -> &updateMonoPackage options

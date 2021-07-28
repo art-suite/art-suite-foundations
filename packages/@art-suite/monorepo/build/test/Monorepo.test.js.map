@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Monorepo.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Monorepo.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,+EAAO,0BAAe,gDAEtB,YAAK,uBAAY,OACf,YAAY"
+}

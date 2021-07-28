@@ -1,1 +1,1 @@
-module.exports = require('neptune-namespaces-runtime')
+module.exports = require('./build');

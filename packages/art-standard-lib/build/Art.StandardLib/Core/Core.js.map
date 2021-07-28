@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Core.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.StandardLib/Core/Core.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,MAAM,CAAC,OAAP,GAAiB,CACf,OAAA,CAAQ,uBAAR,CADe,EAEf,OAAA,CAAQ,cAAR,CAFe,EAGf,OAAA,CAAQ,SAAR,CAHe,EAIf,OAAA,CAAQ,SAAR,CAJe;AAAjB"
+}

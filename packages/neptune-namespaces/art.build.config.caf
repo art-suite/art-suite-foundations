@@ -1,20 +1,5 @@
-target:
-  node: true
 package:
-  description: "Generate index.coffee and namespace.coffee files from directory structures",
-  bin:
-    neptune-namespaces: :./nn
-    nn:                 :./nn
-
-  dependencies:
-    neptune-namespaces-runtime: :*
-
-  scripts:
-    build: "coffee --output source --compile source-source;caf -p -c source-source -o source;nn -s"
-
-webpack:
-  common: target: "node"
-  targets:
-    index: {}
-    generator: {}
-    nnCommand: {}
+  &@ArtSuite/StandardPackageBuilder.configure {}
+    &package
+    coffeeScript: true
+    mocha: true

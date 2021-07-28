@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Core.js",
+  "sourceRoot": "../../../..",
+  "sources": [
+    "source/Art.StandardLib/Inspect/Inspected/Core.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,uBAAA;IAAA;;;EAAA,iBAAA,GAAoB,OAAA,CAAQ,yBAAR;;EACpB,MAAM,CAAC,OAAP,GAAuB;;;IACR,cAAC,KAAD;MACX,uCAAA,SAAA;MACA,IAAC,CAAA,KAAD,GAAS;MAET,IAAkB,KAAA,IAAS,KAAK,CAAC,WAAW,CAAC,IAAlB,KAA0B,kBAArD;QAAA,IAAC,CAAA,KAAD,GAAS,MAAT;;IAJW;;IAMb,IAAC,CAAA,MAAD,CACE;MAAA,QAAA,EAAU,SAAA;eAAG;MAAH,CAAV;KADF;;mBAEA,QAAA,GAAU,SAAA;aAAG,EAAA,GAAG,IAAC,CAAA;IAAP;;;;KATwB;AADpC"
+}

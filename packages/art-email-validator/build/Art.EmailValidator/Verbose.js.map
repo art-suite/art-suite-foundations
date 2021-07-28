@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Verbose.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.EmailValidator/Verbose.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,2GAAO,yEACP,2BAAW,CAAC,OAAO,QAAQ,mHACzB,OAAO,EAAC,OAAO,SAAS,QAAQ,YAAY,mBAAmB,gBAAgB,0BAA0B,0GACzG,IAA8C,yEAAG,iBAAiB,MAAM,OAAO,iBAC/E,EAAI,SAAK,UACY,wBACjB,IAAwD,iGAAG,iBAAiB,cAAc,cAAc"
+}

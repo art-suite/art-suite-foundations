@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "EventedObject.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Events/EventedObject.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,8DAAA;IAAA;;;EAAA,MAAsB,OAAA,CAAQ,kBAAR,CAAtB,EAAC,+BAAD,EAAe;;EACf,YAAA,GAAe,OAAA,CAAQ,gBAAR;;EACd,YAAa,OAAA,CAAQ,kBAAR;;EAGd,YAAA,CAAa,MAAb,EAA2B;;;IACZ,uBAAA;MACX,GAAG,CAAC,KAAJ,CAAU,gDAAV;MACA,gDAAA,SAAA;IAFW;;;;KADkC,YAAA,CAAa,SAAb,EAAjD;AALA"
+}

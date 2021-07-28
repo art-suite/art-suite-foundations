@@ -1,1 +1,1 @@
-module.exports = require('./source/Art/Events/ExtendableEventedMixin');
+module.exports = require('./build/Art.Events/ExtendableEventedMixin');

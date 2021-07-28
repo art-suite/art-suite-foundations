@@ -1,8 +1,1 @@
-module.exports = require("./source");
-
-// if (require("./use-build")) { // use build
-//   module.exports = require('./build');
-// } else {
-//   require('./register');
-//   module.exports = require('./index.caf');
-// }
+module.exports = require("./build");

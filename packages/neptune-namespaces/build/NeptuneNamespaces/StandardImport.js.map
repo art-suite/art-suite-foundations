@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardImport.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/NeptuneNamespaces/StandardImport.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0CACE,MAAO,yBACP,KAAO,qBACP,MAAO,6BACF,iCAAa,iBACb,yCAAqB,aAC5B"
+}

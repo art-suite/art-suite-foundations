@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardLib.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.StandardLib/StandardLib.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,oBACG,sBAAU,eAAa,oBAAkB,WAAS,cAAY,sBAAoB,oBAAkB,wBACvG,8BACA,8BACA,+BACA,+BACA,iBACA,iCACA,yBACA,4BACA,6BACA,0BACA,uBACA,iCACA,+BACA,mBACA,2BACA,mBACA,4BACA,uBACA,wBACA,mBAEA,sBACA,oBACA,kBACA,wBACA,wBAEA,6BACA,6BAEA,eAAe"
+}

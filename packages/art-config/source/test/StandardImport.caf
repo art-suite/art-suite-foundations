@@ -1,0 +1,5 @@
+[]
+  &ArtStandardLib
+  &ArtTestbench
+  &build
+  require :./Art.Config

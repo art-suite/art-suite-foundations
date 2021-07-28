@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DomElementFactories.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.BrowserTools/DomElementFactories.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sJAAO,6BAAiB,wJACxB,6OAkE8B,CAAC,YAC3B,0BAAyB,CACvB,gBAAgB,CAAC,WAAW,qBACb,kBACF,UAAC,KAAQ,OAAK,WACrB,UAAU,UAAU,IAAI,KAExB,KACN,MAEA,CAAC,UAAU,OAAO,2BAChB,UAAU,uBAAuB,eACI,0DACM,sEAE3C,sCAGF,8pBAWW,+BAA2B,sCAAyB"
+}

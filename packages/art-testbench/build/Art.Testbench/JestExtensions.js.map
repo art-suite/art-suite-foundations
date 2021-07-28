@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "JestExtensions.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Testbench/JestExtensions.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kJAEE,qBAAQ,QAAG,CAAC,GAAG,IACb,IAAG,UAAK,UAAM,UACC,aACR,WAAK,aACN,gBAAgB,UAAM,YAAK,eAE3B,gBAAgB,SACd,SAAS,aACZ,IAAI,UAAI,kBAAW,GAAK,YAC3B,gBAAgB,UAAM,YAAK,qBACxB,MAAM,IAAI,MAAM,iFAErB"
+}

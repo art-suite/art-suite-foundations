@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Xbd.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Xbd/Xbd.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,+CAAS,6BAEP,+CACA,yBACA,OAAU,gBACV,KAAU"
+}

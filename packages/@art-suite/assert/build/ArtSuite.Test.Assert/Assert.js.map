@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Assert.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtSuite.Test.Assert/Assert.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,uEAAO,2CAEP,yBACA,oBACA,mBACA,kCAGA,+BAEG"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Lib.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Lib.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kGAAO,gEAEP,qCAAqB,CAAC,wCAAW,eACd,gJACf,iBAAiB,KAAK,IAAE,IAExB,KAAO,wBAAkB,WACvB,MAAM,IAAI,kDAAqC,IAAE,0FAEnD,KACE,uBACS,OAAO,cAEd,UACE,oBACA,iBACA,2BAA2B,IAAI,IAAE"
+}

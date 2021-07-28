@@ -1,0 +1,88 @@
+import &ArtStandardLib
+
+configure: (options = {}) -> (_package) ->
+  options extract?
+    sourceDir = :source
+    targetDir = :build
+    mocha
+    mochaAndJest
+    coffeeScript
+    package as currentPackage = _package
+
+  targetTempDir = targetDir + "-temp"
+
+  buildScript = (sourceDir, targetDir) ->
+    if coffeeScript
+      """
+        coffee -m --output #{targetDir} --compile #{sourceDir} &
+        COFFEE_PID=$!
+        caf -m -c #{sourceDir} -o #{targetDir} &
+        CAF_PID=$!
+        wait $COFFEE_PID || exit 1
+        wait $CAF_PID || exit 1
+        npm run nn
+    else
+      """
+        caf -m -c #{sourceDir} -o #{targetDir}
+        npm run nn
+
+  merge currentPackage,
+    scripts:
+      nn:
+        "" nn #{targetDir}/* #{if mocha then :test/tests}
+      test:
+        """
+          npm run nn
+          #{}
+            if mochaAndJest then
+              """
+                jest
+                if [[ $? -ne 0 ]]; then
+                  exit 1
+                fi
+                mocha -u tdd
+            else if mocha then "" mocha -u tdd
+            else          :jest
+
+      build: buildScript sourceDir, targetDir
+
+      build-clean:
+        """
+          # BUILD CLEAN START
+          #   - building into: #{targetTempDir}
+          #
+          rm -rf ./__build-old__\n
+        + buildScript sourceDir, targetTempDir
+        + """
+            \n
+            nn #{targetTempDir}/*
+
+            # BUILD CLEAN FINIALIZING
+            #  - replace old build in:   #{targetDir}
+            #  - with new build from:    #{targetTempDir}
+            #
+            mv #{targetDir} __build-old__
+            mv #{targetTempDir} #{targetDir}
+            rm -rf ./__build-old__
+
+      clean:        "" rm -rf #{targetDir}/*
+      watch:        :npm-watch
+
+    jest:
+      testEnvironment: :node
+      verbose: true
+      collectCoverageFrom:
+        "#{targetDir}/**/*.js",
+        "!#{targetDir}/test/**/*.js"
+      testPathIgnorePatterns:
+        "/node_modules/"
+        "<rootDir>/test" # so it can ignore our mocha tests
+
+    watch:
+      build:
+        extensions: compactFlattenAll
+          :caf
+          coffeeScript && :coffee
+
+        patterns:   [] sourceDir
+        quiet:      false

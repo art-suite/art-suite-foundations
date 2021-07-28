@@ -1,0 +1,7 @@
+&ArtStandardLib.mergeWithSelf
+  &ArtClassSystem
+  &Data
+  Configurator: require :./namespace
+  {}
+    fs: &fsExtra
+    &path

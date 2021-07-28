@@ -1,0 +1,5 @@
+import &StandardImport
+
+cli: ->
+  &@ArtSuite/Cli
+  .start {} &commands

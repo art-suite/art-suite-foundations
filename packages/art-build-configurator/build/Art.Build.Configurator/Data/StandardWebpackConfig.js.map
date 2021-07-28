@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardWebpackConfig.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Build.Configurator/Data/StandardWebpackConfig.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,uEAAO,sEAEP,kKACE,QAAM,CAAC,SAAS,WAAW,0CAAc,oCACvC,wCAAuC,iBAEvC,MAAM,kDAA0B,aAAgB,SAAW,gBAE3D,UAME,aAAY,eAAa,WAAS,WAAS,QAAM,aAAW,OAAK,WAEnE,SACE,MAAY,qBAAW,SAAS,aAChC,UAAY,cAEd,UACE,IAAI,QAAQ,yCAEd,SACE,SACK,MAAM,kBAA8B,MAAK,QAAQ,iCACjD,MAAM,aAA8B,MAAK,QAAQ,oBACjD,MAAM,UAA8B,MAAK,gBAAc,iBACvD,MAAM,UAA8B,MAAK,QAAQ,8BACjD,MAAM,UAA8B,MAAK,QAAQ,gCAGrD"
+}

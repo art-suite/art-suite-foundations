@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "FileBuilder.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.FileBuilder/FileBuilder.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mIAAO,gHAEP,qBAAa,cAAW,QAAG,CAAC,MAAM,WAAY,OAC5C,wBAAM,MACD,cAAc,OAAI,OACrB,iBAAK,eAA0B,uBAAU,YAAY,GAAG,aAAQ,MAC7D,SAAS,WAAc,yBAAM,MAAM,WAAQ,MAC3C,SAAS,WAAc,yBAAM,MAAM,WAAQ,MAC3C,cAAc,WAAc,wBAAM,MAAM,YAAY,YAAQ,MAC5D,CAAQ,aAAI,QAAQ,aAAY,aAAa,aAAY,QAAW,sBACpE,qBAAM,IAAI,MAAK,2EAAiE,kBAAkB,MAAM"
+}

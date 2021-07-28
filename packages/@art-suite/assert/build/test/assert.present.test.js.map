@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "assert.present.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/assert.present.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kFAAO,sDAEP,yBAAkB,WAAS,gBACtB,MAAK,QACL,MAAK,KACL,MAAK,KACL,OAAM,MACN,OAAM,QACN,OAAM"
+}

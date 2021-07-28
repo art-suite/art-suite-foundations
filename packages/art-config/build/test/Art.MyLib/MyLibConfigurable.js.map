@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "MyLibConfigurable.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/test/Art.MyLib/MyLibConfigurable.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,6EAAO,yEAEP,wEAAgC,+FAE5B,MAAU,SACV,OAAU,IAEZ,cAAU"
+}

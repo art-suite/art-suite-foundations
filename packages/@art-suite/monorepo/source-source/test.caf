@@ -1,6 +1,0 @@
-import &StandardImport
-
-(options) ->
-  &runLib merge options,
-    command: "npm test"
-    verb: :test

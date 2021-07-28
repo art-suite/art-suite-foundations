@@ -11,7 +11,8 @@ npm install art-cli
 ### Example
 
 ```coffeescript
-require("@art-suite/cli").start
+# CaffeineScript
+&@art-suite/cli.start
   commands:
     sing:       ({song}) -> "♫ #{song} ♫!"
     send-cheer: -> "May you have a holly, jolly Christmas this year!"

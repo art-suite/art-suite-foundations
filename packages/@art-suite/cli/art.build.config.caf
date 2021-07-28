@@ -1,2 +1,1 @@
-package: require(:../standard-package-builder)
-  &package
+package: &@ArtSuite/StandardPackageBuilder.configure {} &package

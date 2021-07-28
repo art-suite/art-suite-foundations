@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Test.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Test.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,+FAAO,iEAEP,4BAAqB,mBAAS,mBAAc"
+}

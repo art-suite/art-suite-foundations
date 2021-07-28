@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ColorsLib.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Monorepo/ColorsLib.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,uEAAC,MAAM,QAAQ,OAAO,MAAM,OAAO"
+}

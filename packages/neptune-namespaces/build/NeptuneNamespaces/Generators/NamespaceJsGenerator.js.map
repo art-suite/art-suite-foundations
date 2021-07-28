@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "NamespaceJsGenerator.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/NeptuneNamespaces/Generators/NamespaceJsGenerator.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,uHAAO,kHAEP,wKAEE,QAAe,CAAC,CAAC,iBAAkB,OAC9B,kBAAkB,iBACf,KAAK,oBAAoB,QACzB,+CAER,QAAyB,CAAC,CAAC,oBAAW,OACpC,0BAAiB,iCACf,gCAEJ,QAAW,CAAC,WAAW,iGAAe,gBACpC,sEAEA,YAAY,kBAAc,YAC1B,sBAAsB,4BAAwB,YAE9C,yCAA8B,kEAGR,wBAClB,MAAK,iBAAe,yCACK,mDAAqC,qBAAiB,MAE1E,gBAAe,wCAAqC,uBAEnD,iDACG,2CACM,mCAAqB,gFACE,gCAGlC,uBAEE,iDACG,0CACK,mCAAqB,6DAInC,UAAc,iFACE,2BACV"
+}

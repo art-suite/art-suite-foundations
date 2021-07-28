@@ -1,1 +1,1 @@
-module.exports = require('./source/Art.StandardLib');
+module.exports = require('./build/Art.StandardLib');

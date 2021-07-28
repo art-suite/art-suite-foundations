@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Main.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtSuite.Cli/Main.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wHAAO,6BAAiB,oFAExB,iHAoBU,CAAC,CAAC,mBAAmB,UAAU,aAAa,MAAM,MAAM,iFAC9D,0BAAM,SAAI,cACV,sBAAI,OAAI,cACR,EAAC,QAAQ,WAAW,WAAW,OAE/B,EAAC,SAAS,iBAAiB,aAAa,QAAQ,yCAC9C,WAAW,kBAAkB,UAAU,OACvC,MACA,mBAEF,aAAY,MACP,oBAAe,CAAK,gBAAY,CAC9B,kBACD,OAAM,CAAC,uBAAqB,MAAK,CAC/B,SAAU,aACV,MAAa,qCAAe,KAAO,kBACnC,yBAEJ,gBAAgB,SAAS,SAGzB,0BACE,YACG,UAAU,cACb,kBAED,CAAC,WAAkB,kBAAI,OAAO"
+}

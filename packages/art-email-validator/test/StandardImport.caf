@@ -5,7 +5,7 @@ else
   log "USING FAKE, LOCAL SMTP FOR TESTING"
   log "For real smtp:\n> REAL_SMTP=true npm test"
 
-merge
+[]
   &ArtStandardLib
   &ArtClassSystem
   &ArtEmailValidator

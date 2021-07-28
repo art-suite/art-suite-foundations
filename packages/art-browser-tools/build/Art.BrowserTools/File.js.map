@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "File.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.BrowserTools/File.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,iGAAO,6BAAiB,kEAExB,mHAcY,CAAC,iBACT,IAAI,QAAQ,CAAC,gBAAgB,mEAAU,SACrC,4FAEA,2DAA+C,6BAC/C,6BAAyB,sBACrB,sFAGJ,sBAEA,YAAY,yDAGc,yDACD,+CAGzB,uCAAmC,YACnC,iBAAiB,6BACR,qBAAY,CAAC,8CACpB,mBAA4B,4LAIzB,CAAe,kBAAG,KAAK,SAAS,MAAE,CACnC,YAAY,SAAS,WACrB,eAAe,aAGf,OAAS,+BAEb"
+}

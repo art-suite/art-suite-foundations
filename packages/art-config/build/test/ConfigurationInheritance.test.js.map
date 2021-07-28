@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ConfigurationInheritance.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/ConfigurationInheritance.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,gHAAO,iIAEP,qEAAkC,6GACR,4CACA,UAE1B,aAAa,uFAA+C,2HACpC,WAExB,KAAK,6BAAmB,OACtB,UAAU,oDAAoD,mBAEhE,KAAK,8BAAoB,OACvB,UAAU,uDAAuD"
+}

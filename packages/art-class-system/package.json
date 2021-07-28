@@ -1,16 +1,39 @@
 {
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
-  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "bugs": "https:/github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.71.1"
+    "art-build-configurator": "^1.0.0"
   },
-  "description": "Enhances javascript/coffeescript classes with features of more evolved class-based languages primarily through a new BaseClass.",
   "devDependencies": {
-    "art-build-configurator": "^1.29.4"
+    "art-testbench": "^1.0.0",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "chai": "^4.2.0",
+    "coffee-loader": "^0.7.3",
+    "css-loader": "^3.0.0",
+    "json-loader": "^0.5.7",
+    "mocha": "^7.0.0",
+    "mock-fs": "^4.10.0",
+    "script-loader": "^0.7.2",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "*",
+    "webpack-dev-server": "^3.7.2",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-stylish": "^0.1.8"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
-    "testEnvironment": "node"
+    "collectCoverageFrom": [
+      "build/**/*.js",
+      "!build/test/**/*.js"
+    ],
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
   },
   "license": "ISC",
   "name": "art-class-system",
@@ -19,17 +42,22 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee --output source --compile --map source-source &\ncaf -p -c source-source -o source &\nwait\nnn -sq",
-    "build-clean": "rm -rf source/*; npm run build",
-    "test": "nn -s;mocha -u tdd",
+    "build": "coffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* test/tests",
+    "test": "npm run nn\nmocha -u tdd",
     "watch": "npm-watch"
   },
   "version": "1.11.14",
   "watch": {
     "build": {
-      "extensions": "caf coffee",
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
       "patterns": [
-        "source-source"
+        "source"
       ],
       "quiet": false
     }

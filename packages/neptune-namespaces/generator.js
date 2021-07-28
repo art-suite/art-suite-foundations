@@ -1,1 +1,1 @@
-module.exports = require("./source/NeptuneNamespaces/Generator")
+module.exports = require("./build/NeptuneNamespaces/Generator")

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Dir.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.FileBuilder/Dir.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8GAAO,kGACP,OAAO,wBAEP,uEACyB,sBACR,CAAC,YAAa,gGAEzB,EAAC,SAAS,eAAe,gBACnB,qBAAW,SACjB,gBAAY,6DAEd,YAAO,CACL,0BAAgB,QACd,CAAC,qBACC,MAAM,aAAgB,0BAAe,sBAAsB,qCAEjE,QAAO,CAAC,yBACN,OAAO,UAAU,gBAAgB,KAAK,sCACvB,0BAAa,YAAY,MAAM,UAAU"
+}

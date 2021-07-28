@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "assert.exists.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/assert.exists.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kFAAO,sDAEP,yBAAkB,UAAQ,kBACrB,MAAK,MACL,MAAK,KACL,OAAM,QACN,OAAM"
+}
