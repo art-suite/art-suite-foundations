@@ -1,2 +1,2 @@
-require('../register');
+require('./register');
 require('./index.caf');

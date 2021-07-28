@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardImport.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.EmailValidator/StandardImport.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mEAAsB,6BAAiB,6BAAiB,sBAAU"
+}

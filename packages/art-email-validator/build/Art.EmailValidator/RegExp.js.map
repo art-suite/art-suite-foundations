@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "RegExp.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.EmailValidator/RegExp.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,oEACE,8CAMF,yBAAyB"
+}

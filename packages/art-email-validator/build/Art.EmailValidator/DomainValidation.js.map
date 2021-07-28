@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DomainValidation.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.EmailValidator/DomainValidation.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8IAAO,6BAAiB,mHASxB,iCAAiB,CAAC,QAAQ,UAAW,OACnC,qBAAqB,CAAC,aAAa,yBAAe,QAAQ,gBACpD,CAAC,8CAAe,IACU,WAAW,mCACzC,SAAS,MACT,iBAAiB,aAEY,wCAC3B,GAAI,mBAAW,WAAW,kBAAc,CACtC,iBAAiB,UACjB,SAAS,+BAEb,aAQJ,WAAW,YAAS,QAAG,CAAC,8BACtB,EAAC,UAAU,UAAU,YAAY,cAKjC,oGAAG"
+}
