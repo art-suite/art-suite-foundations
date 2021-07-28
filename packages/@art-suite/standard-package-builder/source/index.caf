@@ -2,8 +2,8 @@ import &ArtStandardLib
 
 (currentPackage, options = {}) -> (abcPackage) ->
   options extract?
-    sourceDir = "source-source"
-    targetDir = "source"
+    sourceDir = :source
+    targetDir = :build
     mocha
     mochaAndJest
     coffeeScript

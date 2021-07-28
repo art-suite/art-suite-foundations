@@ -1,0 +1,5 @@
+[]
+  &ArtStandardLib
+  &ArtTestbench
+  standardPackageBuilder: &source
+

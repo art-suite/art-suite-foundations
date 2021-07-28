@@ -9,10 +9,41 @@
     "caffeine-script": "^0.74.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "build/**/*.js",
+      "!build/test/**/*.js"
+    ],
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
+  },
   "license": "ISC",
   "name": "@art-suite/standard-package-builder",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "caf -m -c source -o build\nnpm run nn",
+    "build-clean": "npm run clean; npm run build",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* ",
+    "test": "npm run nn\njest",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf"
+      ],
+      "patterns": [
+        "source"
+      ],
+      "quiet": false
+    }
   }
 }

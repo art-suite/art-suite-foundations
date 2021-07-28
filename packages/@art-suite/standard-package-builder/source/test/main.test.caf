@@ -1,0 +1,16 @@
+import &StandardImport
+
+assertLooksLikePackage = (options) ->
+  existingPackage = {}
+  f = standardPackageBuilder existingPackage, options
+  testPackage = f()
+  assert.present testPackage.scripts.test
+  assert.present testPackage.scripts.build
+  assert.present testPackage.scripts.watch
+
+describe
+  standardPackageBuilder: ->
+    test "basics" -> assertLooksLikePackage {}
+    test "coffeeScript" -> assertLooksLikePackage coffeeScript: true
+    test "mocha" -> assertLooksLikePackage mocha: true
+    test "mochaAndJest" -> assertLooksLikePackage mochaAndJest: true
