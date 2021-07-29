@@ -1,0 +1,45 @@
+import &ArtStandardLib, &ArtClassSystem
+
+class JsonStore extends BaseObject
+  @singletonClass()
+  ##
+    IN: store: localStorage or sessionStorage
+      OR anything that implements the Async Storage interface (localStorage but returns promises):
+        length
+        key(index)
+        getItem(key)
+        setItem(key, value)
+        removeItem(key)
+        clear()
+      Note, each of these functions can return a promise or the actual value
+  constructor: (store = &AsyncLocalStorage) -> @store = store
+
+  # returns the string-value written or null if non written (for example, if nothing changed)
+  setItem: (key, value) ->
+    json = null
+    Promise
+    .then -> @store.getItem key
+    .then (oldJson) ->
+      if oldJson != json = JSON.stringify value
+        Promise
+        .then -> @store.setItem key, json
+        .then -> json
+
+      else
+        null
+
+    .catch (error) ->
+      log.error JsonStore_setItem: {} key, value, json, error
+      throw error
+
+  getItem: (key) ->
+    Promise.then    -> @store.getItem key
+    .then (json)    -> json && JSON.parse json
+    .catch (error) ->
+      log.error JsonStore_getItem: {} key, error
+      throw error
+
+  removeItem: (k)    -> Promise.then -> @store.removeItem k
+  clear:             -> Promise.then -> @store.clear()
+  key:        (i)    -> Promise.then -> @store.key i
+  getLength:         -> Promise.then -> @store.getLength?() ? @store.length ? throw new Error "expected store to implement store.getLength()"
