@@ -1,8 +1,4 @@
 import &ArtStandardLib, &ArtClassSystem
-{log, Promise, isNumber} = require 'art-standard-lib'
-ClassSystem = require 'art-class-system'
-AsyncLocalStorage = require './AsyncLocalStorage'
-{BaseObject} = ClassSystem
 
 class JsonStore extends BaseObject
   @singletonClass()
@@ -16,7 +12,7 @@ class JsonStore extends BaseObject
         removeItem(key)
         clear()
       Note, each of these functions can return a promise or the actual value
-  constructor: (store = AsyncLocalStorage) -> @store = store
+  constructor: (store = &AsyncLocalStorage) -> @store = store
 
   # returns the string-value written or null if non written (for example, if nothing changed)
   setItem: (key, value) ->
@@ -40,10 +36,10 @@ class JsonStore extends BaseObject
     Promise.then    -> @store.getItem key
     .then (json)    -> json && JSON.parse json
     .catch (error) ->
-      log.error JsonStore_getItem: {} key, json, error
+      log.error JsonStore_getItem: {} key, error
       throw error
 
   removeItem: (k)    -> Promise.then -> @store.removeItem k
   clear:             -> Promise.then -> @store.clear()
   key:        (i)    -> Promise.then -> @store.key i
-  getLength:         -> Promise.then -> if isNumber @store.length then @store.length else @store.getLength()
+  getLength:         -> Promise.then -> @store.getLength?() ? @store.length ? throw new Error "expected store to implement store.getLength()"

@@ -1,6 +1,6 @@
-import &ArtStandardLib, &ArtTestbench
+import &ArtStandardLib, &ArtTestbench, &build
 
-jsonStore = new Foundation.JsonStore
+mockJsonStore = new JsonStore
   class AsyncSessionStorage
     @store = {}
     @getItem:    (path)        -> @store[path]
@@ -8,41 +8,46 @@ jsonStore = new Foundation.JsonStore
     @removeItem: (path)        -> delete @store[path]
     @clear:                    -> @store = {}
     @key:        (index)       -> Object.keys(@store).sort()[index]
-    @getLength:                -> objectKeyCount @tore
+    @getLength:                -> objectKeyCount @store
 
-jsonStore.clear()
+mockJsonStore.clear()
 
-setup ->
-  jsonStore.clear()
+describe
+  mockJsonStore: ->
+    chainedTest ->
+      mockJsonStore.clear()
 
-test "get non existant item", ->
-  jsonStore.getItem :oasdifaoi
-  .then (result) -> assert.eq result. null
+    .softTapTest
 
-test "clear, setItem, removeItem & length", ->
-  jsonStore.getLength()
-  .then (length) -> assert.eq length, 0
-  .then -> jsonStore.setItem "foo", "bar"
-  # .then -> assert.resolved.eq jsonStore.getLength(), 1
-  # .then -> jsonStore.setItem "foo2", "bar2"
-  # .then -> assert.resolved.eq jsonStore.getLength(), 2
-  # .then -> jsonStore.setItem "foo2", "bar3"
-  # .then -> assert.resolved.eq jsonStore.getLength(), 2
-  # .then -> jsonStore.removeItem "foo"
-  # .then -> assert.resolved.eq jsonStore.getLength(), 1
+      "get non existant item", ->
+        mockJsonStore.getItem :oasdifaoi
+        .then (result) -> assert.doesNotExist result
 
-test "setItem k, custom:'hash'", ->
-  o = null
-  jsonStore.setItem "foo", o = custom:'hash'
-  .then -> assert.resolved.eq      o, jsonStore.getItem "foo"
-  .then -> assert.resolved.notSame o, jsonStore.getItem "foo"
+      "clear, setItem, removeItem & length", ->
+        mockJsonStore.getLength()
+        .then (length) -> assert.eq length, 0
+        .then -> mockJsonStore.setItem    :foo :bar
+        .then -> assert.resolved.eq       :bar  mockJsonStore.getItem(:foo)
+        .then -> assert.resolved.eq       1     mockJsonStore.getLength()
+        .then -> mockJsonStore.setItem    :foo2 :bar2
+        .then -> assert.resolved.eq       2     mockJsonStore.getLength()
+        .then -> mockJsonStore.setItem    :foo2 :bar3
+        .then -> assert.resolved.eq       2     mockJsonStore.getLength()
+        .then -> mockJsonStore.removeItem :foo
+        .then -> assert.resolved.eq       1     mockJsonStore.getLength()
 
-test "setItem k, ['custom', 'array']", ->
-  jsonStore.setItem "foo", o = ['custom', 'array']
-  .then -> assert.resolved.eq      o, jsonStore.getItem "foo"
-  .then -> assert.resolved.notSame o, jsonStore.getItem "foo"
+      "setItem k, custom:'hash'", ->
+        o = null
+        mockJsonStore.setItem "foo", o = custom:'hash'
+        .then -> assert.resolved.eq      o, mockJsonStore.getItem "foo"
+        .then -> assert.resolved.notSame o, mockJsonStore.getItem "foo"
 
-test "setItem k, complex:['object', 'with', 1], and:true", ->
-  jsonStore.setItem "foo", o = complex:['object', 'with', 1], and:true
-  .then -> assert.resolved.eq      o, jsonStore.getItem "foo"
-  .then -> assert.resolved.notSame o, jsonStore.getItem "foo"
+      "setItem k, ['custom', 'array']", ->
+        mockJsonStore.setItem "foo", o = ['custom', 'array']
+        .then -> assert.resolved.eq      o, mockJsonStore.getItem "foo"
+        .then -> assert.resolved.notSame o, mockJsonStore.getItem "foo"
+
+      "setItem k, complex:['object', 'with', 1], and:true", ->
+        mockJsonStore.setItem "foo", o = complex:['object', 'with', 1], and:true
+        .then -> assert.resolved.eq      o, mockJsonStore.getItem "foo"
+        .then -> assert.resolved.notSame o, mockJsonStore.getItem "foo"

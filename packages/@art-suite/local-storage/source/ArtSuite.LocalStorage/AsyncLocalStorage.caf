@@ -1,4 +1,5 @@
 import &ArtStandardLib, &@ArtSuite/WebWorker
+WorkerRpc extract workerRpc
 
 ###
   AsyncLocalStorage defines a consistent API for localStorage across web-workers and the main thread.
