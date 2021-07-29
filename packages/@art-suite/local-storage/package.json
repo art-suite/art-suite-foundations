@@ -5,9 +5,7 @@
     "@art-suite/web-worker": "^1.0.0",
     "art-standard-lib": "^1.71.2"
   },
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
@@ -22,7 +20,7 @@
     "verbose": true
   },
   "license": "ISC",
-  "name": "@art-suite/json-store",
+  "name": "@art-suite/local-storage",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
