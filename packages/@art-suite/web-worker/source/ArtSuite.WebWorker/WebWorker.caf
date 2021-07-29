@@ -14,8 +14,8 @@ class WebWorker
 
   # start a worker by evaluating workerSource
   # Internal: Converts workSource into a DATAURI so we can start a Wroker
-  @startWorkerFromJsString: startWorkerFromJsString = (workerSource) ->
+  @startWorkerFromJsString: (workerSource) ->
     new Worker URL.createObjectURL new Blob [workerSource], type: :application/javascript
 
-  @startWorkerFromFunction: (workerFunction) ->
-    startWorkerFromJsString "" (#{workerFunction})();
+  @startWorkerFromFunction: (workerFunction) =>
+    @startWorkerFromJsString "" (#{workerFunction})();

@@ -22,8 +22,9 @@ WorkerRPC has two modes: singleton and instanced.
         # to register all your handlers, call this one or more times:
         WorkerRpc.register ...
 
-        # call for each each worker you want to listen for RPC calls from,
-        # and bind any remote procedures you want to be able to invoke on that specific worker-thread
+        # Call for each each worker you want to listen for RPC calls from,
+        # and bind any remote procedures you want to be able to invoke on
+        # that specific worker-thread.
         aBoundWorker = new WorkerRpc worker,
           bind: ...
           bindWithPromises: ...
