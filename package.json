@@ -46,7 +46,7 @@
     "css-loader": "^6.2.0",
     "dateformat": "^4.5.1",
     "detect-node": "^2.0.4",
-    "fs-extra": "^9.0.0",
+    "fs-extra": "^10",
     "glob": "^7.1.6",
     "glob-promise": "^4.1.0",
     "jest": "^27.0.6",
