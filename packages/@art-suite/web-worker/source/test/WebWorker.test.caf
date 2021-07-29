@@ -1,0 +1,3 @@
+import &StandardImport
+
+test "foo" ->

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "WebWorker.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/WebWorker.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,qEAAO,yCAEP,YAAK"
+}

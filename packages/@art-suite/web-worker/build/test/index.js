@@ -4,5 +4,6 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  JsonStoreTest: require('./JsonStore.test')
+  StandardImport: require('./StandardImport'),
+  WebWorkerTest:  require('./WebWorker.test')
 });

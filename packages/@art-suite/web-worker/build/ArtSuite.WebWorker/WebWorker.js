@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {return Caf.importInvoke(["isBrowser", "URL"], [global, require('art-standard-lib')], (isBrowser, URL) => {let Worker, Blob, WebWorker, temp; temp = global; Worker = temp.Worker; Blob = temp.Blob; return WebWorker = Caf.defClass(class WebWorker extends Object {}, function(WebWorker, classSuper, instanceSuper) {let startWorkerFromJsString; this.echoWebWorker = "self.onmessage=function(e){postMessage('Worker: '+e.data);}"; this.isWebWorker = !isBrowser && global.importScripts; this.webWorkersSupported = isBrowser; this.startWorkerFromJsString = startWorkerFromJsString = function(workerSource) {return new Worker(URL.createObjectURL(new Blob([workerSource], {type: "application/javascript"})));}; this.startWorkerFromFunction = function(workerFunction) {return startWorkerFromJsString(`(${Caf.toString(workerFunction)})();`);};});});});
+//# sourceMappingURL=WebWorker.js.map

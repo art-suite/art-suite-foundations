@@ -1,6 +1,4 @@
-import &StandardImport
-{isWebWorker} = require './WebWorker'
-{workerRpc} = require './WorkerRpc'
+import &ArtStandardLib, &@ArtSuite/WebWorker
 
 ###
   AsyncLocalStorage defines a consistent API for localStorage across web-workers and the main thread.
@@ -12,20 +10,22 @@ import &StandardImport
       removeItem: (path)        -> promise.then -> success
       clear:                    -> promise.then -> success
 
-{localStorage} = global
-localStorage ?= class LocalStorageShimForNode
-  @store:       {}
-  @getItem:     (k)     => @store[k]
-  @setItem:     (k, v)  => @store[k] = v
-  @removeItem:  (k)     => delete @store[k]
-  @clear:               => @store = {}
-  @key:         (i)     => Object.keys(@store)[i]
-  @getLength:           => objectKeyCount @store
+global extract localStorage = class LocalStorageShimForNode
+  @_store:       {}
+  @getItem:     (k)     => @_store[k]
+  @setItem:     (k, v)  => @_store[k] = v
+  @removeItem:  (k)     => delete @_store[k]
+  @clear:               => @_store = {}
+  @key:         (i)     => Object.keys(@_store)[i]
+  @getLength:           => objectKeyCount @_store
 
 if isWebWorker
-  workerRpc.bindWithPromises localStorage: :getItem :setItem :removeItem :clear :key
+  workerRpc.bindWithPromises localStorage: [] :getItem :setItem :removeItem :clear :key
+
 else
-  workerRpc.register localStorage: localStorage
+  if webWorkersSupported
+    workerRpc.register localStorage: localStorage
+
   class AsyncLocalStorage
     @getItem:    (path)        -> Promise.then -> localStorage.getItem path
     @setItem:    (path, value) -> Promise.then -> localStorage.setItem path, value

@@ -1,0 +1,21 @@
+import &ArtStandardLib
+
+global extract Worker, Blob
+###
+  source:
+    http://jsfiddle.net/uqcFM/49/
+    http://stackoverflow.com/a/10372280/2121000
+class WebWorker
+  # a simple demo WebWorker
+  @echoWebWorker: "" self.onmessage=function(e){postMessage('Worker: '+e.data);}
+
+  @isWebWorker:         !isBrowser && global.importScripts
+  @webWorkersSupported: isBrowser
+
+  # start a worker by evaluating workerSource
+  # Internal: Converts workSource into a DATAURI so we can start a Wroker
+  @startWorkerFromJsString: startWorkerFromJsString = (workerSource) ->
+    new Worker URL.createObjectURL new Blob [workerSource], type: :application/javascript
+
+  @startWorkerFromFunction: (workerFunction) ->
+    startWorkerFromJsString "" (#{workerFunction})();

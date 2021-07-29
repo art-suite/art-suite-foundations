@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "WebWorker.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtSuite.WebWorker/WebWorker.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,iFAAO,sFAEP,4NAOoB,kFAEc,cAAI,iDACd,0CAII,0BAAuB,QAAG,CAAC,eAAgB,OACnE,IAAI,OAAO,oBAAoB,IAAI,MAAM,gBAAe,MAAM,+DAEhE,QAA0B,CAAC,iBAAkB,OAC3C,yCAA8B"
+}
