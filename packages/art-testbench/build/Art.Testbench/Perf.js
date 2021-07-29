@@ -16,9 +16,9 @@ suite 'my suite', ->
  */
 
 (function() {
-  var BaseObject, commaize, currentSecond, defaultTestDuration, defaultWarmUpRatio, defineModule, floatEq, getPadding, inspect, isFunction, isNode, isPromise, log, nextTick, ref, requestAnimationFrame, rightAlign, targetCycleDuration, time;
+  var BaseObject, Promise, commaize, currentSecond, defaultTestDuration, defaultWarmUpRatio, defineModule, floatEq, getPadding, inspect, isFunction, isNode, isPromise, log, nextTick, ref, requestAnimationFrame, rightAlign, targetCycleDuration, time;
 
-  ref = require('art-standard-lib'), inspect = ref.inspect, log = ref.log, time = ref.time, nextTick = ref.nextTick, currentSecond = ref.currentSecond, requestAnimationFrame = ref.requestAnimationFrame, BaseObject = ref.BaseObject, isFunction = ref.isFunction, commaize = ref.commaize, rightAlign = ref.rightAlign, isPromise = ref.isPromise, defineModule = ref.defineModule, isFunction = ref.isFunction, floatEq = ref.floatEq, isNode = ref.isNode, getPadding = ref.getPadding;
+  ref = require('art-standard-lib'), inspect = ref.inspect, log = ref.log, time = ref.time, nextTick = ref.nextTick, currentSecond = ref.currentSecond, requestAnimationFrame = ref.requestAnimationFrame, BaseObject = ref.BaseObject, isFunction = ref.isFunction, commaize = ref.commaize, rightAlign = ref.rightAlign, isPromise = ref.isPromise, defineModule = ref.defineModule, isFunction = ref.isFunction, floatEq = ref.floatEq, isNode = ref.isNode, getPadding = ref.getPadding, Promise = ref.Promise;
 
   targetCycleDuration = .02;
 
@@ -49,21 +49,23 @@ suite 'my suite', ->
           name = name.replace(/[\n\s]+/g, ' ');
           name = name.slice(0, 70);
         }
-        return test(name, function(mochaDone) {
-          var done, doneCalled, f, ret;
-          doneCalled = false;
-          done = function() {
-            if (!doneCalled) {
-              mochaDone();
+        return test(name, function() {
+          return new Promise(function(resolve) {
+            var done, doneCalled, f, ret;
+            doneCalled = false;
+            done = function() {
+              if (!doneCalled) {
+                resolve();
+              }
+              return doneCalled = true;
+            };
+            f = Perf._isAsyncBenchmark(benchmarkF) ? Perf._getAsyncBenchmarkFunction(name, benchmarkF, options) : Perf._getSyncBenchmarkFunction(name, benchmarkF, options);
+            ret = f(done);
+            if (isFunction(ret.then)) {
+              ret.then(done);
             }
-            return doneCalled = true;
-          };
-          f = Perf._isAsyncBenchmark(benchmarkF) ? Perf._getAsyncBenchmarkFunction(name, benchmarkF, options) : Perf._getSyncBenchmarkFunction(name, benchmarkF, options);
-          ret = f(done);
-          if (isFunction(ret.then)) {
-            ret.then(done);
-          }
-          return null;
+            return null;
+          });
         });
       });
 
