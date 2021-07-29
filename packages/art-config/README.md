@@ -1,5 +1,23 @@
-# art-config [![Build Status](https://travis-ci.org/imikimi/art-config.svg?branch=master)](https://travis-ci.org/imikimi/art-config)
-A powerful yet simple tool for configuring all your libraries consistently.
+# Art-Config
+A powerful yet simple tool for configuring all your libraries consistently in one place under one configuration hierarchy.
+
+### Code Basics
+
+1. Declare a `Configurable` wherever you need config values.
+1. Declare a `Configuration` for Development, Production and/or test
+1. and run `configure()` when initializing your app.
+
+### Configuration Sources
+
+ArtConfig supports reading the `artConfigName` and `artConfig` configuration values from many sources:
+
+1. environment:
+    - NodeJS: system variables (e.g. `export artConfigName=dev`)
+    - Browser: query params (e.g. `?artConfigName=dev`)
+1. options passed at runtime (e.g. `&ArtConfig.configure(artConfigName: dev)`)
+1. globals (e.g. `window.artConfigName = dev;`)
+1. `Configuration` selected by artConfigName
+1. Each `Configurable`'s defaults
 
 # Install
 
@@ -42,8 +60,6 @@ assert.eq
   getArtConfig()
   Any: Path: You: Want: foo: :bar
 ```
-
-
 
 #### Concept: Configurable (class to inherit from)
 
