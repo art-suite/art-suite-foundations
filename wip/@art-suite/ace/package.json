@@ -31,7 +31,7 @@
     "art-testbench": "^3.2.4",
     "jest": "^27.0.6",
     "mocha": "^7.2.0",
-    "mock-fs": "^4.13.0"
+    "mock-fs": "^5.0.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

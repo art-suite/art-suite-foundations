@@ -52,7 +52,7 @@
     "jest": "^27.0.6",
     "mailcheck": "^1.1.1",
     "mocha": "^7.2.0",
-    "mock-fs": "^4.13.0",
+    "mock-fs": "^5.0.0",
     "neptune-namespaces": "file:packages/neptune-namespaces",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "npm-watch": "^0.10.0",

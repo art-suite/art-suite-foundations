@@ -34,7 +34,7 @@
     "art-testbench": "^3.2.4",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "mocha": "^7.2.0",
-    "mock-fs": "^4.13.0",
+    "mock-fs": "^5.0.0",
     "webpack-merge": "^5.8.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
