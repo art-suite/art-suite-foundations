@@ -7,6 +7,7 @@ configure: (options = {}) -> (_package) ->
     mocha
     mochaAndJest
     coffeeScript
+    scripts
     package as currentPackage = _package
 
   targetTempDir = targetDir + "-temp"
@@ -27,7 +28,8 @@ configure: (options = {}) -> (_package) ->
         npm run nn
 
   merge currentPackage,
-    scripts:
+    scripts: merge
+      scripts
       nn:
         "" nn #{targetDir}/* #{if mocha then :test/tests}
       test:

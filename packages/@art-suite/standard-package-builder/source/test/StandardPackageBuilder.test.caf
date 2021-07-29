@@ -27,3 +27,9 @@ describe
     test "coffeeScript" -> assertLooksLikePackage coffeeScript: true
     test "mocha" -> assertLooksLikePackage mocha: true
     test "mochaAndJest" -> assertLooksLikePackage mochaAndJest: true
+
+    test "custom scripts" ->
+      packageBuilder = standardPackageBuilder.configure scripts: foo: :bar
+      builtPackage = packageBuilder()
+
+      assert.eq builtPackage.scripts.foo, :bar
