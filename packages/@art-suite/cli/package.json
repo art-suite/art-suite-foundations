@@ -12,7 +12,6 @@
     "art-build-configurator": "^1.29.5",
     "art-testbench": "^3.2.4",
     "mocha": "^7.2.0",
-    "mock-fs": "^4.13.0",
     "npm-watch": "^0.10.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",

@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "mock-fs": "^4.13.0"
+    "mock-fs": "^5.0.0"
   },
   "devDependencies": {
     "art-testbench": "^3.2.4"

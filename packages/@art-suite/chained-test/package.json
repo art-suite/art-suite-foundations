@@ -5,7 +5,7 @@
   "devDependencies": {
     "@art-suite/assert": "^1.0.5",
     "art-build-configurator": "^1.29.5",
-    "jest": "^26.6.1"
+    "jest": "^27.0.6"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

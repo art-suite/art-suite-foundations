@@ -26,6 +26,7 @@ suite 'my suite', ->
   floatEq
   isNode
   getPadding
+  Promise
 } = require 'art-standard-lib'
 
 targetCycleDuration = .02
@@ -52,23 +53,24 @@ defineModule module, ->
         name = name.replace(/[\n\s]+/g, ' ')
         name = name.slice 0, 70
 
-      test name, (mochaDone) =>
-        doneCalled = false
-        done = ->
-          mochaDone() unless doneCalled
-          doneCalled = true
+      test name, =>
+        new Promise (resolve) =>
+          doneCalled = false
+          done = ->
+            resolve() unless doneCalled
+            doneCalled = true
 
-        f = if @_isAsyncBenchmark benchmarkF
-          @_getAsyncBenchmarkFunction name, benchmarkF, options
-        else
-          @_getSyncBenchmarkFunction name, benchmarkF, options
+          f = if @_isAsyncBenchmark benchmarkF
+            @_getAsyncBenchmarkFunction name, benchmarkF, options
+          else
+            @_getSyncBenchmarkFunction name, benchmarkF, options
 
-        ret = f done
+          ret = f done
 
-        # mocha no longer does this for me
-        if isFunction ret.then
-          ret.then done
-        null
+          # mocha no longer does this for me
+          if isFunction ret.then
+            ret.then done
+          null
 
     ########################
     # PRIVATE
