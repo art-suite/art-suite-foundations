@@ -29,7 +29,6 @@ configure: (options = {}) -> (_package) ->
 
   merge currentPackage,
     scripts: merge
-      scripts
       nn:
         "" nn #{targetDir}/* #{if mocha then :test/tests}
       test:
@@ -69,6 +68,7 @@ configure: (options = {}) -> (_package) ->
 
       clean:        "" rm -rf #{targetDir}/*
       watch:        :npm-watch
+      scripts
 
     jest:
       testEnvironment: :node

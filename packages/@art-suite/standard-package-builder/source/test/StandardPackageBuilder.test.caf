@@ -29,7 +29,7 @@ describe
     test "mochaAndJest" -> assertLooksLikePackage mochaAndJest: true
 
     test "custom scripts" ->
-      packageBuilder = standardPackageBuilder.configure scripts: foo: :bar
+      packageBuilder = standardPackageBuilder.configure scripts: test: :bar
       builtPackage = packageBuilder()
 
-      assert.eq builtPackage.scripts.foo, :bar
+      assert.eq builtPackage.scripts.test, :bar
