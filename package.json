@@ -8,7 +8,7 @@
     "@art-suite/configuration-engine": "file:wip/@art-suite/ace",
     "@art-suite/global": "file:packages/@art-suite/global",
     "@art-suite/instance-function-binding-mixin": "file:packages/@art-suite/instance-function-binding-mixin",
-    "@art-suite/json-store": "file:packages/@art-suite/local-storage",
+    "@art-suite/local-storage": "file:packages/@art-suite/local-storage",
     "@art-suite/mock-fs": "file:packages/@art-suite/mock-fs",
     "@art-suite/monorepo": "file:packages/@art-suite/monorepo",
     "@art-suite/source-root-finder": "file:packages/@art-suite/source-root-finder",
