@@ -18,9 +18,6 @@ class StandardWebpackConfig
       path:       &path.join npmRoot, outputPath
       filename:   "[name].js"
 
-    plugins: []
-      new require :case-sensitive-paths-webpack-plugin
-
     module:
       rules: []
         {} test: /\.caf(feine)?$/,             use: loader: :caffeine-mc/webpack-loader

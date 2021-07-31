@@ -9,7 +9,7 @@
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
-    "art-build-configurator": "^1.29.5",
+    "art-build-configurator": "^1.30.0",
     "art-testbench": "^3.2.4",
     "mocha": "^7.2.0"
   },

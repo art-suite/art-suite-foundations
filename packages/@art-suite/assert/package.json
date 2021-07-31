@@ -6,7 +6,7 @@
   },
   "description": "ArtSuite.Assert",
   "devDependencies": {
-    "art-build-configurator": "^1.29.5",
+    "art-build-configurator": "^1.30.0",
     "jest": "^27.0.6"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",

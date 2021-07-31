@@ -6,7 +6,7 @@
   },
   "description": "Create Declarative frameworks that output tree structures with properties (e.g. ArtReact)",
   "devDependencies": {
-    "art-build-configurator": "^1.29.5"
+    "art-build-configurator": "^1.30.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

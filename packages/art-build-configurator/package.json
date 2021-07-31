@@ -7,7 +7,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-browser-tools": "^1.2.12",
-    "art-build-configurator": "^1.29.5",
+    "art-build-configurator": "^1.30.0",
     "art-class-system": "^1.11.15",
     "art-config": "^2.0.3",
     "art-filebuilder": "^2.1.13",
@@ -27,7 +27,8 @@
     "glob": "^7.1.6",
     "glob-promise": "^4.1.0",
     "neptune-namespaces": "^4.2.11",
-    "style-loader": "^3.2.1"
+    "style-loader": "^3.2.1",
+    "webpack-merge": "^5.8.0"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
@@ -64,7 +65,7 @@
     "test": "npm run nn\nmocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "1.29.5",
+  "version": "1.30.0",
   "watch": {
     "build": {
       "extensions": [

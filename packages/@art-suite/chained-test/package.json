@@ -4,7 +4,7 @@
   "description": "@art-suite/chained-test lets you break up large Jest or Mocha tests into a sequences of smaller tests. This is particularly helpful for integration tests, user-story tests, and tests with more than one asynchronous step.",
   "devDependencies": {
     "@art-suite/assert": "^1.0.5",
-    "art-build-configurator": "^1.29.5",
+    "art-build-configurator": "^1.30.0",
     "jest": "^27.0.6"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
