@@ -1,0 +1,1 @@
+require 'art-suite-test'

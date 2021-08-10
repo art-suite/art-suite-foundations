@@ -1,0 +1,19 @@
+package:
+  dependencies:
+    atob:                     :^2.0.3
+    art-object-tree-factory:  :*
+    art-communication-status: :*
+    art-rest-client:          :*
+    art-validation:           :*
+    art-epoched-state:        :*
+
+  description: "Foundation classes for the Art framework. Javascript extensions."
+
+webpack:
+  common: {}
+  targets:
+    index: {}
+    test: {}
+    perf: {}
+    worker_for_worker_rpc_tests: {}
+    dom_element_factories: {}
