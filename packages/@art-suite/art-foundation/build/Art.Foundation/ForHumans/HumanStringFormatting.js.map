@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "HumanStringFormatting.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Foundation/ForHumans/HumanStringFormatting.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA;;EAAC,eAAgB,OAAA,CAAQ,kBAAR;;EAEjB,YAAA,CAAa,MAAb,EAA2B;;;IACzB,qBAAC,CAAA,aAAD,GAAgB,SAAC,KAAD;MACd,IAAG,KAAA,GAAQ,IAAX;eACK,KAAD,GAAO,QADX;OAAA,MAAA;QAGE,KAAA,IAAS;QACT,IAAG,KAAA,GAAQ,IAAX;iBACI,CAAC,KAAA,GAAQ,CAAT,CAAA,GAAW,KADf;SAAA,MAAA;UAGE,KAAA,IAAS;iBACP,CAAC,KAAA,GAAQ,CAAT,CAAA,GAAW,KAJf;SAJF;;IADc;;;;MADlB;AAFA"
+}

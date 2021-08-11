@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Test.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Foundation/.DevTools/Test.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,OAAA,CAAQ,gBAAR;AAAA"
+}

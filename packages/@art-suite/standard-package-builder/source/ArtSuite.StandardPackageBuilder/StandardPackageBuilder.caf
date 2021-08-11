@@ -17,7 +17,7 @@ configure: (options = {}) -> (_package) ->
       """
         coffee -m --output #{targetDir} --compile #{sourceDir} &
         COFFEE_PID=$!
-        caf -m -c #{sourceDir} -o #{targetDir} &
+        caf -m -c #{sourceDir} -o #{targetDir} #{coffeeScript && "--require coffee-script/register" }&
         CAF_PID=$!
         wait $COFFEE_PID || exit 1
         wait $CAF_PID || exit 1

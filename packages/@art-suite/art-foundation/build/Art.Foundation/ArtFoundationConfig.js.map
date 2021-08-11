@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtFoundationConfig.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Foundation/ArtFoundationConfig.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,sFAAA;IAAA;;;EAAA,MAAmD,OAAA,CAAQ,kBAAR,CAAnD,EAAC,SAAD,EAAI,yBAAJ,EAAe,+BAAf,EAA6B,yBAA7B,EAAwC;;EACvC,eAAgB,OAAA,CAAQ,YAAR;;EAEjB,YAAA,CAAa,MAAb,EAA2B;;;;;;;;;KAA4B,aAAvD;AAHA"
+}

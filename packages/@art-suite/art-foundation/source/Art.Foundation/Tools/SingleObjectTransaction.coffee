@@ -1,7 +1,7 @@
 StandardLib = require 'art-standard-lib'
 ClassSystem = require 'art-class-system'
 
-{cloneByStructure, removeFirstMatch, eq, inspect, rubyTrue}  = StandardLib
+{cloneStructure, removeFirstMatch, eq, inspect, rubyTrue}  = StandardLib
 {BaseObject} = ClassSystem
 
 module.exports = class SingleObjectTransaction extends BaseObject
@@ -81,7 +81,7 @@ module.exports = class SingleObjectTransaction extends BaseObject
     @clearOptimizations()
     metaProperties = @object.metaProperties
     for prop in @props when !saveTo.hasOwnProperty prop
-      value = saveTo[prop] = cloneByStructure if getterName = metaProperties?[prop]?.getterName
+      value = saveTo[prop] = cloneStructure if getterName = metaProperties?[prop]?.getterName
         @object[getterName]()
       else
         @object[prop]

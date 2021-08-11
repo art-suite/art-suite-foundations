@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ForHumans.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Foundation/ForHumans/ForHumans.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,MAAM,CAAC,OAAP,GAAiB,CACf,OAAA,CAAQ,yBAAR,CADe;AAAjB"
+}

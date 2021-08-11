@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Stat.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Stat.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;iCACA,kEAAO,iEAEP,gBAAQ,CAAC,yCAA6B,OACpC,KAAK,4CACH,IAAI,IAAI,MACR,MAAM,IACN,MAAM,IACN,MAAM,IACN,UAAU,WAAW,GAAE,GAAE,KACzB,UAAU,iBAAiB,IAC3B,UAAU,WAAW,IACrB,UAAU,OAAO,IACjB,UAAU,OAAO,WACjB,UAAU,UAAU"
+}

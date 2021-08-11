@@ -1,1 +1,0 @@
-module.exports = require 'art-build-configurator/configure_webpack'
