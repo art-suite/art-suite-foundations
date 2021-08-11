@@ -1,4 +1,4 @@
-{BaseObject, peek, log} = require "art-foundation"
+{BaseObject, peek, log} = require "@art-suite/art-foundation"
 
 module.exports = class HotLoader extends BaseObject
   @singletonClass()

@@ -4,7 +4,7 @@ To customize how an object shows up in the DOM console, add
 getInspectedObjects member method. For more info, see base_object.coffee
 ###
 
-Foundation = require 'art-foundation'
+Foundation = require '@art-suite/art-foundation'
 DomConsole = require './namespace'
 {Component} = require './PseudoReact'
 

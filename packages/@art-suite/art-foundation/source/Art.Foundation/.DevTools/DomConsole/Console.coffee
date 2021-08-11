@@ -4,9 +4,7 @@ To customize how an object shows up in the DOM console, add
 getInspectedObjects member method. For more info, see base_object.coffee
 ###
 
-require "./style.css" if self.document
-
-Foundation = require 'art-foundation'
+Foundation = require '@art-suite/art-foundation'
 Atomic = require 'art-atomic'
 ToolBar = require './ToolBar'
 
@@ -32,6 +30,10 @@ ToolBar = require './ToolBar'
   escapeJavascriptString
   findColorRegExp
 } = Foundation
+
+{document} = global
+
+require "./style.css" if document
 
 {containsImages, resolveImages, isHTMLImageElement, imgToDom} = require './Images'
 {Div, Pre, Span, Img, Li, Ul} = Foundation.Browser.DomElementFactories
@@ -63,7 +65,7 @@ module.exports = createWithPostCreate class Console extends BaseObject
     super
 
   constructor: ->
-    window.domConsole = @
+    global.domConsole = @
     @_width = 500
     @initDom()
 
@@ -87,7 +89,7 @@ module.exports = createWithPostCreate class Console extends BaseObject
       @domConsoleParent.style.width = "#{w}px"
   @getter "width"
 
-  initDom: ->
+  initDom: -> if document
     mocha = document.getElementById "mocha"
     bodyChildren = (child for child in document.body.childNodes)
     document.body.appendChild Div null,

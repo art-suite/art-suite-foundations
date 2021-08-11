@@ -6,16 +6,12 @@ getInspectedObjects member method. For more info, see base_object.coffee
  */
 
 (function() {
-  var Atomic, BaseObject, Color, Console, Div, Foundation, Img, InspectedObjectLiteral, Li, Pre, Promise, Span, ToolBar, Ul, clone, colorRegExp, containsImages, containsPromises, createWithPostCreate, deepAll, deepEach, deepMap, domConsoleId, escapeJavascriptString, findColorRegExp, flatten, hasProperties, htmlEscape, imgToDom, insertBetweenEveryElement, inspect, inspectLean, isArray, isColorOrColorString, isFunction, isHTMLImageElement, isNumber, isPlainArray, isPlainObject, isString, merge, nextTick, objectKeyCount, packageLogArgs, point, point0, ref, ref1, resolveImages, rgbColor, timeout, toInspectedObjects,
+  var Atomic, BaseObject, Color, Console, Div, Foundation, Img, InspectedObjectLiteral, Li, Pre, Promise, Span, ToolBar, Ul, clone, colorRegExp, containsImages, containsPromises, createWithPostCreate, deepAll, deepEach, deepMap, document, domConsoleId, escapeJavascriptString, findColorRegExp, flatten, hasProperties, htmlEscape, imgToDom, insertBetweenEveryElement, inspect, inspectLean, isArray, isColorOrColorString, isFunction, isHTMLImageElement, isNumber, isPlainArray, isPlainObject, isString, merge, nextTick, objectKeyCount, packageLogArgs, point, point0, ref, ref1, resolveImages, rgbColor, timeout, toInspectedObjects,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty,
     slice = [].slice;
 
-  if (self.document) {
-    require("./style.css");
-  }
-
-  Foundation = require('art-foundation');
+  Foundation = require('@art-suite/art-foundation');
 
   Atomic = require('art-atomic');
 
@@ -24,6 +20,12 @@ getInspectedObjects member method. For more info, see base_object.coffee
   isColorOrColorString = Atomic.isColorOrColorString, rgbColor = Atomic.rgbColor, Color = Atomic.Color, point = Atomic.point, point0 = Atomic.point0;
 
   BaseObject = Foundation.BaseObject, inspect = Foundation.inspect, clone = Foundation.clone, merge = Foundation.merge, nextTick = Foundation.nextTick, timeout = Foundation.timeout, flatten = Foundation.flatten, isArray = Foundation.isArray, isString = Foundation.isString, isFunction = Foundation.isFunction, isNumber = Foundation.isNumber, createWithPostCreate = Foundation.createWithPostCreate, colorRegExp = Foundation.colorRegExp, Promise = Foundation.Promise, containsPromises = Foundation.containsPromises, deepAll = Foundation.deepAll, toInspectedObjects = Foundation.toInspectedObjects, isPlainArray = Foundation.isPlainArray, isPlainObject = Foundation.isPlainObject, hasProperties = Foundation.hasProperties, objectKeyCount = Foundation.objectKeyCount, InspectedObjectLiteral = Foundation.InspectedObjectLiteral, deepEach = Foundation.deepEach, deepMap = Foundation.deepMap, inspectLean = Foundation.inspectLean, escapeJavascriptString = Foundation.escapeJavascriptString, findColorRegExp = Foundation.findColorRegExp;
+
+  document = global.document;
+
+  if (document) {
+    require("./style.css");
+  }
 
   ref = require('./Images'), containsImages = ref.containsImages, resolveImages = ref.resolveImages, isHTMLImageElement = ref.isHTMLImageElement, imgToDom = ref.imgToDom;
 
@@ -72,7 +74,7 @@ getInspectedObjects member method. For more info, see base_object.coffee
     };
 
     function Console() {
-      window.domConsole = this;
+      global.domConsole = this;
       this._width = 500;
       this.initDom();
     }
@@ -124,85 +126,87 @@ getInspectedObjects member method. For more info, see base_object.coffee
 
     Console.prototype.initDom = function() {
       var bodyChildren, child, delay, fixMochaStats, maxAttempts, mocha;
-      mocha = document.getElementById("mocha");
-      bodyChildren = (function() {
-        var j, len, ref2, results;
-        ref2 = document.body.childNodes;
-        results = [];
-        for (j = 0, len = ref2.length; j < len; j++) {
-          child = ref2[j];
-          results.push(child);
-        }
-        return results;
-      })();
-      document.body.appendChild(Div(null, Div({
-        style: {
-          display: "flex",
-          flexDirection: "row",
-          position: "fixed",
-          left: "0",
-          right: "0",
-          top: "0",
-          bottom: "0"
-        }
-      }, Div({
-        id: domConsoleId + "Area",
-        style: {
-          flex: "1 1 auto",
-          overflow: "scroll"
-        }
-      }, bodyChildren), this.domConsoleParent = Div({
-        style: {
-          overflow: "auto",
-          backgroundColor: "white",
-          top: "0",
-          bottom: "0",
-          paddingTop: "25px",
-          flex: "0 0 auto",
-          width: this._width + "px",
-          borderLeft: "1px solid #aaa"
-        }
-      }, this.domContainer = Div({
-        "class": "domConsole",
-        style: {
-          padding: "5px"
-        },
-        on: {
-          click: (function(_this) {
-            return function(arg) {
-              var results, target;
-              target = arg.target;
-              results = [];
-              while (target) {
-                if (target.className.match("collapsable")) {
-                  toggleCollapsable(target);
-                  break;
+      if (document) {
+        mocha = document.getElementById("mocha");
+        bodyChildren = (function() {
+          var j, len, ref2, results;
+          ref2 = document.body.childNodes;
+          results = [];
+          for (j = 0, len = ref2.length; j < len; j++) {
+            child = ref2[j];
+            results.push(child);
+          }
+          return results;
+        })();
+        document.body.appendChild(Div(null, Div({
+          style: {
+            display: "flex",
+            flexDirection: "row",
+            position: "fixed",
+            left: "0",
+            right: "0",
+            top: "0",
+            bottom: "0"
+          }
+        }, Div({
+          id: domConsoleId + "Area",
+          style: {
+            flex: "1 1 auto",
+            overflow: "scroll"
+          }
+        }, bodyChildren), this.domConsoleParent = Div({
+          style: {
+            overflow: "auto",
+            backgroundColor: "white",
+            top: "0",
+            bottom: "0",
+            paddingTop: "25px",
+            flex: "0 0 auto",
+            width: this._width + "px",
+            borderLeft: "1px solid #aaa"
+          }
+        }, this.domContainer = Div({
+          "class": "domConsole",
+          style: {
+            padding: "5px"
+          },
+          on: {
+            click: (function(_this) {
+              return function(arg) {
+                var results, target;
+                target = arg.target;
+                results = [];
+                while (target) {
+                  if (target.className.match("collapsable")) {
+                    toggleCollapsable(target);
+                    break;
+                  }
+                  results.push(target = target.parentElement);
                 }
-                results.push(target = target.parentElement);
-              }
-              return results;
-            };
-          })(this)
+                return results;
+              };
+            })(this)
+          }
+        }))), ToolBar()));
+        if (mocha) {
+          maxAttempts = 8;
+          delay = 125 / 2;
+          fixMochaStats = function() {
+            var ms;
+            if (!maxAttempts--) {
+              console.log("domConsoleMocha fixMochaStats... giving up; sorry for the ugly screen");
+              return;
+            }
+            delay *= 2;
+            if (ms = document.getElementById("mocha-stats")) {
+              return ms.style.position = "relative";
+            } else {
+              console.log("domConsoleMocha fixMochaStats... (waiting " + delay + "ms for #mocha-stats div to appear: " + maxAttempts + ")");
+              return timeout(delay, fixMochaStats);
+            }
+          };
+          return timeout(delay, fixMochaStats);
         }
-      }))), ToolBar()));
-      if (mocha) {
-        maxAttempts = 8;
-        delay = 125 / 2;
-        fixMochaStats = function() {
-          var ms;
-          if (!maxAttempts--) {
-            console.log("domConsoleMocha fixMochaStats... giving up; sorry for the ugly screen");
-            return;
-          }
-          delay *= 2;
-          if (ms = document.getElementById("mocha-stats")) {
-            return ms.style.position = "relative";
-          } else {
-            console.log("domConsoleMocha fixMochaStats... (waiting " + delay + "ms for #mocha-stats div to appear: " + maxAttempts + ")");
-            return timeout(delay, fixMochaStats);
-          }
-        };
-        return timeout(delay, fixMochaStats);
       }
     };
 

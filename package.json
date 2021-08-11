@@ -17,6 +17,7 @@
     "@art-suite/types": "file:wip/@art-suite/types",
     "@art-suite/web-worker": "file:packages/@art-suite/web-worker",
     "ansi-wordwrap": "^1.0.2",
+    "art-atomic": "^1.28.2",
     "art-binary": "file:packages/art-binary",
     "art-browser-tools": "file:packages/art-browser-tools",
     "art-build-configurator": "file:packages/art-build-configurator",

@@ -5,14 +5,11 @@
 .includeInNamespace(require('./Tools'))
 .addModules({
   Analytics:                    require('./Analytics'),
-  AsyncLocalStorage:            require('./AsyncLocalStorage'),
   BatchLoader:                  require('./BatchLoader'),
   GlobalCounts:                 require('./GlobalCounts'),
   InstanceFunctionBindingMixin: require('./InstanceFunctionBindingMixin'),
   ProgressAdapter:              require('./ProgressAdapter'),
   SingleObjectTransaction:      require('./SingleObjectTransaction'),
   Stat:                         require('./Stat'),
-  Transaction:                  require('./Transaction'),
-  WebWorker:                    require('./WebWorker'),
-  WorkerRpc:                    require('./WorkerRpc')
+  Transaction:                  require('./Transaction')
 });

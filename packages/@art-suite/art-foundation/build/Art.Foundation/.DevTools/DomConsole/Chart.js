@@ -4,7 +4,7 @@
 
   Atomic = require('art-atomic');
 
-  Foundation = require('art-foundation');
+  Foundation = require('@art-suite/art-foundation');
 
   point = Atomic.point, rgbColor = Atomic.rgbColor, rect = Atomic.rect, Matrix = Atomic.Matrix;
 

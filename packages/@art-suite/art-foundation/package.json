@@ -4,6 +4,7 @@
   "dependencies": {
     "@art-suite/local-storage": "^1.0.0",
     "@art-suite/web-worker": "^1.0.0",
+    "art-atomic": "^1.28.2",
     "art-browser-tools": "^1.2.12",
     "art-build-configurator": "^1.30.0",
     "art-class-system": "^1.11.15",

@@ -3,7 +3,7 @@
   var Foundation, console,
     slice = [].slice;
 
-  Foundation = require('art-foundation');
+  Foundation = require('@art-suite/art-foundation');
 
   console = require('./Console').console;
 

@@ -1,4 +1,4 @@
-Foundation = require 'art-foundation'
+Foundation = require '@art-suite/art-foundation'
 {Div} = Foundation.Browser.DomElementFactories
 {merge, BaseObject} = Foundation
 {createObjectTreeFactory} = require 'art-object-tree-factory'

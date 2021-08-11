@@ -1,5 +1,5 @@
 Atomic = require 'art-atomic'
-Foundation = require 'art-foundation'
+Foundation = require '@art-suite/art-foundation'
 {point, rgbColor, rect, Matrix} = Atomic
 {inspect, log} = Foundation
 
