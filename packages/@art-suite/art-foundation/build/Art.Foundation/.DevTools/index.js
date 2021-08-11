@@ -3,4 +3,3 @@
 
 module.exports = require('./namespace');
 require('./DomConsole');
-require('./Webpack');
