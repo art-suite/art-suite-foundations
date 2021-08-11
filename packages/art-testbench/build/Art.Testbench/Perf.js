@@ -6,10 +6,6 @@ Perf works within Mocha. It extends mocha's timeouts and runs as mocha tests.
 Benchmark results are logged to the DomConsole and normal Console. They are not displayed
 in the Mocha browser output.
 
-Usage:
-
-{Perf} = require 'art-foundation/dev_tools/test'
-{benchmark} = Perf
 
 suite 'my suite', ->
   benchmark 'My Benchmark', -> 1 + 2 + 3

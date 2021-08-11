@@ -7,7 +7,7 @@ if global.document
   require "mocha/mocha.css"
   require "!script-loader!mocha/mocha.js"
 
-  DomConsole = require 'art-foundation/dev_tools/dom_console'
+  DomConsole = require '@art-suite/art-foundation/dev_tools/dom_console'
   mocha.setup reporter: require './MochaBrowserReporter'
 
 ###
