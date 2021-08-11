@@ -15,7 +15,9 @@ configure: (options = {}) -> (_package) ->
   buildScript = (sourceDir, targetDir) ->
     common =
       """
+        cd #{sourceDir}
         find . -name '*.js' -o -name '*.css' | cpio -vpdm ../#{targetDir}
+        cd ..
 
     if coffeeScript
       """
