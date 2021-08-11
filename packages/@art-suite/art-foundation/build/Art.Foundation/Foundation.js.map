@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Foundation.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Foundation/Foundation.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,6BACA,6BACA,uBACA,uBAEA,wBACA,qBAEA,OAAU,yCACV,SAAU,8BACV,QAAU"
+}

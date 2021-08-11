@@ -1,0 +1,53 @@
+import &StandardImport
+
+mockJsonStore = new JsonStore
+  class AsyncSessionStorage
+    @store = {}
+    @getItem:    (path)        -> @store[path]
+    @setItem:    (path, value) -> @store[path] = value
+    @removeItem: (path)        -> delete @store[path]
+    @clear:                    -> @store = {}
+    @key:        (index)       -> Object.keys(@store).sort()[index]
+    @getLength:                -> objectKeyCount @store
+
+mockJsonStore.clear()
+
+describe
+  mockJsonStore: ->
+    chainedTest ->
+      mockJsonStore.clear()
+
+    .softTapTest
+
+      "get non existant item", ->
+        mockJsonStore.getItem :oasdifaoi
+        .then (result) -> assert.doesNotExist result
+
+      "clear, setItem, removeItem & length", ->
+        mockJsonStore.getLength()
+        .then (length) -> assert.eq length, 0
+        .then -> mockJsonStore.setItem    :foo :bar
+        .then -> assert.resolved.eq       :bar  mockJsonStore.getItem(:foo)
+        .then -> assert.resolved.eq       1     mockJsonStore.getLength()
+        .then -> mockJsonStore.setItem    :foo2 :bar2
+        .then -> assert.resolved.eq       2     mockJsonStore.getLength()
+        .then -> mockJsonStore.setItem    :foo2 :bar3
+        .then -> assert.resolved.eq       2     mockJsonStore.getLength()
+        .then -> mockJsonStore.removeItem :foo
+        .then -> assert.resolved.eq       1     mockJsonStore.getLength()
+
+      "setItem k, custom:'hash'", ->
+        o = null
+        mockJsonStore.setItem "foo", o = custom:'hash'
+        .then -> assert.resolved.eq      o, mockJsonStore.getItem "foo"
+        .then -> assert.resolved.notSame o, mockJsonStore.getItem "foo"
+
+      "setItem k, ['custom', 'array']", ->
+        mockJsonStore.setItem "foo", o = ['custom', 'array']
+        .then -> assert.resolved.eq      o, mockJsonStore.getItem "foo"
+        .then -> assert.resolved.notSame o, mockJsonStore.getItem "foo"
+
+      "setItem k, complex:['object', 'with', 1], and:true", ->
+        mockJsonStore.setItem "foo", o = complex:['object', 'with', 1], and:true
+        .then -> assert.resolved.eq      o, mockJsonStore.getItem "foo"
+        .then -> assert.resolved.notSame o, mockJsonStore.getItem "foo"

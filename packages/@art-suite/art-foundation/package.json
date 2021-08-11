@@ -1,0 +1,64 @@
+{
+  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "@art-suite/local-storage": "^1.0.0",
+    "@art-suite/web-worker": "^1.0.0",
+    "art-atomic": "^1.28.2",
+    "art-browser-tools": "^1.2.12",
+    "art-build-configurator": "^1.30.0",
+    "art-class-system": "^1.11.15",
+    "art-communication-status": "^1.5.15",
+    "art-config": "^2.0.3",
+    "art-epoched-state": "^1.2.14",
+    "art-object-tree-factory": "^2.2.10",
+    "art-rest-client": "^1.9.2",
+    "art-standard-lib": "^1.71.2",
+    "art-validation": "^1.9.8",
+    "atob": "^2.0.3"
+  },
+  "description": "Foundation classes for the Art framework. Javascript extensions.",
+  "devDependencies": {
+    "art-testbench": "^3.2.4"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "build/**/*.js",
+      "!build/test/**/*.js"
+    ],
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
+  },
+  "license": "ISC",
+  "name": "@art-suite/art-foundation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "cd source\nfind . -name '*.js' -o -name '*.css' | cpio -vpdm ../build\ncd ..\ncoffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncd source\nfind . -name '*.js' -o -name '*.css' | cpio -vpdm ../build-temp\ncd ..\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* ",
+    "test": "npm run nn\njest",
+    "watch": "npm-watch"
+  },
+  "version": "2.0.1",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
+      "patterns": [
+        "source"
+      ],
+      "quiet": false
+    }
+  }
+}

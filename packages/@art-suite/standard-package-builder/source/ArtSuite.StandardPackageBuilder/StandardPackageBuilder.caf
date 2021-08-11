@@ -13,17 +13,25 @@ configure: (options = {}) -> (_package) ->
   targetTempDir = targetDir + "-temp"
 
   buildScript = (sourceDir, targetDir) ->
+    common =
+      """
+        cd #{sourceDir}
+        find . -name '*.js' -o -name '*.css' | cpio -vpdm ../#{targetDir}
+        cd ..
+
     if coffeeScript
       """
+        #{common}
         coffee -m --output #{targetDir} --compile #{sourceDir} &
         COFFEE_PID=$!
-        caf -m -c #{sourceDir} -o #{targetDir} &
+        caf -m -c #{sourceDir} -o #{targetDir} #{coffeeScript && "--require coffee-script/register" }&
         CAF_PID=$!
         wait $COFFEE_PID || exit 1
         wait $CAF_PID || exit 1
         npm run nn
     else
       """
+        #{common}
         caf -m -c #{sourceDir} -o #{targetDir}
         npm run nn
 

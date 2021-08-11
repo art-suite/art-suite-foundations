@@ -1,0 +1,113 @@
+###
+  TODO - guess what? I'm going to build my own Commander.
+
+  What I want:
+
+  1) I want to be able to add "commands" which each have their own options:
+
+    cli myCommand -zyx
+
+  2) I want fully automatic single-letter assignment.
+
+  3) I want common options across commands (--verbose)
+
+  4) I want a nice, declarative API.
+
+    a) uses Validator
+
+    artCommander
+      loadData:
+        help: "load test data"
+        options:
+          # validator declaration
+          # validator is exclusive - if it's not here, it's an error.
+          parallel: "boolean"
+
+          # args is special - it's all the arguments which are not -/-- options.
+          # It is an array of strings.
+          args: validate: (v) -> v.length > 1
+
+        # options is a plain object with all the options
+        action: (options) ->
+          {parallel, args} = options
+
+  5) I want a sane and automatic way of handling "help"
+
+###
+import &ArtStandardLib
+
+(options) ->
+  {actions, beforeActions, title = 'artCommander'} = options
+  commander = require "commander"
+  {version, name} = options.package
+  commander.version "#{name} v#{version}"
+  commander.option "-v, --verbose"
+  commander.option "-q, --quiet"
+
+  actionTaken = false
+  letterAssignments = v: true q: true
+  actionsToLetters = {}
+  assignLetters = (offset = 0) ->
+    allAssigned = true
+    each v, k in actions when !actionsToLetters[k]
+      if letter = getCodeWords(k)[offset]?.slice(0, 1)?.toLowerCase()
+        if letterAssignments[letter]
+          allAssigned = false
+        else
+          letterAssignments[letter] = k
+          actionsToLetters[k] = letter
+    unless allAssigned
+      assignLetters offset + 1
+  assignLetters()
+
+  actionMap = {}
+
+  each v, k in actions
+    command = lowerCamelCase k
+    action = if v.constructor == Object
+      {params, action, help} = v
+      invokeParameters =
+        if params
+          "" --#{command} #{params}
+        else
+          "" --#{command}
+      action
+    else
+      invokeParameters = "" --#{command}
+      v
+
+    if letter = actionsToLetters[k]
+      invokeParameters = "-#{letter}, #{baseCommand = invokeParameters}"
+
+    commander.option invokeParameters, help
+
+    actionMap[command] = (arg)->
+      arg = null if arg == true
+      args = compactFlatten [] arg
+
+      unless quiet
+        log.full [title]: {}
+          command
+          &process.title
+          inputs: args
+
+      actionTaken = true
+
+      Promise.resolve beforeActions? commander
+      .then  (beforeActionsOptions) -> action merge beforeActionsOptions, {} args, quiet, verbose
+      .then  (out)   -> !quiet && log.full [title]: {} command, output: out
+      .catch (error) -> log.full [title]: {} command, error
+
+  parsed = commander
+  .parse process.argv
+
+  {quiet, verbose} = parsed
+
+  each action, command in actionMap
+    if parsed[command]
+      action parsed[command]
+
+  unless actionTaken
+    console.error "" No command given.
+    commander.outputHelp()
+    process.exit 1

@@ -1,0 +1,84 @@
+@charset "UTF-8";
+.domConsole {
+  }
+  .domConsole img {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+    background-image: linear-gradient(-45deg, rgba(255, 255, 255, .9) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .9) 50%, rgba(255, 255, 255, .9) 75%, transparent 75%, transparent);
+    background-color: #ddd;
+    background-size: 50px 50px;
+    border: 1px solid rgba(255, 255, 255, 255);
+  }
+  .domConsole img:hover {
+    border: 1px solid #bbbbbb; }
+  .domConsole ul {
+    list-style-type: none; }
+  .domConsole .collapsable {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    padding-left: 12px;
+    margin-bottom: 5px;
+    position: relative;
+    border-left: 1px solid transparent; }
+    .domConsole .collapsable:before {
+      content: "▾";
+      position: absolute;
+      left: 2px;
+      top: 0;
+      bottom: 0; }
+    .domConsole .collapsable:hover {
+      border-left: 1px solid #cccc44;
+      border-radius: 5px; }
+  .domConsole .collapsable.closed {
+    overflow: hidden;
+    height: 14px;
+  }
+  .domConsole .collapsable.closed.array:before {
+    content: "▹"; }
+  .domConsole .collapsable.open.array:before {
+    content: "▿"; }
+  .domConsole .collapsable.closed.object:before {
+    content: "▸"; }
+  .domConsole .collapsable.open.object:before {
+    content: "▾"; }
+  .domConsole pre {
+    margin: 0;
+    color: #555555;
+    font-family: Monaco, monospace; }
+  .domConsole .logLine {
+    font-family: Monaco, monospace;
+    font-size: 11px;
+    color: #aaaaaa;
+    border-right: 2px solid transparent; }
+    .domConsole .logLine .literal {
+      color: green; }
+    .domConsole .logLine .errorLiteral {
+      color: red; }
+    .domConsole .logLine .warningLiteral {
+      color: yellow; }
+    .domConsole .logLine .object .key {
+      color: #bbbb00; }
+    .domConsole .logLine:hover {
+      border-right: 2px solid #e0e0e0; }
+  .domConsole h1 {
+    margin-bottom: 20px;
+    margin-top: 40px; }
+  .domConsole h2 {
+    margin-bottom: 15px;
+    margin-top: 30px; }
+  .domConsole h3 {
+    margin-bottom: 10px;
+    margin-top: 20px; }
+  .domConsole h1 .logLine {
+    font-size: 24px;
+    border-bottom: 4px solid #e0e0e0; }
+  .domConsole h2 .logLine {
+    font-size: 20px;
+    border-bottom: 3px solid #e0e0e0; }
+  .domConsole h3 .logLine {
+    font-size: 16px;
+    border-bottom: 2px solid #e0e0e0; }

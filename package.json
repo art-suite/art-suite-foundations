@@ -2,6 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
+    "@art-suite/art-foundation": "file:packages/@art-suite/art-foundation",
     "@art-suite/assert": "file:packages/@art-suite/assert",
     "@art-suite/chained-test": "file:packages/@art-suite/chained-test",
     "@art-suite/cli": "file:packages/@art-suite/cli",
@@ -16,6 +17,7 @@
     "@art-suite/types": "file:wip/@art-suite/types",
     "@art-suite/web-worker": "file:packages/@art-suite/web-worker",
     "ansi-wordwrap": "^1.0.2",
+    "art-atomic": "^1.28.2",
     "art-binary": "file:packages/art-binary",
     "art-browser-tools": "file:packages/art-browser-tools",
     "art-build-configurator": "file:packages/art-build-configurator",
@@ -34,6 +36,7 @@
     "art-testbench": "file:packages/art-testbench",
     "art-validation": "file:packages/art-validation",
     "art-xbd": "file:packages/art-xbd",
+    "atob": "^2.0.3",
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.74.0",
     "caffeine-script-runtime": "^1.14.0",

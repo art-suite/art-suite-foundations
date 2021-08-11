@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Binary.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Foundation/Binary.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;EAAA,MAAM,CAAC,OAAP,GAAiB,OAAA,CAAQ,YAAR;AAAjB"
+}
