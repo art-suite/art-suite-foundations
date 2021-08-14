@@ -19,7 +19,7 @@
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",
   "devDependencies": {
-    "art-testbench": "^3.2.4"
+    "art-testbench": "^3.2.5"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

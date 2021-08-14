@@ -32,7 +32,7 @@
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
-    "art-testbench": "^3.2.4",
+    "art-testbench": "^3.2.5",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "mocha": "^7.2.0",
     "mock-fs": "^5.0.0",
