@@ -3,9 +3,11 @@
   &ArtClassSystem
   &ArtConfig
   &ArtBinary
+  &ArtValidation
 
   &ForHumans
   &Tools
+
 
   CommunicationStatus: &ArtCommunicationStatus
   Epoch:    &ArtEpochedState.EpochClass

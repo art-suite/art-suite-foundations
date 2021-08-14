@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "PackagesPrevioslyFactoredOut.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/PackagesPrevioslyFactoredOut.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wGAAO,sEAEP,gBAAQ,CACN,8BAAkB,OAChB,KAAK,4DAEH,IAAI,IAAI,WAAU,KAChB,WAAW,iBACX,WAAW,MACb,cAAa,MAAI,kBAAiB,IAAI,4BAEtC,kBAAiB,IAAI"
+}

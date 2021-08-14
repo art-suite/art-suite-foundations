@@ -1,0 +1,12 @@
+import &StandardImport
+
+describe
+  art-validation: ->
+    test "Validator is defined and works as expected" ->
+
+      v = new Validator id:
+        fieldType: 'trimmedString'
+        maxLength: 5
+      assert.throws -> v.validateCreate id: "  too long man"
+
+      v.validateCreate id: :abc

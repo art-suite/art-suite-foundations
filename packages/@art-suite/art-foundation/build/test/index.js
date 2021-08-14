@@ -4,10 +4,11 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  BatchLoaderTest:     require('./BatchLoader.test'),
-  JsonStoreTest:       require('./JsonStore.test'),
-  ProgressAdapterTest: require('./ProgressAdapter.test'),
-  StandardImport:      require('./StandardImport'),
-  StatTest:            require('./Stat.test'),
-  TransactionTest:     require('./Transaction.test')
+  BatchLoaderTest:                  require('./BatchLoader.test'),
+  JsonStoreTest:                    require('./JsonStore.test'),
+  PackagesPrevioslyFactoredOutTest: require('./PackagesPrevioslyFactoredOut.test'),
+  ProgressAdapterTest:              require('./ProgressAdapter.test'),
+  StandardImport:                   require('./StandardImport'),
+  StatTest:                         require('./Stat.test'),
+  TransactionTest:                  require('./Transaction.test')
 });
