@@ -1,9 +1,3 @@
 []
   [] &ProgressAdapter, "executePromiseSequence"
-  &@ArtSuite/WebWorker
-  &@ArtSuite/LocalStorage
-  &ArtObjectTreeFactory
   &GlobalCounts
-  &ArtCommunicationStatus
-  &ArtRestClient
-  &ArtValidation.Validator

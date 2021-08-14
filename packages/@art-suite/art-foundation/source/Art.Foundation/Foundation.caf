@@ -4,12 +4,19 @@
   &ArtConfig
   &ArtBinary
   &ArtValidation
+  &ArtObjectTreeFactory
+  &ArtCommunicationStatus
+  &ArtRestClient
+  &@ArtSuite/WebWorker
+  &@ArtSuite/LocalStorage
 
   &ForHumans
   &Tools
 
 
-  CommunicationStatus: &ArtCommunicationStatus
-  Epoch:    &ArtEpochedState.EpochClass
-  Browser:  &ArtBrowserTools
-  Binary:   &ArtBinary
+  {}
+    RestClient:           &ArtRestClient
+    CommunicationStatus:  &ArtCommunicationStatus
+    Epoch:                &ArtEpochedState.EpochClass
+    Browser:              &ArtBrowserTools
+    Binary:               &ArtBinary
