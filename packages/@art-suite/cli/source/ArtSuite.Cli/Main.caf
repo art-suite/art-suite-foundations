@@ -47,3 +47,6 @@ class Main
           commandName
 
     .tap (result) -> result? && output result
+    .catch (error) ->
+      log error
+      process.exit 1

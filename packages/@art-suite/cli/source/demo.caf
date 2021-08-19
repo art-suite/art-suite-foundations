@@ -33,6 +33,7 @@ require :@art-suite/cli
           description: "name of the song to sing"
           required: true
 
+    force-error: -> throw new Error "" You've forced an error!
     send-cheer: -> "" May you have a holly, jolly Christmas this year!
     xmas:
       run: ({ santa, rudolph }) ->
