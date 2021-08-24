@@ -6,5 +6,6 @@
 .addModules({
   DataTypes:  require('./DataTypes'),
   FieldTypes: require('./FieldTypes'),
+  Lib:        require('./Lib'),
   Validator:  require('./Validator')
 });

@@ -3,8 +3,8 @@
   "file": "Validation.js",
   "sourceRoot": "../..",
   "sources": [
-    "source/Art.Validation/Validation.coffee"
+    "source/Art.Validation/Validation.caf"
   ],
   "names": [],
-  "mappings": ";AAAA;AAAA,MAAA;;EAAA,MAAyC,OAAA,CAAQ,aAAR,CAAzC,EAAC,6CAAD,EAAsB;;EACtB,MAAM,CAAC,OAAP,GAAiB;IAAC,qBAAA,mBAAD;IAAsB,iBAAA,eAAtB;;AADjB"
+  "mappings": "AAAA;;AAAA,6EAAC,qBAAqB,mBAAmB"
 }

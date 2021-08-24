@@ -1,0 +1,22 @@
+import &ArtStandardLib
+
+###
+  @dataTypes only includes the Standard Json types:
+    except 'null':
+      no field has the type of 'null'
+      instead, it has some other type and can be 'null' unless it is 'required'
+
+merge
+  base =
+    boolean:    validate: isBoolean
+    number:     validate: isNumber
+    string:     validate: isString
+    object:     validate: isPlainObject
+    array:      validate: isPlainArray
+    function:   validate: isFunction
+    date:       validate: isDate
+    json:       validate: isJsonType
+    any:        {}
+
+  # for every dataType (e.g. 'boolean'), ALSO declare: booleanDataType: 'boolean'
+  object v, k in base with-key lowerCamelCase "#{k} DataType" with k

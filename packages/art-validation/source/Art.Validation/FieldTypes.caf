@@ -1,0 +1,112 @@
+import &ArtStandardLib, &DataTypes, &ArtCommunicationStatus, {} &DataTypes
+
+idRegEx       = ///i ^[-_a-z0-9]{1,100}$
+hexColorRegEx = /// ^#([a-f0-9]{3})|([a-f0-9]{6})
+isId          = (v) -> isString(v) && idRegEx.test v
+isHexColor    = (v) -> hexColorRegEx.test "#{v}"
+
+###
+  standard FieldType props:
+    validate: (v) -> true/false
+    preprocess: (v1) -> v2
+    required: true/false
+    dataType: one of @DataTypes, default: 'string'
+
+  You can add your own, too, but they are ignored by this class.
+
+  fieldTypes are just easy, pre-defined Objects with the right properties:
+  Usage:
+    This:           @fields webPage: @fieldTypes.id
+    is the same as: @fields webPage: validate: (v) -> isId v
+    and this:       @fields webPage: fieldType: "id"
+
+FieldTypes =
+  count:
+    fromString: numberFromString = (v) -> v - 0
+    dataType:   numberDataType
+    default:    0
+
+  boolean:  dataType: booleanDataType,  fromString: (v) -> !!/^ *t *$|true/i.test v
+  number:   dataType: numberDataType,   fromString: numberFromString
+  string:   dataType: stringDataType
+  object:   dataType: objectDataType
+  array:    dataType: arrayDataType
+  any:      dataType: anyDataType
+  json:     dataType: jsonDataType,     fromString: (v) -> JSON.parse v
+
+
+  id:
+    required: true
+    validate: (v) -> isId v
+
+  date:
+    fromString: (v) -> Date.parse v
+    validate:   (v) ->
+      if v instanceof Date
+        !isNaN v - 0
+      else isString v
+
+    preprocess: (v) -> if isString(v) then new Date v else v
+    dataType: dateDataType
+
+  timestamp: # milliseconds since 1970; to get the current timestamp: Date.now()
+    fromString:   (v) -> toMilliseconds v
+    dataType:     numberDataType
+    validate:     (v) -> isNumber(v) || isDate v
+    preprocess:   toMilliseconds
+    decode:       toDate
+
+  secondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
+    dataType:     numberDataType
+    fromString:   (v) -> toSeconds v
+    validate:     (v) -> isNumber(v) || isDate v
+    preprocess:   (v) -> toSeconds(v) + .5 | 0
+    decode:       toDate
+
+  fractionalSecondsTimestamp: # seconds since 1970; to get the current timestamp: Date.now()/1000
+    dataType:     numberDataType
+    fromString:   (v) -> toSeconds v
+    validate:     (v) -> isNumber(v) || isDate v
+    preprocess:   (v) -> toSeconds v
+    decode:       toDate
+
+  color:
+    validate:     (v) -> isHexColor v
+    preprocess:   (v) -> "#{v}"
+
+  email:
+    validate:     (v) -> isString(v) && v.trim().match emailRegexp
+    preprocess:   (v) -> lowerCase v.trim()
+
+  url:
+    validate:     (v) -> isString(v) && v.match urlWithOptionalProtocolRegExp
+    preprocess:   (v) -> normalizeUrl v # downcase protocol and domain name
+
+  communicationStatus:
+    validate:     (v) -> validStatus v
+
+  trimmedString:
+    validate:     (v) -> isString v
+    preprocess:   (v) ->
+      v = v.trim()
+      v.length > 0 && v
+
+    maxLength:    1024 # a reasonable upper cap; can override
+
+  username:
+    minLength:    3    # can override
+    maxLength:    30   # can override
+    present:      true
+    validate:     (v) -> isString(v) && /^\s*\w+\s*$/i.test v
+    preprocess:   (v) -> lowerCase v.trim()
+
+  function:
+    dataType:   functionDataType
+
+# apply defaults
+each v, k in FieldTypes
+  v.fieldType =   k
+  v.dataType  ?=  stringDataType
+  v.validate  ?=  DataTypes[v.dataType].validate
+
+FieldTypes

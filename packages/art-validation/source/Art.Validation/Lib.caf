@@ -1,0 +1,130 @@
+import &ArtStandardLib, {} &FieldTypes
+
+namespace = require :./namespace
+
+{}
+  normalizeInstanceOfProp = (ft) ->
+    if _instanceof = ft.instanceof
+      {validate} = ft
+      merge ft,
+        validate: (v) ->
+          (v instanceof _instanceof) &&
+          (!validate || validate v)
+    else
+      ft
+
+  normalizePlainObjectProps = (ft) ->
+    out = null
+    each v, k from ft when k != :fields && k != :array
+      if isPlainObject subObject = v
+        out = shallowClone ft unless out
+        out[k] = true
+        mergeIntoUnless out, normalizePlainObjectProps subObject
+
+    out || ft
+
+  normalizeDepricatedProps = (ft) ->
+    if ft.requiredPresent
+      throw new Error "DEPRICATED: requiredPresent. Use: present: true"
+    if isString ft.required
+      throw new Error "DEPRICATED: required can no longer specifiy the field-type. Use: required: fieldType: myFieldTypeString OR 'required myFieldTypeString'"
+    if isString ft.present
+      throw new Error "DEPRICATED: present can no longer specifiy the field-type. Use: present: fieldType: myFieldTypeString OR 'present myFieldTypeString'"
+    ft
+
+  normalizeFieldTypeProp = (ft) ->
+    {fieldType, fields} = ft
+    fieldType ?= :object if fields
+    if isString fieldType
+      merge FieldTypes[fieldType], ft
+    else
+      ft
+
+  normalizeFieldProps = (ft) ->
+    fieldProps = if isPlainObject ft
+
+      normalizeFieldTypeProp normalizeInstanceOfProp normalizeDepricatedProps normalizePlainObjectProps ft
+
+    else if isPlainArray ftArray = ft
+      processed = array ft in ftArray
+        normalizeFieldProps ft
+      merge processed...
+
+    else if isString strings = ft
+      ft = {}
+      each string in w strings
+        if subFt = FieldTypes[string]
+          ft.fieldType = string
+          mergeIntoUnless ft, subFt
+        else
+          ft[string] = true
+
+      ft
+
+    else if ft == true
+      FieldTypes.any
+    else
+      throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
+
+    fieldPropsWithGeneratedPostValidator merge FieldTypes[fieldProps.fieldType], fieldProps
+
+  initNormalizedArrayFieldProps = (rawArrayFieldProps, intoFieldProps = {}) ->
+    {preprocess, validate, postValidate, length, maxLength = length, minLength = length} = arrayFieldProps = normalizeFieldProps rawArrayFieldProps
+
+    {validate: customValidate, preprocess: customPreprocess, postValidate: customPostValidate} = intoFieldProps
+
+    intoFieldProps.validate ?=
+      (a) ->
+        isArray a
+        && if minLength?      then a.length >= minLength else true
+        && if maxLength?      then a.length <= maxLength else true
+        && if validate?       then !find v in-array a when !validate v else true
+        && true
+
+    intoFieldProps.preprocess ?=
+      (a) ->
+        if a? && preprocess? then a = array v in-array a with preprocess v
+        a
+
+    intoFieldProps.postValidate ?=
+      (a) ->
+        isArray a
+        && if minLength?          then a.length >= minLength else true
+        && if maxLength?          then a.length <= maxLength else true
+        && if postValidate?       then !find v in-array a when !postValidate v else true
+        && true
+
+    intoFieldProps
+
+  fieldPropsWithGeneratedPostValidator = (fieldProps) ->
+    fieldProps extract postValidate, maxLength, minLength, fields
+    rawArrayFieldProps = fieldProps.array
+
+    if rawArrayFieldProps && fields
+      throw new Error "can only specify `array:` or `fields:`"
+
+    if maxLength? || minLength? || fields? || rawArrayFieldProps
+
+      if rawArrayFieldProps
+        initNormalizedArrayFieldProps rawArrayFieldProps, fieldProps
+
+      else
+        if fields
+          validator = new namespace.Validator fields, exclusive: true
+          fieldProps.preprocess = (value, forCreate) -> validator.preprocessFields value, forCreate
+
+        fieldProps.postValidate = (value, fieldName, fields) ->
+          if postValidate && !postValidate value, fieldName, fields then false
+          else if value?
+            if maxLength? && value.length > maxLength       then false
+            else if minLength? && value.length < minLength  then false
+            else
+              try
+                validator?.validate value
+                true
+              catch
+                false
+
+          else true
+
+    fieldProps
