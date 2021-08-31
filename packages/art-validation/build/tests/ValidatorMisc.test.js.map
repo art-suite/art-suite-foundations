@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ValidatorMisc.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/tests/ValidatorMisc.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,4FAAO,4DAEP,YAAK,wCACH,KAAK,IAAI,WAAU,QAAO,WAAW,oBACrC,gBAAgB"
+}

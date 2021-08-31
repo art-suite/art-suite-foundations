@@ -141,15 +141,15 @@ class Validator extends BaseClass
     NOTE: missing fields are errors
   validateCreate: validateCreate = (fields = {}, options) ->
     processedFields = null
-    out = try
-      @requiredFieldsPresent(fields) &&
-      @presentFieldsValid(fields) &&
-      @postValidateFields processedFields = @preprocessFields fields, true
+    try
+      @requiredFieldsPresent fields
+      && @presentFieldsValid fields
+      && @postValidateFields processedFields = @preprocess fields, true
 
     catch error
       log.error Validator: error_in: validateCreate: {fields, options, this: @, error}
 
-    out || @_throwError fields, processedFields, options, true
+    || @_throwError fields, processedFields, options, true
 
   validate:       validateCreate
 
@@ -166,7 +166,7 @@ class Validator extends BaseClass
   validateUpdate: validateUpdate = (fields = {}, options) ->
     try
       @presentFieldsValid fields
-      && @postValidateFields processedFields = @preprocessFields fields
+      && @postValidateFields processedFields = @preprocess fields
 
     catch error
       log.error Validator: error_in: validateUpdate: {fields, options, this: @, error}
@@ -239,26 +239,24 @@ class Validator extends BaseClass
   ####################
   # PREPROCESS CORE
   ####################
-  preprocessFields: preprocessFields = (fields, applyDefaults) ->
+  preprocess: preprocessFields = (fields, applyDefaults) ->
     processedFields = null
-    fields ||= {} if applyDefaults
+    fields ?= {} if applyDefaults
     fields && each props, fieldName from @_fieldProps
-      {preprocess} = props
+      value =
+        if undefined != incomingValue = fields[fieldName]
+              incomingValue
+        else  applyDefaults && props.default
 
-      value = if undefined != oldValue = fields[fieldName]
-        oldValue
-      else
-        applyDefaults && props.default
+      value = props.preprocess value, applyDefaults if props.preprocess && value?
 
-      value = preprocess value, applyDefaults if preprocess && value?
-
-      if value != oldValue
-        processedFields ||= shallowClone fields
+      if value != incomingValue
+        processedFields ?= shallowClone fields
         processedFields[fieldName] = value
 
-    processedFields || fields || {}
+    processedFields ? fields ? {}
 
-  preprocess: preprocessFields
+  preprocessFields: preprocessFields
 
   ####################
   # VALIDATION INFO CORE

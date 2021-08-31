@@ -178,50 +178,6 @@ describe
       assert.rejects -> v.validate foo: {}
       .then ({info}) -> assert.eq info.errors, foo: "invalid"
 
-  defaults:
-    preUpdate: ->
-      test "default: undefined", ->
-        v3 = new Validator count: fieldType: "number", default: 1
-        assert.eq {},       v3.validateUpdate {}
-
-    preCreate: ->
-
-      test "default: 0", ->
-        v1 = new Validator count: fieldType: "number", default: 0
-        assert.eq
-          count: 0
-          v1.validate {}
-
-      test "default: 1, validate {}", ->
-        v2 = new Validator count: fieldType: "number", default: 1
-        assert.eq
-          count: 1
-          v2.validate {}
-
-      test "default: 1, validate()", ->
-        v2 = new Validator count: fieldType: "number", default: 1
-        assert.eq
-          count: 1
-          v2.validate()
-
-      test "default: null", ->
-        v3 = new Validator count: fieldType: "number", default: null
-        assert.eq
-          count: null
-          v3.validate {}
-
-      test "default: undefined", ->
-        v3 = new Validator count: fieldType: "number", default: undefined
-        assert.eq
-          {}
-          v3.validate {}
-
-      test "default applied before preprocess", ->
-        v1 = new Validator text: fieldType: "trimmedString", default: " hi "
-        assert.eq
-          text: "hi"
-          v1.validate {}
-
   compoundTests:->
     test "require: validate: ->", ->
       v = new Validator

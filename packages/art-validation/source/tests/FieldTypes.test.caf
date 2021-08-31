@@ -1,6 +1,5 @@
 import &StandardImport
 
-
 each tests, type in
     id:
       '': null
@@ -12,6 +11,15 @@ each tests, type in
     date:
       2020-10-29: new Date :2020-10-29
       # abc:        null
+
+    communicationStatus:
+      foo:      null
+      success:  :success
+
+    username:
+      a:      null
+      abc:    :abc
+      "a bc": null
 
     url:
       www:                                  null

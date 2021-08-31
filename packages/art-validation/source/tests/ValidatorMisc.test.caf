@@ -1,0 +1,5 @@
+import &StandardImport
+
+test "inspectedObjects" ->
+  v1 = new Validator count: fieldType: :number
+  assert.isObject v1.inspectedObjects

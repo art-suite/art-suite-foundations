@@ -1,0 +1,51 @@
+import &StandardImport
+
+describe
+    validateUpdate: ->
+      test "default: undefined", ->
+        v3 = new Validator count: fieldType: :number default: 1
+        assert.eq {},       v3.validateUpdate {}
+
+    validate: ->
+      test "default: 0 with incoming undefined", ->
+        v1 = new Validator count: fieldType: :number default: 0
+        assert.eq
+          v1.validate count: undefined
+          count: 0
+
+      test "default: 0 with incoming null", ->
+        v1 = new Validator count: fieldType: :number default: 0
+        assert.eq
+          v1.validate count: null
+          count: null
+
+      test "default: 1, validate {}", ->
+        v2 = new Validator count: fieldType: :number default: 1
+        assert.eq
+          count: 1
+          v2.validate {}
+
+      test "default: 1, validate()", ->
+        v2 = new Validator count: fieldType: :number default: 1
+        assert.eq
+          count: 1
+          v2.validate()
+
+      test "default: null", ->
+        v3 = new Validator count: fieldType: :number default: null
+        assert.eq
+          count: null
+          v3.validate {}
+
+      test "default: undefined", ->
+        v3 = new Validator count: fieldType: :number default: undefined
+        assert.eq
+          {}
+          v3.validate {}
+
+      test "default applied before preprocess", ->
+        v1 = new Validator text: fieldType: "trimmedString", default: " hi "
+        assert.eq
+          text: "hi"
+          v1.validate {}
+
