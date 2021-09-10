@@ -1,0 +1,9 @@
+import &StandardImport
+
+suite: ->
+  test "Uint16Array" ->
+    a = new Uint16Array 6
+    b = binary a
+    assert.eq
+      b.length
+      12

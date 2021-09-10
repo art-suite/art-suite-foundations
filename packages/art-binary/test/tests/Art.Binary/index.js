@@ -4,8 +4,9 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  BinaryString: require('./BinaryString'),
-  EncodedImage: require('./EncodedImage'),
-  Utf8:         require('./Utf8'),
-  WriteStream:  require('./WriteStream')
+  BinaryString:    require('./BinaryString'),
+  EncodedImage:    require('./EncodedImage'),
+  FromBinaryArray: require('./FromBinaryArray'),
+  Utf8:            require('./Utf8'),
+  WriteStream:     require('./WriteStream')
 });
