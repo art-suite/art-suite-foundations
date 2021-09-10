@@ -5,7 +5,8 @@
     "art-binary": "^1.1.16",
     "art-class-system": "^1.11.15",
     "art-object-tree-factory": "^2.2.10",
-    "art-standard-lib": "^1.71.2"
+    "art-standard-lib": "^1.71.2",
+    "fs-extra": "^10"
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
@@ -40,7 +41,7 @@
     "test": "npm run nn\nmocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "2.1.13",
+  "version": "2.1.14",
   "watch": {
     "build": {
       "extensions": [
