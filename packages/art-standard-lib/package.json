@@ -11,8 +11,8 @@
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
-    "art-build-configurator": "^1.30.0",
-    "art-testbench": "^3.2.5",
+    "art-build-configurator": "^1.30.1",
+    "art-testbench": "^3.2.6",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",

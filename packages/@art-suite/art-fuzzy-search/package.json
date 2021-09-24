@@ -19,6 +19,7 @@
     "verbose": true
   },
   "license": "ISC",
+  "name": "@art-suite/art-fuzzy-search",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
@@ -41,5 +42,6 @@
       ],
       "quiet": false
     }
-  }
+  },
+  "version": "0.1.0"
 }

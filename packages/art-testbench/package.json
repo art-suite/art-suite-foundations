@@ -43,7 +43,7 @@
     "test": "npm run nn\njest\nif [[ $? -ne 0 ]]; then\n  exit 1\nfi\nmocha -u tdd",
     "watch": "npm-watch"
   },
-  "version": "3.2.5",
+  "version": "3.2.6",
   "watch": {
     "build": {
       "extensions": [

@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "description": "Simple, powerful iteration comprehensions for JavaScript.",
   "devDependencies": {
-    "art-testbench": "^3.2.5",
+    "art-testbench": "^3.2.6",
     "caffeine-script": "^0.74.0",
     "chai": "^4.2.0",
     "mocha": "^7.2.0"
