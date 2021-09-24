@@ -2,3 +2,4 @@ package:
   &@ArtSuite/StandardPackageBuilder.configure {}
     &package
     coffeeScript: true
+    mochaAndJest: true

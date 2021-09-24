@@ -1,0 +1,5 @@
+import &StandardImport
+
+suite: ->
+  test "simple test" ->
+    assert.eq 1, 1

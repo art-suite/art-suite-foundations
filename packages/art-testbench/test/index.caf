@@ -1,0 +1,4 @@
+&ArtTestbench/testing
+.init
+  defineTests: -> &tests
+  afterAll: -> console.log "after all worked"

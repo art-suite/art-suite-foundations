@@ -8,6 +8,7 @@
   JestExtensions:       require('./JestExtensions'),
   Mocha:                require('./Mocha'),
   MochaBrowserReporter: require('./MochaBrowserReporter'),
+  NestedSuites:         require('./NestedSuites'),
   Perf:                 require('./Perf'),
   StandardImport:       require('./StandardImport'),
   Test:                 require('./Test'),
