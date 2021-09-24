@@ -1,0 +1,35 @@
+import &ArtStandardLib
+
+{}
+  compareMatchQuality = (a, b) -> a.quality - b.quality
+  getSearchRegExp = (searchString) ->
+    {}
+      searchString
+      caseInsensative: new RegExp
+        array letter from searchString.split('') with escapeRegexp letter
+        .join '.*?'
+        :ig
+
+      caseSensative: new RegExp
+        array letter from searchString.split('') with escapeRegexp letter
+        .join '.*?'
+        :g
+
+  getMatchQuality = (string, {caseInsensative, caseSensative, searchString}) ->
+    quality = 1/0
+
+    caseSensative.lastIndex = caseInsensative.lastIndex
+    match = fullMatch = null
+
+    while (fullMatch = caseInsensative.exec string) && match = fullMatch[0]
+      caseSensativeMatchLength = caseSensative.exec(string)?[0]?.length
+      caseSensative.lastIndex = caseInsensative.lastIndex = 1 + position = fullMatch.index
+
+      quality = min quality,
+        match.length
+        * 10000
+        + if caseSensativeMatchLength == match.length then 1 else 0
+        * 10000
+        + position
+
+    quality

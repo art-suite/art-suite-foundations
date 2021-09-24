@@ -1,0 +1,17 @@
+import &ArtStandardLib, &Lib
+stableSort = &stable
+
+fuzzySearch: (searchString, stringDataPairs) ->
+  return stringDataPairs unless present searchString
+
+  searchRegExp = getSearchRegExp searchString
+  sortedStringsWithMatchLength =
+    stableSort
+      each stringData in stringDataPairs into found = []
+        [string] = stringData
+        if nearInfinity > quality = getMatchQuality string, searchRegExp
+          found.push {} quality, stringData
+
+      compareMatchQuality
+
+  array {stringData} in sortedStringsWithMatchLength with stringData

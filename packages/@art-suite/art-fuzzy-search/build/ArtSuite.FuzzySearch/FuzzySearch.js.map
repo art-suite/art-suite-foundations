@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "FuzzySearch.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtSuite.FuzzySearch/FuzzySearch.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,qJAAO,6BAAiB,sHACxB,aAAa,2BAEb,qBAAa,CAAC,cAAc,yEAAmB,KACf,QAAQ,0CAEtC,eAAe,gBAAgB,eAC/B,+BACE,qBACqB,uDACjB,EAAC,UAAU,oBACR,gBAAe,WAAU,gBAAgB,QAAQ,kBAClD,YAAc,SAAS,+CAE3B,uCAEkB,gDAAkC"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "FuzzySearch.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/FuzzySearch.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8FAAO,8DAEP,YAAK,2BAAgB,OACnB,UACE,YACE,QAEK,iBACA,0BAAyB,KAAI,QAC7B,cAAa,QAAM,aAErB,cAAa,QAAM,UACnB,0BAAyB,KAAI"
+}

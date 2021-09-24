@@ -1,0 +1,13 @@
+import &StandardImport
+
+test "fuzzySearch" ->
+  assert.eq
+    fuzzySearch
+      :fz
+      []
+        [] "I love food"
+        [] "I find pizza appealing" 123 true
+        [] "I fuzzbuzz" :some :data
+    []
+      [] "I fuzzbuzz" :some :data
+      [] "I find pizza appealing" 123 true
