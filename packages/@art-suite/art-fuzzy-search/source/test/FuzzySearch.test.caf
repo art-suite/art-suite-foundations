@@ -1,6 +1,6 @@
 import &StandardImport
 
-test "fuzzySearch" ->
+test "fuzzySearch with data" ->
   assert.eq
     fuzzySearch
       :fz
@@ -11,3 +11,52 @@ test "fuzzySearch" ->
     []
       [] "I fuzzbuzz" :some :data
       [] "I find pizza appealing" 123 true
+
+test "fuzzySearch with just strings" ->
+  assert.eq
+    fuzzySearch
+      :fz
+      []
+        "I love food"
+        "I find pizza appealing"
+        "I fuzzbuzz"
+    []
+      "I fuzzbuzz"
+      "I find pizza appealing"
+
+test "shorter-match-length trumps case-sensative-match" ->
+  assert.eq
+    fuzzySearch
+      :fz
+      []
+        "" foobar
+        "" f z
+        "" -                  Fz
+    []
+      "" -                  Fz
+      "" f z
+
+
+test "case-sensative-match trumps better-position" ->
+  assert.eq
+    fuzzySearch
+      :fz
+      []
+        "" foobar
+        "" Fz
+        "" -                  fz
+    []
+      "" -                  fz
+      "" Fz
+
+test "better-positions first i.e. closer to start of string" ->
+  assert.eq
+    fuzzySearch
+      :fz
+      []
+        "" foobar
+        "" -  Fz
+        "" - Fz
+    []
+      "" - Fz
+      "" -  Fz

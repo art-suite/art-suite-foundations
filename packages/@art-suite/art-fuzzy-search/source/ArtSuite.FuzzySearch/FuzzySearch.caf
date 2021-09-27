@@ -8,7 +8,7 @@ fuzzySearch: (searchString, stringDataPairs) ->
   sortedStringsWithMatchLength =
     stableSort
       each stringData in stringDataPairs into found = []
-        [string] = stringData
+        string = if isArray stringData then stringData[0] else stringData
         if nearInfinity > quality = getMatchQuality string, searchRegExp
           found.push {} quality, stringData
 
