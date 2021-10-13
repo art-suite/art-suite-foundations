@@ -2,39 +2,12 @@
 
 Easy, fast, fuzzy text search.
 
+The primary use-case for ArtFuzzySearch is to quickly filter a list of items as you type, and to do it in flexible way so you catch odd spellings and type-os and other inconsistencies. The key to success is speed and, together with a good UX, interactively showing the results as the user types and edits their search string.
+
 > It works similar to VSCode and SublimeText's file-search. The order of the letters matter, but there can be missing letters or skipped letters.
 
-# What is a Fuzzy Search?
 
-The fuzzy search will find matches where the characters in the search string are found i
-
-# API
-
-```javascript
-let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
-
-fuzzySearch(searchString, searchData) => filteredAndSortedSearchData
-```
-
-- **IN**: `(searchString, searchData)`
-
-  - searchString: an String to search for
-  - searchData: `[searchDataRecord, ...]` - an Array of searchDataRecords
-
-- **OUT**: searchData, filtered and sorted by best-matches
-
-- **searchDataRecord**: [searchInString, arbitraryData...]
-  - searchDataRecords are themselves an array
-  - only the first element is used by fuzzySearch
-  - searchInString: arbitrary String which is tested to see if it matches the provided searchString; the quality of the match is also considered and used for the final sort of the returned searchData
-  - arbitraryData: if searchInString matches, the entire searchDataRecord will be returned, untouched - including any arbitrary data included after searchInString. Use these additional slots to pass through any additional data you need. e.g. a JSON object of the record or just the record's ID.
-
-Note that fuzzySearch is very forgiving. The only requirement for a match is that the characters of the searchString exist in the searchInString (case insensitively), in the same order, but possibly with any number of characters in between:
-
-> Example: If searchString == 'dog', then the string "I did a lot of great work." *will match*: "I **D**id a l**O**t of **G**reat work."
-
-The key is the results will be sorted based on the quality of the match - best match first. The main sorting criterias is the length of the match. Sorter matches are preferred. For more details, see the [Algorithm Notes](#algorithm-notes) below.
-# EXAMPLE
+# Example
 
 ```javascript
 let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
@@ -58,6 +31,33 @@ result: [
 */
 
 ```
+
+# API
+
+```javascript
+let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
+
+fuzzySearch(searchString, searchData) => filteredAndSortedSearchData
+```
+
+- **IN**: `(searchString, searchData)`
+
+  - searchString: an String to search for
+  - searchData: `[searchDataRecord, ...]` (an Array of searchDataRecords)
+
+- **OUT**: searchData, filtered and sorted by best-matches
+
+- **searchDataRecord**: `[searchInString, arbitraryData...]`
+  - searchDataRecords are themselves an array
+  - only the first element is used by fuzzySearch
+  - searchInString: arbitrary String which is tested to see if it matches the provided searchString; the quality of the match is also considered and used for the final sort of the returned searchData
+  - arbitraryData: if searchInString matches, the entire searchDataRecord will be returned, untouched - including any arbitrary data included after searchInString. Use these additional slots to pass through any additional data you need. e.g. a JSON object of the record or just the record's ID.
+
+Note that fuzzySearch is very forgiving. The only requirement for a match is that the characters of the searchString exist in the searchInString (case insensitively), in the same order, but possibly with any number of characters in between:
+
+> Example: If searchString == 'dog', then the string "I did a lot of great work." *will match*: "I **D**id a l**O**t of **G**reat work."
+
+The key is the results will be sorted based on the quality of the match - best match first. The main sorting criterias is the length of the match. Sorter matches are preferred. For more details, see the [Algorithm Notes](#algorithm-notes) below.
 
 # Algorithm Notes
 
