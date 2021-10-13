@@ -64,9 +64,9 @@ The key is the results will be sorted based on the quality of the match - best m
 Basic algorithm:
 
 1. Filter out all search-texts that don't match:
-  - all letters from the search string must be present and in the same order in the search text
-  - However, they don't have to match case and they can optionally match search-text with extra characters in between. e.g. "fz" will match "Fun zoo" since "f" and "z" are in order even though "un " is in between.
+    - all letters from the search string must be present and in the same order in the search text
+    - However, they don't have to match case and they can optionally match search-text with extra characters in between. e.g. "fz" will match "Fun zoo" since "f" and "z" are in order even though "un " is in between.
 2. Sort the results by result-quality which is determined by
-  1. length of match; shorter is preferred
-  1. case sensitive matches are preferred
-  1. matches closer to the beginning of the search-text are preferred
+    - length of match; shorter is preferred
+    - case sensitive matches are preferred
+    - matches closer to the beginning of the search-text are preferred
