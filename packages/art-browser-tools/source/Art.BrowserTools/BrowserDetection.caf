@@ -190,7 +190,7 @@ class BrowserDetection
           when /ipad/i.test        artBrowserUserAgent then :iPad
           else                                              :other
 
-        touch:  touch = document.documentElement.ontouchstart? || getIsMobileBrowser()
+        touch:  touch = (document.documentElement.ontouchstart != undefined) || getIsMobileBrowser()
 
         deviceMajorScreenSize: deviceMajorScreenSize = max screen.availWidth, screen.availHeight
         deviceMinorScreenSize: deviceMinorScreenSize = min screen.availWidth, screen.availHeight
