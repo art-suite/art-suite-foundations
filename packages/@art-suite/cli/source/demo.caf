@@ -28,10 +28,13 @@ require :@art-suite/cli
       description: "Sing any name you choose"
       options:
         args:
-          description: "your favorite lyrics"
+          description:  "your favorite lyrics"
+          argument:     :string
+          default:      "" Dashing through the snow.
         song:
           description: "name of the song to sing"
-          required: true
+          argument:     :string
+          required:     true
 
     force-error: -> throw new Error "" You've forced an error!
     send-cheer: -> "" May you have a holly, jolly Christmas this year!

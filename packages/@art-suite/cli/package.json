@@ -41,7 +41,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "1.4.0",
+  "version": "1.5.0",
   "watch": {
     "build": {
       "extensions": [

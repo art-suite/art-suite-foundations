@@ -46,7 +46,10 @@ class Main
           {} commands, description
           commandName
 
-    .tap (result) -> result? && output result
+    .tap (result) -> result? &&
+      if options.json
+        console.log JSON.stringify result
+      else output result
     .catch (error) ->
       log error
       process.exit 1
