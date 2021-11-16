@@ -9,12 +9,37 @@ The primary use-case for ArtFuzzySearch is to quickly filter a list of items as 
 
 # Example
 
+Basic example:
+
 ```javascript
 let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
 
 let result = fuzzySearch(
-  "fz",       // search text
-  [
+  "sord",     // searchString
+  [           // searchData
+    "Sally Ford",
+    "John Goodall",
+    "Swordmaster Smith"
+  ]
+)
+
+/*
+result: [     // filtered and sorted searchData
+  "Swordmaster Smith",
+  "Sally Ford"
+];
+*/
+
+```
+
+More complex example:
+
+```javascript
+let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
+
+let result = fuzzySearch(
+  "fz",       // searchString
+  [           // searchData
     ["I love food"],
     "fz - just a string is OK too",
     ["I find pizza appealing", 123, true],
@@ -23,7 +48,7 @@ let result = fuzzySearch(
 )
 
 /*
-result: [
+result: [     // filtered and sorted searchData
   "fz - just a string is OK too",
   ["I fuzzbuzz", "any extra data", "is returned unchanged"],
   ["I find pizza appealing", 123, true]
@@ -48,7 +73,7 @@ fuzzySearch(searchString, searchData) => filteredAndSortedSearchData
 - **OUT**: searchData, filtered and sorted by best-matches
 
 - **searchDataRecord**: `[searchInString, arbitraryData...]`
-  - searchDataRecords are themselves an array
+  - searchDataRecords can be just a searchInString or an array
   - only the first element is used by fuzzySearch
   - searchInString: arbitrary String which is tested to see if it matches the provided searchString; the quality of the match is also considered and used for the final sort of the returned searchData
   - arbitraryData: if searchInString matches, the entire searchDataRecord will be returned, untouched - including any arbitrary data included after searchInString. Use these additional slots to pass through any additional data you need. e.g. a JSON object of the record or just the record's ID.
