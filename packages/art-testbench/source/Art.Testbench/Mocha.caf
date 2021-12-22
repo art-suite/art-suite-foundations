@@ -1,6 +1,4 @@
-{isArray, isNode, log, isFunction, isPlainObject, merge, Promise, isPromise} = require 'art-standard-lib'
-{configure} = require 'art-config'
-NestedSuites = require "./NestedSuites"
+import &ArtStandardLib, &ArtConfig, &NestedSuites
 
 if global.document
   document.write "<div id=\"mocha\"></div>" unless document.getElementById "mocha"
@@ -10,7 +8,7 @@ if global.document
   DomConsole = require '@art-suite/art-foundation/dev_tools/dom_console'
   mocha.setup reporter: require './MochaBrowserReporter'
 
-module.exports = class Mocha
+class Mocha
 
   @setup:         (args...) -> global.setup args...
   @initTesting:   (options) => @init options
@@ -37,15 +35,12 @@ module.exports = class Mocha
 
     else
       Promise.resolve configure options
-      .then =>
-        @_run options.defineTests
-
-
+      .then -> @_run options.defineTests
 
   @defineGlobals: ->
     global.testAssetRoot = "/test/assets"
 
-  @_run: (defineAllTests)=>
+  @_run: (defineAllTests) =>
     (new NestedSuites).groupTestSuites defineAllTests
     .then -> mocha?.run()
 

@@ -1,5 +1,7 @@
 import &StandardImport, &ErrorExtensions, &@ArtSuite/assert
 
+## Accepts global TDD or BDD keywords; as long as either are declared, it'll work
+
 test: (name, test, rest...) ->
   (global.it ? global.test)
     name
@@ -17,6 +19,11 @@ test: (name, test, rest...) ->
 
     rest...
 
+suite:          (args...) -> (global.describe   ? global.suite)         args...
+suiteSetup:     (args...) -> (global.before     ? global.suiteSetup)    args...
+suiteTeardown:  (args...) -> (global.after      ? global.suiteTeardown) args...
+setup:          (args...) -> (global.beforeEach ? global.setup)         args...
+teardown:       (args...) -> (global.afterEach  ? global.teardown)      args...
 
 skipKnownFailingTest: (name, f) ->
   message = "SKIPPING KNOWN-FAILING TEST: #{name}"
