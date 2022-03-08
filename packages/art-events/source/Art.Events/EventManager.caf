@@ -1,0 +1,88 @@
+import &ArtStandardLib, &ArtClassSystem, {} &Event
+###
+
+  TODO:
+    handlEvent alternate signature:
+      (type, functionReturningEventElement) ->
+
+    The function would only be invoked if there are actually event handlers for the specified type.
+
+rawErrorLog = Log.rawErrorLog
+
+class EventManager extends BaseClass
+
+  constructor: (parent) ->
+    @parent = parent
+    @eventHandlers = {}
+
+  hasHandler: (type) -> !!((handlers = @eventHandlers[type]) && handlers.length > 0)
+
+  on: (handlerMap) ->
+    each action, type in handlerMap when action
+      throw new Error "EventManager: action is not a function for #{inspect type} event handler. (action: #{inspect action}, parent: #{inspect @parent})" unless isFunction action
+      @eventHandlers[type] = arrayWith @eventHandlers[type], {} action, oneTime:false
+
+  # returns count removed
+  removeListeners: (handlerMap) ->
+    count = 0
+    each action, type in handlerMap when @eventHandlers[type]
+      handlers = @eventHandlers[type]
+      beforeCount = handlers.length
+      @eventHandlers[type] = array handler in handlers when handler.action != action
+      count = beforeCount - @eventHandlers[type].length
+    count
+
+  onNext: (handlerMap) ->
+    each action, type in handlerMap
+      @eventHandlers[type] ?= []
+      @eventHandlers[type].push {} action, oneTime: true
+
+  countOneTimeHandlersFor: (eventType) ->
+    count = 0
+    if handlers = @eventHandlers[eventType]
+      each handler in handlers when handler.oneTime with count++
+
+    count
+
+  # event can be an Event or a string which becomes the event-type
+  handleEvent: (event) ->
+    event = new Event event if isString event
+    @sendToHandlers event.type, event
+
+  handleEvents: (events) ->
+    each event in events with @handleEvent event
+
+  # invokes handler.action(event) for every handler in handlers
+  # returns handlers with any oneTime handlers removed
+  sendToHandlers: (eventType, event) ->
+    handlers = @eventHandlers[eventType]
+    return unless handlers && handlers.length > 0
+    firedOneTimeHandler = false
+    each handler in handlers
+      try
+        handler.remove = firedOneTimeHandler = true if handler.oneTime
+        action = handler.action
+        action event
+      catch error
+        @handleErrorInHandler handler, event, error
+
+    if firedOneTimeHandler
+      # This could be run every time safely, but we want to only create a new array if we have to.
+      @eventHandlers[event.type] = array handler in @eventHandlers[eventType] when !handler.remove
+
+  handleErrorInHandler: (handler, event, error) ->
+    if event.type == "eventException"
+      rawErrorLog "exception in eventException handler.\nEvent:#{inspect event, 1}.\n\nError:\n#{error.stack}"
+      throwErrorOutOfStack error
+    else if @eventHandlers["eventException"]
+      @handleEvent new Event
+        :eventException
+        event: clone event
+        exception: error
+        handler: handler
+    else
+      rawErrorLog "exception in handler AND no eventException handler. Error:"
+      rawErrorLog error
+      rawErrorLog "Event: #{inspect event, 1}"
+      rawErrorLog "Stack:\n#{error.stack}"
+      throwErrorOutOfStack error

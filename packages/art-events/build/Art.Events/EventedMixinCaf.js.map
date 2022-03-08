@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "EventedMixinCaf.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Events/EventedMixinCaf.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,oGAAO,8BAAoB,yCAAe,iGAE1C,gBAAC,kCAAc,oEACiB,oBAAoB,iDAEhC,qBAAiB,gEAEjC,YAAO,CACL,0BAAiB,6BAAc,sBAAK,IAAI,aAAa,gCAGvD,QAAI,CAAC,aAAwB,4BAAiB,6BAAyB,wCAGvE,QAAQ,CAAC,aAAoB,gCAAqB,mDAElD,YAA6B,4BAAiB,yCAC9C,QAA0B,CAAC,uBAAe,qEAAgC,gEAChD,CAAC,aAAe,0DAK1C,QAAsB,CAAC,kBAAc,iEAA4B,4CACjE,QAAsB,CAAC,sBAAc,gEAA2B"
+}

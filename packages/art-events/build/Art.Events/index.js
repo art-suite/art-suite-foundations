@@ -6,8 +6,9 @@
 .addModules({
   Event:                  require('./Event'),
   EventedBaseMixin:       require('./EventedBaseMixin'),
+  EventedBaseMixinCaf:    require('./EventedBaseMixinCaf'),
   EventedMixin:           require('./EventedMixin'),
-  EventedObject:          require('./EventedObject'),
+  EventedMixinCaf:        require('./EventedMixinCaf'),
   EventEpoch:             require('./EventEpoch'),
   EventManager:           require('./EventManager'),
   ExtendableEventedMixin: require('./ExtendableEventedMixin')
