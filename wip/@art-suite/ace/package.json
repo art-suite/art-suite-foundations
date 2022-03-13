@@ -7,7 +7,7 @@
   "dependencies": {
     "art-browser-tools": "^1.2.14",
     "art-build-configurator": "^1.30.1",
-    "art-class-system": "^1.11.15",
+    "art-class-system": "^1.11.16",
     "art-config": "^2.0.3",
     "art-filebuilder": "^2.1.14",
     "art-object-tree-factory": "^2.2.10",

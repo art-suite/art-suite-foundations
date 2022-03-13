@@ -4,7 +4,7 @@
   "dependencies": {
     "@art-suite/assert": "^1.0.5",
     "@art-suite/chained-test": "^1.3.4",
-    "art-class-system": "^1.11.15",
+    "art-class-system": "^1.11.16",
     "art-config": "^2.0.3",
     "art-events": "^2.0.0",
     "art-standard-lib": "^1.71.2",
