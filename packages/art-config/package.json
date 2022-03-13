@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.15",
-    "art-events": "^1.3.12",
+    "art-events": "^2.0.0",
     "art-standard-lib": "^1.71.2"
   },
   "description": "A powerful yet simple tool for configuring all your libraries consistently.",
