@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.71.2",
+    "art-standard-lib": "^1.71.3",
     "stable": "^0.1.8"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -32,6 +32,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
+  "version": "0.1.5",
   "watch": {
     "build": {
       "extensions": [
@@ -42,6 +43,5 @@
       ],
       "quiet": false
     }
-  },
-  "version": "0.1.5"
+  }
 }

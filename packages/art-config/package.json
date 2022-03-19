@@ -4,11 +4,11 @@
   "dependencies": {
     "art-class-system": "^1.11.16",
     "art-events": "^2.0.0",
-    "art-standard-lib": "^1.71.2"
+    "art-standard-lib": "^1.71.3"
   },
   "description": "A powerful yet simple tool for configuring all your libraries consistently.",
   "devDependencies": {
-    "art-testbench": "^3.2.6",
+    "art-testbench": "^3.2.7",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -38,7 +38,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "2.0.3",
+  "version": "2.0.4",
   "watch": {
     "build": {
       "extensions": [
