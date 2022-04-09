@@ -64,8 +64,8 @@ uniqueErrorsReported = {}
           However, a failure in a soft-test will not cause the rest of the chain to fail.
 
   constructor: (@name, @test, @_runSetupOnce, @_runDependencyChainOnce, @options) ->
-    throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless @name is String
-    throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless @test is Function
+    throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless isString @name
+    throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless isFunction @test
     self = @
     (global.it ? global.test) @name, ~>
       self.runThisTestOnce()
