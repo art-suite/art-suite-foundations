@@ -3,15 +3,16 @@
 ### Functions
 
 ```javascript
-each()
-array()
-object()
-find()
-inject()
-reduce()
+each();
+array();
+object();
+find();
+inject();
+reduce();
 ```
 
 ### COMMON API
+
 All comprehensions support four standard input patterns:
 
 ```
@@ -25,23 +26,26 @@ f(source, into, options) => into
 ```
 
 Where:
-  - **f:** is `each/array/object/find/reduce`
-  - **source:** can be one of:
-    - **array-like:** iterated over using `for (i = 0; i < source.length; i++)`
-    - **object:** iterated over using `for (k in source)`
-    - **null/undefined:** treated as an empty container (eqivelent to passing in `[]` or `{}`)
 
-  - **options:**
-    - **when**: (value, key) -> booleanish
-    - **with**: (see with)
-    - **map**:  (value, key) -> new value
-    - **into/returning/inject**: any (these are alias of each other)
+- **f:** is `each/array/object/find/reduce`
+- **source:** can be one of:
 
-  - **with:**
-    - `(value, key) -> new value`
-    - Generally, this function generates the 'value' used for each part of the
-      iteration. When constructing a new collection, this is the value for each
-      entry. ('find' and 'reduce' use this differently)
+  - **array-like:** iterated over using `for (i = 0; i < source.length; i++)`
+  - **object:** iterated over using `for (k in source)`
+  - **null/undefined:** treated as an empty container (eqivelent to passing in `[]` or `{}`)
+
+- **options:**
+
+  - **when**: `(value, key) -> booleanish` if this returns falsish, iteration will skip to the next value/key.
+  - **with**: `(value, key) -> new value` (see with, below)
+  - **map**: `(value, key) -> value` gets called AFTER `when` but before `with` (most useful with `reduce()`)
+  - **into/returning/inject**: any (these are alias of each other)
+
+- **with:**
+  - `(value, key) -> new value`
+  - Generally, this function generates the 'value' used for each part of the
+    iteration. When constructing a new collection, this is the value for each
+    entry. ('find' and 'reduce' use this differently)
 
 ### each
 
@@ -58,14 +62,14 @@ each(source, into, options) => into
 
 `each` differs from the common-api:
 
-1) into defaults to source
-2) each doesn't modify source
+1. into defaults to source
+2. each doesn't modify source
 
 ### object
 
 Create a new object derived fromthe source container. The default behavior differs slightly between array-sources and object-sources:
 
-* **from-array**:
+- **from-array**:
 
 ```
 object(source) => new {} derived from source
@@ -116,6 +120,7 @@ find(source, options) => a value from 'options.with' or directly from source
 `find` differs from common api:
 
 - returns:
+
   - the last value returned by `with`
   - or returns `undefined` if `with` was never executed
 
@@ -131,8 +136,10 @@ These comprehensions are very similar. Inject always injects an initial `last` v
   - for inject: inject/into/returning
   - for reduce: the first value in source
 - `with` has a different argument order:
+
   - (last, value, key) ->
   - This allows you to drop-in functions that take two args and reduce them to one like:
+
     - add = (a, b) => a + b
 
   - The default `with` still returns `v` (which is now the second argument).

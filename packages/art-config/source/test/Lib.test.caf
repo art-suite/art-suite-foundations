@@ -24,7 +24,17 @@ describe
       assert.eq
         artConfig: "Art.Foo.bar": 123, foo: 1
         artConfigName: undefined
-        Lib.getExternalEnvironment "artConfig.Art.Foo.bar": 123, artConfig: '{"foo": 1}'
+        Lib.getExternalEnvironment
+          artConfig.Art.Foo.bar: 123
+          artConfig: '{"foo": 1}'
+
+    test "artConfig_* keys", ->
+      assert.eq
+        artConfig: Art.Foo.bar: 123, Art.Foo.baz: 123
+        artConfigName: undefined
+        Lib.getExternalEnvironment
+          artConfig_Art_Foo_bar: 123
+          artConfig_Art_Foo_baz: 123
 
     test "normal evaluation doesn't crash", ->
       assert.isObject Lib.getExternalEnvironment()
