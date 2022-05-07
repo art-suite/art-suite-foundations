@@ -82,8 +82,11 @@ configure: (options = {}) -> (_package) ->
       testEnvironment: :node
       verbose: true
       collectCoverageFrom:
-        "#{targetDir}/**/*.js",
+        "#{targetDir}/**/*.js"
         "!#{targetDir}/test/**/*.js"
+      coveragePathIgnorePatterns:
+        "/index.js$"
+        "/namespace.js$"
       testPathIgnorePatterns:
         "/node_modules/"
         "<rootDir>/test" # so it can ignore our mocha tests
