@@ -1,9 +1,10 @@
 import &ArtStandardLib, &ArtCommunicationStatus, &ArtClassSystem
-unless global.XMLHttpRequest # if in Node, we need to import xhr2
+XMLHttpRequest = global.XMLHttpRequest
+unless XMLHttpRequest # if in Node, we need to import xhr2
   realRequire = eval :require
-  global.XMLHttpRequest = realRequire :xhr2
+  XMLHttpRequest = realRequire :xhr2
 
-global extract XMLHttpRequest, FormData
+global extract FormData
 
 class RestClient extends BaseClass
   @singletonClass()
