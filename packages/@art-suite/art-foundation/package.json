@@ -12,7 +12,7 @@
     "art-config": "^2.0.4",
     "art-epoched-state": "^1.2.14",
     "art-object-tree-factory": "^2.2.10",
-    "art-rest-client": "^1.9.2",
+    "art-rest-client": "^1.9.3",
     "art-standard-lib": "^1.71.3",
     "art-validation": "^1.10.1",
     "atob": "^2.0.3"
