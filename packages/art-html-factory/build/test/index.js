@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  ComponentsTest:   require('./Components.test'),
   FactoriesTest:    require('./Factories.test'),
   HtmlTextNodeTest: require('./HtmlTextNode.test'),
   Lib:              require('./Lib'),

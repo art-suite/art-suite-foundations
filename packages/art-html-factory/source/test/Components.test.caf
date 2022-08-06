@@ -1,0 +1,22 @@
+import &StandardImport, &Lib
+
+test "create component" ->
+  HelloWorld = createHtmlComponent -> Div :hello
+  assert.eq HelloWorld().toString(), :<div>hello</div>
+
+test "component props" ->
+  HelloWorld = createHtmlComponent ({name}) -> Div "" Hello, #{name}.
+  assert.eq HelloWorld(name: :Bob).toString(), "<div>Hello, Bob.</div>"
+
+test "component children" ->
+  HelloWorld = createHtmlComponent ({children}) -> Div
+    "" Hello.
+    children
+  assert.eq
+    HelloWorld Div :Noodle
+    .toString()
+    """
+      <div>
+        Hello.
+        <div>Noodle</div>
+      </div>

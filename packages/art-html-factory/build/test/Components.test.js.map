@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Components.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Components.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,6GAAO,6BAAiB,gEAExB,KAAK,gDACH,aAAa,oBAAmB,MAAI,IAAI,kBACxC,UAAU,yBAAyB,wBAErC,KAAK,+CACH,aAAa,oBAAoB,CAAC,CAAC,UAAU,2BAAgB,mBAC7D,UAAU,YAAW,MAAM,oBAAkB,qCAE/C,KAAK,kDACH,aAAa,oBAAoB,CAAC,CAAC,cAAc,IAC7C,UACF,mBACF,UACE,WAAW,IAAI,uBAEZ"
+}

@@ -38,3 +38,8 @@ import &ArtStandardLib, &ArtObjectTreeFactory
       {} mergePropsInto
       compactFlatten elementNames
       &HtmlTextNode
+
+  createHtmlComponent = (renderer) ->
+    createObjectTreeFactory
+      {} mergePropsInto
+      (props, children) -> renderer merge props, {} children
