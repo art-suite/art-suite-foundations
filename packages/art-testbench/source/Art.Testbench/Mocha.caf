@@ -1,6 +1,6 @@
-import &ArtStandardLib, &ArtConfig, &NestedSuites
+import &ArtStandardLib, &ArtConfig, {} &NestedSuites
 
-if global.document
+if global extract document, mocha
   document.write "<div id=\"mocha\"></div>" unless document.getElementById "mocha"
   require "mocha/mocha.css"
   require "!script-loader!mocha/mocha.js"
