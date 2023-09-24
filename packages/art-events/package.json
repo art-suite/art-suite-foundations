@@ -9,7 +9,7 @@
   "description": "Epoched event system",
   "devDependencies": {
     "art-build-configurator": "^1.30.1",
-    "art-testbench": "^3.2.7",
+    "art-testbench": "^3.2.10",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
