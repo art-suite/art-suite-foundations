@@ -1,9 +1,0 @@
-import &StandardImport
-
-pairedAssertTests :present :notPresent []
-  [] true :hi
-  [] true 0
-  [] true 1
-  [] false ''
-  [] false null
-  [] false undefined

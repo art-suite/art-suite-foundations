@@ -1,7 +1,0 @@
-import &StandardImport
-
-pairedAssertTests :exists :doesNotExist []
-  [] true ""
-  [] true 0
-  [] false null
-  [] false undefined

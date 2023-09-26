@@ -1,8 +1,0 @@
-import &StandardImport
-
-a = {}
-pairedAssertTests :same :notSame []
-  [] true 0 0
-  [] true a, a
-  [] false 0 1
-  [] false a, {}

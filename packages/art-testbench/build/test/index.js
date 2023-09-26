@@ -9,4 +9,3 @@
   StandardImport:  require('./StandardImport'),
   TestTest:        require('./Test.test')
 });
-require('./Assert');

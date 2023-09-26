@@ -1,2 +1,5 @@
 coverage/
 art.build.config.caf
+build/test/
+source/test/
+test/
