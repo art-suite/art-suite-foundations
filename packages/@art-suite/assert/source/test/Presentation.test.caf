@@ -33,3 +33,25 @@ test "function context not invoked until failure" ->
     :whatever
 
   assert.eq invokedCount, 1
+
+test 'eq fails correctly' ->
+  Promise.then ->
+    assert.eq 1, 2
+
+  .catch (error) ->
+    assert.match error.message, /This value(.|\n)*\beq\b/
+
+test 'lte fails correctly' ->
+  Promise.then ->
+    assert.lte 321, 123
+
+  .catch (error) ->
+    assert.match error.message, /// 321 (.|\n)+ should .* lte (.|\n)+ 123
+
+test 'match fails correctly' ->
+  Promise.then ->
+    assert.match "do something", /snot/
+
+  .catch (error) ->
+    assert.match error.message, /// do\ something (.|\n)+ should .* match (.|\n)+ snot
+

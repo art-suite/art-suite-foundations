@@ -6,8 +6,8 @@ array name in :gt :gte :lte :lt :eq :neq :floatEq
 # generalize this if we have more assert functions with TWO binary tests
 assert.within = (a, b, c, context) ->
   if a? && a.gte? && a.lte?
-        failWithExpectedMessage context, a, "to be gte", b, "to be lte", c unless a.gte(b) and a.lte(c)
-  else  failWithExpectedMessage context, a, "to be >=",  b, "to be <=" , c unless a >= b and a <= c
+        failWithExpectedMessage context, a, "should be gte", b, "and lte", c unless a.gte(b) and a.lte(c)
+  else  failWithExpectedMessage context, a, "should be >=",  b, "and <=" , c unless a >= b and a <= c
 
 # match / doesNotMatch
 addTester :match        (a, b) -> a.match  if isString b then escapeRegExp b else b
@@ -23,9 +23,9 @@ addTester :selectedPropsEq,
   customFailure: (name, expectedProps, testObject, context) ->
     failWithExpectedMessageBase context, expectedProps, testObject, []
       indent format expectedProps
-      "" to equal selected props:
+      "" should equal these selected props:
       indent format object v, k in expectedProps with testObject[k]
-      "" test object:
+      "" from the test object:
       indent format testObject
 
   (expectedProps, testObject) ->

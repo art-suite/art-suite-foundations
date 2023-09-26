@@ -28,7 +28,7 @@ maxLength = 80
           else
             formattedInspect context
 
-        :expected
+        "" This value:
 
         lines
 

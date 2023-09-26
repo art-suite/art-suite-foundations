@@ -35,7 +35,7 @@ import &ArtStandardLib, &Presentation, &Chai
               failWithExpectedMessage
                 context
                 inspectedObjectLiteral name
-                "to be true for"
+                "should be true for"
                 testValue
 
       else
@@ -47,7 +47,15 @@ import &ArtStandardLib, &Presentation, &Chai
               failWithExpectedMessage
                 context
                 value1
-                name
+                switch name
+                when :match
+                  "" should be 'match' this pattern:
+                when :< :> :<= :>= :lte :gte
+                  "" should be '#{name}' this value:
+                when :== :eq :equal :match
+                  "" should '#{name}' this value:
+                else
+                  "" should be '#{name}' to this value:
                 value2
 
     addTester = (name, a, b) ->
