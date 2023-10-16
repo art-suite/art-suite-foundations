@@ -39,7 +39,14 @@ maxLength = 80
       .join :\n\n
 
   failWithExpectedMessageBase = (context, a, b, lines) ->
-    &Chai.assert.fail
-      a
-      b
-      generateFailedMessage context, a, b, lines
+    try
+      &Chai.assert.fail
+        a
+        b
+        generateFailedMessage context, a, b, lines
+
+    catch error
+      error.stack =
+        array line in error.stack.split "\n" when !/art-suite\/assert\/source/.test line
+        .join "\n"
+      throw error
