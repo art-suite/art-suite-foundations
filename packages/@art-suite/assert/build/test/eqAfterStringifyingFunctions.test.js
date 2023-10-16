@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {return Caf.importInvoke(["test", "assert", "eqAfterStringifyingFunctions"], [global, require('./StandardImport'), require('../../build').Lib], (test, assert, eqAfterStringifyingFunctions) => {test("eqAfterStringifyingFunctions for two same-string functions", function() {return assert.true(eqAfterStringifyingFunctions((a) => a, (a) => a));}); test("eqAfterStringifyingFunctions for two different-string functions", function() {return assert.false(eqAfterStringifyingFunctions((a) => a, (b) => b));}); test("eqAfterStringifyingFunctions objects", function() {return assert.true(eqAfterStringifyingFunctions({a: (a) => a}, {a: (a) => a}));}); return test("eqAfterStringifyingFunctions arrays", function() {return assert.true(eqAfterStringifyingFunctions([(a) => a], [(a) => a]));});});});
+//# sourceMappingURL=eqAfterStringifyingFunctions.test.js.map

@@ -3,6 +3,9 @@ import &StandardImport
 array name in :gt :gte :lte :lt :eq :neq :floatEq
   addTester name, &ArtStandardLib[name]
 
+addTester "eqAfterStringifyingFunctions", eqAfterStringifyingFunctions
+addTester "neqAfterStringifyingFunctions", (a, b) -> !eqAfterStringifyingFunctions a, b
+
 # generalize this if we have more assert functions with TWO binary tests
 assert.within = (a, b, c, context) ->
   if a? && a.gte? && a.lte?

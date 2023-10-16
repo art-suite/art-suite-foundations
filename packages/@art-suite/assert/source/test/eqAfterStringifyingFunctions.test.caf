@@ -1,0 +1,30 @@
+import &StandardImport, &build.Lib
+
+test "eqAfterStringifyingFunctions for two same-string functions" ->
+  assert.true
+    eqAfterStringifyingFunctions
+      (a) -> a
+      (a) -> a
+
+test "eqAfterStringifyingFunctions for two different-string functions" ->
+  assert.false
+    eqAfterStringifyingFunctions
+      (a) -> a
+      (b) -> b
+
+test "eqAfterStringifyingFunctions objects" ->
+  assert.true
+    eqAfterStringifyingFunctions
+      {} a: (a) -> a
+      {} a: (a) -> a
+
+test "eqAfterStringifyingFunctions arrays" ->
+  assert.true
+    eqAfterStringifyingFunctions
+      [] (a) -> a
+      [] (a) -> a
+
+
+
+
+

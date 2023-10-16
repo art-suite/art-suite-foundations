@@ -1,0 +1,16 @@
+import &StandardImport
+
+pairedAssertTests :eqAfterStringifyingFunctions :neqAfterStringifyingFunctions []
+  []
+    true
+    (a) -> a
+    (a) -> a
+
+test "baseline eq failes" ->
+  assert.rejects -> assert.eq
+    (a) -> a
+    (a) -> a
+
+  assert.eqAfterStringifyingFunctions
+    (a) -> a
+    (a) -> a

@@ -4,18 +4,20 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  AssertExistsTest:          require('./assert.exists.test'),
-  AssertHasKeysTest:         require('./assert.hasKeys.test'),
-  AssertMatchTest:           require('./assert.match.test'),
-  AssertPresentTest:         require('./assert.present.test'),
-  AssertResolvesRejectsTest: require('./assert.resolves_rejects.test'),
-  AssertSameTest:            require('./assert.same.test'),
-  AssertSelectedEqTest:      require('./assert.selectedEq.test'),
-  AssertTruthTest:           require('./assert.truth.test'),
-  AssertWithin:              require('./assert.within'),
-  CommunicationStatusTest:   require('./CommunicationStatus.test'),
-  ComparisonTest:            require('./Comparison.test'),
-  PresentationTest:          require('./Presentation.test'),
-  StandardImport:            require('./StandardImport'),
-  TypeTest:                  require('./Type.test')
+  AssertEqAfterStringifyingFunctionsTest: require('./assert.eqAfterStringifyingFunctions.test'),
+  AssertExistsTest:                       require('./assert.exists.test'),
+  AssertHasKeysTest:                      require('./assert.hasKeys.test'),
+  AssertMatchTest:                        require('./assert.match.test'),
+  AssertPresentTest:                      require('./assert.present.test'),
+  AssertResolvesRejectsTest:              require('./assert.resolves_rejects.test'),
+  AssertSameTest:                         require('./assert.same.test'),
+  AssertSelectedEqTest:                   require('./assert.selectedEq.test'),
+  AssertTruthTest:                        require('./assert.truth.test'),
+  AssertWithin:                           require('./assert.within'),
+  CommunicationStatusTest:                require('./CommunicationStatus.test'),
+  ComparisonTest:                         require('./Comparison.test'),
+  EqAfterStringifyingFunctionsTest:       require('./eqAfterStringifyingFunctions.test'),
+  PresentationTest:                       require('./Presentation.test'),
+  StandardImport:                         require('./StandardImport'),
+  TypeTest:                               require('./Type.test')
 });

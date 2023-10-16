@@ -60,3 +60,21 @@ import &ArtStandardLib, &Presentation, &Chai
 
     addTester = (name, a, b) ->
       assert[name] = testerFor = getTesterFor name, a, b
+
+
+    # each time a function is created, it is unique; this tests to see if the functions have the same strinigfied values
+    # within a plain-objects data structures
+    eqAfterStringifyingFunctions = (a, b) ->
+      switch
+      when isObject a then
+        isObject b
+        && eq Object.keys(a).sort(), Object.keys(b).sort()
+        && !find v, k in a when !eqAfterStringifyingFunctions v, b[k]
+      when isArray a then
+        isArray b
+        && a.length == b.length
+        && !find v, i in a when !eqAfterStringifyingFunctions v, b[i]
+      when isFunction a then
+        isFunction b
+        && "#{a}" == "#{b}"
+      else eq a, b
