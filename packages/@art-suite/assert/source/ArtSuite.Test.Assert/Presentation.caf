@@ -6,7 +6,7 @@ maxLength = 80
   indent = (str) -> '  ' + str.replace /\n/g, "\n  "
 
   # TODO: use color output???
-  format = (val) -> formattedInspect val, maxLength
+  format = (val) -> formattedInspect val, maxLineLength: maxLength, color: true
 
   failWithExpectedMessage = (context, a, verb, b, verb2, c) ->
     failWithExpectedMessageBase context, a, b, []
