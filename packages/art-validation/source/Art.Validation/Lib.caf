@@ -40,31 +40,43 @@ namespace = require :./namespace
     else
       ft
 
-  normalizeFieldProps = (ft) ->
-    fieldProps = if isPlainObject ft
+  normalizeFieldProps = (ft, customFieldTypes) ->
+    fieldProps =
+      switch
+      when isPlainObject ft
 
-      normalizeFieldTypeProp normalizeInstanceOfProp normalizeDepricatedProps normalizePlainObjectProps ft
+        normalizeFieldTypeProp normalizeInstanceOfProp normalizeDepricatedProps normalizePlainObjectProps ft
 
-    else if isPlainArray ftArray = ft
-      processed = array ft in ftArray
-        normalizeFieldProps ft
-      merge processed...
+      when isPlainArray ftArray = ft
+        processed = array ft in ftArray
+          normalizeFieldProps ft
+        merge processed...
 
-    else if isString strings = ft
-      ft = {}
-      each string in w strings
-        if subFt = FieldTypes[string]
-          ft.fieldType = string
-          mergeIntoUnless ft, subFt
-        else
-          ft[string] = true
+      when isString strings = ft
+        ft = {}
+        each string in w strings
+          if customFieldType = customFieldTypes?[string]
+            if isPlainObject customFieldType
+              customFieldTypeProps = normalizeFieldProps customFieldType
+            else if isString customFieldType
+              if !customFieldTypeProps = FieldTypes[customFieldType]
+                throw new Error "Custom field type #{customFieldType} maps to an invalid standard field type: #{customFieldType}"
+            else
+              throw new Error "Invalid custom field type #{customFieldType}. Expected string or plain object. Got: #{formattedInspect customFieldType}"
 
-      ft
+          if subFt = customFieldTypeProps ? FieldTypes[string]
+            ft.fieldType = string
+            mergeIntoUnless ft, subFt
+          else
+            ft[string] = true
 
-    else if ft == true
-      FieldTypes.any
-    else
-      throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
+        ft
+
+      when ft == true
+        FieldTypes.any
+
+      else
+        throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
 
     fieldPropsWithGeneratedPostValidator merge FieldTypes[fieldProps.fieldType], fieldProps
 

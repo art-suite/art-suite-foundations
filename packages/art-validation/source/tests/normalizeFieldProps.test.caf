@@ -1,0 +1,86 @@
+import &StandardImport
+{normalizeFieldProps} = Validator
+
+assertIsTrimmedString = (ft) ->
+  assert.eq ft.dataType, "string"
+  assert.isFunction ft.validate
+  assert.isFunction ft.preprocess
+
+testEq = (f, a, b) ->
+  test "#{f.name} #{formattedInspect a} should-eq #{formattedInspect b}" ->
+    assert.eq
+      f(a)
+      b
+
+describe
+  basic: ->
+    testEq normalizeFieldProps, {required: true}, required: true
+    testEq normalizeFieldProps, {dood: 'trimmedString'}, dood: 'trimmedString'
+    testEq normalizeFieldProps, {required: ['trimmedString']}, required: ['trimmedString']
+
+  depricated: ->
+    test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
+    test "required: 'foo'", -> assert.throws -> normalizeFieldProps required: 'foo'
+    test "present: 'foo'", -> assert.throws -> normalizeFieldProps present: 'foo'
+
+  objectValues: ->
+    testEq normalizeFieldProps, {required: foobar: true}, required: true, foobar: true
+    testEq normalizeFieldProps, {foobar: required: true}, required: true, foobar: true
+
+  topLevelArrayValues: ->
+    testEq normalizeFieldProps, [w 'foobar'                   ], foobar: true
+    testEq normalizeFieldProps, [w 'required foobar'          ], required: true, foobar: true
+    testEq normalizeFieldProps, [w 'required foobar', fad: 123], required: true, foobar: true, fad: 123
+
+  topLevelStringValues: ->
+    testEq normalizeFieldProps, 'foobar', foobar: true
+    testEq normalizeFieldProps, 'foo bar', foo: true, bar: true
+
+    test "'trimmedString'", ->
+      assertIsTrimmedString normalizeFieldProps 'trimmedString'
+
+    test "'trimmedString foo bar'", ->
+      ft = normalizeFieldProps 'trimmedString foo bar'
+      assertIsTrimmedString ft
+      assert.eq true, ft.foo
+      assert.eq true, ft.bar
+
+  specialFields: ->
+    test "fieldType: 'trimmedString'", ->
+      assertIsTrimmedString normalizeFieldProps fieldType: 'trimmedString'
+
+    test "instanceof: Validator", ->
+      ft = normalizeFieldProps instanceof: Validator
+      assert.eq true, ft.validate new Validator
+      assert.eq false, ft.validate {}
+
+  customFieldTypes: ->
+    test "mapped to another fieldType" ->
+      assert.eq
+        normalizeFieldProps
+          :myCustomField
+          myCustomField: :string
+        merge
+          normalizeFieldProps :string
+          fieldType: :myCustomField
+
+    test "mapped to an object definition" ->
+      assert.eqAfterStringifyingFunctions
+        normalizeFieldProps
+          :myCustomField
+          myCustomField:
+            fields:
+              myCustomSubField: :string
+        merge
+          normalizeFieldProps
+            fields: myCustomSubField: :string
+          fieldType: :myCustomField
+
+    test "normalizeFields accepts custom fields" ->
+      assert.eq
+        normalizeFields
+          {} foo: :myCustomField
+          myCustomField: :string
+        foo: merge
+          normalizeFieldProps :string
+          fieldType: :myCustomField

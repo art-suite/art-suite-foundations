@@ -78,20 +78,22 @@ import &ArtStandardLib, &ArtClassSystem, &DataTypes, &Lib, {} &FieldTypes, &Data
             specified class
 class Validator extends BaseClass
 
-  @normalizeFields: (fields) ->
-    object f in fields with normalizeFieldProps f
+  @normalizeFields: (fields, customFields) ->
+    object f in fields with normalizeFieldProps f, customFields
 
   @normalizeFieldProps: normalizeFieldProps
 
   constructor: (fieldDeclarationMap, options) ->
-    @_fieldProps = {}
-    @_requiredFields = []
-    @addFields fieldDeclarationMap
     if options
       @exclusive = options.exclusive
       @context = options.context
+      @_customFieldTypes = options.customFieldTypes
 
-  @property "exclusive"
+    @_fieldProps = {}
+    @_requiredFields = []
+    @addFields fieldDeclarationMap
+
+  @property :exclusive
 
   addFields: (fieldDeclarationMap) ->
     each fieldOptions, field from fieldDeclarationMap
@@ -101,6 +103,8 @@ class Validator extends BaseClass
     null
 
   @getter
+    :customFieldTypes
+    fields: -> @_fieldProps
     inspectedObjects: ->
       Validator: @_fieldProps
 
@@ -268,4 +272,4 @@ class Validator extends BaseClass
   ###################
   # PRIVATE
   ###################
-  _addField: (field, options) -> @_fieldProps[field] = normalizeFieldProps options
+  _addField: (field, fieldProps) -> @_fieldProps[field] = normalizeFieldProps fieldProps, @customFieldTypes

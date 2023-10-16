@@ -4,13 +4,14 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  DefaultsTest:       require('./Defaults.test'),
-  FieldTypesTest:     require('./FieldTypes.test'),
-  LimitsTest:         require('./Limits.test'),
-  PostValidationTest: require('./PostValidation.test'),
-  PreprocessTest:     require('./Preprocess.test'),
-  StandardImport:     require('./StandardImport'),
-  SubValidationTest:  require('./SubValidation.test'),
-  ValidatorTest:      require('./Validator.test'),
-  ValidatorMiscTest:  require('./ValidatorMisc.test')
+  DefaultsTest:            require('./Defaults.test'),
+  FieldTypesTest:          require('./FieldTypes.test'),
+  LimitsTest:              require('./Limits.test'),
+  NormalizeFieldPropsTest: require('./normalizeFieldProps.test'),
+  PostValidationTest:      require('./PostValidation.test'),
+  PreprocessTest:          require('./Preprocess.test'),
+  StandardImport:          require('./StandardImport'),
+  SubValidationTest:       require('./SubValidation.test'),
+  ValidatorTest:           require('./Validator.test'),
+  ValidatorMiscTest:       require('./ValidatorMisc.test')
 });
