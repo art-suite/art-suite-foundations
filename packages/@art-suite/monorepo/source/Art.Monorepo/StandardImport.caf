@@ -1,5 +1,7 @@
 []
   &ArtStandardLib
+  &ArtCommunicationStatus
   &ColorsLib
   &Lib
   &ExecLib
+  &NpmApi

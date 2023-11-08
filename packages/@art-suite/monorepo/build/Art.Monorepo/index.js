@@ -9,6 +9,7 @@
   Commands:          require('./Commands'),
   ExecLib:           require('./ExecLib'),
   Lib:               require('./Lib'),
+  NpmApi:            require('./NpmApi'),
   StandardImport:    require('./StandardImport'),
   UpdateMonoPackage: require('./UpdateMonoPackage'),
   UpdateSubPackages: require('./UpdateSubPackages')

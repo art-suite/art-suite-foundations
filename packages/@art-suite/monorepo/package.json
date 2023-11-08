@@ -6,9 +6,12 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/cli": "^1.5.0",
+    "art-communication-status": "^1.5.15",
+    "art-rest-client": "^1.9.3",
     "chalk": "^4.1.0",
     "glob-promise": "^4.1.0",
-    "neptune-namespaces-runtime": "^3.2.11"
+    "neptune-namespaces-runtime": "^3.2.11",
+    "semver": "^7.5.4"
   },
   "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -38,7 +41,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "1.6.3",
+  "version": "1.7.0",
   "watch": {
     "build": {
       "extensions": [

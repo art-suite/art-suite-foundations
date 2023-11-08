@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "NpmApi.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Monorepo/NpmApi.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sFAAO,6BAAiB,mHAExB,QACE,mDAAuB,QAAG,CAAC,cAAe,OACxC,mDAA0C,qBACpC,CAAC,UAAU,WAAW,QAAO,UAAU,MAAM,mBAErD,+DAA6B,QAAG,CAAC,cAAe,OAC9C,mDAAwC"
+}

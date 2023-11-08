@@ -1,0 +1,9 @@
+import &ArtStandardLib, &ArtRestClient
+
+{}
+  getPublishedPackageInfo = (packageName) ->
+    getJson "" https://registry.npmjs.org/#{} packageName
+    .then (props) -> objectWith props, distTags: props[:dist-tags]
+
+  getLatestPublishedPackageJson = (packageName) ->
+    getJson "" https://registry.npmjs.org/#{packageName}/latest

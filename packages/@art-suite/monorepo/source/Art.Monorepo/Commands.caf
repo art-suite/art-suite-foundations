@@ -26,6 +26,16 @@ import &StandardImport
       allPackageExec merge options,
         verb: :run
 
+  versions: ->
+    getAllPackagesVersionInfo()
+    .then (packages) ->
+      object {version, publishedVersion, status} from packages
+        {} version, publishedVersion, status:
+          switch status
+          when :behind then status.red
+          when :current then status.grey
+          else status
+
   clean: (options) ->
     cleanMonorepo()
     .then -> green "" Monorepo is clean.
