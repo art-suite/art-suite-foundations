@@ -51,6 +51,14 @@ stripEmptyKeys = (o) -> object v from o when objectHasKeys v
       :devDependencies
       :description
 
+    normalizeVersion = (v) ->
+      [v] = v.match(/\d+(\.\d+)*/) || []
+      if v
+        unless /\d+\.\d+\.\d+/.test v
+          each til 3 - v.split(".").length
+            v = v + ".0"
+      v
+
     getAllPackagesVersionInfo()
     .then (packages) ->
       object {version, publishedVersion, status, package: _package, publishedPackage} from packages
@@ -66,9 +74,12 @@ stripEmptyKeys = (o) -> object v from o when objectHasKeys v
                 if dependencies.changed
                   versionChanges = {}
                   each {newItem, oldItem}, key in dependencies.changed
-                    [newItem] = newItem.match /(\d+(\.)?)+/
-                    [oldItem] = oldItem.match /(\d+(\.)?)+/
-                    if semver.gt oldItem, newItem
+                    newItem = normalizeVersion newItem
+                    oldItem = normalizeVersion oldItem
+
+                    if !newItem || !oldItem
+                      versionChanges.incomparable = compactFlattenAll versionChanges.incomparable, key
+                    else if semver.gt oldItem, newItem
                       versionChanges.reverted = compactFlattenAll versionChanges.reverted, key
                     else
                       changeType = semver.diff oldItem, newItem
@@ -80,10 +91,11 @@ stripEmptyKeys = (o) -> object v from o when objectHasKeys v
                   if dependencies.added
                     "dependencies have been added: #{(Object.keys dependencies.added).join ', '}".yellow
                   else if dependencies.removed
-                    "dependencies have been removed: #{(Object.keys dependencies.added).join ', '}".grey
+                    "dependencies have been removed: #{(Object.keys dependencies.removed).join ', '}".grey
                   else
                     switch
                     when versionChanges.reverted  then "dependencies have reverted: #{versionChanges.reverted.join ', '}".red
+                    when versionChanges.incomparable     then "dependencies have major-version changes: #{versionChanges.incomparable.join ', '}".yellow
                     when versionChanges.major     then "dependencies have major-version changes: #{versionChanges.major.join ', '}".yellow
                     when versionChanges.minor     then "dependencies have minor-version changes: #{versionChanges.minor.join ', '}".yellow
                     when versionChanges.patch     then "dependencies have patch-version changes: #{versionChanges.patch.join ', '}".grey
