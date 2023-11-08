@@ -58,12 +58,13 @@ import &ArtStandardLib, &NpmApi, &chalk, &fs, &fs.promises, &ArtCommunicationSta
         getLatestPublishedPackageJson name
         .catch (response) -> if response.status == missing then null else Promise.reject response
         .then (publishedPackage) ->
-          publishedVersion = publishedPackage?.version || :unpublished
+          publishedVersion = publishedPackage?.version
           {}
             name, version, package: _package
             publishedPackage, publishedVersion
             status:
-              if publishedVersion == :unpublished || semver.gt version, publishedVersion then :ahead
+              if !publishedVersion? then :unpublished
+              else if semver.gt version, publishedVersion then :ahead
               else if semver.gt publishedVersion, version then :behind
               else :current
 

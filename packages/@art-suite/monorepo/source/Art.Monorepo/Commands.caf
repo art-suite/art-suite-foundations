@@ -32,6 +32,7 @@ import &StandardImport
       object {version, publishedVersion, status} from packages
         {} version, publishedVersion, status:
           switch status
+          when :unpublished then status.white
           when :behind then status.red
           when :current then status.grey
           else status
