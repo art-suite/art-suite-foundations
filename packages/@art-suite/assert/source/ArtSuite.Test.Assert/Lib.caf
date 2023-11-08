@@ -48,8 +48,6 @@ import &ArtStandardLib, &Presentation, &Chai
                 context
                 value1
                 switch name
-                when :match
-                  "" should be 'match' this pattern:
                 when :< :> :<= :>= :lte :gte
                   "" should be '#{name}' this value:
                 when :== :eq :equal :match
