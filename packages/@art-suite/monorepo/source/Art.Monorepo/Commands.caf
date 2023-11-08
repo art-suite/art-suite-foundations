@@ -1,5 +1,6 @@
-import &StandardImport
+import &StandardImport, {} &semver
 
+stripEmptyKeys = (o) -> object v from o when objectHasKeys v
 {}
   &update-mono-package
   &update-sub-packages
@@ -26,15 +27,78 @@ import &StandardImport
       allPackageExec merge options,
         verb: :run
 
-  versions: ->
+  versions: ({verbose})->
+    packageFieldsNpmChanges =
+      :gitHead
+      :_id
+      :_nodeVersion
+      :_npmVersion
+      :_npmUser
+      :directories
+      :maintainers
+      :_npmOperationalInternal
+      :_hasShrinkwrap
+      :author
+      :bugs
+      :dist
+      :repository
+      :integrity
+      :shasum
+      :tarball
+      :fileCount
+      :unpackedSize
+      :signatures
+      :devDependencies
+      :description
+
     getAllPackagesVersionInfo()
     .then (packages) ->
-      object {version, publishedVersion, status} from packages
+      object {version, publishedVersion, status, package: _package, publishedPackage} from packages
         {} version, publishedVersion, status:
           switch status
           when :unpublished then status.white
           when :behind then status.red
-          when :current then status.grey
+          when :current
+            if eq _package, publishedPackage
+              status.grey
+            else
+              if objectHasKeys dependencies = stripEmptyKeys objectDiffReport _package.dependencies, publishedPackage.dependencies
+                if dependencies.changed
+                  versionChanges = {}
+                  each {newItem, oldItem}, key in dependencies.changed
+                    [newItem] = newItem.match /(\d+(\.)?)+/
+                    [oldItem] = oldItem.match /(\d+(\.)?)+/
+                    if semver.gt oldItem, newItem
+                      versionChanges.reverted = compactFlattenAll versionChanges.reverted, key
+                    else
+                      changeType = semver.diff oldItem, newItem
+                      versionChanges[changeType] = compactFlattenAll versionChanges[changeType], key
+
+                if verbose
+                  {} dependencies, versionChanges
+                else
+                  if dependencies.added
+                    "dependencies have been added: #{(Object.keys dependencies.added).join ', '}".yellow
+                  else if dependencies.removed
+                    "dependencies have been removed: #{(Object.keys dependencies.added).join ', '}".grey
+                  else
+                    switch
+                    when versionChanges.reverted  then "dependencies have reverted: #{versionChanges.reverted.join ', '}".red
+                    when versionChanges.major     then "dependencies have major-version changes: #{versionChanges.major.join ', '}".yellow
+                    when versionChanges.minor     then "dependencies have minor-version changes: #{versionChanges.minor.join ', '}".yellow
+                    when versionChanges.patch     then "dependencies have patch-version changes: #{versionChanges.patch.join ', '}".grey
+
+              else
+                otherChanges = stripEmptyKeys objectDiffReport
+                  objectWithout _package, packageFieldsNpmChanges...
+                  objectWithout publishedPackage, packageFieldsNpmChanges...
+                  eq
+
+                if objectHasKeys otherChanges
+                  if verbose then otherChanges else "current, but package.json changed".grey
+
+                else status.grey
+
           else status
 
   clean: (options) ->
