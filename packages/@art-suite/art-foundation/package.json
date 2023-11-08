@@ -14,12 +14,12 @@
     "art-object-tree-factory": "^2.2.10",
     "art-rest-client": "^1.9.3",
     "art-standard-lib": "^1.71.3",
-    "art-validation": "^1.10.1",
+    "art-validation": "^1.11.0",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",
   "devDependencies": {
-    "art-testbench": "^3.2.10"
+    "art-testbench": "^3.2.13"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

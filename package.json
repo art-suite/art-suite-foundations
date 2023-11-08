@@ -62,6 +62,7 @@
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "npm-watch": "^0.11.0",
     "pluralize": "^8.0.0",
+    "semver": "^7.5.4",
     "simple-git": "^3.20.0",
     "stable": "^0.1.8",
     "style-loader": "^3.2.1",
@@ -77,6 +78,7 @@
   },
   "scripts": {
     "clean": "art-monorepo clean",
+    "versions": "art-monorepo versions",
     "sync": "art-monorepo sync",
     "test": "art-monorepo test",
     "update": "art-monorepo update"
