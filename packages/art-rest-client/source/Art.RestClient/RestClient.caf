@@ -14,7 +14,7 @@ class RestClient extends BaseClass
     object v, k in headers with-key capitalizedDashCase k
 
   @legalVerbs: legalVerbs = {}
-  each v in :get :put :post :delete :head
+  each v in :get :put :post :delete :head :options :patch
     upper = v.toUpperCase()
     legalVerbs[v.toLowerCase()] = legalVerbs[upper] = upper
 
