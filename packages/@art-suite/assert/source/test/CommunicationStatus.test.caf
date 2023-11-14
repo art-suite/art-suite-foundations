@@ -1,6 +1,6 @@
 import &StandardImport, &ArtCommunicationStatus
 
-each status in supportedStatuses = :missing :clientFailure :clientFailureNotAuthorized
+each {failure}, status in communicationStatuses when failure
   assertName = lowerCamelCase "is #{status}"
   test
     "" #{assertName} succeeds for: '#{status}'
@@ -33,7 +33,7 @@ each status in supportedStatuses = :missing :clientFailure :clientFailureNotAuth
       assert.rejects -> assert.rejectsWithStatus status, Promise.reject status: failure
       assert.rejects -> assert.rejectsWithStatus status, Promise.resolve status: success
 
-  each s2 in supportedStatuses when s2 != status
+  each {failure}, s2 in communicationStatuses when s2 != status && failure
     test
       "" #{assertName} fails for: '#{s2}'
       -> assert.rejects -> assert[assertName] s2

@@ -1,7 +1,7 @@
-import &StandardImport
+import &StandardImport, &ArtCommunicationStatus
 
 # ArtCommunicationStatus tests
-each status in :missing :clientFailure :clientFailureNotAuthorized
+each {failure}, status in communicationStatuses when failure
   assert[status] =
   assert[name = lowerCamelCase "is #{status}"] = (communicationPromise, context) ->
     if isPromise(communicationPromise) or isFunction communicationPromise
