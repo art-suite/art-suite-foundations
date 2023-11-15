@@ -9,8 +9,15 @@ assertIsTrimmedString = (ft) ->
 testEq = (f, a, b) ->
   test "#{f.name} #{formattedInspect a} should-eq #{formattedInspect b}" ->
     assert.eq
-      f(a)
-      b
+      stripFunctions f(a)
+      stripFunctions b
+
+stripFunctions = (o) ->
+  switch
+  when o is Object then object v from o with stripFunctions v
+  when o is Array then array v from o with stripFunctions v
+  when o is Function then :function
+  else o
 
 describe
   basic: ->
@@ -45,6 +52,38 @@ describe
       assert.eq true, ft.foo
       assert.eq true, ft.bar
 
+  nestedTypes:
+    arrays: ->
+      testEq
+        normalizeFieldProps
+        {} array: :number
+
+        array:
+          dataType:   :number
+          fromString: :function
+          fieldType:  :number
+          validate:   :function
+
+        validate:     :function
+        preprocess:   :function
+        postValidate: :function
+
+    objects: ->
+      testEq
+        normalizeFieldProps
+        {} fields: myCustomSubField: :string
+
+        dataType:  :object
+        fieldType: :object
+        validate:  :function
+        fields:    myCustomSubField:
+          dataType:     :string
+          fieldType:    :string
+          validate:     :function
+
+        preprocess:   :function
+        postValidate: :function
+
   specialFields: ->
     test "fieldType: 'trimmedString'", ->
       assertIsTrimmedString normalizeFieldProps fieldType: 'trimmedString'
@@ -65,16 +104,23 @@ describe
           fieldType: :myCustomField
 
     test "mapped to an object definition" ->
-      assert.eqAfterStringifyingFunctions
-        normalizeFieldProps
+      assert.eq
+        stripFunctions normalizeFieldProps
           :myCustomField
           myCustomField:
             fields:
               myCustomSubField: :string
-        merge
-          normalizeFieldProps
-            fields: myCustomSubField: :string
-          fieldType: :myCustomField
+
+        dataType:  :object
+        fieldType: :myCustomField
+        validate:  :function
+        fields:    myCustomSubField:
+          dataType:     :string
+          fieldType:    :string
+          validate:     :function
+
+        preprocess:   :function
+        postValidate: :function
 
     test "normalizeFields accepts custom fields" ->
       assert.eq

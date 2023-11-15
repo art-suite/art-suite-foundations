@@ -1,6 +1,8 @@
 import &ArtStandardLib, {} &FieldTypes
 
 namespace = require :./namespace
+Validator = null
+loadValidator = () -> Validator ?= &Validator
 
 {}
   normalizeInstanceOfProp = (ft) ->
@@ -33,18 +35,29 @@ namespace = require :./namespace
     ft
 
   normalizeFieldTypeProp = (ft) ->
-    {fieldType, fields} = ft
+    {fieldType, fields, array: _array, validate, preprocess} = ft
     fieldType ?= :object if fields
-    if isString fieldType
-      merge FieldTypes[fieldType], ft
-    else
-      ft
+    ft = merge FieldTypes[fieldType], ft if isString fieldType
+    if fields
+      loadValidator()
+      subValidator = new Validator fields
+      ft = merge ft, {}
+        subValidator.fields
+        validate:   validate ? (v) -> isPlainObject(v) && subValidator.isValid v
+        preprocess: preprocess ? (v) -> subValidator.preprocess v
+
+    if _array
+      ft = merge ft,
+        array: normalizedArray = normalizeFieldProps _array
+        validate:   validate ? (_array) -> isArray(_array) && !find v in _array when if v? then !normalizedArray.validate v else normalizedArray.required with true
+        preprocess: preprocess ? normalizedArray.preprocess && (_array) -> _array && array v in _array with normalizedArray.preprocess v
+
+    ft
 
   normalizeFieldProps = (ft, customFieldTypes) ->
     fieldProps =
       switch
       when isPlainObject ft
-
         normalizeFieldTypeProp normalizeInstanceOfProp normalizeDepricatedProps normalizePlainObjectProps ft
 
       when isPlainArray ftArray = ft

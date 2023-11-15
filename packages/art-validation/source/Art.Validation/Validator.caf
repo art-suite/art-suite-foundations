@@ -133,14 +133,17 @@ class Validator extends BaseClass
     @validateUpdate fields, options
   # </DEPRICATED>
 
-  ###
+  ## validateCreate
     IN:
       fields: - the object to check
       options:
         context: string - included in validation errors for reference
         logErrors: false - if true, will log.error errors
 
-    OUT: preprocessed fields - if they pass, otherwise error is thrown
+    OUT:
+      if valid for create
+        preprocessed fields
+      else throw error
 
     NOTE: missing fields are errors
   validateCreate: validateCreate = (fields = {}, options) ->
@@ -157,14 +160,50 @@ class Validator extends BaseClass
 
   validate:       validateCreate
 
-  ###
+
+  ## isValidCreate
+    IN:
+      fields: - the object to check
+
+    OUT:
+      if valid for create
+        preprocessed fields
+      else falsish
+  isValidCreate: isValidCreate = (fields) ->
+    @requiredFieldsPresent fields
+    && @presentFieldsValid fields
+    && @postValidateFields processedFields = @preprocess fields, true
+
+  isValid: isValidCreate
+
+  ## isValidUpdate
     IN:
       fields: - the object to check
       options:
         context: string - included in validation errors for reference
         logErrors: false - if true, will log.error errors
 
-    OUT: preprocessed fields - if they pass, otherwise error is thrown
+    OUT:
+      if valid
+        preprocessed fields
+      else falsish
+
+    NOTE: missing fields are ignored
+  isValidUpdate: (fields) ->
+    @presentFieldsValid fields
+    && @postValidateFields processedFields = @preprocess fields
+
+  ## validateUpdate
+    IN:
+      fields: - the object to check
+      options:
+        context: string - included in validation errors for reference
+        logErrors: false - if true, will log.error errors
+
+    OUT:
+      if valid
+        preprocessed fields
+      else thrown error
 
     NOTE: missing fields are ignored
   validateUpdate: validateUpdate = (fields = {}, options) ->
