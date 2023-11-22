@@ -4,8 +4,8 @@ Validate object properties.
 
 ### NOTES
 
-* validators are evaluated before preprocessors
-* preprocessors should NOT throw validation-related errors
+- validators are evaluated before preprocessors
+- preprocessors should NOT throw validation-related errors
 
 ### USAGE
 
@@ -26,11 +26,19 @@ fieldProps:
   plainObject: (all fields are optional)
 
     validate: (v) -> true/false
+      v is never null nor undefined
       whenever this field is included in an update OR create operation,
         validate() must return true
       NOTE: validate is evaluated BEFORE preprocess
 
+    postValidate: (v) -> true/false
+      v is never null nor undefined
+      whenever this field is included in an update OR create operation,
+        validate() must return true
+      NOTE: validate is evaluated AFTER preprocess
+
     preprocess: (v1) -> v2
+      v1 is never null nor undefined
       whenever this field is included in an update OR create operation,
         after validation succeeds,
         value = preprocess value

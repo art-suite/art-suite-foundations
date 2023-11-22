@@ -33,9 +33,11 @@ FieldTypes =
   array:    dataType: arrayDataType
   any:      dataType: anyDataType
   json:     dataType: jsonDataType,     fromString: (v) -> JSON.parse v
-  integer:
-    dataType: numberDataType
-    preprocess: (v) -> if v? then v | 0
+  integer: merge
+    number
+    fromString: parseInt
+    dataType:   numberDataType
+    preprocess: (v) -> Math.floor v
 
   id:
     required: true
