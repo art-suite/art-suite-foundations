@@ -33,7 +33,9 @@ FieldTypes =
   array:    dataType: arrayDataType
   any:      dataType: anyDataType
   json:     dataType: jsonDataType,     fromString: (v) -> JSON.parse v
-
+  integer:
+    dataType: numberDataType
+    preprocess: (v) -> if v? then v | 0
 
   id:
     required: true

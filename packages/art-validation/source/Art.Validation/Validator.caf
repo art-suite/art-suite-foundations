@@ -244,18 +244,16 @@ class Validator extends BaseClass
   ####################
   presentFieldPostValid: (fields, fieldName, value) ->
     if fieldProps = @_fieldProps[fieldName]
-      {postValidate} = fieldProps
-      !postValidate || !value? || value == null || value == undefined || postValidate value, fieldName, fields
+      if value? && fieldProps extract postValidate then postValidate value, fieldName, fields else value
     else
       true
 
   presentFieldValid: (fields, fieldName, value) ->
     if fieldProps = @_fieldProps[fieldName]
-      fieldProps extract validate
       if fieldProps.present && !present value
         false
       else
-        !validate || !value? || value == null || value == undefined || validate value, fieldName, fields
+        if value? && fieldProps extract validate then validate value, fieldName, fields else value
     else
       !@exclusive
 
@@ -287,7 +285,7 @@ class Validator extends BaseClass
     fields ?= {} if applyDefaults
     fields && each props, fieldName from @_fieldProps
       value =
-        if undefined != incomingValue = fields[fieldName]
+        if (incomingValue = fields[fieldName]) ?
               incomingValue
         else  applyDefaults && props.default
 
