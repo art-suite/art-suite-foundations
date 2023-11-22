@@ -11,7 +11,8 @@
   PostValidationTest:      require('./PostValidation.test'),
   PreprocessTest:          require('./Preprocess.test'),
   StandardImport:          require('./StandardImport'),
-  SubValidationTest:       require('./SubValidation.test'),
+  SubArrayValidationTest:  require('./SubArrayValidation.test'),
+  SubObjectValidationTest: require('./SubObjectValidation.test'),
   ValidatorTest:           require('./Validator.test'),
   ValidatorMiscTest:       require('./ValidatorMisc.test')
 });

@@ -113,25 +113,25 @@ class Validator extends BaseClass
   # with modest savings to other libs. All it does is ensure fields are resolved before doing
   # fully synchronous work.
 
-  # <DEPRICATED>
+  # <DEPRECATED>
   preCreate: (fields, options) ->
-    log.error "Validator.preCreate is DEPRICATED. Use .validate or .validateCreate"
+    log.error "Validator.preCreate is DEPRECATED. Use .validate or .validateCreate"
     Promise.resolve(fields).then (fields) => @preCreateSync fields, options
 
   preUpdate: (fields, options) ->
-    log.error "Validator.preUpdate is DEPRICATED. Use .validateUpdate"
+    log.error "Validator.preUpdate is DEPRECATED. Use .validateUpdate"
     Promise.resolve(fields).then (fields) => @preUpdateSync fields, options
 
-  validateSync: -> throw new Error "DEPRICATED: use validate"
+  validateSync: -> throw new Error "DEPRECATED: use validate"
 
   preCreateSync: (fields = {}, options) ->
-    log.error "preCreateSync is DEPRICATED. use .validateCreate or just .validate"
+    log.error "preCreateSync is DEPRECATED. use .validateCreate or just .validate"
     @validateCreate fields, options
 
   preUpdateSync: (fields = {}, options) ->
-    log.error "preUpdateSync is DEPRICATED. use validateUpdate"
+    log.error "preUpdateSync is DEPRECATED. use validateUpdate"
     @validateUpdate fields, options
-  # </DEPRICATED>
+  # </DEPRECATED>
 
   ## validateCreate
     IN:

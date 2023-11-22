@@ -1,155 +1,148 @@
 import &ArtStandardLib, {} &FieldTypes
 
 namespace = require :./namespace
-Validator = null
-loadValidator = () -> Validator ?= &Validator
 
-{}
-  normalizeInstanceOfProp = (ft) ->
-    if _instanceof = ft.instanceof
-      {validate} = ft
-      merge ft,
-        validate: (v) ->
-          (v instanceof _instanceof) &&
-          (!validate || validate v)
-    else
+normalizeInstanceOfProp = (ft) ->
+  if _instanceof = ft.instanceof
+    {validate} = ft
+    merge ft,
+      validate: (v) ->
+        (v instanceof _instanceof) &&
+        (!validate || validate v)
+  else
+    ft
+
+## normalizeRecursivePlainObjectProps
+  IN: plainObjectFieldType: plain object
+  OUT: plain object
+
+  converts something like this:
+    this: is: a: recursive: field: definition: :number
+
+  into this:
+    this: true
+    is: true
+    a: true
+    recursive: true
+    field: true
+    definition: true
+    fieldType: :number
+normalizeRecursivePlainObjectProps = (plainObjectFieldType) ->
+  if 1 == objectKeyCount plainObjectFieldType
+    find singleFieldValue, singleFieldName from plainObjectFieldType when singleFieldName != :fields && singleFieldName != :array &&
+        isPlainObject singleFieldValue
+        || isString singleFieldValue
+      mergeIntoUnless
+        [singleFieldName]: true
+        if isString singleFieldValue
+          FieldTypes[singleFieldValue]
+        else normalizeRecursivePlainObjectProps singleFieldValue
+
+  ? plainObjectFieldType
+
+normalizeDeprecatedProps = (ft) ->
+  throw new Error "DEPRECATED: requiredPresent. Use: present: true" if ft.requiredPresent
+  ft
+
+normalizeFieldTypeProp = (ft, customFieldTypes) ->
+  {fieldType, fields, array: _array, validate, postValidate, preprocess, minLength, maxLength} = ft
+  fieldType ?= :object if fields
+  ft = merge FieldTypes[fieldType], ft if isString fieldType
+  if fields
+    throw new Error "Can only specify `array: ...` or `fields: ...`" if _array
+    subValidator = new namespace.Validator fields, {} customFieldTypes, exclusive: true
+    ft = merge ft, {}
+      subValidator.fields
+      validate:   validate ? (v) -> isPlainObject(v) && subValidator.isValid v
+      preprocess: preprocess ? (v) -> subValidator.preprocess v
+
+  else if _array
+    normalizedArray = _normalizeFieldProps _array, customFieldTypes
+    merge ft,
+      array:      normalizedArray
+      validate:  validate ? if normalizedArray.validate || normalizedArray.required
+        (_array) ->
+          isArray _array
+          && !validate || validate _array
+          && !normalizedArray.validate || !find v in-array _array when v? && !normalizedArray.validate v with true
+          && !normalizedArray.required || !find v in-array _array when !v? with true
+
+      preprocess: preprocess ? if normalizedArray.preprocess
+        (_array) ->
+          if isArray _array then array v in _array with normalizedArray.preprocess v else _array
+
+      postValidate: postValidate ? if normalizedArray.postValidate
+        (_array) ->
+          !find v in-array _array when !normalizedArray.postValidate v with true
+
+  else ft
+
+fieldPropsWithGeneratedPostValidator = (fieldProps, customFieldTypes) ->
+  fieldProps extract preprocess, validate, postValidate, maxLength, minLength, fields
+
+  if (maxLength? || minLength?) # not array, because we already create a postValidate for arrays
+    fieldProps.postValidate = (value, fieldName, fields) ->
+      if postValidate && !postValidate value, fieldName, fields then false
+      else if value?
+        if maxLength? && value.length > maxLength       then false
+        else if minLength? && value.length < minLength  then false
+        else true
+
+      else true
+
+  fieldProps
+
+normalizeLengthChecks = (ft) ->
+  if ft extract length? then merge ft, maxLength: length, minLength: length else ft
+
+processingCustomFieldtypePath = []
+_normalizeFieldProps = (ft, customFieldTypes) ->
+  fieldProps =
+    switch
+    when isPlainObject ft
+      normalizeFieldTypeProp
+        normalizeInstanceOfProp normalizeDeprecatedProps normalizeRecursivePlainObjectProps normalizeLengthChecks ft
+        customFieldTypes
+
+    when isPlainArray ftArray = ft
+      each ft in ftArray into out = {} with mergeInto out, _normalizeFieldProps ft, customFieldTypes
+
+    when isString strings = ft
+      ft = {}
+      each string in-array w strings
+        if customFieldType = customFieldTypes?[string]
+          try
+            if string in processingCustomFieldtypePath
+              throw new Error "" Recursive custom field types are not supported. Recursive path: #{processingCustomFieldtypePath.join ' > '} > #{string}
+
+            processingCustomFieldtypePath.push string
+
+            if isPlainObject(customFieldType) || isString customFieldType
+              customFieldTypeProps = _normalizeFieldProps customFieldType, customFieldTypes
+
+            else throw new Error "Invalid custom field type #{customFieldType}. Expected string or plain object. Got: #{formattedInspect customFieldType}"
+
+          finally
+            processingCustomFieldtypePath.pop()
+
+        if subFt = customFieldTypeProps ? FieldTypes[string]
+          ft.fieldType = string
+          mergeIntoUnless ft, subFt
+
+        else
+          ft[string] = true
+
       ft
 
-  normalizePlainObjectProps = (ft) ->
-    out = null
-    each v, k from ft when k != :fields && k != :array
-      if isPlainObject subObject = v
-        out = shallowClone ft unless out
-        out[k] = true
-        mergeIntoUnless out, normalizePlainObjectProps subObject
+    when ft == true
+      FieldTypes.any
 
-    out || ft
+    else
+      throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
 
-  normalizeDepricatedProps = (ft) ->
-    if ft.requiredPresent
-      throw new Error "DEPRICATED: requiredPresent. Use: present: true"
-    if isString ft.required
-      throw new Error "DEPRICATED: required can no longer specifiy the field-type. Use: required: fieldType: myFieldTypeString OR 'required myFieldTypeString'"
-    if isString ft.present
-      throw new Error "DEPRICATED: present can no longer specifiy the field-type. Use: present: fieldType: myFieldTypeString OR 'present myFieldTypeString'"
-    ft
+  fieldPropsWithGeneratedPostValidator
+    merge FieldTypes[fieldProps.fieldType], fieldProps
+    customFieldTypes
 
-  normalizeFieldTypeProp = (ft) ->
-    {fieldType, fields, array: _array, validate, preprocess} = ft
-    fieldType ?= :object if fields
-    ft = merge FieldTypes[fieldType], ft if isString fieldType
-    if fields
-      loadValidator()
-      subValidator = new Validator fields
-      ft = merge ft, {}
-        subValidator.fields
-        validate:   validate ? (v) -> isPlainObject(v) && subValidator.isValid v
-        preprocess: preprocess ? (v) -> subValidator.preprocess v
-
-    if _array
-      ft = merge ft,
-        array: normalizedArray = normalizeFieldProps _array
-        validate:   validate ? (_array) -> isArray(_array) && !find v in _array when if v? then !normalizedArray.validate v else normalizedArray.required with true
-        preprocess: preprocess ? normalizedArray.preprocess && (_array) -> _array && array v in _array with normalizedArray.preprocess v
-
-    ft
-
-  normalizeFieldProps = (ft, customFieldTypes) ->
-    fieldProps =
-      switch
-      when isPlainObject ft
-        normalizeFieldTypeProp normalizeInstanceOfProp normalizeDepricatedProps normalizePlainObjectProps ft
-
-      when isPlainArray ftArray = ft
-        processed = array ft in ftArray
-          normalizeFieldProps ft
-        merge processed...
-
-      when isString strings = ft
-        ft = {}
-        each string in w strings
-          if customFieldType = customFieldTypes?[string]
-            if isPlainObject customFieldType
-              customFieldTypeProps = normalizeFieldProps customFieldType
-            else if isString customFieldType
-              if !customFieldTypeProps = FieldTypes[customFieldType]
-                throw new Error "Custom field type #{customFieldType} maps to an invalid standard field type: #{customFieldType}"
-            else
-              throw new Error "Invalid custom field type #{customFieldType}. Expected string or plain object. Got: #{formattedInspect customFieldType}"
-
-          if subFt = customFieldTypeProps ? FieldTypes[string]
-            ft.fieldType = string
-            mergeIntoUnless ft, subFt
-          else
-            ft[string] = true
-
-        ft
-
-      when ft == true
-        FieldTypes.any
-
-      else
-        throw new Error "fieldType must be a string or plainObject. Was: #{formattedInspect ft}"
-
-    fieldPropsWithGeneratedPostValidator merge FieldTypes[fieldProps.fieldType], fieldProps
-
-  initNormalizedArrayFieldProps = (rawArrayFieldProps, intoFieldProps = {}) ->
-    {preprocess, validate, postValidate, length, maxLength = length, minLength = length} = arrayFieldProps = normalizeFieldProps rawArrayFieldProps
-
-    {validate: customValidate, preprocess: customPreprocess, postValidate: customPostValidate} = intoFieldProps
-
-    intoFieldProps.validate ?=
-      (a) ->
-        isArray a
-        && if minLength?      then a.length >= minLength else true
-        && if maxLength?      then a.length <= maxLength else true
-        && if validate?       then !find v in-array a when !validate v else true
-        && true
-
-    intoFieldProps.preprocess ?=
-      (a) ->
-        if a? && preprocess? then a = array v in-array a with preprocess v
-        a
-
-    intoFieldProps.postValidate ?=
-      (a) ->
-        isArray a
-        && if minLength?          then a.length >= minLength else true
-        && if maxLength?          then a.length <= maxLength else true
-        && if postValidate?       then !find v in-array a when !postValidate v else true
-        && true
-
-    intoFieldProps
-
-  fieldPropsWithGeneratedPostValidator = (fieldProps) ->
-    fieldProps extract postValidate, maxLength, minLength, fields
-    rawArrayFieldProps = fieldProps.array
-
-    if rawArrayFieldProps && fields
-      throw new Error "can only specify `array:` or `fields:`"
-
-    if maxLength? || minLength? || fields? || rawArrayFieldProps
-
-      if rawArrayFieldProps
-        initNormalizedArrayFieldProps rawArrayFieldProps, fieldProps
-
-      else
-        if fields
-          validator = new namespace.Validator fields, exclusive: true
-          fieldProps.preprocess = (value, forCreate) -> validator.preprocessFields value, forCreate
-
-        fieldProps.postValidate = (value, fieldName, fields) ->
-          if postValidate && !postValidate value, fieldName, fields then false
-          else if value?
-            if maxLength? && value.length > maxLength       then false
-            else if minLength? && value.length < minLength  then false
-            else
-              try
-                validator?.validate value
-                true
-              catch
-                false
-
-          else true
-
-    fieldProps
+noCustomFieldTypes = {}
+normalizeFieldProps: (fieldType, customFieldTypes) -> _normalizeFieldProps fieldType, customFieldTypes ? noCustomFieldTypes

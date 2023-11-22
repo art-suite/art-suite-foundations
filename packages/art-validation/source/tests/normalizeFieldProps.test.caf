@@ -14,21 +14,24 @@ testEq = (f, a, b) ->
 
 stripFunctions = (o) ->
   switch
-  when o is Object then object v from o with stripFunctions v
-  when o is Array then array v from o with stripFunctions v
-  when o is Function then :function
+  when o is Object then object v from o with stripFunctions v when !isFunction v
+  when o is Array then array v from o with stripFunctions v when !isFunction v
   else o
 
 describe
   basic: ->
     testEq normalizeFieldProps, {required: true}, required: true
-    testEq normalizeFieldProps, {dood: 'trimmedString'}, dood: 'trimmedString'
+    testEq normalizeFieldProps,
+      {} dood: 'trimmedString'
+      maxLength:    1024
+      fieldType:    :trimmedString
+      dataType:     :string
+      dood:         true
+
     testEq normalizeFieldProps, {required: ['trimmedString']}, required: ['trimmedString']
 
-  depricated: ->
+  deprecated: ->
     test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
-    test "required: 'foo'", -> assert.throws -> normalizeFieldProps required: 'foo'
-    test "present: 'foo'", -> assert.throws -> normalizeFieldProps present: 'foo'
 
   objectValues: ->
     testEq normalizeFieldProps, {required: foobar: true}, required: true, foobar: true
@@ -60,13 +63,7 @@ describe
 
         array:
           dataType:   :number
-          fromString: :function
           fieldType:  :number
-          validate:   :function
-
-        validate:     :function
-        preprocess:   :function
-        postValidate: :function
 
     objects: ->
       testEq
@@ -75,14 +72,9 @@ describe
 
         dataType:  :object
         fieldType: :object
-        validate:  :function
         fields:    myCustomSubField:
           dataType:     :string
           fieldType:    :string
-          validate:     :function
-
-        preprocess:   :function
-        postValidate: :function
 
   specialFields: ->
     test "fieldType: 'trimmedString'", ->
@@ -113,14 +105,9 @@ describe
 
         dataType:  :object
         fieldType: :myCustomField
-        validate:  :function
         fields:    myCustomSubField:
           dataType:     :string
           fieldType:    :string
-          validate:     :function
-
-        preprocess:   :function
-        postValidate: :function
 
     test "normalizeFields accepts custom fields" ->
       assert.eq
@@ -130,3 +117,76 @@ describe
         foo: merge
           normalizeFieldProps :string
           fieldType: :myCustomField
+
+  recursiveTypesWithCustomFieldTypes: ->
+    test "object" ->
+      assert.eq
+        stripFunctions normalizeFieldProps
+          {} fields: data:   :record
+          {} record: fields: name: :string
+
+        dataType:     :object
+        fieldType:    :object
+        fields:       data:
+          dataType:     :object
+          fieldType:    :record
+          fields:       name: dataType: :string, fieldType: :string
+
+    test "array" ->
+      assert.eq
+        stripFunctions normalizeFieldProps
+          {} array:   :record
+          {} record: fields: name: :string
+
+        array:
+          fieldType:    :record
+          dataType:     :object
+          fields:       name: dataType: :string, fieldType: :string
+
+  recursiveCustomFieldTypes: ->
+    test "a references b" ->
+      assert.eq
+        stripFunctions normalizeFieldProps
+          :myCustomField
+          myCustomField:  :myCustomField2
+          myCustomField2: :string
+
+        fieldType: :myCustomField, dataType: :string
+
+    test "a references object with b" ->
+      assert.eq
+        stripFunctions normalizeFieldProps
+          :myCustomField
+          myCustomField:  fields: myFieldName: :myCustomField2
+          myCustomField2: :string
+
+        fieldType:    :myCustomField
+        dataType:     :object
+        fields: myFieldName: dataType: :string, fieldType: :myCustomField2
+
+    chainedTest "a references a not allowed" ->
+      assert.rejects ->
+        stripFunctions normalizeFieldProps
+          :myCustomField
+          myCustomField: :myCustomField
+      .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported
+
+    .thenTest "after a failed recursion check, we don't wrongly trigger it again" ->
+      stripFunctions normalizeFieldProps
+        :myCustomField
+        myCustomField:  fields: myFieldName: :string
+
+    test "a references object a not allowed" ->
+      assert.rejects ->
+        stripFunctions normalizeFieldProps
+          :myCustomField
+          myCustomField:  fields: myFieldName: :myCustomField
+      .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported
+
+    test "a references b refernces a not allowed" ->
+      assert.rejects ->
+        stripFunctions normalizeFieldProps
+          :myCustomField
+          myCustomField:  fields: myFieldName: :myCustomField2
+          myCustomField2:  fields: myFieldName: :myCustomField
+      .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported

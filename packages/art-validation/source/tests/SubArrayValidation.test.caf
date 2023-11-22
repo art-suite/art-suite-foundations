@@ -1,0 +1,117 @@
+import &StandardImport
+
+test "can't be array and fields" ->
+  assert.rejects -> new Validator idList: array: :number fields: name: :string
+
+test :array-basic ->
+  v = new Validator idList: array: :number
+
+  v.validate idList: []
+  v.validate idList: [] 1
+  v.validate idList: 1 2 3
+  v.validate idList: 1 null 3
+  v.validate idList: null
+  assert.throws -> v.validate idList: 123
+  assert.throws -> v.validate idList: [] :string-not-ok
+  assert.throws -> v.validate idList: [] {}
+  assert.throws -> v.validate idList: [] []
+
+test "validate array with required number elements" ->
+  v = new Validator ids: array: "required number"
+  v.validate {}
+  v.validate ids: null
+  v.validate ids: 1 2
+  assert.rejects -> v.validate ids: 1 null 2
+  .then (_with) -> assert.match _with.stack, /invalid ids/
+
+test "maxLength on array" ->
+  v = new Validator idList: maxLength: 3 array: fieldType: :number
+  v.validate idList: 1 2
+  v.validate idList: 1 2 3
+  assert.throws -> v.validate idList: 1 2 3 4
+
+test "maxLength on array is after preprocess" ->
+  v = new Validator idList:
+    maxLength: 3
+    # preprocess: (a) -> compact a
+    array: fieldType: :number
+
+  v.validate idList: 1 2
+  # v.validate idList: 1 2 null null 3
+  assert.throws -> v.validate idList: 1 2 3 4
+
+test "maxLength on array value" ->
+  v = new Validator idList: array: maxLength: 3 fieldType: :string
+  v.validate idList: :1 :2
+  assert.throws -> v.validate idList: :1 :2 :way-too-long
+
+test :minLength ->
+  v = new Validator idList: minLength: 3 array: fieldType: :number
+  v.validate idList: 1 2 3
+  v.validate idList: 1 2 3 4
+  assert.throws -> v.validate idList: 1 2
+
+test :customValidate ->
+  v = new Validator idList:
+    array: :number
+    validate: (a) -> 10 == reduce sum, v from a inject 0 with sum + v
+
+  v.validate idList: 1 2 3 4
+  v.validate idList: [] 10
+  v.validate idList: 6 4
+  assert.throws -> v.validate idList: 1 2
+
+test :customPreprocess ->
+  v = new Validator idList:
+    array: :string
+    preprocess: (a) -> w a
+    validate: (a) -> isArray(a) || isString(a)
+
+  v.validate idList: "" a b c
+  v.validate idList: :a :b :c
+
+  assert.eq
+    v.preprocess idList: "" a b c
+    idList: :a :b :c
+
+test :array-of-objects ->
+  v = new Validator
+    recordList: array: fields:
+      id:     :string
+      count:  :number
+
+  v.validate recordList: []
+    id: :a1 count: 10
+    id: :a2 count: 20
+
+  assert.throws ->
+    v.validate recordList: [] 123
+
+  assert.throws ->
+    v.validate recordList: []
+      id: :a1 count: :aString
+      id: :a2 count: 20
+
+test :array-of-arrays ->
+  v = new Validator
+    matrix:
+      length: 3
+      array:
+        length: 3
+        array: :number
+
+  v.validate matrix:
+    1 2 3
+    4 5 6
+    7 8 9
+  assert.throws -> v.validate matrix:
+    1 2 3 4
+    4 5 6
+    7 8 9
+  assert.throws -> v.validate matrix:
+    1 2 3
+    4 5 6
+  assert.throws -> v.validate matrix:
+    1 2 3
+    4 5
+    7 8 9

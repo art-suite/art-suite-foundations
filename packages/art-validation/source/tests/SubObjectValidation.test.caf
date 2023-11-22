@@ -1,0 +1,77 @@
+import &StandardImport
+
+test "fields" ->
+  v = new Validator
+    dimensions:
+      fields:
+        x: :number
+        y: :number
+
+  v.validate dimensions: x: 1
+  v.validate dimensions: {}
+  v.validate dimensions: null
+  v.validate dimensions: undefined
+  assert.throws -> v.validate dimensions: "not a string"
+  assert.throws -> v.validate dimensions: 1
+  assert.throws -> v.validate dimensions: []
+  assert.throws -> v.validate dimensions: x: "not a string"
+  assert.throws -> v.validate dimensions: z: 1
+
+test "sub-object required" ->
+  v = new Validator
+    dimensions: required:
+      fields:
+        x: :number
+        y: :number
+
+  assert.throws -> v.validate dimensions: null
+  assert.throws -> v.validate dimensions: undefined
+
+test "object's fields required" ->
+  v = new Validator
+    dimensions:
+      fields:
+        x: required: :number
+        y: :number
+
+  v.validate dimensions: x: 1 y: 1
+  assert.throws -> v.validate dimensions: y: 1
+
+test "preprocess" ->
+  v = new Validator
+    normalFoo:
+      preprocess: (v) -> v.trim()
+
+    myFields: required:
+      fields:
+        foo:
+          preprocess: (v) -> v.trim()
+
+  assert.eq
+    myFields: foo: "hi"
+    normalFoo: "hi"
+    v.validate
+      myFields: foo: "   hi   "
+      normalFoo: " hi "
+
+test "validate object type" ->
+  v = new Validator
+    user: fields: name: :string
+  v.validate user: name: :frank
+  assert.rejects -> v.validate user: name: {}
+  .then (_with) -> assert.match _with.stack, /invalid user/
+
+test "validate object type required field" ->
+  v = new Validator
+    user: fields: name: :required :string
+  v.validate user: name: :frank
+  assert.rejects -> v.validate user: {} # name missing
+  .then (_with) -> assert.match _with.stack, /invalid user/
+
+test "double nested" ->
+  v = new Validator
+    post: fields: user: fields: name: :required :string
+  v.validate post: user: name: :frank
+  assert.rejects -> v.validate post: user: name: 123 # not a string
+  .then (_with) -> assert.match _with.stack, /invalid post/
+
