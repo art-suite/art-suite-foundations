@@ -1,4 +1,4 @@
 "use strict"
 let Caf = require('caffeine-script-runtime');
-Caf.defMod(module, () => {let normalizeFieldProps, normalizeFields; return ({normalizeFieldProps, normalizeFields} = require('./Validator'), {normalizeFieldProps, normalizeFields});});
+Caf.defMod(module, () => {return require('./FieldPropNormalizer');});
 //# sourceMappingURL=Validation.js.map

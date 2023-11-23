@@ -1,6 +1,13 @@
 import &StandardImport
 
 describe
+  length: ->
+    test "length: 5" ->
+      v = new Validator caption:
+        fieldType: 'trimmedString'
+        length: 5
+      v.validateCreate caption: "" 12345
+
   maxLength: ->
     test "maxLength" ->
       v = new Validator id:

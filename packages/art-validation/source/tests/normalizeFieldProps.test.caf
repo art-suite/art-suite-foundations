@@ -6,11 +6,15 @@ assertIsTrimmedString = (ft) ->
   assert.isFunction ft.validate
   assert.isFunction ft.preprocess
 
-testEq = (f, a, b) ->
-  test "#{f.name} #{formattedInspect a} should-eq #{formattedInspect b}" ->
+testEqNormalizeFieldProps = (a, b) ->
+  test "#{formattedInspect inputs: a, outputs: stripFunctions b}" ->
     assert.eq
-      stripFunctions f(a)
+      stripFunctions normalizeFieldProps a
       stripFunctions b
+      """
+        this:       normalizeFieldProps #{formattedInspect a}
+        should eq:  #{formattedInspect b}
+
 
 stripFunctions = (o) ->
   switch
@@ -20,45 +24,64 @@ stripFunctions = (o) ->
 
 describe
   basic: ->
-    testEq normalizeFieldProps, {required: true}, required: true
-    testEq normalizeFieldProps,
-      {} dood: 'trimmedString'
-      maxLength:    1024
-      fieldType:    :trimmedString
-      dataType:     :string
-      dood:         true
+    testEqNormalizeFieldProps "number",  dataType: :number, fieldType: :number
+    testEqNormalizeFieldProps {required: true}, required: true
+    testEqNormalizeFieldProps
+      {} required: :number
+      {} dataType: :number, fieldType: :number, required: true
 
-    testEq normalizeFieldProps, {required: ['trimmedString']}, required: ['trimmedString']
+    testEqNormalizeFieldProps
+      {} present: :number
+      {} dataType: :number, fieldType: :number, present: true
+
+    testEqNormalizeFieldProps
+      {} dood: :number
+      {} dood: :number
+
+    testEqNormalizeFieldProps {required: ['trimmedString']}, required: ['trimmedString']
 
   deprecated: ->
     test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
 
+  invalid: ->
+    test "normalizeFieldProps 'unknownFieldTypeTag' (an unknown field-type tag)" ->
+      normalizeFieldProps :number
+      normalizeFieldProps "" required number
+      assert.throws -> normalizeFieldProps :unknownFieldTypeTag
+      assert.throws -> normalizeFieldProps "" number unknownFieldTypeTag
+      assert.throws -> normalizeFieldProps "" unknownFieldTypeTag number
+
   objectValues: ->
-    testEq normalizeFieldProps, {required: foobar: true}, required: true, foobar: true
-    testEq normalizeFieldProps, {foobar: required: true}, required: true, foobar: true
+    testEqNormalizeFieldProps {required: foobar: true}, required: true, foobar: true
+    testEqNormalizeFieldProps {required: foobar: :123}, required: true, foobar: :123
+    testEqNormalizeFieldProps {foobar: required: true}, foobar: required: true
 
+  declarationSequences: ->
   topLevelArrayValues: ->
-    testEq normalizeFieldProps, [w 'foobar'                   ], foobar: true
-    testEq normalizeFieldProps, [w 'required foobar'          ], required: true, foobar: true
-    testEq normalizeFieldProps, [w 'required foobar', fad: 123], required: true, foobar: true, fad: 123
+    testEqNormalizeFieldProps [:required :number          ], required: true, dataType: :number, fieldType: :number
+    testEqNormalizeFieldProps [:required :number fad: 123 ], required: true, dataType: :number, fieldType: :number, fad: 123
 
-  topLevelStringValues: ->
-    testEq normalizeFieldProps, 'foobar', foobar: true
-    testEq normalizeFieldProps, 'foo bar', foo: true, bar: true
+  multipleTagsInString: ->
+    testEqNormalizeFieldProps 'required number',  dataType: :number fieldType: :number required: true
+    testEqNormalizeFieldProps 'required present', required: true, present: true
 
-    test "'trimmedString'", ->
-      assertIsTrimmedString normalizeFieldProps 'trimmedString'
+  tagsCanBeMixedWithCustomProps: ->
+    testEqNormalizeFieldProps
+      :trimmedString foo: true bar: true
+      normalizeFieldProps foo: true bar: true fieldType: :trimmedString
 
-    test "'trimmedString foo bar'", ->
-      ft = normalizeFieldProps 'trimmedString foo bar'
-      assertIsTrimmedString ft
-      assert.eq true, ft.foo
-      assert.eq true, ft.bar
+    testEqNormalizeFieldProps
+      []
+        :present
+        foo: true
+        :required
+        bar: true
+        :trimmedString
+      normalizeFieldProps foo: true bar: true fieldType: :trimmedString required: true present: true
 
   nestedTypes:
     arrays: ->
-      testEq
-        normalizeFieldProps
+      testEqNormalizeFieldProps
         {} array: :number
 
         array:
@@ -66,8 +89,7 @@ describe
           fieldType:  :number
 
     objects: ->
-      testEq
-        normalizeFieldProps
+      testEqNormalizeFieldProps
         {} fields: myCustomSubField: :string
 
         dataType:  :object
@@ -76,14 +98,16 @@ describe
           dataType:     :string
           fieldType:    :string
 
-  specialFields: ->
-    test "fieldType: 'trimmedString'", ->
-      assertIsTrimmedString normalizeFieldProps fieldType: 'trimmedString'
+  specialFieldTypes: ->
+    testEqNormalizeFieldProps
+      fieldType: 'trimmedString'
+      {} maxLength: 1024, fieldType: :trimmedString, dataType: :string
 
+  specialProprties: ->
     test "instanceof: Validator", ->
       ft = normalizeFieldProps instanceof: Validator
-      assert.eq true, ft.validate new Validator
-      assert.eq false, ft.validate {}
+      assert.true   ft.validate new Validator
+      assert.false  ft.validate {}
 
   customFieldTypes: ->
     test "mapped to another fieldType" ->
@@ -190,3 +214,8 @@ describe
           myCustomField:  fields: myFieldName: :myCustomField2
           myCustomField2:  fields: myFieldName: :myCustomField
       .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported
+  downstream_dependency_regressions: ->
+    test "link: 'user'" ->
+      assert.eq
+        stripFunctions normalizeFieldProps link: :user
+        link: :user

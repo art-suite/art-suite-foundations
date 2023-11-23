@@ -1,0 +1,3 @@
+import &ArtStandardLib, &ArtValidation
+
+log normalizeFieldProps link: "number"

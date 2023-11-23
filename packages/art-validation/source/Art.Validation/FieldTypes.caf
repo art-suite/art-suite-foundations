@@ -44,7 +44,7 @@ FieldTypes =
     validate: (v) -> isId v
 
   date:
-    fromString: (v) -> Date.parse v
+    fromString: (v) -> new Date Date.parse v
     validate:   (v) ->
       if v instanceof Date
         !isNaN v - 0

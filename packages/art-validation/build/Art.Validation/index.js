@@ -4,8 +4,8 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./Validation'))
 .addModules({
-  DataTypes:  require('./DataTypes'),
-  FieldTypes: require('./FieldTypes'),
-  Lib:        require('./Lib'),
-  Validator:  require('./Validator')
+  DataTypes:           require('./DataTypes'),
+  FieldPropNormalizer: require('./FieldPropNormalizer'),
+  FieldTypes:          require('./FieldTypes'),
+  Validator:           require('./Validator')
 });

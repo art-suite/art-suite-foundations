@@ -12,7 +12,6 @@ describe
 
         date:
           2020-10-29: new Date :2020-10-29
-          # abc:        null
 
         communicationStatus:
           foo:      null
@@ -22,6 +21,15 @@ describe
           a:      null
           abc:    :abc
           "a bc": null
+
+        integer:
+          -10:      -10
+          0:        0
+          123:      123
+          123.5:    123
+          123.9:    123
+          10000000000:     10000000000   # 10 billion > larger than 32 bit int
+          -10000000000:   -10000000000  # 10 billion > larger than 32 bit int
 
         url:
           www:                                  null
@@ -40,6 +48,12 @@ describe
       each output, input in tests
         test "#{type}: #{input} >> #{if output? then formattedInspect output else "(invalid)"}" ->
           if output?
+            validator = new Validator myField: type
+
+            if validator.fields.myField extract fromString
+              input = fromString input
+              log {} input
+
             assert.eq
               new Validator myField: type
               .validate myField: input

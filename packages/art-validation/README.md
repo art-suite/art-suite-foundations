@@ -66,3 +66,12 @@ fieldProps:
       in addition to passing validate(), if present, the value must also be an instance of the
       specified class
 ```
+
+# Examples
+
+```coffeescript
+age: "integer"
+age: required: "integer"
+age: "required integer"
+age: ["required", "integer"]
+```

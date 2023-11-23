@@ -12,6 +12,10 @@ normalizeInstanceOfProp = (ft) ->
   else
     ft
 
+allowedBooleanProps =
+  required: true
+  present: true
+
 ## normalizeRecursivePlainObjectProps
   IN: plainObjectFieldType: plain object
   OUT: plain object
@@ -29,7 +33,7 @@ normalizeInstanceOfProp = (ft) ->
     fieldType: :number
 normalizeRecursivePlainObjectProps = (plainObjectFieldType) ->
   if 1 == objectKeyCount plainObjectFieldType
-    find singleFieldValue, singleFieldName from plainObjectFieldType when singleFieldName != :fields && singleFieldName != :array &&
+    find singleFieldValue, singleFieldName from plainObjectFieldType when allowedBooleanProps[singleFieldName] &&
         isPlainObject singleFieldValue
         || isString singleFieldValue
       mergeIntoUnless
@@ -105,7 +109,8 @@ _normalizeFieldProps = (ft, customFieldTypes) ->
         customFieldTypes
 
     when isPlainArray ftArray = ft
-      each ft in ftArray into out = {} with mergeInto out, _normalizeFieldProps ft, customFieldTypes
+      each ft in compactFlatten ftArray into out = {}
+        mergeInto out, _normalizeFieldProps ft, customFieldTypes
 
     when isString strings = ft
       ft = {}
@@ -129,8 +134,10 @@ _normalizeFieldProps = (ft, customFieldTypes) ->
           ft.fieldType = string
           mergeIntoUnless ft, subFt
 
-        else
+        else if allowedBooleanProps[string]
           ft[string] = true
+
+        else throw new Error "" Unknown field-type: #{JSON.stringify string}
 
       ft
 
@@ -145,4 +152,7 @@ _normalizeFieldProps = (ft, customFieldTypes) ->
     customFieldTypes
 
 noCustomFieldTypes = {}
-normalizeFieldProps: (fieldType, customFieldTypes) -> _normalizeFieldProps fieldType, customFieldTypes ? noCustomFieldTypes
+
+{}
+  normalizeFieldProps = (fieldType, customFieldTypes) -> _normalizeFieldProps fieldType, customFieldTypes ? noCustomFieldTypes
+  normalizeFields:      (fields, customFieldTypes) -> object fieldType in fields with normalizeFieldProps fieldType, customFieldTypes

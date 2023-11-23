@@ -22,7 +22,7 @@ test "validate array with required number elements" ->
   v.validate ids: null
   v.validate ids: 1 2
   assert.rejects -> v.validate ids: 1 null 2
-  .then (_with) -> assert.match _with.stack, /invalid ids/
+  .then (_with) -> assert.match _with.stack, /// ids .* failed .* validation
 
 test "maxLength on array" ->
   v = new Validator idList: maxLength: 3 array: fieldType: :number

@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtClassSystem, &DataTypes, &Lib, {} &FieldTypes, &DataTypes
+import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, {} &FieldTypes, &DataTypes
 
 ###
   CONCEPTS:
@@ -78,9 +78,7 @@ import &ArtStandardLib, &ArtClassSystem, &DataTypes, &Lib, {} &FieldTypes, &Data
             specified class
 class Validator extends BaseClass
 
-  @normalizeFields: (fields, customFields) ->
-    object f in fields with normalizeFieldProps f, customFields
-
+  @normalizeFields: normalizeFields
   @normalizeFieldProps: normalizeFieldProps
 
   constructor: (fieldDeclarationMap, options) ->
@@ -100,7 +98,6 @@ class Validator extends BaseClass
       fieldOptions = @_addField field, fieldOptions
       if fieldOptions.required || fieldOptions.present
         pushIfNotPresent @_requiredFields, field
-    null
 
   @getter
     :customFieldTypes
@@ -223,17 +220,17 @@ class Validator extends BaseClass
     array f from @invalidFields(fields) into messageFields
       errors[f] = "invalid"
       if @exclusive && !@_fieldProps[f]
-        "unexpected '#{f}' field"
+        "" #{JSON.stringify f} unexpected"
       else
-        "invalid #{f}"
+        "" #{JSON.stringify f} failed validation
 
     array f from @postInvalidFields(processedFields) into messageFields
       errors[f] = "invalid"
-      "invalid processed #{f}"
+      "" #{JSON.stringify f} failed post-validation
 
     forCreate && array f from @missingFields(fields) into messageFields
       errors[f] = "missing"
-      "missing #{f}"
+      "" #{JSON.stringify f} missing
 
     message = "#{options?.context ? @context} #{if forCreate then 'create' else 'update'}-validation failed. Invalid fields: #{messageFields.join ', '}"
     info.fields = fields
