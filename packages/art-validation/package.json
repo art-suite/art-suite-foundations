@@ -2,6 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
+    "art-class-system": "^1.11.16",
     "art-communication-status": "^1.5.15",
     "art-standard-lib": "^1.71.3"
   },
