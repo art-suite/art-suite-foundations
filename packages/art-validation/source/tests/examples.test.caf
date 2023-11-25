@@ -1,0 +1,33 @@
+import &StandardImport
+
+test "simples" ->
+  validator = new Validator name: "string"
+
+  assert.true !!validator.validate name: "Alice"
+  assert.true !!validator.validate name: "Alice" age: 123 # not exclusive
+  assert.throws -> validator.validate name: 123
+
+test "required" ->
+  validator = new Validator name: "required string"
+
+  assert.true !!validator.validate name: "Alice"
+  assert.throws -> validator.validate {} # not required
+
+test "exclusive" ->
+  validator = new Validator {name: "string"}, exclusive: true
+
+  assert.true !!validator.validate name: "Alice"
+  assert.throws -> validator.validate name: "Alice" age: 123 # exclusive!
+  assert.throws -> validator.validate name: 123
+
+
+test "example 2" ->
+  validator = new Validator
+    name: [] "required string", maxLength: 5
+    age:  "integer"
+
+  assert.true !!validator.validate name: "Alice"
+  assert.true !!validator.validate name: "Alice", someField: "OK, notExclusive"
+
+  assert.throws -> validator.validate name: "Veronica"
+  assert.throws -> validator.validate name: "Veronica", number: "not-a-number"

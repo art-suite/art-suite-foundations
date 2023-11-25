@@ -1,4 +1,4 @@
-# ArtValidator
+# ArtValidator 2.0
 
 Validate object properties.
 
@@ -6,6 +6,49 @@ Validate object properties.
 
 - validators are evaluated before preprocessors
 - preprocessors should NOT throw validation-related errors
+
+### Example
+
+Simplest: _"name", must be a string (or null or undefined)_
+
+```coffeescript
+validator = new Validator name: "string"
+# or, verbose: new Validator name: fieldType: "string"
+
+assert.true !!validator.validate name: "Alice"
+assert.true !!validator.validate {} # name not required
+
+assert.throws -> validator.validate name: 123   # not a string
+```
+
+Required: _"name", must be a string (and not null or undefined)_
+
+```coffeescript
+validator = new Validator name: "required string"
+# or, verbose: new Validator name: required: true, fieldType: "string"
+
+assert.true !!validator.validate name: "Alice"
+assert.throws -> validator.validate {} # name required
+```
+
+Exclusive: _"name" is the only field allowed_
+
+```coffeescript
+validator = new Validator {name: "string"}, exclusive: true
+# or, verbose: new Validator {name: fieldType: "string"}, exclusive: true
+
+assert.true !!validator.validate name: "Alice"
+assert.throws -> validator.validate name: "Alice" age: 123 # exclusive!
+assert.throws -> validator.validate name: 123
+```
+
+Alternatives:
+
+```coffeescript
+new Validator age: required: "integer"  # only `required` and `present` can be expressed this way
+new Validator age: "required integer"   # strings are broken up on word boundaries
+new Validator age: ["required", "integer"]
+```
 
 ### USAGE
 
@@ -67,11 +110,37 @@ fieldProps:
       specified class
 ```
 
-# Examples
+# Breaking Changes with 1.0
+
+- maxLength and minLength tests for arrays were expressed inconsistently with the rest of the API in v1, and there was therefor no way to express a minLength or maxLength test for the individual elements in an array.
+
+  ```coffeescript
+  # v1
+  myField: array: maxLength: 10 # array can't be longer than 10 elements
+
+  # v2
+  myField:
+    array: maxLength: 20  # individual elements can't be longer than 20
+    maxLength: 10         # array can't be longer than 10 elements
+  ```
+
+- In v2, only `required` and `present` can be used as nested-object-tags:
 
 ```coffeescript
-age: "integer"
-age: required: "integer"
-age: "required integer"
-age: ["required", "integer"]
+# v1
+myField: required: "string" # hard-deprecated in v1
+myField: required: fieldType: "string" # OK
+# became: required: true, fieldType: "string"
+
+myField: foobar: fieldType: "string"
+# became: foobar: true, fieldType: "string"
+
+# v2
+myField: required: "string" # allowed, once again! (but only for 'required' and 'present')
+# now becomes: required: true, fieldType: "string"
+
+myField: foobar: fieldType: "string"
+# now becomes: foobar: fieldType: "string"
+# note, the {fieldType: "string"}, being a property on foobar, a
+# custom property, is completely ignored by the Validator.
 ```
