@@ -12,9 +12,9 @@
     "art-config": "^2.0.4",
     "art-epoched-state": "^1.2.14",
     "art-object-tree-factory": "^2.2.10",
-    "art-rest-client": "^1.9.3",
+    "art-rest-client": "^1.10.0",
     "art-standard-lib": "^1.71.3",
-    "art-validation": "^1.11.0",
+    "art-validation": "^2.0.0",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",

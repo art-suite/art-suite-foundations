@@ -7,13 +7,15 @@
   "dependencies": {
     "@art-suite/cli": "^1.5.0",
     "art-communication-status": "^1.5.15",
-    "art-rest-client": "^1.9.3",
+    "art-rest-client": "^1.10.0",
     "chalk": "^4.1.0",
     "glob-promise": "^4.1.0",
     "neptune-namespaces-runtime": "^3.2.11",
     "semver": "^7.5.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
