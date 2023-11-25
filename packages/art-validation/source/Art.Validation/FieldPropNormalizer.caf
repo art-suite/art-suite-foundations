@@ -63,8 +63,10 @@ normalizeFieldTypeProp = (ft, customFieldTypes) ->
   else if _array
     normalizedArray = _normalizeFieldProps _array, customFieldTypes
     merge ft,
+      dataType:   :array
+      fieldType:  :array
       array:      normalizedArray
-      validate:  validate ? if normalizedArray.validate || normalizedArray.required
+      validate:   validate ? if normalizedArray.validate || normalizedArray.required
         (_array) ->
           isArray _array
           && !validate || validate _array

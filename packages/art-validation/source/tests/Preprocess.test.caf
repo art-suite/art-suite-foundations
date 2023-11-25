@@ -1,6 +1,6 @@
 import &StandardImport
 
-test "preprocess creates a new object if values change (via default" ->
+test "preprocess creates a new object if values change (via default)" ->
   v1 = new Validator count: fieldType: :number default: 0
 
   assert.notEqual
