@@ -20,6 +20,10 @@
       "build/**/*.js",
       "!build/test/**/*.js"
     ],
+    "coveragePathIgnorePatterns": [
+      "/index.js$",
+      "/namespace.js$"
+    ],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
@@ -34,8 +38,8 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "coffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp &\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build": "cd source\nfind . -name '*.js' -o -name '*.css' | cpio -vpdm ../build\ncd ..\ncaf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncd source\nfind . -name '*.js' -o -name '*.css' | cpio -vpdm ../build-temp\ncd ..\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
     "clean": "rm -rf build/*",
     "nn": "nn build/* test/tests",
     "test": "npm run nn\nmocha -u tdd",
@@ -45,8 +49,7 @@
   "watch": {
     "build": {
       "extensions": [
-        "caf",
-        "coffee"
+        "caf"
       ],
       "patterns": [
         "source"
