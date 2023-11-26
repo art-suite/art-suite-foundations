@@ -1,16 +1,6 @@
-import &ArtStandardLib, {} &FieldTypes
+import &ArtStandardLib, &StandardValidations, {} &FieldTypes
 
 namespace = require :./namespace
-
-normalizeInstanceOfProp = (ft) ->
-  if _instanceof = ft.instanceof
-    {validate} = ft
-    merge ft,
-      validate: (v) ->
-        (v instanceof _instanceof) &&
-        (!validate || validate v)
-  else
-    ft
 
 standardTags =
   required: true
@@ -31,29 +21,34 @@ standardTags =
     field: true
     definition: true
     fieldType: :number
-normalizeRecursivePlainObjectProps = (plainObjectFieldType) ->
+normalizeRecursivePlainObjectProps = (plainObjectFieldType, validatorOptions) ->
   if 1 == objectKeyCount plainObjectFieldType
     find singleFieldValue, singleFieldName from plainObjectFieldType when standardTags[singleFieldName] &&
         isPlainObject singleFieldValue
         || isString singleFieldValue
-      log.warn "" ArtValidation DEPRECTAED fieldProps: {#{singleFieldName}: object/string}. USE: ["#{singleFieldName}", object/string]
+      log.warn validatorOptions.getNiceErrorMessage
+        "" ArtValidation DEPRECTAED fieldProps: {#{singleFieldName}: object/string}. USE: ["#{singleFieldName}", object/string]
+        plainObjectFieldType
+
       [] singleFieldName, singleFieldValue
 
   ? plainObjectFieldType
 
-normalizeDeprecatedProps = (ft) ->
-  throw new Error "ArtValidation DEPRECTAED fieldProps: requiredPresent. USE: present: true" if ft.requiredPresent
-  ft
+normalizeDeprecatedProps = (fieldProps, validatorOptions) ->
+  if fieldProps.requiredPresent
+    throw new Error validatorOptions.getNiceErrorMessage "ArtValidation DEPRECTAED fieldProps: requiredPresent. USE: present: true", fieldProps
+  fieldProps
 
 normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
-  {fieldType, fields, array: _array, validate, postValidate, preprocess, minLength, maxLength} = fieldProps
-  fieldType ?= :object if fields
-  fieldProps = merge FieldTypes[fieldType], fieldProps if isString fieldType
+  fieldProps extract fields, array as _array, validate, postValidate, preprocess
   if fields
-    throw new Error "Can only specify `array: ...` or `fields: ...`" if _array
+    if _array
+      throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Can only specify `array: ...` or `fields: ...`", fieldProps
     subValidator = new namespace.Validator fields, merge validatorOptions, exclusive: true
     fieldProps = merge fieldProps, {}
       subValidator.fields
+      dataType:   :object
+      fieldType:  :object
       validate:   validate ? (v) -> isPlainObject(v) && subValidator.isValid v
       preprocess: preprocess ? (v) -> subValidator.preprocess v
 
@@ -78,95 +73,90 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
 
   else fieldProps
 
-fieldPropsWithGeneratedPostValidator = (fieldProps, validatorOptions) ->
-  fieldProps extract postValidate, maxLength, minLength, length
-
-  if length?
-    if maxLength? || minLength?
-      throw new Error "If specifying 'length', you can't also specify maxLength nor minLength"
-
-    maxLength = minLength = length
-
-  if maxLength? || minLength? # not array, because we already create a postValidate for arrays
-    merge
-      fieldProps
-      {}
-        maxLength
-        minLength
-        length
-        postValidate: (value, fieldName, fields) ->
-          if postValidate && !postValidate value, fieldName, fields then false
-          else if value?
-            if maxLength? && value.length > maxLength       then false
-            else if minLength? && value.length < minLength  then false
-            else true
-
-          else true
-
-  else fieldProps
-
-applyFieldtype = (fieldProps, validatorOptions) ->
-  if fieldProps extract fieldType
-    unless fieldTypeProps = validatorOptions.fieldtypes[fieldType]
-      throw new Error "" Unknown field-type: #{JSON.stringify fieldType}
-
 processingCustomFieldtypePath = []
-_normalizeFieldProps = (fieldProps, validatorOptions) ->
-  switch
-  when isPlainObject fieldProps
-    normalizedFieldProps = normalizeObjectAndArrayFieldProps
-      normalizeInstanceOfProp normalizeDeprecatedProps normalizeRecursivePlainObjectProps fieldProps
-      validatorOptions
+normalizeStringFieldProp = (fieldPropString, validatorOptions) ->
+  if customFieldType = validatorOptions.customFieldTypes?[fieldPropString]
+    try
+      if fieldPropString in processingCustomFieldtypePath
+        throw new Error validatorOptions.getNiceErrorMessage "" Invalid custom fields. Recursive custom field types are not supported. Recursive path: #{processingCustomFieldtypePath.join ' > '} > #{fieldPropString}
 
-  when isPlainArray ftArray = fieldProps
-    each fieldProps in compactFlatten ftArray into normalizedFieldProps = {}
-      mergeInto normalizedFieldProps, _normalizeFieldProps fieldProps, validatorOptions
+      processingCustomFieldtypePath.push fieldPropString
 
-  when isString ftStrings = fieldProps
-    normalizedFieldProps = {}
-    each string in-array w ftStrings
-      if customFieldType = validatorOptions.customFieldTypes?[string]
-        try
-          if string in processingCustomFieldtypePath
-            throw new Error "" Recursive custom field types are not supported. Recursive path: #{processingCustomFieldtypePath.join ' > '} > #{string}
+      if isPlainObject(customFieldType) || isString customFieldType
+        customFieldTypeProps = _normalizeFieldProps customFieldType, validatorOptions
 
-          processingCustomFieldtypePath.push string
+      else throw new Error validatorOptions.getNiceErrorMessage "Invalid custom field type. Expected fieldPropString or plain object", customFieldType
 
-          if isPlainObject(customFieldType) || isString customFieldType
-            customFieldTypeProps = _normalizeFieldProps customFieldType, validatorOptions
+      merge customFieldTypeProps, fieldType: fieldPropString
 
-          else throw new Error "Invalid custom field type #{customFieldType}. Expected string or plain object. Got: #{formattedInspect customFieldType}"
+    finally
+      processingCustomFieldtypePath.pop()
 
-        finally
-          processingCustomFieldtypePath.pop()
-
-      if subFt = customFieldTypeProps ? FieldTypes[string]
-        normalizedFieldProps.fieldType = string
-        mergeIntoUnless normalizedFieldProps, subFt
-
-      else
-        normalizedFieldProps[string] = true
-
-    normalizedFieldProps
-
-  when fieldProps == true
-    normalizedFieldProps = FieldTypes.any
+  else if namedFieldTypeProps = FieldTypes[fieldPropString]
+    merge namedFieldTypeProps, fieldType: fieldPropString
 
   else
-    throw new Error "fieldProps must be a string, plainObject, or array of strings, plainObjects and/or arrays. Was: #{formattedInspect fieldProps}"
+    [fieldPropString]: true
 
-  fieldPropsWithGeneratedPostValidator
-    merge FieldTypes[normalizedFieldProps.fieldType], normalizedFieldProps
-    validatorOptions
+normalizeFieldPropsStructure = (fieldProps, validatorOptions) ->
+  compactFlatten array element in compactFlattenAll fieldProps
+    switch
+    when isString element then w element
+    when isPlainObject element
+      element = normalizeRecursivePlainObjectProps element
+      [] element.fieldType, element
+
+    when element == true then FieldTypes.any
+    else throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Expected string, plainObject, or array of strings, plainObjects and/or arrays", element
+
+_normalizeFieldProps = (fieldProps, validatorOptions) ->
+  each fieldProps in normalizeFieldPropsStructure fieldProps, validatorOptions into normalizedFieldProps = {}
+    mergeInto
+      normalizedFieldProps
+      switch
+      when isString fieldProps then normalizeStringFieldProp fieldProps, validatorOptions
+
+      when isPlainObject fieldProps
+        fieldProps = preExpandStandardValidationProps fieldProps, validatorOptions
+        fieldProps = normalizeDeprecatedProps fieldProps, validatorOptions
+        fieldProps = normalizeObjectAndArrayFieldProps fieldProps, validatorOptions
+
+      else throw new Error validatorOptions.getNiceErrorMessage "Internal failure. Should not be possible to get here.", fieldProps
+
+  normalizeAllStandardValidations normalizedFieldProps, validatorOptions
 
 normalizeValidatorOptions = (validatorOptions) ->
   merge
     validatorOptions
-    fieldTypes:
-      if validatorOptions extract? customFieldTypes
-            merge FieldTypes, customFieldTypes
-      else  FieldTypes
+    getNiceErrorMessage: (message, invalidInput) ~>
+      joiner = '. '
+      compact []
+        message
+        if invalidInput && invalidInput != @rawFieldProps
+          inspected = formattedInspect invalidInput
+          if /\n/.test inspected
+            joiner = "\n"
+            inspected = "\n  " + inspected.replace /\n/g, "\n  "
+          "" Got: #{inspected}
+        if @fieldName then "Field #{@fieldName}:"
+        if @rawFieldProps
+          inspected = formattedInspect @rawFieldProps
+          if /\n/.test inspected
+            joiner = "\n"
+            inspected = "\n  " + inspected.replace /\n/g, "\n  "
+          "" Raw fieldProps: #{inspected}
+
+      .join joiner
 
 {}
-  normalizeFieldProps = (fieldType, validatorOptions) -> _normalizeFieldProps fieldType, normalizeValidatorOptions validatorOptions
-  normalizeFields:      (fields, validatorOptions) -> object fieldType in fields with normalizeFieldProps fieldType, normalizeValidatorOptions validatorOptions
+  normalizeFieldProps:  (fieldProps, validatorOptions) ->
+    validatorOptions = normalizeValidatorOptions validatorOptions
+    validatorOptions.rawFieldProps = fieldProps
+    _normalizeFieldProps fieldProps, validatorOptions
+
+  normalizeFields:      (fields, validatorOptions) ->
+    validatorOptions = normalizeValidatorOptions validatorOptions
+    object fieldProps, fieldName in fields
+      validatorOptions.fieldName = fieldName
+      validatorOptions.rawFieldProps = fieldProps
+      _normalizeFieldProps fieldProps, validatorOptions

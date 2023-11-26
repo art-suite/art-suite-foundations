@@ -1,0 +1,48 @@
+import &ArtStandardLib
+
+{}
+  normalizeInstanceofValidation = (fieldProps, validatorOptions) ->
+    if _instanceof = fieldProps.instanceof
+      {validate} = fieldProps
+      merge fieldProps, validate: (v) ->
+        (v instanceof _instanceof) &&
+        (!validate || validate v)
+
+    else
+      fieldProps
+
+  normalizeLengthValidation = (fieldProps, validatorOptions) ->
+    fieldProps extract postValidate, maxLength, minLength
+
+    if maxLength? || minLength? # not array, because we already create a postValidate for arrays
+      merge
+        fieldProps
+        {}
+          maxLength
+          minLength
+          postValidate: (value, fieldName, fields) ->
+            if postValidate && !postValidate value, fieldName, fields then false
+            else if value?
+              if maxLength? && value.length > maxLength       then false
+              else if minLength? && value.length < minLength  then false
+              else true
+
+            else true
+
+    else fieldProps
+
+  preExpandStandardValidationProps: (fieldProps, validatorOptions) ->
+    fieldProps extract length, maxLength, minLength
+    if length?
+      if (maxLength? && maxLength != length) || (minLength? && minLength != length)
+        message = "Invalid fieldProps: If specifying 'length', you can't also specify maxLength or minLength"
+        if validatorOptions.getNiceErrorMessage
+          message = validatorOptions.getNiceErrorMessage message, fieldProps
+        throw new Error message
+      merge fieldProps, {} length, minLength: length, maxLength: length
+    else fieldProps
+
+  normalizeAllStandardValidations: (fieldProps, validatorOptions) ->
+    normalizeLengthValidation
+      normalizeInstanceofValidation fieldProps, validatorOptions
+      validatorOptions

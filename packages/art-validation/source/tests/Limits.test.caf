@@ -4,7 +4,7 @@ describe
   length: ->
     test "length: 5" ->
       v = new Validator caption:
-        fieldType: 'trimmedString'
+        fieldType: :trimmedString
         length: 5
       v.validateCreate caption: "" 12345
 

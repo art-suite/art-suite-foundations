@@ -7,5 +7,7 @@
   DataTypes:           require('./DataTypes'),
   FieldPropNormalizer: require('./FieldPropNormalizer'),
   FieldTypes:          require('./FieldTypes'),
+  StandardValidations: require('./StandardValidations'),
+  ValidateFunctions:   require('./ValidateFunctions'),
   Validator:           require('./Validator')
 });
