@@ -26,9 +26,10 @@ normalizeRecursivePlainObjectProps = (plainObjectFieldType, validatorOptions) ->
     find singleFieldValue, singleFieldName from plainObjectFieldType when standardTags[singleFieldName] &&
         isPlainObject singleFieldValue
         || isString singleFieldValue
-      log.warn validatorOptions.getNiceErrorMessage
-        "" ArtValidation DEPRECTAED fieldProps: {#{singleFieldName}: object/string}. USE: ["#{singleFieldName}", object/string]
+      message = validatorOptions.getNiceErrorMessage
+        "" ArtValidation DEPRECATED fieldProps: {#{singleFieldName}: object/string}. USE: ["#{singleFieldName}", object/string]
         plainObjectFieldType
+      log.warn message unless validatorOptions.quiet
 
       [] singleFieldName, singleFieldValue
 
@@ -36,7 +37,7 @@ normalizeRecursivePlainObjectProps = (plainObjectFieldType, validatorOptions) ->
 
 normalizeDeprecatedProps = (fieldProps, validatorOptions) ->
   if fieldProps.requiredPresent
-    throw new Error validatorOptions.getNiceErrorMessage "ArtValidation DEPRECTAED fieldProps: requiredPresent. USE: present: true", fieldProps
+    throw new Error validatorOptions.getNiceErrorMessage "ArtValidation DEPRECATED fieldProps: requiredPresent. USE: present: true", fieldProps
   fieldProps
 
 normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
@@ -103,7 +104,7 @@ normalizeFieldPropsStructure = (fieldProps, validatorOptions) ->
     switch
     when isString element then w element
     when isPlainObject element
-      element = normalizeRecursivePlainObjectProps element
+      element = normalizeRecursivePlainObjectProps element, validatorOptions
       [] element.fieldType, element
 
     when element == true then FieldTypes.any

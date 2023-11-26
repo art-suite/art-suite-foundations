@@ -19,34 +19,34 @@ cleanStackAndThrow = (stack, error) ->
   throw error
 
 normalizeArgsAndName = (args) ->
-  if args.length >= 3
-    [name, testInput, shouldEqualOutput] = args
+  if args.length >= 3 && isString args[0]
+    [name, testInput, shouldEqualOutput, validatorOptions] = args
   else
-    [testInput, shouldEqualOutput] = args
+    [testInput, shouldEqualOutput, validatorOptions] = args
     name = "#{formattedInspect(testInput).replace /\n/g, ', '} >>> #{formattedInspect(shouldEqualOutput).replace /\n/g, ', '}"
-  return {} name, testInput, shouldEqualOutput
+  return {} name, testInput, shouldEqualOutput, validatorOptions
 
 testEqNormalizeFieldProps = (args...) ->
   {stack} = new Error
-  {name, testInput, shouldEqualOutput} = normalizeArgsAndName args
+  {name, testInput, shouldEqualOutput, validatorOptions} = normalizeArgsAndName args
   test name, ->
     try
-      assertDefinitionEq testInput, shouldEqualOutput
+      assertDefinitionEq testInput, shouldEqualOutput, stripFunctions, validatorOptions
     catch error
       cleanStackAndThrow stack, error
 
 testEqNormalizeFieldPropsWithFunctionsIdentified = (args...) ->
   {stack} = new Error
-  {name, testInput, shouldEqualOutput} = normalizeArgsAndName args
+  {name, testInput, shouldEqualOutput, validatorOptions} = normalizeArgsAndName args
   test name, ->
     try
-      assertDefinitionEq testInput, shouldEqualOutput, identifyFunctions
+      assertDefinitionEq testInput, shouldEqualOutput, identifyFunctions, validatorOptions
     catch error
       cleanStackAndThrow stack, error
 
-assertDefinitionEq = (a, b, cleanThings = stripFunctions) ->
+assertDefinitionEq = (a, b, cleanThings, validatorOptions) ->
   assert.eq
-    cleanThings normalizeFieldProps a
+    cleanThings normalizeFieldProps a, validatorOptions
     cleanThings b
     """
       this:       normalizeFieldProps #{formattedInspect a}
@@ -97,7 +97,7 @@ describe
     test "'required' tag" -> assert.eq normalizeFieldProps(:required), required: true
     test "'present' tag" -> assert.eq normalizeFieldProps(:present), present: true
 
-  ## deprecated:
+  deprecated:
     hard: ->
       test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
 
@@ -105,10 +105,12 @@ describe
       testEqNormalizeFieldProps
         {} required: :number
         {} dataType: :number, fieldType: :number, required: true
+        quiet: true
 
       testEqNormalizeFieldProps
         {} present: :number
         {} dataType: :number, fieldType: :number, present: true
+        quiet: true
 
       testEqNormalizeFieldProps {required: ['trimmedString']}, required: ['trimmedString']
 
@@ -350,6 +352,16 @@ describe
         assert.eq
           stripFunctions normalizeFieldProps link: :user
           link: :user
+
+      test "each" ->
+        normalizeFields
+          type:               required: fieldType: :string
+          session:            required: fieldType: :object
+          parentRequest:      instanceof: class Foo
+          originatedOnServer: :boolean
+          props:              :object
+          key:                :string
+          {} quiet: true
 
     array_and_lengths: ->
       testEqNormalizeFieldProps
