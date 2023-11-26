@@ -42,7 +42,7 @@ assert.throws -> validator.validate name: "Alice" age: 123 # exclusive!
 assert.throws -> validator.validate name: 123
 ```
 
-Alternatives:
+Three different ways to express field-property sequences:
 
 ```coffeescript
 new Validator age: required: "integer"  # only `required` and `present` can be expressed this way

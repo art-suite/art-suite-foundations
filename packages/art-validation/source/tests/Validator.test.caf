@@ -34,13 +34,13 @@ describe
       assert.throws -> v.validate id: 123
 
     test "required: 'trimmedString'", ->
-      v = new Validator id: required: fieldType: 'trimmedString'
+      v = new Validator id: :required :trimmedString
       v.validate id: "hi"
       assert.throws -> v.validate id: 123
       assert.throws -> v.validate()
 
     test "requiredPresent: 'trimmedString'", ->
-      v = new Validator id: required: present: fieldType: 'trimmedString'
+      v = new Validator id: [] :required :present fieldType: :trimmedString
       assert.throws -> v.validate(id: 123), "with number"
       assert.throws -> v.validate(), "missing"
       assert.throws -> v.validate(id: ""), "id:''"
@@ -125,9 +125,11 @@ describe
       .then ({info}) -> assert.eq info.errors, foo: "invalid"
 
   compoundTests:->
-    test "require: validate: ->", ->
+    test "'required', validate: ->", ->
       v = new Validator
-        foo: required: validate: (v) -> v.match /// ^email\:#{findEmailRegexp.source}$
+        foo:
+          :required
+          validate: (v) -> v.match /// ^email\:#{findEmailRegexp.source}$
 
       assert.throws -> v.validate id: 123
       assert.throws -> v.validate foo: "test@test.com"

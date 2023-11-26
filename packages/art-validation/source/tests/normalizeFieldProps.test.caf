@@ -97,45 +97,36 @@ describe
     test "'required' tag" -> assert.eq normalizeFieldProps(:required), required: true
     test "'present' tag" -> assert.eq normalizeFieldProps(:present), present: true
 
-  more: ->
-    testEqNormalizeFieldProps
-      {} required: :number
-      {} dataType: :number, fieldType: :number, required: true
+  ## deprecated:
+    hard: ->
+      test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
 
-    testEqNormalizeFieldProps
-      {} present: :number
-      {} dataType: :number, fieldType: :number, present: true
+    soft: ->
+      testEqNormalizeFieldProps
+        {} required: :number
+        {} dataType: :number, fieldType: :number, required: true
 
-    testEqNormalizeFieldProps
-      {} dood: :number
-      {} dood: :number
+      testEqNormalizeFieldProps
+        {} present: :number
+        {} dataType: :number, fieldType: :number, present: true
 
-    testEqNormalizeFieldProps {required: ['trimmedString']}, required: ['trimmedString']
+      testEqNormalizeFieldProps {required: ['trimmedString']}, required: ['trimmedString']
 
-  deprecated: ->
-    test "requiredPresent: true", -> assert.throws -> normalizeFieldProps requiredPresent: true
-
-  invalid: ->
-    test "non fieldType, non-tag is illegal" ->
-      assert.rejects -> normalizeFieldProps :unknownFieldType
-      .then (rejectsWith) ->
-        assert.match
-          rejectsWith.message
-          ///i unknown .* unknownFieldType
-
-    test "all variations with unknownFieldType" ->
-      normalizeFieldProps :number
-      normalizeFieldProps "" required number
-      assert.throws -> normalizeFieldProps :unknownFieldType
-      assert.throws -> normalizeFieldProps "" number unknownFieldType
-      assert.throws -> normalizeFieldProps "" unknownFieldType number
+  # invalid: ->
+  #   test "explicit, unknown field type is an error" ->
+  #     assert.rejects -> normalizeFieldProps fieldType: :unknownFieldType
+  #     .then (rejectsWith) ->
+  #       assert.match
+  #         rejectsWith.message
+  #         ///i unknown .* unknownFieldType
 
   tags:
+    unknown-field-types-are-treated-as-tags: ->
+      testEqNormalizeFieldProps :unknownFieldType, unknownFieldType: true
+
     asObjectProperties: ->
       testEqNormalizeFieldProps {required: true}, required: true
       testEqNormalizeFieldProps {present: true}, present: true
-      testEqNormalizeFieldProps {required: :number}, dataType: :number, fieldType: :number, required: true
-      testEqNormalizeFieldProps {required: present: :number}, dataType: :number, fieldType: :number, required: true, present: true
 
     asSimpleStrings: ->
       testEqNormalizeFieldProps :required required: true
@@ -171,8 +162,6 @@ describe
     testEqNormalizeFieldProps {foobar: :number}, foobar: :number
     testEqNormalizeFieldProps {foobar: required: true}, foobar: required: true
     testEqNormalizeFieldProps {foobar: required: :number}, foobar: required: :number
-    testEqNormalizeFieldProps {required: foobar: true}, required: true, foobar: true
-    testEqNormalizeFieldProps {required: foobar: :123}, required: true, foobar: :123
 
   nestedTypes: ->
     testEqNormalizeFieldProps
@@ -241,7 +230,7 @@ describe
         assert.eq
           normalizeFieldProps
             :myCustomField
-            myCustomField: :string
+            customFieldTypes: myCustomField: :string
           merge
             normalizeFieldProps :string
             fieldType: :myCustomField
@@ -250,7 +239,7 @@ describe
         assert.eq
           stripFunctions normalizeFieldProps
             :myCustomField
-            myCustomField:
+            customFieldTypes: myCustomField:
               fields:
                 myCustomSubField: :string
 
@@ -264,7 +253,7 @@ describe
         assert.eq
           normalizeFields
             {} foo: :myCustomField
-            myCustomField: :string
+            customFieldTypes: myCustomField: :string
           foo: merge
             normalizeFieldProps :string
             fieldType: :myCustomField
@@ -274,7 +263,7 @@ describe
         assert.eq
           stripFunctions normalizeFieldProps
             {} fields: data:   :record
-            {} record: fields: name: :string
+            customFieldTypes: record: fields: name: :string
 
           dataType:     :object
           fieldType:    :object
@@ -287,7 +276,7 @@ describe
         assert.eq
           stripFunctions normalizeFieldProps
             {} array:   :record
-            {} record: fields: name: :string
+            customFieldTypes: record: fields: name: :string
 
           dataType: :array
           fieldType: :array
@@ -301,8 +290,9 @@ describe
         assert.eq
           stripFunctions normalizeFieldProps
             :myCustomField
-            myCustomField:  :myCustomField2
-            myCustomField2: :string
+            customFieldTypes:
+              myCustomField:  :myCustomField2
+              myCustomField2: :string
 
           fieldType: :myCustomField, dataType: :string
 
@@ -310,8 +300,9 @@ describe
         assert.eq
           stripFunctions normalizeFieldProps
             :myCustomField
-            myCustomField:  fields: myFieldName: :myCustomField2
-            myCustomField2: :string
+            customFieldTypes:
+              myCustomField:  fields: myFieldName: :myCustomField2
+              myCustomField2: :string
 
           fieldType:    :myCustomField
           dataType:     :object
@@ -321,31 +312,40 @@ describe
         assert.rejects ->
           stripFunctions normalizeFieldProps
             :myCustomField
-            myCustomField: :myCustomField
+            customFieldTypes: myCustomField: :myCustomField
         .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported
 
       .thenTest "after a failed recursion check, we don't wrongly trigger it again" ->
         stripFunctions normalizeFieldProps
           :myCustomField
-          myCustomField:  fields: myFieldName: :string
+          customFieldTypes: myCustomField:  fields: myFieldName: :string
 
       test "a references object a not allowed" ->
         assert.rejects ->
           stripFunctions normalizeFieldProps
             :myCustomField
-            myCustomField:  fields: myFieldName: :myCustomField
+            customFieldTypes: myCustomField:  fields: myFieldName: :myCustomField
+
         .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported
 
       test "a references b refernces a not allowed" ->
         assert.rejects ->
           stripFunctions normalizeFieldProps
             :myCustomField
-            myCustomField:  fields: myFieldName: :myCustomField2
-            myCustomField2:  fields: myFieldName: :myCustomField
+            customFieldTypes:
+              myCustomField:    fields: myFieldName: :myCustomField2
+              myCustomField2:   fields: myFieldName: :myCustomField
+
         .then (rejectsWith) -> assert.match rejectsWith.message, ///i recursive .* not\ supported
 
   regressions:
-    downstream_dependency_regressions: ->
+    art_pipelines_link_fields_filter: ->
+      test "'link required'" ->
+        assert.eq
+          stripFunctions normalizeFieldProps 'link required'
+          link:     true
+          required: true
+
       test "link: 'user'" ->
         assert.eq
           stripFunctions normalizeFieldProps link: :user

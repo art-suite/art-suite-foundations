@@ -52,7 +52,6 @@ describe
 
             if validator.fields.myField extract fromString
               input = fromString input
-              log {} input
 
             assert.eq
               new Validator myField: type

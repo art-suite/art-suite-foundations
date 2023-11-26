@@ -81,17 +81,27 @@ class Validator extends BaseClass
   @normalizeFields: normalizeFields
   @normalizeFieldProps: normalizeFieldProps
 
-  constructor: (fieldDeclarationMap, options) ->
-    if options
-      @exclusive = options.exclusive
-      @context = options.context
-      @_customFieldTypes = options.customFieldTypes
+  ## constructor
+    IN:
+      fieldDeclarationMap: [fieldName]: fieldProps
+      options:
+        exclusive: true - only fields listed in fieldDeclarationMap are allowed
+        context: string - descriptive string to attach to errors
+        customFieldtypes: [filedType]: fieldProps
+        customTags: [tag]: value (any) - when the tag is used, {tag: value} is added to the field-props
+  constructor: (fieldDeclarationMap, validatorOptions) ->
+    if validatorOptions
+      @_validatorOptions = validatorOptions
+      @exclusive = validatorOptions.exclusive
+      @context = validatorOptions.context
+      @customFieldTypes = validatorOptions.customFieldTypes
+      @customTags = validatorOptions.customTags
 
     @_fieldProps = {}
     @_requiredFields = []
     @addFields fieldDeclarationMap
 
-  @property :exclusive
+  @property :exclusive :context :customFieldProps :customTags
 
   addFields: (fieldDeclarationMap) ->
     each fieldOptions, field from fieldDeclarationMap
@@ -100,10 +110,8 @@ class Validator extends BaseClass
         pushIfNotPresent @_requiredFields, field
 
   @getter
-    :customFieldTypes
     fields: -> @_fieldProps
-    inspectedObjects: ->
-      Validator: @_fieldProps
+    inspectedObjects: -> Validator: @_fieldProps
 
   # 2017-09-01 NEW API:
   # I'm going to drop the async stuff. It just makes this lib more complex than it needs to be
@@ -220,9 +228,8 @@ class Validator extends BaseClass
     array f from @invalidFields(fields) into messageFields
       errors[f] = "invalid"
       if @exclusive && !@_fieldProps[f]
-        "" #{JSON.stringify f} unexpected"
-      else
-        "" #{JSON.stringify f} failed validation
+            "" #{JSON.stringify f} unexpected"
+      else  "" #{JSON.stringify f} failed validation
 
     array f from @postInvalidFields(processedFields) into messageFields
       errors[f] = "invalid"
@@ -308,4 +315,4 @@ class Validator extends BaseClass
   ###################
   # PRIVATE
   ###################
-  _addField: (field, fieldProps) -> @_fieldProps[field] = normalizeFieldProps fieldProps, @customFieldTypes
+  _addField: (field, fieldProps) -> @_fieldProps[field] = normalizeFieldProps fieldProps, @_validatorOptions

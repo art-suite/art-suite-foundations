@@ -19,7 +19,8 @@ test "fields" ->
 
 test "sub-object required" ->
   v = new Validator
-    dimensions: required:
+    dimensions:
+      :required
       fields:
         x: :number
         y: :number
@@ -31,7 +32,7 @@ test "object's fields required" ->
   v = new Validator
     dimensions:
       fields:
-        x: required: :number
+        x: :required :number
         y: :number
 
   v.validate dimensions: x: 1 y: 1
@@ -42,7 +43,8 @@ test "preprocess" ->
     normalFoo:
       preprocess: (v) -> v.trim()
 
-    myFields: required:
+    myFields:
+      :required
       fields:
         foo:
           preprocess: (v) -> v.trim()
