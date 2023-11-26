@@ -49,8 +49,9 @@ assertDefinitionEq = (a, b, cleanThings, validatorOptions) ->
     cleanThings normalizeFieldProps a, validatorOptions
     cleanThings b
     """
-      this:       normalizeFieldProps #{formattedInspect a}
-      should eq:  #{formattedInspect b}
+      this:             normalizeFieldProps #{formattedInspect a}
+      should eq:        #{} formattedInspect b
+      validatorOptions: #{} formattedInspect validatorOptions
 
 stripFunctions = (o) ->
   switch
@@ -68,10 +69,17 @@ identifyFunctions = (o) ->
 describe
   basicDefinitions: ->
     test
-      "" just fieldType name (e.g. "number") selects the functions for that fieldType
+      "" fieldType name (e.g. "number") selects the functions for that fieldType
       ->
         assert.eq
           normalizeFieldProps :number
+          FieldTypes.number
+
+    test
+      "" explicit fieldType name (e.g. "number") selects the functions for that fieldType
+      ->
+        assert.eq
+          normalizeFieldProps fieldType: :number
           FieldTypes.number
 
     test
@@ -114,13 +122,14 @@ describe
 
       testEqNormalizeFieldProps {required: ['trimmedString']}, required: ['trimmedString']
 
-  # invalid: ->
-  #   test "explicit, unknown field type is an error" ->
-  #     assert.rejects -> normalizeFieldProps fieldType: :unknownFieldType
-  #     .then (rejectsWith) ->
-  #       assert.match
-  #         rejectsWith.message
-  #         ///i unknown .* unknownFieldType
+  invalid: ->
+    test "explicit, unknown field type is an error" ->
+      assert.rejects -> normalizeFieldProps fieldType: :unknownFieldType
+      .then (rejectsWith) -> assert.match rejectsWith.message, ///i unknown .* unknownFieldType
+
+    test "sub-object with unknown field-type" ->
+      assert.rejects -> normalizeFieldProps fields: data: fieldType: :unknownFieldType
+      .then (rejectsWith) -> assert.match rejectsWith.message, ///i unknown .* unknownFieldType
 
   tags:
     unknown-field-types-are-treated-as-tags: ->
@@ -165,7 +174,7 @@ describe
     testEqNormalizeFieldProps {foobar: required: true}, foobar: required: true
     testEqNormalizeFieldProps {foobar: required: :number}, foobar: required: :number
 
-  nestedTypes: ->
+  nestedObjectAndArrayFields: ->
     testEqNormalizeFieldProps
       :arrays
       {} array: :number
@@ -207,7 +216,6 @@ describe
         dataType:  :array
         fieldType: :array
         array:     dataType: :number, fieldType: :number
-
 
   buildInValidators: ->
     testEqNormalizeFieldPropsWithFunctionsIdentified
@@ -362,6 +370,20 @@ describe
           props:              :object
           key:                :string
           {} quiet: true
+
+    art_pipelines: ->
+      testEqNormalizeFieldProps
+        {} fields: data: :record
+        {}
+          fields: data:
+            fields:     name: dataType: :string, fieldType: :string
+            dataType:   :object
+            fieldType:  :record
+
+          dataType:   :object
+          fieldType:  :object
+
+        {} customFieldTypes: record: fields: name: :string
 
     array_and_lengths: ->
       testEqNormalizeFieldProps

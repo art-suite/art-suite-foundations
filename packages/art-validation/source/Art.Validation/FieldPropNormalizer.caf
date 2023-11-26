@@ -76,7 +76,7 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
 
 processingCustomFieldtypePath = []
 normalizeStringFieldProp = (fieldPropString, validatorOptions) ->
-  if customFieldType = validatorOptions.customFieldTypes?[fieldPropString]
+  if customFieldType = validatorOptions.customFieldTypes[fieldPropString]
     try
       if fieldPropString in processingCustomFieldtypePath
         throw new Error validatorOptions.getNiceErrorMessage "" Invalid custom fields. Recursive custom field types are not supported. Recursive path: #{processingCustomFieldtypePath.join ' > '} > #{fieldPropString}
@@ -105,7 +105,18 @@ normalizeFieldPropsStructure = (fieldProps, validatorOptions) ->
     when isString element then w element
     when isPlainObject element
       element = normalizeRecursivePlainObjectProps element, validatorOptions
-      [] element.fieldType, element
+      if element extract fieldType
+        if FieldTypes[fieldType] || validatorOptions.customFieldTypes[fieldType]
+          [] element.fieldType, element
+        else throw new Error validatorOptions.getNiceErrorMessage
+          "" Invalid, explicit fieldType. Valid fieldTypes: #{}
+            Object.keys merge FieldTypes, validatorOptions.customFieldTypes
+            .sort()
+            .join ', '
+
+          fieldType
+
+      else element
 
     when element == true then FieldTypes.any
     else throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Expected string, plainObject, or array of strings, plainObjects and/or arrays", element
@@ -129,6 +140,7 @@ _normalizeFieldProps = (fieldProps, validatorOptions) ->
 normalizeValidatorOptions = (validatorOptions) ->
   merge
     validatorOptions
+    customFieldTypes: validatorOptions?.customFieldTypes ? {}
     getNiceErrorMessage: (message, invalidInput) ~>
       joiner = '. '
       compact []
