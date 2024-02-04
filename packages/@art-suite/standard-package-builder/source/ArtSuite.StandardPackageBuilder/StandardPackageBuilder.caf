@@ -13,15 +13,13 @@ configure: (options = {}) -> (_package) ->
   targetTempDir = targetDir + "-temp"
 
   buildScript = (sourceDir, targetDir) ->
-    common =
+    copyJs =
       """
-        cd #{sourceDir}
-        find . -name '*.js' -o -name '*.css' | cpio -vpdm ../#{targetDir}
-        cd ..
+        rsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/
 
     if coffeeScript
       """
-        #{common}
+        #{copyJs}
         coffee -m --output #{targetDir} --compile #{sourceDir} &
         COFFEE_PID=$!
         caf -m -c #{sourceDir} -o #{targetDir} #{coffeeScript && "--require coffee-script/register" }&
@@ -31,7 +29,7 @@ configure: (options = {}) -> (_package) ->
         npm run nn
     else
       """
-        #{common}
+        #{copyJs}
         caf -m -c #{sourceDir} -o #{targetDir}
         npm run nn
 
