@@ -24,7 +24,7 @@ userRequestedFakeNativeApp = fakeNativeApp =
 smallestTabletDeviceWidth = 600
 
 class BrowserDetection
-  @isBrowser:           !!navigator
+  @isBrowser:           &browserOrNode.isBrowser
   @getAgent:            getAgent = -> navigator?.userAgent || navigator?.vendor || opera || ""
 
   # https://github.com/jhildenbiddle/canvas-size#test-results
