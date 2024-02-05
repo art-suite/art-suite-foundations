@@ -4,37 +4,41 @@ defaultSourceRootFinder = new SourceRootFinder
 customSourceRootFinder = new SourceRootFinder
   indicatorFiles: [] :README.txt
 
+
+&process.chdir testDir = :./testFs
 cwd = &process.cwd()
+
 
 stripTrailingSlash = (s) -> s.replace /[\/\\]$/ ''
 
-beforeEach ->
-  &mockFs
-    package.json: "" {}
-    myRoot:
-      package.json: "" {}
-      subPackages:
-        funnel: package.json: "" {}
-      source:
-        Widgets:
-          Button.caf: "" ...
+# beforeEach ->
+#   &mockFs
+#     package.json: "" {}
+#     myRoot:
+#       package.json: "" {}
+#       subPackages:
+#         funnel: package.json: "" {}
+#       source:
+#         Widgets:
+#           Button.caf: "" ...
 
-        Main.caf: "" ...
-    gitRooted:
-      .git: config: "" ...
-      source: foo: "" ...
-    noRoot: foo: "" ...
+#         Main.caf: "" ...
+#     gitRooted:
+#       .git: config: "" ...
+#       source: foo: "" ...
+#     noRoot: foo: "" ...
 
-    customRoot:
-      README.txt: "" hello
-      notReallyRoot:
-        package.json: "" {}
+#     customRoot:
+#       README.txt: "" hello
+#       notReallyRoot:
+#         package.json: "" {}
 
-afterEach ->
-  &mockFs.restore()
+# afterEach ->
+#   &mockFs.restore()
 
 testOne = (input, output, sourceRootFinder = defaultSourceRootFinder) ->
   output = stripTrailingSlash &path.join cwd, output if output
+  # input = if input then &path.join testDir, input else input
 
   test "sync: #{input}" ->
     sourceRootFinder.resetKnownSourceRoots()
@@ -44,7 +48,7 @@ testOne = (input, output, sourceRootFinder = defaultSourceRootFinder) ->
     assert.eq first, second
     assert.eq first, output
 
-  test "async: #{input}" ->
+  test "async: #{input} OK?" ->
     sourceRootFinder.resetKnownSourceRoots()
 
     sourceRootFinder.findSourceRoot input
@@ -75,7 +79,7 @@ describe
       gitRooted:                  :gitRooted
       gitRooted/source:           :gitRooted
 
-      ../:                        false
+      /:                        false
       noRoot:                     './'
       customRoot:                 './'
       customRoot/notReallyRoot:   :customRoot/notReallyRoot
