@@ -5,7 +5,7 @@
     "art-class-system": "^1.11.16",
     "art-epoched-state": "^1.2.14",
     "art-standard-lib": "^1.71.3"
-  },
+  },"foo":1,
   "description": "Epoched event system",
   "devDependencies": {
     "art-build-configurator": "^1.30.1",

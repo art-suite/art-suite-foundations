@@ -73,13 +73,14 @@ updateMonoPackage = ({quiet}) ->
               #{packageFolderByPackageName[name]}
         throw new HandledError "" Two packages have the same name
 
-      else packageFolderByPackageName[name] = packageFolder
+      else
+        packageFolderByPackageName[name] = packageFolder if name?
 
       # log "package: #{packageFolder}"
 
       each v, k in dependencies     with addDep :dependencies, k, v, _package
       each v, k in devDependencies  with addDep :dependencies, k, v, _package
-      addDep :dependencies, name, "file:#{packageFolder}"
+      addDep :dependencies, name, "file:#{packageFolder}" if name?
 
     addArtMonorepoFeatures rootPackage
 
