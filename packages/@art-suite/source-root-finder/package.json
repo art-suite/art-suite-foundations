@@ -4,7 +4,7 @@
   "dependencies": {
     "art-class-system": "^1.11.16",
     "art-standard-lib": "^1.71.3",
-    "fs-extra": "^11"
+    "fs-extra": "^11.2.0"
   },
   "description": "ArtSuite.SourceRootFinder",
   "devDependencies": {

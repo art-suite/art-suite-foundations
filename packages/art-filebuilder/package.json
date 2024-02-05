@@ -6,7 +6,7 @@
     "art-class-system": "^1.11.16",
     "art-object-tree-factory": "^2.2.10",
     "art-standard-lib": "^1.71.3",
-    "fs-extra": "^10"
+    "fs-extra": "^11.2.0"
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
