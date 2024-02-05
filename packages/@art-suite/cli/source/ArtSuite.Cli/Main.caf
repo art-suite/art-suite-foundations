@@ -20,7 +20,7 @@ class Main
         args:     undefined or array of arguments not part of options
 
     options: object mapping lowerCamelCase option names to values parsed from the argv array
-  @start: ({commands, default: _default, description, help, argv, output}) =>
+  @start: ({commands, default: _default, description, help, argv, output, preprocessOptions}) =>
     output ?= log.unquoted
     argv ?= process.argv
     [nodeJs, startFile, args...] = argv
@@ -38,6 +38,7 @@ class Main
             args:     if args?.length > 0 then args
             options
 
+        options = preprocessOptions options if preprocessOptions
         commandFunction options, args
 
       else

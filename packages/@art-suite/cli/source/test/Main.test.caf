@@ -17,6 +17,19 @@ test "start + myCommand" ->
       {} myCommandRan
       myCommandRan: true
 
+test "start + preprocessOptions" ->
+  myCommandRan = false
+  start
+    commands: myCommand: ({x}) -> myX: x | 0
+    argv: :nodeJs :startFile :myCommand :--x :123
+    preprocessOptions: (options) -> merge options, x: (options.x | 0) + 1
+    output: ->
+
+  .then (out) ->
+    assert.eq
+      out
+      myX: 124
+
 
 test "start + myCommand --verbose" ->
   myCommandRan = false
