@@ -8,7 +8,7 @@
     "art-config": "^2.0.4",
     "art-events": "^2.0.0",
     "art-standard-lib": "^1.71.3",
-    "chai": "^4.2.0",
+    "chai": "^5.1.0",
     "neptune-namespaces-runtime": "^3.2.11",
     "npm-watch": "^0.11.0"
   },
