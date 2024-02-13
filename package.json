@@ -42,7 +42,7 @@
     "caffeine-script": "^0.74.0",
     "caffeine-script-runtime": "^1.14.0",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
-    "chai": "^4.2.0",
+    "chai": "^5.1.0",
     "chalk": "^4.1.0",
     "coffee-loader": "^0.7.3",
     "coffee-script": "^1.12.7",

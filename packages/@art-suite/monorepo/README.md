@@ -24,6 +24,13 @@ To get started with Art-Monorepo, install it globally via npm:
 npm install -g @art-suite/monorepo
 ```
 
+## Commands Overview
+
+- `art-monorepo sync`: Synchronizes all package.json files with the root package.json.
+- `art-monorepo test`: Runs tests across all packages.
+- `art-monorepo versions`: Displays local and published versions of all packages, highlighting any discrepancies.
+- `art-monorepo run`: Runs a specified command in every package.
+
 ## Example Usage
 
 Extended help is available via the --help flag for all commands. Not all options available are listed here, but the command-line help will always be up to date and complete.
@@ -39,6 +46,15 @@ npm install
 
 This ensures all your packages are aligned in terms of dependency versions. It also allows you to develop multiple packages in parallel as any cross-dependencies within the monorepo will be bound to local versions.
 
+### Updating Dependencies
+
+```bash
+npm update # + any additional options
+art-monorepo sync
+```
+
+After updating NPM, be sure to sync those updates to all your sub-packages.
+
 ### Running Tests Across Packages
 
 ```bash
@@ -50,31 +66,16 @@ This command executes npm test in every subfolder containing a package.json file
 ### Running Arbitrary Commands
 
 ```bash
-art-monorepo run --command "<your_command_here>" [--path "<sub_path">] [--verbose]
+art-monorepo run --command "<your_command_here>" [--path "<sub_path>"] [--verbose]
 ```
 
 Execute any shell command in all packages of the monorepo. If you provide the path argument, it will only run the command on packages within that subpath. Any options you wish to pass to your command should be within the quoted command itself. E.g.: "ls -la".
-By default, the outputs of commands that succeed are not shown. Use `--verbose` to show the outputs of all commands.
+By default, the outputs of commands that succeed are not shown. Use verbose to show the outputs of all commands.
 
-## Commands Overview
-
-### Basic Commands
-
-- `art-monorepo sync`: Synchronizes all package.json files with the root package.json.
-- `art-monorepo test`: Runs tests across all packages.
-- `art-monorepo versions`: Displays local and published versions of all packages, highlighting any discrepancies.
-- `art-monorepo run`: Runs a specified command in every package.
-
-### Advanced Commands
+## Advanced Usage
 
 `art-monorepo sync` does three unique steps. You can run them individually if you wish:
 
 1. `art-monorepo clean`: Deletes all package-lock.json files and node_modules folders in subfolders.
 2. `art-monorepo update-sub-packages`: Update the root package.json file based on all the package.json files in sub-folders.
 3. `art-monorepo update-mono-package`: Update all package.json files in sub-folders to match the root package.json file.
-
-## Conclusion
-
-Art-Monorepo is built with the philosophy that managing a JavaScript monorepo should be straightforward and flexible. By focusing on unifying dependency versions and simplifying monorepo structure, it allows developers to concentrate on what matters most: building great software.
-
-For more information and detailed command usage, run art-monorepo command --help.
