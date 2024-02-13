@@ -3,6 +3,16 @@
   "bin": {
     "art-monorepo": "art-monorepo"
   },
+  "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
+  "keywords": [
+    "monorepo",
+    "dependencies",
+    "javascript",
+    "node",
+    "npm",
+    "devops",
+    "automation"
+  ],
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/cli": "^1.6.0",
@@ -42,7 +52,7 @@
     "test": "npm run nn\njest",
     "watch": "npm-watch"
   },
-  "version": "1.7.11",
+  "version": "1.7.12",
   "watch": {
     "build": {
       "extensions": [
