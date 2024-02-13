@@ -1,20 +1,32 @@
 import &StandardImport
 
-describe 
+describe
   validation: ->
-    test "string enum" ->
-      validator = new Validator
-        myStatus: enum: :ok :failure :retry
+    test "optional enum" ->
+      validator = new Validator myStatus: enum: :ok :failure :retry
 
-      assert.true !!validator.validate myStatus: :ok
-      assert.true !!validator.validate myStatus: :failure
-      assert.true !!validator.validate myStatus: :retry
-      assert.true !!validator.validate {} # not required
+      validator.validate myStatus: :ok
+      validator.validate myStatus: :failure
+      validator.validate myStatus: :retry
+      validator.validate {} # not required
       assert.throws -> validator.validate myStatus: :alice
 
+    test "required enum" ->
+      validator = new Validator myStatus: :required enum: :ok :failure :retry
+
+      validator.validate myStatus: :ok
+      assert.throws -> validator.validate {} # required
+
   invalidForms: ->
-    test "malformatted enum" ->
+    test "enum values must be strings" ->
       assert.throws -> new Validator myStatus: enum: 123
+
+    test "strings must be present" ->
+      assert.throws -> new Validator myStatus: enum: ''
+      assert.throws -> new Validator myStatus: enum: [] '         '
+
+    test "must have at least one value" ->
+      assert.throws -> new Validator myStatus: enum: []
 
   validForms: ->
     test "single enum, no array" ->
