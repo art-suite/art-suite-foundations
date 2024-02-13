@@ -7,7 +7,6 @@ Art-Monorepo is an opinionated tool designed to streamline the management of Jav
 At the heart of Art-Monorepo is a simple yet powerful principle:
 
 - **Unified Dependency Versions:** Ensure all packages in the monorepo use the same version of any external dependencies, leading to a single `package-lock.json` and one `node_modules/` folder at the root of your monorepo.
--
 
 ## Features
 
