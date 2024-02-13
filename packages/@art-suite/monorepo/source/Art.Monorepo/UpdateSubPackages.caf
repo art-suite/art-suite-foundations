@@ -38,7 +38,9 @@ addSubPackagesToDependencies = (packages, dependencies) ->
   object {name}, packageFolder from packages into dependencies with-key name
     "file:#{packageFolder}"
 
-updateSubPackages = ({quiet}) ->
+options: quiet: "" Supress output.
+description: "" Update all package.json files in sub-folders to match the root package.json file.
+run: ({quiet}) ->
   !quiet && log blue "" Updating ./package.json >> **/package.json...
 
   loadAllPackages()

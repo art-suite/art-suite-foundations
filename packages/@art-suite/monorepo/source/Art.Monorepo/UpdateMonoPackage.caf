@@ -10,7 +10,9 @@ addArtMonorepoFeatures = (rootPackage) ->
 
   rootPackage
 
-updateMonoPackage = ({quiet}) ->
+options: quiet: "" Supress output.
+description: "" Advanced: Update the root package.json file based on all the package.json files in sub-folders. This includes updating dependency versions, new dependencies, and cross-references between packages in the mono-repo. Run `npm install` after.
+run: ({quiet}) ->
   unless quiet
     log blue "" Updating **/package.json >> ./package.json...
 

@@ -1,22 +1,40 @@
-import &StandardImport, {} &semver
+import &StandardImport
 
-stripEmptyKeys = (o) -> object v from o when objectHasKeys v
 {}
   &update-mono-package
   &update-sub-packages
 
-  test: (options) ->
-    allPackageExec merge options,
-      command: "npm test"
-      verb: :test
+  test:
+    options:
+      verbose:  "" true/false
+    description: "" Test all packages. This runs `npm test` in every subfolder with a package.json file.
+    run: (options) ->
+      allPackageExec merge options,
+        command: "npm test"
+        verb: :test
 
-  sync: (options) ->
-    cleanMonorepo()
-    .then -> &updateSubPackages options
-    .then -> &updateMonoPackage options
-    .then -> green "" All package.json files synced.
+  sync:
+    description:
+      """
+        Sync the root package.json with all package.json files in subfolders. This will ensure all packages are using the same verison of every external dependency. It will also ensure all cross-referenced packages within the monorepo are referencing the latest version. Last, it will update the root package.json to contain all external references. It's best to run `npm install` immediately after running this.
+
+        This happens in three steps:
+
+        1. Clean: remove all package-lock.json files and all node_modules folders in sub-folders. There should only be one of each in the root of the monorepo.
+        2. Update sub-packages: update all dependency versions in all sub-packages to match the root package.json.
+        3. Update mono-package: update the root mono-repo's package.json with any new dependencies found in sub-packages as well as updating any cross-referencing between packages within the monorepo.
+
+    options:
+      quiet: "" Supress output.
+
+    run: (options) ->
+      cleanMonorepo()
+      .then -> &updateSubPackages options
+      .then -> &updateMonoPackage options
+      .then -> green "" All package.json files synced.
 
   run:
+    description: "" Run a command in all packages. This will run the command in every subfolder with a package.json file.
     options:
       command:  "" Shell command to run.
       verbose:  "" true/false
@@ -24,100 +42,22 @@ stripEmptyKeys = (o) -> object v from o when objectHasKeys v
     run: (options) ->
       if options extract path
         process.chdir path
-      allPackageExec merge options,
-        verb: :run
+      allPackageExec merge options, verb: :run
 
-  versions: ({verbose})->
-    packageFieldsNpmChanges =
-      :gitHead
-      :_id
-      :_nodeVersion
-      :_npmVersion
-      :_npmUser
-      :directories
-      :maintainers
-      :_npmOperationalInternal
-      :_hasShrinkwrap
-      :author
-      :bugs
-      :dist
-      :repository
-      :integrity
-      :shasum
-      :tarball
-      :fileCount
-      :unpackedSize
-      :signatures
-      :devDependencies
-      :description
+  &versions
 
-    normalizeVersion = (v) ->
-      [v] = v.match(/\d+(\.\d+)*/) || []
-      if v
-        unless /\d+\.\d+\.\d+/.test v
-          each til 3 - v.split(".").length
-            v = v + ".0"
-      v
+  clean:
+    description:
+      "" Advanced: Delete all package-lock.json files and node_modules folders in all subfolders. There should only be one package-lock.json file and one node_modules folder located in the root of the monorepo.
+    run: (options) ->
+      cleanMonorepo()
+      .then -> green "" Monorepo is clean.
 
-    getAllPackagesVersionInfo()
-    .then (packages) ->
-      object {version, publishedVersion, status, package: _package, publishedPackage} from packages
-        {} version, publishedVersion, status:
-          switch status
-          when :unpublished then status.white
-          when :behind then status.red
-          when :current
-            if eq _package, publishedPackage
-              status.grey
-            else
-              if objectHasKeys dependencies = stripEmptyKeys objectDiffReport _package.dependencies, publishedPackage.dependencies
-                if dependencies.changed
-                  versionChanges = {}
-                  each {newItem, oldItem}, key in dependencies.changed
-                    newItem = normalizeVersion newItem
-                    oldItem = normalizeVersion oldItem
-
-                    if !newItem || !oldItem
-                      versionChanges.incomparable = compactFlattenAll versionChanges.incomparable, key
-                    else if semver.gt oldItem, newItem
-                      versionChanges.reverted = compactFlattenAll versionChanges.reverted, key
-                    else
-                      changeType = semver.diff oldItem, newItem
-                      versionChanges[changeType] = compactFlattenAll versionChanges[changeType], key
-
-                if verbose
-                  {} dependencies, versionChanges
-                else
-                  if dependencies.added
-                    "dependencies have been added: #{(Object.keys dependencies.added).join ', '}".yellow
-                  else if dependencies.removed
-                    "dependencies have been removed: #{(Object.keys dependencies.removed).join ', '}".grey
-                  else
-                    switch
-                    when versionChanges.reverted  then "dependencies have reverted: #{versionChanges.reverted.join ', '}".red
-                    when versionChanges.incomparable     then "dependencies have major-version changes: #{versionChanges.incomparable.join ', '}".yellow
-                    when versionChanges.major     then "dependencies have major-version changes: #{versionChanges.major.join ', '}".yellow
-                    when versionChanges.minor     then "dependencies have minor-version changes: #{versionChanges.minor.join ', '}".yellow
-                    when versionChanges.patch     then "dependencies have patch-version changes: #{versionChanges.patch.join ', '}".grey
-
-              else
-                otherChanges = stripEmptyKeys objectDiffReport
-                  objectWithout _package, packageFieldsNpmChanges...
-                  objectWithout publishedPackage, packageFieldsNpmChanges...
-                  eq
-
-                if objectHasKeys otherChanges
-                  if verbose then otherChanges else "current, but package.json changed".grey
-
-                else status.grey
-
-          else status
-
-  clean: (options) ->
-    cleanMonorepo()
-    .then -> green "" Monorepo is clean.
-
-  update: (options) ->
-    Promise
-    .then -> &updateSubPackages options
-    .then -> &updateMonoPackage options
+  update:
+    options:
+      quiet: "" Supress output.
+    description: "" Advanced: Run the update-sub-packages then update-mono-package.
+    run: (options) ->
+      Promise
+      .then -> &updateSubPackages options
+      .then -> &updateMonoPackage options
