@@ -32,7 +32,7 @@ npm install -g @art-suite/monorepo
 
 ## Example Usage
 
-Extended help is available via the --help flag for all commands. Not all options available are listed here, but the command-line help will always be up to date and complete.
+Extendeded help is available via the --help flag for all commands. Not all options available are listed here, but the command-line help will always be up to date and complete.
 
 ### Synchronizing Dependencies
 
