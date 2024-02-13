@@ -5,6 +5,7 @@
 
 .addModules({
   DefaultsTest:            require('./Defaults.test'),
+  EnumTest:                require('./enum.test'),
   ExamplesTest:            require('./examples.test'),
   FieldTypesTest:          require('./FieldTypes.test'),
   LimitsTest:              require('./Limits.test'),

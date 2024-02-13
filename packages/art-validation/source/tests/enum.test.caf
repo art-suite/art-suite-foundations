@@ -1,0 +1,30 @@
+import &StandardImport
+
+describe 
+  validation: ->
+    test "string enum" ->
+      validator = new Validator
+        myStatus: enum: :ok :failure :retry
+
+      assert.true !!validator.validate myStatus: :ok
+      assert.true !!validator.validate myStatus: :failure
+      assert.true !!validator.validate myStatus: :retry
+      assert.true !!validator.validate {} # not required
+      assert.throws -> validator.validate myStatus: :alice
+
+  invalidForms: ->
+    test "malformatted enum" ->
+      assert.throws -> new Validator myStatus: enum: 123
+
+  validForms: ->
+    test "single enum, no array" ->
+      a = new Validator myStatus: enum: :ok # single string, no array
+      assert.eq a.fields.myStatus.enum, [] :ok
+
+    test "nested arrays ok" ->
+      a = new Validator myStatus: enum: :ok [] :foo [] :bar # nested arrays
+      assert.eq a.fields.myStatus.enum, [] :ok :foo :bar
+
+    test "multiple enums in one string ok" ->
+      a = new Validator myStatus: enum: "ok foo bar" # nested arrays
+      assert.eq a.fields.myStatus.enum, [] :ok :foo :bar

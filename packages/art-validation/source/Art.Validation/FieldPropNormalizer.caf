@@ -105,7 +105,19 @@ normalizeFieldPropsStructure = (fieldProps, validatorOptions) ->
     when isString element then w element
     when isPlainObject element
       element = normalizeRecursivePlainObjectProps element, validatorOptions
-      if element extract fieldType
+      if element extract enum as rawEnum
+        normalizedEnum = compactFlatten array str in compactFlatten rawEnum
+          unless isString str
+            throw new Error "" Error: `enum:` option must provide a list of strings. #{} formattedInspect: {} rawEnum, normalizedEnum
+          w str
+
+        enum: normalizedEnum
+        fieldType:  :enum
+        dataType:   :string
+        validate:   (v) -> v in normalizedEnum
+
+
+      else if element extract fieldType
         if FieldTypes[fieldType] || validatorOptions.customFieldTypes[fieldType]
           [] element.fieldType, element
         else throw new Error validatorOptions.getNiceErrorMessage
