@@ -2,4 +2,19 @@ import &StandardImport
 
 cli: ->
   &@ArtSuite/Cli
-  .start {} &commands
+  .start {}
+    description:
+      """
+        Art-monorepo is a tool for managing a JavaScript monorepo's depdencies. It is an opinionated tool with one core design principles:
+
+        - All packages in the monorepo should use the same version of any external dependencies.
+
+        Given that principle, it follows that there should only be one package-lock.json file and one node_modules/ folder - in the root of the entire monorepo.
+
+        Art-monorepo is also explicitly auto-opinionated, compared to other monorepo tools, in that we believe the folder structure of your monorepo should be up to you. Art-monorepo simply looks for any package.json file in any sub-folder when performing its tasks.
+
+        The main usage of art-monorepo is running the `art-monorepo sync` command followed by an `npm install`.
+
+        Art-monorepo also has handy tools for running all tests and any shell-command of your choices in all packages in the monorepo.
+
+    &commands

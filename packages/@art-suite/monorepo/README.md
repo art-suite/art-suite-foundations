@@ -1,17 +1,80 @@
-# @art-suite/monorepo
+# Art-Monorepo
 
-An opinionated, yet simple way to manage monorepos of JavaScript projects which use package.json.
+Art-Monorepo is an opinionated tool designed to streamline the management of JavaScript monorepos by ensuring a unified approach to handling dependencies. It emphasizes simplicity and flexibility in monorepo structure, allowing you to focus on development rather than configuration.
 
-1. All dependencies are synced across all packages to be the same version.
-1. Only one package-lock.json file is checked in - the one in the root that lists all dependencies of all packages.
-1. Only one node_modules/ folder is needed - again, in the root.
-1. Sub-packages can exist anywhere in the tree. Organize them as you like.
+## Core Principle
 
-# Commands
+At the heart of Art-Monorepo is a simple yet powerful principle:
 
-- `art-monorepo sync` - update the root package.json and package-lock.json
-  from all sub-packages
-  - Runs all three sub commands: `clean`, `update-sub-packages`, and `update-mono-package` in that order
-- `art-monorepo clean` - clean up any dangling `node_modules/` and `package-lock.json` files in sub-folders.
-- `art-monorepo test` - run `npm test` in every sub-project in parallel
-- `art-monorepo run --command foo` - run `npm run foo` in every sub-project in parallel
+- **Unified Dependency Versions:** Ensure all packages in the monorepo use the same version of any external dependencies, leading to a single `package-lock.json` and one `node_modules/` folder at the root of your monorepo.
+-
+
+## Features
+
+- **Dependency Synchronization:** Syncs all package.json files within the monorepo to use identical versions of external dependencies.
+- **Simplified Structure:** Operates with any folder structure, automatically detecting package.json files in subfolders.
+- **Efficient Commands:** Provides commands for cleaning, synchronizing dependencies, running tests, and executing arbitrary commands across all packages.
+- **Automatic Cross-Dependencies:** It allows you to develop multiple packages in parallel as any cross-dependencies within the monorepo will automatically be bound to local versions.
+
+## Installation
+
+To get started with Art-Monorepo, install it globally via npm:
+
+```bash
+npm install -g @art-suite/monorepo
+```
+
+## Example Usage
+
+Extended help is available via the --help flag for all commands. Not all options available are listed here, but the command-line help will always be up to date and complete.
+
+### Synchronizing Dependencies
+
+The main use of art-monorepo is to synchronize your monorepo's dependencies. Simply run:
+
+```bash
+art-monorepo sync
+npm install
+```
+
+This ensures all your packages are aligned in terms of dependency versions. It also allows you to develop multiple packages in parallel as any cross-dependencies within the monorepo will be bound to local versions.
+
+### Running Tests Across Packages
+
+```bash
+art-monorepo test
+```
+
+This command executes npm test in every subfolder containing a package.json file.
+
+### Running Arbitrary Commands
+
+```bash
+art-monorepo run --command "<your_command_here>" [--path "<sub_path">] [--verbose]
+```
+
+Execute any shell command in all packages of the monorepo. If you provide the path argument, it will only run the command on packages within that subpath. Any options you wish to pass to your command should be within the quoted command itself. E.g.: "ls -la".
+By default, the outputs of commands that succeed are not shown. Use `--verbose` to show the outputs of all commands.
+
+## Commands Overview
+
+### Basic Commands
+
+- `art-monorepo sync`: Synchronizes all package.json files with the root package.json.
+- `art-monorepo test`: Runs tests across all packages.
+- `art-monorepo versions`: Displays local and published versions of all packages, highlighting any discrepancies.
+- `art-monorepo run`: Runs a specified command in every package.
+
+### Advanced Commands
+
+`art-monorepo sync` does three unique steps. You can run them individually if you wish:
+
+1. `art-monorepo clean`: Deletes all package-lock.json files and node_modules folders in subfolders.
+2. `art-monorepo update-sub-packages`: Update the root package.json file based on all the package.json files in sub-folders.
+3. `art-monorepo update-mono-package`: Update all package.json files in sub-folders to match the root package.json file.
+
+## Conclusion
+
+Art-Monorepo is built with the philosophy that managing a JavaScript monorepo should be straightforward and flexible. By focusing on unifying dependency versions and simplifying monorepo structure, it allows developers to concentrate on what matters most: building great software.
+
+For more information and detailed command usage, run art-monorepo command --help.
