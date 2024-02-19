@@ -46,3 +46,14 @@ describe
 
     each status in success, pending
       test "non-failure: #{status}", -> assert.ok !isFailure status
+
+  isMissing: ->
+    test "isMissing :missing is true  " -> assert.true isMissing :missing
+    test "isMissing :success is false " -> assert.false isMissing :success
+
+  allIsCommands: ->
+    each _, validStatus in communicationStatuses
+      command = lowerCamelCase "is #{validStatus}"
+      test
+        "" #{command} returns a boolean
+        -> assert.isBoolean &ArtCommunicationStatus[command] "missing"

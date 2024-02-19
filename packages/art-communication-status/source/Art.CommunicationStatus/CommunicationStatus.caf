@@ -103,9 +103,11 @@ class CommunicationStatus
 
   @isClientFailure: (status) -> !!communicationStatuses[status]?.clientFailure
   @isServerFailure: (status) -> !!communicationStatuses[status]?.serverFailure
+  @isFailure:       (status) -> !!communicationStatuses[status]?.failure
 
-  @isFailure: (status) -> !!communicationStatuses[status]?.failure
-  @isSuccess: (status) -> status == "success"
+  # define isMissing, isAborted, for all not previously defined statuses in communicationStatus
+  each _, validStatus in communicationStatuses
+    @["is#{validStatus.charAt(0).toUpperCase()}#{validStatus.slice(1)}"] ?= (status) -> status == validStatus
 
   ###
     OUT: true if status is a valid status-string
