@@ -48,5 +48,5 @@ describe
         default: :green
 
       assert.eq
-        a.preprocess {}, true
+        a.validate {}, true
         myColor: :green

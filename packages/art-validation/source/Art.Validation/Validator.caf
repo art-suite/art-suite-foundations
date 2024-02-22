@@ -287,7 +287,6 @@ class Validator extends BaseClass
   # PREPROCESS CORE
   ####################
   preprocess: preprocessFields = (fields, applyDefaults) ->
-    log preprocess: {} fields, applyDefaults, @_fieldProps
     processedFields = null
     fields ?= {} if applyDefaults
     fields && each props, fieldName from @_fieldProps
