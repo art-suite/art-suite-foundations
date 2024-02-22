@@ -40,3 +40,13 @@ describe
     test "multiple enums in one string ok" ->
       a = new Validator myStatus: enum: "ok foo bar" # nested arrays
       assert.eq a.fields.myStatus.enum, [] :ok :foo :bar
+
+  defaults: ->
+    test "with default value" ->
+      a = new Validator myColor:
+        enum: :red :green :blue
+        default: :green
+
+      assert.eq
+        a.preprocess {}, true
+        myColor: :green

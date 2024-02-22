@@ -5,6 +5,7 @@
 .includeInNamespace(require('./Validation'))
 .addModules({
   DataTypes:           require('./DataTypes'),
+  Enum:                require('./Enum'),
   FieldPropNormalizer: require('./FieldPropNormalizer'),
   FieldTypes:          require('./FieldTypes'),
   StandardValidations: require('./StandardValidations'),
