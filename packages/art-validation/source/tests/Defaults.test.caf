@@ -6,6 +6,11 @@ describe
         v3 = new Validator count: fieldType: :number default: 1
         assert.eq {},       v3.validateUpdate {}
 
+    validateCreate: ->
+      test "default: undefined", ->
+        v3 = new Validator count: fieldType: :number default: 1
+        assert.eq {count: 1}, v3.validateCreate {}
+
     validate: ->
       test "default: 0 with incoming undefined", ->
         v1 = new Validator count: fieldType: :number default: 0

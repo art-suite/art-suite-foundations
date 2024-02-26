@@ -266,12 +266,14 @@ class Validator extends BaseClass
   requiredFieldPresent: (fields, fieldName) ->
     unless fieldProps = @_fieldProps[fieldName]
       true
-    else if fieldProps.required && !fields[fieldName]?
-      false
-    else if fieldProps.present  && !present fields[fieldName]
-      false
     else
-      true
+      value = fields[fieldName] ? fieldProps.default
+      if fieldProps.required && !value?
+        false
+      else if fieldProps.present  && !present value
+        false
+      else
+        true
 
   presentFieldsValid: (fields) ->
     !find fieldValue, fieldName from fields with !@presentFieldValid fields, fieldName, fieldValue
