@@ -39,7 +39,7 @@ configure: (options = {}) -> (_package) ->
         "" nn #{targetDir}/* #{if mocha then :test/tests}
       test:
         """
-          npm run nn
+          npm run build
           #{}
             if mochaAndJest then
               """
@@ -51,8 +51,9 @@ configure: (options = {}) -> (_package) ->
             else if mocha then "" mocha -u tdd
             else          :jest
 
-      build: buildScript sourceDir, targetDir
+      test-watch: if mochaAndJest || mocha then "nodemon npm run test" else "" jest --watch
 
+      build: buildScript sourceDir, targetDir
       build-clean:
         """
           # BUILD CLEAN START
@@ -72,8 +73,9 @@ configure: (options = {}) -> (_package) ->
             mv #{targetTempDir} #{targetDir}
             rm -rf ./__build-old__
 
+      build-watch:  "" nodemon npm run build
       clean:        "" rm -rf #{targetDir}/*
-      watch:        :npm-watch
+
       scripts
 
     jest:
@@ -88,12 +90,3 @@ configure: (options = {}) -> (_package) ->
       testPathIgnorePatterns:
         "/node_modules/"
         "<rootDir>/test" # so it can ignore our mocha tests
-
-    watch:
-      build:
-        extensions: compactFlattenAll
-          :caf
-          coffeeScript && :coffee
-
-        patterns:   [] sourceDir
-        quiet:      false
