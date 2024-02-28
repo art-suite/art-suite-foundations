@@ -1,1 +1,1 @@
-package: require("./source") &package
+package: require("./build").configure {} &package

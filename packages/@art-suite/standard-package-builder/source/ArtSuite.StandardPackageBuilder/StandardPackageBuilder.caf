@@ -1,5 +1,7 @@
 import &ArtStandardLib
 
+nodemonCommand = "" nodemon -e js,ts,jsx,tsx,caf,coffee,json -x
+
 configure: (options = {}) -> (_package) ->
   options extract?
     sourceDir = :source
@@ -51,7 +53,7 @@ configure: (options = {}) -> (_package) ->
             else if mocha then "" mocha -u tdd
             else          :jest
 
-      test-watch: if mochaAndJest || mocha then "nodemon npm run test" else "" jest --watch
+      test-watch: if mochaAndJest || mocha then "#{nodemonCommand} npm run test" else "" jest --watch
 
       build: buildScript sourceDir, targetDir
       build-clean:
@@ -73,7 +75,7 @@ configure: (options = {}) -> (_package) ->
             mv #{targetTempDir} #{targetDir}
             rm -rf ./__build-old__
 
-      build-watch:  "" nodemon npm run build
+      build-watch:  "" #{nodemonCommand} npm run build
       clean:        "" rm -rf #{targetDir}/*
 
       scripts

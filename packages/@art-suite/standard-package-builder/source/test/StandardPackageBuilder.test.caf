@@ -7,7 +7,7 @@ assertLooksLikePackage = (options) ->
 
   assert.present builtPackage.scripts.test
   assert.present builtPackage.scripts.build
-  assert.present builtPackage.scripts.watch
+  assert.present builtPackage.scripts[:build-watch]
 
 describe
   standardPackageBuilder: ->
