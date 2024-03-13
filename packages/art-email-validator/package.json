@@ -12,6 +12,10 @@
       "build/**/*.js",
       "!build/test/**/*.js"
     ],
+    "coveragePathIgnorePatterns": [
+      "/index.js$",
+      "/namespace.js$"
+    ],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
@@ -26,12 +30,13 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -m -c source -o build\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build": "rsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncaf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run build",
     "clean": "rm -rf build/*",
     "nn": "nn build/* test/tests",
-    "test": "npm run nn\nmocha -u tdd",
-    "watch": "npm-watch"
+    "test": "npm run build\nmocha -u tdd",
+    "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
   "version": "1.2.5",
   "watch": {

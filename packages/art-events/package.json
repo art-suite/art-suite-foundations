@@ -5,17 +5,22 @@
     "art-class-system": "^1.11.16",
     "art-epoched-state": "^1.2.14",
     "art-standard-lib": "^1.71.3"
-  },"foo":1,
+  },
   "description": "Epoched event system",
   "devDependencies": {
     "art-build-configurator": "^1.30.1",
-    "art-testbench": "^3.2.13"
+    "art-testbench": "^3.2.14"
   },
+  "foo": 1,
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
       "build/**/*.js",
       "!build/test/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/index.js$",
+      "/namespace.js$"
     ],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
@@ -31,12 +36,13 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "cd source\nfind . -name '*.js' -o -name '*.css' | cpio -vpdm ../build\ncd ..\ncoffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncd source\nfind . -name '*.js' -o -name '*.css' | cpio -vpdm ../build-temp\ncd ..\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build": "rsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncoffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run build",
     "clean": "rm -rf build/*",
     "nn": "nn build/* ",
-    "test": "npm run nn\njest",
-    "watch": "npm-watch"
+    "test": "npm run build\njest",
+    "test-watch": "jest --watch"
   },
   "version": "2.0.0",
   "watch": {

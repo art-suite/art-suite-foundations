@@ -6,7 +6,7 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-browser-tools": "^1.2.15",
+    "art-browser-tools": "^1.2.16",
     "art-build-configurator": "^1.30.1",
     "art-class-system": "^1.11.16",
     "art-config": "^2.0.4",
@@ -27,12 +27,11 @@
     "glob": "^7.1.6",
     "glob-promise": "^4.1.0",
     "neptune-namespaces": "^4.2.11",
-    "style-loader": "^3.2.1",
-    "webpack-merge": "^5.8.0"
+    "style-loader": "^3.2.1"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {
-    "art-testbench": "^3.2.13",
+    "art-testbench": "^3.2.14",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "mocha": "^7.2.0",
     "mock-fs": "^5.0.0",
@@ -43,6 +42,10 @@
     "collectCoverageFrom": [
       "build/**/*.js",
       "!build/test/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/index.js$",
+      "/namespace.js$"
     ],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
@@ -58,12 +61,13 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "caf -m -c source -o build\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build": "rsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncaf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run build",
     "clean": "rm -rf build/*",
     "nn": "nn build/* test/tests",
-    "test": "npm run nn\nmocha -u tdd",
-    "watch": "npm-watch"
+    "test": "npm run build\nmocha -u tdd",
+    "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
   "version": "1.30.1",
   "watch": {
