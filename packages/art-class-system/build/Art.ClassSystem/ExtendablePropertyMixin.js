@@ -9,6 +9,25 @@
 
 
   /*
+  2023 Todo:
+    Idea:
+      add this:
+        @pluralExtendableProperty rocks: {}
+  
+      Which Means this:
+        @extendableProperty rocks: {}
+        @rock = @extendRocks
+  
+    Idea:
+      allow just the extender as options:
+      @extendableProperty
+        rocks: {}
+        (rocks, newRocks) -> merge rocks, newRocks
+  
+      A similar version of this is now Depricated, but that version used @ (this) to pass the current
+      value into the function rather than as the first parameter. I think it's been DEPRICATED long enough
+      to re-introduce with the new signature- the same signature as extend: () ->.
+  
   Todo:
     validatedDeclarable / validatedExtendableProperty
       Which use Art.Validation
@@ -178,11 +197,7 @@
         IN:
           map: name: defaultValue
           options:
-            declarable: true/false
-              if true, slightly alters the created functions:
-                for: @extendableProperty foo: ...
-                generates:
-                  @foo
+            declarable: true/false (slightly alters the created functions; see below)
         
             extend:
               DEFAULTS:
@@ -191,13 +206,14 @@
                 when is Array  then arrayPropetyExtender
                 else                defaultExtender
         
-              (extendable, extendWithValues...) -> newExtendedOwnPropertyValue
+              (currentExtendedValue, extendWithValues...) -> newExtendedOwnPropertyValue
                 IN:
-                  extendable: the current, extended value, already cloned, so direct mutation is OK
-                  extendWithValues: 1 or more values passed into the extend funtion by the client.
-                    Ex: for an array, this is either a single value or an array
-                    Ex: for an object, this is either a single object or two args: key, value
-                OUT: new property value to set own-property to
+                  currentExtendedValue: the current, extended value, already cloned if needed, so direct mutation is OK
+                  extendWithValues: all the values passed into the extend funtion by the caller, unprocessed
+                    Ex: arrayPropetyExtender accepts an single array or a single value
+                    Ex: objectPropertyExtender accepts either a plain object or a key followed by a value
+                    Ex: however, if you want, you can accpet, say, a list of values...
+                OUT: new, extended value to set for the current contect (class/instance)
                 EFFECT:
                   Can be pure functional and just return the new, extended data.
                   OR
@@ -215,26 +231,27 @@
             current subclass or instance! Instead, call @extendFoo() if you wish to manually modify
             the extended property.
         
-          declarable:
-            getters:
-              @getFoo:
-              getFoo:
-        
-            extenders:
-              @foo:
-              foo:
-        
-          non-declarable:
+          Both Declarable and Non-declarable extends create the following methods:
         
             getters:
-              @getFoo:
-              @getter foo:
+              @getFoo:    # class method
+              getFoo:     # instance method
         
             extenders:
-              @foo:
-              @extendFoo:
-              extendFoo:
+              @extendFoo: # class method
+              @foo:       # class method
+              extendFoo:  # instance method
         
+          The difference between Declarable and Non-declarable extendable properters are
+          on the same-named instance-method:
+        
+            declarable creates an extender:
+              foo:        # instance method
+        
+            non-declarable creates a getter:
+              foo:        # instance method
+        
+          Extenders:
               IN:
                 0-args: nothing happens beyond the standard EFFECT
                 1+args: passed to the "extend" function
