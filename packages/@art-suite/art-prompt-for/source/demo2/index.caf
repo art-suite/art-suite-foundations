@@ -1,0 +1,12 @@
+import &ArtStandardLib, &@ArtSuite/ArtPromptFor
+
+PromptFor.menu
+  state = {}
+  exitPrompt: exitPrompt
+  prompt:  "" Demo Prompt:
+  items:
+    {}
+      label: "" Pick me!
+      action: -> pickMe: true
+
+.then log

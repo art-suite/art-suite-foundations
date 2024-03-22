@@ -1,0 +1,247 @@
+import &ArtStandardLib, &Lib, {} &sliceAnsi
+
+readlineUtils = require :inquirer/lib/utils/readline
+Base = require :inquirer/lib/prompts/base
+Paginator = require :inquirer/lib/utils/paginator
+observe = require :inquirer/lib/utils/events
+{ takeWhile } = &rxjs/operators
+
+colors =
+  tip:          &chalk.grey
+  currentLine:  &chalk.white.bold
+  selected:     &chalk.greenBright
+  warning:      &chalk.yellow
+  error:        &chalk.red
+
+applyColors = (customColors) ->
+  object c, k in colors
+    c = customColors?[k] ? c
+
+    if c is String
+      throw new Error "invalid color #{k}: '#{c}'" unless color = &chalk[c]
+      color
+    else if c is Function
+      c
+    else throw new Error "invalid color for #{k} - expecting string or function"
+
+class AutocompletePrompt extends Base
+
+  constructor: (options, rl, answers) ->
+    @throwParamError :source unless @opt.source is Function
+    @currentItems = []
+    @showTip = true
+    @selected = 0
+    @itemsWereStrings = false
+    if @multiselect = @opt.multiselect
+      @selectedById = {}
+
+    @default = @opt.default
+    @opt.default = null
+    @errorMessage = null
+    @colors = applyColors @opt.colors
+    @paginator = new Paginator
+
+  logFile: (args...) ->
+    [args] = args if args.length = 1
+    &fs.appendFileSync
+      :prompt.log
+      if args is String then args else
+        formattedInspect args
+      + "\n"
+
+  _run: (@done) ->
+    if isArray @rl.history
+      @rl.history = []
+
+    @bindEvents()
+    @search()
+    @
+
+  bindEvents: ->
+    events = observe @rl
+
+    events.line.pipe takeWhile dontHaveAnswer = -> !@answer
+    .forEach (line) ->
+      if @currentItems.length <= @selected
+        @rl.write line
+        @search line
+
+      else
+        @answer = if @multiselect then array @selectedById else @getCurrentItem()
+        @render()
+        @screen.done()
+        @done @answer
+
+    events.keypress.pipe takeWhile dontHaveAnswer
+    .forEach (e) -> if e.key extract? meta, ctrl, shift, name
+      @errorMessage = null
+
+      switch mergedName = "" #{if ctrl then :ctrl_ else ''}#{name}
+      when :down  then return @down()
+      when :up    then return @up()
+      else
+        handled = true
+        if handled = @multiselect
+          switch mergedName
+          when :space
+            if item = @getCurrentItem()
+              if @selectedById[item.id]
+                # @logFile unselect: item.id
+                delete @selectedById[item.id]
+              else
+                # @logFile select: item.id
+                @selectedById[item.id] = item
+
+              @down()
+
+            @rl.line = @rl.line.trim()
+
+          when :ctrl_a then return @selectAll()
+          when :ctrl_n then return @selectNone()
+          when :ctrl_i then return @invertSelection()
+          else handled = false
+
+        unless handled
+          # @logFile {} e.key?.name, @rl.line
+          @search @rl.line
+
+      # @logFile {} @selectedById
+
+  selectAll: ->
+    @selectedById = merge @selectedById, object item in @currentItems with-key item.id
+    @render()
+
+  selectNone: ->
+    @selectedById = {}
+    @render()
+
+  getCurrentItem: -> @currentItems[@selected]
+
+  invertSelection: ->
+    @selectedById = object item in @currentItems with-key item.id when !@selectedById[item.id]
+    @render()
+
+  down: ->
+    @setSelected @selected + 1
+    @render()
+    readlineUtils.up @rl, 2
+
+  up: ->
+    @setSelected @selected - 1
+    @render()
+
+  renderItemList: (items, pointer) ->
+    process.stdout extract columns
+
+    array item, i in items
+      line = sliceAnsi
+        if isSelected = i == pointer
+          &figures.pointer + ''
+        else ' '
+        + if @multiselect
+          if @selectedById[item.id] then @colors.selected &figures.radioOn else &figures.radioOff
+        else ''
+        + ' '
+        + item.value
+
+        0
+        columns - 1
+
+      if isSelected then @colors.currentLine line else line
+
+    .join "\n"
+
+  getPrompt: ->
+    compactFlatten []
+      @getQuestion()
+      if @showTip then @colors.tip @opt.tip ? "" (Use arrow keys or type to search)
+      else if @multiselect then @colors.tip "#{objectKeyCount @selectedById}/#{@total} "
+
+      if @errorMessage then @colors.error "" ERROR: #{@errorMessage}
+
+      if @answer
+        @colors.currentLine @answer.label ? @answer.value
+
+      else
+        @rl.line
+
+    .join ''
+
+  getRenderedPage: ->
+    if @searching
+      '  ' + @colors.tip 'Searching...'
+
+    else if @currentItems.length > 0
+      @paginator.paginate
+        @renderItemList @currentItems, @selected
+        + if @currentItems.length > @opt.pageSize then @colors.tip "\n  " + repeat "-", process.stdout.columns - 4 else ''
+        @selected
+        @opt.pageSize
+
+    else
+      '  ' + @colors.warning 'No results...'
+
+  render: ->
+    @screen.render
+      @getPrompt()
+
+      if @answer
+        ''
+      else
+        @getRenderedPage()
+
+    @showTip = false
+
+  getNormalizedItems: (items) ->
+    if @itemsWereStrings || (items[0] && items[0] is String)
+      @itemsWereStrings = true
+      array item in items
+        unless item is String
+          throw new Error "If any item is a string, all items must be strings."
+
+        id: item
+        value: item
+
+    else
+      array item in items
+        unless item.value is String
+          throw new Error "Every item should have a .value."
+
+        unless present item.id
+          merge item, id: item.value
+
+        else item
+
+  search: (searchTerm) ->
+    @setSelected 0
+
+    if @searchedOnce
+      @searching = true
+      @currentItems = []
+      @render()
+    else
+      firstSearch = true
+      @searchedOnce = true
+
+    @lastPromise = thisPromise = @opt.source
+      @answers
+      @lastSearchTerm = searchTerm
+
+    .then (items) -> if thisPromise == @lastPromise
+      @currentItems = @getNormalizedItems items
+
+      if firstSearch
+        @total = @currentItems.length
+        @setSelected
+          findDefaultItemIndex @currentItems, @default
+          ? 0
+
+      if @multiselect
+        @selectedById = merge @selectedById, object item in @currentItems when item.selected with-key item.id
+
+      @searching = false
+      @render()
+
+    .catch (error) -> @errorMessage = error.message
+
+  setSelected: (selected) -> @selected = (selected ? 0) %% max 1, @currentItems.length

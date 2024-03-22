@@ -1,0 +1,22 @@
+import &ArtStandardLib
+
+{}
+  standardFormatDate: (date) -> formatDate date ? toSeconds(), "yyyy-mm-dd HH:MM:ss"
+
+  colorizeValue = &Style.yellow
+  colorNotPresent = &Style.grey
+
+  presentValue = (value, noneValue = :none) ->
+    if present value
+      if (value is Array) and value[0] is String
+        array v in value
+          colorizeValue v
+        .join ', '
+
+      else if value is String
+        colorizeValue value
+
+      else
+        formattedInspect value, color: true
+    else
+      colorNotPresent noneValue

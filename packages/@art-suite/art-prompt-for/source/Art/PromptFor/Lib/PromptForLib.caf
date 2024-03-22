@@ -1,0 +1,18 @@
+
+
+
+{}
+  # all props in a match b
+  partialEq = (a, b)->
+    !find v, k from a when b[k] != v
+
+  findDefaultItem = (items, _default) ->
+    items[findDefaultItemIndex items, _default]
+
+  findDefaultItemIndex = (items, _default) ->
+    return undefined unless _default
+
+    switch
+    when _default is Object then  find item, i from-array items when partialEq _default, item with i
+    when _default is String then  find item, i from-array items when item.value == _default with i
+    else                          find item, i from-array items when item.default with i

@@ -1,0 +1,17 @@
+import &ArtStandardLib, &chalk
+
+hex = &chalk.hex.bind &chalk
+
+merge {}
+  red
+  blue
+  green
+  cyan
+  white
+  yellow: hex #ffd400
+  bold
+  brightWhite: whiteBright
+  brightGreen: greenBright
+  grey: &chalk.hex(#777).bold
+  red:  &chalk.hex(#e96b00).bold
+  blue: &chalk.hex #65b1ff

@@ -1,0 +1,138 @@
+import &ArtStandardLib, &ArtClassSystem, &Lib, &Style
+
+&inquirer.registerPrompt :autocomplete &AutocompletePrompt
+
+inquire = (options) ->
+  throw new Error "no need to specify 'name' - just your value is returned w/o a wrapping object" if present options.name
+  Promise.then -> &inquirer.prompt merge options, name: :value, message: options.prompt ? options.message
+  .then ({value}) -> value
+
+class Core
+
+  ##
+    IN:
+      items:
+        array of strings, presented in order
+        OR array of objects with at least a 'value' property:
+          value: string presentation value
+          default: if true, select this one as the default
+
+      multiselect: false
+
+      prompt: string for prompt
+
+      default: string exactly matching default item
+
+    OUT: selected item, as passed in
+
+  @selectList: ({items, multiselect, prompt, tip, pageSize, default: _default}) ->
+    if isString items[0]
+      itemsWereStrings = true
+      items = array string from items with value: string
+
+    values = array {value} from items with value
+    itemsByValue = object item in items with-key item.value
+
+    inquire {}
+      prompt
+      multiselect
+      tip
+      default:    _default
+      type:       :autocomplete
+      pageSize:   if pageSize == :max then process.stdout.rows - 2 else pageSize ? 20
+      source:     (answersSoFar, input) ->
+        Promise.resolve
+          array value in approximateSearchSort input, values
+            itemsByValue[value]
+
+    .then (item) ->
+      if itemsWereStrings then item.value
+      else item
+
+      # highlight:  true
+      # searchable: true
+
+  @item: @selectList
+
+  @yesNo: (options) ->
+    inquire merge
+      type:     :expand
+      default:  if options.default == true || options.default == :yes then :yes else :no
+      choices:
+        key: :y value: :yes name: "" yes
+        key: :n value: :no  name: "" no
+      options
+
+  ## input
+    IN: options
+      canBeBlank: t/f - unless true, if the result is an empty string, then default will be returned
+  @input: (options) ->
+    inquire merge
+      type: :input
+      options
+    .then (str) ->
+      unless options.canBeBlank
+        switch
+        when present str then str
+        when str?.length > 0 then ''
+        else options.default
+
+  @password: (options) =>
+    @input merge options, type: :password
+
+  @password: (options) ->
+    inquire merge
+      type: :password
+      options
+
+  numberValues = (list) ->
+    maxLabel = reduce m, {label = ''} from list inject 0 with m = max m, label.length
+    array item, index in list
+      item extract shortcut, value, label, disabled
+      if present label
+        label = pad label + ":", maxLabel + 2
+        value = if disabled
+          grey label + value
+        else
+          blue label
+          + presentValue value
+      else if disabled
+        value = grey value
+
+      shortcut ?= "#{index + 1}"
+      shortcut += "."
+      if list.length > 9
+        shortcut = pad shortcut, 3
+
+      merge item,
+        value: "" #{shortcut} #{} value
+
+  @menu: (state, options) =>
+    unless options?
+      options = state
+      state = {}
+
+    options extract
+      preprocessState = (a) -> a
+      postprocessState = (a) -> a
+      exitPrompt = "exit"
+      items
+
+    Promise.resolve state
+    .then preprocessState
+    .then (state) ->
+      @selectList merge options,
+        items: numberValues compactFlatten []
+          if items is Function then items state else items
+          exit: true
+          value: "" #{} exitPrompt
+          shortcut: capitalize exitPrompt[0]
+
+      .then (item) ->
+        item extract action, exit, disabled
+        Promise.then ->
+          !disabled && action? state
+          ? state
+
+        .then postprocessState
+        .then (newState) -> if exit then newState else @menu newState, merge options, default: if item then {} item.label
