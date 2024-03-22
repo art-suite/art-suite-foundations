@@ -80,11 +80,6 @@ class Core
   @password: (options) =>
     @input merge options, type: :password
 
-  @password: (options) ->
-    inquire merge
-      type: :password
-      options
-
   numberValues = (list) ->
     maxLabel = reduce m, {label = ''} from list inject 0 with m = max m, label.length
     array item, index in list
@@ -131,7 +126,7 @@ class Core
       .then (item) ->
         item extract action, exit, disabled
         Promise.then ->
-          !disabled && action? state
+          if !disabled && action then action state
           ? state
 
         .then postprocessState
