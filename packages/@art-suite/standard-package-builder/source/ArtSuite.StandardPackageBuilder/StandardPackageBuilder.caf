@@ -41,18 +41,15 @@ configure: (options = {}) -> (_package) ->
       nn:
         "" nn #{targetDir}/* #{if mocha then :test/tests}
       test:
-        """
-          npm run build
-          #{}
-            if mochaAndJest then
-              """
-                jest
-                if [[ $? -ne 0 ]]; then
-                  exit 1
-                fi
-                mocha -u tdd
-            else if mocha then "" mocha -u tdd
-            else          :jest
+        if mochaAndJest then
+          """
+            jest
+            if [[ $? -ne 0 ]]; then
+              exit 1
+            fi
+            mocha -u tdd
+        else if mocha then "" mocha -u tdd
+        else          :jest
 
       test-watch: if mochaAndJest || mocha then "#{nodemonCommand} npm run test" else "" jest --watch
 

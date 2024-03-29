@@ -41,7 +41,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.2.2",
+  "version": "1.2.3",
   "watch": {
     "build": {
       "extensions": [
