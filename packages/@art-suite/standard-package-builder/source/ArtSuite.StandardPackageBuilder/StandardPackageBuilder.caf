@@ -1,6 +1,7 @@
 import &ArtStandardLib
 
-nodemonCommand = "" nodemon -e js,ts,jsx,tsx,caf,coffee,json -x
+nodemonExtensions = "" js,ts,jsx,tsx,caf,coffee,json
+nodemonCommand = "" nodemon -e #{nodemonExtensions} -x
 
 configure: (options = {}) -> (_package) ->
   options extract?
@@ -75,7 +76,7 @@ configure: (options = {}) -> (_package) ->
             mv #{targetTempDir} #{targetDir}
             rm -rf ./__build-old__
 
-      build-watch:  "" #{nodemonCommand} npm run build
+      build-watch:  "" nodemon -e #{nodemonExtensions} -i "#{targetDir}/**" -x npm run build
       clean:        "" rm -rf #{targetDir}/*
 
       scripts
