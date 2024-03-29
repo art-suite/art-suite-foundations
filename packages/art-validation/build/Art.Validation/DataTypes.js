@@ -1,4 +1,0 @@
-"use strict"
-let Caf = require('caffeine-script-runtime');
-Caf.defMod(module, () => {return Caf.importInvoke(["merge", "isBoolean", "isNumber", "isString", "isPlainObject", "isPlainArray", "isFunction", "isDate", "isJsonType", "lowerCamelCase"], [global, require('art-standard-lib')], (merge, isBoolean, isNumber, isString, isPlainObject, isPlainArray, isFunction, isDate, isJsonType, lowerCamelCase) => {let base; return merge(base = {boolean: {validate: isBoolean}, number: {validate: isNumber}, string: {validate: isString}, object: {validate: isPlainObject}, array: {validate: isPlainArray}, function: {validate: isFunction}, date: {validate: isDate}, json: {validate: isJsonType}, any: {}}, Caf.object(base, (v, k) => k, null, null, (v, k) => lowerCamelCase(`${Caf.toString(k)} DataType`)));});});
-//# sourceMappingURL=DataTypes.js.map

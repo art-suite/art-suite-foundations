@@ -23,8 +23,13 @@ import &ArtStandardLib
           postValidate: (value, fieldName, fields) ->
             if postValidate && !postValidate value, fieldName, fields then false
             else if value?
-              if maxLength? && value.length > maxLength       then false
-              else if minLength? && value.length < minLength  then false
+
+              length =
+                if isPlainObject value then objectKeyCount value
+                else value.length
+
+              if maxLength? && length > maxLength       then false
+              else if minLength? && length < minLength  then false
               else true
 
             else true

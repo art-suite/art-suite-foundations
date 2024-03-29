@@ -1,4 +1,0 @@
-"use strict"
-let Caf = require('caffeine-script-runtime');
-Caf.defMod(module, () => {return Caf.importInvoke(["test", "Validator", "isString", "assert", "lowerCamelCase"], [global, require('./StandardImport')], (test, Validator, isString, assert, lowerCamelCase) => {return test("postValidate", function() {let v, out; v = new Validator({message: {validate: isString, preprocess: (v) => lowerCamelCase(v), postValidate: (v) => v.match(/Queen/)}}); v.validate({message: "myQueen"}); v.validate({message: "my queen"}); out = v.validate({message: "my what a queen you are"}); assert.eq(out, {message: "myWhatAQueenYouAre"}); assert.throws(() => v.validate({message: 123})); assert.throws(() => v.validate({message: "myqueen"})); return assert.throws(() => v.validate({message: "queen"}));});});});
-//# sourceMappingURL=PostValidation.test.js.map

@@ -7,6 +7,21 @@ describe
         fieldType: :trimmedString
         length: 5
       v.validateCreate caption: "" 12345
+      assert.throws -> v.validateCreate caption: "" 123456
+      assert.throws -> v.validateCreate caption: "" 1234
+
+    test "object length: 2" ->
+      v = new Validator location:
+        fields:
+          x: :number
+          y: :number
+          z: :number
+        length: 2
+      v.validateCreate location: x: 1 y: 2
+      v.validateCreate location: z: 1 y: 2
+      v.validateCreate location: x: 1 z: 2
+      assert.throws -> v.validateCreate location: x: 1 y: 2 z: 3
+      assert.throws -> v.validateCreate location: z: 3
 
   maxLength: ->
     test "maxLength" ->

@@ -7,9 +7,9 @@ import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, {} &F
 
       validate: (v) -> true/false
 
-        Validate is evaludated first. If it returns a false value, validation fails.
+        Validate is evaluated first. If it returns a false value, validation fails.
 
-        NOTE: Return false for validation failures, DO NOT THROUGH ERRORS
+        NOTE: Return false for validation failures, DO NOT THROW ERRORS
 
       preprocess: (v1) -> v2
 
@@ -21,7 +21,7 @@ import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, {} &F
 
       postValidate: (v) -> true/false
 
-        Post-validate is evaludated last. It works the same as validate, but
+        Post-validate is evaluated last. It works the same as validate, but
         sometimes it's easy to normalize the input first with 'preprocess' and
         THEN validate it.
 
@@ -69,7 +69,7 @@ import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, {} &F
             fieldProps = merge FieldTypes[string], fieldProps
 
           dataType: string
-            sepecify which of the standard Json data-types this field contains
+            specify which of the standard Json data-types this field contains
             This is not used by Validator itself, but is available for clients to reflect on field-types.
             Must be one of the values in: DataTypes
 
@@ -177,7 +177,7 @@ class Validator extends BaseClass
   isValidCreate: isValidCreate = (fields) ->
     @requiredFieldsPresent fields
     && @presentFieldsValid fields
-    && @postValidateFields processedFields = @preprocess fields, true
+    && @postValidateFields @preprocess fields, true
 
   isValid: isValidCreate
 
