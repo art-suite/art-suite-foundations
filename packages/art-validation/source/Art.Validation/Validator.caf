@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, {} &FieldTypes, &DataTypes
+import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, &Tools, {} &FieldTypes, &DataTypes
 
 ###
   CONCEPTS:
@@ -163,7 +163,9 @@ class Validator extends BaseClass
 
     || @_throwError fields, processedFields, options, true
 
-  validate:       validateCreate
+  validate: (fields, options, forCreate = true) ->
+    if forCreate then @validateCreate fields, options
+    else @validateUpdate fields, options
 
 
   ## isValidCreate
@@ -178,8 +180,6 @@ class Validator extends BaseClass
     @requiredFieldsPresent fields
     && @presentFieldsValid fields
     && @postValidateFields @preprocess fields, true
-
-  isValid: isValidCreate
 
   ## isValidUpdate
     IN:
@@ -197,6 +197,15 @@ class Validator extends BaseClass
   isValidUpdate: (fields) ->
     @presentFieldsValid fields
     && @postValidateFields processedFields = @preprocess fields
+
+  ## isValid
+    IN:
+      fields: - the object to check
+      forCreate: boolean = selects isValidCreate or isValidUpdate
+    OUT: see isValidCreate or isValidUpdate
+  isValid: (fields, forCreate = true) ->
+    if forCreate then @isValidCreate fields
+    else @isValidUpdate fields
 
   ## validateUpdate
     IN:
@@ -221,27 +230,41 @@ class Validator extends BaseClass
 
     || @_throwError fields, processedFields, options
 
+
+  getValidationErrors: (fields, parentFieldPath, forCreate) ->
+    compactFlattenAll
+      if forCreate && !@requiredFieldsPresent fields
+        array fieldName from @missingFields fields
+          value: fields[fieldName]
+          fieldPath: joinFieldPath parentFieldPath, fieldName
+          errorIs: :missing
+
+      array fieldName from @invalidFields fields
+        value = fields[fieldName]
+        fieldPath = joinFieldPath parentFieldPath, fieldName
+        if @exclusive && !@_fieldProps[fieldName]
+          {} fieldPath, value, errorIs: "" not one of the allowed fields
+        else
+          makeEmptyArraysIntoNulls @fields[fieldName].getValidationErrors? value, fieldPath, forCreate
+          || {} fieldPath, value, errorIs: standardInvalidMessage @fields[fieldName], value
+
   _throwError: (fields, processedFields, options, forCreate) ->
-    info = errors: errors = {}
-    messageFields = []
 
-    array f from @invalidFields(fields) into messageFields
-      errors[f] = "invalid"
-      if @exclusive && !@_fieldProps[f]
-            "" #{JSON.stringify f} unexpected"
-      else  "" #{JSON.stringify f} failed validation
+    validationErrors = @getValidationErrors fields, '', forCreate
 
-    array f from @postInvalidFields(processedFields) into messageFields
-      errors[f] = "invalid"
-      "" #{JSON.stringify f} failed post-validation
+    invalidFields = array {fieldPath, errorIs} in-array validationErrors with "" #{fieldPath} is #{errorIs}
+    invalidFieldString = if invalidFields.length > 1
+      last = peek invalidFields
+      most = invalidFields.slice 0, invalidFields.length - 1
+      "" #{most.join ", "} and #{last}
+    else
+      invalidFields[0]
 
-    forCreate && array f from @missingFields(fields) into messageFields
-      errors[f] = "missing"
-      "" #{JSON.stringify f} missing
-
-    message = "#{options?.context ? @context} #{if forCreate then 'create' else 'update'}-validation failed. Invalid fields: #{messageFields.join ', '}"
-    info.fields = fields
-    throw new ErrorWithInfo message.trim(), info
+    message = "#{options?.context ? @context} #{if forCreate then 'create' else 'update'}-validation failed: #{invalidFieldString}"
+    throw new ErrorWithInfo message.trim(),
+      fields: invalidFields
+      errors: object {errorIs, fieldPath} from validationErrors with-key fieldPath with errorIs
+      invalidValues: object {value, fieldPath} from validationErrors with-key fieldPath with value
 
   ####################
   # VALIDATION CORE
@@ -275,11 +298,8 @@ class Validator extends BaseClass
       else
         true
 
-  presentFieldsValid: (fields) ->
-    !find fieldValue, fieldName from fields with !@presentFieldValid fields, fieldName, fieldValue
-
-  requiredFieldsPresent: (fields) ->
-    !find fieldValue, fieldName from @_fieldProps with !@requiredFieldPresent fields, fieldName
+  presentFieldsValid:     (fields) -> !find fieldValue, fieldName from fields with !@presentFieldValid fields, fieldName, fieldValue
+  requiredFieldsPresent:  (fields) -> !find fieldValue, fieldName from @_fieldProps with !@requiredFieldPresent fields, fieldName
 
   postValidateFields: (fields) ->
     !find fieldValue, fieldName from fields with !@presentFieldPostValid fields, fieldName, fieldValue
@@ -310,9 +330,8 @@ class Validator extends BaseClass
   ####################
   # VALIDATION INFO CORE
   ####################
-  invalidFields:      (fields) -> array v, k  from fields when !@presentFieldValid fields, k, v with k
-  postInvalidFields:  (fields) -> array v, k  from fields when !@presentFieldPostValid fields, k, v with k
-  missingFields:      (fields) -> array k     from @_requiredFields when !@requiredFieldPresent fields, k with k
+  invalidFields:   (fields) -> array v, k  from fields when !@presentFieldValid(fields, k, v) || !@presentFieldPostValid fields, k, v with k
+  missingFields:   (fields) -> array k     from @_requiredFields when !@requiredFieldPresent fields, k with k
 
   ###################
   # PRIVATE

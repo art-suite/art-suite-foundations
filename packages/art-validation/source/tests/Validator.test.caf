@@ -56,7 +56,7 @@ describe
       v.validateUpdate {}
       v.validate id: "123"
       assert.rejects -> v.validate(id: 123)
-      .then ({info}) -> assert.eq info.errors, id: "invalid"
+      .then ({info}) -> assert.eq Object.keys(info.errors), [] :id
 
     test "validate: ->", ->
       v = new Validator

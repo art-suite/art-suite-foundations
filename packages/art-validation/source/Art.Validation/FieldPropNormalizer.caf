@@ -1,4 +1,4 @@
-import &ArtStandardLib, &StandardValidations, &Enum, {} &FieldTypes
+import &ArtStandardLib, &StandardValidations, &Enum, &Tools, {} &FieldTypes
 
 namespace = require :./namespace
 
@@ -48,6 +48,13 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
     subValidator = new namespace.Validator fields, merge validatorOptions, exclusive: true
     fieldProps = merge fieldProps, {}
       subValidator.fields
+      getValidationErrors: (value, fieldPath, forCreate) ->
+        if !isPlainObject value
+          {} fieldPath, value, error: "" must be a plain object
+        else
+          unless subValidator.isValid value, forCreate
+            subValidator.getValidationErrors value, fieldPath, forCreate
+
       dataType:   :object
       fieldType:  :object
       validate:   validate ? (v) -> isPlainObject(v) && subValidator.isValid v
@@ -55,7 +62,24 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
 
   else if _array
     normalizedArray = _normalizeFieldProps _array, validatorOptions
+    elementIsValid = (v) ->
+      if normalizedArray.required && !v?
+        false
+      else
+        if v? && normalizedArray.validate
+          !!normalizedArray.validate v
+        else true
+
     merge fieldProps,
+      getValidationErrors: (value, fieldPath, forCreate) ->
+        if !isArray value
+          {} fieldPath, value, errorIs: "" not an array
+        else
+          array subValue, i in-array value when !elementIsValid subValue
+            subFieldPath = joinFieldPath fieldPath, i
+            makeEmptyArraysIntoNulls normalizedArray.getValidationErrors? subValue, subFieldPath, forCreate
+            || {} value: subValue, fieldPath: subFieldPath, errorIs: standardInvalidMessage normalizedArray, subValue
+
       dataType:   :array
       fieldType:  :array
       array:      normalizedArray
@@ -63,8 +87,7 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
         (_array) ->
           isArray _array
           && !validate || validate _array
-          && !normalizedArray.validate || !find v in-array _array when v? && !normalizedArray.validate v with true
-          && !normalizedArray.required || !find v in-array _array when !v? with true
+          && !find v in-array _array when !elementIsValid v with true
 
       preprocess: preprocess ? if normalizedArray.preprocess
         (_array) -> if isArray _array then array v in _array with normalizedArray.preprocess v else _array

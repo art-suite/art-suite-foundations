@@ -1,0 +1,29 @@
+import &ArtStandardLib
+{}
+  makeEmptyArraysIntoNulls: (arr) -> if isArray(arr) && arr.length == 0 then null else arr
+  joinFieldPath: (parentFieldPath, toJoin) ->
+    unless isString(toJoin) && /^[_a-z][_a-z0-9]*$/i.test toJoin
+      "#{parentFieldPath}[#{JSON.stringify toJoin}]"
+    else if present parentFieldPath
+      "" #{parentFieldPath}.#{toJoin}
+    else toJoin
+
+  getFieldLength = (value) ->
+    if isPlainObject value
+      objectKeyCount value
+    else value?.length
+
+  standardInvalidMessage: (fieldProps, value) ->
+    fieldProps extract fieldType, dataType, length, maxLength, minLength
+
+    if length? || minLength? || maxLength?
+      fieldLength = getFieldLength value
+      switch
+      when length? && fieldLength != length      then "" not length == #{length} (was #{formattedInspect fieldLength})"
+      when minLength? && fieldLength < minLength then "" not length >= #{minLength} (was #{formattedInspect fieldLength})"
+      when maxLength? && fieldLength > maxLength then "" not length <= #{maxLength} (was #{formattedInspect fieldLength})"
+
+    else if present fieldType then "" not a valid #{fieldType}
+    else if present dataType then "" invalid #{dataType} data
+    else :invalid
+

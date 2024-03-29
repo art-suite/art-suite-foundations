@@ -22,7 +22,12 @@ test "validate array with required number elements" ->
   v.validate ids: null
   v.validate ids: 1 2
   assert.rejects -> v.validate ids: 1 null 2
-  .then (_with) -> assert.match _with.stack, /// ids .* failed .* validation
+  .then (_with) -> assert.match _with.stack, ///i ids\[1\] .* \bnot\b .* \bvalid
+
+test "validate array with multiple validation failures" ->
+  v = new Validator ids: array: "required number"
+  assert.rejects -> v.validate ids: 1 null "wrong"
+  .then (_with) -> assert.match _with.stack, ///i ids\[1\] .* and .* ids\[2\] .* \bnot\b .* \bvalid
 
 test "maxLength on array" ->
   v = new Validator idList: maxLength: 3 array: fieldType: :number
@@ -44,6 +49,7 @@ test "maxLength on array value" ->
   v = new Validator idList: array: maxLength: 3 fieldType: :string
   v.validate idList: :1 :2
   assert.throws -> v.validate idList: :1 :2 :way-too-long
+
 
 test :minLength ->
   v = new Validator idList: minLength: 3 array: fieldType: :number

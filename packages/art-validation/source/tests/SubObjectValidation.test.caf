@@ -56,24 +56,24 @@ test "preprocess" ->
       myFields: foo: "   hi   "
       normalFoo: " hi "
 
-test "validate object type" ->
+test "validate object type basic" ->
   v = new Validator
     user: fields: name: :string
   v.validate user: name: :frank
   assert.rejects -> v.validate user: name: {}
-  .then (_with) -> assert.match _with.stack, /// user.*failed.*validation
+  .then (_with) -> assert.match _with.stack, ///i user\.name .* \bnot\b .* \bvalid
 
 test "validate object type required field" ->
   v = new Validator
     user: fields: name: :required :string
   v.validate user: name: :frank
   assert.rejects -> v.validate user: {} # name missing
-  .then (_with) -> assert.match _with.stack, /// user.*failed.*validation
+  .then (_with) -> assert.match _with.stack, /// user\.name .* missing
 
 test "double nested" ->
   v = new Validator
     post: fields: user: fields: name: :required :string
   v.validate post: user: name: :frank
   assert.rejects -> v.validate post: user: name: 123 # not a string
-  .then (_with) -> assert.match _with.stack, /// post.*failed.*validation
+  .then (_with) -> assert.match _with.stack, /// post\.user\.name .* \bnot\b .* \bvalid
 

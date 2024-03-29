@@ -1,0 +1,53 @@
+import &StandardImport
+
+describe
+  dynamoDb: ->
+    test "complex example" ->
+      sortKey = :myRank
+      sortFieldValidator = :number
+      v = new Validator
+        key: [] :string, required: true
+        select:
+          validate: (select) ->
+            isString select
+            || isArray(select) && select.length >= 1 && !find v2 in-array select when !isString v2
+
+        limit:
+          :number
+          postValidate: (limit) -> limit >= 1
+
+        where:
+          minLength: 1 # NEW: objects can have count checks
+          # exclusive: true
+          fields:
+            [sortKey]:    sortFieldValidator
+            eq:           sortFieldValidator
+            lt:           sortFieldValidator
+            lte:          sortFieldValidator
+            gt:           sortFieldValidator
+            gte:          sortFieldValidator
+            beginsWith:   sortFieldValidator
+            between:
+              array:      sortFieldValidator
+              length:     2
+              postValidate: ([a, b]) -> a <= b
+
+      v.validate
+        key: :abc123
+        select: ["a", "b"]
+        limit: 10
+        where:
+          gt: 123
+
+      assert.rejects ->
+        v.validate
+          key: :abc123
+          select: ["a", "b"]
+          limit: 10
+          where:
+            gt: foo: 1
+      .then (error) ->
+        assert.match
+          error.message
+          /// where.gt .* not .* valid
+
