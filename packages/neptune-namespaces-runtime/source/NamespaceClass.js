@@ -13,37 +13,37 @@ NEW:
   Did this fix it?
  */
 
-(function() {
+(function () {
   var ArtStandardLibCore, Namespace, isClass, isExtendedClass, isFunction, isPlainArray, ref,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    extend = function (child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     hasProp = {}.hasOwnProperty,
     slice = [].slice,
-    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    indexOf = [].indexOf || function (item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   ref = require('art-standard-lib/Types'), isClass = ref.isClass, isFunction = ref.isFunction, isPlainArray = ref.isPlainArray, isExtendedClass = ref.isExtendedClass;
 
   ArtStandardLibCore = null;
 
-  module.exports = Namespace = (function() {
+  module.exports = Namespace = (function () {
     var excludedPropNames, isPathedNamespace;
 
-    function Namespace() {}
+    function Namespace() { }
 
-    Namespace.isNamespace = function(klass) {
+    Namespace.isNamespace = function (klass) {
       return (klass != null ? klass.prototype : void 0) instanceof Namespace;
     };
 
     Namespace.allNamespaces = {};
 
-    Namespace.getAllNamespacePaths = function() {
+    Namespace.getAllNamespacePaths = function () {
       return Object.keys(Namespace.allNamespaces).sort();
     };
 
-    Namespace.toString = function() {
+    Namespace.toString = function () {
       return this.namespacePath;
     };
 
-    Namespace.inspect = function() {
+    Namespace.inspect = function () {
       return this.namespacePath;
     };
 
@@ -55,23 +55,23 @@ NEW:
 
     Namespace.modules = {};
 
-    Namespace.getNamespacePath = function() {
+    Namespace.getNamespacePath = function () {
       return this.namespacePath;
     };
 
-    Namespace.getNamespaceNames = function() {
+    Namespace.getNamespaceNames = function () {
       return Object.keys(this.namespaces).sort();
     };
 
-    Namespace.getModuleNames = function() {
+    Namespace.getModuleNames = function () {
       return Object.keys(this.modules).sort();
     };
 
-    Namespace.getNeptuneLib = function() {
+    Namespace.getNeptuneLib = function () {
       return ArtStandardLibCore || (ArtStandardLibCore = require('art-standard-lib/Core'));
     };
 
-    Namespace.getInspectedObjects = function(includeModules) {
+    Namespace.getInspectedObjects = function (includeModules) {
       var name, namespace, obj;
       if (includeModules == null) {
         includeModules = true;
@@ -80,7 +80,7 @@ NEW:
         obj = {},
         obj["" + this.namespacePath] = this.getNeptuneLib().merge(this.version ? {
           version: this.version
-        } : void 0, (function() {
+        } : void 0, (function () {
           var ref1, results;
           ref1 = this.namespaces;
           results = [];
@@ -96,7 +96,7 @@ NEW:
       );
     };
 
-    Namespace.getVersions = function() {
+    Namespace.getVersions = function () {
       var key, out, recurse, ref1, subnamespace;
       out = {};
       if (this === Neptune) {
@@ -123,7 +123,7 @@ NEW:
       OR: ["Foo", "Bar", "Baz"] ->  vivifies @Foo.Bar.Baz
      */
 
-    Namespace.vivifySubnamespace = function(name) {
+    Namespace.vivifySubnamespace = function (name) {
       var PathedNamespace, base, j, len, namespace, path;
       if (isPathedNamespace(name)) {
         name = name.split('.');
@@ -136,7 +136,7 @@ NEW:
         }
         return namespace;
       } else {
-        return (base = this.namespaces)[name] || (base[name] = this[name] = PathedNamespace = (function(superClass) {
+        return (base = this.namespaces)[name] || (base[name] = this[name] = PathedNamespace = (function (superClass) {
           extend(PathedNamespace, superClass);
 
           function PathedNamespace() {
@@ -149,11 +149,11 @@ NEW:
       }
     };
 
-    Namespace.isPathedNamespace = isPathedNamespace = function(name) {
+    Namespace.isPathedNamespace = isPathedNamespace = function (name) {
       return /\./.test(name);
     };
 
-    Namespace.addVersionedNamespace = function(name, namespace) {
+    Namespace.addVersionedNamespace = function (name, namespace) {
       var version, versions;
       if (!namespace) {
         return;
@@ -176,7 +176,7 @@ NEW:
       return namespace;
     };
 
-    Namespace.addNamespace = function(name, namespace) {
+    Namespace.addNamespace = function (name, namespace) {
       var existingNamespace, j, path, ref1;
       if (isPathedNamespace(name)) {
         ref1 = name.split("."), path = 2 <= ref1.length ? slice.call(ref1, 0, j = ref1.length - 1) : (j = 0, []), name = ref1[j++];
@@ -194,14 +194,11 @@ NEW:
       return namespace;
     };
 
-    Namespace.addModules = function(map) {
+    Namespace.addModules = function (map) {
       var modName, module, name;
       for (name in map) {
         module = map[name];
         this._setChildNamespaceProps(name, module);
-        if (isExtendedClass(module) && name !== (modName = module.getName())) {
-          console.warn("NN: module name (" + this.namespacePath + "." + name + ") does not match module.exports.getName(): " + modName);
-        }
         if (!name.match(/^-/)) {
           this.modules[name] = this[name] = module;
         }
@@ -213,17 +210,17 @@ NEW:
     /*
     IN: any combination of objects or arrays
       object: all properties in the object are added to the namespace
-    
+
       array: [fromObject, property names as one or more strings]
         for propName in every sub-string in args matching: /[0-9a-z_]+/ig
           @_addToNamespace propName, fromObject
-    
+
         Each string is parsed to find everything that matches: /[0-9a-z_]+/ig
         All resulting property names are concated into a one list.
         Every property in fromObject that matches one of the property-names is added to the namespace.
      */
 
-    Namespace.includeInNamespace = function() {
+    Namespace.includeInNamespace = function () {
       var arg, args, fromObject, i, j, k, l, len, len1, propName, ref1, ref2, v;
       args = arguments.length === 1 && isPlainArray(arguments[0]) ? arguments[0] : arguments;
       for (j = 0, len = args.length; j < len; j++) {
@@ -252,15 +249,15 @@ NEW:
 
     /*
     Every child of a namespace gets these properties:
-    
+
       namespace:      pointer to the parent namespace
       namespacePath:  string path from global to child
-    
+
     NOTE: only modules which return a class or function
       get their namespace-props set.
      */
 
-    Namespace._setChildNamespaceProps = function(name, child) {
+    Namespace._setChildNamespaceProps = function (name, child) {
       if (isFunction(child) || isClass(child)) {
         if (isFunction(child["class"])) {
           this._setChildNamespaceProps(name, child["class"]);
@@ -277,7 +274,7 @@ NEW:
     function initializes those props.
      */
 
-    Namespace._init = function(name, namespace1) {
+    Namespace._init = function (name, namespace1) {
       var ref1;
       this.namespace = namespace1;
       this._name = name;
@@ -296,21 +293,21 @@ NEW:
     /*
     Helper for includeInNamespace.
     Add anything to the namespace.
-    
+
     IN:
       propName:   property name to  value will be assigned to in the namespace (string)
       addingFrom: object
         used for reporting errors if attempting to overwrite an
         existing item.
-    
+
     EFFECT:
       Only adds value if @[propName] is not already set.
       Otherwise, reports error and continues.
-    
+
     OUT: value
      */
 
-    Namespace._addToNamespace = function(propName, addingFrom) {
+    Namespace._addToNamespace = function (propName, addingFrom) {
       var addingFromString, ref1, value;
       value = addingFrom[propName];
       if (propName === "inspect" && (value != null ? value.length : void 0) > 0) {
