@@ -15,9 +15,7 @@
     "semver": "^7.5.4"
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
@@ -59,7 +57,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.7.12",
+  "version": "1.7.13",
   "watch": {
     "build": {
       "extensions": [
