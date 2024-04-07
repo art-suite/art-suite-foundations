@@ -2,13 +2,13 @@
   "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.16",
+    "art-class-system": "^1.11.18",
     "art-epoched-state": "^1.2.14",
     "art-standard-lib": "^1.71.3"
   },
   "description": "Epoched event system",
   "devDependencies": {
-    "art-build-configurator": "^1.30.1",
+    "art-build-configurator": "^1.30.2",
     "art-testbench": "^3.2.14"
   },
   "foo": 1,
