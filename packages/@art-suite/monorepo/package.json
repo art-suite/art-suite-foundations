@@ -10,11 +10,14 @@
     "art-rest-client": "^1.10.0",
     "art-standard-lib": "^1.71.3",
     "chalk": "^4.1.0",
+    "glob": "^10.0.0",
     "neptune-namespaces-runtime": "^3.2.12",
     "semver": "^7.5.4"
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
-  "devDependencies": {},
+  "devDependencies": {
+    
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [

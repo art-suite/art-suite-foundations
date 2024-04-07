@@ -2,13 +2,14 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["path", "Promise", "globPromise"],
+    ["path", "Promise", "glob"],
     [
       global,
       require("./StandardImport"),
-      { path: require("path"), globPromise: require("glob-promise") },
+      require("glob"),
+      { path: require("path") },
     ],
-    (path, Promise, globPromise) => {
+    (path, Promise, glob) => {
       let LoadAceConfig;
       return (LoadAceConfig = Caf.defClass(
         class LoadAceConfig extends Object {},
@@ -21,7 +22,7 @@ Caf.defMod(module, () => {
             let configFilepath;
             configFilepath = path.join(npmRoot, this.configBasename);
             return Promise.then(() => this.registerLoaders())
-              .then(() => globPromise(configFilepath + "*"))
+              .then(() => glob(configFilepath + "*"))
               .then((results) =>
                 results.length > 0
                   ? this.AceMain.realRequire(configFilepath)

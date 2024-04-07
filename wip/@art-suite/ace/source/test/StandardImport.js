@@ -2,17 +2,15 @@
 let Caf = require("caffeine-script-runtime");
 Caf.defMod(module, () => {
   return Caf.importInvoke(
-    ["AceMain", "globPromise", "JSON"],
+    ["AceMain", "glob", "JSON"],
     [
       global,
       require("art-standard-lib"),
       require("../ArtSuite.Ace"),
-      {
-        globPromise: require("glob-promise"),
-        ArtSuiteAce: require("../ArtSuite.Ace"),
-      },
+      require("glob"),
+      { ArtSuiteAce: require("../ArtSuite.Ace") },
     ],
-    (AceMain, globPromise, JSON) => {
+    (AceMain, glob, JSON) => {
       return require("art-standard-lib").mergeWithSelf(
         require("art-class-system"),
         require("art-testbench"),
@@ -23,7 +21,7 @@ Caf.defMod(module, () => {
             return (AceMain.realRequire = (path) =>
               /register/.test(path)
                 ? ""
-                : globPromise(path + ".*").then(([filePath]) =>
+                : glob(path + ".*").then(([filePath]) =>
                     JSON.parse(require("fs").readFileSync(filePath).toString())
                   ));
           },
