@@ -5,7 +5,7 @@
     "art-binary": "^1.1.16",
     "art-standard-lib": "^1.71.3",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.11"
+    "neptune-namespaces-runtime": "^3.2.12"
   },
   "description": "Art.Xbd",
   "devDependencies": {

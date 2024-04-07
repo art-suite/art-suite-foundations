@@ -9,7 +9,7 @@
     "art-events": "^2.0.0",
     "art-standard-lib": "^1.71.3",
     "chai": "^4.4.1",
-    "neptune-namespaces-runtime": "^3.2.11"
+    "neptune-namespaces-runtime": "^3.2.12"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
   "devDependencies": {

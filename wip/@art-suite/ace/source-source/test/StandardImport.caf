@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtSuiteAce, {} &globPromise, &ArtSuiteAce
+import &ArtStandardLib, &ArtSuiteAce, &glob, {}  &ArtSuiteAce
 
 &ArtStandardLib.mergeWithSelf
   &ArtClassSystem
@@ -10,7 +10,7 @@ import &ArtStandardLib, &ArtSuiteAce, {} &globPromise, &ArtSuiteAce
     AceMain.realRequire = (path) ->
       if /register/.test path then ""
       else
-        globPromise path + ".*"
+        glob path + ".*"
         .then ([filePath]) ->
           JSON.parse
             &fs.readFileSync filePath

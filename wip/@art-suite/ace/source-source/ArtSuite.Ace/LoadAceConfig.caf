@@ -1,4 +1,4 @@
-import &StandardImport, {} &path, &globPromise
+import &StandardImport, &glob, {} &path
 
 class LoadAceConfig
 
@@ -15,7 +15,7 @@ class LoadAceConfig
     Promise
     .then -> @registerLoaders()
     .then ->
-      globPromise
+      glob
         configFilepath
         + "*"
 

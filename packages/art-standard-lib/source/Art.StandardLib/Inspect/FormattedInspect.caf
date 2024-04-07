@@ -64,6 +64,17 @@ module.exports = {}
       when toInspect? && typeOf toInspect == 'object' then "keys: #{Object.keys(toInspect).join ', '}"
       else "toString: #{toInspect}"
 
+  ## formattedInspect
+    IN:
+      toInspect - anything
+      options:
+        maxLineLength:    number
+        maxArrayLength:   number
+        maxDepth:         number
+        maxCount:         number
+        indent:           string
+        unquoted:         boolean
+        color:            boolean
   formattedInspect: (toInspect, options = {}) ->
     try
       if isNumber options
