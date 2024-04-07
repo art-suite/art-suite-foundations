@@ -2,7 +2,7 @@
 
 {log} = MiniFoundation
 
-suite "NeptuneNamespaces.Generation.Pathing", ->
+module.exports.suite = pathing: ->
   test "pathed explicitly", ->
     generator = new Generator "source/Foo", pretend: true, quiet: true
     generator.generateFromFiles [

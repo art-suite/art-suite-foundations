@@ -1,3 +1,4 @@
 &ArtStandardLib.mergeWithSelf
   &ArtTestbench
   &build/NeptuneNamespaces
+  suite: null # need to NOT include "suite" or else mocha attempts to define a test suite from it
