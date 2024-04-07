@@ -1,8 +1,4 @@
-import &ArtStandardLib, &NpmApi, &chalk, &fs, &fs.promises, &ArtCommunicationStatus, {} &semver
-glob =
-  # temporary solution to support glob v8, which NOT promise=ready, and glob v10 which is.
-  # v10 has globSync, v8 does not
-  if &glob.globSync then &glob.glob else &GlobPromise
+import &ArtStandardLib, &NpmApi, &chalk, &fs, &glob, &fs.promises, &ArtCommunicationStatus, {} &semver
 
 {}
   readJson = (file) ->

@@ -1,8 +1,5 @@
-out =
-  glob:
-    # temporary solution to support glob v8, which NOT promise=ready, and glob v10 which is.
-    # v10 has globSync, v8 does not
-    if &glob.globSync then &glob.glob else &GlobPromise
+out = {}
+  &glob.glob
   fsp:   &FsExtra
   Path:  &Path
 object &Helper into out
