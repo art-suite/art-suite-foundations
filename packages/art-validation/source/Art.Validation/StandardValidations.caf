@@ -22,8 +22,7 @@ import &ArtStandardLib
           minLength
           postValidate: (value, fieldName, fields) ->
             if postValidate && !postValidate value, fieldName, fields then false
-            else if value?
-
+            else
               length =
                 if isPlainObject value then objectKeyCount value
                 else value.length
@@ -31,8 +30,6 @@ import &ArtStandardLib
               if maxLength? && length > maxLength       then false
               else if minLength? && length < minLength  then false
               else true
-
-            else true
 
     else fieldProps
 
@@ -47,7 +44,26 @@ import &ArtStandardLib
       merge fieldProps, {} length, minLength: length, maxLength: length
     else fieldProps
 
+  normalizePresentValidation = (fieldProps, validatorOptions) ->
+    if fieldProps.present
+      fieldProps extract validate, getValidationErrors
+      merge
+        fieldProps
+        required: true
+        validate: (value, fieldName, fields) ->
+          present value
+          && !validate || validate value, fieldName, fields
+        getValidationErrors: (value, fieldPath, forCreate) -> []
+          if !present value then {} value, fieldPath, errorIs: "" not 'present'
+          if getValidationErrors then getValidationErrors? value, fieldPath, forCreate
+
+    else fieldProps
+
   normalizeAllStandardValidations: (fieldProps, validatorOptions) ->
     normalizeLengthValidation
-      normalizeInstanceofValidation fieldProps, validatorOptions
+      normalizeInstanceofValidation
+        normalizePresentValidation
+          fieldProps
+          validatorOptions
+        validatorOptions
       validatorOptions

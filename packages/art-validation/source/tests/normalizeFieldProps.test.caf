@@ -103,7 +103,6 @@ describe
           merge FieldTypes.number, definition
 
     test "'required' tag" -> assert.eq normalizeFieldProps(:required), required: true
-    test "'present' tag" -> assert.eq normalizeFieldProps(:present), present: true
 
   deprecated:
     hard: ->
@@ -117,7 +116,7 @@ describe
 
       testEqNormalizeFieldProps
         {} present: :number
-        {} dataType: :number, fieldType: :number, present: true
+        {} dataType: :number, fieldType: :number, present: true required: true
         quiet: true
 
       testEqNormalizeFieldProps {required: ['trimmedString']}, required: ['trimmedString']
@@ -137,11 +136,11 @@ describe
 
     asObjectProperties: ->
       testEqNormalizeFieldProps {required: true}, required: true
-      testEqNormalizeFieldProps {present: true}, present: true
+      testEqNormalizeFieldProps {present: true}, present: true required: true
 
     asSimpleStrings: ->
       testEqNormalizeFieldProps :required required: true
-      testEqNormalizeFieldProps :present present: true
+      testEqNormalizeFieldProps :present present: true required: true
 
     asArrays: ->
       testEqNormalizeFieldProps [:required :present] required: true, present: true

@@ -25,5 +25,6 @@ import &ArtStandardLib
 
     else if present fieldType then "" not a valid #{fieldType}
     else if present dataType then "" invalid #{dataType} data
-    else :invalid
+    else if value? then :invalid
+    else :missing
 

@@ -226,7 +226,7 @@ class Validator extends BaseClass
       && @postValidateFields processedFields = @preprocess fields
 
     catch error
-      log.error Validator: error_in: validateUpdate: {fields, options, this: @, error}
+      log.error Validator: error_in: validateUpdate: {] fields, options, error, this: @
 
     || @_throwError fields, processedFields, options
 
@@ -279,7 +279,7 @@ class Validator extends BaseClass
   presentFieldValid: (fields, fieldName, value) ->
     if fieldProps = @_fieldProps[fieldName]
       fieldProps extract validate
-      if fieldProps.present && !present value
+      if fieldProps.required && !value?
         false
       else
         !validate || !value? || validate value, fieldName, fields

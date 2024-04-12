@@ -1,0 +1,42 @@
+import &StandardImport
+
+test "stateToCapital example - key length test" ->
+  v = new Validator
+    stateToCapital:
+      map:
+        keys: length: 2
+
+  v.validate stateToCapital: CO: :Denver
+  assert.throws -> v.validate stateToCapital: C: "Denver"
+
+test "stateToCapital example - values present" ->
+  v = new Validator
+    stateToCapital:
+      map:
+        values: :present :string
+
+  v.validate stateToCapital: CO: :Denver
+  assert.throws -> v.validate stateToCapital: CO: ""
+
+test "stateToCapital example - keys and values minLength" ->
+  v = new Validator
+    stateToCapital:
+      map:
+        keys:   [] :string minLength: 2
+        values: [] :string minLength: 2
+
+  v.validate stateToCapital: CO: :Denver
+  assert.throws -> v.validate stateToCapital: CO: "" 1
+  assert.throws -> v.validate stateToCapital: C: "" 12
+
+
+test "stateToCapital example - keys and values preprocess" ->
+  v = new Validator
+    stateToCapital:
+      map:
+        keys:   preprocess: (k) -> k.toUpperCase()
+        values: preprocess: upperCamelCase
+
+  assert.eq
+    v.preprocess stateToCapital: co: :denver
+    stateToCapital: CO: :Denver

@@ -2,6 +2,9 @@ import &ArtStandardLib, &StandardValidations, &Enum, &Tools, {} &FieldTypes
 
 namespace = require :./namespace
 
+alwaysValid = -> true
+noop = (a) -> a
+
 standardTags =
   required: true
   present: true
@@ -40,11 +43,13 @@ normalizeDeprecatedProps = (fieldProps, validatorOptions) ->
     throw new Error validatorOptions.getNiceErrorMessage "ArtValidation DEPRECATED fieldProps: requiredPresent. USE: present: true", fieldProps
   fieldProps
 
-normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
-  fieldProps extract fields, array as _array, validate, postValidate, preprocess
-  if fields
-    if _array
-      throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Can only specify `array: ...` or `fields: ...`", fieldProps
+normalizeRecursiveFieldProps = (fieldProps, validatorOptions) ->
+  fieldProps extract fields, array as _array, validate, postValidate, preprocess, map
+  if (fields && 1 || 0) + (_array && 1 || 0) + (map && 1 || 0) > 1
+    throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Can only specify one of `array: ...`, `fields: ...` or 'object: ...'", fieldProps
+
+  switch
+  when fields
     subValidator = new namespace.Validator fields, merge validatorOptions, exclusive: true
     fieldProps = merge fieldProps, {}
       subValidator.fields
@@ -60,7 +65,7 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
       validate:   validate ? (v) -> isPlainObject(v) && subValidator.isValid v
       preprocess: preprocess ? (v) -> subValidator.preprocess v
 
-  else if _array
+  when _array
     normalizedArray = _normalizeFieldProps _array, validatorOptions
     elementIsValid = (v) ->
       if normalizedArray.required && !v?
@@ -87,24 +92,88 @@ normalizeObjectAndArrayFieldProps = (fieldProps, validatorOptions) ->
         (_array) ->
           isArray _array
           && !validate || validate _array
-          && !find v in-array _array when !elementIsValid v with true
+          && !find v in-array _array with !elementIsValid v
 
       preprocess: preprocess ? if normalizedArray.preprocess
         (_array) -> if isArray _array then array v in _array with normalizedArray.preprocess v else _array
 
       postValidate: postValidate ? if normalizedArray.postValidate
-        (_array) -> !find v in-array _array when !normalizedArray.postValidate v with true
+        (_array) -> !find v in-array _array with !normalizedArray.postValidate v
+
+  when map
+    map extract keys, values
+    if !keys && !values
+      throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. 'object' definition must specify 'keys' and/or 'values'", fieldProps
+    keys = keys && _normalizeFieldProps [:string, keys, dataType: :string], validatorOptions
+    values = values && _normalizeFieldProps values, validatorOptions
+
+    validateKey = keys?.validate || alwaysValid
+    validateValue = values?.validate || alwaysValid
+    preprocessKey = keys?.preprocess || noop
+    preprocessValue = values?.preprocess || noop
+    postValidateKey = keys?.postValidate || alwaysValid
+    postValidateValue = values?.postValidate || alwaysValid
+
+    needToPreprocess = values?.preprocess || keys?.preprocess
+
+    elementIsValid = if validateKey || validateValue
+      (value, key) -> validateKey(key) && validateValue value
+
+    elementIsPostValid = if postValidateKey || postValidateValue
+      (value, key) -> postValidateKey(key) && postValidateValue(value)
+
+    dataType:   :object
+    fieldType:  :map
+    object: {} keys, values
+    validate: validate = (value) ->
+      if isObject value
+        elementIsValid && !find v, k in value with !elementIsValid v, k
+
+    preprocess: preprocess = (value) ->
+      if isObject value
+        if needToPreprocess
+          object v, k from value with-key preprocessKey k with preprocessValue v
+        else value
+
+    postValidate: if elementIsPostValid then (value) -> !find v, k in value with !elementIsPostValid v, k
+
+    getValidationErrors: (value, fieldPath, forCreate) ->
+      if !isObject value
+        {} fieldPath, value, errorIs: "" not an object
+      else
+        if !validate value
+          keyTest = keys?.validate ? alwaysValid
+          valueTest = values?.validate ? alwaysValid
+          fieldTest = elementIsValid
+        else
+          keyTest = keys?.postValidate ? alwaysValid
+          valueTest = values?.postValidate ? alwaysValid
+          value = preprocess value
+          fieldTest = elementIsPostValid
+
+        if fieldTest
+          compactFlatten array v, k in value when !fieldTest v, k
+            path = joinFieldPath(fieldPath, k)
+            []
+              if !keyTest k
+                keyPath = path+"(the key itself)"
+                keys.getValidationErrors? k, keyPath, forCreate
+                || value: k, fieldPath: keyPath, errorIs: standardInvalidMessage keys, k
+
+              if !valueTest k
+                values.getValidationErrors? v, path, forCreate
+                || value: v, fieldPath: path, errorIs: standardInvalidMessage values, v
 
   else fieldProps
 
-processingCustomFieldtypePath = []
+processingCustomFieldTypePath = []
 normalizeStringFieldProp = (fieldPropString, validatorOptions) ->
   if customFieldType = validatorOptions.customFieldTypes[fieldPropString]
     try
-      if fieldPropString in processingCustomFieldtypePath
-        throw new Error validatorOptions.getNiceErrorMessage "" Invalid custom fields. Recursive custom field types are not supported. Recursive path: #{processingCustomFieldtypePath.join ' > '} > #{fieldPropString}
+      if fieldPropString in processingCustomFieldTypePath
+        throw new Error validatorOptions.getNiceErrorMessage "" Invalid custom fields. Recursive custom field types are not supported. Recursive path: #{processingCustomFieldTypePath.join ' > '} > #{fieldPropString}
 
-      processingCustomFieldtypePath.push fieldPropString
+      processingCustomFieldTypePath.push fieldPropString
 
       if isPlainObject(customFieldType) || isString customFieldType
         customFieldTypeProps = _normalizeFieldProps customFieldType, validatorOptions
@@ -114,7 +183,7 @@ normalizeStringFieldProp = (fieldPropString, validatorOptions) ->
       merge customFieldTypeProps, fieldType: fieldPropString
 
     finally
-      processingCustomFieldtypePath.pop()
+      processingCustomFieldTypePath.pop()
 
   else if namedFieldTypeProps = FieldTypes[fieldPropString]
     merge namedFieldTypeProps, fieldType: fieldPropString
@@ -157,7 +226,7 @@ _normalizeFieldProps = (fieldProps, validatorOptions) ->
       when isPlainObject fieldProps
         fieldProps = preExpandStandardValidationProps fieldProps, validatorOptions
         fieldProps = normalizeDeprecatedProps fieldProps, validatorOptions
-        fieldProps = normalizeObjectAndArrayFieldProps fieldProps, validatorOptions
+        fieldProps = normalizeRecursiveFieldProps fieldProps, validatorOptions
 
       else throw new Error validatorOptions.getNiceErrorMessage "Internal failure. Should not be possible to get here.", fieldProps
 

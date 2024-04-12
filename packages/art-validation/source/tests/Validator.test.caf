@@ -84,6 +84,7 @@ describe
         id: present: true
 
       v.validate id: "123"
+      v.validateUpdate {}
       assert.throws -> v.validate id: ""
       assert.throws -> v.validate id: null
       assert.throws -> v.validate id: undefined
@@ -106,8 +107,16 @@ describe
         id: required: true
 
       v.validate id: 123
+      v.validateUpdate {}
+      assert.throws -> v.validate {}
+      assert.throws -> v.validate id: undefined
+      assert.throws -> v.validateUpdate id: null
+      assert.throws -> v.validateUpdate id: undefined
+
       assert.rejects -> v.validate id: null
-      .then ({info}) -> assert.eq info.errors, id: "missing"
+      .then ({info}) ->
+        log {} info
+        assert.eq info.errors, id: "missing"
       .then -> assert.rejects -> v.validate id: undefined
       .then ({info}) -> assert.eq info.errors, id: "missing"
 
