@@ -54,7 +54,7 @@ import &ArtStandardLib
           present value
           && !validate || validate value, fieldName, fields
         getValidationErrors: (value, fieldPath, forCreate) -> []
-          if !present value then {} value, fieldPath, errorIs: "" not 'present'
+          if !present value then {} value, fieldPath, errorIs: "" not present
           if getValidationErrors then getValidationErrors? value, fieldPath, forCreate
 
     else fieldProps
