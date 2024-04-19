@@ -54,3 +54,45 @@ describe
           text: "hi"
           v1.validate {}
 
+    defaultFunctions: ->
+      test "default: -> toSeconds()", ->
+        captureValue = null
+        validator = new Validator lastActivityAt: [] :number default: -> captureValue = toSeconds()
+        assert.eq
+          validator.validate {}
+          lastActivityAt: captureValue
+
+        assert.within
+          captureValue
+          toSeconds() - 2
+          toSeconds() + 2
+
+      test "defaultFunction: -> toSeconds()", ->
+        captureValue = null
+        validator = new Validator lastActivityAt: [] :number defaultFunction: -> captureValue = toSeconds()
+        assert.eq
+          validator.validate {}
+          lastActivityAt: captureValue
+
+        assert.within
+          captureValue
+          toSeconds() - 2
+          toSeconds() + 2
+
+      test "default: (fieldName, fieldProps) -> ", ->
+        validator = new Validator myFieldName: [] :string default: (fieldName, fieldProps) -> "" #{fieldName} #{fieldProps.fieldType}
+        assert.eq
+          validator.validate {}
+          myFieldName: "myFieldName string"
+
+      test "default: toSeconds, dataType: :function", ->
+        validator = new Validator dontEvalThisDefaultFunction: default: toSeconds, dataType: :function
+        assert.eq
+          validator.validate {}
+          dontEvalThisDefaultFunction: toSeconds
+
+      test "defaultFunction: (-> toSeconds), dataType: :function", ->
+        validator = new Validator doEvalThisDefaultFunction: defaultFunction: (-> toSeconds), dataType: :function
+        assert.eq
+          validator.validate {}
+          doEvalThisDefaultFunction: toSeconds

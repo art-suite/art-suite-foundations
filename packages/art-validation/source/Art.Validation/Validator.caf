@@ -226,7 +226,7 @@ class Validator extends BaseClass
       && @postValidateFields processedFields = @preprocess fields
 
     catch error
-      log.error Validator: error_in: validateUpdate: {] fields, options, error, this: @
+      log.error Validator: error_in: validateUpdate: {} fields, options, error, this: @
 
     || @_throwError fields, processedFields, options
 
@@ -290,7 +290,7 @@ class Validator extends BaseClass
     unless fieldProps = @_fieldProps[fieldName]
       true
     else
-      value = fields[fieldName] ? fieldProps.default
+      value = fields[fieldName] ? getDefaultValue fieldName, fieldProps
       if fieldProps.required && !value?
         false
       else if fieldProps.present  && !present value
@@ -315,7 +315,7 @@ class Validator extends BaseClass
       value =
         if undefined != incomingValue = fields[fieldName]
               incomingValue
-        else  applyDefaults && props.default
+        else  if applyDefaults then getDefaultValue fieldName, props
 
       value = props.preprocess value, applyDefaults if props.preprocess && value?
 

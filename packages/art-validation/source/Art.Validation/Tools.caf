@@ -28,3 +28,14 @@ import &ArtStandardLib
     else if value? then :invalid
     else :missing
 
+
+  getDefaultValue: (fieldName, fieldProps) ->
+    fieldProps extract defaultFunction
+
+    if !defaultFunction && fieldProps.dataType != :function && isFunction fieldProps.default
+      defaultFunction = fieldProps.default
+
+    if defaultFunction
+      defaultFunction fieldName, fieldProps
+    else
+      fieldProps.default

@@ -108,5 +108,14 @@ fieldProps:
     instanceof: class
       in addition to passing validate(), if present, the value must also be an instance of the
       specified class
+
+    default: value or function
+      If field is not included in the object being validated, the default value will be used.
+      If the default is a function, it will be invoked with f(fieldName, normalizedFieldProps)
+      UNLESS your fieldProps.dataType is "function" in which case the default value is used as-is (see the "defaultFunction" option.
+
+    defaultFunction: (fieldName, normalizedFieldProps) ->
+      If your fieldProps.dataType is "function", you can use this to create the default function
+      dynamically.
 ```
 
