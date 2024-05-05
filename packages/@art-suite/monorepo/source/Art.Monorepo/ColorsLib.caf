@@ -1,1 +1,1 @@
-{blue, yellow, green, grey, red} = &chalk
+{blue, yellow, green, grey, red} = &tinyChalk

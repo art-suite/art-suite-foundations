@@ -1,4 +1,4 @@
-import &ArtStandardLib, &NpmApi, &chalk, &fs, &glob, &fs.promises, &ArtCommunicationStatus, {} &semver
+import &ArtStandardLib, &NpmApi, &tinyChalk, &fs, &glob, &fs.promises, &ArtCommunicationStatus, {} &semver
 
 {}
   readJson = (file) ->

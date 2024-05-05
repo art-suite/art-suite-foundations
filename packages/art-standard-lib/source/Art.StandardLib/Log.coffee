@@ -7,6 +7,8 @@ Inspect = require './Inspect/namespace'
 {isNode, getEnv} = require './Environment'
 {stripAnsi} = require './Ansi'
 
+{red, yellow} = require 'tiny-chalk'
+
 {disableLog} = getEnv()
 
 module.exports = class Log
@@ -52,17 +54,17 @@ module.exports = class Log
 
   @rawErrorLog: (args...)=>
     return if @loggingHidden
-    if isNode && "".red
+    if isNode
       str = args.join ' '
-      console.error str.red
+      console.error red str
     else
       console.error args...
 
   @rawWarningLog: (args...)=>
     return if @loggingHidden
-    if isNode && "".red
+    if isNode
       str = args.join ' '
-      console.warn str.yellow
+      console.warn yellow str
     else
       console.warn args...
 
