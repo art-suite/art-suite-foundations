@@ -12,7 +12,7 @@ uniqueErrorsReported = {}
   ###
     IN:
       PATTERN 1:
-        (setupFunciton) ->
+        (setupFunction) ->
 
       PATTERN 2:
         (setupTestName, setupFunction) ->
@@ -85,7 +85,9 @@ uniqueErrorsReported = {}
         @_setupAndTestOncePromise ?=
           Promise.all [] @previousTestResultPromise, @setupResultPromise
           .then ([previousTestResult, setupResult]) ->
-            Promise.then -> @test previousTestResult, setupResult
+            Promise.then ->
+              chainedTest.current = @
+              @test previousTestResult, setupResult
             .then (out) -> if @options?.tap then previousTestResult else out
           .catch (error) ->
             throw cleanErrorStack

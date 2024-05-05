@@ -16,7 +16,9 @@ chainedTest 'start' ->
   ran :start
   :setupValue
 
-.thenTest "initial values passed to thenTest" (args...) ->
+.thenTest (exampleCurrentTestName = "initial values passed to thenTest"), (args...) ->
+  assert.eq chainedTest.current, @
+  assert.eq chainedTest.current.name, exampleCurrentTestName
   ran :thenTestSetupValues
   assert.eq  args, [] :setupValue :setupValue
   :newValue
