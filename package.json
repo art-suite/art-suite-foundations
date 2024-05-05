@@ -1,5 +1,5 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/art-foundation": "file:packages/@art-suite/art-foundation",
@@ -73,6 +73,7 @@
     "slice-ansi": "^4.0.0",
     "stable": "^0.1.8",
     "style-loader": "^3.2.1",
+    "tiny-chalk": "^2.0.0",
     "webpack-merge": "^5.8.0",
     "wrap-ansi": "^7.0.0",
     "xhr2": "^0.2.1"

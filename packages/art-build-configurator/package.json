@@ -1,5 +1,5 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "author": "Shane Brinkman-Davis Delamore",
   "bin": {
     "abc": "abc",
     "art-build-configurator": "art-build-configurator"
@@ -26,7 +26,8 @@
     "fs-extra": "^11.2.0",
     "glob": "^10.0.0",
     "neptune-namespaces": "^4.2.13",
-    "style-loader": "^3.2.1"
+    "style-loader": "^3.2.1",
+    "webpack-merge": "^5.8.0"
   },
   "description": "Tools for configuring npm (package.json) and webpack (webpack.config.js)",
   "devDependencies": {

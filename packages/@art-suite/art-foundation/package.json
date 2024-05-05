@@ -1,5 +1,5 @@
 {
-  "author": "Shane Brinkman-Davis Delamore, Imikimi LLC",
+  "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/local-storage": "^1.0.0",
@@ -14,7 +14,7 @@
     "art-object-tree-factory": "^2.2.10",
     "art-rest-client": "^1.10.0",
     "art-standard-lib": "^1.71.3",
-    "art-validation": "^2.5.0",
+    "art-validation": "^2.7.0",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",
