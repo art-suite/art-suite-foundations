@@ -112,5 +112,6 @@ each v, k in FieldTypes
   v.fieldType =   k
   v.dataType  ?=  stringDataType
   v.validate  ?=  DataTypes[v.dataType].validate
+  v.getValidationErrors  ?=  DataTypes[v.dataType].getValidationErrors
 
 FieldTypes

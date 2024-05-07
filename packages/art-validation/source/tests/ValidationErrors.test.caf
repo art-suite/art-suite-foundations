@@ -1,0 +1,16 @@
+import &StandardImport
+
+# Other files will test that we fail correctly. This file tests that we give good errors.
+
+test "basic ValidationError" ->
+  v = new Validator
+    name: :present :string
+
+  assert.rejects -> v.validate name: 123
+  .then (error) ->
+    assert.instanceOf error, ValidationError
+    assert.eq
+      error.info
+      fields:        [] :name
+      errors:        {} name: "" not a valid string (!isString)
+      invalidValues: {} name: 123

@@ -1,4 +1,4 @@
-import &ArtStandardLib
+import &StandardImport
 
 {}
   normalizeInstanceofValidation = (fieldProps, validatorOptions) ->
@@ -40,7 +40,7 @@ import &ArtStandardLib
         message = "Invalid fieldProps: If specifying 'length', you can't also specify maxLength or minLength"
         if validatorOptions.getNiceErrorMessage
           message = validatorOptions.getNiceErrorMessage message, fieldProps
-        throw new Error message
+        throw new ConfigurationError message
       merge fieldProps, {} length, minLength: length, maxLength: length
     else fieldProps
 

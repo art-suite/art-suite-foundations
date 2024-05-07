@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtClassSystem, &DataTypes, &FieldPropNormalizer, &Tools, {} &FieldTypes, &DataTypes
+import &StandardImport, &DataTypes, &FieldPropNormalizer, &Tools, &ErrorTypes, {} &FieldTypes, &DataTypes
 
 ###
   CONCEPTS:
@@ -127,7 +127,7 @@ class Validator extends BaseClass
     log.error "Validator.preUpdate is DEPRECATED. Use .validateUpdate"
     Promise.resolve(fields).then (fields) => @preUpdateSync fields, options
 
-  validateSync: -> throw new Error "DEPRECATED: use validate"
+  validateSync: -> throw new DeprecationError "DEPRECATED: use validate"
 
   preCreateSync: (fields = {}, options) ->
     log.error "preCreateSync is DEPRECATED. use .validateCreate or just .validate"
@@ -234,12 +234,12 @@ class Validator extends BaseClass
   getValidationErrors: (fields, parentFieldPath, forCreate) ->
     compactFlattenAll
       if forCreate && !@requiredFieldsPresent fields
-        array fieldName from @missingFields fields
+        array fieldName from @getMissingFields fields
           value: fields[fieldName]
           fieldPath: joinFieldPath parentFieldPath, fieldName
           errorIs: :missing
 
-      array fieldName from @invalidFields fields
+      array fieldName from @getInvalidFields fields
         value = fields[fieldName]
         fieldPath = joinFieldPath parentFieldPath, fieldName
         if @exclusive && !@_fieldProps[fieldName]
@@ -252,16 +252,20 @@ class Validator extends BaseClass
 
     validationErrors = @getValidationErrors fields, '', forCreate
 
-    invalidFields = array {fieldPath, errorIs} in-array validationErrors with "" #{fieldPath} is #{errorIs}
-    invalidFieldString = if invalidFields.length > 1
-      last = peek invalidFields
-      most = invalidFields.slice 0, invalidFields.length - 1
+    invalidFieldLongForm = []
+    invalidFields = array {fieldPath, errorIs} in-array validationErrors
+      invalidFieldLongForm.push "" #{fieldPath} is #{errorIs}
+      fieldPath
+
+    invalidFieldString = if invalidFieldLongForm.length > 1
+      last = peek invalidFieldLongForm
+      most = invalidFieldLongForm.slice 0, invalidFieldLongForm.length - 1
       "" #{most.join ", "} and #{last}
     else
-      invalidFields[0]
+      invalidFieldLongForm[0]
 
     message = "#{options?.context ? @context} #{if forCreate then 'create' else 'update'}-validation failed: #{invalidFieldString}"
-    throw new ErrorWithInfo message.trim(),
+    throw new ValidationError message.trim(),
       fields: invalidFields
       errors: object {errorIs, fieldPath} from validationErrors with-key fieldPath with errorIs
       invalidValues: object {value, fieldPath} from validationErrors with-key fieldPath with value
@@ -330,8 +334,8 @@ class Validator extends BaseClass
   ####################
   # VALIDATION INFO CORE
   ####################
-  invalidFields:   (fields) -> array v, k  from fields when !@presentFieldValid(fields, k, v) || !@presentFieldPostValid fields, k, v with k
-  missingFields:   (fields) -> array k     from @_requiredFields when !@requiredFieldPresent fields, k with k
+  getInvalidFields:   (fields) -> array v, k  from fields when !@presentFieldValid(fields, k, v) || !@presentFieldPostValid fields, k, v with k
+  getMissingFields:   (fields) -> array k     from @_requiredFields when !@requiredFieldPresent fields, k with k
 
   ###################
   # PRIVATE

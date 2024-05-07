@@ -1,0 +1,3 @@
+import &ArtStandardLib
+
+class ConfigurationError extends Error

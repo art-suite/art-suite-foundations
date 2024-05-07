@@ -1,0 +1,3 @@
+import &ArtStandardLib
+
+class DeprecationError extends Error

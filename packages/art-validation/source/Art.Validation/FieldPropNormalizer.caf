@@ -1,4 +1,4 @@
-import &ArtStandardLib, &StandardValidations, &Enum, &Tools, {} &FieldTypes
+import &StandardImport, &StandardValidations, &Enum, &Tools, {} &FieldTypes
 
 namespace = require :./namespace
 
@@ -40,13 +40,13 @@ normalizeRecursivePlainObjectProps = (plainObjectFieldType, validatorOptions) ->
 
 normalizeDeprecatedProps = (fieldProps, validatorOptions) ->
   if fieldProps.requiredPresent
-    throw new Error validatorOptions.getNiceErrorMessage "ArtValidation DEPRECATED fieldProps: requiredPresent. USE: present: true", fieldProps
+    throw new DeprecationError validatorOptions.getNiceErrorMessage "ArtValidation DEPRECATED fieldProps: requiredPresent. USE: present: true", fieldProps
   fieldProps
 
 normalizeRecursiveFieldProps = (fieldProps, validatorOptions) ->
   fieldProps extract fields, array as _array, validate, postValidate, preprocess, map
   if (fields && 1 || 0) + (_array && 1 || 0) + (map && 1 || 0) > 1
-    throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Can only specify one of `array: ...`, `fields: ...` or 'object: ...'", fieldProps
+    throw new ConfigurationError validatorOptions.getNiceErrorMessage "Invalid fieldProps. Can only specify one of `array: ...`, `fields: ...` or 'object: ...'", fieldProps
 
   switch
   when fields
@@ -103,7 +103,7 @@ normalizeRecursiveFieldProps = (fieldProps, validatorOptions) ->
   when map
     map extract keys, values
     if !keys && !values
-      throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. 'object' definition must specify 'keys' and/or 'values'", fieldProps
+      throw new ConfigurationError validatorOptions.getNiceErrorMessage "Invalid fieldProps. 'object' definition must specify 'keys' and/or 'values'", fieldProps
     keys = keys && _normalizeFieldProps [:string, keys, dataType: :string], validatorOptions
     values = values && _normalizeFieldProps values, validatorOptions
 
@@ -171,14 +171,14 @@ normalizeStringFieldProp = (fieldPropString, validatorOptions) ->
   if customFieldType = validatorOptions.customFieldTypes[fieldPropString]
     try
       if fieldPropString in processingCustomFieldTypePath
-        throw new Error validatorOptions.getNiceErrorMessage "" Invalid custom fields. Recursive custom field types are not supported. Recursive path: #{processingCustomFieldTypePath.join ' > '} > #{fieldPropString}
+        throw new ConfigurationError validatorOptions.getNiceErrorMessage "" Invalid custom fields. Recursive custom field types are not supported. Recursive path: #{processingCustomFieldTypePath.join ' > '} > #{fieldPropString}
 
       processingCustomFieldTypePath.push fieldPropString
 
       if isPlainObject(customFieldType) || isString customFieldType
         customFieldTypeProps = _normalizeFieldProps customFieldType, validatorOptions
 
-      else throw new Error validatorOptions.getNiceErrorMessage "Invalid custom field type. Expected fieldPropString or plain object", customFieldType
+      else throw new ConfigurationError validatorOptions.getNiceErrorMessage "Invalid custom field type. Expected fieldPropString or plain object", customFieldType
 
       merge customFieldTypeProps, fieldType: fieldPropString
 
@@ -203,7 +203,7 @@ normalizeFieldPropsStructure = (fieldProps, validatorOptions) ->
       else if element extract fieldType
         if FieldTypes[fieldType] || validatorOptions.customFieldTypes[fieldType]
           [] element.fieldType, element
-        else throw new Error validatorOptions.getNiceErrorMessage
+        else throw new ConfigurationError validatorOptions.getNiceErrorMessage
           "" Invalid, explicit fieldType. Valid fieldTypes: #{}
             Object.keys merge FieldTypes, validatorOptions.customFieldTypes
             .sort()
@@ -214,7 +214,7 @@ normalizeFieldPropsStructure = (fieldProps, validatorOptions) ->
       else element
 
     when element == true then FieldTypes.any
-    else throw new Error validatorOptions.getNiceErrorMessage "Invalid fieldProps. Expected string, plainObject, or array of strings, plainObjects and/or arrays", element
+    else throw new ConfigurationError validatorOptions.getNiceErrorMessage "Invalid fieldProps. Expected string, plainObject, or array of strings, plainObjects and/or arrays", element
 
 _normalizeFieldProps = (fieldProps, validatorOptions) ->
   each fieldProps in normalizeFieldPropsStructure fieldProps, validatorOptions into normalizedFieldProps = {}
@@ -228,7 +228,7 @@ _normalizeFieldProps = (fieldProps, validatorOptions) ->
         fieldProps = normalizeDeprecatedProps fieldProps, validatorOptions
         fieldProps = normalizeRecursiveFieldProps fieldProps, validatorOptions
 
-      else throw new Error validatorOptions.getNiceErrorMessage "Internal failure. Should not be possible to get here.", fieldProps
+      else throw new ConfigurationError validatorOptions.getNiceErrorMessage "Internal failure. Should not be possible to get here.", fieldProps
 
   normalizeAllStandardValidations normalizedFieldProps, validatorOptions
 

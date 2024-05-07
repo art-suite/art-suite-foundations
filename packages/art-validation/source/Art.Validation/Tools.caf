@@ -1,6 +1,7 @@
 import &ArtStandardLib
 {}
-  makeEmptyArraysIntoNulls: (arr) -> if isArray(arr) && arr.length == 0 then null else arr
+  makeEmptyArraysIntoNulls: (arr) -> if isArray(arr) && compact(arr).length == 0 then null else arr
+
   joinFieldPath: (parentFieldPath, toJoin) ->
     unless isString(toJoin) && /^[_a-z][_a-z0-9]*$/i.test toJoin
       "#{parentFieldPath}[#{JSON.stringify toJoin}]"
