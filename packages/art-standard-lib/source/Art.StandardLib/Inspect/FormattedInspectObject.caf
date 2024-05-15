@@ -34,7 +34,7 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
       else if ansiSafeStringLength(inspected) > maxLineLength - (key.length + 2)
         inspected = "#{newLineWithIndent}#{inspected}\n"
 
-      key = escapeJavascriptString key unless barePropKeyRegExp.test key
+      key = escapeJavascriptString key unless options.unquoted || barePropKeyRegExp.test key
       inspectedLength += ansiSafeStringLength(inspected) + key.length + 2
       valuesRequireMultilineOutput ||= lastLineMustEndTheLine # if previous entry should be on own line, force all on own line
 
