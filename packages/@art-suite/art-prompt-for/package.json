@@ -14,7 +14,7 @@
   },
   "description": "Art.PromptFor - Wrapper for InquirerJs to make it even easier to write powerful CLI apps",
   "devDependencies": {
-    "art-build-configurator": "^1.30.2",
+    "art-build-configurator": "^1.30.3",
     "art-testbench": "^3.2.14"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
