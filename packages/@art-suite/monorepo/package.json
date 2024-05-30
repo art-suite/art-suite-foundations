@@ -8,7 +8,7 @@
     "@art-suite/cli": "^1.6.0",
     "art-communication-status": "^1.6.0",
     "art-rest-client": "^1.10.0",
-    "art-standard-lib": "^1.73.0",
+    "art-standard-lib": "^1.73.1",
     "glob": "^10.0.0",
     "neptune-namespaces-runtime": "^3.2.12",
     "semver": "^7.5.4"
@@ -56,7 +56,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.7.16",
+  "version": "1.7.17",
   "watch": {
     "build": {
       "extensions": [
