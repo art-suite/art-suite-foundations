@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-object-tree-factory": "^2.2.10",
-    "art-standard-lib": "^1.71.3",
+    "art-standard-lib": "^1.71.6",
     "wrap-ansi": "^7.0.0"
   },
   "description": "Build HTML from code in the most elegant way possible",

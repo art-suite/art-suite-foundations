@@ -11,7 +11,7 @@
     "art-config": "^2.0.4",
     "art-filebuilder": "^2.1.14",
     "art-object-tree-factory": "^2.2.10",
-    "art-standard-lib": "^1.71.3",
+    "art-standard-lib": "^1.71.6",
     "bluebird": "^3.5.5",
     "caffeine-script": "^0.74.0",
     "caffeine-script-runtime": "^1.14.0",

@@ -8,14 +8,16 @@
     "@art-suite/cli": "^1.6.0",
     "art-communication-status": "^1.6.0",
     "art-rest-client": "^1.10.0",
-    "art-standard-lib": "^1.71.3",
+    "art-standard-lib": "^1.71.6",
     "glob": "^10.0.0",
     "neptune-namespaces-runtime": "^3.2.12",
     "semver": "^7.5.4",
     "tiny-chalk": "^2.0.0"
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
-  "devDependencies": {},
+  "devDependencies": {
+    
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
