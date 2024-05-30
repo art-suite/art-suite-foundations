@@ -4,7 +4,7 @@
   "description": "Simple, powerful iteration comprehensions for JavaScript.",
   "devDependencies": {
     "art-testbench": "^3.2.14",
-    "caffeine-script": "^0.74.0",
+    "caffeine-script": "^0.74.4",
     "chai": "^4.4.1",
     "mocha": "^7.2.0"
   },

@@ -4,7 +4,7 @@
   "dependencies": {
     "art-class-system": "^1.11.18",
     "art-communication-status": "^1.6.0",
-    "art-standard-lib": "^1.71.6"
+    "art-standard-lib": "^1.73.0"
   },
   "description": "Validate object props.",
   "devDependencies": {

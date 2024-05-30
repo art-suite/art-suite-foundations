@@ -47,7 +47,7 @@
     "test": "npm run build\njest\nif [[ $? -ne 0 ]]; then\n  exit 1\nfi\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "1.72.0",
+  "version": "1.73.0",
   "watch": {
     "build": {
       "extensions": [

@@ -1,1 +1,1 @@
-{blue, yellow, green, grey, red} = &tinyChalk
+{blue, yellow, green, grey, red} = &ArtStandardLib.terminalColors

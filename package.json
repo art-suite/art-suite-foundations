@@ -40,7 +40,7 @@
     "atob": "^2.0.3",
     "bluebird": "^3.5.5",
     "browser-or-node": "^3.0.0-pre.0",
-    "caffeine-script": "^0.74.0",
+    "caffeine-script": "^0.74.4",
     "caffeine-script-runtime": "^1.14.0",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "chai": "^4.4.1",
@@ -73,7 +73,6 @@
     "slice-ansi": "^4.0.0",
     "stable": "^0.1.8",
     "style-loader": "^3.2.1",
-    "tiny-chalk": "^2.0.0",
     "webpack-merge": "^5.8.0",
     "wrap-ansi": "^7.0.0",
     "xhr2": "^0.2.1"
