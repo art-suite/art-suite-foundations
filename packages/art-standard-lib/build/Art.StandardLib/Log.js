@@ -19,7 +19,7 @@
 
   stripAnsi = require('./Ansi').stripAnsi;
 
-  ref2 = require('tiny-chalk'), red = ref2.red, yellow = ref2.yellow;
+  ref2 = require('./TerminalColors'), red = ref2.red, yellow = ref2.yellow;
 
   disableLog = getEnv().disableLog;
 

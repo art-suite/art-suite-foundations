@@ -47,7 +47,7 @@ formattedInspectRecursiveWrapper = (m, maxArrayLength, options) ->
     throw error
 
 colorNames = :red :yellow :green :blue :grey
-colorizeFunctions = object c in colorNames with &tinyChalk[c]
+colorizeFunctions = object c in colorNames with &TerminalColors[c]
 
 identity = (s) -> s
 passThroughColorizeFunctions = object colorNames with identity

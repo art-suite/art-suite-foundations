@@ -7,7 +7,7 @@ Inspect = require './Inspect/namespace'
 {isNode, getEnv} = require './Environment'
 {stripAnsi} = require './Ansi'
 
-{red, yellow} = require 'tiny-chalk'
+{red, yellow} = require './TerminalColors'
 
 {disableLog} = getEnv()
 

@@ -34,6 +34,7 @@
   Ruby:               require('./Ruby'),
   ShallowClone:       require('./ShallowClone'),
   StringExtensions:   require('./StringExtensions'),
+  TerminalColors:     require('./TerminalColors'),
   Time:               require('./Time'),
   TimeConstants:      require('./TimeConstants'),
   TypesExtended:      require('./TypesExtended'),

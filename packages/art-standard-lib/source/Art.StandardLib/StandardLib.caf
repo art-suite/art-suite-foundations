@@ -32,4 +32,4 @@
   &TimeConstants
 
   PushBackTimer: &ReschedulableTimer
-
+  terminalColors: &TerminalColors
