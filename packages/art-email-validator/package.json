@@ -38,7 +38,7 @@
     "test": "npm run build\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "1.2.6",
+  "version": "1.2.7",
   "watch": {
     "build": {
       "extensions": [
