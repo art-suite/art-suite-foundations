@@ -4,16 +4,19 @@ Validate email and suggest corrections. Steps:
 
 1. check the domain syntactically - just a rough, quick-check
 1. look up the MX record for the domain, fail if it doesn't exist
-1. communciate with the SMTP server on the MX-server to determine if the mailbox exists
-1. if the SMTP server responds ambiguously, optiontionally, invoke fallbackValidator - useful to call an external, premium validation service
+1. communicate with the SMTP server on the MX-server to determine if the mailbox exists
+1. if the SMTP server responds ambiguously, optionally, invoke fallbackValidator - useful to call an external, premium validation service
 
 Always returns a results-object regardless of what happens, example output:
 
 * `valid: true/false`
 * `invalid: true/false`
-* `didYouMean: '...@...'`
-* `message: 'details about what happend'`
+* `didYouMean: '...@...'` (provided by [mailcheck](https://www.npmjs.com/package/mailcheck))
+* `message: 'details about what happened'`
 
+The most important results, `valid` and `invalid` will only be set to `true` if there is a strong confirmation that they are true. Therefor, they can can be `true/false`, `false/true` or `false/false` respectively, but never `true/true`. In the `false/false` case, the result is ambiguous. The email passed several tests, but didn't get a hard confirmation from the email server that the address exists.
+
+> Note: additional fields may be returned with additional information about the validation for introspection and logging purposes.
 
 ### Install
 
@@ -32,7 +35,7 @@ npm install art-email-validator
 # Example output:
 results =
   valid:      false                   # possibly invalid
-  invalid:    true                    # definitly invalid
+  invalid:    true                    # definitely invalid
   didYouMean: "foobar@gmail.com"      # suggested fix
   message:    "Domain was not valid." # developer-friendly info
 ```

@@ -15,7 +15,7 @@ maxEmailLength = 320
       email:        (required) email address to check (string)
       smtpFrom:     (required OR smtpHost, default: feedback@smtpHost)    for validateMailbox: smtpFrom-address to tell the email server
       smtpHost:     (required OR smtpFrom, default: parsed from smtpFrom) for validateMailbox: smtpHost to tell the email server
-      timeout:      (default: 1000) number in miliseconds to wait before timing out when checking mailbox
+      timeout:      (default: 1000) number in milliseconds to wait before timing out when checking mailbox
       fallbackValidator: (options, ambiguousResult) ->
         IN:
           options: options object passed into validateMailbox
@@ -30,8 +30,8 @@ maxEmailLength = 320
       Primarily used for testing.
 
   OUT: Promise.then ({valid, invalid, message, didYouMean}) ->
-    valid:    true - means the email is definitly valid
-    invalid:  true - means email is definitly invalid
+    valid:    true - means the email is definitely valid
+    invalid:  true - means email is definitely invalid
     didYouMean: (optional) suggest a possibly-correct email
     message:  developer-consumable description of what happened
 
