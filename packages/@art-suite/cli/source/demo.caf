@@ -24,7 +24,7 @@ require :@art-suite/cli
         myRequiredOption: required: true
 
     sing:
-      run: ({song}, args) -> "" ♫ #{args} ♫! (#{song})
+      run: ({song}, args) -> "" ♫ #{args.join ' '} ♫! (#{song})
       description: "Sing any name you choose"
       examples:
         args: w "" dashing through the snow
@@ -34,7 +34,7 @@ require :@art-suite/cli
       onlyAllowListedOptions: true
       args:
         description:  "your favorite lyrics"
-        argument:     :strings
+        argument:     :lyrics
         default:      [] "" Who's fleece was white as snow.
       options:
         song:

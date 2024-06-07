@@ -42,7 +42,11 @@ import &StandardImport, {} &ansiWordwrap
             #{formattedInspect [k]: v}
       else v
 
-    commands.help ?= args: argument: "command name"
+    commands.help ?=
+      args:
+        argument: "command name"
+        description: "command to display help for"
+      description: "display help, optionally for a specific command"
     commands
 
   normalizeParsedOptionsWithDefaults: (options, commandOptions = {}) ->

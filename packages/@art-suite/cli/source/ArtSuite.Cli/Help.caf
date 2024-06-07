@@ -11,10 +11,10 @@ class Help extends BaseClass
   @classGetter
     coloredCliName: -> colors.bold colors.blue @cliName
 
-  @getCommandSummary: (commandName, {description, options}) ->
+  @getCommandSummary: (commandName, {description, options, args}) ->
     commandName = dashCase commandName
     @toHelpString
-      @getCommandUsage commandName, options
+      @getCommandUsage commandName, options, args
       wrapProse description, 2
 
   @getOptionDetails: (option, details) ->
@@ -38,11 +38,12 @@ class Help extends BaseClass
       .join ' '
       wrapProse description, 4
 
-  @getCommandUsage: (command, options) =>
+  @getCommandUsage: (command, options, args) =>
     command = dashCase command
     compactFlatten []
       @coloredCliName
       colors.bold colors.whiteBright command
+      args?.argument?.replace(/\s+/g, '-')
       @getOptionsList (object o from options when o.required), true
       @getOptionsList object o from options when !o.required
     .join ' '
@@ -55,14 +56,14 @@ class Help extends BaseClass
         .join if required then ' ' else ', '
       if required then l else if l.length > 0 then "[#{l}]"
 
-  @getCommandDetails: (command, {description, options, examples}) =>
+  @getCommandDetails: (command, {description, options, examples, args}) =>
     @toHelpString
-      "" usage: #{@getCommandUsage command, options}
+      "" usage: #{@getCommandUsage command, options, args}
       wrapProse description
       ""
-      if options?.args then []
+      if args then []
         colors.blue "args:\n"
-        "    " + @getOptionDetails :args, options.args
+        "    " + @getOptionDetails :args, args
         ""
       colors.blue "options:\n" if options
       if options

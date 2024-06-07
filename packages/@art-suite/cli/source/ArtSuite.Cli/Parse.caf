@@ -92,7 +92,7 @@ class Parse
 
   @parseAndSelectCommand: (commands, args, defaultCommandName) =>
     {commandName, options, args} = @parseArgs args
-    commandName ?= defaultCommandName
+    commandName = lowerCamelCase commandName ? defaultCommandName
 
     if selectedCommandConfig = commands[commandName]
       commandFunction = selectedCommandConfig.run
@@ -106,6 +106,10 @@ class Parse
         find v, k from options when !legalOptions[k]
           legalOptions = array v from Object.keys(selectedCommandConfig.options) with "--#{v}"
           throw new ParseError "Option '#{k}' is not a legal option for command '#{commandName}'. Legal options: #{legalOptions.join ', '}"
+
+      unless options.help
+        find optionConfig, k in selectedCommandConfig.options when optionConfig.required && !(options[k]?)
+          throw new ParseError "Option '--#{k}' is required for command '#{commandName}'"
 
     {}
       commandFunction

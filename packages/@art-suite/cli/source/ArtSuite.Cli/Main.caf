@@ -45,7 +45,7 @@ class Main
           &Help.getHelp
             startFile
             {} commands, description
-            if commandName == :help then args[0] else commandName
+            if commandName == :help then args?[0] else commandName
           + if commandName == :help || options.help || !commandName then '' else colors.red "\n\nInvalid command: #{commandName}"
 
       .tap (result) -> result? &&
@@ -57,4 +57,7 @@ class Main
       if error instanceof ParseError
         log.error error.message
       else log error
-      process.exit 1
+      if process.env.JEST_WORKER_ID
+        throw error
+      else
+        process.exit 1

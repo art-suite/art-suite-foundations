@@ -118,3 +118,17 @@ describe
           {} myCommandRan
           myCommandRan: false
 
+
+    test "default help command" ->
+      myCommandRan = false
+      start
+        commands: myCommand: -> myCommandRan = true
+        argv: :nodeJs :startFile :help
+        output: ->
+
+      .then stripAnsi
+      .then (output) ->
+        assert.match output, "startFile my-command"
+        assert.eq
+          {} myCommandRan
+          myCommandRan: false
