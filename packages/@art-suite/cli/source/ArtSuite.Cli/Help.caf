@@ -28,8 +28,10 @@ class Help extends BaseClass
 
     @toHelpString
       compactFlatten []
-        colors.green "  --#{option}"
-        if argument then colors.yellow argument
+        unless option == :args
+          colors.green "  --#{option}"
+
+        if argument then colors.yellow argument + if option == :args then "s" else ""
         if _default then colors.grey "" [default: #{_default}]
         if required then colors.brightWhite "(REQUIRED)"
         if advanced then colors.grey "(ADVANCED)"
@@ -58,9 +60,13 @@ class Help extends BaseClass
       "" usage: #{@getCommandUsage command, options}
       wrapProse description
       ""
+      if options.args then []
+        colors.blue "args:\n"
+        "    " + @getOptionDetails :args, options.args
+        ""
       colors.blue "options:\n" if options
       if options
-        keys = Object.keys(options).sort()
+        keys = Object.keys(objectWithout options, :args).sort()
         compactFlatten []
           array option in keys when options[option].required && !options[option].advanced
             @getOptionDetails option, options[option]
@@ -80,13 +86,14 @@ class Help extends BaseClass
           []
             "  #{@coloredCliName} #{colors.brightWhite command} "
             + if example is Object
-              array value, option from example
+              array value, option from example when option != :args
                 colors.green "--#{option}"
                 + if value != undefined && value != true
-                  colors.yellow " " + value
+                  colors.yellow " " + if /\s/.test value then JSON.stringify(value) else value
                 else ''
               .join ' '
             else example
+            + if example.args then " " + example.args.join " "
             wrapProse description, 4
             ""
 

@@ -26,11 +26,14 @@ require :@art-suite/cli
     sing:
       run: ({song, args}) -> "" ♫ #{song ? args?.join ' '} ♫!
       description: "Sing any name you choose"
+      examples:
+        args: w "" dashing through the snow
+        song: "" Jingle Bells
+        "" ♫ Jingle Bells ♫!
       options:
         args:
           description:  "your favorite lyrics"
           argument:     :string
-          default:      "" Dashing through the snow.
         song:
           description: "name of the song to sing"
           argument:     :string
