@@ -1,4 +1,4 @@
-import &StandardImport, &Util, {} &colors
+import &StandardImport, &Util
 
 class Help extends BaseClass
   @classProperty :cliName
@@ -31,9 +31,9 @@ class Help extends BaseClass
         unless option == :args
           colors.green "  --#{option}"
 
-        if argument then colors.yellow argument + if option == :args then "s" else ""
+        if argument then colors.yellow argument
         if _default then colors.grey "" [default: #{_default}]
-        if required then colors.brightWhite "(REQUIRED)"
+        if required then colors.whiteBright "(REQUIRED)"
         if advanced then colors.grey "(ADVANCED)"
       .join ' '
       wrapProse description, 4
@@ -42,7 +42,7 @@ class Help extends BaseClass
     command = dashCase command
     compactFlatten []
       @coloredCliName
-      colors.bold colors.brightWhite command
+      colors.bold colors.whiteBright command
       @getOptionsList (object o from options when o.required), true
       @getOptionsList object o from options when !o.required
     .join ' '
@@ -60,7 +60,7 @@ class Help extends BaseClass
       "" usage: #{@getCommandUsage command, options}
       wrapProse description
       ""
-      if options.args then []
+      if options?.args then []
         colors.blue "args:\n"
         "    " + @getOptionDetails :args, options.args
         ""
@@ -84,7 +84,7 @@ class Help extends BaseClass
         array example, i from examples by 2
           description = examples[i+1]
           []
-            "  #{@coloredCliName} #{colors.brightWhite command} "
+            "  #{@coloredCliName} #{colors.whiteBright command} "
             + if example is Object
               array value, option from example when option != :args
                 colors.green "--#{option}"
@@ -150,10 +150,10 @@ class Help extends BaseClass
 
   @getGeneralInfo: (description) =>
     compactFlatten []
-      "" usage: #{@coloredCliName} #{colors.brightWhite :command} #{colors.blue "[options]"}
+      "" usage: #{@coloredCliName} #{colors.whiteBright :command} #{colors.blue "[options]"}
       + "" \nhelp:\_
       + @coloredCliName
-      + colors.brightWhite " command"
+      + colors.whiteBright " command"
       + colors.green " --help"
       wrapProse description
     .join "\n\n"

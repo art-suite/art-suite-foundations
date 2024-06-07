@@ -1,2 +1,4 @@
-&ArtStandardLib.mergeWithSelf
+[]
+  &ArtStandardLib
   &ArtClassSystem
+  colors: &ArtStandardLib.TerminalColors

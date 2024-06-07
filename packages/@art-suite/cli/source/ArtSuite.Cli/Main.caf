@@ -1,4 +1,4 @@
-import &StandardImport, &Util
+import &StandardImport, &Util, {} &ParseError
 
 class Main
 
@@ -20,37 +20,41 @@ class Main
         args:     undefined or array of arguments not part of options
 
     options: object mapping lowerCamelCase option names to values parsed from the argv array
-  @start: ({commands, default: _default, description, help, argv, output, preprocessOptions}) =>
+  @start: ({commands, default: _default, description, argv, output, preprocessOptions}) =>
     output ?= log.unquoted
     argv ?= process.argv
     [nodeJs, startFile, args...] = argv
 
-    {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand
-      commands = normalizeCommands commands, help
-      args
-      _default
+    commands = normalizeCommands commands
 
     Promise.then ->
-      if commandFunction && !options.help
-        if options.verbose
-          output parsed-command-line: merge {}
-            command:  commandName
-            args:     if args?.length > 0 then args
-            options
+      {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand commands, args, _default
 
-        options = preprocessOptions options if preprocessOptions
-        commandFunction options, args
+      Promise.then ->
+        if commandFunction && !options.help
+          if options.verbose
+            output parsed-command-line: merge {}
+              command:  commandName
+              args:     if args?.length > 0 then args
+              options
 
-      else
-        &Help.getHelp
-          startFile
-          {} commands, description
-          commandName
+          options = preprocessOptions options if preprocessOptions
+          commandFunction options, args
 
-    .tap (result) -> result? &&
-      if options.json
-        console.log JSON.stringify result
-      else output result
+        else
+          &Help.getHelp
+            startFile
+            {} commands, description
+            if commandName == :help then args[0] else commandName
+          + if commandName == :help || options.help || !commandName then '' else colors.red "\n\nInvalid command: #{commandName}"
+
+      .tap (result) -> result? &&
+        if options.json
+          console.log JSON.stringify result
+        else output result
+
     .catch (error) ->
-      log error
+      if error instanceof ParseError
+        log.error error.message
+      else log error
       process.exit 1

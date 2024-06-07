@@ -24,19 +24,23 @@ require :@art-suite/cli
         myRequiredOption: required: true
 
     sing:
-      run: ({song, args}) -> "" ♫ #{song ? args?.join ' '} ♫!
+      run: ({song}, args) -> "" ♫ #{args} ♫! (#{song})
       description: "Sing any name you choose"
       examples:
         args: w "" dashing through the snow
         song: "" Jingle Bells
         "" ♫ Jingle Bells ♫!
+
+      onlyAllowListedOptions: true
+      args:
+        description:  "your favorite lyrics"
+        argument:     :strings
+        default:      [] "" Who's fleece was white as snow.
       options:
-        args:
-          description:  "your favorite lyrics"
-          argument:     :string
         song:
           description: "name of the song to sing"
           argument:     :string
+          default:      "" Mary Had a Little Lamb
           required:     true
 
     force-error: -> throw new Error "" You've forced an error!

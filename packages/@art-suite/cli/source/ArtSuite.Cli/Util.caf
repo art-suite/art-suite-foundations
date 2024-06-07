@@ -29,9 +29,8 @@ import &StandardImport, {} &ansiWordwrap
 
   wrapProse = (text, indent) -> wrap text, indent, 100
 
-  normalizeCommands: (commands, help) ->
-    throw new Error "Commands should be an object (got: #{formattedInspect commands})" unless commands is Object
-    commands = object v, k from commands with-key normalizeCommandName k
+  normalizeCommands: (inputCommands) ->
+    commands = object v, k from inputCommands with-key normalizeCommandName k
       if isFunction v
         run: v
 
@@ -41,17 +40,16 @@ import &StandardImport, {} &ansiWordwrap
             #{k}'s run value is not a plain function. Details:
 
             #{formattedInspect [k]: v}
-
       else v
 
-    if help?
-      log.warn "ArtSuite/cli: 'help' option is deprecated. Use the new, improved commands option."
-      description ?= help.description
-      each commandHelp, rawK in help.commands
-        k = normalizeCommandName rawK
-        if commands[k]
-          mergeInto commands[k], commandHelp
-        else
-          throw new Error "No matching command for help: commands: #{rawK}: {}}"
-
+    commands.help ?= args: argument: "command name"
     commands
+
+  normalizeParsedOptionsWithDefaults: (options, commandOptions = {}) ->
+    merge
+      object v, k from commandOptions when v.default? with v.default
+      object v, k from options
+        switch v.length
+        when 0 then commandOptions[k]?.default ? true
+        when 1 then v[0]
+        else v

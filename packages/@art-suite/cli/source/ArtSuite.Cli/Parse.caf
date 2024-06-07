@@ -1,7 +1,7 @@
-import &StandardImport, &Util
+import &StandardImport, &Util, {} &ParseError
 
 class Parse
-  @optionRegExp: /^--(.+)$/
+  @optionRegExp: /^--([^=\[\]]+)(\[\])?(=(.+))?$/
   @evalJsRegExp: /^js:(.*)$/
   @typedArgumentRegExp: /^([a-z]+):(.*)$/
   @numberRegExp:
@@ -20,77 +20,95 @@ class Parse
       ([eE][-+]?[0-9]+)?
       $
 
-  @parseArgs: (args)=>
-    currentOptionName = :argument
-    commands = currentOption = []
-    each argument, i in args into parsedOptions = {}
+  @parseValue: (value, errorContext) ->
+    switch
+    when value == :true then true
+    when value == :false then false
+    when @numberRegExp.test value then value / 1
+    when typedMatch = @typedArgumentRegExp.exec value
+      [__, type, value] = typedMatch
+      switch type
+      when :string
+        value
+      when :json
+        try JSON.parse value
+        catch error
+          throw new ParseError
+            """
+              Error parsing JSON value for #{errorContext}: #{error.message}
+                Value: #{value}
+
+      when :js
+        try eval value
+        catch error
+          throw new ParseError
+            """
+              Error parsing JavaScript value for #{errorContext}: #{error.message}
+                Value: #{value}
+
+      else throw new ParseError
+        """
+          Error parsing value for #{errorContext}: Invalid data-type '#{type}:'
+            Expecting: "string:...", "json:..." or "js:..."
+            Value: #{value}
+            Hint: If you want to pass the value as a string, prefix it with "string:".
+
+    else value
+
+  @parseArgs: (inputArgs) =>
+    errorContext = null
+    currentValueAccumulator = args = []
+    currentIsArray = false
+
+    if inputArgs[0] && !@optionRegExp.test inputArgs[0]
+      commandName = inputArgs[0]
+      inputArgs.shift()
+
+    each argument, i in inputArgs into options = {}
       if option = argument.match @optionRegExp
-        currentOption = parsedOptions[currentOptionName = lowerCamelCase option[1]] = []
+        [_, optionName, isArray, _, value] = option
+        currentIsArray = !!isArray
+        errorContext = argument
+        currentValueAccumulator = options[lowerCamelCase optionName] ?= []
+
+        if value
+          currentValueAccumulator.push @parseValue value, errorContext
+          errorContext = null
+          currentValueAccumulator = args
+
       else
-        currentOption.push
-          switch
-          when argument == :true then true
-          when argument == :false then false
-          when @numberRegExp.test argument then argument / 1
-          when typedMatch = @typedArgumentRegExp.exec argument
-            [__, type, value] = typedMatch
-            switch type
-            when :string
-              value
-            when :json
-              try JSON.parse value
-              catch error
-                log.error
-                  JsonParseError: {}
-                    option: currentOptionName
-                    type
-                    value
-                    argument
-                    error: error.message
-                throw error
+        currentValueAccumulator.push @parseValue argument, errorContext ? "argument #{i + 1}"
 
-            when :js
-              try eval value
-              catch error
-                error.info =
-                  JavaScriptEvalError: {}
-                    option: currentOptionName
-                    type
-                    value
-                    argument
+        # if not array, reset to appending to args
+        unless currentIsArray
+          errorContext = null
+          currentValueAccumulator = args
 
-                throw error
-
-            else throw new Error "invalid data-type '#{type}:' in: #{argument}\nExpecting: 'string:' or 'js:'"
-          else argument
-
-    {}
-      commands
-      options: object o, k in parsedOptions
-        switch o.length
-        when 0 then true
-        when 1 then o[0]
-        else o
+    {} commandName, options, args
 
   @getCommandFunction: (commands, commandName) ->
     if command = commands[normalizeCommandName commandName]
       command.run
 
-  @selectCommand: (commands, commandNames, defaultCommandName) =>
-    [commandName, args...] = commandNames
-
-    merge {}
-      commandFunction = @getCommandFunction commands, commandName ?= defaultCommandName
-      commandName
-      args: if args.length > 0 then args
-
   @parseAndSelectCommand: (commands, args, defaultCommandName) =>
-    {options, commands: commandNames} = @parseArgs args
-    {commandFunction, commandName, args} = @selectCommand commands, commandNames, defaultCommandName
+    {commandName, options, args} = @parseArgs args
+    commandName ?= defaultCommandName
+
+    if selectedCommandConfig = commands[commandName]
+      commandFunction = selectedCommandConfig.run
+      unless args?.length > 0
+        args = selectedCommandConfig.args?.default
+
+      options = normalizeParsedOptionsWithDefaults options, selectedCommandConfig.options
+
+      if selectedCommandConfig.onlyAllowListedOptions && !options.help
+        legalOptions = selectedCommandConfig.options ? {}
+        find v, k from options when !legalOptions[k]
+          legalOptions = array v from Object.keys(selectedCommandConfig.options) with "--#{v}"
+          throw new ParseError "Option '#{k}' is not a legal option for command '#{commandName}'. Legal options: #{legalOptions.join ', '}"
+
     {}
       commandFunction
       commandName
-      options:
-        if args?.length > 0
-          merge options, {} args
-        else options
+      options
+      args
