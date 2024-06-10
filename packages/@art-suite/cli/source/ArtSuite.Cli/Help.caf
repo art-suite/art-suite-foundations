@@ -85,16 +85,16 @@ class Help extends BaseClass
         array example, i from examples by 2
           description = examples[i+1]
           []
-            "  #{@coloredCliName} #{colors.whiteBright command} "
+            "  #{@coloredCliName} #{colors.whiteBright command}"
             + if example is Object
               array value, option from example when option != :args
-                colors.green "--#{option}"
+                colors.green " --#{option}"
                 + if value != undefined && value != true
                   colors.yellow " " + if /\s/.test value then JSON.stringify(value) else value
                 else ''
-              .join ' '
+              .join ''
             else example
-            + if example.args then " " + example.args.join " "
+            + if example.args then " " + example.args.join " " else ''
             wrapProse description, 4
             ""
 
