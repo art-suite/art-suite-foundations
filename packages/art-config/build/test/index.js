@@ -11,4 +11,4 @@
   LibTest:                      require('./Lib.test'),
   StandardImport:               require('./StandardImport')
 });
-require('./Art.Config');
+require('./Art.MyLib');
