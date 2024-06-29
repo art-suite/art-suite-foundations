@@ -1,6 +1,5 @@
 {isString} = require './TypesExtended'
 {parseUrl} = require './ParseUrl'
-{inspect} = require './Inspect'
 
 # TODO: switch to using https://github.com/stacktracejs/stacktrace.js
 module.exports = class CallStack

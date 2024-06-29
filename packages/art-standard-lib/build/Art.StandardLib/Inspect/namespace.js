@@ -5,4 +5,4 @@ module.exports = require('../namespace').addNamespace(
   'Inspect',
   class Inspect extends Neptune.PackageNamespace {}
 );
-require('./Inspected/namespace');
+require('./FormattedInspect/namespace');

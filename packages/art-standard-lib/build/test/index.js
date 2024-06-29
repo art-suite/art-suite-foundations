@@ -4,7 +4,11 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  DateExtensionsTest: require('./DateExtensions.test'),
-  StandardImport:     require('./StandardImport'),
-  TimeConstantsTest:  require('./TimeConstants.test')
+  ArrayExtensionsTest: require('./ArrayExtensions.test'),
+  DateExtensionsTest:  require('./DateExtensions.test'),
+  StandardImport:      require('./StandardImport'),
+  TimeTest:            require('./Time.test'),
+  TimeConstantsTest:   require('./TimeConstants.test')
 });
+require('./Core');
+require('./Inspect');

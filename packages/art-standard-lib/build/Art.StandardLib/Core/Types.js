@@ -265,9 +265,11 @@ What is the differences?
       return (v != null) && null === Object.getPrototypeOf(Object.getPrototypeOf(v));
     };
 
-    Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? Types.isPlainObjectUniversal : function(v) {
+    Types.isPlainObjectFast = function(v) {
       return (v != null) && v.constructor === Object;
     };
+
+    Types.isPlainObject = isPlainObject = ArtStandardLibMultipleContextTypeSupport ? Types.isPlainObjectUniversal : Types.isPlainObjectFast;
 
     Types.hasProperties = hasProperties = function(o) {
       var k;

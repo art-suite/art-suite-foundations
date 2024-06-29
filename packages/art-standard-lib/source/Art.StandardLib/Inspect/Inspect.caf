@@ -1,0 +1,6 @@
+[]
+  &DeprecatedInspectors
+  &FormattedInspect
+  &InspectedObjects
+  &PlainObjects
+  &InspectedObjectLiteral

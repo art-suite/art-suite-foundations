@@ -1,0 +1,13 @@
+import &FormattedInspect
+
+shallowInspect: (a) ->
+  console.log "" 'shallowInspect' is DEPRECATED: use 'formattedInspect' instead
+  formattedInspect a, maxDepth: 1
+
+inspectLean: (a) ->
+  console.log "" 'inspectLean' is DEPRECATED: use 'formattedInspect' instead
+  formattedInspect a
+
+inspect: (a) ->
+  console.log "" 'inspect' is DEPRECATED: use 'formattedInspect' instead
+  formattedInspect a

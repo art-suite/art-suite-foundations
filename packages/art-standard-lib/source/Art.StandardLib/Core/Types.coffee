@@ -250,11 +250,12 @@ module.exports = class Types
   #   10-70x faster: v.constructor == Object
   @isPlainObjectUniversal: (v) -> v? && null == Object.getPrototypeOf Object.getPrototypeOf v
 
+  @isPlainObjectFast: (v) -> v? && v.constructor == Object
+
   @isPlainObject: isPlainObject = if ArtStandardLibMultipleContextTypeSupport
     @isPlainObjectUniversal
   else
-    (v) -> v? && v.constructor == Object
-
+    @isPlainObjectFast
 
   ############################
   # helpers

@@ -3,8 +3,8 @@
   "file": "Inspect.js",
   "sourceRoot": "../../..",
   "sources": [
-    "source/Art.StandardLib/Inspect/Inspect.coffee"
+    "source/Art.StandardLib/Inspect/Inspect.caf"
   ],
   "names": [],
-  "mappings": ";;AAAA;;;;;AAAA;EAKA,MAAM,CAAC,OAAP,GAAiB,CACf,CAAE,OAAA,CAAS,aAAT,CAAF,EAA2B,oCAA3B,CADe,EAEf,OAAA,CAAQ,oBAAR,CAFe,EAGf,OAAA,CAAQ,oBAAR,CAHe,EAIf,OAAA,CAAQ,gBAAR,CAJe,EAKf,OAAA,CAAQ,0BAAR,CALe;AALjB"
+  "mappings": "AAAA;;AAAA,kCACE,mCACA,+BACA,+BACA,2BACA"
 }

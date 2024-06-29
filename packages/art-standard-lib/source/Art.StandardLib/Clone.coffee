@@ -39,7 +39,6 @@ populateClone would need to take an additional argument - the clone function to 
 Map = require "./Map"
 
 Unique  = require './Unique'
-{inspect} = require './Inspect'
 {isPlainObject, isArray, isFunction} = require './Core/Types'
 
 uniquePropertyName = Unique.PropertyName

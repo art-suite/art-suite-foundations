@@ -1,0 +1,26 @@
+import &TypesExtended, &InspectedObjectLiteral
+
+{} toPlainObjects = (m) ->
+  return m unless m?
+
+  m.getPlainObjects?()
+  || switch
+    when isPlainObjectUniversal(m) || isPlainArray(m) then deepMap m, (v) -> toPlainObjects v
+    when isClass m then inspectedObjectLiteral "<#{m.getName()}>"
+    when isFunction m
+      functionString = "#{m}"
+      reducedFunctionString =
+        functionString
+        .replace /\s+/g, ' '
+        .replace /^function (\([^)]*\))/, "$1 ->"
+        .replace /^\(\)\s*/, ''
+
+      inspectedObjectLiteral
+        if reducedFunctionString.length < 80
+          reducedFunctionString
+
+        else
+          functionString.slice 0, 5 * 80
+
+    else
+      m

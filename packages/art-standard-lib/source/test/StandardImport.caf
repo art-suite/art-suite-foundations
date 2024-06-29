@@ -1,3 +1,22 @@
+import &ArtStandardLib
+
+inspectForTestStringR = (a) ->
+  switch
+  when isPlainObject a then object v, k from a with inspectForTestStringR v
+  when isArray a then array v, k from a with inspectForTestStringR v
+  when isFunction a then "#{a}"
+  when a is RegExp then "#{a}"
+  when isObject a then "<#{a.class?.name} instance>"
+  when isString(a), isBoolean(a), isNumber(a) then a
+  when a == null then null
+  else "#{a}"
+
 []
   &ArtStandardLib
   &ArtTestbench
+
+  inspectForTestString: (a) ->
+    if isJsonType a
+      JSON.stringify inspectForTestStringR a
+      .slice 0, 100
+    else inspectForTestStringR a

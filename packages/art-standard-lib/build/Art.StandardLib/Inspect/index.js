@@ -5,14 +5,9 @@
 .includeInNamespace(require('./Inspect'))
 .addModules({
   AlignTabs:              require('./AlignTabs'),
-  FormattedInspect:       require('./FormattedInspect'),
-  FormattedInspectArray:  require('./FormattedInspectArray'),
-  FormattedInspectObject: require('./FormattedInspectObject'),
-  FormattedInspectString: require('./FormattedInspectString'),
+  DeprecatedInspectors:   require('./DeprecatedInspectors'),
   InspectedObjectLiteral: require('./InspectedObjectLiteral'),
   InspectedObjects:       require('./InspectedObjects'),
-  Inspector:              require('./Inspector'),
-  Inspector2:             require('./Inspector2'),
   PlainObjects:           require('./PlainObjects')
 });
-require('./Inspected');
+require('./FormattedInspect');

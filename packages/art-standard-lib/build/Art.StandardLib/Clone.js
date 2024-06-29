@@ -38,13 +38,11 @@
   
   populateClone would need to take an additional argument - the clone function to use for recursive cloning.
    */
-  var Clone, Map, Unique, byProperties, byStructure, clonedMap, inspect, isArray, isFunction, isPlainObject, ref, topObject, uniquePropertyName;
+  var Clone, Map, Unique, byProperties, byStructure, clonedMap, isArray, isFunction, isPlainObject, ref, topObject, uniquePropertyName;
 
   Map = require("./Map");
 
   Unique = require('./Unique');
-
-  inspect = require('./Inspect').inspect;
 
   ref = require('./Core/Types'), isPlainObject = ref.isPlainObject, isArray = ref.isArray, isFunction = ref.isFunction;
 
