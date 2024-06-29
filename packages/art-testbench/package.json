@@ -8,10 +8,9 @@
     "art-config": "^2.0.4",
     "art-events": "^2.0.0",
     "art-standard-lib": "^1.73.2",
-    "chai": "^4.4.1",
     "neptune-namespaces-runtime": "^3.2.12"
   },
-  "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Mocha & Chai",
+  "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Jest & Mocha",
   "devDependencies": {
     "art-build-configurator": "^1.30.3",
     "mocha": "^7.2.0"

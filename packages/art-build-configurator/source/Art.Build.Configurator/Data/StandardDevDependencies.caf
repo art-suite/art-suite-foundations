@@ -17,7 +17,6 @@ style-loader:                         :^1.0.0
 
 # test baseline
 mocha:                                :^7.0.0
-chai:                                 :^4.2.0
 mock-fs:                              :^4.10.0
 
 art-testbench:                        :^1.0.0

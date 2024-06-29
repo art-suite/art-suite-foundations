@@ -2,10 +2,10 @@
 Art-Suite Testing and Benchmarking tools.
 
 Right now:
-* wrapper and extensions for Mocha and Chai
+* wrapper and extensions for Jest & Mocha
 
 ###  Future
-* Chai is already mostly replaced, plan to drop it.
+* Jest is the main supported platform at this point
 * Mocha is already highly augmented, plan to drop it.
 
 ### Todo
