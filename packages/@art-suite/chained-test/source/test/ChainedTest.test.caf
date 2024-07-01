@@ -1,4 +1,4 @@
-import &ArtStandardLib, &ArtSuiteTestChainedTest, require :@art-suite/assert
+import &ArtStandardLib, &ArtSuiteTestChainedTest, &@ArtSuite/Assert
 
 testsActuallyRan = []
 ran = (key) -> testsActuallyRan.push key

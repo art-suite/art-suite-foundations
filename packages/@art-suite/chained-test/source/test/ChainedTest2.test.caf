@@ -1,0 +1,31 @@
+import &ArtStandardLib, &ArtSuiteTestChainedTest, require :@art-suite/assert
+
+mergedOptions =
+  userId: :123
+  friendId: :xyz
+
+chainedTest "needs to have an object to start" ->
+  userId: :123
+
+.thenTestMerged
+  "baseline" (options) ->
+    assert.eq
+      userId: :123
+      options
+
+    # gets merged with options and passed to the next test
+    friendId: :xyz
+
+  "should be merged" (options) -> assert.eq mergedOptions, options
+  "assert returns null, so shouldn't alter options" (options) -> assert.eq mergedOptions, options
+
+  "deepAll is applied" ->
+    shouldResolve:
+      Promise.resolve 5
+      Promise.resolve 6
+      Promise.resolve 7
+
+  "all promises resolved" (options) ->
+    assert.eq
+      merge mergedOptions, shouldResolve: 5 6 7
+      options

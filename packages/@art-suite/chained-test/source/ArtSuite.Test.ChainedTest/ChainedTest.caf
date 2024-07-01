@@ -6,6 +6,10 @@ cleanErrorStack = (error, stackTraceIgnoreLineRegExp) ->
     .join :\n
   error
 
+isMergeable = (v) ->
+  !v?
+  || isPlainObject v
+
 uniqueErrorsReported = {}
 
 {chainedTest, firstIt} = class ChainedTest extends BaseClass
@@ -27,9 +31,10 @@ uniqueErrorsReported = {}
       if b? then a else "" ChainedTest setup
       b ? a
 
-  thenTest:     (args...)-> @_applySequence :_thenTest    compactFlatten args
-  tapTest:      (args...)-> @_applySequence :_tapTest     compactFlatten args
-  softTapTest:  (args...)-> @_applySequence :_softTapTest compactFlatten args
+  thenTest:       (args...)-> @_applySequence :_thenTest        compactFlatten args
+  thenTestMerged: (args...)-> @_applySequence :_thenTestMerged  compactFlatten args
+  tapTest:        (args...)-> @_applySequence :_tapTest         compactFlatten args
+  softTapTest:    (args...)-> @_applySequence :_softTapTest     compactFlatten args
 
   # ALIASES
   @firstIt:     @chainedTest
@@ -58,7 +63,7 @@ uniqueErrorsReported = {}
         OUT: Promise.then -> dependency chain result
 
       options:
-        tap: <boolean> ignore the result of this test
+        filter: (testResult, previousTestResult) -> filtered test result for the next test
         soft: <boolean> don't run this test if not explicitly run by the test framework (Jest/Mocha)
           NOTE: Normally, a failure in a test will cause the rest of the chain to fail.
           However, a failure in a soft-test will not cause the rest of the chain to fail.
@@ -88,7 +93,11 @@ uniqueErrorsReported = {}
             Promise.then ->
               chainedTest.current = @
               @test previousTestResult, setupResult
-            .then (out) -> if @options?.tap then previousTestResult else out
+            .then (out) ->
+              if @options extract? filter
+                filter out, previousTestResult
+              else out
+
           .catch (error) ->
             throw cleanErrorStack
               error
@@ -100,9 +109,22 @@ uniqueErrorsReported = {}
         if @options?.soft then  @previousTestResultPromise
         else                    @runThisTestOnce()
 
-  _thenTest:    (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink
-  _tapTest:     (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true
-  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink, tap: true, soft: true
+  _thenTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink
+
+  _thenTestMerged: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
+    filter: (testResult, testInput) ->
+      Promise.deepResolve testResult
+      .then (testResult) ->
+        unless isMergeable(testResult) && isMergeable(testInput)
+          throw new Error "Always return a plain object, null or undefined result when using `thenTestMerged`. For #{formattedInspect {testInput}} got: #{formattedInspect {testResult}}"
+        merge testInput, testResult
+
+  _tapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
+    filter: (res, prevRes) -> prevRes
+
+  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
+    soft: true
+    filter: (res, prevRes) -> prevRes
 
   _applySequence: (applyMemberName, sequence) ->
     lastChainedTest = @
