@@ -21,7 +21,7 @@ import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promis
       + :\n
 
   globAllPackages = (folder) ->
-    glob log :globAllPackages join folder ? "!(node_modules)", "**", :package.json
+    glob join folder ? "!(node_modules)", "**", :package.json
 
   loadAllPackages = (folder) ->
     globAllPackages folder
