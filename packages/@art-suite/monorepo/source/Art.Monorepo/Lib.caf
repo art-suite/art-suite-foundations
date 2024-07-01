@@ -1,4 +1,4 @@
-import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &glob, &fs.promises, &ArtCommunicationStatus, {} &semver
+import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promises, &ArtCommunicationStatus, &glob, {} &semver
 
 {}
   readJson = (file) ->
