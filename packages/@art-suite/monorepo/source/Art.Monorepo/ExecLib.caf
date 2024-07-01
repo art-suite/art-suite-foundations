@@ -11,10 +11,10 @@ logRun = (verb, packagePath) ->
     blue "#{verb}: "
     + packagePath
 
-allPackageExec: ({command, verb, verbose}) ->
+allPackageExec: ({command, verb, verbose, folder}) ->
   verb = upperCase verb
 
-  loadAllPackages()
+  loadAllPackages folder
   .then (packages) ->
     array {scripts}, packagePath in packages when scripts?.test
       packagePath

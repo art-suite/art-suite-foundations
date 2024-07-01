@@ -1,4 +1,4 @@
-import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promises, &ArtCommunicationStatus, &glob, {} &semver
+import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promises, &ArtCommunicationStatus, &glob, &path, {} &semver
 
 {}
   readJson = (file) ->
@@ -20,8 +20,11 @@ import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promis
       consistentJsonStringify data, '  '
       + :\n
 
-  loadAllPackages = ->
-    glob "!(node_modules)/**/package.json"
+  globAllPackages = (folder) ->
+    glob log :globAllPackages join folder ? "!(node_modules)", "**", :package.json
+
+  loadAllPackages = (folder) ->
+    globAllPackages folder
     .then (results) ->
       object file from-array results with-key file.split(/\/package.json$/)[0] when
           !/node_modules\//.test file # don't read into node_modules/

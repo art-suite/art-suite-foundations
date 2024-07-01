@@ -7,6 +7,7 @@ import &StandardImport
   test:
     options:
       verbose:  "" true/false
+      folder:   "" find all packages in this path. default: "."
     description: "" Test all packages. This runs `npm test` in every subfolder with a package.json file.
     run: (options) ->
       allPackageExec merge options,
@@ -16,7 +17,7 @@ import &StandardImport
   sync:
     description:
       """
-        Sync the root package.json with all package.json files in subfolders. This will ensure all packages are using the same verison of every external dependency. It will also ensure all cross-referenced packages within the monorepo are referencing the latest version. Last, it will update the root package.json to contain all external references. It's best to run `npm install` immediately after running this.
+        Sync the root package.json with all package.json files in subfolders. This will ensure all packages are using the same version of every external dependency. It will also ensure all cross-referenced packages within the monorepo are referencing the latest version. Last, it will update the root package.json to contain all external references. It's best to run `npm install` immediately after running this.
 
         This happens in three steps:
 
@@ -25,7 +26,7 @@ import &StandardImport
         3. Update mono-package: update the root mono-repo's package.json with any new dependencies found in sub-packages as well as updating any cross-referencing between packages within the monorepo.
 
     options:
-      quiet: "" Supress output.
+      quiet: "" Suppress output.
 
     run: (options) ->
       cleanMonorepo()
@@ -34,15 +35,20 @@ import &StandardImport
       .then -> green "" All package.json files synced.
 
   run:
-    description: "" Run a command in all packages. This will run the command in every subfolder with a package.json file.
+    description: "" 'npm run X' in all packages. This will run the command in every subfolder with a package.json file.
     options:
-      command:  "" Shell command to run.
       verbose:  "" true/false
-      path:     "" find all packages in this path. default: "."
-    run: (options) ->
-      if options extract path
-        process.chdir path
-      allPackageExec merge options, verb: :run
+      folder:   "" find all packages in this path. default: "."
+    args:  "" Npm run-command.
+    run: (options, args) -> allPackageExec merge options, verb: :run command: "npm run #{args[0]}"
+
+  exec:
+    description: "" Run shell command in every subfolder with a package.json file.
+    options:
+      verbose:  "" true/false
+      folder:   "" find all packages in this path. default: "."
+    args:  "" Shell command to run.
+    run: (options, args) -> allPackageExec merge options, verb: :exec command: args.join " "
 
   &versions
 
@@ -55,7 +61,7 @@ import &StandardImport
 
   update:
     options:
-      quiet: "" Supress output.
+      quiet: "" Suppress output.
     description: "" Advanced: Run the update-sub-packages then update-mono-package.
     run: (options) ->
       Promise
