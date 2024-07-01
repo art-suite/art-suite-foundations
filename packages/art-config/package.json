@@ -8,7 +8,7 @@
   },
   "description": "A powerful yet simple tool for configuring all your libraries consistently.",
   "devDependencies": {
-    "art-testbench": "^3.2.14"
+    "art-testbench": "^3.2.15"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
