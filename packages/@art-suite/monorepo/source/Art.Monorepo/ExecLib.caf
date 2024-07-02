@@ -11,7 +11,14 @@ logRun = (verb, packagePath) ->
     blue "#{verb}: "
     + packagePath
 
-allPackageExec: ({command, verb, verbose, folder}) ->
+allPackageExec: (options) ->
+  options extract
+    command
+    verb
+    verbose
+    folder
+  skipTest = options.skip ? -> false
+
   verb = upperCase verb
 
   loadAllPackages folder
@@ -21,44 +28,53 @@ allPackageExec: ({command, verb, verbose, folder}) ->
 
   .then (packagePaths) ->
     logRun "#{verb}ING" pluralize :package packagePaths.length
+    log packagePaths
     passed = []
+    skipped = []
     failed = []
     Promise.all array packagePath in packagePaths
-      logRun verb, grey packagePath
+      packageContents = readJson &path.join packagePath, :package.json
+      if skipReason = skipTest packageContents, packagePath, options
+        skipped.push packagePath
+        logRun :SKIPPED,
+          yellow packagePath
+          + if isString skipReason then grey " #{skipReason}" else ""
+      else
+        logRun verb, grey packagePath
 
-      execShellCommand "" cd #{packagePath};#{command}
-      .then
-        (stdout) ->
-          passed.push packagePath;
-          if verbose
-            log blue "#{packagePath} > #{command} (stdout)"
-            log indent
-              stdout.trim()
-              "  "
+        execShellCommand "" cd #{packagePath};#{command}
+        .then
+          (stdout) ->
+            passed.push packagePath;
+            if verbose
+              log blue "#{packagePath} > #{command} (stdout)"
+              log indent
+                stdout.trim()
+                "  "
 
-          logRun :SUCCESS green packagePath
-          if verbose
-            log ""
+            logRun :SUCCESS green packagePath
+            if verbose
+              log ""
 
-        ({stdout, stderr}) ->
-          failed.push packagePath
-          logRun :FAILED red packagePath
-          if present stdout
-            log blue "  #{packagePath} > #{command} (stdout)"
-            log indent stdout.trim()
-            log ""
-          if present stderr
-            log blue "  #{packagePath} > #{command} (stderr)"
-            log red indent stderr.trim()
-            log ""
+          ({stdout, stderr}) ->
+            failed.push packagePath
+            logRun :FAILED red packagePath
+            if present stdout
+              log blue "  #{packagePath} > #{command} (stdout)"
+              log indent stdout.trim()
+              log ""
+            if present stderr
+              log blue "  #{packagePath} > #{command} (stderr)"
+              log red indent stderr.trim()
+              log ""
 
     .then ->
       log blue "" \nRESULTS:
-      log blue "  succeeded: " + yellow passed.length
-      if failed.length > 0
-        each f in failed
-          log blue "  failed: " + red f
+      log blue "  succeeded: " + green passed.length
+      if skipped.length > 0 then log blue "  skipped: " + yellow skipped.length
 
+      if failed.length > 0
+        each f in failed with log blue "  failed: " + red f
         process.exit 1
 
       null

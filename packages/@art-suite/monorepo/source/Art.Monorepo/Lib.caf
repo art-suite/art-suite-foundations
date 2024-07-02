@@ -21,13 +21,26 @@ import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promis
       + :\n
 
   globAllPackages = (folder) ->
-    glob join folder ? "!(node_modules)", "**", :package.json
+    folders = array f in compactFlatten [] folder when present f
+    Promise
+    .then ->
+      if folders.length > 0
+        Promise.all array folder in folders
+          glob join folder, "**", :package.json
+        .then compactFlatten
+      else
+        glob log join "!(node_modules)", "**", :package.json
+    .tap (out) -> log globAllPackages: {} folder, out
+
+  packagePathToPackageFolder = (packagePath) ->
+    packagePath
+    .replace /(\/)package.json/, ''
+    .replace /^package.json$/, '.'
 
   loadAllPackages = (folder) ->
     globAllPackages folder
     .then (results) ->
-      object file from-array results with-key file.split(/\/package.json$/)[0] when
-          !/node_modules\//.test file # don't read into node_modules/
+      object file from-array results with-key packagePathToPackageFolder file when !/node_modules\//.test file # don't read into node_modules/
         readJson file
 
   removePackageLocks = ->

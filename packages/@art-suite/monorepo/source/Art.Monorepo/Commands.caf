@@ -1,18 +1,27 @@
 import &StandardImport
 
+makeNpmRunCommand = (command) ->
+  (options, args) ->
+    allPackageExec merge options,
+      skip: ({scripts}, path) -> unless scripts?[command]? then "(package.json does not have a '#{command}' script)"
+      folder: compactFlattenAll options.folder, args
+      command: "npm run #{command}"
+      verb: command
+
+makeNpmCommand = (command) ->
+  options:
+    verbose:  "" true/false
+    folder:   "" find all packages in this path. default: "."
+  args: "" Find all packages in any additional paths passed as args.
+  description: "" Runs `npm run #{command}` in every subfolder with a package.json file.
+  run: makeNpmRunCommand command
+
 {}
   &update-mono-package
   &update-sub-packages
 
-  test:
-    options:
-      verbose:  "" true/false
-      folder:   "" find all packages in this path. default: "."
-    description: "" Test all packages. This runs `npm test` in every subfolder with a package.json file.
-    run: (options) ->
-      allPackageExec merge options,
-        command: "npm test"
-        verb: :test
+  test: makeNpmCommand :test
+  build: makeNpmCommand :build
 
   sync:
     description:
@@ -40,7 +49,7 @@ import &StandardImport
       verbose:  "" true/false
       folder:   "" find all packages in this path. default: "."
     args:  "" Npm run-command.
-    run: (options, args) -> allPackageExec merge options, verb: :run command: "npm run #{args[0]}"
+    run: (options, args) -> makeNpmRunCommand(args[0]) options, args.slice 1
 
   exec:
     description: "" Run shell command in every subfolder with a package.json file.
