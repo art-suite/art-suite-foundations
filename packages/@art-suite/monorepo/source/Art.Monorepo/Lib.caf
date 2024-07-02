@@ -30,7 +30,6 @@ import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promis
         .then compactFlatten
       else
         glob log join "!(node_modules)", "**", :package.json
-    .tap (out) -> log globAllPackages: {} folder, out
 
   packagePathToPackageFolder = (packagePath) ->
     packagePath

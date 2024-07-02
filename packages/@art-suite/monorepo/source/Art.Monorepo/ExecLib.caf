@@ -28,7 +28,6 @@ allPackageExec: (options) ->
 
   .then (packagePaths) ->
     logRun "#{verb}ING" pluralize :package packagePaths.length
-    log packagePaths
     passed = []
     skipped = []
     failed = []
