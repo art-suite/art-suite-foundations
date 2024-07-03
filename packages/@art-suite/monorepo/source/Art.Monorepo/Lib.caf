@@ -29,7 +29,7 @@ import &ArtStandardLib.terminalColors, &ArtStandardLib, &NpmApi, &fs, &fs.promis
           glob join folder, "**", :package.json
         .then compactFlatten
       else
-        glob log join "!(node_modules)", "**", :package.json
+        glob join "!(node_modules)", "**", :package.json
 
   packagePathToPackageFolder = (packagePath) ->
     packagePath

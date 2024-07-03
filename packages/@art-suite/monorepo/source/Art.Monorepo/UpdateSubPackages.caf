@@ -4,7 +4,11 @@ updateDependencyVersions = (packages, fromDeps, toDeps) -> if toDeps? && fromDep
   object fromVersion, packageName in fromDeps
     if (toVersion = toDeps[packageName]) && fromVersion != toVersion
       if fileRefMatch = toVersion.match /// ^file:(.*)$
-        "" ^#{packages[fileRefMatch[1]].version}
+        if _package = packages[fileRefMatch[1]]
+          "" ^#{packages[fileRefMatch[1]].version}
+        else
+          log.warn "Could not find local package.json file dependency: #{JSON.stringify toVersion}"
+          toVersion
       else
         toVersion
     else
@@ -38,7 +42,7 @@ addSubPackagesToDependencies = (packages, dependencies) ->
   object {name}, packageFolder from packages into dependencies with-key name
     "file:#{packageFolder}"
 
-options: quiet: "" Supress output.
+options: quiet: "" Suppress output.
 description: "" Update all package.json files in sub-folders to match the root package.json file.
 run: ({quiet}) ->
   !quiet && log blue "" Updating ./package.json >> **/package.json...
