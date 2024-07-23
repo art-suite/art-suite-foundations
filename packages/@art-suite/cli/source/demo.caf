@@ -1,12 +1,11 @@
 import &ArtStandardLib
 
-require :@art-suite/cli
-.start
+&@ArtSuite/Cli.start
   description:
     """
       A demo of the art-suite/cli library.
 
-      PirateIpsum.me Heave down stern heave to hearties crack Jennys tea cup topgallant snow reef sails belaying pin haul wind. Strike colors mizzenmast nipper draft scurvy skysail gangplank ye list interloper. Squiffy bring a spring upon her cable line chandler execution dock plunder topgallant scourge of the seven seas crimp ahoy.
+      PirateIpsum.me Heave down stern heave to hearties crack Jenny's tea cup topgallant snow reef sails belaying pin haul wind. Strike colors mizzenmast nipper draft scurvy skysail gangplank ye list interloper. Squiffy bring a spring upon her cable line chandler execution dock plunder topgallant scourge of the seven seas crimp ahoy.
 
       Jack Ketch Yellow Jack main sheet list black spot spyglass hearties barque sutler fathom. Stern gally crimp run a rig execution dock lugsail hogshead boatswain Davy Jones' Locker jolly boat. Tender Pieces of Eight league matey mizzenmast take a caulk nipperkin capstan furl chantey.
 
