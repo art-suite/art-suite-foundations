@@ -30,3 +30,22 @@ test "demo" ->
           <p>simple, elegant, fast declarative tree generation library</p>
         </body>
       </html>
+
+test "works with non-string atomics" ->
+  assert.eq
+    Div 123
+    .toString()
+    """
+      <div>
+        123
+      </div>
+
+  assert.eq
+    Div
+      null
+      undefined
+      new Date('2024-01-01').toISOString()
+      null
+
+    .toString()
+    """ <div>2024-01-01T00:00:00.000Z</div>
