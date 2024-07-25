@@ -11,6 +11,28 @@ test "basic ValidationError" ->
     assert.instanceOf error, ValidationError
     assert.eq
       error.info
+      message:       "name is not a valid string (!isString)"
       fields:        [] :name
       errors:        {} name: "" not a valid string (!isString)
       invalidValues: {} name: 123
+
+test "basic getValidationErrorsString" ->
+  v = new Validator
+    name: :present :string
+
+  assert.false v.isValid name: 123
+  assert.eq
+    v.getValidationErrorsString name: 123
+    "name is not a valid string (!isString)"
+
+test "basic getValidationErrorsInfo" ->
+  v = new Validator
+    name: :present :string
+
+  assert.false v.isValid name: 123
+  assert.eq
+    v.getValidationErrorsInfo name: 123
+    message:       "name is not a valid string (!isString)"
+    fields:        [] :name
+    errors:        {} name: "" not a valid string (!isString)
+    invalidValues: {} name: 123

@@ -247,10 +247,18 @@ class Validator extends BaseClass
           makeEmptyArraysIntoNulls @fields[fieldName].getValidationErrors? value, fieldPath, forCreate
           || {} fieldPath, value, errorIs: standardInvalidMessage @fields[fieldName], value
 
-  getValidationErrorsString: (fields) ->
-    @_getValidationErrorsString fields, @getValidationErrors fields, '', true
+  # NOTE: we are migrating to always "forCreate=true" to simplify the code.
+  #   We will add a "getUpdateValidator" method which will return a new validator for forCreate=false.
+  getValidationErrorsString: (fields) -> @_getValidationErrorsString @getValidationErrors fields, '', true
+  getValidationErrorsInfo: (fields) -> @_getValidationErrorsInfo @getValidationErrors fields, '', true
 
-  _getValidationErrorsString: (fields, validationErrors) ->
+  _getValidationErrorsInfo: (validationErrors) ->
+    message:        @_getValidationErrorsString validationErrors
+    fields:         array {fieldPath} in-array validationErrors with fieldPath
+    errors:         object {errorIs, fieldPath} from validationErrors with-key fieldPath with errorIs
+    invalidValues:  object {value, fieldPath} from validationErrors with-key fieldPath with value
+
+  _getValidationErrorsString: (validationErrors) ->
     if validationErrors.length > 0
       invalidFieldLongForm = array {fieldPath, errorIs} in-array validationErrors
         "" #{fieldPath} is #{errorIs}
@@ -263,16 +271,11 @@ class Validator extends BaseClass
         invalidFieldLongForm[0]
 
   _throwError: (fields, processedFields, options, forCreate) ->
-    validationErrors = @getValidationErrors fields, '', forCreate
-
-    invalidFieldString = @_getValidationErrorsString fields, validationErrors
-    invalidFields = array {fieldPath} in-array validationErrors with fieldPath
-
-    message = "#{options?.context ? @context} #{if forCreate then 'create' else 'update'}-validation failed: #{invalidFieldString}"
-    throw new ValidationError message.trim(),
-      fields:         invalidFields
-      errors:         object {errorIs, fieldPath} from validationErrors with-key fieldPath with errorIs
-      invalidValues:  object {value, fieldPath} from validationErrors with-key fieldPath with value
+    info = @_getValidationErrorsInfo @getValidationErrors fields, '', forCreate
+    throw new ValidationError
+      "" #{options?.context ? @context} #{if forCreate then 'validation' else 'update-validation'} failed: #{info.message}
+      .trim()
+      info
 
   ####################
   # VALIDATION CORE
