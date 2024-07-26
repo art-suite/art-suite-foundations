@@ -18,7 +18,7 @@ configure: (options = {}) -> (_package) ->
   buildScript = (sourceDir, targetDir) ->
     copyJs =
       """
-        rsync -av --exclude='*.caf' #{" --exclude='*.coffee'" if  coffeeScript} ./source/ ./build/
+        rsync -av --exclude='*.caf'#{" --exclude='*.coffee'" if  coffeeScript} ./source/ ./build/
 
     if coffeeScript
       """
