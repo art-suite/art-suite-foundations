@@ -19,8 +19,8 @@ configure: (options = {}) -> (_package) ->
     rsyncCommon =
       compactFlatten []
         :-av
-        " --exclude='*.caf'"
-        " --exclude='*.coffee'" if coffeeScript
+        :--exclude='*.caf'
+        :--exclude='*.coffee' if coffeeScript
       .join ' '
 
     copyNonCompiledSourceFiles =
