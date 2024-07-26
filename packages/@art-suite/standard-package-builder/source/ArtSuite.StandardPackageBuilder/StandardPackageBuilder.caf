@@ -16,13 +16,20 @@ configure: (options = {}) -> (_package) ->
   targetTempDir = targetDir + "-temp"
 
   buildScript = (sourceDir, targetDir) ->
-    copyJs =
+    rsyncCommon =
+      compactFlatten []
+        :-av
+        " --exclude='*.caf'"
+        " --exclude='*.coffee'" if coffeeScript
+      .join ' '
+
+    copyNonCompiledSourceFiles =
       """
-        rsync -av --exclude='*.caf'#{" --exclude='*.coffee'" if  coffeeScript} ./source/ ./build/
+        rsync #{rsyncCommon} ./#{sourceDir}/ ./#{targetDir}/
 
     if coffeeScript
       """
-        #{copyJs}
+        #{copyNonCompiledSourceFiles}
         coffee -m --output #{targetDir} --compile #{sourceDir} &
         COFFEE_PID=$!
         caf -m -c #{sourceDir} -o #{targetDir} #{coffeeScript && "--require coffee-script/register" }&
@@ -32,7 +39,7 @@ configure: (options = {}) -> (_package) ->
         npm run nn
     else
       """
-        #{copyJs}
+        #{copyNonCompiledSourceFiles}
         caf -m -c #{sourceDir} -o #{targetDir}
         npm run nn
 
