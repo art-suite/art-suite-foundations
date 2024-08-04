@@ -249,6 +249,7 @@ class Validator extends BaseClass
 
   # NOTE: we are migrating to always "forCreate=true" to simplify the code.
   #   We will add a "getUpdateValidator" method which will return a new validator for forCreate=false.
+  getValidationErrorStrings: (fields) -> @_getValidationErrorStrings @getValidationErrors fields, '', true
   getValidationErrorsString: (fields) -> @_getValidationErrorsString @getValidationErrors fields, '', true
   getValidationErrorsInfo: (fields) -> @_getValidationErrorsInfo @getValidationErrors fields, '', true
 
@@ -258,15 +259,19 @@ class Validator extends BaseClass
     errors:         object {errorIs, fieldPath} from validationErrors with-key fieldPath with errorIs
     invalidValues:  object {value, fieldPath} from validationErrors with-key fieldPath with value
 
+  _getValidationErrorStrings: (validationErrors) ->
+    array {fieldPath, errorIs} in-array validationErrors
+      "" #{fieldPath} is #{errorIs}
+
   _getValidationErrorsString: (validationErrors) ->
     if validationErrors.length > 0
-      invalidFieldLongForm = array {fieldPath, errorIs} in-array validationErrors
-        "" #{fieldPath} is #{errorIs}
+      invalidFieldLongForm = @_getValidationErrorStrings validationErrors
 
       if invalidFieldLongForm.length > 1
         last = peek invalidFieldLongForm
         most = invalidFieldLongForm.slice 0, invalidFieldLongForm.length - 1
         "" #{most.join ", "} and #{last}
+
       else
         invalidFieldLongForm[0]
 
