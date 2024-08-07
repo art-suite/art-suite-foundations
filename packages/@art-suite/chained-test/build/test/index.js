@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
-  ChainedTestTest:  require('./ChainedTest.test'),
-  ChainedTest2Test: require('./ChainedTest2.test')
+  AlwaysTestAndFinallyTest: require('./AlwaysTestAndFinally.test'),
+  ChainedTestTest:          require('./ChainedTest.test'),
+  ChainedTest2Test:         require('./ChainedTest2.test')
 });

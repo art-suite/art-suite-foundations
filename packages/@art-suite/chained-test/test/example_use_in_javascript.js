@@ -45,3 +45,7 @@ chainedTest("Alice's user story", () => auth(aliceEmail))
   })
 
   .tapIt("should be able to logOut", logOut)
+
+  .alwaysTest("should always run this test", () => 123)
+
+  .finally("just an alias for alwaysTest", () => 123);

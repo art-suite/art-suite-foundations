@@ -1,0 +1,24 @@
+import &ArtStandardLib, &ArtSuiteTestChainedTest, require :@art-suite/assert
+
+# enable this to verify alwaysTest and finally work as expected
+enableManualFailing = false
+
+chainedTest "needs to have an object to start" ->
+  userId: 123
+
+.thenTestMerged
+  "add friendId" (options) ->
+    userId:   999
+    friendId: 888
+
+  "can manually test by making this fail" (options) ->
+    assert.false true if enableManualFailing
+    assert.eq options, userId: 999 friendId: 888
+
+.alwaysTest "should only have the setup values" (options) ->
+  log "alwaysTest ran!" if enableManualFailing
+  assert.eq options, userId: 123
+
+.finally "should only have the setup values" (options) ->
+  log "finally ran!" if enableManualFailing
+  assert.eq options, userId: 123
