@@ -19,6 +19,10 @@ chainedTest "needs to have an object to start" ->
   log "alwaysTest ran!" if enableManualFailing
   assert.eq options, userId: 123
 
+.alwaysIt "should only have the setup values" (options) ->
+  log "alwaysIt ran!" if enableManualFailing
+  assert.eq options, userId: 123
+
 .finally "should only have the setup values" (options) ->
   log "finally ran!" if enableManualFailing
   assert.eq options, userId: 123

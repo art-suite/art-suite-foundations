@@ -44,6 +44,7 @@ uniqueErrorsReported = {}
   thenIt:         (args...)-> @_applySequence :_thenTest          compactFlatten args
   tapIt:          (args...)-> @_applySequence :_tapTest           compactFlatten args
   softTapIt:      (args...)-> @_applySequence :_softTapTest       compactFlatten args
+  alwaysIt:       (args...)-> @_applySequence :_alwaysTest        compactFlatten args
   finally:        (args...)-> @_applySequence :_alwaysTest        compactFlatten args
 
   ##########################
