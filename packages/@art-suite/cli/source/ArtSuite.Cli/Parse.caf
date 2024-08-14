@@ -26,32 +26,27 @@ class Parse
     when value == :false then false
     when @numberRegExp.test value then value / 1
     when typedMatch = @typedArgumentRegExp.exec value
-      [__, type, value] = typedMatch
+      [__, type, rawValue] = typedMatch
       switch type
       when :string
-        value
+        rawValue
       when :json
-        try JSON.parse value
+        try JSON.parse rawValue
         catch error
           throw new ParseError
             """
-              Error parsing JSON value for #{errorContext}: #{error.message}
-                Value: #{value}
+              Error parsing JSON rawValue for #{errorContext}: #{error.message}
+                Value: #{rawValue}
 
       when :js
-        try eval value
+        try eval rawValue
         catch error
           throw new ParseError
             """
-              Error parsing JavaScript value for #{errorContext}: #{error.message}
-                Value: #{value}
+              Error parsing JavaScript rawValue for #{errorContext}: #{error.message}
+                Value: #{rawValue}
 
-      else throw new ParseError
-        """
-          Error parsing value for #{errorContext}: Invalid data-type '#{type}:'
-            Expecting: "string:...", "json:..." or "js:..."
-            Value: #{value}
-            Hint: If you want to pass the value as a string, prefix it with "string:".
+      else value
 
     else value
 
