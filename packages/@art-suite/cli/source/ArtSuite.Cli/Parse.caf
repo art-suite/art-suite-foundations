@@ -111,7 +111,7 @@ class Parse
           throw new ParseError "Option '#{k}' is not a legal option for command '#{commandName}'. Legal options: #{legalOptions.join ', '}"
 
       else
-        each optionConfig, k in selectedCommandConfig.options when optionConfig.required && !(options[k]?)
+        each optionConfig, k in selectedCommandConfig.options when optionConfig.required && !(options[lowerCamelCase k]?)
           message = "Option '--#{k}' is required for command '#{commandName}'"
           if options.help
             log.error message
