@@ -103,6 +103,7 @@ class Help extends BaseClass
       startFile: <String> name of the CLI app
       help:
         description: <String>
+        parsed: {} options, args
         commands:
           command1Name:
             description:
@@ -148,6 +149,10 @@ class Help extends BaseClass
             @getCommandSummary commandName, commands[commandName]
           .join "\n\n"
 
+      if help.parsed
+        "\n" + formattedInspect
+          {} parsed: merge help.parsed
+          color: true
 
   @getGeneralInfo: (description) =>
     compactFlatten []

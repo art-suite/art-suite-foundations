@@ -44,7 +44,7 @@ class Main
         else
           &Help.getHelp
             startFile
-            {} commands, description
+            {} commands, description, parsed: {} options, args
             if commandName == :help then args?[0] else commandName
           + if commandName == :help || options.help || !commandName then '' else colors.red "\n\nInvalid command: #{commandName}"
 

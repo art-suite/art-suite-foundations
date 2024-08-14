@@ -103,6 +103,7 @@ class Parse
 
       if selectedCommandConfig.args extract? argsToOptions
         mergeInto options, argsToOptions args
+        args = undefined
 
       if selectedCommandConfig.onlyAllowListedOptions && !options.help
         legalOptions = selectedCommandConfig.options ? {}
@@ -110,7 +111,7 @@ class Parse
           legalOptions = array v from Object.keys(selectedCommandConfig.options) with "--#{v}"
           throw new ParseError "Option '#{k}' is not a legal option for command '#{commandName}'. Legal options: #{legalOptions.join ', '}"
 
-      unless options.help
+      else
         find optionConfig, k in selectedCommandConfig.options when optionConfig.required && !(options[k]?)
           throw new ParseError "Option '--#{k}' is required for command '#{commandName}'"
 
