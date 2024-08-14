@@ -84,6 +84,20 @@ import &ArtStandardLib
             Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho! Ho!
             Rudolph's nose glows!
 
+    add:
+      description: "" Add two numbers together.
+      options:
+        a:
+          required: true
+          description: "first number"
+        b:
+          required: true
+          description: "second number"
+      args:
+        description: "the numbers to add"
+        argsToOptions: (args) -> a: args[0], b: args[1]
+      run: ({a, b}) -> a + b
+
     stat:
       description: "" stat the listed files
       args: :files
