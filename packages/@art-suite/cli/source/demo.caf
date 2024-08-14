@@ -23,7 +23,7 @@ import &ArtStandardLib
         myRequiredOption: required: true
 
     sing:
-      run: ({song}, args) -> "" ♫ #{args.join ' '} ♫! (#{song})
+      run: ({song, lyrics}) -> "" ♫ #{lyrics.join ' '} ♫! (#{song})
       description: "Sing any name you choose"
       examples:
         args: w "" dashing through the snow
@@ -38,7 +38,9 @@ import &ArtStandardLib
         description:  "your favorite lyrics"
         argument:     :lyrics
         default:      [] "" Who's fleece was white as snow.
+        argsToOptions: (args) -> lyrics: args
       options:
+        lyrics: required: true description: "Lyrics to sync. Can also pass as args."
         song:
           description: "name of the song to sing"
           argument:     :string
@@ -84,7 +86,8 @@ import &ArtStandardLib
 
     stat:
       description: "" stat the listed files
-      run: ({ args }) ->
+      args: :files
+      run: (options, args) ->
         object arg in args
           stat = &fs.statSync arg
           object k from Object.keys stat

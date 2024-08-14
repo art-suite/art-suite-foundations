@@ -101,6 +101,9 @@ class Parse
 
       options = normalizeParsedOptionsWithDefaults options, selectedCommandConfig.options
 
+      if selectedCommandConfig.args extract? argsToOptions
+        mergeInto options, argsToOptions args
+
       if selectedCommandConfig.onlyAllowListedOptions && !options.help
         legalOptions = selectedCommandConfig.options ? {}
         find v, k from options when !legalOptions[k]

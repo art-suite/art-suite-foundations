@@ -51,6 +51,17 @@ describe
         commands: myCommand: (options, args) -> assert.eq args, [] :arg
         argv: :nodeJs :startFile :myCommand :arg
 
+
+    test "argsToOptions" ->
+      start
+        commands:
+          myCommand:
+            run: (options) -> assert.eq options.myArgs, [] :arg
+            options: myArgs: required: true
+            args: argsToOptions: (args) -> myArgs: args
+
+        argv: :nodeJs :startFile :myCommand :arg
+
     test "args undefined if there are no extra args" ->
       start
         commands: myCommand: (options, args) -> assert.eq args, undefined
