@@ -29,7 +29,6 @@ class Main
 
     Promise.then ->
       {options, commandFunction, commandName, args} = &Parse.parseAndSelectCommand commands, args, _default
-      log {} options
 
       Promise.then ->
         if commandFunction && !options.help
@@ -40,7 +39,6 @@ class Main
               options
 
           options = preprocessOptions options if preprocessOptions
-          log {} options
 
           commandFunction options, args
 
