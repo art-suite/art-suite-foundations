@@ -2,3 +2,5 @@ source-coffee/
 test/
 webpack.config.js
 art.build.config.caf
+coverage/
+*.tgz
