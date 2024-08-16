@@ -20,5 +20,5 @@
   "scripts": {
     "test": "nn -s;mocha -u tdd"
   },
-  "version": "3.2.12"
+  "version": "3.2.13"
 }
