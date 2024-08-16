@@ -14,7 +14,7 @@
     "art-object-tree-factory": "^2.2.10",
     "art-rest-client": "^1.10.0",
     "art-standard-lib": "^1.73.2",
-    "art-validation": "^2.7.1",
+    "art-validation": "^2.9.0",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",

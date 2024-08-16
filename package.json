@@ -5,6 +5,7 @@
     "@art-suite/art-foundation": "file:packages/@art-suite/art-foundation",
     "@art-suite/art-fuzzy-search": "file:packages/@art-suite/art-fuzzy-search",
     "@art-suite/art-prompt-for": "file:packages/@art-suite/art-prompt-for",
+    "@art-suite/art-time": "file:packages/@art-suite/art-time",
     "@art-suite/assert": "file:packages/@art-suite/assert",
     "@art-suite/chained-test": "file:packages/@art-suite/chained-test",
     "@art-suite/cli": "file:packages/@art-suite/cli",

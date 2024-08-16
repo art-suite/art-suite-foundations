@@ -1,0 +1,165 @@
+import &ArtStandardLib, &TimeConstants
+
+class TimePresenters
+
+  @dateAgeInSeconds: dateAgeInSeconds = (date, now = new Date) ->
+    toSeconds now
+    - toSeconds date
+
+  @dateAgePartArray: (date, verbose) ->
+    dateAgeString date, verbose
+
+  dayPart = (date) ->
+    hours = date.getHours()
+    switch
+      when hours < 12  then :morning
+      when hours < 17  then :afternoon
+      else                  :evening
+
+  @daysDurationString: (seconds) ->
+    if seconds < 3 * secondsPer.day
+      humanDurationString seconds, true
+    else
+      "" #{round seconds / secondsPer.day} days
+
+  humanDurationStringHelper = (number, unit, words) ->
+    if words then pluralize number, longTimeNames[unit]
+    else            "#{number}#{unit}"
+
+  @humanDurationString: humanDurationString = (seconds, {words, precision} = {precision: 1}) ->
+
+    if precision > 1
+      units = switch
+        # when seconds <  1                   then  :ms
+        when seconds <  secondsPer.m    then  [] :s
+        when seconds <  secondsPer.h    then  :m :s
+        when seconds <  secondsPer.d    then  :h :m :s
+        when seconds <  secondsPer.mo   then  :d :h :m :s
+        when seconds <  secondsPer.y    then  :mo :d :h :m :s
+        else                                  :y :mo :d :h :m :s
+
+      compactFlatten array i til precision
+        if currentUnit = units[i]
+          number = seconds / secondsPer[currentUnit]
+          if i == precision - 1
+            number = round number
+          else
+            number |= 0
+          seconds %= secondsPer[currentUnit]
+          humanDurationStringHelper number, currentUnit, words
+
+      .join ' '
+
+    else
+      unit = switch
+        # when seconds <  1                   then  :ms
+        when seconds <      secondsPer.m    then  :s
+        when seconds <  3 * secondsPer.h    then  :m
+        when seconds <  3 * secondsPer.d    then  :h
+        when seconds <  3 * secondsPer.mo   then  :d
+        when seconds <  2 * secondsPer.y    then  :mo
+        else                                      :y
+
+      number = round seconds / secondsPer[unit]
+      humanDurationStringHelper number, unit, words
+
+
+  @niceFullDateString: (date) ->
+    formatDate date, "h:mmtt mmmm d, yyyy"
+
+  @niceMonthYear: (date) ->
+    formatDate date, "mmmm yyyy"
+
+  @niceDateString: (date) ->
+    now = toDate()
+    date = toDate date
+
+    if   now.getFullYear() != date.getFullYear() then formatDate date, "" mmmm d yyyy
+    else if now.getMonth() != date.getMonth()    then formatDate date, "" mmmm d
+    else switch date.getDate() - now.getDate()
+      when 1  then :tomorrow
+      when -1 then :yesterday
+      when 0  then :today
+      else formatDate date, "" mmmm d
+
+  @niceTimeDetailsString: (date) => "" #{formatDate date, :h:mmtt} #{@niceDateString date}
+
+  # @dayAgeString: (date, verbose) ->
+  #   today = firstOfDayLocale()
+  #   day = firstOfDayLocale date
+  #   switch day
+  #   when today then :today
+  #   when today - secondsPer.day then :yesterday
+  #   when today + secondsPer.day then :tomorrow
+  #   else if day >= today - secondsPer.day * 6
+  #     formatDate day, "" dddd
+
+  #   else
+  #     formatDate day, if verbose
+  #       "" dddd, mmmm dS
+  #     else
+  #       "" mmm dS
+
+  @timeAgo: (date, {now, verbose} = {now: toDate()}) ->
+    date = toSeconds date
+    now = toSeconds now
+
+    if date > now
+      "in "
+      + humanDurationString date - now, verbose
+    else
+      humanDurationString now - date, verbose
+      + " ago"
+
+  @dateAgeString: dateAgeString = (date, { verbose, precise, now} = {now: toDate()}) ->
+    now = toDate now
+    date = toDate date
+
+    if date > now
+      # FUTURE
+      if verbose then "in " else ''
+      + humanDurationString (date - now) / 1000, verbose
+
+    else
+      # PAST
+      ageInSeconds  = dateAgeInSeconds date, now
+      log {} ageInSeconds, date, now
+      ageInMinutes  = ageInSeconds / secondsPer.minute
+      ageInHours    = ageInSeconds / secondsPer.hour
+      ageInDays     = ageInSeconds / secondsPer.day
+      if ageInMinutes < 1
+        if precise
+          pluralize ageInSeconds | 0, :second
+
+        else
+          "" just now
+
+      else if ageInHours < 1
+        minPlural = pluralize round(ageInMinutes), if verbose then :minute else :min
+
+        if verbose then minPlural + " ago" else minPlural
+
+      else if ageInDays < 2 && now.getDay() ==
+          date.getDay() + 1
+          % 7
+
+        "" yesterday #{dayPart date}
+
+      else if ageInDays < 1
+        if :12:00am == out = formatDate date, :h:MMtt
+          :midnight
+
+        else
+          out
+
+      else if ageInDays < 7 && now.getDay() != date.getDay()
+        formatDate date, :dddd
+        + " "
+        + dayPart date
+
+      else if now.getYear() == date.getYear() &&
+          ageInDays < 60 || now.getMonth() != date.getMonth()
+        formatDate date, "" mmmm dS
+
+      else
+        formatDate date, "" mmm dS yyyy

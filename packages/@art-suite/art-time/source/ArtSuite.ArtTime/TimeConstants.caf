@@ -1,0 +1,28 @@
+
+longTimeNames =
+  ms: :millisecond
+  s:  :second
+  m:  :minute
+  h:  :hour
+  d:  :day
+  mo: :month
+  y:  :year
+  w:  :week
+
+object v, k in longTimeNames   with-key v with k into normalizedTimeNames = {}
+object v, k in longTimeNames              with k into normalizedTimeNames
+
+secondsPer =
+  ms: 1/1000
+  s:  1
+  m:  60
+  h:  3600
+  d:  24 * 3600
+  w:  24 * 3600 * 7
+  mo: 24 * 3600 * 365.2425 / 12
+  y:  24 * 3600 * 365.2425
+
+each shortName, name in normalizedTimeNames
+  secondsPer[name] = secondsPer[shortName]
+
+{} normalizedTimeNames, longTimeNames, secondsPer

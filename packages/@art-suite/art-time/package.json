@@ -2,13 +2,8 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-object-tree-factory": "^2.2.10",
     "art-standard-lib": "^1.73.2",
-    "wrap-ansi": "^7.0.0"
-  },
-  "description": "Build HTML from code in the most elegant way possible",
-  "devDependencies": {
-    "art-build-configurator": "^1.30.3"
+    "stable": "^0.1.8"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -28,7 +23,7 @@
     "verbose": true
   },
   "license": "ISC",
-  "name": "art-html-factory",
+  "name": "@art-suite/art-time",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
@@ -42,7 +37,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "2.2.1",
+  "version": "0.0.1",
   "watch": {
     "build": {
       "extensions": [

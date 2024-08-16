@@ -8,6 +8,7 @@
   },
   "description": "Validate object props.",
   "devDependencies": {
+    "@art-suite/standard-package-builder": "^1.2.6",
     "art-build-configurator": "^1.30.3",
     "art-testbench": "^3.2.15"
   },
