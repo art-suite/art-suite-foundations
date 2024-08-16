@@ -4,7 +4,7 @@
   "dependencies": {
     "art-class-system": "^1.11.18",
     "art-communication-status": "^1.6.1",
-    "art-standard-lib": "^1.73.2",
+    "art-standard-lib": "^1.73.3",
     "xhr2": "^0.2.1"
   },
   "description": "Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.",

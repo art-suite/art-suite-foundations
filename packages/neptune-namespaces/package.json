@@ -7,8 +7,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.18",
-    "art-standard-lib": "^1.73.2",
-    "glob": "^10.0.0",
+    "art-standard-lib": "^1.73.3",
+    "glob": "^11.0.0",
     "neptune-namespaces-runtime": "^3.2.12"
   },
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
