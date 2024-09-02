@@ -6,27 +6,27 @@ class TimePresenters
     toSeconds now
     - toSeconds date
 
-  @dateAgePartArray: (date, verbose) ->
-    dateAgeString date, verbose
+  # @dateAgePartArray: (date, verbose) ->
+  #   timeAgo date, verbose
 
-  dayPart = (date) ->
-    hours = date.getHours()
-    switch
-      when hours < 12  then :morning
-      when hours < 17  then :afternoon
-      else                  :evening
+  # dayPart = (date) ->
+  #   hours = date.getHours()
+  #   switch
+  #     when hours < 12  then :morning
+  #     when hours < 17  then :afternoon
+  #     else                  :evening
 
-  @daysDurationString: (seconds) ->
-    if seconds < 3 * secondsPer.day
-      humanDurationString seconds, true
-    else
-      "" #{round seconds / secondsPer.day} days
+  # @daysDurationString: (seconds) ->
+  #   if seconds < 3 * secondsPer.day
+  #     humanDurationString seconds, true
+  #   else
+  #     "" #{round seconds / secondsPer.day} days
 
-  humanDurationStringHelper = (number, unit, words) ->
-    if words then pluralize number, longTimeNames[unit]
+  humanDurationStringHelper = (number, unit, verbose) ->
+    if verbose then pluralize number, longTimeNames[unit]
     else            "#{number}#{unit}"
 
-  @humanDurationString: humanDurationString = (seconds, {words, precision} = {precision: 1}) ->
+  @humanDurationString: humanDurationString = (seconds, {verbose, precision} = {precision: 1}) ->
 
     if precision > 1
       units = switch
@@ -46,7 +46,7 @@ class TimePresenters
           else
             number |= 0
           seconds %= secondsPer[currentUnit]
-          humanDurationStringHelper number, currentUnit, words
+          humanDurationStringHelper number, currentUnit, verbose
 
       .join ' '
 
@@ -61,105 +61,46 @@ class TimePresenters
         else                                      :y
 
       number = round seconds / secondsPer[unit]
-      humanDurationStringHelper number, unit, words
-
+      humanDurationStringHelper number, unit, verbose
 
   @niceFullDateString: (date) ->
-    formatDate date, "h:mmtt mmmm d, yyyy"
+    formatDate date, "h:MMtt mmmm d, yyyy"
 
   @niceMonthYear: (date) ->
     formatDate date, "mmmm yyyy"
 
-  @niceDateString: (date) ->
-    now = toDate()
-    date = toDate date
-
-    if   now.getFullYear() != date.getFullYear() then formatDate date, "" mmmm d yyyy
-    else if now.getMonth() != date.getMonth()    then formatDate date, "" mmmm d
-    else switch date.getDate() - now.getDate()
-      when 1  then :tomorrow
-      when -1 then :yesterday
-      when 0  then :today
-      else formatDate date, "" mmmm d
-
-  @niceTimeDetailsString: (date) => "" #{formatDate date, :h:mmtt} #{@niceDateString date}
-
-  # @dayAgeString: (date, verbose) ->
-  #   today = firstOfDayLocale()
-  #   day = firstOfDayLocale date
-  #   switch day
-  #   when today then :today
-  #   when today - secondsPer.day then :yesterday
-  #   when today + secondsPer.day then :tomorrow
-  #   else if day >= today - secondsPer.day * 6
-  #     formatDate day, "" dddd
-
-  #   else
-  #     formatDate day, if verbose
-  #       "" dddd, mmmm dS
-  #     else
-  #       "" mmm dS
-
-  @timeAgo: (date, {now, verbose} = {now: toDate()}) ->
-    date = toSeconds date
-    now = toSeconds now
-
-    if date > now
-      "in "
-      + humanDurationString date - now, verbose
-    else
-      humanDurationString now - date, verbose
-      + " ago"
-
-  @dateAgeString: dateAgeString = (date, { verbose, precise, now} = {now: toDate()}) ->
+  @niceDateString: (date, now) ->
     now = toDate now
     date = toDate date
 
-    if date > now
+    switch Math.round (toSeconds(date) - toSeconds(now)) / secondsPer.day
+    when 1  then :tomorrow
+    when -1 then :yesterday
+    when 0  then :today
+    else
+      if   now.getFullYear() != date.getFullYear() then formatDate date, "" mmmm d, yyyy
+      else if now.getMonth() != date.getMonth()    then formatDate date, "" mmmm d
+      else formatDate date, "" mmmm d
+
+  @niceTimeDetailsString: (date) => "" #{formatDate date, :h:MMtt} #{@niceDateString date}
+
+  @timeAgo: timeAgo = (date, { verbose, precision, now} = {now: toDate()}) ->
+    ageInSeconds  = dateAgeInSeconds date, now
+
+    if ageInSeconds < 0
       # FUTURE
-      if verbose then "in " else ''
-      + humanDurationString (date - now) / 1000, verbose
+      if verbose then "in " else '-'
+      + humanDurationString -ageInSeconds, {} verbose, precision, now
 
     else
       # PAST
-      ageInSeconds  = dateAgeInSeconds date, now
-      log {} ageInSeconds, date, now
       ageInMinutes  = ageInSeconds / secondsPer.minute
       ageInHours    = ageInSeconds / secondsPer.hour
       ageInDays     = ageInSeconds / secondsPer.day
-      if ageInMinutes < 1
-        if precise
-          pluralize ageInSeconds | 0, :second
-
-        else
-          "" just now
-
-      else if ageInHours < 1
-        minPlural = pluralize round(ageInMinutes), if verbose then :minute else :min
-
-        if verbose then minPlural + " ago" else minPlural
-
-      else if ageInDays < 2 && now.getDay() ==
-          date.getDay() + 1
-          % 7
-
-        "" yesterday #{dayPart date}
-
-      else if ageInDays < 1
-        if :12:00am == out = formatDate date, :h:MMtt
-          :midnight
-
-        else
-          out
-
-      else if ageInDays < 7 && now.getDay() != date.getDay()
-        formatDate date, :dddd
-        + " "
-        + dayPart date
-
-      else if now.getYear() == date.getYear() &&
-          ageInDays < 60 || now.getMonth() != date.getMonth()
-        formatDate date, "" mmmm dS
+      if ageInMinutes < 1 && !(precision > 1)
+        "" just now
 
       else
-        formatDate date, "" mmm dS yyyy
+        minPlural = humanDurationString ageInSeconds, {} verbose, precision, now
+
+        if verbose then minPlural + " ago" else minPlural
