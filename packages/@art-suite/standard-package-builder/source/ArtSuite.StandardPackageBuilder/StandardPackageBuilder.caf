@@ -80,7 +80,7 @@ configure: (options = {}) -> (_package) ->
             mv #{targetTempDir} #{targetDir}
             rm -rf ./__build-old__
 
-      build-watch:  "" nodemon -e #{nodemonExtensions} -i "#{targetDir}/**" -x npm run build
+      build-watch:  "" nodemon -e #{nodemonExtensions} -w "#{sourceDir}/**" -x npm run build
       clean:        "" rm -rf #{targetDir}/*
 
       scripts
