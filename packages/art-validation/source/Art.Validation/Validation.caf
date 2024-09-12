@@ -1,3 +1,4 @@
 []
   &FieldPropNormalizer
   &ErrorTypes
+  &Validator2

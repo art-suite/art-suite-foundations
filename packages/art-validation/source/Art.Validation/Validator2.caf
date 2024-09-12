@@ -1,0 +1,202 @@
+import &ArtStandardLib, &ArtClassSystem
+
+identityNormalizer = (value) -> value
+alwaysValidValidator = -> true
+
+class Validator2 extends BaseObject
+
+  constructor: (options) ->
+    throw new Error "validate function required" unless isFunction options.validate
+    throw new Error "jsonDataType required" unless isString options.jsonDataType
+    @_options                   = options
+    @_validator                 = options.validate
+    @_normalizer                = options.normalize ? identityNormalizer
+    @_postValidator             = options.postValidate ? alwaysValidValidator
+    @_validationErrorGenerator  = options.getValidationErrors
+    @_isRequired                = !!(options.required ? false)
+    @_isExclusive               = !!(options.exclusive ? false)
+    @_jsonDataType              = options.jsonDataType
+    @_defaultValue              = options.defaultValue
+    @_structure                 = options.structure
+
+    @_descriptionValue          = options.description
+    @_patternValue              = options.pattern
+    @_enumValue                 = options.enum
+    @_formatValue               = options.format
+
+  ###################################################
+    Getters
+  ###################################################
+  @getter :isRequired :isExclusive :jsonDataType :defaultValue :options
+  @getter :validator :normalizer :postValidator :validationErrorGenerator
+  @getter :descriptionValue :patternValue :enumValue :formatValue :structure
+
+  ###################################################
+    Main Validation API
+  ###################################################
+  validate: (value) ->
+    unless value? then !@isRequired
+    else
+      @validator value
+      && @normalizeAndPostValidate value
+
+  normalize:    (value) -> @normalizer value
+  postValidate: (value) -> @postValidator value
+
+  validated: (value) ->
+    throw new Error "Invalid value: #{value}" unless @validate value
+    return value unless value?
+
+    normalized = @normalize value
+    throw new Error "Invalid value: #{value} (post-validator failed)" unless @postValidate normalized
+    normalized
+
+  getValidationErrors: (value, parentFieldPath) -> compactFlatten
+    switch
+    when @isRequired && !value?           then [] {} value, fieldPath: parentFieldPath, errorIs: :required
+    when @validationErrorGenerator        then @validationErrorGenerator value, parentFieldPath
+    when !@validate value                 then [] {} value, fieldPath: parentFieldPath, errorIs: :invalid
+    when !@normalizeAndPostValidate value then [] {} value, fieldPath: parentFieldPath, errorIs: "invalid under post-validation"
+    else []
+
+  normalizeAndPostValidate: (value) -> @postValidator @normalizer value
+
+
+  @getter
+    inspectedObjects: -> merge {} @isRequired, @isExclusive, @jsonDataType, @defaultValue, @descriptionValue, @patternValue, @enumValue, @formatValue,
+      structure: toInspectedObjects @structure
+
+  ###################################################
+    Derive Related Validator
+  ###################################################
+  @getter
+    optional: -> new Validator2 merge @options, required: false
+    required: -> new Validator2 merge @options, required: true
+
+  withOptions:  (options)                     -> @new Validator2 merge @options, options
+
+  withReplacedNormalizer:     (normalize)     -> @withOptions {} normalize
+  withReplacedPostValidator:  (postValidate)  -> @withOptions {} postValidate
+  addNormalizer:              (normalize)     -> @withOptions normalize: (value) => normalize @normalize value
+  addPostValidator:           (postValidate)  -> @withOptions postValidate: (value) => @postValidate(value) && postValidate value
+
+  min:          (min)                         -> @addPostValidator (value) -> value >= min
+  max:          (max)                         -> @addPostValidator (value) -> value <= max
+  bound:        (min, max)                    -> @addPostValidator (value) -> value >= min && value <= max
+  minLength:    (min)                         -> @addPostValidator (value) -> value.length >= min
+  maxLength:    (max)                         -> @addPostValidator (value) -> value.length <= max
+  boundLength:  (min, max)                    -> @addPostValidator (value) -> value.length >= min && value.length <= max
+
+  trimmed:                                    -> @addNormalizer (value) -> value.trim()
+
+  description:  (description)                 -> @withOptions {} description
+  format:       (format)                      -> @withOptions {} format
+  pattern:      (pattern)                     -> @withOptions {} pattern
+  examples:     (examples)                    -> @withOptions {} examples
+  example:      (example)                     -> @withOptions examples: [] example
+  enum:         (values)                      -> @withOptions {} enum: values
+
+  default:      (defaultValue)                -> @withOptions {} defaultValue
+
+validatorBuilder = (structure, options = {}) =>
+  if structure is Validator2
+    structure
+  else
+    options extract exclusive
+    new Validator2 merge {structure}, switch
+      when structure in [] :string :number :boolean :integer
+        jsonDataType: structure
+        normalize: if structure is :integer then parseInt else identityNormalizer
+        validate: validate = switch structure
+          when :string then isString
+          when :boolean then isBoolean
+          else isNumber
+        getValidationErrors: (value, parentFieldPath) ->
+          if validate value then []
+          else [] {} value, fieldPath: parentFieldPath, errorIs: "an invalid-type"
+
+      when isRegExp regexp = structure
+        jsonDataType: :string
+        pattern: regexp.source;
+        validate: (value) -> isString(value) && regexp.test value
+        getValidationErrors: (value, parentFieldPath) ->
+          unless isString value then [] {} value, fieldPath: parentFieldPath, errorIs: "not a string"
+          else unless regexp.test value then [] {} value, fieldPath: parentFieldPath, errorIs: "" does not match #{structure}
+          else []
+
+      when isArray structure
+        subValidator = switch
+          when structure.length == 1 then validator structure[0], {} exclusive
+          when structure.length > 1 then throw new Error "validator array definitions can have zero or one element"
+
+        {}
+          jsonDataType: :array
+          validate = unless subValidator then isArray else (anArray) ->
+            isArray anArray
+            && anArray.every (v) -> subValidator.validate v
+
+          getValidationErrors: (value, parentFieldPath) =>
+            unless isArray value then [] {} value, fieldPath: parentFieldPath, errorIs: "not an array"
+            else if subValidator then array element, i in-array value with subValidator.getValidationErrors element, "" #{parentFieldPath}[#{i}]
+            else []
+
+      when isPlainObject structure
+        fieldValidators = object v from structure with validator v, {} exclusive
+        fieldNames = Object.keys fieldValidators
+        {}
+          jsonDataType: :object
+          validate: (value) ->
+            isPlainObject value
+            && !find validator, key in fieldValidators when !validator.validate value[key] with true
+            # && fieldNames.every (key) -> fieldValidators[key].validate value[key]
+            && !exclusive || Object.keys(value).every (key) -> !!fieldValidators[key]
+
+          getValidationErrors: (value, parentFieldPath) ->
+            unless isPlainObject value then [] {} value, fieldPath: parentFieldPath, errorIs: "not an object"
+            else compactFlattenAll
+              array v, key from fieldValidators
+                v.getValidationErrors value[key], if parentFieldPath then "#{parentFieldPath}.#{key}" else key
+              if exclusive
+                array v, key from value when !fieldValidators[key]
+                  {}
+                    value: value[key]
+                    fieldPath: if parentFieldPath then "#{parentFieldPath}.#{key}" else key
+                    errorIs: "an unexpected field"
+
+      else
+        throw new Error "Invalid validation-definition structure"
+
+validator           = (structure) -> validatorBuilder structure
+validator.inclusive = (structure) -> validatorBuilder structure
+validator.exclusive = (structure) -> validatorBuilder structure, exclusive: true
+validator.custom    = (options) -> new Validator2 options
+
+validator.required = (s) -> validator(s).required
+validator.optional = (s) -> validator(s).optional
+
+createUnionValidator = (exclusive) -> (validatorStructures...) ->
+  validators = array structure in validatorStructures with validatorBuilder structure, {} exclusive
+  validator.custom
+    validate: (value) -> find v, k in validators when v.validate value with true
+    jsonDataType: validators[0].jsonDataType
+
+validator.union            = createUnionValidator false
+validator.union.inclusive  = createUnionValidator false
+validator.union.exclusive  = createUnionValidator true
+
+validator.enum = (legalValues...) ->
+  validator :string
+  .addPostValidator (value) -> value in legalValues
+  .enum legalValues
+
+uuidPattern = ///i ^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
+
+# validator.url     = validator urlRegExp
+# validator.uuid    = validator uuidPattern
+# validator.email   = validator emailRegExp
+validator.string  = validator :string
+validator.number  = validator :number
+validator.boolean = validator :boolean
+validator.integer = validator :integer
+
+{} validator

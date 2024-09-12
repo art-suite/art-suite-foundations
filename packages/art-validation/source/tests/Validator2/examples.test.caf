@@ -1,0 +1,136 @@
+import &StandardImport
+validator extract string, number
+
+
+describe
+  atomicValidation: ->
+    test "string validator" ->
+      myValidator = validator "string"
+      assert.true myValidator.validate "hi"
+      assert.eq
+        myValidator.getValidationErrors "hi"
+        []
+
+      assert.false myValidator.validate 123
+      assert.eq
+        myValidator.getValidationErrors 123
+        [] value: 123, fieldPath: undefined, errorIs: "an invalid-type"
+
+    test "number validator" ->
+      myValidator = validator "number"
+      assert.true myValidator.validate 123
+      assert.false myValidator.validate "hi"
+
+    test "boolean validator" ->
+      myValidator = validator "boolean"
+      assert.true myValidator.validate true
+      assert.false myValidator.validate "hi"
+
+    test "integer validator" ->
+      myValidator = validator "integer"
+      assert.true myValidator.validate 123
+      assert.false myValidator.validate "hi"
+
+      assert.true myValidator.validate 123.5
+      assert.eq
+        myValidator.validated 123.5
+        123
+
+  required: ->
+    test "required" ->
+      myValidator = validator.required :string
+      assert.true myValidator.validate "hi"
+      assert.false myValidator.validate null
+      assert.false myValidator.validate undefined
+      assert.eq
+        myValidator.getValidationErrors null
+        [] value: null, fieldPath: undefined, errorIs: :required
+
+    test "streamlined required" ->
+      myValidator = string.required
+      assert.true myValidator.validate "hi"
+      assert.false myValidator.validate null
+      assert.false myValidator.validate undefined
+
+  objectValidation: ->
+    test "simple object" ->
+      myValidator = validator name: "string"
+      assert.true myValidator.validate name: "Alice"
+      assert.true myValidator.validate {} # default not required
+      assert.true myValidator.validate name: "Alice" age: 123 # inclusive by default
+      assert.eq
+        myValidator.getValidationErrors name: 123
+        []  value: 123, fieldPath: :name, errorIs: "an invalid-type"
+
+    test "exclusive object" ->
+      myValidator = validator.exclusive name: "string"
+
+      assert.true myValidator.validate name: "Alice"
+      assert.true myValidator.validate {} # default not required
+      assert.false myValidator.validate name: "Alice" age: 123 # EXCLUSIVE
+      assert.eq
+        myValidator.getValidationErrors name: "Alice" age: 123
+        []
+          value:     123
+          fieldPath: :age
+          errorIs:   "an unexpected field"
+
+    test "field required" ->
+      assert.true string.required.isRequired
+      myValidator = validator.required structure = name: string.required
+      assert.true myValidator.validate name: "Alice"
+      assert.false myValidator.validate {}
+
+
+  arrayValidation: ->
+    test "simple array" ->
+      myValidator = validator []
+      assert.true myValidator.validate []
+      assert.true myValidator.validate [] 1, 2, 3
+      assert.false myValidator.validate 123
+      assert.eq
+       myValidator.getValidationErrors 123
+       [] value: 123, fieldPath: undefined, errorIs: "not an array"
+
+    test "array with item type" ->
+      myValidator = validator [] string
+      assert.true myValidator.validate []
+      assert.true myValidator.validate [] "hi" null # TODO - this null probably shouldn't be allowed - by default anyway
+      assert.false myValidator.validate [] 123
+      assert.eq
+        myValidator.getValidationErrors [] 123, "bar", 456
+        []
+          value: 123 fieldPath: "[0]" errorIs: "" an invalid-type
+          value: 456 fieldPath: "[2]" errorIs: "" an invalid-type
+
+  jsonStructure: ->
+    test "simple json structure" ->
+      myValidator = validator
+        groupName: :string
+        boxes: [] boxValidationStructure = validator.required
+          ## TODO - I don't like this; array element should, by default, be required
+              I know, I'm inconsistent! I want everything else to be default optional!
+              But really, a object field being optional is very different from an array element being optional.
+              In the latter case, just compact the array. Only if the array element positions are important does
+              optional make sense in an array. Most the time only order matters. Position does not - unless you are using
+              the array as a tuple, but really, why not use an object at that point?
+              I DO want the option for elements to be optional - ahem!
+          x: number.required
+          y: number.required
+          w: number.required
+          h: number.required
+          colors: validator.required [] string.required
+
+      assert.true myValidator.validate {}
+      assert.true myValidator.validate groupName: "Alice"
+      assert.eq
+        myValidator.getValidationErrors groupName: "Alice" boxes: [] {}
+        []
+          {} value: undefined, fieldPath: "boxes[0].x",      errorIs: :required
+          {} value: undefined, fieldPath: "boxes[0].y",      errorIs: :required
+          {} value: undefined, fieldPath: "boxes[0].w",      errorIs: :required
+          {} value: undefined, fieldPath: "boxes[0].h",      errorIs: :required
+          {} value: undefined, fieldPath: "boxes[0].colors", errorIs: :required
+
+      assert.false myValidator.validate groupName: "Alice" boxes: [] {}
+

@@ -9,8 +9,8 @@
   "description": "Validate object props.",
   "devDependencies": {
     "@art-suite/standard-package-builder": "^1.2.6",
-    "art-build-configurator": "^1.30.3",
-    "art-testbench": "^3.2.15"
+    "art-build-configurator": "^1.30.4",
+    "art-testbench": "^3.2.16"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -31,14 +31,18 @@
   },
   "license": "ISC",
   "name": "art-validation",
+  "nodemonConfig": {
+    "ext": "js,ts,jsx,tsx,caf,coffee,json,md,css",
+    "delay": "1000"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "rsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncaf -m -c source -o build\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --include='*.js' --include='*.css' --exclude='*' ./source/ ./build/\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
-    "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -i \"build/**\" -x npm run build",
+    "build": "rsync -av --exclude='*.caf' ./source/ ./build/\ncaf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --exclude='*.caf' ./source/ ./build-temp/\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -w \"source/**\" -x npm run build",
     "clean": "rm -rf build/*",
     "nn": "nn build/* ",
     "test": "jest",
