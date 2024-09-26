@@ -71,6 +71,17 @@
       return results;
     };
 
+    StringCase.getUpperCaseCodeWords = function(str) {
+      var i, len, ref1, results, word;
+      ref1 = StringCase.getCodeWords(str);
+      results = [];
+      for (i = 0, len = ref1.length; i < len; i++) {
+        word = ref1[i];
+        results.push(StringCase.upperCase(word));
+      }
+      return results;
+    };
+
     StringCase.getCapitalizedCodeWords = function(str) {
       var i, len, ref1, results, word;
       ref1 = StringCase.getCodeWords(str);
@@ -106,16 +117,32 @@
       return StringCase.decapitalize(StringCase.upperCamelCase(str, joiner));
     };
 
-    StringCase.snakeCase = function(str) {
-      return (StringCase.getLowerCaseCodeWords(str)).join("_");
+    StringCase.snakeCase = function(str, joiner) {
+      if (joiner == null) {
+        joiner = "_";
+      }
+      return (StringCase.getLowerCaseCodeWords(str)).join(joiner);
     };
 
-    StringCase.dashCase = function(str) {
-      return (StringCase.getLowerCaseCodeWords(str)).join("-");
+    StringCase.upperSnakeCase = function(str, joiner) {
+      if (joiner == null) {
+        joiner = "_";
+      }
+      return (StringCase.getUpperCaseCodeWords(str)).join(joiner);
     };
 
-    StringCase.capitalizedDashCase = function(str) {
-      return (StringCase.getCapitalizedCodeWords(str)).join("-");
+    StringCase.dashCase = function(str, joiner) {
+      if (joiner == null) {
+        joiner = "-";
+      }
+      return (StringCase.getLowerCaseCodeWords(str)).join(joiner);
+    };
+
+    StringCase.capitalizedDashCase = function(str, joiner) {
+      if (joiner == null) {
+        joiner = "-";
+      }
+      return (StringCase.getCapitalizedCodeWords(str)).join(joiner);
     };
 
     return StringCase;

@@ -27,14 +27,16 @@ module.exports = class StringCase
   @capitalize:   (str) => @upperCase(str.charAt 0) + str.slice 1
   @decapitalize: (str) => @lowerCase(str.charAt 0) + str.slice 1
 
-  @getLowerCaseCodeWords:   (str) =>              @lowerCase word for word in @getCodeWords str
-  @getCapitalizedCodeWords: (str) =>              @capitalize @lowerCase word for word in @getCodeWords str
-  @upperCamelCase:          (str, joiner = "") => (@capitalize word for word in @getLowerCaseCodeWords str).join joiner
-  @lowerCamelCase:          (str, joiner = "") => @decapitalize @upperCamelCase str, joiner
-  @snakeCase:               (str) =>              (@getLowerCaseCodeWords str).join "_"
-  @dashCase:                (str) =>              (@getLowerCaseCodeWords str).join "-"
-  @capitalizedDashCase:     (str) =>              (@getCapitalizedCodeWords str).join "-"
+  @getLowerCaseCodeWords:   (str) =>                @lowerCase word for word in @getCodeWords str
+  @getUpperCaseCodeWords:   (str) =>                @upperCase word for word in @getCodeWords str
+  @getCapitalizedCodeWords: (str) =>                @capitalize @lowerCase word for word in @getCodeWords str
 
-  # Should all work - add when we have a use-case
-  # @getUpperCaseCodeWords: (str) => word.toUpperCase() for word in @getCodeWords str
-  # @capsCase:              (str) => (@getUpperCaseCodeWords str).join "_"
+  @upperCamelCase:          (str, joiner = "")  =>  (@capitalize word for word in @getLowerCaseCodeWords str).join joiner
+  @lowerCamelCase:          (str, joiner = "")  =>  @decapitalize @upperCamelCase str, joiner
+
+  @snakeCase:               (str, joiner = "_") =>  (@getLowerCaseCodeWords str).join joiner
+  @upperSnakeCase:          (str, joiner = "_") =>  (@getUpperCaseCodeWords str).join joiner
+
+  @dashCase:                (str, joiner = "-") =>  (@getLowerCaseCodeWords str).join joiner
+
+  @capitalizedDashCase:     (str, joiner = "-") =>  (@getCapitalizedCodeWords str).join joiner
