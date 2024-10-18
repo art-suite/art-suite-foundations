@@ -7,7 +7,7 @@
     "art-class-system": "^1.11.18",
     "art-config": "^2.0.4",
     "art-events": "^2.0.0",
-    "art-standard-lib": "^1.73.3",
+    "art-standard-lib": "^1.74.0",
     "neptune-namespaces-runtime": "^3.2.13"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Jest & Mocha",

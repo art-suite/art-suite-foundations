@@ -1,9 +1,17 @@
 {
-  "name": "art-linux-stat",
-  "version": "0.0.1",
+  "author": "Shane Brinkman-Davis Delamore",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "*",
-    "neptune-namespaces-client": "*",
-    "caffeine-script-runtime": "*"
-  }
+    "art-standard-lib": "^1.74.0",
+    "caffeine-script-runtime": "^1.14.0",
+    "neptune-namespaces-client": "*"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "art-linux-stat",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "version": "0.0.1"
 }

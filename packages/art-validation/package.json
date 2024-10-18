@@ -4,11 +4,11 @@
   "dependencies": {
     "art-class-system": "^1.11.18",
     "art-communication-status": "^1.6.1",
-    "art-standard-lib": "^1.73.3"
+    "art-standard-lib": "^1.74.0"
   },
   "description": "Validate object props.",
   "devDependencies": {
-    "@art-suite/standard-package-builder": "^1.2.6",
+    "@art-suite/standard-package-builder": "^1.2.7",
     "art-build-configurator": "^1.30.4",
     "art-testbench": "^3.2.16"
   },
@@ -32,8 +32,8 @@
   "license": "ISC",
   "name": "art-validation",
   "nodemonConfig": {
-    "ext": "js,ts,jsx,tsx,caf,coffee,json,md,css",
-    "delay": "1000"
+    "delay": "1000",
+    "ext": "js,ts,jsx,tsx,caf,coffee,json,md,css"
   },
   "repository": {
     "type": "git",

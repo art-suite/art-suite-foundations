@@ -8,7 +8,7 @@
     "@art-suite/cli": "^2.2.0",
     "art-communication-status": "^1.6.1",
     "art-rest-client": "^1.10.1",
-    "art-standard-lib": "^1.73.3",
+    "art-standard-lib": "^1.74.0",
     "glob": "^11.0.0",
     "neptune-namespaces-runtime": "^3.2.13",
     "semver": "^7.5.4"

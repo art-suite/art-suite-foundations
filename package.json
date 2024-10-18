@@ -32,6 +32,7 @@
     "art-events": "file:packages/art-events",
     "art-filebuilder": "file:packages/art-filebuilder",
     "art-html-factory": "file:packages/art-html-factory",
+    "art-linux-stat": "file:packages/art-linux-stat",
     "art-object-tree-factory": "file:packages/art-object-tree-factory",
     "art-rest-client": "file:packages/art-rest-client",
     "art-standard-lib": "file:packages/art-standard-lib",
@@ -64,6 +65,7 @@
     "mocha": "^7.2.0",
     "mock-fs": "^5.0.0",
     "neptune-namespaces": "file:packages/neptune-namespaces",
+    "neptune-namespaces-client": "*",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "nodemon": "^3.1.0",
     "pluralize": "^8.0.0",
@@ -85,6 +87,7 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
+    "build": "art-monorepo build",
     "clean": "art-monorepo clean",
     "sync": "art-monorepo sync",
     "test": "art-monorepo test",
