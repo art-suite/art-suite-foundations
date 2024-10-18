@@ -1,0 +1,31 @@
+headerDelimiter = ' '
+
+#     Time NET   i   o MEM cch SWP CPU wIO ttl load
+# 21:14:37  5%  10  52 16% 61%   0 68%  0% 68%  5.5
+
+#     Time net mem dsk cpu
+# 21:15:45  5% 16%  0% 61%
+getHeaders: (options, diskDevList) ->
+  compactFlatten []
+    "    Time"
+
+    if options.usageOnly
+      [] :net :mem :dsk :cpu
+
+    else []
+      :Delta                if options.delta
+      :NET "  i" "  o"      if options.netEnabled
+      :tcp                  if options.netEnabled and options.tcp
+      :ei :eo               if options.net
+      :MEM :cch             if options.memEnabled
+      :SWP                  if options.swpEnabled
+
+      if options.diskEnabled then []
+        :ALL "   read" "   write" if diskDevList.length > 1
+        array dev from diskDevList
+          dev.toUpperCase() "   read" "  write"
+
+      :CPU :wIO :ttl :load  if options.cpuEnabled
+      :DF "used (Gb)"       if options.diskSpaceEnabled
+
+  .join headerDelimiter

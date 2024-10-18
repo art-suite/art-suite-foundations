@@ -1,0 +1,9 @@
+{
+  "name": "art-linux-stat",
+  "version": "0.0.1",
+  "dependencies": {
+    "art-standard-lib": "*",
+    "neptune-namespaces-client": "*",
+    "caffeine-script-runtime": "*"
+  }
+}

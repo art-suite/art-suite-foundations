@@ -1,0 +1,31 @@
+import &ArtStandardLib, &ProcLib, &StatsLib
+
+# getSystemLoad:      -> parseSystemLoad      readProcFile :loadavg
+# getMemStats:        -> parseMemStats        readProcFile :meminfo
+# getVmStats:         -> parseVmStats         readProcFile :vmstat
+# getNetStats:        -> parseNetStats        readProcFile :net/dev
+# getTcpConnections:  -> parseTcpConnections  readProcFile :net/tcp
+# getDiskStats:       -> parseDiskStats       readProcFile :diskstats
+# getCpuStats:        -> parseCpuStats        readProcFile :stat
+
+
+class ArtLinuxStats extends BaseObject
+
+  constructor: ->
+    @_count = 0
+    @_lastState = undefined
+    @_delayMs = 1000
+
+  @attribute :count :lastState :delayMs
+  @getter currentStats: -> getAllStats()
+
+  report: ->
+    @lastState ?= @currentStats
+    timeout @delayMs, ->
+      {currentStats, lastState} = @
+
+      statsDiff = deepStatsDiff currentStats, lastState
+
+
+      @lastState = currentStats
+      @count++

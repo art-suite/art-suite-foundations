@@ -1,0 +1,52 @@
+import &ArtStandardLib, &ChildProcess
+
+{}
+  parseDvOutput = (dfOutput) ->
+    all =
+      hash: {}
+      array: []
+      total:
+        percent: 0
+        used: 0
+        free: 0
+        total: 0
+
+    lineCarryOver = ""
+
+    each line in dfOutput.split "\n" into all
+      if lineCarryOver
+        line = lineCarryOver + line
+        lineCarryOver = ""
+
+      unless line.match /Filesystem/
+        fields = line.split /\s+/
+
+        if fields.length == 1
+          lineCarryOver = line.trim() + " "
+
+        else
+          data = {}
+          curPath = &path.resolve(fields[5])
+          data.device = fields[0]
+          data.total = parseInt(fields[1]) * 1024
+          data.used = parseInt(fields[2]) * 1024
+          data.free = parseInt(fields[3]) * 1024
+          data.percent = parseInt(fields[4])
+          data.path = curPath
+
+          all.array.push data
+          all.hash[curPath] = data
+
+          all.worst = data if !all.worst || all.worst.percent < data.percent
+
+          all.total.used += data.used
+          all.total.free += data.free
+          all.total.total += data.total
+          all.total.percent = Math.floor(100 * all.total.used / all.total.total)
+
+  getDfStats = (path = null) ->
+    all = parseDvOutput
+      execSync "df -BK -l #{path}"
+      .toString()
+
+    if path then all.array[0] else all

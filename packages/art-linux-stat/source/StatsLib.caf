@@ -1,0 +1,25 @@
+{}
+  # statDiff = (stat1, stat2) -> object v, k from stat1 with v - stat2[k]
+  # multiStatDiff = (statSet1, statSet2) -> object stats, k from statSet1 with statDiff stats, statSet2[k]
+  # mergeMultiStats = (statSet, options) =>
+  #   each stats, dev in statSet into mergedStats = {}
+  #     each v, k in stats
+  #       v = parseInt v
+  #       unless mergedStats[k]?
+  #         mergedStats[k] = v
+  #       else
+  #         switch options[k]
+  #         when :max then mergedStats[k] = max mergedStats[k], v
+  #         when :min then mergedStats[k] = min mergedStats[k], v
+  #         else
+  #           mergedStats[k] += v         # store the sum under the same key
+  #           if options[k] == :newMax    # calc the max, but store it in a new key (:keyname_max)
+  #             key = lowerCamelCase "#{k} max"
+  #             mergedStats[key] = max mergedStats[key] ? 0, v
+
+  deepStatsDiff = (s1, s2) ->
+    switch
+    when isNumber s1 then s1 - s2
+    when isObject s1 then object v, k from s1 with deepStatsDiff v, s2[k]
+    when isArray  s1 then array  v, k from s1 with deepStatsDiff v, s2[k]
+    else throw new Error "Not a number, object, or array: #{formattedInspect {s1, s2}}"

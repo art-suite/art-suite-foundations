@@ -1,0 +1,23 @@
+import &ArtStandardLib, &ArtClassSystem, &ProcParsers, {} &fs
+
+readProcFile = (path) ->
+  fs.readFileSync "" /proc/#{path}
+  .toString().trim()
+{}
+  getSystemLoad =     -> parseSystemLoad      readProcFile :loadavg
+  getMemStats =       -> parseMemStats        readProcFile :meminfo
+  getVmStats =        -> parseVmStats         readProcFile :vmstat
+  getNetStats =       -> parseNetStats        readProcFile :net/dev
+  getTcpConnections = -> parseTcpConnections  readProcFile :net/tcp
+  getDiskStats =      -> parseDiskStats       readProcFile :diskstats
+  getCpuStats =       -> parseCpuStats        readProcFile :stat
+
+  getAllStats: ->
+    time: toSeconds()
+    load: getSystemLoad()
+    mem:  getMemStats()
+    vm:   getVmStats()
+    net:  getNetStats()
+    tcp:  getTcpConnections()
+    disk: getDiskStats
+    cpu:  getCpuStats()

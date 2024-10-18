@@ -1,0 +1,8 @@
+import &ArtStandardLib
+
+conditionallyColorText: (string, statOk, statActive = true, statWarn = false) ->
+  switch
+  when !statOk then terminalColor.red string
+  when statWarn then terminalColor.yellow string
+  when statActive then terminalColor.green string
+  else terminalColor.white string

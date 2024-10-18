@@ -1,0 +1,62 @@
+import &ArtStandardLib, &ArtClassSystem, {} &fs
+
+readProcFile = (path, split = "\n") ->
+  fs.readFileSync("/proc/#{path}").toString().trim().split split
+
+parseSystemLoad: (procLoad) ->
+  [loadAvg1min, loadAvg5min, loadAvg15min] = procLoad.split /// \s+
+  {} loadAvg1min, loadAvg5min, loadAvg15min
+
+parseMemStats: (memStats) -> each line from memStats.split "\n" into stats = {}
+  parts = line.split ":"
+  stats[parts[0].trim()] = parts[1].trim().split(/\s+/)[0] | 0
+
+parseVmStats: (vmStats) -> each line from vmStats.split "\n" into stats = {}
+  parts = line.split /\s+/
+  stats[parts[0].trim()] = parts[1])
+
+parseNetStats: (netStates) ->
+  # TODO: add "all" stat that like this:
+  #  diffNetStats=mergeMultiStats(diffAllNicStats,{:in_bytes => :new_max, :out_bytes => :new_max})
+
+  each line from netStates.split "\n" when /:/.test line into allStats = {}
+    deviceLine = line.split ":"
+    device = deviceLine[0].trim()
+    [inBytes, inPackets, inErrs, inDrop, _, _, _, _, outBytes, outPackets, outErrs, outDrop] = deviceLine[1].trim().split /\s+/
+
+    allStats[device] = object v, from {} inBytes, inPackets, inErrs, inDrop,outBytes, outPackets, outErrs, outDrop
+      v | 0
+
+parseTcpConnections: (tcpConnections) ->
+  numConns = 0
+  each line from tcpConnections.split "\n" when /^\s*\d+:/.test line with numConns++
+  numConns
+
+parseDiskStats: (diskStats) -> # http://www.mjmwired.net/kernel/Documentation/iostats.txt
+  # TODO: add "all" stat that like this:
+  # diffDiskStats=mergeMultiStats(diffAllDiskStats,{:total_time => :max})
+
+  each line from diskStats.split "\n" into allStats = {}
+    fields = line.split /\s+/
+
+    device = fields[3].trim()
+    fields = fields.slice 4
+    if /^(sd|hd)[a-z]$/.test device
+      allStats[device] =
+        readsIssued:        parseInt fields[0]
+        readsMerged:        parseInt fields[1]
+        sectorsRead:        parseInt fields[2]
+        timeReading:        parseInt fields[3]  # In milliseconds
+        writesCompleted:    parseInt fields[4]
+        sectorsWritten:     parseInt fields[6]
+        timeWriting:        parseInt fields[7]  # In milliseconds
+        activeIos:          parseInt fields[8]  # In milliseconds
+        totalTime:          parseInt fields[9]  # In milliseconds
+        weightedTotalTime:  parseInt fields[10] # In milliseconds
+        kRead:              (parseInt fields[2]) / 2  # sectorsRead / 2
+        kWritten:           (parseInt fields[6]) / 2  # sectorsWritten / 2
+
+parseCpuStats: (cpuStats) ->
+  each line in cpuStats.split "\n" when deviceLineRegex.test line into stats = {}
+    [device, user, nice, sys, idle, ioWait] = line.split /\s+/, 1
+    stats[device] = object v from {} user, nice, sys, idle, ioWait with parseFloat v
