@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ParseError.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtSuite.Cli/ParseError.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0HAAyB"
+}
