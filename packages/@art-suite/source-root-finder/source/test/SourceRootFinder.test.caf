@@ -1,5 +1,6 @@
 import &StandardImport
 
+
 defaultSourceRootFinder = new SourceRootFinder
 customSourceRootFinder = new SourceRootFinder
   indicatorFiles: [] :README.txt
@@ -61,6 +62,12 @@ testOne = (input, output, sourceRootFinder = defaultSourceRootFinder) ->
 tester = (sourceRootFinder, tests) ->
   each output, input in tests
     testOne input, output, sourceRootFinder
+
+beforeAll ->
+  gitFilePath = &path.join process.cwd(), :testFs/gitRooted/.git
+
+  &fs.mkdirSync &path.dirname(gitFilePath), recursive: true
+  &fs.writeFileSync gitFilePath, ''
 
 describe
   defaults: ->
