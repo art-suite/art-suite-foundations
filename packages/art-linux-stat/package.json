@@ -4,7 +4,7 @@
   "dependencies": {
     "art-standard-lib": "^1.74.0",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-client": "*"
+    "neptune-namespaces-runtime": "^3.2.13"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",

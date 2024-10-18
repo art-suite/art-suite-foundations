@@ -3,8 +3,8 @@ import &StandardImport
 addArtMonorepoFeatures = (rootPackage) ->
   rootPackage.dependencies[&package.name] ?= :^ + &package.version
   rootPackage.scripts = merge
-    test: "" art-monorepo test
-    sync: "" art-monorepo sync
+    object script in :test :build :sync :clean :update :versions
+      "" art-monorepo #{script}
 
     rootPackage.scripts
 
@@ -77,8 +77,6 @@ run: ({quiet}) ->
 
       else
         packageFolderByPackageName[name] = packageFolder if name?
-
-      # log "package: #{packageFolder}"
 
       each v, k in dependencies     with addDep :dependencies, k, v, _package
       each v, k in devDependencies  with addDep :dependencies, k, v, _package

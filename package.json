@@ -65,7 +65,6 @@
     "mocha": "^7.2.0",
     "mock-fs": "^5.0.0",
     "neptune-namespaces": "file:packages/neptune-namespaces",
-    "neptune-namespaces-client": "*",
     "neptune-namespaces-runtime": "file:packages/neptune-namespaces-runtime",
     "nodemon": "^3.1.0",
     "pluralize": "^8.0.0",
