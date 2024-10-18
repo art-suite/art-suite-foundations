@@ -64,9 +64,8 @@ tester = (sourceRootFinder, tests) ->
     testOne input, output, sourceRootFinder
 
 beforeAll ->
-  gitFilePath = &path.join process.cwd(), :testFs/gitRooted/.git
-
-  &fs.mkdirSync &path.dirname(gitFilePath), recursive: true
+  gitFilePath = &path.join process.cwd(), :gitRooted/.git
+  log beforeAll: gitFilePath, cwd: process.cwd()
   &fs.writeFileSync gitFilePath, ''
 
 describe
