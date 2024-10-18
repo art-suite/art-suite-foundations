@@ -10,8 +10,8 @@
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
-    "art-build-configurator": "^1.30.3",
-    "art-testbench": "^3.2.15",
+    "art-build-configurator": "^1.30.4",
+    "art-testbench": "^3.2.16",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -46,7 +46,7 @@
     "test": "npm run build\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "2.1.14",
+  "version": "2.1.15",
   "watch": {
     "build": {
       "extensions": [

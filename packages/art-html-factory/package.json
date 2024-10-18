@@ -8,7 +8,7 @@
   },
   "description": "Build HTML from code in the most elegant way possible",
   "devDependencies": {
-    "art-build-configurator": "^1.30.3"
+    "art-build-configurator": "^1.30.4"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

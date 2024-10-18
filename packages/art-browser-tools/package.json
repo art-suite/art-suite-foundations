@@ -2,11 +2,11 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-build-configurator": "^1.30.3",
+    "art-build-configurator": "^1.30.4",
     "browser-or-node": "^3.0.0-pre.0"
   },
   "devDependencies": {
-    "art-testbench": "^3.2.15",
+    "art-testbench": "^3.2.16",
     "coffee-loader": "^0.7.3",
     "css-loader": "^6.2.0",
     "json-loader": "^0.5.7",

@@ -1,5 +1,25 @@
 import &ArtStandardLib, &ArtClassSystem
 
+## TODO:
+  New processing order:
+    1. preprocess: (any) -> any - runs first, before anything - it's input could be anything
+    2. validate: (any) -> true if valid - runs second
+    3. normalize: (validPossiblyNormalized) -> validNormalized - runs third - it assumes a valid, but possibly non-normalized input
+    3. postValidate: (validNormalized) -> true if postValid - runs last - useful, for example, to check cross-field consistency
+
+  I think I'm coming around to the default-required pattern.
+  I think we can add an allOptional builder as well.
+    - allOptional is useful because it creates a minimal validator for what your code will use, and it won't fail for extra fields you won't use anyway.
+    - It will apply to the full validation structure, but it won't reach into sub-validators in that structure.
+    - it Will use the .optional getter on all sub-validators though.
+    - There is one place it won't auto-apply optional - the validator for an array element.
+      - The client can easily compact an array to make it valid.
+      - Along the core philosophy of allOptional, we want code to "work" for validated fields, but gaps in the array has a good chance of breaking code.
+      - Generally we don't assume that, if an array validates to an array of strings, even if the array itself is optional, we won't assume that each individual element could be null.
+      - You can still explicitly make them optional: [] string.optional
+
+    This is representable in Typescript, and also meeds my general needs for ease of use.
+
 identityNormalizer = (value) -> value
 alwaysValidValidator = -> true
 

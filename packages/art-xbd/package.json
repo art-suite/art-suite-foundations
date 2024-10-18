@@ -5,11 +5,11 @@
     "art-binary": "^1.1.16",
     "art-standard-lib": "^1.73.3",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.12"
+    "neptune-namespaces-runtime": "^3.2.13"
   },
   "description": "Art.Xbd",
   "devDependencies": {
-    "art-build-configurator": "^1.30.3"
+    "art-build-configurator": "^1.30.4"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

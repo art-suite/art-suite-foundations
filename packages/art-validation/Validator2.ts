@@ -118,6 +118,18 @@ Important use-case: create-validate and update-validate
   - Actually, for ArtEry, I'll have the raw field-list, so I could just STUFF
 */
 
+/*
+undefined vs null vs missing
+
+null means INTENTIONALLY not set
+undefined means maybe you are looking at a partial object, or accept a default value
+undefined and missing are the same thing in the Validator system
+  small exception: for exclusive validators, only the allowed fields are allowed, and even
+    undefined but not misting fields that are not in that list are still not allowed
+
+in the database, null fields are just not stored, so when you read them out they are null or missing
+*/
+
 /********************************************************
  * The magical Validator Typing system
  ********************************************************/
@@ -126,10 +138,30 @@ type PrimitiveType = "string" | "number" | "boolean" | "integer" | RegExp;
 type EmptyObject = Record<string, never>;
 type ValueExists<T> = Exclude<T, undefined | null>
 type ValueOptional<T> = T | undefined | null;
+type Flatten<T> = { [K in keyof T]: T[K] };
+
+
+
+// Recursive helper type with adjusted Rest
+type OptionalIfUndefinedHelper<T, K extends readonly (keyof T)[]> = K extends [infer First, ...infer Rest]
+  ? First extends keyof T
+  ? (undefined extends T[First]
+    ? { [P in First]?: T[First] }
+    : { [P in First]: T[First] }) &
+  OptionalIfUndefinedHelper<T, Extract<Rest, readonly (keyof T)[]>>
+  : {}
+  : {};
+
+// Utility type to expand the resulting type for better readability
+type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+
+// Main type to generate the desired type
+type OptionalIfUndefined<T, K extends readonly (keyof T)[]> = Expand<OptionalIfUndefinedHelper<T, K>>;
+
 
 type ExclusiveObject<T> = keyof T extends never
   ? EmptyObject
-  : { [K in keyof T]: TypeFromValidator<T[K]> };
+  : OptionalIfUndefined<{ [K in keyof T]: TypeFromValidator<T[K]> }>;
 
 type ValidatorInputStructure =
   | PrimitiveType
@@ -142,6 +174,7 @@ type ValidatorInputArray = ValidatorInputStructure[];
 
 type TypeFromValidatorBase<T> =
   T extends "string" ? string :
+  T extends "integer" ? number :
   T extends "number" ? number :
   T extends "boolean" ? boolean :
   T extends RegExp ? string :
@@ -150,12 +183,18 @@ type TypeFromValidatorBase<T> =
   T extends ValidatorInputArray ? TypeFromValidator<T[number]>[] :
   never;
 
+// TODO: can't figure out how to make typescript detect tuples - I can' test for the length of an array.
+
 type TypeFromValidator<T> =
   T extends ValidatorInputObject ? ExclusiveObject<T> :
   TypeFromValidatorBase<T>;
 
 type TypeFromInclusiveValidator<T> =
-  T extends ValidatorInputObject ? { [K in keyof T]: TypeFromInclusiveValidator<T[K]> } & { [key: string]: any } :
+  T extends ValidatorInputObject ? OptionalIfUndefined<{ [K in keyof T]: TypeFromInclusiveValidator<T[K]> }> & { [key: string]: any } :
+  TypeFromValidatorBase<T>;
+
+type TypeFromAllOptionalValidator<T> =
+  T extends ValidatorInputObject ? OptionalIfUndefined<{ [K in keyof T]?: ValueOptional<TypeFromAllOptionalValidator<T[K]>> }> :
   TypeFromValidatorBase<T>;
 
 type ValidationError = {
@@ -289,6 +328,7 @@ class Validator2<T> {
   minLength(min: number) { return this.addPostValidator((value) => (value as any).length >= min); }
   maxLength(max: number) { return this.addPostValidator((value) => (value as any).length <= max); }
   boundLength(min: number, max: number) { return this.addPostValidator((value) => (value as any).length >= min && (value as any).length <= max); }
+  exactLength(length: number) { return this.addPostValidator((value) => (value as any).length === length); }
 
   trimmed() {
     if (this.options.jsonDataType !== "string") throw new Error("trim() only works on strings");
@@ -367,7 +407,7 @@ const _validator = (structure: any, options: any) => {
       }] : compactFlatten(value.map((item, i) => subValidator.getValidationErrors(item, `${parentFieldPath}[i]`))) as any;
     } else throw new Error("Invalid validation-definition structure - Array definitions must be length 0 or 1");
 
-  } else if (typeof structure === "object" && structure !== null) {
+  } else if (isPlainObject(structure)) {
     openApiType = "object";
     const structureKeys = Object.keys(structure);
     const subValidators = structureKeys.map((key) => validator(structure[key]));
@@ -400,6 +440,18 @@ validator.custom = <T>(options: ValidatorOptions<T>) => new Validator2<T>(option
  * Validator Helpers
  ********************************************************/
 
+validator.allOptional = <T extends ValidatorInputObject>(objectDefinition: T): Validator2<TypeFromAllOptionalValidator<T>> => {
+  const allOptional: ValidatorInputObject = {};
+  for (const key in objectDefinition) {
+    const value = objectDefinition[key];
+    allOptional[key] =
+      isPlainObject(value)
+        ? validator.allOptional(value as ValidatorInputObject)
+        : validator(objectDefinition[key]).optional;
+  }
+  return validator(objectDefinition) as any;
+}
+
 // Union function to handle multiple validators
 // `union`, like `validator`, is exclusive by default
 const union = <T extends ValidatorInputStructure[]>(...validators: T): Validator2<TypeFromValidator<T[number]>> =>
@@ -407,12 +459,24 @@ const union = <T extends ValidatorInputStructure[]>(...validators: T): Validator
     validate: ((value) => validators.some((validatorItem) => validator(validatorItem).validate(value))) as any,
     jsonDataType: validator(validators[0]).openApiType
   });
+
 union.inclusive = <T extends ValidatorInputStructure[]>(...validators: T): Validator2<TypeFromInclusiveValidator<T[number]>> =>
   validator.custom<any>({
     validate: ((value) => validators.some((validatorItem) => validator.inclusive(validatorItem).validate(value))) as any,
     jsonDataType: validator(validators[0]).openApiType
   });
 validator.union = union.exclusive = union;
+
+type IntersectionType<T extends any[]> =
+  T extends [infer First, ...infer Rest]
+  ? First & IntersectionType<Rest>
+  : unknown;
+
+validator.intersection = <T extends ValidatorInputStructure[]>(...validators: T): Validator2<IntersectionType<{ [K in keyof T]: TypeFromValidator<T[K]> }>> =>
+  validator.custom<any>({
+    validate: ((value) => validators.every((validatorItem) => validator.inclusive(validatorItem).validate(value))) as any,
+    jsonDataType: validator(validators[0]).openApiType
+  })
 
 // Enum validator function
 validator.enum = <T extends string[]>(...options: T): Validator2<T[number]> =>
@@ -472,7 +536,7 @@ validator.integer = validator("integer");
 //********************************************************
 //********************************************************
 //********************************************************
-const { number, boolean, string } = validator
+const { number, boolean, string, uuid, integer } = validator
 
 const plainStructureExample = validator({
   id: "string",
@@ -490,6 +554,9 @@ const plainStructureExample = validator({
 const simpleRegex = validator(/^[a-zA-Z0-9]+$/);
 
 const stringOrNumber = validator.union("string", "number");
+
+const objectWithEitherOrFields = validator.intersection({ a: "string", b: "number" }, validator.union({ id: "string" }, { phoneNumber: "string" }));
+type ObjectWithEitherOrFields = typeof objectWithEitherOrFields.value
 
 // Example usage with nested Validator2
 const rectangle = validator({
@@ -577,8 +644,136 @@ const pointValidator = validator({ x: number, y: number });
 type Point = typeof pointValidator.value
 const myPoint: Point = { x: 10, y: 20 };
 
+const nonNegativeInteger = integer.min(0)
+const rating = number.bound(0, 10)
+const year = number.bound(1800, 2100)
+
 // Example custom validators
 const myCustomBooleanValidator = validator.custom<boolean>({
   validate: (value) => typeof value === "boolean",
   jsonDataType: "boolean",
 });
+
+const fusionAdminPropertyDetailsUpdateSchema = validator({
+  fromKaiListingRequestId: string.optional,
+  photoIds: validator([uuid]).optional,
+  propertyDescription: {
+    contents: string,
+  },
+  hoa: {
+    hasHoa: boolean,
+    periodicFeeCents: nonNegativeInteger,
+    feeCadence: validator.enum("weekly", "monthly", "quarterly", "annually"),
+  },
+  estimatedRenoCostRange: validator([nonNegativeInteger]).exactLength(2),
+  valuation: {
+    thirdPartyAvmDollars: nonNegativeInteger.optional,
+    kaiizenArvDollars: nonNegativeInteger.optional,
+    kaiizenAsIsValueDollars: nonNegativeInteger.optional,
+  },
+  floodZone: {
+    isFloodZone: boolean,
+  },
+  schools: {
+    districtName: string,
+    greatSchoolsRatings: {
+      elementary: rating,
+      middle: rating,
+      high: rating,
+    },
+  },
+  proximity: {
+    highPowerLines: boolean,
+    arterialRoads: boolean,
+    railways: boolean,
+    commercialIndustrial: boolean,
+  },
+  systems: {
+    hvac: {
+      type: string.optional, // TODO specific enum
+      year: year.optional,
+    },
+    electrical: {
+      type: string.optional, // TODO specific enum
+      amperage: nonNegativeInteger.optional,
+    },
+    plumbing: {
+      waterSupplyType: string.optional, // TODO specific enum
+      supplyPipeMaterial: string.optional, // TODO specific enum
+      drainPipeMaterial: string.optional, // TODO specific enum
+      waterHeaterType: string.optional, // TODO specific enum
+      waterHeaterYear: year.optional,
+    },
+    utilityProviders: {
+      electric: string,
+      sewer: string,
+      water: string,
+      gas: string,
+    },
+  },
+  interior: {
+    totalBedrooms: nonNegativeInteger,
+    totalBathrooms: nonNegativeInteger,
+  },
+  construction: {
+    sqft: nonNegativeInteger,
+    yearBuilt: year,
+    roof: {
+      material: string.optional, // TODO specific enum
+      year: year.optional,
+    },
+    garageAndParking: {
+      type: string.optional, // TODO specific enum
+      parkingSpots: nonNegativeInteger,
+    },
+    facade: {
+      type: string.optional, // TODO specific enum
+    },
+    foundation: {
+      type: string.optional, // TODO specific enum
+    },
+  },
+  property: {
+    lotSqft: nonNegativeInteger,
+    fencingType: string.optional, // TODO specific enum
+    drivewayType: string.optional, // TODO specific enum
+    poolType: string.optional, // TODO specific enum
+  },
+  misc: {
+    notes: string,
+  },
+});
+
+const testAllOptional = validator.allOptional({
+  a: string,
+  b: number,
+  c: {
+    x: string,
+    y: number,
+  },
+});
+
+type TestAllOptional = typeof testAllOptional.value
+
+const testManualAllOptional = validator({
+  a: string.optional,
+  b: number,
+  c: validator({
+    x: string.optional,
+    y: number.optional,
+  }).optional,
+});
+type TestManualAllOptional = typeof testManualAllOptional.value
+// const t: TestManualAllOptional = { c: { y: 10 } }
+
+
+type Foo123 = {
+  a: string;
+  b: undefined | string;
+  c: string;
+}
+
+
+type DerivedFoo123 = OptionalIfUndefined<Foo123>;
+
+const foo123: DerivedFoo123 = { a: "123", c: "123" }

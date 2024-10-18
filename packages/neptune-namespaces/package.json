@@ -9,12 +9,12 @@
     "art-class-system": "^1.11.18",
     "art-standard-lib": "^1.73.3",
     "glob": "^11.0.0",
-    "neptune-namespaces-runtime": "^3.2.12"
+    "neptune-namespaces-runtime": "^3.2.13"
   },
   "description": "Generate index.coffee and namespace.coffee files from directory structures",
   "devDependencies": {
-    "art-build-configurator": "^1.30.3",
-    "art-testbench": "^3.2.15",
+    "art-build-configurator": "^1.30.4",
+    "art-testbench": "^3.2.16",
     "mocha": "^7.2.0",
     "mock-fs": "^5.0.0"
   },

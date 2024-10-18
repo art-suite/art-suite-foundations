@@ -6,20 +6,20 @@
     "@art-suite/web-worker": "^1.0.0",
     "art-atomic": "^1.28.2",
     "art-browser-tools": "^1.2.16",
-    "art-build-configurator": "^1.30.3",
+    "art-build-configurator": "^1.30.4",
     "art-class-system": "^1.11.18",
     "art-communication-status": "^1.6.1",
     "art-config": "^2.0.4",
     "art-epoched-state": "^1.2.14",
     "art-object-tree-factory": "^2.2.10",
-    "art-rest-client": "^1.10.0",
+    "art-rest-client": "^1.10.1",
     "art-standard-lib": "^1.73.3",
     "art-validation": "^2.9.0",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",
   "devDependencies": {
-    "art-testbench": "^3.2.15"
+    "art-testbench": "^3.2.16"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -53,7 +53,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "3.0.1",
+  "version": "3.1.0",
   "watch": {
     "build": {
       "extensions": [

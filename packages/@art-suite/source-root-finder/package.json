@@ -8,8 +8,8 @@
   },
   "description": "ArtSuite.SourceRootFinder",
   "devDependencies": {
-    "art-build-configurator": "^1.30.3",
-    "art-testbench": "^3.2.15",
+    "art-build-configurator": "^1.30.4",
+    "art-testbench": "^3.2.16",
     "jest": "^29.7.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -44,7 +44,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.11",
+  "version": "1.0.12",
   "watch": {
     "build": {
       "extensions": [
