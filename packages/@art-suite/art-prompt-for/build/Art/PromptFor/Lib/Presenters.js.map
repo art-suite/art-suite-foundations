@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Presenters.js",
+  "sourceRoot": "../../../..",
+  "sources": [
+    "source/Art/PromptFor/Lib/Presenters.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0IAAO,sJAEP,QACE,4BAAoB,CAAC,OAAS,kBAAW,sBAAO,aAAa,0BAE7D,+BAAgB,4BAChB,mCAAkB,0BAElB,6BAAY,QAAG,CAAC,OAAO,YAAY,SAAS,OACvC,QAAQ,SACL,eAAS,UAAM,OAAK,MAAM,IAAM,WAClC,UAAW,cACT,cAAc,SACV,QAEA,eAAS,WACf,cAAc,SAGd,iBAAiB,QAAO,OAAO,SAEjC,gBAAgB"
+}

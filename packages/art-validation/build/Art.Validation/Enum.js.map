@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Enum.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Validation/Enum.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0IAAO,oGAEP,qCAAqB,CAAC,uCAAW,UAC/B,cACA,iBAAiB,yBAA4B,eAAe,oBAC1D,KAAO,UAAS,QAAQ,QAAQ,QAC9B,MAAM,IAAI,2FAAgF,oBAAqB,SAAS,+BAC1H,EAAE,UAEJ,IAAG,0BAAyB,IAC1B,MAAM,IAAI,2FAAgF,oBAAqB,SAAS,+BAE1H,MACE,UACA,MAAY,gBACZ,WAAY,QACZ,UAAY,UACZ,UAAY,CAAC,MAAM,UAAK"
+}

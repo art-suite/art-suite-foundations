@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ConfigurationError.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Validation/ErrorTypes/ConfigurationError.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sEAAO,kEAEP,0EAAiC"
+}

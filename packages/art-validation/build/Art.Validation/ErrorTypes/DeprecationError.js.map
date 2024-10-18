@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DeprecationError.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Validation/ErrorTypes/DeprecationError.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sEAAO,gEAEP,sEAA+B"
+}

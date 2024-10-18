@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DataTypes.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Validation/DataTypes.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,oMAAO,gKAOP,QACE,UAAY,UAAU,YACtB,SAAY,UAAU,WACtB,SAAY,UAAU,WACtB,SAAY,UAAU,gBACtB,QAAY,UAAU,eACtB,WAAY,UAAU,aACtB,OAAY,UAAU,SACtB,OAAY,UAAU,aACtB,oBAEe,oBACV,4BAAoB,QAAG,CAAC,OAAO,YAAa,OAC/C,EAAI,eAAe,UAAK,CACnB,WAAW,OAAO,qCAA0B,qBAAO,0FAE5D,MACE,iBAEe,gBAAkD"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ValidationError.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.Validation/ErrorTypes/ValidationError.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,8EAAO,uEAEP,oEAA8B"
+}

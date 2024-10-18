@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ChainedTest2.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/ChainedTest2.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0GAAO,6BAAiB,yCAA0B,QAAQ,oFAE1D,iBACE,QAAQ,OACR,UAAU,eAEZ,YAAY,gDAAqC,QAC/C,QAAQ,0BAGR,oBAAW,CAAC,UACV,WACE,QAAQ,QACR,kBAGF,UAAU,YAEZ,4BAAmB,CAAC,UAAY,iBAAU,eAAe,cACzD,2DAAkD,CAAC,UAAY,iBAAU,eAAe,cAExF,kCAAuB,QACrB,gBACE,gBAAgB,IAChB,gBAAgB,IAChB,gBAAgB,UAEpB,iCAAwB,CAAC,UAAW,OAClC,UACE,MAAM,gBAAe,gBAAe,GAAE,GAAE,MACxC"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DeprecatedInspectors.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art.StandardLib/Inspect/DeprecatedInspectors.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,4FAAO,gEAEP,gCAAgB,CAAC,IACf,YAAc,0EACd,iBAAiB,IAAG,UAAU,OAEhC,qBAAa,CAAC,IACZ,YAAc,uEACd,iBAAiB,MAEnB,iBAAS,CAAC,IACR,YAAc,mEACd,iBAAiB"
+}

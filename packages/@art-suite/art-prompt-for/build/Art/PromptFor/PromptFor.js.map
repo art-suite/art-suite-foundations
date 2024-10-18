@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "PromptFor.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art/PromptFor/PromptFor.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,6CAAW"
+}

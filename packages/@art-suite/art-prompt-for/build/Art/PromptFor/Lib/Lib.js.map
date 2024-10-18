@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Lib.js",
+  "sourceRoot": "../../../..",
+  "sources": [
+    "source/Art/PromptFor/Lib/Lib.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,2BACA,yBACA"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Validation.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/Art.Validation/Validation.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,kCACA,yBACA"
+}

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Style.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/Art/PromptFor/Style.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,qJAAO,6BAAiB,uGAExB,MAAM,0BAAgB,0BAEtB,MAAK,CACH,KACA,MACA,OACA,MACA,OACA,QAAQ,IAAI,YACZ,MACA,aAAa,aACb,aAAa,aACb,MAAM,qBAAW,cACjB,KAAM,qBAAW,iBACjB,MAAM,qBAAW"
+}

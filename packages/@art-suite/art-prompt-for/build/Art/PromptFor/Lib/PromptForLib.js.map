@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "PromptForLib.js",
+  "sourceRoot": "../../../..",
+  "sources": [
+    "source/Art/PromptFor/Lib/PromptForLib.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wIAKE,uBAAS,QAAG,CAAC,GAAG,IAAI,iBACF,mBAAO,EAAE,OAAM,MAEjC,mCAAe,QAAG,CAAC,OAAO,WAAY,OACpC,MAAM,qBAAqB,OAAO,cAEpC,6CAAoB,QAAG,CAAC,OAAO,qGAAY,KACjB,sCAExB,wBAAM,MACD,kBAAY,UAAa,eAAwB,mIAAW,UAAU,UAAU,eAAU,iEAAC,MAC3F,kBAAY,UAAa,gBAAwB,yIAAW,eAAc,mBAAc,6EAC/D,gBAAwB,yIAAW,uBAAkB"
+}
