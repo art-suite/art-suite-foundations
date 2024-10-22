@@ -1,5 +1,6 @@
 declare module "@art-suite/chained-test" {
   export function chainedTest<T>(name: string, fn: () => T): ChainedTest<T, T>;
+  export function firstIt<T>(name: string, fn: () => T): ChainedTest<T, T>;
 
   export interface ChainedTest<SetupResult, ChainResult> {
     thenTest<U>(name: string, fn: (input: ChainResult) => U): ChainedTest<SetupResult, U>;
