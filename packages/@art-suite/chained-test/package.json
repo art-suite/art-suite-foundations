@@ -51,7 +51,7 @@
     "test-watch": "jest --watch"
   },
   "types": "index.d.ts",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "watch": {
     "build": {
       "extensions": [
