@@ -2,6 +2,7 @@ declare module "@art-suite/chained-test" {
   export function chainedTest<T>(name: string, fn: () => T): ChainedTest<Awaited<T>, Awaited<T>>;
   export function firstIt<T>(name: string, fn: () => T): ChainedTest<Awaited<T>, Awaited<T>>;
 
+
   export interface ChainedTest<SetupResult, ChainResult> {
     thenTest<NextChainedResult>(name: string, fn: (input: ChainResult) => NextChainedResult): ChainedTest<SetupResult, Awaited<NextChainedResult>>;
     thenIt<NextChainedResult>(name: string, fn: (input: ChainResult) => NextChainedResult): ChainedTest<SetupResult, Awaited<NextChainedResult>>;
