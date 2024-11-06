@@ -3,7 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-class-system": "^1.11.18",
-    "art-standard-lib": "^1.74.0"
+    "art-standard-lib": "^1.74.0",
+    "type-fest": "^4.26.1"
   },
   "description": "@art-suite/chained-test lets you break up large Jest or Mocha tests into a sequences of smaller tests. This is particularly helpful for integration tests, user-story tests, and tests with more than one asynchronous step.",
   "devDependencies": {

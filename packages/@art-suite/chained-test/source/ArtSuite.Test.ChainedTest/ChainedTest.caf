@@ -15,6 +15,14 @@ useIfMergeable = (v) -> if isPlainObject v then v
 uniqueErrorsReported = {}
 
 {chainedTest, firstIt} = class ChainedTest extends BaseClass
+  ### SBD NOTES TO SELF
+    I want to simplify the API. I think we just need:
+
+    - .thenTest (which is .thenTestMerged; drop the old thenTest and tapTest)
+    - .thenOptionallyTest (which is the old "soft" - skippable if the test-runner doesn't run it)
+    - .finally (just drop "always" - we are simplifying!
+
+   Drop all the "it" methods. I'm making this for me, and no one else has requested them.
   ###
     IN:
       PATTERN 1:
