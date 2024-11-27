@@ -52,7 +52,7 @@
     "test-watch": "jest --watch"
   },
   "types": "index.d.ts",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "watch": {
     "build": {
       "extensions": [

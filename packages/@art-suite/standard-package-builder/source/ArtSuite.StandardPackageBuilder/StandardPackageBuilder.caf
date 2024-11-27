@@ -97,3 +97,6 @@ configure: (options = {}) -> (_package) ->
       testPathIgnorePatterns:
         "/node_modules/"
         "<rootDir>/test" # so it can ignore our mocha tests
+        "<rootDir>/source" # tests always run on build
+        "<rootDir>/build/test"
+        "<rootDir>/build/tests"
