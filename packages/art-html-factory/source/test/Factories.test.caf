@@ -51,41 +51,48 @@ describe
     "" <div prop="&lt;foo&gt;"></div>
 
   merging:
-    caseSensativity: -> testFactoryToString
-      -> Div
-        {} style: Color: #abc123
-      "" <div style="Color: #abc123"></div>
+    other:
+      caseSensitivity: -> testFactoryToString
+        -> Div
+          {} class: :FooBar
+        "" <div class="FooBar"></div>
 
-      -> Div
-        {} class: :FooBar
-      "" <div class="FooBar"></div>
+      class: -> testFactoryToString
+        -> Div
+          {} class: :ROW
+          {} class: :border-1px
+        "" <div class="ROW border-1px"></div>
 
-    style: -> testFactoryToString
-      -> Div
-        {} style: color: #abc123
-        {} style: height: 100px
-      "" <div style="color: #abc123; height: 100px"></div>
+      class-reset: -> testFactoryToString
+        -> Div
+          {} class: :row
+          {} class: null
+          {} class: :border-1px
+        "" <div class="border-1px"></div>
 
-    style-reset: -> testFactoryToString
-      -> Div
-        {} style: color: #abc123
-        {} style: null
-        {} style: height: 100px
-      "" <div style="height: 100px"></div>
+    style:
+      caseSensitivity: -> testFactoryToString
+        -> Div
+          {} style: Color: #abc123
+        "" <div style="color: #abc123"></div>
 
-    class: -> testFactoryToString
-      -> Div
-        {} class: :ROW
-        {} class: :border-1px
-      "" <div class="ROW border-1px"></div>
+      dashCase: -> testFactoryToString
+        -> Div
+          {} style: fontSize: 10pt
+        "" <div style="font-size: 10pt"></div>
 
-    class-reset: -> testFactoryToString
-      -> Div
-        {} class: :row
-        {} class: null
-        {} class: :border-1px
-      "" <div class="border-1px"></div>
+      style: -> testFactoryToString
+        -> Div
+          {} style: color: #abc123
+          {} style: height: 100px
+        "" <div style="color: #abc123; height: 100px"></div>
 
+      style-reset: -> testFactoryToString
+        -> Div
+          {} style: color: #abc123
+          {} style: null
+          {} style: height: 100px
+        "" <div style="height: 100px"></div>
 
   textWordWrappingDefaultBehavior: -> testFactoryToString
     -> Div

@@ -10,7 +10,7 @@ import &ArtStandardLib, &ArtObjectTreeFactory
           unless v is Object
             throw new Error "HtmlTextNode 'style' property must be an object: style: #{formattedInspect v}"
 
-          object val, key from v into dest.style ? {}
+          object val, key from v into dest.style ? {} with-key dashCase key
 
         when :class then w("#{dest.class} #{v}").join ' '
         else v

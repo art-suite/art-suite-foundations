@@ -82,7 +82,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     styleString: ->
       @_styleString ?= if @ extract style
         array name from-array Object.keys(style).sort()
-          "#{name}: #{style[name]}"
+          "#{dashCase name}: #{style[name]}"
         .join '; '
 
     propsString: ->
