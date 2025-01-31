@@ -50,6 +50,16 @@ describe
       prop: "<foo>"
     "" <div prop="&lt;foo&gt;"></div>
 
+  props: -> testFactoryToString
+    -> Div
+      prop1: "a"
+      prop2: undefined
+      prop3: null
+      prop4: 0
+      prop5: true
+      prop6: false
+    "" <div prop1="a" prop4="0" prop5 prop6="false"></div>
+
   merging:
     other:
       caseSensitivity: -> testFactoryToString
