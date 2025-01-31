@@ -1,97 +1,154 @@
-# ArtFuzzySearch
+# @art-suite/art-time
 
-Easy, fast, fuzzy text search.
+Utilities for working with dates and times in JavaScript and TypeScript. Provides functions to get the age of a date in seconds, format durations (short or verbose), and create user-friendly date/time strings.
 
-The primary use-case for ArtFuzzySearch is to quickly filter a list of items as you type, and to do it in flexible way so you catch odd spellings and type-os and other inconsistencies. The key to success is speed and, together with a good UX, interactively showing the results as the user types and edits their search string.
+Supports:
 
-> It works similar to VSCode and SublimeText's file-search. The order of the letters matter, but there can be missing letters or skipped letters.
+- CaffeineScript, JavaScript, TypeScript
+- ECM Modules and CommonJS
 
+## Table of Contents
 
-# Example
+- [Overview](#overview)
+- [Core Types](#core-types)
+- [Core Exports](#core-exports)
+- [Usage Examples](#usage-examples)
+- [API Reference](#api-reference)
+- [License](#license)
 
-Basic example:
+## Overview
 
-```javascript
-let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
+This library offers:
 
-let result = fuzzySearch(
-  "sord",     // searchString
-  [           // searchData
-    "Sally Ford",
-    "John Goodall",
-    "Swordmaster Smith"
-  ]
-)
+- A flexible date input type (ArtTimeDate) which accepts Date, string, number (epoch), or null/undefined to represent the current time.
+- Utility methods for:
+  - Converting dates to human-friendly strings (humanDurationString, timeAgo, niceDateString, etc.).
+  - Calculating how many seconds have passed (or will pass) relative to a given time (dateAgeInSeconds).
 
-/*
-result: [     // filtered and sorted searchData
-  "Swordmaster Smith",
-  "Sally Ford"
-];
-*/
+## Core Types
 
+### ArtTimeDate
+
+export type ArtTimeDate = Date | string | number | null | undefined;
+Accepts multiple forms of time representation:
+
+- Date object
+- string (parseable by Date.parse OR an integer-string which will be treated the same as a number)
+- number (seconds or milliseconds from epoch)
+- null or undefined (uses current time)
+
+## HumanDurationOptions
+
+```typescript
+export interface HumanDurationOptions {
+  readonly verbose?: boolean;
+  readonly precision?: number;
+  readonly now?: ArtTimeDate;
+}
 ```
 
-More complex example:
+- verbose: Use full names for time units (e.g. "minutes" vs "m").
+- precision: Maximum number of time units to display.
+- now: Reference time for relative calculations (defaults to current time).
 
-```javascript
-let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
+## Core Exports
 
-let result = fuzzySearch(
-  "fz",       // searchString
-  [           // searchData
-    ["I love food"],
-    "fz - just a string is OK too",
-    ["I find pizza appealing", 123, true],
-    ["I fuzzbuzz", "any extra data", "is returned unchanged"]
-  ]
-)
+- dateAgeInSeconds(date, now?)
+- humanDurationString(seconds, options?)
+- niceFullDateString(date)
+- niceMonthYear(date)
+- niceDateString(date, now?)
+- niceTimeDetailsString(date)
+- timeAgo(date, options?)
 
-/*
-result: [     // filtered and sorted searchData
-  "fz - just a string is OK too",
-  ["I fuzzbuzz", "any extra data", "is returned unchanged"],
-  ["I find pizza appealing", 123, true]
-];
-*/
+## Usage Examples
 
+### Human-Readable Durations
+
+```typescript
+// Typescript
+import { humanDurationString, secondsPer } from "@art-suite/art-time";
+
+// A minute:
+humanDurationString(secondsPer.minute); // "1m"
+
+// Two hours:
+humanDurationString(secondsPer.hour * 2); // "120m"
+
+// With precision of 2:
+humanDurationString(secondsPer.hour + 30, { precision: 2 }); // "1h 1m"
+
+// Verbose style:
+humanDurationString(60, { verbose: true }); // "1 minute"
 ```
 
-# API
+### Relative Time
 
 ```javascript
-let {fuzzySearch} = require("@art-suite/art-fuzzy-search");
+// JavaScript
+const { timeAgo, secondsPer } = require("@art-suite/art-time");
 
-fuzzySearch(searchString, searchData) => filteredAndSortedSearchData
+const now = Date.parse("2024-07-01 12:35");
+
+// Just now:
+timeAgo(now - 10, { now }); // "just now"
+
+// One minute ago:
+timeAgo(now - secondsPer.minute, { now }); // "1m"
+
+// Verbose style:
+timeAgo(now - 3600, { now, verbose: true }); // "60 minutes ago"
 ```
 
-- **IN**: `(searchString, searchData)`
+### Nice Date Strings
 
-  - searchString: an String to search for
-  - searchData: `[searchDataRecord, ...]` (an Array of searchDataRecords)
+```coffee
+## CaffeineScript, too
+import &ArtSuite/ArtTime
 
-- **OUT**: searchData, filtered and sorted by best-matches
+now = Date.now()
 
-- **searchDataRecord**: `[searchInString, arbitraryData...]`
-  - searchDataRecords can be just a searchInString or an array
-  - only the first element is used by fuzzySearch
-  - searchInString: arbitrary String which is tested to see if it matches the provided searchString; the quality of the match is also considered and used for the final sort of the returned searchData
-  - arbitraryData: if searchInString matches, the entire searchDataRecord will be returned, untouched - including any arbitrary data included after searchInString. Use these additional slots to pass through any additional data you need. e.g. a JSON object of the record or just the record's ID.
+# Today:
+niceDateString()                      # "today"
 
-Note that fuzzySearch is very forgiving. The only requirement for a match is that the characters of the searchString exist in the searchInString (case insensitively), in the same order, but possibly with any number of characters in between:
+# Yesterday:
+niceDateString now - secondsPer.day   # "yesterday"
 
-> Example: If searchString == 'dog', then the string "I did a lot of great work." *will match*: "I **D**id a l**O**t of **G**reat work."
+# Full date/time:
+niceFullDateString now                # "12:35pm July 1, 2024"
 
-The key is the results will be sorted based on the quality of the match - best match first. The main sorting criterias is the length of the match. Sorter matches are preferred. For more details, see the [Algorithm Notes](#algorithm-notes) below.
+# Month and year:
+niceMonthYear now                     # "July 2024"
 
-# Algorithm Notes
+# Detailed time (hour/minute):
+niceTimeDetailsString now             # "12:35pm July 1"
+```
 
-Basic algorithm:
+## API Reference
 
-1. Filter out all search-texts that don't match:
-    - all letters from the search string must be present and in the same order in the search text
-    - However, they don't have to match case and they can optionally match search-text with extra characters in between. e.g. "fz" will match "Fun zoo" since "f" and "z" are in order even though "un " is in between.
-2. Sort the results by result-quality which is determined by
-    - length of match; shorter is preferred
-    - case sensitive matches are preferred
-    - matches closer to the beginning of the search-text are preferred
+```typescript
+// Returns the number of seconds between date and now. Positive if date is in the past.
+dateAgeInSeconds(date: ArtTimeDate, now?: ArtTimeDate): number
+
+// Formats a duration in seconds into a short or verbose form (e.g. "1m 30s" or "1 minute 30 seconds").
+humanDurationString(seconds: number, options?: HumanDurationOptions): string
+
+// Returns a long-form date string (e.g. "3:30pm March 14, 2024").
+niceFullDateString(date: ArtTimeDate): string
+
+// Returns a month/year string (e.g. "March 2024").
+niceMonthYear(date: ArtTimeDate): string
+
+// Returns a context-aware date string (e.g. "just now", "yesterday", "March 14"), depending on how far date is from now.
+niceDateString(date: ArtTimeDate, now?: ArtTimeDate): string
+
+// Returns a time string with detailed precision (e.g. "3:30:45 PM").
+niceTimeDetailsString(date: ArtTimeDate): string
+
+// Returns a relative time string (e.g. "5 minutes ago" or "in 2 hours"), optionally verbose or with custom precision.
+timeAgo(date: ArtTimeDate, options?: HumanDurationOptions): string
+```
+
+## License
+
+ISC

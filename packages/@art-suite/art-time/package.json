@@ -5,6 +5,10 @@
     "art-standard-lib": "^1.74.0",
     "stable": "^0.1.8"
   },
+  "exports": {
+    "import": "./index.mjs",
+    "require": "./index.js"
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
@@ -37,7 +41,8 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "0.1.0",
+  "types": "./index.d.ts",
+  "version": "0.1.1",
   "watch": {
     "build": {
       "extensions": [
