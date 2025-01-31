@@ -58,7 +58,8 @@ describe
       prop4: 0
       prop5: true
       prop6: false
-    "" <div prop1="a" prop4="0" prop5 prop6="false"></div>
+      prop7: "false"
+    "" <div prop1="a" prop4="0" prop5 prop7="false"></div>
 
   merging:
     other:

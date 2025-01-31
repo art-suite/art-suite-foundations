@@ -89,7 +89,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       @_propsString ?=
         if @_props
           ' ' +
-            array propValue, propName from @_props when propValue?
+            array propValue, propName from @_props when propValue? && propValue != false
               propValue = @styleString if propName == :style
               if propValue == true then propName
               else "" #{propName}="#{escapeHtmlString propValue}"
