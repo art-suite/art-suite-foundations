@@ -86,15 +86,15 @@ describe
     test "today" -> assert.eq niceDateString(now, now), "today"
     test "yesterday" -> assert.eq niceDateString(now - secondsPer.day, now), "yesterday"
     test "tomorrow" -> assert.eq niceDateString(now + secondsPer.day, now), "tomorrow"
-    test "last month" -> assert.eq niceDateString(now - secondsPer.month), "June 1"
-    test "next month" -> assert.eq niceDateString(now + 31 * secondsPer.day), "August 1"
-    test "last year" -> assert.eq niceDateString(now - secondsPer.year), "July 2, 2023"
+    test "last month" -> assert.eq niceDateString(now - secondsPer.month, now), "June 1"
+    test "next month" -> assert.eq niceDateString(now + 31 * secondsPer.day, now), "August 1"
+    test "last year" -> assert.eq niceDateString(now - secondsPer.year, now), "July 2, 2023"
 
   niceFullDateString: ->
     test "today" -> assert.eq niceFullDateString(now), "12:35pm July 1, 2024"
 
   niceTimeDetailsString: ->
-    test "today" -> assert.eq niceTimeDetailsString(now), "12:35pm July 1"
+    test "today" -> assert.eq niceTimeDetailsString(now, now + secondsPer.month), "12:35pm July 1"
 
   niceMonthYear: ->
     test "today" -> assert.eq niceMonthYear(now), "July 2024"

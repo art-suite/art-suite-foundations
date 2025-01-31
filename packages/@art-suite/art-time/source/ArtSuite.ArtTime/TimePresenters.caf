@@ -82,7 +82,7 @@ class TimePresenters
       else if now.getMonth() != date.getMonth()    then formatDate date, "" mmmm d
       else formatDate date, "" mmmm d
 
-  @niceTimeDetailsString: (date) => "" #{formatDate date, :h:MMtt} #{@niceDateString date}
+  @niceTimeDetailsString: (date, now) => "" #{formatDate date, :h:MMtt} #{@niceDateString date, now}
 
   @timeAgo: timeAgo = (date, { verbose, precision, now} = {now: toDate()}) ->
     ageInSeconds  = dateAgeInSeconds date, now
