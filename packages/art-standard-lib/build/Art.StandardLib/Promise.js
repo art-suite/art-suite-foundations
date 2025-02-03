@@ -3,7 +3,7 @@
   var BlueBirdPromise, ErrorWithInfo, Promise, deepEach, deepMap, defineModule, getEnv, isFunction, isPlainObject, isPromise, namespace, promiseDebug, ref,
     slice = [].slice;
 
-  Promise = BlueBirdPromise = require('bluebird/js/browser/bluebird.core.min');
+  Promise = BlueBirdPromise = require("bluebird");
 
   ref = require('./TypesExtended'), deepMap = ref.deepMap, deepEach = ref.deepEach, isFunction = ref.isFunction, isPlainObject = ref.isPlainObject;
 
