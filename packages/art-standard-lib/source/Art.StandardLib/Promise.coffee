@@ -59,10 +59,10 @@ TODO:
 defineModule module, ->
   class ArtPromise #extends BlueBirdPromise
     # @ES6Promise: Promise
-    # @all: Promise.all
-    # @race: Promise.race
-    # @reject: Promise.reject
-    # @resolve: Promise.resolve
+    @all: Promise.all
+    @race: Promise.race
+    @reject: Promise.reject
+    @resolve: Promise.resolve
     # @then: (f) -> Promise.resolve().then f
 
     @isPromise: isPromise
