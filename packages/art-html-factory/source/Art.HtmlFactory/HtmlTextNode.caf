@@ -66,6 +66,8 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
     style:            -> @_props?.style
     preserveRawText:  -> rawHtmlTags[@_name]
+    isScriptOrStyle:  -> @_name == :script || @_name == :style
+    indentChildren:   -> @isScriptOrStyle || !@preserveRawText
     isRawHtml:        -> @_name == :rawhtml
 
     childRequireMultipleLines: ->
@@ -144,7 +146,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
   ## OUT: String or Array of Strings, possibly nested
   _compile: (indent, options) ->
-    if @isRawHtml && @_children
+    if @isRawHtml && @_children # not an actual tag, so just compile children
       @_getCompiledChildren indent, emptyOptions
 
     else if indent? && indent.length + @length <= options.tagWrap && @onelinerOk
@@ -175,7 +177,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
   _getCompiledChildren: (indent, options) ->
     if @_children
       @_childrenToStringArray
-        if indent? && !@isRawHtml then indent + '  ' else indent
+        if indent? && @indentChildren then indent + '  ' else indent
         options
 
   _childrenToStringArray: (indent, options) ->
@@ -183,7 +185,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       if isFunction child._compile then child._compile indent, options
       else
         child = "#{child}"
-        if @_name != :pre
+        if @indentChildren
           applyIndent indent, child, unless @preserveRawText then options.textWordWrap
         else child
 
@@ -193,7 +195,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
         compactFlatten @_childrenToStringArray '', options
         .join "\n"
 
-      unless @isRawHtml
+      if @indentChildren
         compiledChildren
         .replace  /\n/g, "\n#{indent}"
 

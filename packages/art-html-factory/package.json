@@ -10,6 +10,12 @@
   "devDependencies": {
     "art-build-configurator": "^1.30.4"
   },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./build/index.js"
+    }
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [

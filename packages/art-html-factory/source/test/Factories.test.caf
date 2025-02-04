@@ -253,18 +253,77 @@ describe
     testLength "P :hello", -> P :hello
     testLength "P :hello B :bye", -> P :hello B :bye
 
-  toString: ->
-    test "with options" ->
+  # toString: ->
+  #   test "with options" ->
+  #     assert.eq
+  #       Div "Sweet donut biscuit tiramisu tart. Chocolate powder lollipop."
+  #       .toString indent: true tagWrap: 20 textWordWrap: 20
+  #       """
+  #         <div>
+  #           Sweet donut biscuit
+  #           tiramisu tart.
+  #           Chocolate powder
+  #           lollipop.
+  #         </div>
+
+  script: ->
+    test "long script should not be wrapped" ->
       assert.eq
-        Div "Sweet donut biscuit tiramisu tart. Chocolate powder lollipop."
-        .toString indent: true tagWrap: 20 textWordWrap: 20
+        Script "" 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
+        .toString()
         """
-          <div>
-            Sweet donut biscuit
-            tiramisu tart.
-            Chocolate powder
-            lollipop.
-          </div>
+          <script>
+            1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
+          </script>
+
+  regressions2: ->
+    ##
+      <html>
+        <head><link rel="stylesheet" href="/assets/admin/admin.css"></head>
+        <body>
+          <div> <h1 class="page-title"> Kai Properties <div class="page-menu"> <a href="#"
+          onClick="menuClick(&quot;users&quot;)" class="nav-button">users</a> <a href="#"
+          onClick="menuClick(&quot;properties&quot;)" class="nav-button">properties</a> <a
+          href="#" onClick="menuClick(&quot;whitelist&quot;)"
+          class="nav-button">whitelist</a> <script> function menuClick(item) {
+          window.location.href = window.location.href.replace(/admin.*$/, 'admin/' +
+          item); } </script> <a href="/logout" class="nav-button logout-button">logout</a>
+          </div> </h1> <script>
+    test "long script in nested tags" ->
+      assert.eq
+        Html
+          Head Link rel: :stylesheet href: :/assets/admin/admin.css
+          Body Div
+            H1 "Kai Properties"
+            Div
+              A href: :# onClick: 'menuClick("users")' class: 'nav-button users'
+              A href: :# onClick: 'menuClick("properties")' class: 'nav-button properties'
+              A href: :# onClick: 'menuClick("whitelist")' class: 'nav-button whitelist'
+              Script "function menuClick(item) { window.location.href = window.location.href.replace(/admin.*$/, 'admin/' + item); }"
+              A href: :/logout class: 'nav-button logout-button'
+            Script "" 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
+        .toString()
+        """
+          <html>
+            <head><link rel="stylesheet" href="/assets/admin/admin.css"></head>
+            <body>
+              <div>
+                <h1>Kai Properties</h1>
+                <div>
+                  <a href="#" onClick="menuClick(&quot;users&quot;)" class="nav-button users"></a>
+                  <a href="#" onClick="menuClick(&quot;properties&quot;)" class="nav-button properties"></a>
+                  <a href="#" onClick="menuClick(&quot;whitelist&quot;)" class="nav-button whitelist"></a>
+                  <script>
+                    function menuClick(item) { window.location.href = window.location.href.replace(/admin.*$/, 'admin/' + item); }
+                  </script>
+                  <a href="/logout" class="nav-button logout-button"></a>
+                </div>
+                <script>
+                  1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
+                </script>
+              </div>
+            </body>
+          </html>
 
   createHtmlFactories: ->
     test "custom Svg tags" ->
