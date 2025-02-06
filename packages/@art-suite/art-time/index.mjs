@@ -10,3 +10,4 @@ export const niceMonthYear = build.niceMonthYear;
 export const niceDateString = build.niceDateString;
 export const niceTimeDetailsString = build.niceTimeDetailsString;
 export const timeAgo = build.timeAgo;
+export const humanTimeDeltaString = build.humanTimeDeltaString;

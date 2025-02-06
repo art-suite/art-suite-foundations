@@ -67,6 +67,7 @@ export interface HumanDurationOptions {
 
 /**
  * Gets the age of a date in seconds relative to now or a specified reference time
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
  * @param date The date to get the age of
  * @param now Optional reference time (defaults to current time)
  * @returns Number of seconds between the dates (positive if date is in the past)
@@ -86,6 +87,7 @@ export declare const humanDurationString: (seconds: number, options?: HumanDurat
 
 /**
  * Formats a date in a full, human-readable format
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
  * @param date The date to format
  * @returns Formatted string (e.g. "3:30pm March 14, 2024")
  */
@@ -93,6 +95,7 @@ export declare const niceFullDateString: (date: ArtTimeDate) => string;
 
 /**
  * Formats a date showing just the month and year
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
  * @param date The date to format
  * @returns Formatted string (e.g. "March 2024")
  */
@@ -100,6 +103,7 @@ export declare const niceMonthYear: (date: ArtTimeDate) => string;
 
 /**
  * Formats a date in a context-aware format, showing different levels of detail based on the date's age
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
  * @param date The date to format
  * @param now Optional reference time (defaults to current time)
  * @returns Formatted string (e.g. "just now", "2 hours ago", "yesterday", "March 14")
@@ -108,6 +112,7 @@ export declare const niceDateString: (date: ArtTimeDate, now?: ArtTimeDate) => s
 
 /**
  * Formats the time portion of a date with detailed precision
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
  * @param date The date to format
  * @returns Formatted string (e.g. "3:30:45 PM")
  */
@@ -115,6 +120,8 @@ export declare const niceTimeDetailsString: (date: ArtTimeDate) => string;
 
 /**
  * Formats a date as a relative time string
+ *
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
  * @param date The date to format
  * @param options Configuration options
  * @param options.verbose If true, uses full unit names
@@ -123,3 +130,15 @@ export declare const niceTimeDetailsString: (date: ArtTimeDate) => string;
  * @returns Formatted string (e.g. "2 hours ago", "in 5 minutes")
  */
 export declare const timeAgo: (date: ArtTimeDate, options?: HumanDurationOptions) => string;
+
+// humanTimeDeltaString
+/**
+ * Formats a time delta in a human-readable format
+ *
+ * Note: "dates" can be Date, string, Number of seconds or Number of milliseconds (detected based on magnitude  )
+ * @param date1 The first date
+ * @param date2 The second date
+ * @param options Configuration options
+ * @returns Formatted string (e.g. "2 hours ago", "in 5 minutes")
+ */
+export declare const humanTimeDeltaString: (date1: ArtTimeDate, date2: ArtTimeDate, options?: HumanDurationOptions) => string;
