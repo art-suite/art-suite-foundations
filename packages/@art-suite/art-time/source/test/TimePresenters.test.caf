@@ -74,6 +74,16 @@ describe
       [2 * secondsPer.month]:   "" 2mo 0d
       [2 * secondsPer.year]:   "" 2y 0mo
 
+  "humanTimeDeltaString": ->
+    test "1 second" -> assert.eq humanTimeDeltaString(now, now + 1), "1s"
+    test "1 minute" -> assert.eq humanTimeDeltaString(now, now + secondsPer.minute), "1m"
+    test "60m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour), "60m"
+    test "61m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour + 60), "61m"
+    test "61m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour + 60, {precision: 2}), "1h 1m"
+    test "120m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour * 2), "120m"
+    test "24 hours" -> assert.eq humanTimeDeltaString(now, now + secondsPer.day, {verbose: true}), "24 hours"
+    test "1 day 1 hour" -> assert.eq humanTimeDeltaString(now, now + secondsPer.day + secondsPer.hour, {precision: 2}), "1d 1h"
+
   "humanDurationString verbose: true": ->
     humanDurationStringTester
       {} verbose: true
