@@ -52,7 +52,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
     else text.replace /\n/, ' '
 
   _getNormalizedText: (text) ->
-    if @preserveRawText then text
+    if @isNewLineSensitive then text
     else reformatTextForNiceHtmlSource text
 
   emptyString = ''
@@ -66,9 +66,13 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
 
     style:            -> @_props?.style
     preserveRawText:  -> rawHtmlTags[@_name]
+    escapeHtml:       -> @_name == :rawhtml
     isScriptOrStyle:  -> @_name == :script || @_name == :style
-    indentChildren:   -> @isScriptOrStyle || !@preserveRawText
+    indentChildren:   -> !@isIndentSensitive
+    wordWrapChildren: -> !@isNewLineSensitive
     isRawHtml:        -> @_name == :rawhtml
+    isNewLineSensitive: -> newLineSensitiveTags[@_name]
+    isIndentSensitive:  -> indentSensitiveTags[@_name]
 
     childRequireMultipleLines: ->
       !!@_children &&
@@ -186,7 +190,7 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       else
         child = "#{child}"
         if @indentChildren
-          applyIndent indent, child, unless @preserveRawText then options.textWordWrap
+          applyIndent indent, child, unless @isNewLineSensitive then options.textWordWrap
         else child
 
   _getCompiledChildrenSpan: (indent, options) ->
