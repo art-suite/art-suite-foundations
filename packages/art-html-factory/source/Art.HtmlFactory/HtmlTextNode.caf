@@ -1,9 +1,11 @@
 import &ArtStandardLib, &HtmlLib, &HtmlFactoryLib, {} &wrapAnsi
 
+endsInWhitespace = (string) ->
+  /(\s|\n)$/.test string
+
 class HtmlTextNode extends &ArtClassSystem.BaseClass
   constructor: (@_name, @_props, @_children) ->
     @_name = @_name.toLocaleLowerCase()
-    @_normalizeChildren()
 
   ##
     IN: options
@@ -30,31 +32,6 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
   withChildren:         (children...) -> @clone children: children
   withAppendedChildren: (children...) -> @clone children: @children, children
 
-  _normalizeChildren: ->
-    @_haveStringChildrenWithNewLines = false
-
-    if @_children?
-      @_children =
-        find child in @_children when child is String
-          array child in @_children
-            if child is String
-              child = @_getNormalizedText child
-              @_haveStringChildrenWithNewLines = true if /\n/.test child
-
-            child
-        ? @_children
-
-  reformatTextForNiceHtmlSource = (text) ->
-    if /\n *\n/.test text
-      array p in text.replace(/\ *\n( *\n)+/g, "\n\n").split "\n\n"
-        p.replace /\ *\n\ */g, ' '
-      .join "\n\n"
-    else text.replace /\n/, ' '
-
-  _getNormalizedText: (text) ->
-    if @isNewLineSensitive then text
-    else reformatTextForNiceHtmlSource text
-
   emptyString = ''
   @getter
     :props
@@ -65,20 +42,8 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
       children: if @children then array child in @children with child.inspectedObjects ? child
 
     style:            -> @_props?.style
-    preserveRawText:  -> rawHtmlTags[@_name]
-    escapeHtml:       -> @_name == :rawhtml
-    isScriptOrStyle:  -> @_name == :script || @_name == :style
-    indentChildren:   -> !@isIndentSensitive
-    wordWrapChildren: -> !@isNewLineSensitive
+    escapeHtml:       -> @_name != :rawhtml # TODO: we should honor this for all tags other than rawhtml
     isRawHtml:        -> @_name == :rawhtml
-    isNewLineSensitive: -> newLineSensitiveTags[@_name]
-    isIndentSensitive:  -> indentSensitiveTags[@_name]
-
-    childRequireMultipleLines: ->
-      !!@_children &&
-        @_children.length > 1 || @_children[0].onelinerOk == false
-
-    onelinerOk: -> !@_haveStringChildrenWithNewLines && !@childRequireMultipleLines
 
     length: -> @_length ?=
       5 + @_name.length * 2 # <name></name>
@@ -103,105 +68,32 @@ class HtmlTextNode extends &ArtClassSystem.BaseClass
             .join ' '
         ? emptyString
 
-  @defaultCompileOptions:
-    tagWrap: 80
-    textWordWrap: 80
+    startTag: -> "<#{@_name}#{@propsString}>"
+    endTag:   -> "</#{@_name}>"
+    hasChildren: -> @_children?.length > 0
+    compiledChildrenArray: ->
+      if @hasChildren
+        array child from @_children
+          if isFunction child._compile then child._compile()
+          else child
+      else []
 
-  compile: (indentOrOptions) ->
-    if indentOrOptions is String
-      indent = indentOrOptions
-      options = HtmlTextNode.defaultCompileOptions
-
-    else if indentOrOptions is Object
-      indentOrOptions extract indent
-      {indent} = options = merge
-        HtmlTextNode.defaultCompileOptions
-        indentOrOptions
-
-    indent = '' if indent == true
-
-    compactFlatten @_compile indent, options
-
-  toString: (options = '')->
-    @compile options
-    .join "\n"
-
-  emptyOptions = {}
-  toCompactString: ->
-    compactFlattenJoin '' @_compile null, emptyOptions
+  # OUT: String
+  compile: -> compactFlattenJoin '' @_compile()
+  toString: -> @compile()
+  toCompactString: -> @compile()
 
   ##################
   # PRIVATE
   ##################
 
-  htmlFriendlyTextWrap = (line, columns) ->
-    wrapAnsi
-      line.replace /\ *\n( *\n)/g, "\n\n"
-      columns
-
-  applyIndent = (indent, line, columns) ->
-    if columns > 0
-      line = htmlFriendlyTextWrap line, columns
-
-    if indent?
-      indent + line.replace /\n(?!\n)/g, "\n#{indent}"
-    else
-      line
-
-  ## OUT: String or Array of Strings, possibly nested
-  _compile: (indent, options) ->
-    if @isRawHtml && @_children # not an actual tag, so just compile children
-      @_getCompiledChildren indent, emptyOptions
-
-    else if indent? && indent.length + @length <= options.tagWrap && @onelinerOk
-      indent + @toCompactString()
+  ## OUT: Array of Strings, possibly nested; assumption is the output can be joined with a newline
+  _compile: ->
+    if @isRawHtml && @_children # not an actual tag, so just compile children, don't include open and close tags
+      @compiledChildrenArray
 
     else
-      indentedStartTag = applyIndent indent, "" <#{@_name}#{@propsString}>
-      endTag = "" </#{@_name}>
-
-      if @_children
-        if spanningTags[@name]
-          indentedStartTag
-          + @_getCompiledChildrenSpan indent, options
-          + endTag
-
-        else
-          []
-            indentedStartTag
-            @_getCompiledChildren indent, options
-            applyIndent indent, endTag
-
-      else if noCloseTags[@_name]
-        indentedStartTag
-
-      else
-        indentedStartTag + endTag
-
-  _getCompiledChildren: (indent, options) ->
-    if @_children
-      @_childrenToStringArray
-        if indent? && @indentChildren then indent + '  ' else indent
-        options
-
-  _childrenToStringArray: (indent, options) ->
-    array child from @_children
-      if isFunction child._compile then child._compile indent, options
-      else
-        child = "#{child}"
-        if @indentChildren
-          applyIndent indent, child, unless @isNewLineSensitive then options.textWordWrap
-        else child
-
-  _getCompiledChildrenSpan: (indent, options) ->
-    if @_children
-      compiledChildren =
-        compactFlatten @_childrenToStringArray '', options
-        .join "\n"
-
-      if @indentChildren
-        compiledChildren
-        .replace  /\n/g, "\n#{indent}"
-
-      else
-        compiledChildren
+      switch
+      when @hasChildren then @startTag, @compiledChildrenArray, @endTag
+      when noCloseTags[@_name] then @startTag
+      else @startTag, @endTag

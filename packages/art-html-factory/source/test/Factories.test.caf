@@ -25,24 +25,10 @@ testFactoryToString
     H2 "" You simply have to read it.
 
   """
-    <header>
-      <h1>The most Amazing Page Ever</h1>
-      <h2>You simply have to read it.</h2>
-    </header>
+    <header><h1>The most Amazing Page Ever</h1><h2>You simply have to read it.</h2></header>
 
   -> P "" Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding liquorice.
-  """
-    <p>
-      Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut
-      gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake
-      cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread
-      icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies
-      marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi
-      bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon
-      drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar
-      plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding
-      liquorice.
-    </p>
+  """ <p>Sweet donut biscuit tiramisu tart. Chocolate powder lollipop. Candy canes donut gummi bears marshmallow tiramisu. Sesame snaps fruitcake danish bonbon cupcake cheesecake soufflé cupcake. Tiramisu jelly-o cotton candy fruitcake. Gingerbread icing macaroon sesame snaps cotton candy chocolate. Pudding cookie gummies marshmallow jelly beans cheesecake. Marshmallow jelly beans liquorice gummi bears carrot cake pastry cake tootsie roll donut. Caramels cotton candy lemon drops marshmallow danish. Lollipop sugar plum gummies. Jelly-o carrot cake sugar plum icing brownie sesame snaps lollipop brownie. Apple pie gummi bears pudding liquorice.</p>
 
 describe
   escaping: -> testFactoryToString
@@ -105,50 +91,6 @@ describe
           {} style: height: 100px
         "" <div style="height: 100px"></div>
 
-  textWordWrappingDefaultBehavior: -> testFactoryToString
-    -> Div
-      """
-        one line
-        two line
-    "<div>one line two line</div>"
-
-    -> Div
-      """
-        one line
-
-        two line
-
-    """
-      <div>
-        one line
-
-        two line
-      </div>
-
-    -> Body Div
-      """
-        one line
-
-        two line
-
-    """
-      <body>
-        <div>
-          one line
-
-          two line
-        </div>
-      </body>
-
-    -> Div
-      "" one
-      "" line
-    """
-      <div>
-        one
-        line
-      </div>
-
   escape: -> testFactoryToString
     -> Div "" one<br>&nbsp;line
     "" <div>one<br>&nbsp;line</div>
@@ -163,23 +105,14 @@ describe
         """ </html>
       """
         <!-- RawHtml is here to escape in whatever you want -->
-        <html>
-        <body>
-          With some children
-        </body>
-        </html>
+        <html><body>With some children</body></html>
 
     br: -> testFactoryToString
       -> Div
         "" one
         Br()
         "" line
-      """
-        <div>
-          one
-          <br>
-          line
-        </div>
+      """ <div>one<br>line</div>
 
     script: -> testFactoryToString
       -> Html Head Script
@@ -196,17 +129,11 @@ describe
             font-weight: 400;
           }
       """
-        <html>
-          <head>
-            <style>
-              @font-face {
-                font-family: proxima nova light;
-                font-style: normal;
-                font-weight: 400;
-              }
-            </style>
-          </head>
-        </html>
+        <html><head><style>@font-face {
+          font-family: proxima nova light;
+          font-style: normal;
+          font-weight: 400;
+        }</style></head></html>
 
     img: -> testFactoryToString
       -> Div Img src: :https://my.url.com/wonder_woman.jpg
@@ -229,15 +156,11 @@ describe
             Hello, world!
           </body></html>
       """
-        <div>
-          <pre>
-        Pre tags can have HTML in them:
+        <div><pre>Pre tags can have HTML in them:
 
         <html><body>
           Hello, world!
-        </body></html>
-          </pre>
-        </div>
+        </body></html></pre></div>
 
   length: ->
     testLength = (name, f) ->
@@ -253,77 +176,32 @@ describe
     testLength "P :hello", -> P :hello
     testLength "P :hello B :bye", -> P :hello B :bye
 
-  # toString: ->
-  #   test "with options" ->
-  #     assert.eq
-  #       Div "Sweet donut biscuit tiramisu tart. Chocolate powder lollipop."
-  #       .toString indent: true tagWrap: 20 textWordWrap: 20
-  #       """
-  #         <div>
-  #           Sweet donut biscuit
-  #           tiramisu tart.
-  #           Chocolate powder
-  #           lollipop.
-  #         </div>
-
   script: ->
     test "long script should not be wrapped" ->
       assert.eq
         Script "" 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
         .toString()
         """
-          <script>
-            1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
-          </script>
+          <script>1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000</script>
 
   regressions2: ->
-    ##
-      <html>
-        <head><link rel="stylesheet" href="/assets/admin/admin.css"></head>
-        <body>
-          <div> <h1 class="page-title"> Kai Properties <div class="page-menu"> <a href="#"
-          onClick="menuClick(&quot;users&quot;)" class="nav-button">users</a> <a href="#"
-          onClick="menuClick(&quot;properties&quot;)" class="nav-button">properties</a> <a
-          href="#" onClick="menuClick(&quot;whitelist&quot;)"
-          class="nav-button">whitelist</a> <script> function menuClick(item) {
-          window.location.href = window.location.href.replace(/admin.*$/, 'admin/' +
-          item); } </script> <a href="/logout" class="nav-button logout-button">logout</a>
-          </div> </h1> <script>
     test "long script in nested tags" ->
       assert.eq
-        Html
-          Head Link rel: :stylesheet href: :/assets/admin/admin.css
-          Body Div
-            H1 "Kai Properties"
-            Div
-              A href: :# onClick: 'menuClick("users")' class: 'nav-button users'
-              A href: :# onClick: 'menuClick("properties")' class: 'nav-button properties'
-              A href: :# onClick: 'menuClick("whitelist")' class: 'nav-button whitelist'
-              Script "function menuClick(item) { window.location.href = window.location.href.replace(/admin.*$/, 'admin/' + item); }"
-              A href: :/logout class: 'nav-button logout-button'
-            Script "" 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
-        .toString()
+        log
+          Html
+            Head Link rel: :stylesheet href: :/assets/admin/admin.css
+            Body Div
+              H1 "Stuff Stuff"
+              Div
+                A href: :# onClick: 'menuClick("users")' class: 'nav-button users'
+                A href: :# onClick: 'menuClick("properties")' class: 'nav-button properties'
+                A href: :# onClick: 'menuClick("whitelist")' class: 'nav-button whitelist'
+                Script "function menuClick(item) { window.location.href = window.location.href.replace(/admin.*$/, 'admin/' + item); }"
+                A href: :/logout class: 'nav-button logout-button'
+              Script "" 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
+          .toString()
         """
-          <html>
-            <head><link rel="stylesheet" href="/assets/admin/admin.css"></head>
-            <body>
-              <div>
-                <h1>Kai Properties</h1>
-                <div>
-                  <a href="#" onClick="menuClick(&quot;users&quot;)" class="nav-button users"></a>
-                  <a href="#" onClick="menuClick(&quot;properties&quot;)" class="nav-button properties"></a>
-                  <a href="#" onClick="menuClick(&quot;whitelist&quot;)" class="nav-button whitelist"></a>
-                  <script>
-                    function menuClick(item) { window.location.href = window.location.href.replace(/admin.*$/, 'admin/' + item); }
-                  </script>
-                  <a href="/logout" class="nav-button logout-button"></a>
-                </div>
-                <script>
-                  1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000
-                </script>
-              </div>
-            </body>
-          </html>
+          <html><head><link rel="stylesheet" href="/assets/admin/admin.css"></head><body><div><h1>Stuff Stuff</h1><div><a href="#" onClick="menuClick(&quot;users&quot;)" class="nav-button users"></a><a href="#" onClick="menuClick(&quot;properties&quot;)" class="nav-button properties"></a><a href="#" onClick="menuClick(&quot;whitelist&quot;)" class="nav-button whitelist"></a><script>function menuClick(item) { window.location.href = window.location.href.replace(/admin.*$/, 'admin/' + item); }</script><a href="/logout" class="nav-button logout-button"></a></div><script>1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000 1111 2222 3333 4444 5555 6666 7777 8888 9999 0000</script></div></body></html>
 
   createHtmlFactories: ->
     test "custom Svg tags" ->
@@ -338,9 +216,7 @@ describe
           Path d: "M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"
         .toString()
         """
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-            <path d="M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"></path>
-          </svg>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><path d="M4 12h56v12h-56zM4 28h56v12h-56zM4 44h56v12h-56z"></path></svg>
 
   regressions: ->
     test "merging styles" ->
@@ -367,10 +243,7 @@ describe
           Img src: "with-source-image"
 
       """
-        <div>
-          <a>This is some text, right?
-          <img src="with-source-image"></a>
-        </div>
+        <div><a>This is some text, right?<img src="with-source-image"></a></div>
 
       -> Div
         A
@@ -381,27 +254,19 @@ describe
           "" That's OK?
           Img src: "with-source-image"
 
-      """
-        <div>
-          <a>This is some text, right?
-          <img src="with-source-image">
-          This is some text, right!
-          <b>Then why are you reading this?</b>
-          That's OK?
-          <img src="with-source-image"></a>
-        </div>
+      """ <div><a>This is some text, right?<img src="with-source-image">This is some text, right!<b>Then why are you reading this?</b>That's OK?<img src="with-source-image"></a></div>
 
       -> Div Div
-        A
-          "" This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!
+        A "" This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!
 
-      """
-        <div>
-          <div>
-            <a>This is some text, right, This is some text, right. This is some text, right!
-            This is some text, right!!!</a>
-          </div>
-        </div>
+      """ <div><div><a>This is some text, right, This is some text, right. This is some text, right! This is some text, right!!!</a></div></div>
+
+    whitespacePreservation: -> testFactoryToString
+      -> Div "Hello " Span "world"
+      """ <div>Hello <span>world</span></div>
+
+      -> Div "Hello" Span " world"
+      """ <div>Hello<span> world</span></div>
 
     regressions: -> testFactoryToString
       ->
@@ -417,19 +282,17 @@ describe
                   href: :services class: :background-border-color-padding-7
                   :SERVICES
 
-      """
-        <div id="pageMenu" class="pageMenu-3">
-          <div class="container position-z-4">
-            <div class="color-display-font-padding-position-right-text-top-5">
-              <span class="font-padding-6"><a href="services" class="background-border-color-padding-7">SERVICES</a></span>
-            </div>
-          </div>
-        </div>
+      """ <div id="pageMenu" class="pageMenu-3"><div class="container position-z-4"><div class="color-display-font-padding-position-right-text-top-5"><span class="font-padding-6"><a href="services" class="background-border-color-padding-7">SERVICES</a></span></div></div></div>
 
-      ->
-        A Div :one
+      -> Div :asdf-one
+      """ <div>asdf-one</div>
 
-      """
-        <a><div>
-          one
-        </div></a>
+      -> A Div :one
+      """ <a><div>one</div></a>
+
+  escapeStringsTurnedOff: ->
+    test "escapeStringsTurnedOff" ->
+      assert.eq
+        Div "Hello <b>world</b>"
+        .toString()
+        """ <div>Hello <b>world</b></div>

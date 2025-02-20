@@ -14,6 +14,7 @@
       Summary Sup Table TBody Td TextArea TFoot Th THead Time Title Tr Track Tt U Ul
       Var Video Wbr
       RawHtml
+      Textarea
 
   noCloseTags:
     link:     true

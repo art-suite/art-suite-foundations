@@ -15,8 +15,4 @@ test "component children" ->
   assert.eq
     HelloWorld Div :Noodle
     .toString()
-    """
-      <div>
-        Hello.
-        <div>Noodle</div>
-      </div>
+    """ <div>Hello.<div>Noodle</div></div>

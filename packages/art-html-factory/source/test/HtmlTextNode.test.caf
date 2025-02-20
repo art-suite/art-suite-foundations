@@ -8,10 +8,7 @@ describe
         node.toString
           indent: ''
           tagWrap: 1
-        """
-          <div class="fooClass">
-            string child
-          </div>
+        """ <div class="fooClass">string child</div>
 
     test "style is stringified" ->
       node = new HtmlTextNode :div, style: font-size: 10pt color: #f00
@@ -107,19 +104,11 @@ describe
 
       assert.eq
         node.toString()
-        """
-          <div>
-            <p>some text</p>
-            <p>some other text</p>
-          </div>
+        """ <div><p>some text</p><p>some other text</p></div>
 
       assert.eq
         node2.toString()
-        """
-          <div>
-            <p style="font-size: 5pt">some text</p>
-            <p style="font-size: 5pt">some other text</p>
-          </div>
+        """ <div><p style="font-size: 5pt">some text</p><p style="font-size: 5pt">some other text</p></div>
 
     test "with" ->
       assert.eq

@@ -17,28 +17,13 @@ test "demo" ->
         P "simple, elegant, fast declarative tree generation library"
 
     .toString()
-    """
-      <html>
-        <head>
-          <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, viewport-fit=cover">
-          <meta name="apple-mobile-web-app-capable" content="yes">
-          <meta name="apple-mobile-web-app-status-bar-style" content="black">
-          <meta name="format-detection" content="telephone=no">
-        </head>
-        <body>
-          <h1>Art.ObjectTreeFactory</h1>
-          <p>simple, elegant, fast declarative tree generation library</p>
-        </body>
-      </html>
+    """ <html><head><meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no"></head><body><h1>Art.ObjectTreeFactory</h1><p>simple, elegant, fast declarative tree generation library</p></body></html>
 
 test "works with non-string atomics" ->
   assert.eq
     Div 123
     .toString()
-    """
-      <div>
-        123
-      </div>
+    """ <div>123</div>
 
   assert.eq
     Div
@@ -49,3 +34,9 @@ test "works with non-string atomics" ->
 
     .toString()
     """ <div>2024-01-01T00:00:00.000Z</div>
+
+test "textarea and whitespace sensitivity" ->
+  assert.eq
+    Textarea "Hello\nWorld"
+    .toString()
+    """ <textarea>Hello\nWorld</textarea>
