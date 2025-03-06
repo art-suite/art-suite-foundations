@@ -2,7 +2,7 @@
   log
   timeout
   ReschedulableTimer
-} = Neptune.Art.StandardLib
+} = require('../../../build')
 
 module.exports = suite: ->
   test "basic", ->

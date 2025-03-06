@@ -1,6 +1,5 @@
 
-{StandardLib} = Neptune.Art
-Unique = StandardLib.Unique
+{Unique} = require('../../../build')
 
 suite "Art.StandardLib.StandardLib.Unique", ->
   test "objectId", ->

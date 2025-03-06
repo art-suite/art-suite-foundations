@@ -7,7 +7,7 @@
   array
   findEmailRegExp
   findAllUrlsWithOptionalProtocolRegExp
-} = Neptune.Art.StandardLib
+} = require('../../../build')
 
 popNullish = (a) ->
   a = arrayWithoutLast a while !peek(a)?

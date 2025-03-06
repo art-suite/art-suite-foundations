@@ -1,11 +1,10 @@
 
-{StandardLib} = Neptune.Art
 {
   objectDiff
   inspect
   plainObjectsDeepEq
   objectKeyCount
-} = StandardLib
+} = require('../../../build')
 
 suite "Art.StandardLib.StandardLib.objectDiff", ->
   added = removed = changed = unchanged = 0

@@ -24,7 +24,7 @@
   log
   gt, lt, gte, lte
   getSuperclass
-} = Neptune.Art.StandardLib
+} = require('../../../build')
 {BaseClass} = require 'art-class-system'
 
 module.exports = suite:
@@ -331,7 +331,7 @@ module.exports = suite:
 
     MyEs6ExtendedClass && test "myExtendedInstance -> BaseClass.prototype", ->
       assert.eq Object.getPrototypeOf(myExtendedInstance), MyExtendedClass.prototype
-      assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), Neptune.Art.ClassSystem.BaseClass.prototype
+      assert.eq Object.getPrototypeOf(Object.getPrototypeOf(myExtendedInstance)), BaseClass.prototype
       assert.eq getSuper(myExtendedInstance), BaseClass.prototype
       # assert.instanceof BaseClass, getSuper myExtendedInstance
       # assert.eq MyExtendedClass.prototype, getSuper myExtendedInstance

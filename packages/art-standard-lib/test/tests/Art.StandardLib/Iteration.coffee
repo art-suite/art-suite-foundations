@@ -21,7 +21,7 @@
   eachWhile
   find
   array
-} = Neptune.Art.StandardLib
+} = require('../../../build')
 
 module.exports = suite:
   each:

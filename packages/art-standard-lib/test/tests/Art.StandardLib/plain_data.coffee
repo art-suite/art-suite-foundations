@@ -1,6 +1,5 @@
 
-{StandardLib} = Neptune.Art
-{merge, deepEach, deepMap, log, inspect, toJsonStructure, compact} = StandardLib
+{merge, deepEach, deepMap, log, inspect, toJsonStructure, compact} = require('../../../build')
 
 suite "Art.StandardLib.StandardLib.PlainData", ->
 

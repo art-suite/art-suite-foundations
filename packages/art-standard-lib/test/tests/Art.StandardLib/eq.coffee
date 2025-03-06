@@ -1,9 +1,8 @@
 
-{StandardLib} = Neptune.Art
 {neq, clone, eq, shallowEq, inspect, plainObjectsDeepEq, plainObjectsDeepDiff, compare,
   float64Precision,  floatTrue0
   formattedInspect
-} = StandardLib
+} = require('../../../build')
 # 'lib/art/atomic'
 # {point} = Atomic
 

@@ -1,5 +1,4 @@
 
-{StandardLib} = Neptune.Art
 {
   getCodeWords
   eq, clone, inspect, capitalize, upperCamelCase, lowerCamelCase
@@ -11,7 +10,7 @@
   getLowerCaseCodeWords
   w
   capitalizedDashCase
-} = StandardLib
+} = require('../../../build')
 
 suite "Art.StandardLib.StandardLib.String.Case", ->
 

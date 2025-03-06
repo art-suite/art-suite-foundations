@@ -1,4 +1,4 @@
-{mapToKeysArray, mapToValuesArray, Map, inspect, log} = Neptune.Art.StandardLib
+{mapToKeysArray, mapToValuesArray, Map, inspect, log} = require('../../../build')
 
 # suite "Art.StandardLib.Map.inspect", ->
 #   test "inspect just string keys", ->

@@ -1,6 +1,5 @@
 
-{StandardLib} = Neptune.Art
-{WorkerRpc, timeout, Promise, intRand, log, deepAll} = StandardLib
+{WorkerRpc, timeout, Promise, intRand, log, deepAll} = require('../../../build')
 
 module.exports = suite:
   blueBirdBasics: ->

@@ -6,4 +6,4 @@ suite: ->
     isBrowser:    !!global.window
     isNode:       !global.window
   for testName, expected of list
-    global.test testName, -> assert.eq expected, Neptune.Art.StandardLib[testName]
+    global.test testName, -> assert.eq expected, require('../../../build')[testName]

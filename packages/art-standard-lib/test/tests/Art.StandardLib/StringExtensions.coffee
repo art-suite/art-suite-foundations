@@ -1,5 +1,3 @@
-
-{StandardLib} = Neptune.Art
 {
   eq, clone, inspect, capitalize, upperCamelCase, lowerCamelCase
   snakeCase, pluralize, allIndexes, randomString
@@ -10,7 +8,7 @@
   cryptoRandomString
   compactFlattenJoin
   getPadding
-} = StandardLib
+} = require('../../../build')
 
 hfsStest = (input, maxLength, output) ->
   test "'#{input}', #{maxLength} == '#{output}'", ->

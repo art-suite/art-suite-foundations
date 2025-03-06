@@ -1,6 +1,5 @@
 
-{StandardLib} = Neptune.Art
-{log, inspectLean, rawLog, inspect, errorToString} = StandardLib
+{log, inspectLean, rawLog, inspect, errorToString,callStack } = StandardLib = require('../../../build')
 
 rawLog = ->
 
@@ -13,7 +12,7 @@ module.exports = suite: ->
 
   test "log with function", ->
     myFunc = ->
-      a = StandardLib.callStack()
+      a = callStack()
       rawLog StandardLib.Inspect.inspectLean myFuncReturning:a, 1
       a
     s = myFunc()
@@ -22,7 +21,7 @@ module.exports = suite: ->
   test "log without function", ->
     callIt = (f) -> f()
     s = callIt ->
-      a = StandardLib.callStack()
+      a = callStack()
       rawLog StandardLib.Inspect.inspectLean myFuncReturning:a, 1
       a
 

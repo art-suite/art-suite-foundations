@@ -4,7 +4,7 @@
   MathExtensions
   each
   numberToTightString
-} = Neptune.Art.StandardLib
+} = require('../../../build')
 
 # 'lib/art'
 # point = Art.Atomic.Point.point

@@ -1,10 +1,6 @@
 
-{StandardLib} = Neptune.Art
-{log, clone, cloneStructure, isPlainObject, isArray} = Neptune.Art.StandardLib
+{log, Clone, clone, inspect, Unique,cloneStructure, isPlainObject, isArray, StandardLib} = require('../../../build')
 
-clone = StandardLib.Clone.clone
-inspect = StandardLib.Inspect.inspect
-Unique = StandardLib.Unique
 
 module.exports = suite:
   cloneStructure: ->

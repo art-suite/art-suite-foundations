@@ -1,5 +1,5 @@
 
-{currentSecond, timeout, PromiseWorkerPool, timeout, Promise, intRand, log, deepAll} = Neptune.Art.StandardLib
+{currentSecond, timeout, PromiseWorkerPool, timeout, Promise, intRand, log, deepAll} = require('../../../build')
 
 module.exports = suite:
   basics: ->

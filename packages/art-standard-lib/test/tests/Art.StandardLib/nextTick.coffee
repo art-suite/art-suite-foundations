@@ -1,6 +1,5 @@
 
-{StandardLib} = Neptune.Art
-{nextTick, eq, inspect, clone} = StandardLib
+{nextTick, eq, inspect, clone} = require('../../../build')
 
 suite "Art.StandardLib.StandardLib.nextTick", ->
   test "one nextTick", (done)->

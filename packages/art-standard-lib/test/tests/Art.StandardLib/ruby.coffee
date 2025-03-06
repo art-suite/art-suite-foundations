@@ -1,6 +1,5 @@
 
-{StandardLib} = Neptune.Art
-{rubyTrue, rubyFalse, rubyOr, rubyAnd, inspect} = StandardLib
+{rubyTrue, rubyFalse, rubyOr, rubyAnd, inspect} = require('../../../build')
 
 suite "Art.StandardLib.StandardLib.Ruby.rubyTrue and rubyFalse", ->
   pairs = [
