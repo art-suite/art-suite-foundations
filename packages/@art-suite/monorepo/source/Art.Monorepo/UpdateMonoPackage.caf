@@ -1,11 +1,13 @@
 import &StandardImport
 
 addArtMonorepoFeatures = (rootPackage) ->
-  rootPackage.dependencies[&package.name] ?= :^ + &package.version
+  rootPackage.devDependencies[&package.name] ?= :^ + &package.version
   rootPackage.scripts = merge
-    object script in :test :build :sync :clean :update :versions
+    # provide defaults
+    object script in :test :build :sync :clean :versions
       "" art-monorepo #{script}
 
+    # but don't override any existing scripts
     rootPackage.scripts
 
   rootPackage
@@ -102,7 +104,8 @@ run: ({quiet, preserveRootDependencies}) ->
 
       addDep :dependencies, name, "file:#{packageFolder}" if name?
 
-    addArtMonorepoFeatures rootPackage
+    unless preserveRootDependencies
+      addArtMonorepoFeatures rootPackage
 
     if neq originalRootPackage, rootPackage
       writeJson :package.json rootPackage
