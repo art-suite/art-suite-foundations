@@ -1,0 +1,19 @@
+{
+  "author": "Shane Brinkman-Davis Delamore",
+  "bin": {
+    "art-monorepo": "./bin/art-monorepo"
+  },
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "@art-suite/monorepo": "^1.11.3"
+  },
+  "description": "Wrapper for @art-suite/monorepo",
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "license": "ISC",
+  "name": "art-monorepo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "version": "1.11.3"
+}

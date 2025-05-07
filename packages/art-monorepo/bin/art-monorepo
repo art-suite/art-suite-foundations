@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+require('child_process').spawnSync(
+  require.resolve('@art-suite/monorepo/art-monorepo'),
+  process.argv.slice(2),
+  { stdio: 'inherit' }
+)
