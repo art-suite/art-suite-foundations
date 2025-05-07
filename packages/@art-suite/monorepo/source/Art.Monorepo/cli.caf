@@ -5,7 +5,7 @@ cli: ->
   .start {}
     description:
       """
-        Art-monorepo is a tool for managing a JavaScript monorepo's depdencies. It is an opinionated tool with one core design principles:
+        Art-monorepo is a tool for managing a JavaScript monorepo's dependencies. It is an opinionated tool with one core design principles:
 
         - All packages in the monorepo should use the same version of any external dependencies.
 
@@ -16,5 +16,7 @@ cli: ->
         The main usage of art-monorepo is running the `art-monorepo sync` command followed by an `npm install`.
 
         Art-monorepo also has handy tools for running all tests and any shell-command of your choices in all packages in the monorepo.
+
+        Version: #{&package.version}
 
     &commands
