@@ -33,6 +33,7 @@
     "art-filebuilder": "file:packages/art-filebuilder",
     "art-html-factory": "file:packages/art-html-factory",
     "art-linux-stat": "file:packages/art-linux-stat",
+    "art-monorepo": "file:packages/art-monorepo",
     "art-object-tree-factory": "file:packages/art-object-tree-factory",
     "art-rest-client": "file:packages/art-rest-client",
     "art-standard-lib": "file:packages/art-standard-lib",
