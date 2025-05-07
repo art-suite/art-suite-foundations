@@ -2,13 +2,13 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/assert": "^1.2.0",
+    "@art-suite/assert": "^1.2.1",
     "@art-suite/chained-test": "^1.6.6",
-    "art-class-system": "^1.11.18",
-    "art-config": "^2.0.4",
+    "art-class-system": "^1.11.19",
+    "art-config": "^2.0.5",
     "art-events": "^2.0.0",
-    "art-standard-lib": "^1.74.0",
-    "neptune-namespaces-runtime": "^3.2.13"
+    "art-standard-lib": "^1.74.3",
+    "neptune-namespaces-runtime": "^3.2.14"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Jest & Mocha",
   "devDependencies": {

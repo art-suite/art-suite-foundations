@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.74.0",
+    "art-standard-lib": "^1.74.3",
     "caffeine-script-runtime": "^1.14.0",
     "nodemon": "^3.1.0"
   },

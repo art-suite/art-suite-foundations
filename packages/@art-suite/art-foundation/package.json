@@ -7,19 +7,19 @@
     "art-atomic": "^1.28.2",
     "art-browser-tools": "^1.2.16",
     "art-build-configurator": "^1.30.4",
-    "art-class-system": "^1.11.18",
+    "art-class-system": "^1.11.19",
     "art-communication-status": "^1.6.1",
-    "art-config": "^2.0.4",
+    "art-config": "^2.0.5",
     "art-epoched-state": "^1.2.14",
-    "art-object-tree-factory": "^2.2.10",
-    "art-rest-client": "^1.10.1",
-    "art-standard-lib": "^1.74.0",
-    "art-validation": "^2.9.0",
+    "art-object-tree-factory": "^2.2.11",
+    "art-rest-client": "^1.10.2",
+    "art-standard-lib": "^1.74.3",
+    "art-validation": "^2.9.1",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",
   "devDependencies": {
-    "art-testbench": "^3.2.16"
+    "art-testbench": "^3.2.17"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

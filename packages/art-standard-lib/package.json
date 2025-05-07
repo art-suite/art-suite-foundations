@@ -6,14 +6,14 @@
     "caffeine-script-runtime": "^1.14.0",
     "dateformat": "^4.5.1",
     "detect-node": "^2.0.4",
-    "neptune-namespaces-runtime": "^3.2.13",
+    "neptune-namespaces-runtime": "^3.2.14",
     "pluralize": "^8.0.0"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
     "@art-suite/standard-package-builder": "^1.2.7",
     "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.16",
+    "art-testbench": "^3.2.17",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -48,7 +48,7 @@
     "test": "jest\nif [[ $? -ne 0 ]]; then\n  exit 1\nfi\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "1.74.2",
+  "version": "1.74.3",
   "watch": {
     "build": {
       "extensions": [

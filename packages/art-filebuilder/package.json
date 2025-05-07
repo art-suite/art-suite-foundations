@@ -3,15 +3,15 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "art-binary": "^1.1.16",
-    "art-class-system": "^1.11.18",
-    "art-object-tree-factory": "^2.2.10",
-    "art-standard-lib": "^1.74.0",
+    "art-class-system": "^1.11.19",
+    "art-object-tree-factory": "^2.2.11",
+    "art-standard-lib": "^1.74.3",
     "fs-extra": "^11.2.0"
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
     "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.16",
+    "art-testbench": "^3.2.17",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
