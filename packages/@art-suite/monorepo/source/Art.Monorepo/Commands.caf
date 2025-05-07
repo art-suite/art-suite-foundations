@@ -34,11 +34,11 @@ makeNpmCommand = (command) ->
 
         Run npm install immediately after running this command.
 
-        Three Steps:
+        Sync is done in three Steps:
 
         1.	Clean: Removes all package-lock.json files and node_modules folders in sub-packages. The root should be the only place with a lockfile and installed modules.
-        2.	Update sub-packages: Aligns all sub-package dependency versions with the root package.json.
-        3.	Update root: Merges in any new dependencies from sub-packages and ensures internal package references are up to date and use file: links to local paths.
+        2.	Update sub-packages: Aligns all sub-package dependency versions with each other and the root.
+        3.	Update root: Merges in any new or updated dependencies from sub-packages and ensures all cross-package dependencies use the "file:..." npm protocol.
 
         About the preserveRootDependencies option:
 
