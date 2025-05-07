@@ -26,16 +26,30 @@ makeNpmCommand = (command) ->
   sync:
     description:
       """
-        Sync the root package.json with all package.json files in subfolders. This will ensure all packages are using the same version of every external dependency. It will also ensure all cross-referenced packages within the monorepo are referencing the latest version. Last, it will update the root package.json to contain all external references. It's best to run `npm install` immediately after running this.
+        Syncs the root package.json with all sub-packages. Ensures:
 
-        This happens in three steps:
+        - All sub-packages use the same version of each external dependency.
+        - All internal cross-package references are updated to the latest version and linked in the root package.json using "file:..." references to local packages instead of published npm versions.
+        - This only affects the root package.json and does not modify sub-packages—so it won’t interfere with publishing and should work seamlessly with CI/CD workflows.
+        - The root package.json includes all external dependencies used in sub-packages.
 
-        1. Clean: remove all package-lock.json files and all node_modules folders in sub-folders. There should only be one of each in the root of the monorepo.
-        2. Update sub-packages: update all dependency versions in all sub-packages to match the root package.json.
-        3. Update mono-package: update the root mono-repo's package.json with any new dependencies found in sub-packages as well as updating any cross-referencing between packages within the monorepo.
+        Run npm install immediately after running this command.
+
+        Three Steps:
+
+        1.	Clean: Removes all package-lock.json files and node_modules folders in sub-packages. The root should be the only place with a lockfile and installed modules.
+        2.	Update sub-packages: Aligns all sub-package dependency versions with the root package.json.
+        3.	Update root: Merges in any new dependencies from sub-packages and ensures internal package references are up to date and use file: links to local paths.
+
+        About the preserveRootDependencies option:
+
+        By default, the root package.json is treated as a monorepo manager only—not an active code package. Its dependencies field is fully regenerated to represent the union of all sub-package dependencies and devDependencies. Its devDependencies field is untouched (reserved for monorepo tools like art-monorepo). Any root dependency not used in a sub-package will be removed.
+
+        If the root is also used for coding, use the preserveRootDependencies option. This prevents pruning of root dependencies. Instead, the tool merges sub-package dependencies into the root. You are responsible for removing obsolete dependencies manually.
 
     options:
       quiet: "" Suppress output.
+      preserveRootDependencies: "" Don't remove dependencies from the root package.json even if they are not found in any sub-packages. See the full command description for more details.
 
     run: (options) ->
       cleanMonorepo()

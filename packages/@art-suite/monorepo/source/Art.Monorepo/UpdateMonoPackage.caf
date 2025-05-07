@@ -10,15 +10,27 @@ addArtMonorepoFeatures = (rootPackage) ->
 
   rootPackage
 
-options: quiet: "" Supress output.
-description: "" Advanced: Update the root package.json file based on all the package.json files in sub-folders. This includes updating dependency versions, new dependencies, and cross-references between packages in the mono-repo. Run `npm install` after.
-run: ({quiet}) ->
+options:
+  quiet: "" Suppress output.
+  preserveRootDependencies: "" Don't remove dependencies from the root package.json even if they are not found in any sub-packages. See the full command description for more details.
+description:
+  """
+    Updates the root package.json file based on all the package.json files in sub-folders. This includes updating dependency versions, new dependencies, and cross-references between packages in the mono-repo. Run `npm install` after.
+
+    About the preserveRootDependencies option:
+
+    By default, the root package.json is treated as a monorepo manager only—not an active code package. Its dependencies field is fully regenerated to represent the union of all sub-package dependencies and devDependencies. Its devDependencies field is untouched (reserved for monorepo tools like art-monorepo). Any root dependency not used in a sub-package will be removed.
+
+    If the root is also used for coding, use the preserveRootDependencies option. This prevents pruning of root dependencies. Instead, the tool merges sub-package dependencies into the root. You are responsible for removing obsolete dependencies manually.
+
+run: ({quiet, preserveRootDependencies}) ->
   unless quiet
     log blue "" Updating **/package.json >> ./package.json...
 
   rootPackage = readJson :package.json
   originalRootPackage = clone rootPackage
-  rootPackage.dependencies = {}
+  unless preserveRootDependencies
+    rootPackage.dependencies = {}
 
   previousSubPackages = {}
 
@@ -79,7 +91,15 @@ run: ({quiet}) ->
         packageFolderByPackageName[name] = packageFolder if name?
 
       each v, k in dependencies     with addDep :dependencies, k, v, _package
-      each v, k in devDependencies  with addDep :dependencies, k, v, _package
+      each v, k in devDependencies
+        if preserveRootDependencies
+          # with preserveRootDependencies, sub-package devDependencies are merged into the root package's devDependencies section
+          unless rootPackage.dependencies[k] # don't add duplicated devDependencies that already exist in the dependencies section
+            addDep :devDependencies, k, v, _package
+        else
+          # without preserveRootDependencies, sub-package devDependencies are managed into the root package's dependencies section
+          addDep :dependencies, k, v, _package
+
       addDep :dependencies, name, "file:#{packageFolder}" if name?
 
     addArtMonorepoFeatures rootPackage
