@@ -29,8 +29,7 @@ makeNpmCommand = (command) ->
         Syncs the root package.json with all sub-packages. Ensures:
 
         - All sub-packages use the same version of each external dependency.
-        - All internal cross-package references are updated to the latest version and linked in the root package.json using "file:..." references to local packages instead of published npm versions.
-        - This only affects the root package.json and does not modify sub-packages—so it won’t interfere with publishing and should work seamlessly with CI/CD workflows.
+        - All internal cross-package references are updated to the latest version and linked to use the local packages instead of published npm versions.
         - The root package.json includes all external dependencies used in sub-packages.
 
         Run npm install immediately after running this command.
