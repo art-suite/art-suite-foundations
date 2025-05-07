@@ -5,7 +5,7 @@ addArtMonorepoFeatures = (rootPackage) ->
   rootPackage.scripts = merge
     # provide defaults
     object script in :test :build :sync :clean :versions
-      "" art-monorepo #{script}
+      "" npx art-monorepo #{script}
 
     # but don't override any existing scripts
     rootPackage.scripts
