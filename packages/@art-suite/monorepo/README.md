@@ -11,16 +11,54 @@ At the heart of Art-Monorepo is a simple yet powerful principle:
 ## Features
 
 - **Dependency Synchronization:** Syncs all package.json files within the monorepo to use identical versions of external dependencies.
-- **Simplified Structure:** Operates with any folder structure, automatically detecting package.json files in subfolders.
+- **Simplified Structure:** Operates with any folder structure, automatically detecting package.json files in sub-folders.
 - **Efficient Commands:** Provides commands for cleaning, synchronizing dependencies, running tests, and executing arbitrary commands across all packages.
 - **Automatic Cross-Dependencies:** It allows you to develop multiple packages in parallel as any cross-dependencies within the monorepo will automatically be bound to local versions.
 
-## Installation
+## Quick Start Guide
 
-To get started with Art-Monorepo, install it globally via npm:
+You can start adding sub-packages right away to an existing repo w/o any major refactor. Just be sure to use the `--preserveRootDependencies` option when running `art-monorepo sync`. Here's how:
 
-```bash
+Install art-monorepo:
+
+```shell
+npm install @art-suite/monorepo --save-dev
+```
+
+Add scripts to your package.json:
+
+```json
+{
+  "scripts": {
+    "monorepo:sync": "npx @art-suite/monorepo sync --preserveRootDependencies",
+    "monorepo:sync:install": "npm run monorepo:sync && npm install",
+
+    // optional shortcuts to test, build and clean both your core package and all sub-packages
+    "monorepo:test": "npm run test && npx @art-suite/monorepo test",
+    "monorepo:build": "npm run build && npx @art-suite/monorepo build",
+    "monorepo:clean": "npm run clean && npx @art-suite/monorepo clean"
+  }
+}
+```
+
+## Running Art-Monorepo
+
+You can run Art-Monorepo anywhere with:
+
+```shell
+npx @art-suite/monorepo
+```
+
+If you install it globally:
+
+```shell
 npm install -g @art-suite/monorepo
+```
+
+You can run it with just:
+
+```shell
+art-monorepo
 ```
 
 ## Commands Overview
@@ -32,49 +70,70 @@ npm install -g @art-suite/monorepo
 
 ## Example Usage
 
-Extendeded help is available via the --help flag for all commands. Not all options available are listed here, but the command-line help will always be up to date and complete.
+Extended help is available via the --help flag for all commands. Not all options available are listed here, but the command-line help will always be up to date and complete.
 
 ### Synchronizing Dependencies
 
 The main use of art-monorepo is to synchronize your monorepo's dependencies. Simply run:
 
-```bash
+```shell
 art-monorepo sync
 npm install
 ```
 
 This ensures all your packages are aligned in terms of dependency versions. It also allows you to develop multiple packages in parallel as any cross-dependencies within the monorepo will be bound to local versions.
 
-### Updating Dependencies
+> NOTE: Occasionally you might need to run sync again after an `npm install`.
 
-```bash
-npm update # + any additional options
-art-monorepo sync
-```
+### Running Tests Across all Sub Packages
 
-After updating NPM, be sure to sync those updates to all your sub-packages.
-
-### Running Tests Across Packages
-
-```bash
+```shell
 art-monorepo test
 ```
 
 This command executes npm test in every subfolder containing a package.json file.
 
+### Running Scripts on all Sub Packages
+
+```shell
+art-monorepo run script-name
+```
+
+If a package doesn't have a script with the matching name, it'll just be skipped.
+
+```shell
+> art-monorepo run foobar
+FOOBARING: 36 packages
+SKIPPED: packages/neptune-namespaces-runtime (package.json does not have a 'foobar' script)
+SKIPPED: packages/neptune-namespaces (package.json does not have a 'foobar' script)
+
+RESULTS:
+  succeeded: 0
+  skipped: 2
+```
+
 ### Running Arbitrary Commands
 
-```bash
+```shell
 art-monorepo run --command "<your_command_here>" [--path "<sub_path>"] [--verbose]
 ```
 
 Execute any shell command in all packages of the monorepo. If you provide the path argument, it will only run the command on packages within that subpath. Any options you wish to pass to your command should be within the quoted command itself. E.g.: "ls -la".
 By default, the outputs of commands that succeed are not shown. Use verbose to show the outputs of all commands.
 
-## Advanced Usage
+## Common Activities
 
-`art-monorepo sync` does three unique steps. You can run them individually if you wish:
+### Add a Dependency to a Sub-Package
 
-1. `art-monorepo clean`: Deletes all package-lock.json files and node_modules folders in subfolders.
-2. `art-monorepo update-sub-packages`: Update the root package.json file based on all the package.json files in sub-folders.
-3. `art-monorepo update-mono-package`: Update all package.json files in sub-folders to match the root package.json file.
+1. `cd packages/foo` into the sub-package's folder
+2. `npm install xyz` your dependency - this will create a temporary node_modules/ and package-lock.json, but that's OK
+3. `cd ../..` back to the root
+4. `art-monorepo sync; npm install`
+   - syncs the dependency into the root package.json
+   - removes the temporary sub-package's node_modules/ and package-lock.json
+   - installs the new dependency in the root node_modules/ and package-lock.json
+
+### Add a new Sub-Package
+
+1. Create a new folder and create files following the pattern of one of the other sub-packages.
+2. In the root: `art-monorepo sync; npm install`
