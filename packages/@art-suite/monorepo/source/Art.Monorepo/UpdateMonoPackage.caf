@@ -1,7 +1,13 @@
 import &StandardImport
 
+artMonoRepoPackage = &package
+
 addArtMonorepoFeatures = (rootPackage) ->
-  rootPackage.devDependencies[&package.name] ?= :^ + &package.version
+  log addArtMonorepoFeatures: {} rootPackage, artMonoRepoPackage, rootPackage.devDependencies
+  if (!rootPackage.dependencies[artMonoRepoPackage.name])
+    rootPackage.devDependencies ?= {}
+    rootPackage.devDependencies[artMonoRepoPackage.name] ?= :^ + artMonoRepoPackage.version
+
   rootPackage.scripts = merge
     # provide defaults
     object script in :test :build :sync :clean :versions
@@ -30,6 +36,7 @@ run: ({quiet, preserveRootDependencies}) ->
     log blue "" Updating **/package.json >> ./package.json...
 
   rootPackage = readJson :package.json
+  log {rootPackage}
   originalRootPackage = clone rootPackage
   unless preserveRootDependencies
     rootPackage.dependencies = {}
