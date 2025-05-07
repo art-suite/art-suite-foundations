@@ -115,7 +115,7 @@ RESULTS:
 ### Running Arbitrary Commands
 
 ```shell
-art-monorepo run --command "<your_command_here>" [--path "<sub_path>"] [--verbose]
+art-monorepo exec command [--path "<sub_path>"] [--verbose]
 ```
 
 Execute any shell command in all packages of the monorepo. If you provide the path argument, it will only run the command on packages within that subpath. Any options you wish to pass to your command should be within the quoted command itself. E.g.: "ls -la".

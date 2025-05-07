@@ -17,8 +17,8 @@ makeNpmCommand = (command) ->
   run: makeNpmRunCommand command
 
 {}
-  &update-mono-package
-  &update-sub-packages
+  # &update-mono-package
+  # &update-sub-packages
 
   test: makeNpmCommand :test
   build: makeNpmCommand :build
@@ -61,7 +61,9 @@ makeNpmCommand = (command) ->
     options:
       verbose:  "" true/false
       folder:   "" find all packages in this path. default: "."
-    args:  "" Npm run-command.
+    args:
+      description: "" Npm run-command.
+      argument: :npm-script
     run: (options, args) -> makeNpmRunCommand(args[0]) options, args.slice 1
 
   exec:
@@ -69,7 +71,9 @@ makeNpmCommand = (command) ->
     options:
       verbose:  "" true/false
       folder:   "" find all packages in this path. default: "."
-    args:  "" Shell command to run.
+    args:
+      description: "" Shell command to run.
+      argument: :command
     run: (options, args) -> allPackageExec merge options, verb: :exec command: args.join " "
 
   &versions
@@ -81,11 +85,11 @@ makeNpmCommand = (command) ->
       cleanMonorepo()
       .then -> green "" Monorepo is clean.
 
-  update:
-    options:
-      quiet: "" Suppress output.
-    description: "" Advanced: Run the update-sub-packages then update-mono-package.
-    run: (options) ->
-      Promise
-      .then -> &updateSubPackages.run options
-      .then -> &updateMonoPackage.run options
+  # update:
+  #   options:
+  #     quiet: "" Suppress output.
+  #   description: "" Advanced: Run the update-sub-packages then update-mono-package.
+  #   run: (options) ->
+  #     Promise
+  #     .then -> &updateSubPackages.run options
+  #     .then -> &updateMonoPackage.run options
