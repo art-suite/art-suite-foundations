@@ -4,3 +4,4 @@
   &ArrayConstructors
   &MutateArray
   &ArrayCompactFlatten
+  &Stacks

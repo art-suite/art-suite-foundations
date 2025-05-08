@@ -4,6 +4,8 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  ParseUrlTest:         require('./ParseUrl.test'),
+  RegExpExtensionsTest: require('./RegExpExtensions.test'),
   StandardImport:       require('./StandardImport'),
   StringExtensionsTest: require('./StringExtensions.test')
 });

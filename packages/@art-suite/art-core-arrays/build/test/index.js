@@ -6,5 +6,6 @@
 .addModules({
   ArrayCompactFlattenTest: require('./ArrayCompactFlatten.test'),
   ArrayExtensionsTest:     require('./ArrayExtensions.test'),
+  Stacks:                  require('./Stacks'),
   StandardImport:          require('./StandardImport')
 });

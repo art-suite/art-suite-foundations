@@ -8,5 +8,6 @@
   ArrayConstructors:   require('./ArrayConstructors'),
   ArrayFind:           require('./ArrayFind'),
   ArrayWith:           require('./ArrayWith'),
-  MutateArray:         require('./MutateArray')
+  MutateArray:         require('./MutateArray'),
+  Stacks:              require('./Stacks')
 });

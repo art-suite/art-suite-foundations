@@ -1,0 +1,19 @@
+push: (inputArray, element) ->
+  if inputArray
+    inputArray.push element
+    inputArray
+  else
+    [element]
+
+peek: (inputArray, offset = -1) ->
+  if inputArray?
+    inputArray[inputArray.length + offset]
+  else
+    undefined
+
+pop: (inputArray) ->
+  if inputArray?
+    inputArray.pop()
+  else
+    undefined
+

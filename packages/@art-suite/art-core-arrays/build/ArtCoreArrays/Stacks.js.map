@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Stacks.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreArrays/Stacks.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,gDAAM,CAAC,YAAY,UAAW,OACzB,aAAU,CACX,gBAAgB,UAChB,cACE,CACD,YAEL,cAAM,CAAC,YAAY,SAAS,KAAM,OAChC,CAAG,sBACD,WAAW,oBAAoB,UAE/B,aAEJ,aAAK,CAAC,aAAc,OAClB,CAAG,sBACD,mBAEA"
+}

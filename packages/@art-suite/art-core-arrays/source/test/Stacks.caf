@@ -1,0 +1,20 @@
+import &StandardImport
+
+describe
+  push: ->
+    test "push", ->
+      assert.eq push([1, 2, 3], 4), [1, 2, 3, 4]
+
+  peek: ->
+    test "peek", ->
+      assert.eq peek([1, 2, 3], 0), 3
+      assert.eq peek([1, 2, 3], 1), 2
+      assert.eq peek([1, 2, 3], 2), 1
+      assert.eq peek([1, 2, 3], 3), undefined
+
+  pop: ->
+    test "pop", ->
+      assert.eq pop([1, 2, 3]), 3
+      assert.eq pop([1, 2, 3]), 2
+      assert.eq pop([1, 2, 3]), 1
+      assert.eq pop([1, 2, 3]), undefined

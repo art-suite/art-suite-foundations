@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreStrings.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreStrings/ArtCoreStrings.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,+BACA,uBACA"
+}
