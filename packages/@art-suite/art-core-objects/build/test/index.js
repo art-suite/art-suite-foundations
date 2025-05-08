@@ -4,6 +4,7 @@
 (module.exports = require('./namespace'))
 
 .addModules({
+  ArraysAndObjectsTest: require('./ArraysAndObjects.test'),
   MergeTest:            require('./Merge.test'),
   ObjectExtensionsTest: require('./ObjectExtensions.test'),
   StandardImport:       require('./StandardImport')

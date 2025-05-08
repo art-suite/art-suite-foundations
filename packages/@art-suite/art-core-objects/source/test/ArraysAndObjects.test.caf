@@ -1,0 +1,68 @@
+import &StandardImport
+
+describe
+  deepEach: ->
+    test "deepEach", ->
+      structure =
+        a: 100
+        b:
+          c: [1, 2, 3]
+          d: 300
+
+      keys = []
+      values = []
+      deepEach structure, (v, k) ->
+        keys.push k
+        values.push v
+
+      assert.eq keys, [] :a, 0, 1, 2, :d
+      assert.eq values, [] 100 1 2 3 300
+
+  deepMap: ->
+    test "deepMap", ->
+      structure =
+        a: 100
+        b:
+          c: [1, 2, 3]
+          d: 300
+
+      result = deepMap structure, (v) -> v * 2
+
+      assert.eq result,
+        a: 200
+        b:
+          c: [2, 4, 6]
+          d: 600
+
+  toPlainStructures: ->
+    class MyClass
+      constructor: -> @foo = 123
+      toString: -> "WOW"
+
+    structure =
+      a: 100
+      b:
+        c: [1, 2, 3]
+        d: 300
+        f: new MyClass
+    test "toPlainStructure", ->
+
+      result = toPlainStructure structure
+
+      assert.eq result,
+        a: 100
+        b:
+          c: [1, 2, 3]
+          d: 300
+          f: "MyClass"
+
+    test "toJsonStructure", ->
+
+      result = toJsonStructure structure
+
+      assert.eq result,
+        a: 100
+        b:
+          c: [1, 2, 3]
+          d: 300
+          f: "WOW"

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardImport.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreObjects/StandardImport.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCAAG,sCAAyB"
+}

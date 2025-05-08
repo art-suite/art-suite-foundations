@@ -1,0 +1,97 @@
+import &StandardImport
+noopMapper = (v) -> v
+
+## deepMapArray
+  only creates a new array if the children changed
+deepMapArray = (inputArray, mapper, options) ->
+  res = null
+  each v, i from inputArray
+    r = deepMap v, mapper, options
+    if r!=v
+      res ?= inputArray.slice()
+      res[i] = r
+
+  res ?= inputArray
+  if p = options?.postprocessArray
+    p res
+  else
+    res
+
+cloneObjectUpToKey = (obj, k) ->
+  res = {}
+  each v, k2 from-object obj
+    break if k2 == k
+    res[k2] = v
+  res
+
+deepMapObject = (obj, mapper, options) ->
+  res = null
+  each v, k from obj
+    r = deepMap v, mapper, options
+    if r != v || res
+      res ?= cloneObjectUpToKey obj, k
+      res[k] = r
+
+  res ?= obj
+  if p = options?.postprocessObject
+    p res
+  else
+    res
+
+## deepEach
+  IN:
+    f: (value, [key]) ->
+      f is called on every non-plainObject and non-plainArray reachable by traversing
+      the plainObject/plainArray structure
+      If f is called on a propery of a plainObject, the key for that property is also passed in.
+  OUT: value
+deepEach: deepEach = (v, f, key) ->
+  if isPlainArray(v) || isPlainObject(v)
+    each subV, subK in v with deepEach subV, f, subK
+  else
+    f v, key
+  v
+
+## deepMap
+  Applies "f" to every -value- in a nested structure of plain arrays and objects.
+  Pure functional efficient:
+    If an array or object, and all its sub values, didn't change, the original array/object is reused.
+
+  NOTE: deepMap only yields values to 'mapper' which are NOT plain arrays nor plain objects.
+deepMap: deepMap = (v, mapper, options) ->
+  arrayMapper  = options?.arrays  || noopMapper
+  objectMapper = options?.objects || noopMapper
+  mapper ?= noopMapper
+
+  if isPlainArray v       then deepMapArray  arrayMapper(v),  mapper, options
+  else if isPlainObject v then deepMapObject objectMapper(v), mapper, options
+  else mapper v
+
+# convert structure to only built-in types.
+# functions are left untouched
+# Non-PlainObjects are converted to their objectName string
+toPlainStructure: (o) ->
+  deepMap o, (o) ->
+    if isObject o
+      if o.toPlainStructure
+        o.toPlainStructure()
+      else
+        objectName o
+    else o
+
+## toJsonStructure
+  similar to toPlainStructure, except all non-JSON types are converted to strings
+toJsonStructure: toJsonStructure = (o) ->
+  deepMap o, (o) ->
+    if isObject o
+      if o.toJsonStructure
+        o.toJsonStructure()
+      else
+        toJsonStructure if o.toPlainStructure
+          o.toPlainStructure()
+        else
+          "#{o}"
+    else if isJsonAtomicType o
+      o
+    else
+      "#{o}"

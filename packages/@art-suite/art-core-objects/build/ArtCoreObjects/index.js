@@ -4,6 +4,8 @@
 (module.exports = require('./namespace'))
 .includeInNamespace(require('./ArtCoreObjects'))
 .addModules({
+  ArraysAndObjects: require('./ArraysAndObjects'),
   Merge:            require('./Merge'),
-  ObjectExtensions: require('./ObjectExtensions')
+  ObjectExtensions: require('./ObjectExtensions'),
+  StandardImport:   require('./StandardImport')
 });

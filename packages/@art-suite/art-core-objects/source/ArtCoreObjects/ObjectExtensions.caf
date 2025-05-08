@@ -1,4 +1,4 @@
-import &@ArtSuite/ArtCoreTypes, &@ArtSuite/ArtCoreArrays, &Merge
+import &StandardImport, &Merge
 
 vivifyObjectPathList = (obj, path, setValue) ->
   each field, i in-array path when field?

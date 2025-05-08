@@ -3,7 +3,9 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.14"
+    "neptune-namespaces-runtime": "^3.2.14",
+    "@art-suite/art-core-types": "^1.0.0",
+    "@art-suite/art-core-arrays": "^1.0.0"
   },
   "main": "./build",
   "description": "The Standard Library for JavaScript that aught to be.",
