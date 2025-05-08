@@ -4,7 +4,9 @@
   "dependencies": {
     "bluebird": "^3.5.5",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.14"
+    "neptune-namespaces-runtime": "^3.2.14",
+    "@art-suite/art-core-objects": "^1.0.0",
+    "@art-suite/art-core-types": "^1.0.0"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {

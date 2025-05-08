@@ -1,7 +1,8 @@
 # promise-polyfill takes advantage of setImmediate for performance gains
 # This polyfil promises good setImmediate performance: https://github.com/YuzuJS/setImmediate
 Promise = BlueBirdPromise = require "bluebird"
-{deepMap, deepEach, isFunction, isPlainObject, isPromise} = require '@art-suite/art-core-types'
+{ isFunction, isPlainObject, isPromise} = require '@art-suite/art-core-types'
+{deepMap, deepEach} = require '@art-suite/art-core-objects'
 
 ###
 ArtPromise extends ES6 Promises in the following ways:

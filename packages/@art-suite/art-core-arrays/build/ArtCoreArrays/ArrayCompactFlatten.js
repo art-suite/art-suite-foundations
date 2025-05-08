@@ -120,7 +120,7 @@
   };
 
   module.exports = ArrayCompactFlatten = (function() {
-    var compact, deepArrayEach, deepArrayEachFast, flatten;
+    var compact, deepArrayEach, flatten;
 
     function ArrayCompactFlatten() {}
 
@@ -235,21 +235,8 @@
       return doFlattenInternalFastCustom(inputArray, into, customKeepTester);
     };
 
-    ArrayCompactFlatten.deepArrayEachFast = deepArrayEachFast = function(inputArray, f) {
-      var el, i, len;
-      for (i = 0, len = inputArray.length; i < len; i++) {
-        el = inputArray[i];
-        if (isArray(el)) {
-          deepArrayEachFast(el, f);
-        } else {
-          f(el);
-        }
-      }
-      return inputArray;
-    };
 
-
-    /*
+    /* deepArrayEach
       IN: inputArray: any object that has a length
     
       EFFECT:

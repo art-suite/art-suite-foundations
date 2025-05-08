@@ -57,5 +57,11 @@
       ],
       "quiet": false
     }
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./build/index.js"
+    }
   }
 }

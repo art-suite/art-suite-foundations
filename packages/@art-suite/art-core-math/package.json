@@ -61,7 +61,7 @@
   "exports": {
     ".": {
       "import": "./index.mjs",
-      "require": "./build"
+      "require": "./build/index.js"
     }
   }
 }
