@@ -32,6 +32,12 @@
     ],
     "verbose": true
   },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./build"
+    }
+  },
   "license": "ISC",
   "name": "@art-suite/art-core-arrays",
   "repository": {
