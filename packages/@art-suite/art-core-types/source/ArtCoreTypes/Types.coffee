@@ -1,26 +1,7 @@
 
-###
-Set: global.ArtStandardLibMultipleContextTypeSupport = true
-Before the first time you require this file if you need to be able to test objects
-from multiple contexts.
-
-When do you need this?
-  - when working with iFrames
-  - when working with Node's 'repl' or 'vm'
-
-What is the differences?
-  With: slower, but other-wise the same
-  Without: plain-arrays and plain-objects from other contexts
-    are not detected with isArray, isPlainArray, isPlainObject
-###
-{ArtStandardLibMultipleContextTypeSupport} = global
-
 module.exports = class Types
   @isPromise: (obj) => obj? && isFunction(obj.then) && !isFunction obj
-  @isRegExp:  if ArtStandardLibMultipleContextTypeSupport
-      (obj) => obj.constructor.name == "RegExp"
-    else
-      (obj) => obj.constructor == RegExp
+  @isRegExp: (obj) => obj.constructor.name == "RegExp"
   @isNumber: isNumber = (obj) => typeof obj == "number"
 
   isNonNegativeInt: (x) ->
@@ -146,10 +127,7 @@ module.exports = class Types
   # correct: Array.isArray
   # 3x-8x faster: (o) => o.constructor == Array
   @isArrayUniversal: Array.isArray
-  @isArray: isArray = # if ArtStandardLibMultipleContextTypeSupport
-    @isArrayUniversal
-  # else
-  #   (o) => o? && isNumber(o.length) && o.constructor == Array
+  @isArray: isArray = @isArrayUniversal
 
   @isArguments: (o) ->
     o? &&
@@ -252,10 +230,7 @@ module.exports = class Types
 
   @isPlainObjectFast: (v) -> v? && v.constructor == Object
 
-  @isPlainObject: isPlainObject = if ArtStandardLibMultipleContextTypeSupport
-    @isPlainObjectUniversal
-  else
-    @isPlainObjectFast
+  @isPlainObject: @isPlainObjectUniversal
 
   ############################
   # helpers

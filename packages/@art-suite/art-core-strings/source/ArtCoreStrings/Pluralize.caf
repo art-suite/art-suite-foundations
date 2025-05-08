@@ -50,15 +50,15 @@ import &@ArtSuite/ArtCoreTypes
     english words.
 
     Compatibility:
-      ArtStandardLib's pluralize always outputs the number
+      ArtSuite's pluralize always outputs the number
       if the number is given, unlike npm-pluralize, which
       requires a 'true' in the 3rd argument to enable outputting
       the number.
 
-      ArtStandardLib let's you provide your own, custom pluralForm.
+      ArtSuite let's you provide your own, custom pluralForm.
       npm-pluralize requires you to 'register' it first via addIrregularRule.
       You can still do that, if you wish, but it's renamed 'addPluralizeRule'
-      in ArtStandardLib since it's expected you'll import it 'bare' and
+      in ArtSuite since it's expected you'll import it 'bare' and
       'addIrregularRule' could mean anything out-of-context.
 
     It's an extra 2.1k payload minimized and brotli-zipped for client-side.
