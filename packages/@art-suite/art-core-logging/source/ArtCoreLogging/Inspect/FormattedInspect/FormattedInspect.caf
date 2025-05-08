@@ -1,0 +1,123 @@
+import
+  &@ArtSuite/ArtCoreTypes
+  &@ArtSuite/ArtCoreObjects
+  &@ArtSuite/ArtCoreTerminalColors
+  &@ArtSuite/ArtCoreStrings
+  &InspectedObjects
+  &FormattedInspectObject
+  &FormattedInspectString
+  &FormattedInspectArray
+  &AlignTabs
+
+typeOf = eval "" (x) => typeof x
+
+inspectCount = 0
+
+inspecting = []
+formattedInspectRecursive = (m, maxLineLength, options) ->
+  inspectCount++
+  if isObject(m) and m in inspecting
+    # generally toInspectedObjects should catch this, but we can't guarantee that as long as we are calling custom "inspect" methods
+    "" <<< back reference
+  else if inspecting.length > options.maxDepth
+    "" <<< max depth reached (maxDepth: #{options.maxDepth})
+  else if inspectCount >= options.maxCount
+    "" <<< max count reached (maxCount: #{options.maxCount})
+  else
+    inspecting.push m
+    out =
+      try
+        switch
+        when isInspectableArray m   then formattedInspectArray  m, maxLineLength, options, formattedInspectRecursive
+        when isString m             then formattedInspectString m, options
+        when isFunction m?.inspect  then options.colorize.yellow m.inspect()
+        when isObject m             then formattedInspectObject m, maxLineLength, options, formattedInspectRecursive
+        else options.colorize.yellow '' + m
+
+      catch error
+        options.colorize.red "" error inspecting value (typeof: #{typeOf m}): #{} error.message
+
+    inspecting.pop()
+    out
+
+formattedInspectRecursiveWrapper = (m, maxArrayLength, options) ->
+  inspecting = []
+  inspectCount = 0
+  try # UG - I just need "finally"!
+    out = formattedInspectRecursive m, maxArrayLength, options
+    inspecting = null
+    out
+  catch error
+    inspecting = null
+    throw error
+
+colorNames = :red :yellow :green :blue :grey
+colorizeFunctions = object c in colorNames with &@ArtSuite/ArtCoreTerminalColors[c]
+
+identity = (s) -> s
+passThroughColorizeFunctions = object colorNames with identity
+
+module.exports = {}
+  alignTabs
+  formattedInspectString
+
+  failsafeInspect = (toInspect) ->
+    "typeof: #{typeOf toInspect}\n"
+    + "constructor: #{toInspect?.constructor && toInspect?.constructor?.name}\n"
+    + switch
+      when isInspectableArray toInspect then "length: #{toInspect.length}\njoined: [#{toInspect.join(', ')}]"
+      when toInspect? && typeOf toInspect == 'object' then "keys: #{Object.keys(toInspect).join(', ') || "(no keys)"}"
+      else "toString: #{toInspect}"
+
+  ## formattedInspect
+    IN:
+      toInspect - anything
+      options:
+        maxLineLength:    number
+        maxArrayLength:   number
+        maxDepth:         number
+        maxCount:         number
+        indent:           string
+        unquoted:         boolean
+        color:            boolean
+  formattedInspect: (toInspect, options = {}) ->
+    try
+      if isNumber options
+        maxLineLength = options
+      else if isPlainObjectUniversal options
+        options extract
+          indent, unquoted
+          color as colorizeEnabled
+          maxLineLength, maxArrayLength
+          maxDepth, maxCount
+
+      else
+        console.error invalid: {options}
+        throw new Error "invalid options object type: #{typeOf options}"
+
+      maxLineLength ?= global.process?.stdout?.columns || 80
+      maxArrayLength ?= 100
+      maxDepth ?= 50
+      maxCount ?= 5000
+      indent ?= "  "
+
+      postWhitespaceFormatting
+        maxLineLength
+        formattedInspectRecursiveWrapper
+          toInspectedObjects toInspect
+          maxLineLength
+          {}
+            unquoted, indent, maxLineLength, maxArrayLength, maxDepth, maxCount
+            newLineWithIndent: "\n#{indent}"
+            colorize:
+              if colorizeEnabled
+                colorizeFunctions
+              else
+                passThroughColorizeFunctions
+
+      .replace /\n\n$/, "\n"
+
+    catch error
+      out = "Error in formattedInspect: #{error}\n#{failsafeInspect toInspect}"
+      console.error out, {error, toInspect, options}
+      out

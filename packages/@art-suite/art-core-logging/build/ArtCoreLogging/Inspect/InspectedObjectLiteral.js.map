@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "InspectedObjectLiteral.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/ArtCoreLogging/Inspect/InspectedObjectLiteral.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wEAAO,oFAEP,qGAEe,CAAC,SAAU,kTACA,oDACZ,gDACZ,QAAS,CAAC,IAAM,eAAQ,cAAU"
+}

@@ -1,0 +1,126 @@
+import &@ArtSuite/ArtCoreTerminalColors, &@ArtSuite/ArtCoreStrings, global.Math
+
+###
+  TODO:
+
+    special mode for a chunk of lines that all have this pattern:
+
+      /^\s*([a-z]:\t)*[^\t]+$/
+
+    Example:
+      hi: there: my: friends: "my value"
+      somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+    Currently that becomes:
+      hi:                   there:            my:       friends: "my value"
+      somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+    Which is pretty awkward. I want:
+      hi: there: my: friends:                           "my value"
+      somethingElseIThough: indexAllMyThings: withThis: "foo"
+
+    Basically, replace all but the last tab with a space.
+
+    But only if ALL lines in a chunk are this pattern.
+
+    CounterExample:
+      properties:
+        autoTags:          type: "text", analyzer: "standard"
+        autoText:          type: "text", analyzer: "english"
+        updatedAt:         type: "long"
+        createdAt:         type: "long"
+        title:             type: "text", analyzer: "english"
+        userId:            type: "keyword"
+        lastPostCreatedAt: type: "long"
+        lastPostId:        type: "keyword"
+        lastChapterPostId: type: "keyword"
+        postCount:         type: "integer"
+        followerCount:     type: "integer"
+        activityCount:     type: "long"
+        messageCount:      type: "long"
+        isProfileTopic:    type: "boolean"
+        private:           type: "boolean"
+
+    Should NOT look like this:
+      properties:
+        autoTags:                type: "text", analyzer: "standard"
+        autoText:                type: "text", analyzer: "english"
+        updatedAt: type:         "long"
+        createdAt: type:         "long"
+        title:                   type: "text", analyzer: "english"
+        userId: type:            "keyword"
+        lastPostCreatedAt: type: "long"
+        lastPostId: type:        "keyword"
+        lastChapterPostId: type: "keyword"
+        postCount: type:         "integer"
+        followerCount: type:     "integer"
+        activityCount: type:     "long"
+        messageCount: type:      "long"
+        isProfileTopic: type:    "boolean"
+        private: type:           "boolean"
+{}
+  alignTabs = (linesString, maxLineLength = 10000) ->
+    lines = linesString.split "\n"
+
+    ##
+      if all lines have the same number of columns, then numColumns == that number
+      Otherwise, it == 2.
+      In that case, all tabs after the first tabs are treated as spaces.
+      This a poor man's attempt to smartly align things like:
+        {} AttributeName: "chatRoom",   AttributeType: "S"
+        {} AttributeName: "createdAt",  AttributeType: "N"
+        {} AttributeName: "id",         AttributeType: "S"
+      A better test would be if each column had the same label...
+
+    maxColumnSizes = []
+    maxColumnWidth = maxLineLength / 2
+    each line in lines
+      if (elements = line.split "\t").length > 1
+        each el, i in elements when i < elements.length - 1 && (i == 0 || ansiSafeStringLength(el) < maxColumnWidth)
+          maxColumnSizes.push 0 if maxColumnSizes.length == i
+          maxColumnSizes[i] = max maxColumnSizes[i], ansiSafeStringLength(el) + 1
+
+    array line in lines
+      spaceAvailable = maxLineLength - ansiSafeStringLength line
+      elements = line.split "\t"
+      if elements.length > 1
+        array el, i in elements
+          elLength = ansiSafeStringLength el
+          if i == elements.length - 1
+            el
+
+          else if maxColumnSizes[i]? && (expandAmount = maxColumnSizes[i] - elLength - 1) <= spaceAvailable
+            spaceAvailable -= expandAmount
+            el + pad '', maxColumnSizes[i] - elLength
+
+          else
+            spaceAvailable = 0
+            "#{el} "
+
+      else elements
+      .join ""
+
+    .join "\n"
+
+  postWhitespaceFormatting = (maxLineLength, string) ->
+    lastIndent = 0
+    sameIndentGroup = []
+    outLines = []
+
+    alignTabsInSameIndentGroup = -> if 0 < sameIndentGroup.length
+      str = sameIndentGroup.join "\n"
+      sameIndentGroup = []
+      outLines.push alignTabs str, maxLineLength
+
+    each line in string.split "\n"
+      line = line.replace /\s+$/g, ''
+
+      if lastIndent != indent = ansiSafeStringLength line.match(/^ *-?/)[0]
+        alignTabsInSameIndentGroup()
+
+      sameIndentGroup.push line
+      lastIndent = indent
+
+    alignTabsInSameIndentGroup()
+
+    outLines.join '\n'

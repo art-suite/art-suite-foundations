@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {return Caf.importInvoke(["compare"], [global, require('@art-suite/art-core-equality')], (compare) => {let InspectedObjectLiteral; return InspectedObjectLiteral = Caf.defClass(class InspectedObjectLiteral extends Object {constructor(literal, isError) {super(...arguments); this.literal = literal; this.isError = isError;};}, function(InspectedObjectLiteral, classSuper, instanceSuper) {this.inspectedObjectLiteral = function(literal, isError) {return new InspectedObjectLiteral(literal, isError);}; this.prototype.getInspectedObjects = function() {return this;}; this.prototype.inspect = function() {return this.literal;}; this.prototype.compare = function(b) {return compare(this.literal, b.literal);};});});});
+//# sourceMappingURL=InspectedObjectLiteral.js.map

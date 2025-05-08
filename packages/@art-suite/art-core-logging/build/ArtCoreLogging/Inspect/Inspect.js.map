@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Inspect.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "source/ArtCoreLogging/Inspect/Inspect.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,+BACA,+BACA"
+}

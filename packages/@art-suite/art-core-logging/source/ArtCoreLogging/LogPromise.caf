@@ -1,0 +1,28 @@
+import &StandardImport, &Log
+
+logPromise: (context, p) ->
+  unless p?
+    p = context
+    context = "(context not specified)"
+  log logPromise_start: context
+  startTime = currentSecond()
+  Promise.then ->
+    if isFunction p
+      p()
+    else
+      p
+  .tap (result)     -> log logPromise_success: {context, result, seconds: currentSecond() - startTime }
+  .tapCatch (error) -> log.error logPromise_error: {context, error, seconds: currentSecond() - startTime}
+
+logPromiseProblems: logPromiseProblems = (context, p) ->
+  {log, currentSecond} = namespace
+  startTime = currentSecond()
+  Promise.then ->
+    if isFunction p
+      p()
+    else
+      p
+  .tapCatch (error) -> log.error logRejectedPromises: {context, error, seconds: currentSecond() - startTime}
+
+logPromiseErrors:    logPromiseProblems
+logRejectedPromises: logPromiseProblems # June 2019 - I think I like this alias
