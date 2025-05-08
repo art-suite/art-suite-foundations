@@ -1,0 +1,62 @@
+{
+  "author": "Shane Brinkman-Davis Delamore",
+  "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
+  "dependencies": {
+    "bluebird": "^3.5.5",
+    "caffeine-script-runtime": "^1.14.0",
+    "neptune-namespaces-runtime": "^3.2.14"
+  },
+  "description": "The Standard Library for JavaScript that aught to be.",
+  "devDependencies": {
+    "@art-suite/standard-package-builder": "^1.2.7",
+    "art-build-configurator": "^1.30.4",
+    "art-testbench": "^3.2.17",
+    "mocha": "^7.2.0"
+  },
+  "homepage": "https://github.com/art-suite/art-suite-foundations",
+  "jest": {
+    "collectCoverageFrom": [
+      "build/**/*.js",
+      "!build/test/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/index.js$",
+      "/namespace.js$"
+    ],
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/test"
+    ],
+    "verbose": true
+  },
+  "license": "ISC",
+  "main": "./build",
+  "name": "@art-suite/art-core-promises",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-suite/art-suite-foundations.git"
+  },
+  "scripts": {
+    "build": "rsync -av --exclude='*.caf' --exclude='*.coffee' ./source/ ./build/\ncoffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --exclude='*.caf' --exclude='*.coffee' ./source/ ./build-temp/\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -w \"source/**\" -x npm run build",
+    "clean": "rm -rf build/*",
+    "nn": "nn build/* ",
+    "test": "jest",
+    "test-watch": "jest --watch"
+  },
+  "version": "1.74.3",
+  "watch": {
+    "build": {
+      "extensions": [
+        "caf",
+        "coffee"
+      ],
+      "patterns": [
+        "source"
+      ],
+      "quiet": false
+    }
+  }
+}

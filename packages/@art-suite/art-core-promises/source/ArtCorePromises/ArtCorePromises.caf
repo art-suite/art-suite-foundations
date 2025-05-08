@@ -1,0 +1,4 @@
+[]
+  {} &PromiseWorkerPool
+  &ArtPromise
+  &AsyncExtensions

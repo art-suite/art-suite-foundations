@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "PromiseWorkerPool.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCorePromises/PromiseWorkerPool.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0FAAO,6EAeP,2FAEe,CAAC,aAAc,wDAAO,qGAEnC,QAAO,CAAC,MAAO,IACwB,2DACrC,iBAAa,aACb,+BAGF,YAAS,OACP,sBAAc,sBAAK,aAAY,iFAC7B,WAAW,GACX,eAAY,iCAAK,OACZ,sBAAiB,mBAAkB,aAAQ,CAC5C,YACG,OAAM,YAAQ,oBAAgB,CACxB,YAAC,mBAAmB,MAC3B,aAAY,MAAM,IAAI,iBAAiB,eACjC,CAAC,WAAkB,QAAC,mBAAmB,aACvC,iBACH,aAAa,iBACf,gBAAgB,iBAEvB,UAAU,IAAI,MAAM,UAAU,qBAC9B,qBACA,EAAC,cAAc,OACf,OAAM,wBAAwB,aAC5B,oBAAoB,0BAEtB,YAAY,2BACH,sCAEb,QAAO,CAAC,GAAG,IAAM,yBAAc,GAAG,6BAClC,QAAO,CAAC,IAAS,0BAAe"
+}

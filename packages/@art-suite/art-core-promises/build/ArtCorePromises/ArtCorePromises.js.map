@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCorePromises.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCorePromises/ArtCorePromises.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mCACK,oDACH,yBACA"
+}

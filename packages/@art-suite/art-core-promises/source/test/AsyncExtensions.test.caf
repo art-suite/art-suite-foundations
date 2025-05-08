@@ -1,0 +1,35 @@
+import &StandardImport
+
+describe
+  timeout: ->
+    test "timeout with function", ->
+      timeout 10, -> assert.eq 1, 1
+    test "timeout promise", ->
+      timeout 10
+      .then -> assert.eq 1, 1
+
+
+  timeoutAt: ->
+    test "timeoutAt with function", ->
+      timeoutAt toSeconds() + .01, -> assert.eq 1, 1
+
+    test "timeoutAt promise", ->
+      timeoutAt toSeconds() + .01
+      .then -> assert.eq 1, 1
+
+  interval: ->
+    test "interval with function", ->
+      a = interval 10, -> assert.eq 1, 1
+      a.then ->
+        assert.eq 1, 1
+        a.stop()
+
+  requestAnimationFrame: ->
+    test "requestAnimationFrame", ->
+      requestAnimationFrame -> assert.eq 1, 1
+      undefined
+
+  nextTick: ->
+    test "nextTick", ->
+      nextTick()
+      .then -> assert.eq 1, 1
