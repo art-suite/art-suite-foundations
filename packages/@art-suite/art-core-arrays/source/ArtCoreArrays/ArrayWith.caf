@@ -1,4 +1,4 @@
-import &@ArtSuite/ArtCoreMath, &@ArtSuite/ArtCoreTypes, &MutateArray, &ArrayFind
+import &StandardImport, &MutateArray, &ArrayFind
 
 wordsRegex = /[^\s]+/g
 exactlyOneWordRegex = /^[^\s]+$/

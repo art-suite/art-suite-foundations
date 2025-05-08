@@ -1,4 +1,4 @@
-import &@ArtSuite/ArtCoreTypes
+import &StandardImport
 
 wordsRegex = /[^\s]+/g
 exactlyOneWordRegex = /^[^\s]+$/

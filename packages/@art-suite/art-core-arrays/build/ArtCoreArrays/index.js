@@ -9,5 +9,6 @@
   ArrayFind:           require('./ArrayFind'),
   ArrayWith:           require('./ArrayWith'),
   MutateArray:         require('./MutateArray'),
-  Stacks:              require('./Stacks')
+  Stacks:              require('./Stacks'),
+  StandardImport:      require('./StandardImport')
 });
