@@ -7,7 +7,7 @@ exactlyOneWordRegex = /^[^\s]+$/
   # trying out various aliases to see which one I like
   w: (args...)->
     out = []
-    each arg in-array args
+    each arg in-array compactFlatten args
       if isString(arg) && !arg.match exactlyOneWordRegex
         out = out.concat arg.match wordsRegex
       else

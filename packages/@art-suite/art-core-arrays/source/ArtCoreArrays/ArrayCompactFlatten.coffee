@@ -137,18 +137,7 @@ module.exports = class ArrayCompactFlatten
   @customCompactFlattenFast: (inputArray, customKeepTester) -> compactFlattenIfNeededFastCustom inputArray, customKeepTester
   @customCompactFlattenIntoFast: (into, inputArray, customKeepTester) -> doFlattenInternalFastCustom inputArray, into, customKeepTester
 
-  @deepArrayEachFast: deepArrayEachFast = (inputArray, f) ->
-    for el in inputArray
-      if isArray el
-        deepArrayEachFast el, f
-      else
-        f el
-    inputArray
-
-  ####################
-  # EXTRA
-  ####################
-  ###
+  ### deepArrayEach
     IN: inputArray: any object that has a length
 
     EFFECT:
