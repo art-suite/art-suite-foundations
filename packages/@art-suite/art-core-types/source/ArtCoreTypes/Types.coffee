@@ -1,4 +1,6 @@
 
+isPlainObject = (v) -> v? && null == Object.getPrototypeOf Object.getPrototypeOf v
+
 module.exports = class Types
   @isPromise: (obj) => obj? && isFunction(obj.then) && !isFunction obj
   @isRegExp: (obj) => obj.constructor.name == "RegExp"
@@ -226,11 +228,10 @@ module.exports = class Types
   # PERF: https://jsperf.com/is-plain-object
   #   iFrame-friendly test: null == Object.getPrototypeOf Object.getPrototypeOf v
   #   10-70x faster: v.constructor == Object
-  @isPlainObjectUniversal: (v) -> v? && null == Object.getPrototypeOf Object.getPrototypeOf v
+  @isPlainObjectUniversal: isPlainObject
+  @isPlainObject: isPlainObject
 
   @isPlainObjectFast: (v) -> v? && v.constructor == Object
-
-  @isPlainObject: @isPlainObjectUniversal
 
   ############################
   # helpers
