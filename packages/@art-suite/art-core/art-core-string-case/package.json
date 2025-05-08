@@ -2,8 +2,12 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
+    "bluebird": "^3.5.5",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.14"
+    "dateformat": "^4.5.1",
+    "detect-node": "^2.0.4",
+    "neptune-namespaces-runtime": "^3.2.14",
+    "pluralize": "^8.0.0"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
@@ -12,7 +16,6 @@
     "art-testbench": "^3.2.17",
     "mocha": "^7.2.0"
   },
-  "main": "build",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
@@ -31,7 +34,7 @@
     "verbose": true
   },
   "license": "ISC",
-  "name": "@art-suite/art-core-types",
+  "name": "@art-suite/art-core-string-case",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
@@ -45,7 +48,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.0",
+  "version": "0.1.0",
   "watch": {
     "build": {
       "extensions": [
@@ -56,12 +59,6 @@
         "source"
       ],
       "quiet": false
-    }
-  },
-  "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "require": "./build/index.js"
     }
   }
 }

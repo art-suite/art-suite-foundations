@@ -3,7 +3,6 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "caffeine-script-runtime": "^1.14.0",
-    "dateformat": "^4.5.1",
     "neptune-namespaces-runtime": "^3.2.14"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
@@ -32,21 +31,21 @@
   },
   "license": "ISC",
   "main": "./build",
-  "name": "@art-suite/art-core-time",
+  "name": "@art-suite/art-core-terminal-colors",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "rsync -av --exclude='*.caf' --exclude='*.coffee' ./source/ ./build/\ncoffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --exclude='*.caf' --exclude='*.coffee' ./source/ ./build-temp/\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build": "rsync -av --exclude='*.caf' ./source/ ./build/\ncaf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --exclude='*.caf' ./source/ ./build-temp/\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
     "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -w \"source/**\" -x npm run build",
     "clean": "rm -rf build/*",
     "nn": "nn build/* ",
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.0",
+  "version": "0.1.0",
   "watch": {
     "build": {
       "extensions": [

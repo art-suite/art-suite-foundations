@@ -31,7 +31,7 @@
   },
   "license": "ISC",
   "main": "./build",
-  "name": "@art-suite/art-core-environment",
+  "name": "@art-suite/art-core-errors",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
@@ -45,7 +45,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.0",
+  "version": "0.1.0",
   "watch": {
     "build": {
       "extensions": [
