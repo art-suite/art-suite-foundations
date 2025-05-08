@@ -106,7 +106,10 @@ class Log
       maxArrayLength: 100000
       args...
 
-  # IN: logger: (toLog, label, wasResolvedOrRejected: true/false)
+  ## resolvePromiseWrapper
+    IN:
+      m: toLog
+      logger: (toLog, label, wasResolvedOrRejected: true/false)
   @log.resolvePromiseWrapper = (m, logger) ->
     if containsPromises m
       toResolve = m
@@ -119,6 +122,23 @@ class Log
 
     else logger m, false
 
+  ## log.withOptions
+    IN:
+      options: object
+      args: array of arguments to log
+    OUT:
+      m: object
+
+    options:
+      maxArrayLength: number
+      maxDepth: number
+      maxLength: number
+      resolvePromises: boolean
+      unquoted: boolean
+      color: boolean
+      className: string
+      isError: boolean
+      isWarning: boolean
   @log.withOptions = (options, args...) ->
     m =
       if args.length == 1
@@ -127,19 +147,19 @@ class Log
     Log.logCore m, callStack(), options
     peek args
 
-  ### log.withLabel
+  ### log.labeled
     IN:
       labelString, value
       OR object with one or more properties (usually just one)
         returns the last value of the objects last key-value pair
 
     EX:
-      log.withLabel foo: myObject
+      log.labeled foo: myObject
       # out: myObject
 
-      log.withLabel "foo", myObject
+      log.labeled "foo", myObject
       # out: myObject
-  @log.withLabel = (a, b) =>
+  @log.labeled = (a, b) =>
     if isString a
       obj = {}
       obj[a] = b
@@ -153,6 +173,5 @@ class Log
       ret
 
   @log.unquoted = (args...) => @log.withOptions merge(standardOptions, unquoted: true), args...
-  @log.labeled = @log.withLabel
   @log.error = (args...) => @log.withOptions isError: true, args...
   @log.warn  = (args...) => @log.withOptions isWarning: true, args...
