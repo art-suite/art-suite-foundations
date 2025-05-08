@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreTerminalColors.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreTerminalColors/ArtCoreTerminalColors.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,mBACA"
+}

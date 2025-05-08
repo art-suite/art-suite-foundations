@@ -1,4 +1,4 @@
 "use strict"
 let Caf = require('caffeine-script-runtime');
-Caf.defMod(module, () => {return [require('./Ansi'), require('./TerminalColors')];});
+Caf.defMod(module, () => {return require('./ArtCoreTerminalColors');});
 //# sourceMappingURL=index.js.map

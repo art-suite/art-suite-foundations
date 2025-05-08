@@ -1,9 +1,9 @@
 {
   "version": 3,
   "file": "Ansi.js",
-  "sourceRoot": "..",
+  "sourceRoot": "../..",
   "sources": [
-    "source/Ansi.caf"
+    "source/ArtCoreTerminalColors/Ansi.caf"
   ],
   "names": [],
   "mappings": "AAAA;;AAAA,iDACE,uBAAY,+EAEZ,mBAAW,CAAC,MAAO,OACd,eAAe,OAChB,YAAY,WAAW,MAEvB,OAEJ,8BAAsB,CAAC,MACrB,IAAG,eAAe,OAChB,MAAM,YAAY,WAAW,cAC/B"
