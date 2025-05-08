@@ -1,0 +1,6 @@
+CallStackLine = require './CallStackLine'
+
+{}
+   rawCallStack = (ignoreTop = 0)-> (new Error).stack.split(/\n  */).slice ignoreTop + 2
+   callStack: (ignoreTop = 0)-> array line in rawCallStack ignoreTop + 1
+      new CallStackLine line

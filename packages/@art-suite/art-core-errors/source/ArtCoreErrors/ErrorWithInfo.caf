@@ -1,0 +1,18 @@
+import &StandardImport
+
+class ErrorWithInfo extends Error
+  constructor: (message, @info, @name) ->
+    super
+    @name ||= "ErrorWithInfo"
+    mergeInto @, @info
+
+    @message = message
+
+    if isFunction Error.captureStackTrace
+      # Node only
+      Error.captureStackTrace @, @constructor
+    else
+      @stack = (new Error).stack;
+
+  toString: ->
+    ["ErrorWithInfo: #{@message}", jsStringify info: @info].join "\n\n"

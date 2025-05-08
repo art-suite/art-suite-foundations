@@ -1,0 +1,4 @@
+import &StandardImport
+test "ErrorWithInfo", ->
+  ewi = new ErrorWithInfo "hi", {a: 1}
+  assert.eq ewi.toString(), "ErrorWithInfo: hi\n\n{info:{a:1}}"

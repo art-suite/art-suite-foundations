@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {return Caf.importInvoke(["Error", "jsStringify", "mergeInto", "isFunction"], [global, require('./StandardImport')], (Error, jsStringify, mergeInto, isFunction) => {let ErrorWithInfo; return ErrorWithInfo = Caf.defClass(class ErrorWithInfo extends Error {constructor(message, info, name) {super(...arguments); this.info = info; this.name = name; this.name || (this.name = "ErrorWithInfo"); mergeInto(this, this.info); this.message = message; if (isFunction(Error.captureStackTrace)) {Error.captureStackTrace(this, this.constructor);} else {this.stack = (new Error).stack;};};}, function(ErrorWithInfo, classSuper, instanceSuper) {this.prototype.toString = function() {return ([`ErrorWithInfo: ${Caf.toString(this.message)}`, jsStringify({info: this.info})]).join("\n\n");};});});});
+//# sourceMappingURL=ErrorWithInfo.js.map

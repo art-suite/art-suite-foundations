@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ErrorWithInfo.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/ErrorWithInfo.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,gGAAO,gEACP,YAAK,sCACH,MAAM,IAAI,cAAc,OAAO,GAAG,YAClC,UAAU,gBAAgB"
+}

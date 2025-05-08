@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ErrorWithInfo.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreErrors/ErrorWithInfo.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,gHAAO,iGAEP,gEAA4B,kBACb,CAAC,SAAS,MAAO,gEAE5B,aAAK,aAAK,kBACV,UAAU,MAAG,YAEb,eAAW,SAEX,IAAG,WAAW,2BAEZ,wBAAwB,MAAG,0BAE3B,aAAU,KAAI,kGAElB,YAAY,OACkD,wFAAC"
+}

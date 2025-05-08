@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "CallStack.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreErrors/CallStack.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,iGAAgB,QAAQ,4BAGrB,6BAAY,QAAG,CAAC,YAAY,IAAK,OAAC,KAAI,mBAAmB,eAAe,YAAY,MACpF,mBAAW,CAAC,YAAY,IAAK,iBAAc,aAAa,YAAY,cACjE,IAAI,cAAc"
+}

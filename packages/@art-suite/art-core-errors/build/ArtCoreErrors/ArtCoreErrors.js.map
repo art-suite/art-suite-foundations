@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreErrors.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreErrors/ArtCoreErrors.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,wBACA,6BACG"
+}
