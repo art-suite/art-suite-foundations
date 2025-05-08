@@ -95,8 +95,7 @@ module.exports = class Merge
   # if o1 or o2 is null/undefined, return the other
   # if both are unll/undefined, return o2
   # the name "pureMerge" comes from pure-functional-merge - as in this is how you'd implement
-  # merge if you were asuming o1, o2 and the result of pureMerge were never modified.
-  # TODO: a better name may be leanMerge - since it is ligher weight than "merge".
+  # merge if you were assuming o1, o2 and the result of pureMerge were never modified.
   @pureMerge: pureMerge = (all...)=>
     sources = compactFlatten all
     return null if sources.length == 0
@@ -107,22 +106,3 @@ module.exports = class Merge
     for source in sources when source != last
       return @merge sources unless @hasAllProps source, last
     last
-
-  ###
-  I might consider adding "o" - which works like Object-Tree constructors:
-    First, it compact-flattens args
-    Second, it gathers up and merges all plain-objects in its args list
-    Last, all remaining items get added to the "children" list
-  The question is, what does it return? Options:
-
-    OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-
-  Options if both objects and non-object values are present:
-    a. return compactFlatten [plainObject, nonObjectValues]
-    b. return merge plainObject, children: nonObjectValues
-    c. return new MClass plainObject, nonObjectValues
-      class MClass extends BaseObject
-        @properties "props children"
-        constructor: (@props, @children) ->
-  ###
-  @m: pureMerge

@@ -56,10 +56,6 @@ toObjectInternal = (list, out) ->
   out
 
 {}
-  # http://jsperf.com/counting-object-properties/3
-  countKeys: (o) ->
-    Object.keys(o).length
-
   objectKeyCount = (o) ->
     count = 0
     each from o with count++

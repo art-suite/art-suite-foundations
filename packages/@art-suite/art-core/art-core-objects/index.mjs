@@ -1,0 +1,35 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+export const {
+  merge,
+  mergeWithoutNulls,
+  mergeWith,
+  mergeWithSelf,
+  mergeInto,
+  mergeIntoWithNullDeletes,
+  mergeIntoUnless,
+  deepMerge,
+  hasAllProps,
+  pureMerge,
+  m,
+  objectKeyCount,
+  objectHasKeys,
+  vivifyObjectPath,
+  vivifyObjectPathAndSet,
+  toObject,
+  arrayToMap,
+  select,
+  selectAll,
+  objectWithDefinedValues,
+  objectWithExistingValues,
+  objectWithPresentValues,
+  objectWith,
+  objectWithout,
+  setPathedProperty,
+  withPathedPropertiesExpanded,
+  deepEach,
+  deepMap,
+  toPlainStructure,
+  toJsonStructure
+} = require('./build');

@@ -209,27 +209,6 @@
       return last;
     };
 
-
-    /*
-    I might consider adding "o" - which works like Object-Tree constructors:
-      First, it compact-flattens args
-      Second, it gathers up and merges all plain-objects in its args list
-      Last, all remaining items get added to the "children" list
-    The question is, what does it return? Options:
-    
-      OPTION: If only plain-objects after compact-flatten, just return the merged object ELSE:
-    
-    Options if both objects and non-object values are present:
-      a. return compactFlatten [plainObject, nonObjectValues]
-      b. return merge plainObject, children: nonObjectValues
-      c. return new MClass plainObject, nonObjectValues
-        class MClass extends BaseObject
-          @properties "props children"
-          constructor: (@props, @children) ->
-     */
-
-    Merge.m = pureMerge;
-
     return Merge;
 
   })();
