@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreArrays.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreArrays/ArtCoreArrays.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,wBACA,wBACA,gCACA,0BACA"
+}

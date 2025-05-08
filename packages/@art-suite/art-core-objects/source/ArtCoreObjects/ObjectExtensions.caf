@@ -1,0 +1,181 @@
+import &@ArtSuite/ArtCoreTypes, &@ArtSuite/ArtCoreArrays, &Merge
+
+vivifyObjectPathList = (obj, path, setValue) ->
+  each field, i in-array path when field?
+    obj = switch
+      when setValue? && i == path.length - 1  then obj[field] = setValue
+      when isString field                     then obj[field] ?= {}
+      else throw new Error "Expecting string or array or null/undefined"
+  obj
+
+propertyIsPathed = (key) -> /[\s\.\/]/.test key
+
+withPropertyPath = (obj, propertyPath, action) ->
+  propertyPath = propertyPath.match /[^\s\.\/]+/g
+  result = obj
+  each key, i in propertyPath
+    if i == propertyPath.length - 1
+      action obj, key
+    else
+      obj = obj[key] ?= {}
+
+  result
+
+### toObjectInternal
+  NOTE:
+    null and undefined keys are NOT SUPPORTED
+
+    They should be converted to strings, first,
+    which is what they would become anyway.
+
+  IN: 0 or more args
+    out = {}
+    list = args
+
+    for element in list
+      objects: merge into out
+      arrays or args lists: recurse using element as the list
+      null or undefined: skip
+      else out[element] = next element (or undefined if none)
+
+  OUT: plain object
+toObjectInternal = (list, out) ->
+  key = null
+  each element in list
+    if key
+      out[key] = element
+      key = null
+    else if isPlainObject element
+      mergeInto out, element
+    else if isArray element
+      toObjectInternal element, out
+    else if element?
+      key = element
+
+  out[key] = undefined if key
+  out
+
+{}
+  # http://jsperf.com/counting-object-properties/3
+  countKeys: (o) ->
+    Object.keys(o).length
+
+  objectKeyCount = (o) ->
+    count = 0
+    each from o with count++
+    count
+
+  objectHasKeys: (o) -> !!find from o with true
+
+  ## vivifyObjectPath
+    IN:
+      obj: the object to vivify
+      path: a list of keys or arrays
+
+    OUT: the original object, with the path vivified e.g. if the path is ['a', 'b'] then obj.a.b === {} is now true
+
+    Example:
+      vivifyObjectPath {}, 'a', 'b'
+      => a: b: {}
+
+      vivifyObjectPath {a: c: 123}, 'a', 'b', 'c'
+      => a:
+        b: c: {}
+        c: 123
+  vivifyObjectPath = (obj, path...) ->
+    throw new Error "obj must be an object" unless isPlainObject obj
+    vivifyObjectPathList obj, path
+
+  ## vivifyObjectPathAndSet
+    IN:
+      obj: the object to vivify
+      path: a list of keys or arrays
+
+    EFFECT:
+      if the path is not found, it is created
+      if the path is found, it is set to the last parameter passed in
+
+    OUT: the last parameter passed in
+  vivifyObjectPathAndSet: (obj, path...) ->
+    throw new Error "obj must be an object" unless isPlainObject obj
+    path = [path...]
+    value = path.pop()
+    vivifyObjectPathList obj, path, value
+    value
+
+  toObject: (all...)-> toObjectInternal all, out = {}
+
+  ## arrayToMap
+    IN:
+      inputArray: any array
+      transformFunction: (element) -> [key, value]
+        default: transforms an array of the form: [[key1, value1], [key2, value2], etc...]
+  arrayToMap: (inputArray, transformFunction = (element) -> element) ->
+    outputMap = {}
+    each element in inputArray
+      [key, value] = transformFunction element
+      outputMap[key] = value
+    outputMap
+
+  ## select
+    IN:
+      obj: the object to select fields from
+
+      2nd argument can be:
+        selectFunction: (value, key) -> true / false
+
+      OR obj can be followed by any number of strings or arrays in any nesting, possibly with null fields
+
+    OUT: a new object with the selected fields
+  select: (obj, args...) ->
+    return {} unless obj
+    if isFunction a = args[0]
+      object v, k from obj when a v, k
+
+    else
+      args = compactFlatten args
+      object prop in args when obj[prop]? || obj.hasOwnProperty prop
+        obj[prop]
+
+  # same as select, but ignore hasOwnProperty test
+  selectAll: (obj, properties...) ->
+    return {} unless obj
+    result = {}
+    each prop in-array compactFlatten properties
+      result[prop] = obj[prop]
+    result
+
+  objectWithDefinedValues:   (obj) -> object v from obj when v != undefined
+  objectWithExistingValues:  (obj) -> object v from obj when v?
+  objectWithPresentValues:   (obj) -> object v from obj when present v
+
+  objectWith: (obj, k, v) ->
+    o = object from obj
+    o[k] = v
+    o
+
+  objectWithout: (obj, properties...) ->
+    return {} unless obj
+    properties = compactFlatten properties
+
+    if find prop in properties with obj.hasOwnProperty prop
+      object v, prop from obj when !(prop in properties)
+
+    else
+      obj
+
+
+  setPathedProperty = (obj, propertyPath, value) ->
+    withPropertyPath obj, propertyPath, (o, k) -> o[k] = value
+    obj
+
+  withPathedPropertiesExpanded = (obj, intoObject = {}) ->
+    each v, k from obj into intoObject
+      v = withPathedPropertiesExpanded v if isObject v
+
+      if propertyIsPathed k
+        setPathedProperty intoObject, k, v
+
+      else
+        intoObject[k] = v
+

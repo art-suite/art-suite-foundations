@@ -1,0 +1,11 @@
+import &helper, &CompareCore
+
+throwInequalityError = (a, b) ->
+  throw new Error "Value types are not compatible for inequality tests. a: #{a?.constructor.name}, b: #{b?.constructor.name}"
+
+[]
+  gt:  (a, b) -> if a? && b? then s = typesComparable a, b; (s && a >  b) || (if (s && a <= b) then false else a.gt  b) else throwInequalityError a, b
+  lt:  (a, b) -> if a? && b? then s = typesComparable a, b; (s && a <  b) || (if (s && a >= b) then false else a.lt  b) else throwInequalityError a, b
+  gte: (a, b) -> if a? && b? then s = typesComparable a, b; (s && a >= b) || (if (s && a <  b) then false else a.gte b) else throwInequalityError a, b
+  lte: (a, b) -> if a? && b? then s = typesComparable a, b; (s && a <= b) || (if (s && a >  b) then false else a.lte b) else throwInequalityError a, b
+  &Eq

@@ -1,0 +1,15 @@
+import &@ArtSuite/ArtCoreTypes
+
+wordsRegex = /[^\s]+/g
+exactlyOneWordRegex = /^[^\s]+$/
+
+{}
+  # trying out various aliases to see which one I like
+  w: (args...)->
+    out = []
+    each arg in-array args
+      if isString(arg) && !arg.match exactlyOneWordRegex
+        out = out.concat arg.match wordsRegex
+      else
+        out.push arg
+    out

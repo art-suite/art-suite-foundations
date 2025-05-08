@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {let basicCompareFunction; basicCompareFunction = function(a, b) {return a - b;}; return {getIndexOfOrLength: function(inputArray, value) {let i; return (0 > (i = inputArray.indexOf(value))) ? inputArray.length : i;}, findSortedFirst: function(inputArray, compareFunction = basicCompareFunction) {let returnElement, to, i1, by; if (!((Caf.exists(inputArray) && inputArray.length) > 0)) {return undefined;}; returnElement = inputArray[0]; to = inputArray.length; i1 = 1; by = (i1 < to) ? 1 : -1; while (by > 0 && i1 <= to || by < 0 && i1 >= to) {let i, element; i = i1; if (0 < compareFunction(returnElement, element = inputArray[i])) {returnElement = element;}; i1 += by;}; to; return returnElement;}};});
+//# sourceMappingURL=ArrayFind.js.map

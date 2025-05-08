@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Ansi.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Ansi.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,oHAAO,kFAEP,KAAK,yBAAe,OAClB,UACE,UAAU,qCACV,qBAEJ,KAAK,yCAA+B,OAClC,UACE,UAAU,kBACV,4BAEJ,KAAK,oCAA0B,OAC7B,UACE,qBAAqB,qCACrB"
+}

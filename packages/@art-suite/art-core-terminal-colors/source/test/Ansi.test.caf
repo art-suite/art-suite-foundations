@@ -1,0 +1,16 @@
+import &StandardImport
+
+test "stripAnsi", ->
+  assert.eq
+    stripAnsi "\u001b[31mHello, world!\u001b[0m"
+    "Hello, world!"
+
+test "stripAnsi non-ansi string", ->
+  assert.eq
+    stripAnsi "Hello, world!"
+    "Hello, world!"
+
+test "ansiSafeStringLength", ->
+  assert.eq
+    ansiSafeStringLength "\u001b[31mHello, world!\u001b[0m"
+    "Hello, world!".length

@@ -1,0 +1,40 @@
+basicCompareFunction = (a, b) -> a - b
+
+{}
+  # if value is in array, return the index of the first match
+  # else, return the length of the array
+  getIndexOfOrLength: (inputArray, value) ->
+    if 0 > i = inputArray.indexOf value
+      inputArray.length
+    else
+      i
+
+
+  ## findSortedFirst
+
+    Acts as-if it sorted the array and returned the first element.
+
+    Details:
+      tests each element in the array againts the current "smallest"
+      returns the element for which tests "smaller" than every other
+      element a is "smaller" than b if compareFunction(a, b) returns >0 value
+
+    IN:
+      array - the array to search or null
+      compareFunction - (a, b) -> # standard compare function
+        returns:
+          0: if a and b are equal
+          <0: if b is greater than a
+          >0: if a is greater than b
+        default: (a, b) -> a - b
+
+    OUT:
+      largest value in array or undefined if array is null or length 0
+  findSortedFirst: (inputArray, compareFunction = basicCompareFunction) ->
+    return undefined unless inputArray?.length > 0
+    returnElement = inputArray[0]
+    each i from 1 to inputArray.length
+      if 0 < compareFunction returnElement, element = inputArray[i]
+        returnElement = element
+
+    returnElement

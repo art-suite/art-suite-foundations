@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreObjects.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreObjects/ArtCoreObjects.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,oBACA"
+}

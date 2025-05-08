@@ -1,0 +1,70 @@
+basicCompareFunction = (a, b) -> a - b
+
+{}
+  # insert -1 => add to end of array
+  # insert -2 => insert one before the last element of the array
+  insertIntoArray: (inputArray, index, item) ->
+    index = inputArray.length + index + 1 if index < 0
+    inputArray.splice index, 0, item
+    inputArray
+
+  remove = (inputArray, index, amount = 1) ->
+    index = inputArray.length + index + 1 if index<0
+    inputArray.splice index, amount
+    inputArray
+
+  removeFirstMatch: (inputArray, toMatchValue) =>
+    index = inputArray.indexOf toMatchValue
+    if index >= 0
+      remove inputArray, index
+    else
+      inputArray
+
+  ## shuffleArray
+    randomizes the order of an array in place
+    returns the same array
+  shuffleArray: (inputArray) ->
+    i = inputArray.length
+    while --i > 0
+      j = ~~(Math.random() * (i + 1))
+      t = inputArray[j]
+      inputArray[j] = inputArray[i]
+      inputArray[i] = t
+    inputArray
+
+  ## moveArrayElement
+    mutates the input array
+    move one element of the array FROM one location TO another.
+    IN: from/to are moduloed into valid indexes
+      a = intMode a, array.length
+  moveArrayElement: (inputArray, fromIndex, toIndex) ->
+    fromIndex = (fromIndex | 0) %% inputArray.length
+    toIndex   = (toIndex   | 0) %% inputArray.length
+
+    inputArray.splice toIndex, 0, inputArray.splice(fromIndex, 1)[0]
+    inputArray
+
+
+  ## stableSort
+    stableSort is an in-place, stable sort
+
+    "stable" means that if two elements are 'equal' under the compare test, their order won't
+    change with respect to each other.
+
+    NOTE: array.sort is not guaranteed to be stable
+
+    FIRST PASS - a BUBBLE SORT
+    TO DO: use a better sort
+  stableSort: (inputArray, compare) ->
+    compare ?= basicCompareFunction
+    notSorted = true
+    length = inputArray.length
+    while notSorted
+      notSorted = false
+      each i from 1 til length
+        if 0 < compare (a = inputArray[i-1]), b = inputArray[i]
+          inputArray[i-1] = b
+          inputArray[i] = a
+          notSorted = true
+
+    inputArray

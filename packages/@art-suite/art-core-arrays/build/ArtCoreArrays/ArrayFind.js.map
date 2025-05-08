@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArrayFind.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreArrays/ArrayFind.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,mFAAuB,CAAC,GAAG,IAAM,WAAI,aAKnC,4BAAoB,CAAC,YAAY,eAAS,OACrC,KAAI,KAAI,mBAAmB,WAC5B,oBAEA,KAuBJ,yBAAiB,CAAC,YAAY,kBAAkB,sDAAwB,KAC9C,iDAAqB,yBAC7C,gBAAgB,WAAW,SACV,8HACf,IAAG,IAAI,gBAAgB,eAAe,UAAU,WAAW,MACzD,gBAAgB,kCAEpB"
+}

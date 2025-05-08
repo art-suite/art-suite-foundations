@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArrayConstructors.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreArrays/ArrayConstructors.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,yEAAO,2FAEP,aAAa,WACb,sBAAsB,oBAIpB,WAAG,CAAC,sCACF,iBACkB,uGAChB,IAAG,SAAS,QAAI,CAAK,UAAU,uBAC7B,MAAM,WAAW,UAAU,qBAE3B,SAAS,8BACb"
+}

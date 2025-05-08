@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TerminalColors.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/TerminalColors.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,yFAAO,yDAEP,YAAK,sBAAY,OACf,UACE,OAAO,kBACP"
+}

@@ -1,0 +1,65 @@
+
+{}
+  # recursively compares all elements with indexs < min a.length, b.length
+  # If all are equal, returns a.length - b.length
+  _compareArray = (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
+    aLength = a.length
+    bLength = b.length
+
+    each i to Math.min aLength, bLength
+      av = a[i]
+      bv = b[i]
+      return val if 0 != val = _compare av, bv, recursionBlockArray, compareFunctionsAsStrings
+
+    aLength - bLength
+
+  # recursively compares all properties in both a and b
+  # If all are equal, returns a.length - b.length
+  _compareObject = (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
+    aLength = 0
+    compared = 0
+
+    found = find k, av from a
+      aLength++
+      av = a[k]
+      bv = b[k]
+      if bv != undefined || b.hasOwnProperty k
+        compared++
+        if 0 != val = _compare av, bv, recursionBlockArray, compareFunctionsAsStrings
+          val
+
+    return found if found?
+
+    if aLength == compared && compared == objectKeyCount b
+      0
+    else
+      NaN
+
+  _compare = (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
+    return 0 if a == b
+
+    if a? && b? && a.constructor == _constructor = b.constructor
+      return a.localeCompare b if isString a
+      return floatTrue0 a - b if isNumber(a) or isDate(a)
+
+      # recursion block
+      if recursionBlockArray
+        return 0 if a in recursionBlockArray || b in recursionBlockArray
+        recursionBlockArray.push a
+        recursionBlockArray.push b
+
+      # use a.compare if available
+      return a.compare b, recursionBlockArray if a.compare
+
+      # recurse on plain objects and arrays
+      return _compareArray  a, b, recursionBlockArray, compareFunctionsAsStrings if _constructor == Array
+      return _compareObject a, b, recursionBlockArray, compareFunctionsAsStrings if _constructor == Object
+      return ("#{a}").localeCompare("#{b}")            if compareFunctionsAsStrings && _constructor == Function
+
+      # fallback to .eq
+      return 0 if a.eq && a.eq b, recursionBlockArray
+
+      if recursionBlockArray
+        remove recursionBlockArray, recursionBlockArray.length - 2, 2
+
+    NaN

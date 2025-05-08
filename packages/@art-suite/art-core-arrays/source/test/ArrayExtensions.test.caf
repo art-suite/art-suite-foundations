@@ -1,0 +1,273 @@
+import &StandardImport
+
+oneTwoTree = 1 2 3
+
+testEq = (f, input, output) ->
+  test "#{f.name} #{input} >> #{output}" ->
+    if isArray input
+      assert.eq output, f input...
+    else
+      assert.eq output, f input
+
+inspectForTestStringR = (a) ->
+  switch
+  when isPlainObject a then object v, k from a with inspectForTestStringR v
+  when isArray a then array v, k from a with inspectForTestStringR v
+  when isFunction a then "#{a}"
+  when a is RegExp then "#{a}"
+  when isObject a then "<#{a.class?.name} instance>"
+  when isString(a), isBoolean(a), isNumber(a) then a
+  when a == null then null
+  else "#{a}"
+
+inspectForTestString = (a) ->
+  if isJsonType a
+    JSON.stringify inspectForTestStringR a
+    .slice 0, 100
+  else inspectForTestStringR a
+
+describe
+  insertAndRemoveValues: ->
+    # test "arrayBeforeEach", ->
+    #   assert.eq
+    #     arrayBeforeEach oneTwoTree, 0
+    #     0 1 0 2 0 3
+
+    # test "arrayAfterEach", ->
+    #   assert.eq
+    #     arrayAfterEach oneTwoTree, 0
+    #     1 0 2 0 3 0
+
+    # test "arrayBetweenEach", ->
+    #   assert.eq
+    #     arrayBetweenEach oneTwoTree, 0
+    #     1 0 2 0 3
+
+    test "arrayWithoutValue", ->
+      assert.eq
+        arrayWithoutValue oneTwoTree, 2
+        1 3
+
+      assert.eq
+        arrayWithoutValue oneTwoTree, 4
+        oneTwoTree
+
+      assert.eq arrayWithoutValue(), []
+
+    test "arrayWithout", ->
+      assert.eq
+        arrayWithout oneTwoTree, 2
+        1 2
+
+      assert.eq arrayWithout(), []
+
+  move: ->
+    moveArrayElementTest = (inArray, _from, _to, outArray) ->
+      test "moveArrayElement #{inspectForTestString inArray}, #{_from}, #{_to} >>> #{inspectForTestString outArray}", ->
+        assert.eq outArray, moveArrayElement inArray, _from, _to
+
+    moveArrayElementTest [1,2,3], 0, 0, [1,2,3]
+    moveArrayElementTest [1,2,3], 0, 1, [2,1,3]
+    moveArrayElementTest [1,2,3], 0, 2, [2,3,1]
+
+    moveArrayElementTest [1,2,3], 1, 0, [2,1,3]
+    moveArrayElementTest [1,2,3], 1, 1, [1,2,3]
+    moveArrayElementTest [1,2,3], 1, 2, [1,3,2]
+
+    moveArrayElementTest [1,2,3], 2, 0, [3,1,2]
+    moveArrayElementTest [1,2,3], 2, 1, [1,3,2]
+    moveArrayElementTest [1,2,3], 2, 2, [1,2,3]
+
+    largeMoveArrayElementTest = (_from, _to, tests) ->
+      test "large moveArrayElement from:#{_from}, to:#{_to}", ->
+        a = array til 1000
+        assert.eq a.length, 1000
+        assert.eq a[0], 0
+        assert.eq a[999], 999
+        largeArray = moveArrayElement a, _from, _to
+        assert.eq largeArray.length, 1000
+        each v, k from tests
+          index = k | 0
+          assert.eq largeArray[index], v, "largeArray[#{index}] should == #{v}"
+        undefined
+
+    largeMoveArrayElementTest 999, 0,
+      0: 999
+      1: 0
+      998: 997
+      999: 998
+
+    largeMoveArrayElementTest 0, 999,
+      0: 1
+      1: 2
+      998: 999
+      999: 0
+
+    test 'arrayWithElementMoved [1,2,3], 2, 0', ->
+      assert.eq [3,1,2], arrayWithElementMoved [1,2,3], 2, 0
+
+    test 'arrayWithElementValueMoved [1,2,3], 3, 0', ->
+      assert.eq [3,1,2], arrayWithElementValueMoved [1,2,3],3, 0
+
+  compact: ->
+
+    test "compact", ->
+      assert.eq (compact [1,2,3,null,4]), [1,2,3,4]
+      assert.eq (compact [1,2,3,null]), [1,2,3]
+      assert.eq (compact [null,1,2,3]), [1,2,3]
+
+    test "compact doesn't remove false", ->
+      assert.eq ["child2", "child3", false, "child4"], compact [undefined, "child2", null, "child3", false, "child4"]
+
+    test "compact not needed returns exactly the input array", ->
+      a = [1,3,4]
+      assert.equal a, compact a
+
+    test "compact with custom keepTester", ->
+      structure = [0, false, 1, 2, null, 3, 4, undefined, 5]
+      assert.eq (compact structure), [0, false, 1, 2, 3, 4, 5]
+      assert.eq (compact structure, (a) -> !!a), [1, 2, 3, 4, 5]
+
+  flatten: ->
+    test "flatten empty array", ->
+      assert.eq (flatten []), []
+
+    test "flatten not needed returns exactly the input array", ->
+      a = [1,3,4]
+      assert.equal a, flatten a
+
+    test "flatten args returns array", ->
+      assert.eq (flatten 1,2,3).constructor, Array
+
+    test "flatten() => []",           -> assert.eq [], flatten()
+    test "flatten [] => []",          -> assert.eq [], flatten []
+    test "flatten 1 => [1]",          -> assert.eq [1], flatten 1
+    test "flatten [1] => [1]",        -> assert.eq [1], flatten [1]
+    test "flatten 1, 2 => [1, 2]",    -> assert.eq [1, 2], flatten 1, 2
+    test "flatten [1], 2 => [1, 2]",  -> assert.eq [1, 2], flatten [1], 2
+    test "flatten 1, [2] => [1, 2]",  -> assert.eq [1, 2], flatten 1, [2]
+    test "flatten [1, 2] => [1, 2]",  -> assert.eq [1, 2], flatten [1, 2]
+
+    test "flatten already flat array returns untouched input", ->
+      b = flatten a = [1,2,3,4,5]
+      assert.eq true, a == b
+
+    test "flatten keeps nulls, undefineds, falses and 0s", ->
+      assert.eq (flatten [null, undefined, false, 0]), [null, undefined, false, 0]
+
+    test "flatten array with one sub-array", ->
+      assert.eq (flatten [1,2,3,[4,5]]), [1,2,3,4,5]
+
+    test "flatten array lots of direct nesting", ->
+      assert.eq (flatten [[[1]]]), [1]
+      assert.eq (flatten [[[]]]), []
+
+    test "flatten array with random nesting", ->
+      assert.eq (flatten [[0, [1, 2], 3], [4, [5, [6, 7]]]]), [0, 1, 2, 3, 4, 5, 6, 7]
+
+    test "flatten array with nested []", ->
+      assert.eq (flatten [[],1,2,3,[4,5]]), [1,2,3,4,5]
+
+  insertIntoArray: ->
+    test "insertIntoArray 0", ->
+      assert.eq (insertIntoArray [1,2,3], 0, 999), [999, 1, 2, 3]
+
+    test "insertIntoArray 3", ->
+      assert.eq (insertIntoArray [1,2,3], 3, 999), [1, 2, 3, 999]
+
+    test "insertIntoArray -1", ->
+      assert.eq (insertIntoArray [1,2,3], -1, 999), [1, 2, 3, 999]
+
+    test "insertIntoArray -2", ->
+      assert.eq (insertIntoArray [1,2,3], -2, 999), [1, 2, 999, 3]
+
+    test "arrayWithInsertedAt 0", ->
+      a = [1,2,3]
+      b = arrayWithInsertedAt a, 0, 999
+      assert.eq a, [1, 2, 3]
+      assert.eq b, [999, 1, 2, 3]
+
+  stableSort: ->
+    test "stableSort works like sort (except for stability)", ->
+      arrays = [
+        [1, 2, 3, 4]
+        [4, 3, 2, 1]
+        [3, 1, 2, 4]
+        []
+        [1]
+        [2, 1]
+        [1, 2, 3]
+        [1, 1]
+        [2, 3, 1, 1, 4]
+      ]
+      each a in arrays
+        assert.eq a.sort(), stableSort a
+      undefined
+
+    test "stableSort maintains order of 'same' elements", ->
+      list = []
+        [] 2 :a
+        [] 1 :b
+        [] 1 :c
+        [] 0 :f
+        [] 1 :d
+        [] 1 :e
+
+      stableSortedList = []
+        [] 0 :f
+        [] 1 :b
+        [] 1 :c
+        [] 1 :d
+        [] 1 :e
+        [] 2 :a
+
+      sortFunction = (a, b) -> a[0] - b[0]
+      assert.eq stableSortedList, stableSort list, sortFunction
+
+  "slice helpers": ->
+    test "arrayWithLeftOfIndex null array",       -> assert.eq null,   arrayWithLeftOfIndex  null, 0
+    test "arrayWithRightOfIndex null array",      -> assert.eq null,   arrayWithRightOfIndex null, 0
+    test "arrayWithLeftOfIndex 0",       -> assert.eq [],            arrayWithLeftOfIndex  [1,2,3,4,5,6], 0
+    test "arrayWithRightOfIndex 0",      -> assert.eq [2,3,4,5,6],   arrayWithRightOfIndex [1,2,3,4,5,6], 0
+    test "arrayWithLeftOfIndex -2",      -> assert.eq [1,2,3,4],     arrayWithLeftOfIndex  [1,2,3,4,5,6], -2
+    test "arrayWithRightOfIndex -2",     -> assert.eq [6],           arrayWithRightOfIndex [1,2,3,4,5,6], -2
+    test "arrayWithLeftOfIndex -1",      -> assert.eq [1,2,3,4,5],   arrayWithLeftOfIndex  [1,2,3,4,5,6], -1
+    test "arrayWithRightOfIndex -1",     -> assert.eq [],            arrayWithRightOfIndex [1,2,3,4,5,6], -1
+    test "arrayWithLeftOfIndex 3",       -> assert.eq [1,2,3],       arrayWithLeftOfIndex  [1,2,3,4,5,6], 3
+    test "arrayWithRightOfIndex 3",      -> assert.eq [5,6],         arrayWithRightOfIndex [1,2,3,4,5,6], 3
+    test "arrayWithLeftOfIndex 5",       -> assert.eq [1,2,3,4,5],   arrayWithLeftOfIndex  [1,2,3,4,5,6], 5
+    test "arrayWithRightOfIndex 5",      -> assert.eq [],            arrayWithRightOfIndex [1,2,3,4,5,6], 5
+    test "arrayWithLeftOfIndex 6",       -> assert.eq [1,2,3,4,5,6], arrayWithLeftOfIndex  [1,2,3,4,5,6], 6
+    test "arrayWithRightOfIndex 6",      -> assert.eq [],            arrayWithRightOfIndex [1,2,3,4,5,6], 6
+    test "arrayWithLeftOfIndex 7",       -> assert.eq [1,2,3,4,5,6], arrayWithLeftOfIndex  [1,2,3,4,5,6], 7
+    test "arrayWithRightOfIndex 7",      -> assert.eq [],            arrayWithRightOfIndex [1,2,3,4,5,6], 7
+    test "arrayWithLeftOf one match",    -> assert.eq [1, 2, 3],     arrayWithLeftOf  [1,2,3,4,5,6], 4
+    test "arrayWithRightOf one match ",  -> assert.eq [5, 6],        arrayWithRightOf [1,2,3,4,5,6], 4
+    test "arrayWithLeftOf no match",     -> assert.eq [1,2,3,4,5,6], arrayWithLeftOf  [1,2,3,4,5,6], 400
+    test "arrayWithRightOf no match ",   -> assert.eq [],            arrayWithRightOf [1,2,3,4,5,6], 400
+    test "arrayWithLeftOf two matches",  -> assert.eq [1],           arrayWithLeftOf  [1,4,3,4,5,6], 4
+    test "arrayWithRightOf two matches", -> assert.eq [3,4,5,6],     arrayWithRightOf [1,4,3,4,5,6], 4
+
+  findSortedFirst: ->
+    test "empty or null/undefined array returns undefined", ->
+      assert.eq undefined, findSortedFirst []
+      assert.eq undefined, findSortedFirst null
+      assert.eq undefined, findSortedFirst undefined
+
+    test "numbers", ->
+      assert.eq 1, findSortedFirst [3, 1, 2]
+      assert.eq 1, findSortedFirst [1, 2, 3]
+      assert.eq 1, findSortedFirst [1, 3, 2]
+
+    test "custom compareFunction with numbers", ->
+      assert.eq 3, findSortedFirst [3, 1, 2], (a, b) -> b - a
+      assert.eq 3, findSortedFirst [1, 2, 3], (a, b) -> b - a
+      assert.eq 3, findSortedFirst [1, 3, 2], (a, b) -> b - a
+
+
+  w: ->
+    testEq w, "this", ['this']
+    testEq w, "this ~!@#$%^&*()_+{}|:<>? stinks", ['this', "~!@#$%^&*()_+{}|:<>?", "stinks"]
+    testEq w, "this is it", ['this', 'is', 'it']
+    testEq w, ["this is", "it also"], [] :this :is :it :also
+    testEq w, [123, "it also", foo: 'baz it', ["keep together"]], [123, "it", "also", foo: 'baz it', ["keep together"]]

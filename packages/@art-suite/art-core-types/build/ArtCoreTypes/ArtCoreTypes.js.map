@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreTypes.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreTypes/ArtCoreTypes.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,oBACA"
+}

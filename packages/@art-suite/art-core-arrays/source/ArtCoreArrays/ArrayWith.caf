@@ -1,0 +1,132 @@
+import &@ArtSuite/ArtCoreMath, &@ArtSuite/ArtCoreTypes, &MutateArray, &ArrayFind
+
+wordsRegex = /[^\s]+/g
+exactlyOneWordRegex = /^[^\s]+$/
+
+{}
+  arrayWithUniqueValues: (sortedArray, eqF = ((a, b) -> a == b)) ->
+    array v, i from-array sortedArray when i == 0 || !eqF v, sortedArray[i-1]
+
+  # if index < 0, index += array.length
+  arrayWithLeftOfIndex = (inputArray, index)  ->
+    return inputArray unless inputArray
+    inputArray.slice 0, index
+
+  # if index < 0, index += array.length
+  arrayWithRightOfIndex = (inputArray, index) ->
+    return inputArray unless inputArray
+    if index < 0
+      index += inputArray.length
+    inputArray.slice index + 1
+
+  # if value is not found, left returns whole array, right returns nothing
+  # if value is found, left returns all elements before the first match, right returns all elements after
+  arrayWithLeftOf:   (inputArray, value) -> arrayWithLeftOfIndex  inputArray, getIndexOfOrLength inputArray, value
+  arrayWithRightOf:  (inputArray, value) -> arrayWithRightOfIndex inputArray, getIndexOfOrLength inputArray, value
+
+  # new array, randomly sorted
+  # null/undefined > []
+  arrayWithRandomSort: (inputArray) ->
+    if inputArray
+      len = inputArray.length
+      each i from len-1 to 0 by -1
+        j = intRand i
+        a = inputArray[i]
+        inputArray[i] = inputArray[j]
+        inputArray[j] = a
+
+      inputArray
+    else
+      []
+
+  # same as insert, except doesn't modify input array; returns new array
+  arrayWithInsertedAt: (inputArray, index, item) =>
+    insertIntoArray inputArray.slice(), index, item
+
+  # returns a new, sorted array
+  arrayWithSort: (inputArray = [], sortFunction) ->
+    inputArray = inputArray.slice()
+    inputArray.sort sortFunction
+
+  arrayWithout: (inputArray, index, amount = 1) =>
+    if inputArray?
+      index = inputArray.length - 1 unless index?
+      remove inputArray.slice(), index, amount
+    else []
+
+  ## arrayWithoutValue
+    OUT: returns the exact same array if value isn't present
+    else if array is null/undefined, returns []
+    else, returns the array with the first occurance of value removed.
+  arrayWithoutValue: (inputArray, value) =>
+    if inputArray?
+      if 0 <= index = inputArray.indexOf value
+        remove inputArray.slice(), index, 1
+      else
+        inputArray
+    else []
+
+  ## arrayWithoutLast
+    returns a clone of array without the last element
+  arrayWithoutLast: (inputArray, amount = 1) ->
+    if inputArray? && amount < inputArray.length
+      inputArray.slice 0, inputArray.length - amount
+    else
+      []
+
+  ## arrayWith
+    returns a clone of array
+    pure-functional push
+    with value pushed at the end (value can be duplicated)
+    if array is null/undefined/false, returns new array with only value in it: [value]
+  arrayWith: (inputArray, value) =>
+    return [value] unless inputArray
+    inputArray = inputArray.slice()
+    inputArray.push value
+    inputArray
+
+  ## truncatedArrayWith
+    returns a clone of array with value pushed at the end
+    with the last element truncated to the specified length
+  truncatedArrayWith: (inputArray, length, value) =>
+    return [value] unless inputArray
+    inputArray = inputArray.slice 0, length
+    inputArray.push value
+    inputArray
+
+  ## arrayWithoutLast
+    returns a clone of array without the last element
+    pure-functional pop
+  arrayWithoutLast: (inputArray) =>
+    inputArray.slice 0, inputArray.length - 1
+
+  ## arrayWithExactlyOne
+    returns a clone of array (or [value] if array is null)
+    with value pushed at the end ONLY IF value isn't already in the array
+    if array is null/undefined/false, returns new array with only value in it: [value]
+  arrayWithExactlyOne: (inputArray, value) =>
+    return [value] unless inputArray
+    inputArray = inputArray.slice()
+    inputArray.push value unless value in inputArray
+    inputArray
+
+  ## arrayWithElementMoved
+    returns a new array with one element moved FROM one location TO another.
+    IN: from/to are moduloed into valid indexes
+      a = intMode a, array.length
+  arrayWithElementMoved = (inputArray, fromIndex, toIndex) ->
+    fromIndex = (fromIndex | 0) %% inputArray.length
+    toIndex   = (toIndex   | 0) %% inputArray.length
+    return inputArray if fromIndex == toIndex
+    inputArray = inputArray.slice()
+    moveArrayElement inputArray, fromIndex, toIndex
+
+  arrayWithElementValueMoved: (inputArray, value, toIndex) ->
+    fromIndex = inputArray.indexOf value
+    return inputArray if fromIndex < 0
+    arrayWithElementMoved inputArray, fromIndex, toIndex
+
+  arrayWithElementReplaced: (inputArray, value, index) ->
+    inputArray = inputArray.slice()
+    inputArray[index] = value
+    inputArray

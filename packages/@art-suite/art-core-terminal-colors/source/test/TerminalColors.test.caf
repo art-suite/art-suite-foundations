@@ -1,0 +1,6 @@
+import &StandardImport
+
+test "yellow", ->
+  assert.eq
+    yellow "Hello, world!"
+    "\u001b[33mHello, world!\u001b[39m"

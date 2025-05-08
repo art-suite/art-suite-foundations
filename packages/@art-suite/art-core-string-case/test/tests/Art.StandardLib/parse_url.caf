@@ -1,0 +1,117 @@
+import &StandardImport
+
+suite:
+  parseQuery: ->
+    testParseQuery = (input, expected) ->
+      test input, ->
+        assert.eq parseQuery(input), expected
+
+    testParseQuery "?foo", foo: true
+    testParseQuery "?foo=hi", foo: 'hi'
+    testParseQuery "foo=hi", foo: 'hi'
+    testParseQuery "?foo=hi&bar=bye", foo: 'hi', bar: 'bye'
+    testParseQuery "?foo=hi%20there", foo: 'hi there'
+
+  generateQuery: ->
+    test "generateQuery", ->
+      assert.eq
+        generateQuery
+          isNull: null
+          isUndefined: undefined
+          isFalse: false
+          isTrue: true
+          isEmpty: ''
+          isNotEmpty: 'abc'
+
+        "" isFalse=false&isTrue=true&isEmpty=&isNotEmpty=abc
+
+  "urlJoin and urlResolve are the same": ->
+    tests = []
+      [] 'http://foo.com/bob',      'http://foo.com/',    'bob'
+      [] 'http://foo.com/bob',      'http://foo.com/',    '/bob'
+      [] 'http://foo.com/bob',      'http://foo.com',     '/bob'
+      [] 'http://foo.com/bob',      'http://foo.com',     'bob'
+      [] 'http://foo.com/bob/',     'http://foo.com',     'bob/'
+      [] 'http://foo.com/bob/foo',  'http://foo.com',     'bob/foo'
+      [] 'http://foo.com/foo/bob',  'http://foo.com/foo', 'bob'
+
+    each [out, uri, path] in tests
+      test "#{uri} + #{path} = #{out}", ->
+        assert.eq out, urlJoin uri, path
+        assert.eq out, urlResolve uri, path
+
+  "urlJoin differs": ->
+    tests = []
+      [] 'http://foo.com/foo/bob',  'http://foo.com/foo', '/bob'
+      [] 'http://foo.com/foo/bob',  'http://foo.com/foo/', '/bob'
+
+    each [out, uri, path] in tests
+      test "#{uri} + #{path} = #{out}", ->
+        assert.eq out, urlJoin uri, path
+
+  "urlResolve differs": ->
+    tests = []
+      [] 'http://foo.com/bob',      'http://foo.com/foo', '/bob'
+      [] 'http://foo.com/bob',      'http://foo.com/foo/', '/bob'
+
+    each [out, uri, path] in tests
+      test "#{uri} + #{path} = #{out}", ->
+        assert.eq out, urlResolve uri, path
+
+  parseUrl: ->
+    # fixing this changes parseUrl too much, though I think it probably should be changed...
+    # What to do???
+    # test "start with slash is NOT a domain", ->
+    #   assert.eq
+    #     merge parseUrl "/foo.bar"
+    #     pathName: "/foo.bar"
+    #     path:     "/"
+
+
+    test "just domain", ->
+      a = parseUrl "myDomain.com"
+      assert.eq a,
+        protocol: undefined
+        username: undefined
+        password: undefined
+        hostWithPort: "mydomain.com"
+        host:     "mydomain.com"
+        port:     undefined
+        pathName: undefined
+        path:     undefined
+        fileName: undefined
+        query:    undefined
+        anchor:   undefined
+
+    test "with everything", ->
+      a = parseUrl "ftp://myName:myPassword@mySubDomain.myDomain.com:8080/myPath/myFile.html?param1=foo,bar&param2=baz#myAnchor"
+      assert.eq a,
+        protocol: "ftp"
+        username: "myName"
+        password: "myPassword"
+        hostWithPort: "mysubdomain.mydomain.com:8080"
+        host: "mysubdomain.mydomain.com"
+        port: "8080"
+        pathName: "/myPath/myFile.html"
+        path: "/myPath"
+        fileName: "myFile.html"
+        query:
+          param1: "foo,bar"
+          param2: "baz"
+        anchor: "myAnchor"
+
+  sameOrigin: ->
+    tests = []
+      [true,  "/",                        "http://foo.com"]
+      [true,  "/foo",                     "http://foo.com"]
+      [true,  "/",                        "http://foo.com:8080"]
+      [true,  'http://foo.com/anything',  'http://foo.com']
+      [true,  'https://foo.com/anything', 'https://foo.com']
+      [true,  'http://foo.com/anything',  'http://foo.com/anythingelse']
+      [false, 'http://foo.com/anything',  'https://foo.com']
+      [false, 'http://foo.com/anything',  'http://bar.com']
+      [false, 'http://foo.com/anything',  'http://foo.com:8080']
+      [false, 'http://foo.com/anything',  'http://bar.com']
+    each [result, url, origin] in tests
+      test "#{result}: sameOrigin '#{url}', '#{origin}'", ->
+        assert.eq result, sameOrigin url, origin
