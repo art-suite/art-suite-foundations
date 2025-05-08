@@ -1,0 +1,95 @@
+import &ArtStandardLib, &TimeConstants
+
+humanDurationStringHelper = (number, unit, verbose) ->
+  if verbose then pluralize number, longTimeNames[unit]
+  else            "#{number}#{unit}"
+
+class TimePresenters
+
+  @dateAgeInSeconds: dateAgeInSeconds = (date, now = new Date) ->
+    toSeconds now
+    - toSeconds date
+
+  @humanDurationString: humanDurationString = (seconds, {verbose, precision} = {precision: 1}) ->
+
+    if precision > 1
+      units = switch
+        # when seconds <  1                   then  :ms
+        when seconds <  secondsPer.m    then  [] :s
+        when seconds <  secondsPer.h    then  :m :s
+        when seconds <  secondsPer.d    then  :h :m :s
+        when seconds <  secondsPer.mo   then  :d :h :m :s
+        when seconds <  secondsPer.y    then  :mo :d :h :m :s
+        else                                  :y :mo :d :h :m :s
+
+      compactFlatten array i til precision
+        if currentUnit = units[i]
+          number = seconds / secondsPer[currentUnit]
+          if i == precision - 1
+            number = round number
+          else
+            number |= 0
+          seconds %= secondsPer[currentUnit]
+          humanDurationStringHelper number, currentUnit, verbose
+
+      .join ' '
+
+    else
+      unit = switch
+        # when seconds <  1                   then  :ms
+        when seconds <      secondsPer.m    then  :s
+        when seconds <  3 * secondsPer.h    then  :m
+        when seconds <  3 * secondsPer.d    then  :h
+        when seconds <  3 * secondsPer.mo   then  :d
+        when seconds <  2 * secondsPer.y    then  :mo
+        else                                      :y
+
+      number = round seconds / secondsPer[unit]
+      humanDurationStringHelper number, unit, verbose
+
+  @humanTimeDeltaString: (date1, date2, {verbose, precision} = {precision: 1}) ->
+    humanDurationString
+      dateAgeInSeconds date1, date2
+      {} verbose, precision
+
+  @niceFullDateString: (date) ->
+    formatDate date, "h:MMtt mmmm d, yyyy"
+
+  @niceMonthYear: (date) ->
+    formatDate date, "mmmm yyyy"
+
+  @niceDateString: (date, now) ->
+    now = toDate now
+    date = toDate date
+
+    switch Math.round (toSeconds(date) - toSeconds(now)) / secondsPer.day
+    when 1  then :tomorrow
+    when -1 then :yesterday
+    when 0  then :today
+    else
+      if   now.getFullYear() != date.getFullYear() then formatDate date, "" mmmm d, yyyy
+      else if now.getMonth() != date.getMonth()    then formatDate date, "" mmmm d
+      else formatDate date, "" mmmm d
+
+  @niceTimeDetailsString: (date, now) => "" #{formatDate date, :h:MMtt} #{@niceDateString date, now}
+
+  @timeAgo: timeAgo = (date, { verbose, precision, now} = {now: toDate()}) ->
+    ageInSeconds  = dateAgeInSeconds date, now
+
+    if ageInSeconds < 0
+      # FUTURE
+      if verbose then "in " else '-'
+      + humanDurationString -ageInSeconds, {} verbose, precision, now
+
+    else
+      # PAST
+      ageInMinutes  = ageInSeconds / secondsPer.minute
+      ageInHours    = ageInSeconds / secondsPer.hour
+      ageInDays     = ageInSeconds / secondsPer.day
+      if ageInMinutes < 1 && !(precision > 1)
+        "" just now
+
+      else
+        minPlural = humanDurationString ageInSeconds, {} verbose, precision, now
+
+        if verbose then minPlural + " ago" else minPlural

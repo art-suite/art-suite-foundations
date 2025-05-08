@@ -1,0 +1,11 @@
+import &StandardImport
+
+test "currentSecond", ->
+  assert.isNumber currentSecond()
+
+test "currentSecond matches Date.now", ->
+  assert.lt Math.abs(currentSecond() - Date.now()/1000), 1
+
+test "time", ->
+  assert.lt time(-> 1), .01
+  assert.eq time("logit", -> :foo), :foo

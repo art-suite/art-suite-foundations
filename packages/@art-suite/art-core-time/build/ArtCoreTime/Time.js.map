@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Time.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreTime/Time.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,gHAAO,4BAAgB,gFAEvB,QAUE,MAAM,CAAC,GAAG,0CACR,IAAI,KAAK,GACT,QAAQ,iBACR,UAAU,KACV,aAAa,kBAAkB,cAC5B,IAAC,CACF,YAAW,sBAAU,wBAAU,oBAAoB,iBACnD,WAEA"
+}

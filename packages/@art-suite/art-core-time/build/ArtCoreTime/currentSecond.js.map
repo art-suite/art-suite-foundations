@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "currentSecond.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreTime/currentSecond.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,oKAAI,oBAAY,iCAChB,yBAAoB,YACK,2BACvB,0BACA,yBACA,0CACG,YAAI,sBAET,wBAAwB,yBAAyB,MACjD,iBAAiB,KAAI,oBAAmB,MACxC,mCAAmC,iBAAiB,+BAKlD,+BAAa,YAAK,OAChB,yBAAyB,OACvB"
+}

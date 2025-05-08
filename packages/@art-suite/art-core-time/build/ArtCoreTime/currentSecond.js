@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {let self = global.self, Date = global.Date, initPerformanceSecond, initDateSecond, dateSecondMinusPerformanceSecond, currentSecond, base; self.performance || (self.performance = {}); (base = self.performance).now || (base.now = self.performance.mozNow || self.performance.msNow || self.performance.oNow || self.performance.webkitNow || function() {return (new Date()).getTime();}); initPerformanceSecond = self.performance.now() / 1000; initDateSecond = (new Date()).getTime() / 1000; dateSecondMinusPerformanceSecond = initDateSecond - initPerformanceSecond; return {currentSecond: currentSecond = function() {return self.performance.now() / 1000 + dateSecondMinusPerformanceSecond;}};});
+//# sourceMappingURL=currentSecond.js.map

@@ -1,0 +1,110 @@
+import &StandardImport
+
+now = toSeconds "2024-07-01 12:35"
+humanDurationStringTester = (options, testMap) ->
+  object expected, seconds in testMap
+    test  "#{seconds}s => #{expected}" -> assert.eq humanDurationString(seconds | 0, options), expected
+
+timeAgoTester = (options, testMap) ->
+  object expected, seconds in testMap
+    test  "#{seconds}s => #{expected}" -> assert.eq timeAgo(now - seconds, options), expected
+
+describe
+  timeAgo: ->
+    options = {now}
+    test "1 second from now" -> assert.eq timeAgo(now + 1, options), "" -1s
+    test "a second ago" -> assert.eq timeAgo(now - 1, options), "" just now
+    test "10 seconds ago" -> assert.eq timeAgo(now - 10, options), "" just now
+    test "a minute ago" -> assert.eq timeAgo(now - secondsPer.minute, options), "" 1m
+    test "an hour ago" -> assert.eq timeAgo(now - secondsPer.hour, options), "" 60m
+    test "a day ago" -> assert.eq timeAgo(now - secondsPer.day, options), "" 24h
+
+  "timeAgo precision: 2": ->
+    timeAgoTester
+      {} now, precision: 2
+      -1:  "" -1s
+      1: "" 1s
+      10: "" 10s
+      59: "" 59s
+      60: "" 1m 0s
+      61: "" 1m 1s
+      3600: "" 1h 0m
+      [secondsPer.day]: "" 1d 0h
+
+  "timeAgo verbose": ->
+    timeAgoTester
+      {} now, verbose: true
+      -1:               "" in 1 second
+      1:                "" just now
+      10:               "" just now
+      60:               "" 1 minute ago
+      3600:             "" 60 minutes ago
+      [secondsPer.day]: "" 24 hours ago
+
+  humanDurationString: ->
+    test  "a second" -> assert.eq humanDurationString(1), :1s
+    test  "10 seconds" -> assert.eq humanDurationString(10), :10s
+    test  "a minute" -> assert.eq humanDurationString(secondsPer.minute), :1m
+    test  "an hour" -> assert.eq humanDurationString(secondsPer.hour), :60m
+    test  "2 hours" -> assert.eq humanDurationString(secondsPer.hour*2), :120m
+    test  "3 hours" -> assert.eq humanDurationString(secondsPer.hour*3), :3h
+    test  "a day" -> assert.eq humanDurationString(secondsPer.day), :24h
+    test  "2 days" -> assert.eq humanDurationString(secondsPer.day * 2), :48h
+    test  "3 days" -> assert.eq humanDurationString(secondsPer.day * 3), :3d
+    test  "a month" -> assert.eq humanDurationString(secondsPer.month), :30d
+    test  "2 months" -> assert.eq humanDurationString(secondsPer.month * 2), :61d
+    test  "3 months" -> assert.eq humanDurationString(secondsPer.month * 3), :3mo
+    test  "a year" -> assert.eq humanDurationString(secondsPer.year), :12mo
+    test  "2 years" -> assert.eq humanDurationString(secondsPer.year * 2), :2y
+
+  "humanDurationString precision: 2": ->
+    humanDurationStringTester
+      {} precision: 2
+      1:                        :1s
+      59:                       :59s
+      60:                       "" 1m 0s
+      [secondsPer.hour]:        "" 1h 0m
+      [secondsPer.hour + 29]:   "" 1h 0m
+      [secondsPer.hour + 30]:   "" 1h 1m
+      [secondsPer.hour + secondsPer.minute * 59]: "" 1h 59m
+      [2 * secondsPer.hour]:    "" 2h 0m
+      [2 * secondsPer.hour + secondsPer.minute]: "" 2h 1m
+      [24 * secondsPer.hour]:   "" 1d 0h
+      [2 * secondsPer.day]:   "" 2d 0h
+      [2 * secondsPer.month]:   "" 2mo 0d
+      [2 * secondsPer.year]:   "" 2y 0mo
+
+  "humanTimeDeltaString": ->
+    test "1 second" -> assert.eq humanTimeDeltaString(now, now + 1), "1s"
+    test "1 minute" -> assert.eq humanTimeDeltaString(now, now + secondsPer.minute), "1m"
+    test "60m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour), "60m"
+    test "61m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour + 60), "61m"
+    test "61m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour + 60, {precision: 2}), "1h 1m"
+    test "120m" -> assert.eq humanTimeDeltaString(now, now + secondsPer.hour * 2), "120m"
+    test "24 hours" -> assert.eq humanTimeDeltaString(now, now + secondsPer.day, {verbose: true}), "24 hours"
+    test "1 day 1 hour" -> assert.eq humanTimeDeltaString(now, now + secondsPer.day + secondsPer.hour, {precision: 2}), "1d 1h"
+
+  "humanDurationString verbose: true": ->
+    humanDurationStringTester
+      {} verbose: true
+      1:      "" 1 second
+      59:     "" 59 seconds
+      60:     "" 1 minute
+
+
+  niceDateString: ->
+    test "today" -> assert.eq niceDateString(now, now), "today"
+    test "yesterday" -> assert.eq niceDateString(now - secondsPer.day, now), "yesterday"
+    test "tomorrow" -> assert.eq niceDateString(now + secondsPer.day, now), "tomorrow"
+    test "last month" -> assert.eq niceDateString(now - secondsPer.month, now), "June 1"
+    test "next month" -> assert.eq niceDateString(now + 31 * secondsPer.day, now), "August 1"
+    test "last year" -> assert.eq niceDateString(now - secondsPer.year, now), "July 2, 2023"
+
+  niceFullDateString: ->
+    test "today" -> assert.eq niceFullDateString(now), "12:35pm July 1, 2024"
+
+  niceTimeDetailsString: ->
+    test "today" -> assert.eq niceTimeDetailsString(now, now + secondsPer.month), "12:35pm July 1"
+
+  niceMonthYear: ->
+    test "today" -> assert.eq niceMonthYear(now), "July 2024"

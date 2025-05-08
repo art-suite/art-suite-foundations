@@ -1,0 +1,55 @@
+import &StandardImport
+{toSeconds} = &build
+
+describe
+  toSeconds: ->
+    test "should convert Date to seconds", ->
+      date = new Date()
+      assert.eq toSeconds(date), date.getTime() / 1000
+
+    test "with no argument", ->
+      assert.lt Math.abs(toSeconds() - Date.now() / 1000), .001
+
+  toMilliseconds: ->
+    test "should convert Date to milliseconds", ->
+      date = new Date()
+      assert.eq toMilliseconds(date), date.getTime()
+
+    test "with no argument", ->
+      assert.lt Math.abs(toMilliseconds() - Date.now()), 1000
+
+    test "with milliseconds number", ->
+      assert.eq toMilliseconds(1234567890000), 1234567890000
+
+    test "with seconds number", ->
+      assert.eq toMilliseconds(1234567), 1234567000
+
+    test "with string", ->
+      assert.eq toMilliseconds("2025-01-02"), 1735772400000
+
+    test "with date", ->
+      assert.eq toMilliseconds(new Date("2025-01-02")), 1735776000000
+
+
+  toDate: ->
+    test "should convert seconds to Date", ->
+      seconds = Date.now() / 1000
+      assert.eq toDate(seconds), new Date(seconds * 1000)
+
+    test "with no argument", ->
+      assert.eq toDate(), new Date()
+
+  formatDate: ->
+    test "should format Date", ->
+      date = new Date("2025-01-02")
+      assert.eq formatDate(date, "yyyy-mm-dd"), "2025-01-02"
+
+    test "with no argument", ->
+      # default format: "Thu May 08 2025 11:46:33"
+      assert.match formatDate(), /^\w{3} \w{3} \d{2} \d{4} \d{2}:\d{2}:\d{2}$/
+
+    test "with just format", ->
+      assert.match formatDate("yyyy-mm-dd"), /^\d{4}-\d{2}-\d{2}$/
+
+    test "with format and date", ->
+      assert.eq formatDate("2025-01-02", "yyyy-mm-dd"), "2025-01-02"

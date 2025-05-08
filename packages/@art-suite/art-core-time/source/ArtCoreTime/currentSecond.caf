@@ -1,0 +1,18 @@
+self.performance ||= {}
+self.performance.now ||=
+  self.performance.mozNow    ||
+  self.performance.msNow     ||
+  self.performance.oNow      ||
+  self.performance.webkitNow ||
+  -> new Date().getTime()
+
+initPerformanceSecond = self.performance.now() / 1000
+initDateSecond = new Date().getTime() / 1000
+dateSecondMinusPerformanceSecond = initDateSecond - initPerformanceSecond
+
+{}
+  ## currentSecond
+    OUT: number - equivalent to new Date().getTime() / 1000
+  currentSecond = ->
+    self.performance.now() / 1000
+    + dateSecondMinusPerformanceSecond

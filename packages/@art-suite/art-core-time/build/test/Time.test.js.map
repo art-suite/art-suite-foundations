@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Time.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Time.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,wHAAO,kFAEP,KAAK,6BAAmB,OACtB,gBAAgB,qBAElB,KAAK,8CAAoC,OACvC,UAAU,SAAS,kBAAkB,aAAW,OAAO,cAEzD,KAAK,oBACH,UAAU,WAAQ,IAAI,aACtB,UAAU,KAAK,eAAY,QAAO"
+}

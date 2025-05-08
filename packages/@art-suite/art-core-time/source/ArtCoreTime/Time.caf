@@ -1,0 +1,22 @@
+import &currentSecond, &TimePresenters
+
+{}
+
+  ## time
+    two different ways to use:
+    IN A:
+      time f()
+      => seconds elapsed
+    IN B:
+      time consoleLogName, f()
+      => log to console && return result of f(); exceptions escape
+  time: (a, b) =>
+    f = b || a
+    start = currentSecond()
+    fResult = f()
+    timeResult = currentSecond() - start
+    if b
+      console.log "time: #{a} took #{humanDurationString timeResult}"
+      fResult
+    else
+      timeResult
