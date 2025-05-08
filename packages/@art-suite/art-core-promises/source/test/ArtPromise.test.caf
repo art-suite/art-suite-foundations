@@ -59,7 +59,7 @@ describe
       assert.ok containsPromises
         a: Promise.resolve 123
         b: 45
-      )
+
       assert.false containsPromises
         a: 123
         b: c: 1, d: 2
