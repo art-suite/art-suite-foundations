@@ -3,8 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.14",
-    "dateformat": "*"
+    "dateformat": "^4.5.1",
+    "neptune-namespaces-runtime": "^3.2.14"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
@@ -46,7 +46,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.74.3",
+  "version": "1.0.0",
   "watch": {
     "build": {
       "extensions": [

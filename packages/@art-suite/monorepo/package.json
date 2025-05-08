@@ -4,10 +4,12 @@
     "art-monorepo": "art-monorepo"
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
-  "dependencies": {},
+  "dependencies": {
+    
+  },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
   "devDependencies": {
-    "@art-suite/monorepo": "^1.13.2"
+    "@art-suite/monorepo": "^1.13.3"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {

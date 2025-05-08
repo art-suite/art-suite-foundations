@@ -31,7 +31,7 @@
   },
   "license": "ISC",
   "main": "./build",
-  "name": "@art-suite/art-core-math",
+  "name": "@art-suite/art-core-environment",
   "repository": {
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
@@ -45,7 +45,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.74.3",
+  "version": "1.0.0",
   "watch": {
     "build": {
       "extensions": [
