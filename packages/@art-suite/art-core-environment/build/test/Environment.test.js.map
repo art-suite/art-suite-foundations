@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Environment.test.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/test/Environment.test.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,yFAAO,mEAEP,QACE,aAAc,OACd,WAAc,OACd,QAAc,iBACW,8BACzB,KAAK,sBAAa,iBAAU,uBAAO,WAAW,sBAEhD,KAAK,sBAAY,OACf,aAAa,eAAe"
+}

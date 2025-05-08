@@ -1,0 +1,21 @@
+ParseUrl = require '@art-suite/art-core-strings'
+{isString} = require '@art-suite/art-core-types'
+isNode = require 'detect-node'
+
+[]
+  getEnv: ->
+    global.environment ?=
+      if global.location?
+        out = ParseUrl.parseQuery()
+        each v, k from global.location when k != "search" && isString(v) && v.length > 0
+          out[k] = v
+        out
+      else
+        global.process?.env
+
+      ? {}
+
+  # true/false values
+  isBrowser:   isBrowser = !!(global.window && global.navigator && global.document)
+  isWebWorker: !!(!isBrowser && global.importScripts)
+  isNode:      !!isNode

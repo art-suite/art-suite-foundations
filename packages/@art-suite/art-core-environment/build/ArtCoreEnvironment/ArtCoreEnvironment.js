@@ -1,0 +1,4 @@
+"use strict"
+let Caf = require('caffeine-script-runtime');
+Caf.defMod(module, () => {let ParseUrl, isString, isNode, isBrowser; ParseUrl = require("@art-suite/art-core-strings"); ({isString} = require("@art-suite/art-core-types")); isNode = require("detect-node"); return [{getEnv: function() {let out, temp, base, temp1, base1; return ((temp = (base = global).environment) != null ? temp : base.environment = ((temp1 = (global.location != null) ? (out = ParseUrl.parseQuery(), Caf.each2(global.location, (v, k) => out[k] = v, (v, k) => k !== "search" && isString(v) && v.length > 0), out) : Caf.exists(base1 = global.process) && base1.env) != null ? temp1 : {}));}, isBrowser: isBrowser = !!(global.window && global.navigator && global.document), isWebWorker: !!(!isBrowser && global.importScripts), isNode: !!isNode}];});
+//# sourceMappingURL=ArtCoreEnvironment.js.map
