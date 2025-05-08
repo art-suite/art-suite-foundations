@@ -23,7 +23,6 @@ inspecting = []
         when customInspectedObjects = m.getInspectedObjects?() then customInspectedObjects
         when isPromise m      then inspectedObjectLiteral :Promise
         when isPlainArray  m  then array  v in m with toInspectedObjectsR v
-        when isPlainObjectUniversal m  then object v in m with toInspectedObjectsR v
         when isTypedArray m   then m
 
         when m instanceof Error

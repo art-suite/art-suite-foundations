@@ -22,7 +22,6 @@ export const {
   isArray,
   isArrayBuffer,
   isArrayIterable,
-  isArrayUniversal,
   isBoolean,
   isBrowserObject,
   isClass,
@@ -40,7 +39,6 @@ export const {
   isPlainArray,
   isPlainObject,
   isPlainObjectFast,
-  isPlainObjectUniversal,
   isPromise,
   isRegExp,
   isString,
@@ -48,7 +46,4 @@ export const {
   objectName,
   present,
   stringIsPresent,
-  toJsonStructure,
-  toPlainStructure,
-  toPostMessageStructure,
 } = require('./build');

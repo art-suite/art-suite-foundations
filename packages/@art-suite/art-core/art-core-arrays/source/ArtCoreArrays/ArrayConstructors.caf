@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &ArrayCompactFlatten
 
 wordsRegex = /[^\s]+/g
 exactlyOneWordRegex = /^[^\s]+$/

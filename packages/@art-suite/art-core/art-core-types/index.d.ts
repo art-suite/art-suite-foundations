@@ -1,19 +1,4 @@
 /**
- * Recursively executes a function on each element in a nested data structure.
- */
-export function deepEach(obj: any, f: (value: any) => void): any;
-
-/**
- * Recursively executes a function on all elements in multiple nested data structures.
- */
-export function deepEachAll(...args: any[]): any;
-
-/**
- * Recursively maps a function over each element in a nested data structure.
- */
-export function deepMap(obj: any, f: (value: any) => any): any;
-
-/**
  * Gets the name of a function.
  */
 export function functionName(f: Function): string;
@@ -77,11 +62,6 @@ export function isArrayBuffer(obj: any): obj is ArrayBuffer;
  * Tests if an object is iterable like an array (has length property).
  */
 export function isArrayIterable(source: any): boolean;
-
-/**
- * Universal implementation of Array.isArray that works across frames.
- */
-export function isArrayUniversal(obj: any): obj is Array<any>;
 
 /**
  * Tests if a value is a boolean.
@@ -169,11 +149,6 @@ export function isPlainObject(v: any): boolean;
 export function isPlainObjectFast(v: any): boolean;
 
 /**
- * Cross-frame friendly implementation of isPlainObject.
- */
-export function isPlainObjectUniversal(v: any): boolean;
-
-/**
  * Tests if an object is a Promise.
  */
 export function isPromise(obj: any): boolean;
@@ -207,18 +182,3 @@ export function present(obj: any, returnIfNotPresent?: any): any;
  * Tests if a string has content (not empty or just whitespace).
  */
 export function stringIsPresent(str: string): boolean;
-
-/**
- * Converts a structure to a JSON-compatible structure.
- */
-export function toJsonStructure(obj: any): any;
-
-/**
- * Converts a structure to a plain object structure.
- */
-export function toPlainStructure(obj: any): any;
-
-/**
- * Converts a structure to a structure compatible with postMessage.
- */
-export function toPostMessageStructure(obj: any): any;

@@ -141,9 +141,7 @@
       return !!getSuperclass(obj);
     };
 
-    Types.isArrayUniversal = Array.isArray;
-
-    Types.isArray = isArray = Types.isArrayUniversal;
+    Types.isArray = isArray = Array.isArray;
 
     Types.isArguments = function(o) {
       return (o != null) && typeof o.length === "number" && o.toString() === '[object Arguments]';
@@ -244,8 +242,6 @@
       }
       return _super;
     };
-
-    Types.isPlainObjectUniversal = isPlainObject;
 
     Types.isPlainObject = isPlainObject;
 

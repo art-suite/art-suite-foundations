@@ -13,7 +13,7 @@ import &@ArtSuite/ArtCoreTerminalColors, &@ArtSuite/ArtCoreTypes, &@ArtSuite/Art
     inspectedValuesContainNewlines = false
 
     each value, i in m
-      if isPlainObjectUniversal value
+      if isPlainObject value
         oneLinerOk = false if i < m.length - 1 # non-tail object
         objectsMustBeExplicit = true if lastWasObject
         lastWasObject = true
@@ -31,7 +31,7 @@ import &@ArtSuite/ArtCoreTerminalColors, &@ArtSuite/ArtCoreTypes, &@ArtSuite/Art
 
       inspectedHasNewlines = /\n/.test inspected
 
-      if objectsMustBeExplicit && isPlainObjectUniversal(value) && objectKeyCount(value) > 0
+      if objectsMustBeExplicit && isPlainObject(value) && objectKeyCount(value) > 0
         objectStart = "{}"
         objectStart = colorize.grey objectStart
         inspected = if inspectedHasNewlines

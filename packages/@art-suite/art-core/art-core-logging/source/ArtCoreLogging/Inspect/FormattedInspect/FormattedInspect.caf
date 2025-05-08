@@ -84,7 +84,7 @@ module.exports = {}
     try
       if isNumber options
         maxLineLength = options
-      else if isPlainObjectUniversal options
+      else if isPlainObject options
         options extract
           indent, unquoted
           color as colorizeEnabled

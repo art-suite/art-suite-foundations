@@ -127,9 +127,7 @@ module.exports = class Types
 
   # https://jsperf.com/is-array-sbd
   # correct: Array.isArray
-  # 3x-8x faster: (o) => o.constructor == Array
-  @isArrayUniversal: Array.isArray
-  @isArray: isArray = @isArrayUniversal
+  @isArray: isArray = Array.isArray
 
   @isArguments: (o) ->
     o? &&
@@ -228,9 +226,9 @@ module.exports = class Types
   # PERF: https://jsperf.com/is-plain-object
   #   iFrame-friendly test: null == Object.getPrototypeOf Object.getPrototypeOf v
   #   10-70x faster: v.constructor == Object
-  @isPlainObjectUniversal: isPlainObject
   @isPlainObject: isPlainObject
 
+  # 10-70x faster: v.constructor == Object; works fine as long as Node doesn't have multiple contexts running which cases there to be multiple instances of Object
   @isPlainObjectFast: (v) -> v? && v.constructor == Object
 
   ############################

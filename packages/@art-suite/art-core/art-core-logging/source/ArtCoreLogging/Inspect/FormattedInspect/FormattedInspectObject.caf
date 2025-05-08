@@ -15,7 +15,7 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
   formattedInspectObject = (m, maxLineLength, options, formattedInspectRecursive) ->
     options extract colorize, newLineWithIndent, indent
     inspectedLength = 0
-    if notPlainObject = !plainObject = isPlainObjectUniversal m
+    if notPlainObject = !plainObject = isPlainObject m
       prototype = Object.getPrototypeOf m
 
     valuesRequireMultilineOutput = false
@@ -27,7 +27,7 @@ barePropKeyRegExp = /^[-~!@\#$%^&*_+=|\\<>?\/.$\w\u007f-\uffff]+$/
       inspected = formattedInspectRecursive value, maxLineLength - indent.length, options
 
       if /\n/.test inspected
-        unless isArray(value) || (isPlainObjectUniversal(value) && objectKeyCount(value) == 1)
+        unless isArray(value) || (isPlainObject(value) && objectKeyCount(value) == 1)
           inspected = newLineWithIndent + inspected.replace /\n/g, newLineWithIndent
         inspected += "\n" unless /\n\s*$/.test inspected
 
