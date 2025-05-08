@@ -5,6 +5,7 @@
 
 .addModules({
   ParseUrlTest:         require('./ParseUrl.test'),
+  PlurlizeTest:         require('./Plurlize.test'),
   RegExpExtensionsTest: require('./RegExpExtensions.test'),
   StandardImport:       require('./StandardImport'),
   StringExtensionsTest: require('./StringExtensions.test')

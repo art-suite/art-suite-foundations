@@ -1,0 +1,113 @@
+import &@ArtSuite/ArtCoreTypes
+## pluralize
+  Examples:
+    # just, always, pluralize:
+    pluralize "food" >> "foods"
+
+    # pluralize and output number
+    pluralize -1, "food" -> "-1 foods"
+    pluralize 0, "food" -> "0 foods"
+    pluralize 1, "food" -> "1 food"
+    pluralize 2, "food" -> "2 foods"
+
+    # order of the first 2 params doesn't matter
+    pluralize 1, "food" -> "1 food"
+    pluralize "food", 1 -> "1 food"
+
+    # custom pluralForms
+    pluralize 1, "dragon", "frogs" -> "1 dragon"
+    pluralize 3, "dragon", "frogs" -> "2 frogs"
+
+  IN:
+    various signatures:
+      pluralize singleForm
+      pluralize singleForm, number
+      pluralize number, singleForm
+      pluralize singleForm, number, pluralForm
+      pluralize number, singleForm, pluralForm
+
+    number:     <Number>
+    singleForm: <String> singular noun
+      NOTE: if pluralForm is not provided, it's ok
+        if this is a plural nown, it'll still
+        'do the right thing'
+
+    pluralForm: <String> plural noun
+
+  OUT:
+
+    unless number == 0
+      pluralForm ?=
+
+    if a number was provided
+      "#{number} #{correct singleForm or pluralForm}"
+    else
+      pluralForm
+
+  NOTE:
+    Now using: https://www.npmjs.com/package/pluralize
+    It provides nice functionality and knows about all the odd
+    english words.
+
+    Compatibility:
+      ArtStandardLib's pluralize always outputs the number
+      if the number is given, unlike npm-pluralize, which
+      requires a 'true' in the 3rd argument to enable outputting
+      the number.
+
+      ArtStandardLib let's you provide your own, custom pluralForm.
+      npm-pluralize requires you to 'register' it first via addIrregularRule.
+      You can still do that, if you wish, but it's renamed 'addPluralizeRule'
+      in ArtStandardLib since it's expected you'll import it 'bare' and
+      'addIrregularRule' could mean anything out-of-context.
+
+    It's an extra 2.1k payload minimized and brotli-zipped for client-side.
+
+    It also allows us to provide:
+      {@plural, @singular, @isSingular, @isPlural, @addPluralizeRule}
+
+(npmPluralize = require :pluralize) extract
+  plural, singular, isSingular, isPlural
+  addIrregularRule as addPluralizeRule
+
+## Patch npmPluralize to handle trailing "_" and non-word characters - just ignore them and append them after
+patchedNpmPluralize = (noun, a, b) ->
+  if match = /^(.*)(_|[^\w])+$/.exec noun
+    [__, noun, append] = match
+  out = npmPluralize noun, a, b
+  if append
+    out + append
+  else
+    out
+
+{}
+  plural
+  singular
+  isSingular
+  isPlural
+  addPluralizeRule
+
+  pluralize: (a, b, pluralForm) ->
+
+    # normalize inputs
+    number = if b? && isNumber b
+      singleForm = a
+      b
+    else if isNumber a
+      singleForm = b
+      a
+    else
+      singleForm = if stringIsPresent a then a else if stringIsPresent b then b
+      null
+
+    # validate
+    if !isString(singleForm) || (pluralForm && !isString pluralForm)
+      throw new Error
+        ""
+          singleForm and pluralForm(optional) should be non-empty strings
+          (inputs: #{Neptune.Art.StandardLib.formattedInspect {a, b, pluralForm}})
+
+    switch
+    when pluralForm? then "#{number} #{if number == 1 then singleForm else pluralForm}"
+    when number?     then patchedNpmPluralize singleForm, number, true
+    else                  patchedNpmPluralize singleForm

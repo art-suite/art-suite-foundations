@@ -5,6 +5,7 @@
 .includeInNamespace(require('./ArtCoreStrings'))
 .addModules({
   ParseUrl:         require('./ParseUrl'),
+  Pluralize:        require('./Pluralize'),
   RegExpExtensions: require('./RegExpExtensions'),
   StringExtensions: require('./StringExtensions')
 });
