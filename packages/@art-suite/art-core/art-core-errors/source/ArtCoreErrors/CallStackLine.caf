@@ -14,10 +14,10 @@ class CallStackLine
     @sourceLine = 0
     @sourceColumn = 0
 
-    if @parseLineWithFunction line
-    else @parseLineWithoutFunction line
-    @subParseFunction()
-    @subParseSource()
+    if @_parseLineWithFunction line
+    else @_parseLineWithoutFunction line
+    @_subParseFunction()
+    @_subParseSource()
 
   toString: -> @original
 
@@ -25,7 +25,7 @@ class CallStackLine
   # PRIVATE
   #################
   # example: "at myFunc (http://0.0.0.0:9000/scripts/spec/art/foundation/call_stack.js:10:30)"
-  parseLineWithFunction: (line) ->
+  _parseLineWithFunction: (line) ->
     if r = line.match ///
         \s*at\s
         ((new\s)?[a-zA-Z0-9_.<>]+)
@@ -41,7 +41,7 @@ class CallStackLine
       @sourceColumn = r[5] | 0
 
 
-  parseLineWithoutFunction: (line) ->
+  _parseLineWithoutFunction: (line) ->
     if r = line.match  ///
         \s*at\s
         ([^)]*)
@@ -52,14 +52,14 @@ class CallStackLine
       @sourceLine = r[2] | 0
       @sourceColumn = r[3] | 0
 
-  subParseSource: ->
+  _subParseSource: ->
     if @source
       url = parseUrl @source
       @sourceFileName = url.fileName
       @sourcePath = url.path
       @sourceHostWithPort = url.hostWithPort
 
-  subParseFunction: ->
+  _subParseFunction: ->
     if @function
       f = @function.split "."
       @function = f[f.length-1]

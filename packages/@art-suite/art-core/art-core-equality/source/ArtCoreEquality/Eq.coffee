@@ -83,7 +83,6 @@ compareObject = (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
   else
     NaN
 
-
 compare = (a, b, recursionBlockArray, compareFunctionsAsStrings) =>
   return 0 if a == b
 

@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/art-core-math": "^0.1.0",
-    "@art-suite/art-core-types": "^0.2.0",
+    "@art-suite/art-core-types": "^0.2.1",
     "caffeine-script-runtime": "^1.14.0",
     "neptune-namespaces-runtime": "^3.2.14"
   },

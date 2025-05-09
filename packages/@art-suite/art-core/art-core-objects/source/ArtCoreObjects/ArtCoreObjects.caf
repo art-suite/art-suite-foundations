@@ -2,3 +2,5 @@
   &Merge
   &ObjectExtensions
   &ArraysAndObjects
+  &Clone
+  &ObjectDiff

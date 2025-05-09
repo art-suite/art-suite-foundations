@@ -3,6 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/art-core-arrays": "file:packages/@art-suite/art-core/art-core-arrays",
+    "@art-suite/art-core-comprehensions": "file:packages/@art-suite/art-core/art-core-comprehensions",
     "@art-suite/art-core-environment": "file:packages/@art-suite/art-core/art-core-environment",
     "@art-suite/art-core-equality": "file:packages/@art-suite/art-core/art-core-equality",
     "@art-suite/art-core-errors": "file:packages/@art-suite/art-core/art-core-errors",
