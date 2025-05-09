@@ -1,0 +1,46 @@
+import &StandardImport
+
+describe
+  basic:
+    reduce:->
+      testComprehension 24              _reduce, [1 2 3 4] mul
+      testComprehension 12              _reduce, {a:3 b:4} mul
+      testComprehension 8               _reduce, [1 2 3 4] with: mul, when: even
+      testComprehension 384             _reduce, [1 2 3 4] with: mul, map: x2
+
+    inject: ->
+      testComprehension 110             _inject, [1 2 3 4] 100   add
+      testComprehension 103             _inject, {a:1 b:2} 100   add
+      testComprehension 120             _inject, [1 2 3 4] 100   with: add, map: x2
+      testComprehension 106             _inject, [1 2 3 4] 100   with: add, when: even
+
+    injectAsIntoAlias:->
+      testComprehension 123             _reduce, [],     inject: 123 with: add
+      testComprehension 103             _inject, [1 2]   inject: 100 with: add
+
+      testComprehension 123             _reduce, [],     into:   123 with: add
+      testComprehension 103             _inject, [1 2]   into:   100 with: add
+
+  differences:
+    reduce: ->
+      testComprehension undefined       _reduce, null      (a, b) -> flatten [] a, b
+      testComprehension undefined       _reduce, [],       (a, b) -> flatten [] a, b
+      testComprehension 1               _reduce, [1]       (a, b) -> flatten [] a, b
+      testComprehension [1 2]           _reduce, [1 2]     (a, b) -> flatten [] a, b
+
+      testComprehension 123             _reduce, null  123 (a, b) -> flatten [] a, b
+      testComprehension 123             _reduce, [],   123 (a, b) -> flatten [] a, b
+      testComprehension 1               _reduce, [1]   123 (a, b) -> flatten [] a, b
+      testComprehension [1 2]           _reduce, [1 2] 123 (a, b) -> flatten [] a, b
+
+    inject: ->
+      testComprehension undefined       _inject, null      (a, b) -> flatten [] a, b
+      testComprehension undefined       _inject, [],       (a, b) -> flatten [] a, b
+      testComprehension [undefined 1]   _inject, [1]       (a, b) -> flatten [] a, b
+      testComprehension [undefined 1 2] _inject, [1 2]     (a, b) -> flatten [] a, b
+
+      testComprehension 123             _inject, null  123 (a, b) -> flatten [] a, b
+      testComprehension 123             _inject, [],   123 (a, b) -> flatten [] a, b
+      testComprehension [123 1]         _inject, [1]   123 (a, b) -> flatten [] a, b
+      testComprehension [123 1 2]       _inject, [1 2] 123 (a, b) -> flatten [] a, b
+

@@ -1,0 +1,24 @@
+import &StandardImport, &generators
+
+source = 1 2 9 3 4
+
+describe
+  fromArray: ->
+    testComprehension 1   _find, source
+    testComprehension 2   _find, source, when: even
+    testComprehension 90  _find, source, (v) -> if v % 3 == 0 then v * 10
+    testComprehension 45  _find, source,
+      when: (v) -> v % 3 == 0
+      with: (v) -> v * 5
+
+  fromObject: ->
+    testComprehension 2   _find, {a:1 b:2}, when: even
+    testComprehension 90  _find, {a:1 b:2, c: 9, d: 3, e: 4}, (v) -> if v % 3 == 0 then v * 10
+    testComprehension 45  _find, {a:1 b:2, c: 9, d: 3, e: 4},
+      when: (v) -> v % 3 == 0
+      with: (v) -> v * 5
+
+  fromIterables: ->
+    testComprehension 2   _find, (new Map [] [:a, 1], [:b, 2], [:c, 3]), when: even
+    testComprehension 1   _find, new Set [1 2]
+    testComprehension 2   _find, generate3(), when: even
