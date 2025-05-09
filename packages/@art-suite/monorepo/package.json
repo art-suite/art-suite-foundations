@@ -10,11 +10,12 @@
     "art-rest-client": "^1.10.2",
     "art-standard-lib": "^1.74.3",
     "caffeine-script-runtime": "^1.14.0",
-    "neptune-namespaces-runtime": "^3.2.14"
+    "neptune-namespaces-runtime": "^3.2.14",
+    "glob": "*"
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
   "devDependencies": {
-    "@art-suite/monorepo": "^1.13.3"
+    "@art-suite/monorepo": "^1.13.4"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -59,7 +60,7 @@
     "test-watch": "jest --watch",
     "versions": "npx art-monorepo versions"
   },
-  "version": "1.13.4",
+  "version": "1.13.5",
   "watch": {
     "build": {
       "extensions": [
