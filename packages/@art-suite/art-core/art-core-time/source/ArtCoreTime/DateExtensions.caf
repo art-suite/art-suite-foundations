@@ -1,4 +1,4 @@
-import &@ArtSuite/ArtCoreTypes, &TimeConstants, {} &dateformat
+import &StandardImport, &TimeConstants, {} &dateformat
 
 march1973InMilliseconds = 100000000000
 

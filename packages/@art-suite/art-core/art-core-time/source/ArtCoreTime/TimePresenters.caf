@@ -1,4 +1,4 @@
-import &TimeConstants, &currentSecond, &DateExtensions, &@ArtSuite/ArtCoreArrays, &@ArtSuite/ArtCoreMath, &@ArtSuite/ArtCoreStrings
+import &StandardImport, &TimeConstants, &currentSecond, &DateExtensions
 
 humanDurationStringHelper = (number, unit, verbose) ->
   if verbose then pluralize number, longTimeNames[unit]
