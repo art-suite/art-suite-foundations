@@ -11,7 +11,8 @@
     "art-standard-lib": "^1.74.3",
     "caffeine-script-runtime": "^1.14.0",
     "glob": "^11.0.0",
-    "neptune-namespaces-runtime": "^3.2.14"
+    "neptune-namespaces-runtime": "^3.2.14",
+    "semver": "^7.7.1"
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
   "devDependencies": {
@@ -60,7 +61,7 @@
     "test-watch": "jest --watch",
     "versions": "npx art-monorepo versions"
   },
-  "version": "1.13.5",
+  "version": "1.13.6",
   "watch": {
     "build": {
       "extensions": [
