@@ -49,6 +49,34 @@ describe
       assert.eq false, isArrayIterable {}
       assert.eq false, isArrayIterable 123
 
+  isNull: ->
+    test "isNull null is true", -> assert.eq true, isNull null
+    test "isNull undefined is false", -> assert.eq false, isNull undefined
+    test "isNull 0 is false", -> assert.eq false, isNull 0
+    test "isNull '' is false", -> assert.eq false, isNull ''
+    test "isNull 'hi' is false", -> assert.eq false, isNull 'hi'
+
+  isNotNull: ->
+    test "isNotNull null is false", -> assert.eq false, isNotNull null
+    test "isNotNull undefined is false", -> assert.eq true, isNotNull undefined
+    test "isNotNull 0 is true", -> assert.eq true, isNotNull 0
+    test "isNotNull '' is true", -> assert.eq true, isNotNull ''
+    test "isNotNull 'hi' is true", -> assert.eq true, isNotNull 'hi'
+
+  isNullish: ->
+    test "isNullish null is true", -> assert.eq true, isNullish null
+    test "isNullish undefined is true", -> assert.eq true, isNullish undefined
+    test "isNullish 0 is false", -> assert.eq false, isNullish 0
+    test "isNullish '' is false", -> assert.eq false, isNullish ''
+    test "isNullish 'hi' is false", -> assert.eq false, isNullish 'hi'
+
+  isNotNullish: ->
+    test "isNotNullish null is false", -> assert.eq false, isNotNullish null
+    test "isNotNullish undefined is false", -> assert.eq false, isNotNullish undefined
+    test "isNotNullish 0 is true", -> assert.eq true, isNotNullish 0
+    test "isNotNullish '' is true", -> assert.eq true, isNotNullish ''
+    test "isNotNullish 'hi' is true", -> assert.eq true, isNotNullish 'hi'
+
   isString: ->
     test "isString 'foo' is true", ->
       assert.eq true, isString "foo"

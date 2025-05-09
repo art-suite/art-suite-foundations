@@ -187,3 +187,23 @@ export function stringIsPresent(str: string): boolean;
  * Tests if a value exists: i.e. is not null or undefined (false, '', 0, NaN, etc. all 'exist')
  */
 export function exists(value: any): boolean;
+
+/**
+ * Tests if a value is null.
+ */
+export function isNull(value: any): boolean;
+
+/**
+ * Tests if a value is not null.
+ */
+export function isNotNull(value: any): boolean;
+
+/**
+ * Tests if a value is null or undefined.
+ */
+export function isNullish(value: any): boolean;
+
+/**
+ * Tests if a value is not null or undefined.
+ */
+export function isNotNullish(value: any): boolean;

@@ -47,4 +47,9 @@ export const {
   exists,
   present,
   stringIsPresent,
+
+  isNull,
+  isNotNull,
+  isNullish,
+  isNotNullish,
 } = require('./build');

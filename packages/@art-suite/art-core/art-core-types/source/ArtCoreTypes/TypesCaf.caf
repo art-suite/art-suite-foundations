@@ -1,1 +1,5 @@
 exists: (value) => value?
+isNull: isNull = (value) => value == null
+isNotNull: (value) => !isNull(value)
+isNullish: isNullish = (value) => value == null || value == undefined
+isNotNullish: (value) => !isNullish(value)

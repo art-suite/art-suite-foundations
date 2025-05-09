@@ -12,7 +12,12 @@
     "art-testbench": "^3.2.17",
     "mocha": "^7.2.0"
   },
-  "main": "build",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./build/index.js"
+    }
+  },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
@@ -31,6 +36,7 @@
     "verbose": true
   },
   "license": "ISC",
+  "main": "build",
   "name": "@art-suite/art-core-types",
   "repository": {
     "type": "git",
@@ -45,7 +51,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "0.2.1",
+  "version": "0.2.2",
   "watch": {
     "build": {
       "extensions": [
@@ -56,12 +62,6 @@
         "source"
       ],
       "quiet": false
-    }
-  },
-  "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "require": "./build/index.js"
     }
   }
 }
