@@ -5,7 +5,12 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    
+    "@art-suite/cli": "^2.2.0",
+    "art-communication-status": "^1.6.1",
+    "art-rest-client": "^1.10.2",
+    "art-standard-lib": "^1.74.3",
+    "caffeine-script-runtime": "^1.14.0",
+    "neptune-namespaces-runtime": "^3.2.14"
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
   "devDependencies": {
@@ -54,7 +59,7 @@
     "test-watch": "jest --watch",
     "versions": "npx art-monorepo versions"
   },
-  "version": "1.13.3",
+  "version": "1.13.4",
   "watch": {
     "build": {
       "extensions": [
