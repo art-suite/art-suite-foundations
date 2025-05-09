@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "StandardImport.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreTime/StandardImport.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACG,sCACA,uCACA,qCACA"
+}

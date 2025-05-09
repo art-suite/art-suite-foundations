@@ -6,6 +6,7 @@
 .addModules({
   CurrentSecond:  require('./currentSecond'),
   DateExtensions: require('./DateExtensions'),
+  StandardImport: require('./StandardImport'),
   Time:           require('./Time'),
   TimeConstants:  require('./TimeConstants'),
   TimePresenters: require('./TimePresenters')

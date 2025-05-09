@@ -8,8 +8,9 @@
     "@art-suite/art-core-promises": "^0.1.1",
     "@art-suite/art-core-strings": "^0.1.0",
     "@art-suite/art-core-terminal-colors": "^0.1.0",
-    "@art-suite/art-core-time": "^0.1.0",
+    "@art-suite/art-core-time": "^0.1.1",
     "@art-suite/art-core-types": "^0.2.1",
+    "@art-suite/art-core-equality": "^0.1.0",
     "bluebird": "^3.5.5",
     "caffeine-script-runtime": "^1.14.0",
     "dateformat": "^4.5.1",
@@ -57,7 +58,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "0.2.3",
+  "version": "0.2.4",
   "watch": {
     "build": {
       "extensions": [

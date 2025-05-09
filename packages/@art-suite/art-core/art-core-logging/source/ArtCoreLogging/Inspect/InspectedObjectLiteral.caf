@@ -1,4 +1,4 @@
-import &@ArtSuite/ArtCoreEquality
+import &StandardImport
 
 class InspectedObjectLiteral
   @inspectedObjectLiteral: (literal, isError) -> new InspectedObjectLiteral literal, isError

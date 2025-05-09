@@ -1,8 +1,5 @@
 import
-  &@ArtSuite/ArtCoreTypes
-  &@ArtSuite/ArtCoreObjects
-  &@ArtSuite/ArtCoreTerminalColors
-  &@ArtSuite/ArtCoreStrings
+  &StandardImport
   &InspectedObjects
   &FormattedInspectObject
   &FormattedInspectString

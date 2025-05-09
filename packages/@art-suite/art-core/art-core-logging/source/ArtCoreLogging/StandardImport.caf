@@ -1,8 +1,10 @@
 []
   &@ArtSuite/ArtCoreArrays
   &@ArtSuite/ArtCoreEnvironment
+  &@ArtSuite/ArtCoreEquality
   &@ArtSuite/ArtCoreObjects
   &@ArtSuite/ArtCorePromises
+  &@ArtSuite/ArtCoreStrings
   &@ArtSuite/ArtCoreTerminalColors
   &@ArtSuite/ArtCoreTime
   &@ArtSuite/ArtCoreTypes
