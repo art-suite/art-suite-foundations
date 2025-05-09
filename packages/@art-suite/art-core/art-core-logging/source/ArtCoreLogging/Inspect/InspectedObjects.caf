@@ -2,63 +2,64 @@ import &@ArtSuite/ArtCoreTypes, &InspectedObjectLiteral
 dateFormat = require 'dateformat'
 
 inspecting = []
-{}
-  _backReferenceString = (anscestors, obj) ->
-    "<<< " + switch generation = anscestors.length - anscestors.indexOf obj
-      when 1 then "" self reference
-      when 2 then "" parent reference
-      when 3 then "" grandparent reference
-      when 4 then "" great grandparent reference
-      else "" #{generation - 1} generations back reference
+backReferenceString = (anscestors, obj) ->
+  "<<< " + switch generation = anscestors.length - anscestors.indexOf obj
+    when 1 then "" self reference
+    when 2 then "" parent reference
+    when 3 then "" grandparent reference
+    when 4 then "" great grandparent reference
+    else "" #{generation - 1} generations back reference
 
-  toInspectedObjectsR = (m) ->
-    if isObject(m) and m in inspecting
-      inspectedObjectLiteral _backReferenceString inspecting, m
+toInspectedObjectsR = (m) ->
+  if isObject(m) and m in inspecting
+    inspectedObjectLiteral backReferenceString inspecting, m
 
-    else
-      inspecting.push m
-      out = switch
-        when !m? then m
-        when m == global      then inspectedObjectLiteral :global
-        when customInspectedObjects = m.getInspectedObjects?() then customInspectedObjects
-        when isPromise m      then inspectedObjectLiteral :Promise
-        when isPlainArray  m  then array  v in m with toInspectedObjectsR v
-        when isTypedArray m   then m
+  else
+    inspecting.push m
+    out = switch
+      when !m? then m
+      when m == global      then inspectedObjectLiteral :global
+      when customInspectedObjects = m.getInspectedObjects?() then customInspectedObjects
+      when isPromise m      then inspectedObjectLiteral :Promise
+      when isPlainArray  m  then array  v in m with toInspectedObjectsR v
+      when isTypedArray m   then m
 
-        when m instanceof Error
-          literal = inspectedObjectLiteral m.stack || m.toString(), true
-          if m.info
-            toInspectedObjectsR Error: info: m.info, stack: literal
-          else
-            Error:
-              class: toInspectedObjectsR m.constructor
-              stack: literal
+      when m instanceof Error
+        literal = inspectedObjectLiteral m.stack || m.toString(), true
+        if m.info
+          toInspectedObjectsR Error: info: m.info, stack: literal
+        else
+          Error:
+            class: toInspectedObjectsR m.constructor
+            stack: literal
 
-        when isRegExp m then inspectedObjectLiteral "#{m}"
-        when isDate m   then inspectedObjectLiteral dateFormat m, "UTC:yyyy-mm-dd HH:MM:ss Z"
-        when isClass m  then inspectedObjectLiteral "class #{m.getName?() || m.name}"
-        when isFunction m
-          reducedFunctionString =
-            functionString = "#{m}"
-            .replace /\s+/g, ' '
-            .replace /^function (\([^)]*\))/, "$1 ->"
-            .replace /^\(\)\s*/, ''
+      when isRegExp m then inspectedObjectLiteral "#{m}"
+      when isDate m   then inspectedObjectLiteral dateFormat m, "UTC:yyyy-mm-dd HH:MM:ss Z"
+      when isClass m  then inspectedObjectLiteral "class #{m.getName?() || m.name}"
+      when isFunction m
+        reducedFunctionString =
+          functionString = "#{m}"
+          .replace /\s+/g, ' '
+          .replace /^function (\([^)]*\))/, "$1 ->"
+          .replace /^\(\)\s*/, ''
 
-          inspectedObjectLiteral if reducedFunctionString.length < 80
-            reducedFunctionString
-          else
-            functionString.slice 0, 5 * 80
+        inspectedObjectLiteral if reducedFunctionString.length < 80
+          reducedFunctionString
+        else
+          functionString.slice 0, 5 * 80
 
-        when !isString m
-          switch
-          when isNonNegativeInt m.length     then inspectedObjectLiteral "{#{m.constructor.name} length: #{m.length}}"
-          when isNonNegativeInt m.byteLength then inspectedObjectLiteral "{#{m.constructor.name} byteLength: #{m.byteLength}}"
-          else m
-
+      when !isString m
+        switch
+        when isNonNegativeInt m.length     then inspectedObjectLiteral "{#{m.constructor.name} length: #{m.length}}"
+        when isNonNegativeInt m.byteLength then inspectedObjectLiteral "{#{m.constructor.name} byteLength: #{m.byteLength}}"
         else m
 
-      inspecting.pop()
-      out
+      else m
+
+    inspecting.pop()
+    out
+
+{}
 
   # NOTE: "oldInspecting = inspecting" makes this safe to be re-entered even from outside this library
   toInspectedObjects: (m) ->

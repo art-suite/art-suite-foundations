@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ArtCoreLogging.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreLogging/ArtCoreLogging.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,kCACE,kBACA,yBACA,wBACA"
+}

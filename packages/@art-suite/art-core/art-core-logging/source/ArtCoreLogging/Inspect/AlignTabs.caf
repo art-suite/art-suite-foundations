@@ -59,11 +59,14 @@ import &@ArtSuite/ArtCoreTerminalColors, &@ArtSuite/ArtCoreStrings, global.Math
         isProfileTopic: type:    "boolean"
         private: type:           "boolean"
 {}
+  ## alignTabs
+    Given an array of lines with tabs (\t), will replace the tabs with spaces to align the columns in the lines.
+    Used by formattedInspect to improved output readability.
   alignTabs = (linesString, maxLineLength = 10000) ->
     lines = linesString.split "\n"
 
     ##
-      if all lines have the same number of columns, then numColumns == that number
+      if all lines have the same number of columns (tabs), then numColumns == that number
       Otherwise, it == 2.
       In that case, all tabs after the first tabs are treated as spaces.
       This a poor man's attempt to smartly align things like:

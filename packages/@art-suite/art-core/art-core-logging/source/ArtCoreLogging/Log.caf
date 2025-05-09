@@ -3,96 +3,17 @@ import &StandardImport, {} &Inspect
 
 getEnv() extract ART_CORE_LOGGING_DISABLED
 
+noOptions = {}
+
+promiseLogId = 1
+
+standardOptions =
+  if isNode then color: process.stdout.isTTY
+  else {}
+
 class Log
-  @contextString: (stack, defaultContext) =>
-    if stack && caller = stack[1]
-      if caller.original
-        caller.original
-
-      else
-        context =
-          if caller.function
-            if caller.class then "#{caller.class}::#{caller.function}()"
-            else caller.function+"()"
-
-          else if defaultContext then defaultContext+":"
-          else ''
-
-        "at " + caller.sourceFileName + "-#{caller.sourceLine}: " + context if caller.sourceFileName
-
-    else "at #{defaultContext || "(unknown context)"}"
-
-  @autoSizedInspect: (toInspect, maxLength = 512, maxDepth = 10) =>
-    inspected = null
-    depth = maxDepth
-    depth-- while (inspected = Inspect.inspectLean toInspect, maxDepth:depth, maxLength:maxLength).match(/\.\.\.$/)
-    inspected
-
-  @loggedParamsString: (params) =>
-    if isString params then params
-    else @autoSizedInspect params
-
   @hideLogging: => @loggingHidden = true
   @showLogging: => @loggingHidden = false
-
-  @rawLog: (args...) => console.log args... unless @loggingHidden
-
-  @rawErrorLog: (args...) =>
-    return if @loggingHidden
-
-    if isNode
-      str = args.join ' '
-      console.error red str
-    else
-      console.error args...
-
-  @rawWarningLog: (args...) =>
-    return if @loggingHidden
-
-    if isNode
-      str = args.join ' '
-      console.warn yellow str
-    else
-      console.warn args...
-
-  noOptions = {}
-  getLogger = ({isError, isWarning}) ->
-    if isError then Log.rawErrorLog
-    else if isWarning then Log.rawWarningLog
-    else Log.rawLog
-
-  promiseLogId = 1
-
-  @logCore: (m, stack, options = noOptions) =>
-    if @alternativeLogger
-      @alternativeLogger.logCore m, stack, options
-
-    if options.resolvePromises
-      @log.resolvePromiseWrapper m, (toLog, label) =>
-        @_logNow [label]: toLog, stack, options
-
-    else
-      @_logNow m, stack, options
-
-  @_logNow: (m, stack, options) =>
-    options extract className, color
-    logger = getLogger options
-    if isNode
-      logger if isString m
-        if color
-          m
-        else stripAnsi m
-      else Inspect.formattedInspect m, merge {maxLineLength: process.stdout.columns}, options
-    else logger m
-
-  standardOptions =
-    if isNode
-      try
-        eval("require") "colors"
-
-      color: process.stdout.isTTY
-
-    else {}
 
   # always returned the last argument passed in. That way you can:
   #     bar = foo # log foo's value in the middle of an expression, along with other values, without altering the rest of the expression
@@ -101,28 +22,21 @@ class Log
     if ART_CORE_LOGGING_DISABLED then peek args
     else @log.withOptions standardOptions, args...
 
+  ## log.full
+    only truncate the biggest arrays
+    EQUIVALENT TO:
+      log.withOptions maxArrayLength: 100000
+    IN:
+      args: array of arguments to log
+    OUT:
+      string
   @log.full = (args...) =>
     @log.withOptions
       maxArrayLength: 100000
       args...
 
-  ## resolvePromiseWrapper
-    IN:
-      m: toLog
-      logger: (toLog, label, wasResolvedOrRejected: true/false)
-  @log.resolvePromiseWrapper = (m, logger) ->
-    if containsPromises m
-      toResolve = m
-      logId = promiseLogId++
-      logger m, "RESOLVING_#{logId}", false
-
-      deepAll toResolve
-      .then (resolvedM) -> logger resolvedM, "RESOLVED_#{logId}", true
-      .catch (rejected) -> logger rejected, "REJECTED_#{logId}", true, true
-
-    else logger m, false
-
   ## log.withOptions
+    for full control over the log output
     IN:
       options: object
       args: array of arguments to log
@@ -130,24 +44,25 @@ class Log
       m: object
 
     options:
-      maxArrayLength: number
-      maxDepth: number
-      maxLength: number
-      resolvePromises: boolean
-      unquoted: boolean
-      color: boolean
-      className: string
-      isError: boolean
-      isWarning: boolean
+      maxArrayLength: number # passed to formattedInspect
+      maxDepth: number # passed to formattedInspect
+      maxLength: number # passed to formattedInspect
+      resolvePromises: boolean # if true, will return immediately, but will only log after any nested promises have resolved
+      unquoted: boolean # for human readable, but not easily parsable output: strings are not quoted and arrays and objects won't have [] or {} characters
+      color: boolean # if true, will color the output (ANSI terminal codes only)
+      isError: boolean # if true, will log as an error
+      isWarning: boolean # if true, will log as a warning
   @log.withOptions = (options, args...) ->
     m =
       if args.length == 1
         args[0]
       else args
-    Log.logCore m, callStack(), options
+    Log._logCore m, callStack(), options
     peek args
 
   ### log.labeled
+    shortcut for generating a labeled log entry (works best in coffeescript or caffeinescript where objects won't require curly braces)
+
     IN:
       labelString, value
       OR object with one or more properties (usually just one)
@@ -172,6 +87,105 @@ class Log
       @log obj
       ret
 
+  ## log.unquoted
+    for human readable, but not easily parsable output: strings are not quoted and arrays and objects won't have [] or {} characters
+    EQUIVALENT TO:
+      log.withOptions unquoted: true
+    IN:
+      args: array of arguments to log
+    OUT:
+      string
+    DESC:
+      logs the arguments with a unquoted: true
   @log.unquoted = (args...) => @log.withOptions merge(standardOptions, unquoted: true), args...
+
+  ## log.error
+    is leg-level error
+    EQUIVALENT TO: log.withOptions isError: true
+    IN:
+      args: array of arguments to log
+    OUT:
+      string
+    DESC:
+      logs the arguments with a isError: true
   @log.error = (args...) => @log.withOptions isError: true, args...
+
+  ## log.warn
+    is warning-level error
+    EQUIVALENT TO: log.withOptions isWarning: true
+    IN:
+      args: array of arguments to log
+    OUT:
+      string
+    DESC:
+      logs the arguments with a isWarning: true
   @log.warn  = (args...) => @log.withOptions isWarning: true, args...
+
+  ############################################################
+  # PRIVATE
+  ############################################################
+  @_rawLog: (args...) => console.log args... unless @loggingHidden
+
+  @_rawErrorLog: (args...) =>
+    return if @loggingHidden
+
+    if isNode
+      str = args.join ' '
+      console.error red str
+    else
+      console.error args...
+
+  @_rawWarningLog: (args...) =>
+    return if @loggingHidden
+
+    if isNode
+      str = args.join ' '
+      console.warn yellow str
+    else
+      console.warn args...
+
+  @_getLogger:({isError, isWarning}) ->
+    if isError then Log._rawErrorLog
+    else if isWarning then Log._rawWarningLog
+    else Log._rawLog
+
+
+  @_logCore: (m, stack, options = noOptions) =>
+    if @alternativeLogger
+      @alternativeLogger._logCore m, stack, options
+
+    if options.resolvePromises
+      @_resolvePromiseWrapper m, (toLog, label) =>
+        @_logNow [label]: toLog, stack, options
+
+    else
+      @_logNow m, stack, options
+
+  @_logNow: (m, stack, options) =>
+    options extract color
+    logger = @_getLogger options
+    if isNode
+      logger if isString m
+        if color
+          m
+        else stripAnsi m
+      else Inspect.formattedInspect m, merge {maxLineLength: process.stdout.columns}, options
+    else logger m
+
+  ## _resolvePromiseWrapper
+    IN:
+      m: toLog
+      logger: (toLog, label, wasResolvedOrRejected: true/false)
+  @_resolvePromiseWrapper: (m, logger) ->
+    if containsPromises m
+      toResolve = m
+      logId = promiseLogId++
+      logger m, "RESOLVING_#{logId}", false
+
+      deepAll toResolve
+      .then (resolvedM) -> logger resolvedM, "RESOLVED_#{logId}", true
+      .catch (rejected) -> logger rejected, "REJECTED_#{logId}", true, true
+
+    else logger m, false
+
+{log, showLogging, hideLogging} = Log

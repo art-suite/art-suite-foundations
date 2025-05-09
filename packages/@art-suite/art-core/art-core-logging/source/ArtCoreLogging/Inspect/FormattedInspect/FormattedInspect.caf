@@ -59,7 +59,6 @@ passThroughColorizeFunctions = object colorNames with identity
 
 module.exports = {}
   alignTabs
-  formattedInspectString
 
   failsafeInspect = (toInspect) ->
     "typeof: #{typeOf toInspect}\n"

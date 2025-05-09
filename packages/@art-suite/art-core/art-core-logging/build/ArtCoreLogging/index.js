@@ -2,7 +2,7 @@
 // file: ArtCoreLogging/index.js
 
 (module.exports = require('./namespace'))
-
+.includeInNamespace(require('./ArtCoreLogging'))
 .addModules({
   CallStack:      require('./CallStack'),
   Log:            require('./Log'),
