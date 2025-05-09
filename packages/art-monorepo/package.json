@@ -5,7 +5,7 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/monorepo": "^1.13.3"
+    "@art-suite/monorepo": "^1.13.4"
   },
   "description": "Wrapper for @art-suite/monorepo",
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -15,5 +15,5 @@
     "type": "git",
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
-  "version": "1.13.0"
+  "version": "1.13.4"
 }
