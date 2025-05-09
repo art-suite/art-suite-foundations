@@ -109,3 +109,76 @@ export function toPlainStructure(object: object): object;
 
 /** Converts an object to a JSON-compatible structure. */
 export function toJsonStructure(object: object): object;
+
+/**
+ * Recursively strips `null` from all properties of an object and elements of an array/tuple.
+ * - If a value is `null`, its type becomes `never`.
+ * - If an object property's value type becomes `never`, the property is omitted.
+ * - For arrays/tuples, if an element's type becomes `never`, it remains `never` in that position.
+ * - Preserves types of primitives, functions, Dates, RegExps.
+ * - Preserves tuple structure and specific element types (after stripping null).
+ */
+export type DeepStripNulls<T> =
+  T extends null ? never : // Base case: null becomes never
+
+  // Keep functions, Dates, RegExps, and basic primitives as they are
+  T extends Function | Date | RegExp | string | number | boolean | bigint | symbol ? T :
+
+  // Handle arrays and tuples (including readonly ones)
+  T extends readonly any[] ?
+  // Map over each element in the array/tuple
+  // The `-readonly` modifier makes the resulting array/tuple mutable.
+  // If you need to preserve readonly, this part would need adjustment.
+  { -readonly [K in keyof T]: DeepStripNulls<T[K]> } :
+
+  // Handle objects
+  T extends object ?
+  // Map over object properties.
+  // `as DeepStripNulls<T[P]> extends never ? never : P`
+  // This part filters out keys (P) if their transformed value type becomes `never`.
+  { [P in keyof T as DeepStripNulls<T[P]> extends never ? never : P]: DeepStripNulls<T[P]> } :
+
+  // Fallback for types not explicitly handled (e.g., `undefined` just passes through)
+  T;
+
+/**
+ * Recursively strips `null` and `undefined` from all properties of an object and elements of an array/tuple.
+ * - If a value is `null` or `undefined`, its type becomes `never`.
+ * - If an object property's value type becomes `never`, the property is omitted.
+ * - For arrays/tuples, if an element's type becomes `never`, it remains `never` in that position.
+ * - Preserves types of primitives, functions, Dates, RegExps.
+ * - Preserves tuple structure and specific element types (after stripping nullish values).
+ */
+export type DeepStripNullish<T> =
+  T extends null | undefined ? never : // Base case: null or undefined becomes never
+
+  // Keep functions, Dates, RegExps, and basic primitives as they are
+  T extends Function | Date | RegExp | string | number | boolean | bigint | symbol ? T :
+
+  // Handle arrays and tuples (including readonly ones)
+  T extends readonly any[] ?
+  { -readonly [K in keyof T]: DeepStripNullish<T[K]> } :
+
+  // Handle objects
+  T extends object ?
+  { [P in keyof T as DeepStripNullish<T[P]> extends never ? never : P]: DeepStripNullish<T[P]> } :
+
+  // Fallback for types not explicitly handled
+  T;
+
+/**
+ * Recursively creates a new object/array with all `null` values stripped.
+ * If a property/element was `null`, it's omitted from objects or typed as `never` in tuples.
+ */
+export declare function deepStripNulls<T>(obj: T): DeepStripNulls<T>;
+
+/**
+ * Recursively creates a new object/array with all `null` and `undefined` values stripped.
+ * If a property/element was `null` or `undefined`, it's omitted from objects or typed as `never` in tuples.
+ */
+export declare function deepStripNullish<T>(obj: T): DeepStripNullish<T>;
+
+
+// clone
+/** Clones any nested structure of objects and arrays and atomic values. OR custom objects with a custom clone method. */
+export function clone<T>(obj: T): T;

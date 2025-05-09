@@ -5,7 +5,10 @@
 
 .addModules({
   ArraysAndObjectsTest: require('./ArraysAndObjects.test'),
+  CloneTest:            require('./clone.test'),
+  DeepStripNullTest:    require('./DeepStripNull.test'),
   MergeTest:            require('./Merge.test'),
+  ObjectDiffTest:       require('./objectDiff.test'),
   ObjectExtensionsTest: require('./ObjectExtensions.test'),
   StandardImport:       require('./StandardImport')
 });

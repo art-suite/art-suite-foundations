@@ -1,3 +1,5 @@
 []
   {describe, assert} = &ArtTestbench
+  &@ArtSuite/ArtCoreTypes
+  &@ArtSuite/ArtCoreEquality
   &build

@@ -31,5 +31,8 @@ export const {
   deepEach,
   deepMap,
   toPlainStructure,
-  toJsonStructure
+  toJsonStructure,
+  deepStripNulls,
+  deepStripNullish,
+  clone
 } = require('./build');

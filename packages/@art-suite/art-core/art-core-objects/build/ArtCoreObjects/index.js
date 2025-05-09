@@ -5,7 +5,10 @@
 .includeInNamespace(require('./ArtCoreObjects'))
 .addModules({
   ArraysAndObjects: require('./ArraysAndObjects'),
+  Clone:            require('./Clone'),
+  DeepStripNull:    require('./DeepStripNull'),
   Merge:            require('./Merge'),
+  ObjectDiff:       require('./ObjectDiff'),
   ObjectExtensions: require('./ObjectExtensions'),
   StandardImport:   require('./StandardImport')
 });

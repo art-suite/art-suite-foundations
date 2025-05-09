@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DeepStripNull.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreObjects/DeepStripNull.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,sHAAO,mIAEP,QACE,iCAAc,QAAG,CAAC,oCAAQ,OACrB,QAAQ,QAAI,QACI,4GAAU,UAAU,eAAO,eAAe,4DACrD,cAAc,QAAI,WACZ,aAA2B,eAAe,2BAEtD,QAEJ,qCAAgB,QAAG,CAAC,oCAAQ,OACvB,QAAQ,QAAI,QACI,4GAAU,aAAa,eAAO,iBAAiB,4DAC1D,cAAc,QAAI,WACZ,aAA8B,iBAAiB,8BAE3D"
+}

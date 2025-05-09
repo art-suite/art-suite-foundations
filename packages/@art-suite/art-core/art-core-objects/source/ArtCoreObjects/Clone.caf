@@ -1,0 +1,31 @@
+import &StandardImport
+
+# in perf tests using array.slice instead of array.push to build up the new array is:
+#   10-element array - slightly faster
+#   100-element array - 1.6x faster
+#   1000+ - about 2x faster
+# (Test array contained only numbers and copied them by-value in both cases - no function calls, no conditionals).
+cloneArray = (arr, clonedMap) ->
+  clonedMap.set arr, clonedArray = arr.slice()
+  each v, i in clonedArray into clonedArray with clonedArray[i] = cloneR v, clonedMap
+
+cloneObject = (obj, clonedMap) ->
+  clonedMap.set obj, clonedObj = {}
+  object v in obj into clonedObj with cloneR v, clonedMap
+
+# Primitives are ALWAYS copied by value.
+cloneR = (obj, clonedMap) ->
+  if obj? && got = clonedMap.get obj then got # return previous clone if already cloned
+  else switch
+    when !obj? then obj # return null and undefined as-is
+    when isFunction obj.clone then obj.clone()
+    when isArray obj          then cloneArray obj, clonedMap
+    when isPlainObject obj    then cloneObject obj, clonedMap
+    else obj
+
+# clone the object "type", but none of its properties.
+emptyClone: (obj) ->
+  if isArray obj then []
+  else Object.create Object.getPrototypeOf obj
+
+clone: (obj) -> cloneR obj, new Map
