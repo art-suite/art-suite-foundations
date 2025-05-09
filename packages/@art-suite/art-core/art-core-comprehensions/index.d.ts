@@ -1,4 +1,4 @@
-/ Common helper types
+// Common helper types
 type NotPresent = null | undefined;
 type PlainObject<V = any> = Record<string, V>;
 
@@ -154,28 +154,6 @@ interface ReduceFunction {
   (source: NotPresent, reducerOrOptions?: any, initialValue?: any): undefined;
 }
 export declare const reduce: ReduceFunction;
-
-
-// ### inject ### (Similar to reduce, but initialValue is always used if provided)
-interface InjectFunction {
-  // Source: ArrayInput
-  <InV, AccV>(source: ArrayInput<InV>, reducer: ReduceWithFn<AccV, InV, number>, initialValue: AccV): AccV;
-  <InV, AccV>(source: ArrayInput<InV>, options: ReduceOptions<AccV, InV, number> & { into: AccV }): AccV; // `into` must be in options for inject if no separate initialValue
-
-  // Source: ObjectInput
-  <InV, AccV>(source: ObjectInput<InV>, reducer: ReduceWithFn<AccV, InV, string>, initialValue: AccV): AccV;
-  <InV, AccV>(source: ObjectInput<InV>, options: ReduceOptions<AccV, InV, string> & { into: AccV }): AccV;
-
-  // Source: IterableInput
-  <InV, KeyV, AccV>(source: IterableInput<InV>, reducer: ReduceWithFn<AccV, InV, KeyV>, initialValue: AccV): AccV;
-  <InV, KeyV, AccV>(source: IterableInput<InV>, options: ReduceOptions<AccV, InV, KeyV> & { into: AccV }): AccV;
-
-  // Source: NotPresent
-  <AccV>(source: NotPresent, reducerOrOptions: any, initialValue: AccV): AccV; // Returns initialValue
-  <AccV>(source: NotPresent, options: { into: AccV }): AccV; // Returns options.into
-}
-export declare const inject: InjectFunction;
-
 
 // ### each ###
 // `each` returns its `into` argument if provided (via param or options), otherwise returns undefined.

@@ -89,11 +89,6 @@ let normalizedReduce = (source, into, _with, options) => {
   return into;
 };
 
-let normalizedInject = function (source, into, _with, options) {
-  _each(source, (v, k) => (into = _with(into, v, k)), options);
-  return into;
-};
-
 let normalizedFind = function (source, found, _with, options) {
   let { when, map } = options;
   const _with_map = map ? (v, k) => _with(map(v, k), k) : _with;
@@ -171,6 +166,5 @@ module.exports = {
   array: (source, a, b) => invokeNormalizedIteration(normalizedArray, source, a, b),
   object: (source, a, b) => invokeNormalizedIteration(normalizedObject, source, a, b),
   reduce: (source, a, b) => invokeNormalizedIteration(normalizedReduce, source, a, b),
-  inject: (source, a, b) => invokeNormalizedIteration(normalizedInject, source, a, b),
   find: (source, a, b) => invokeNormalizedIteration(normalizedFind, source, a, b)
 };

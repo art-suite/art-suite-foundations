@@ -6,6 +6,5 @@ export const {
   array,
   object,
   reduce,
-  inject,
   find
 } = require('./build');
