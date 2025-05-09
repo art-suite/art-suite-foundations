@@ -14,7 +14,7 @@ logPromise: (context, p) ->
   .tap (result)     -> log logPromise_success: {context, result, seconds: currentSecond() - startTime }
   .tapCatch (error) -> log.error logPromise_error: {context, error, seconds: currentSecond() - startTime}
 
-logPromiseProblems: logPromiseProblems = (context, p) ->
+logRejectedPromises:  (context, p) ->
   {log, currentSecond} = namespace
   startTime = currentSecond()
   Promise.then ->
@@ -24,5 +24,3 @@ logPromiseProblems: logPromiseProblems = (context, p) ->
       p
   .tapCatch (error) -> log.error logRejectedPromises: {context, error, seconds: currentSecond() - startTime}
 
-logPromiseErrors:    logPromiseProblems
-logRejectedPromises: logPromiseProblems # June 2019 - I think I like this alias

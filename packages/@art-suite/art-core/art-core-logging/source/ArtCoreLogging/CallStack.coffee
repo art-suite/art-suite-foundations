@@ -1,10 +1,12 @@
 {isString} = require '@art-suite/art-core-types'
 {parseUrl} = require '@art-suite/art-core-strings'
+{formattedInspect} = require './Inspect'
 
 # TODO: switch to using https://github.com/stacktracejs/stacktrace.js
 module.exports = class CallStack
   @errorToString: (error) ->
-    error?.error || error?.message || (isString(error) && error) || Neptune.Art.StandardLib.formattedInspect error
+    error?.error || error?.message || (isString(error) && error) || formattedInspect error
+
   @CallStackLine: class CallStackLine
     @getter: (map) ->
       Object.defineProperty @::, prop, {get: getter, configurable: yes} for prop, getter of map

@@ -39,7 +39,7 @@ export interface LogFunction {
   warn: (message?: any, ...optionalParams: any[]) => void;
 }
 
-/** The main logging function with attached utility methods. */
+/** Log in a nice, human readable format. Returns the last value passed into it. */
 export const log: LogFunction;
 
 /** Enables logging output. */
@@ -48,16 +48,10 @@ export function showLogging(): void;
 /** Disables logging output. */
 export function hideLogging(): void;
 
-/** Logs the resolution or rejection of a Promise. */
+/** Logs the resolution or rejection of a Promise. Returns rejected or resolved promise. */
 export function logPromise<T>(promise: Promise<T>, label?: string): Promise<T>;
 
-/** Logs only the problems (rejections) of a Promise. */
-export function logPromiseProblems<T>(promise: Promise<T>, label?: string): Promise<T>;
-
-/** Logs only the errors (rejections) of a Promise. */
-export function logPromiseErrors<T>(promise: Promise<T>, label?: string): Promise<T>;
-
-/** Logs rejected Promises. */
+/** Logs only the problems (rejections) of a Promise. Returns the rejected promise. */
 export function logRejectedPromises<T>(promise: Promise<T>, label?: string): Promise<T>; // Typically same as logPromiseProblems
 
 /** Converts an error object or any value to a string representation. */
@@ -83,6 +77,8 @@ export interface InspectOptions {
 /**
  * Inspects a value, attempting to produce a string representation without throwing errors.
  * Uses a shallow inspection if deep inspection fails.
+ *
+ * WILL NEVER FAIL OR THROW AN ERROR, though the logging might...
  */
 export function failsafeInspect(value: any, options?: InspectOptions): string;
 

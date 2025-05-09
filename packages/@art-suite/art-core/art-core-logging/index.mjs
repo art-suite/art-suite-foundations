@@ -7,8 +7,6 @@ export const {
   showLogging,
   hideLogging,
   logPromise,
-  logPromiseProblems,
-  logPromiseErrors,
   logRejectedPromises,
   errorToString,
   rawCallStack,
