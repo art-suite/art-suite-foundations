@@ -1,6 +1,13 @@
 import &StandardImport, &ArtClassSystem
 
 describe
+  exists: ->
+    test "exists null", -> assert.eq false, exists null
+    test "exists undefined", -> assert.eq false, exists undefined
+    test "exists false", -> assert.eq true, exists false
+    test "exists 0", -> assert.eq true, exists 0
+    test "exists ''", -> assert.eq true, exists ''
+
   hasProperties: ->
     foo = new class Foo
       baz: 123

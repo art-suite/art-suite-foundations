@@ -5,5 +5,6 @@
 .includeInNamespace(require('./ArtCoreTypes'))
 .addModules({
   Types:         require('./Types'),
+  TypesCaf:      require('./TypesCaf'),
   TypesExtended: require('./TypesExtended')
 });

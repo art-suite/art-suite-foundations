@@ -44,6 +44,7 @@ export const {
   isString,
   isTypedArray,
   objectName,
+  exists,
   present,
   stringIsPresent,
 } = require('./build');

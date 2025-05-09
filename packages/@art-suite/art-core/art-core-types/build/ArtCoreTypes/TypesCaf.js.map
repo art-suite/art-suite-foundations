@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TypesCaf.js",
+  "sourceRoot": "../..",
+  "sources": [
+    "source/ArtCoreTypes/TypesCaf.caf"
+  ],
+  "names": [],
+  "mappings": "AAAA;;AAAA,0CAAQ,CAAC,UAAU"
+}

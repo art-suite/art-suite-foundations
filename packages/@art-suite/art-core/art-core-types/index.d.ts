@@ -182,3 +182,8 @@ export function present(obj: any, returnIfNotPresent?: any): any;
  * Tests if a string has content (not empty or just whitespace).
  */
 export function stringIsPresent(str: string): boolean;
+
+/**
+ * Tests if a value exists: i.e. is not null or undefined (false, '', 0, NaN, etc. all 'exist')
+ */
+export function exists(value: any): boolean;
