@@ -2,6 +2,13 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
+    "@art-suite/art-core-arrays": "^0.1.0",
+    "@art-suite/art-core-environment": "^0.1.0",
+    "@art-suite/art-core-objects": "^0.1.0",
+    "@art-suite/art-core-promises": "^0.1.0",
+    "@art-suite/art-core-terminal-colors": "^0.1.0",
+    "@art-suite/art-core-time": "^0.1.0",
+    "@art-suite/art-core-types": "^0.2.1",
     "bluebird": "^3.5.5",
     "caffeine-script-runtime": "^1.14.0",
     "dateformat": "^4.5.1",
