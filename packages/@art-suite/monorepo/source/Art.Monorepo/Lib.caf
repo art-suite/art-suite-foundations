@@ -26,7 +26,7 @@ import
   writeJson: (file, data) ->
     writeFileSync
       file
-      consistentJsonStringify data, '  '
+      JSON.stringify data, null, 2
       + :\n
 
   globAllPackages = (folder) ->
