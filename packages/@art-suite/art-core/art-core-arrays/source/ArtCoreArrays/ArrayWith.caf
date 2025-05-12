@@ -40,6 +40,7 @@ exactlyOneWordRegex = /^[^\s]+$/
       []
 
   # same as insert, except doesn't modify input array; returns new array
+  # old alias: arrayWithInsertedValue
   arrayWithInsertedAt: (inputArray, index, item) =>
     insertIntoArray inputArray.slice(), index, item
 

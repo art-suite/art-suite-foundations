@@ -2,8 +2,8 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/art-core-objects": "^0.1.0",
-    "@art-suite/art-core-types": "^0.2.1",
+    "@art-suite/art-core-objects": "^0.2.2",
+    "@art-suite/art-core-types": "^0.3.2",
     "bluebird": "^3.5.5",
     "caffeine-script-runtime": "^1.14.0",
     "neptune-namespaces-runtime": "^3.2.14"
@@ -14,6 +14,13 @@
     "art-build-configurator": "^1.30.4",
     "art-testbench": "^3.2.17",
     "mocha": "^7.2.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./build/index.js",
+      "types": "./index.d.ts"
+    }
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -40,15 +47,15 @@
     "url": "https://github.com/art-suite/art-suite-foundations.git"
   },
   "scripts": {
-    "build": "rsync -av --exclude='*.caf' --exclude='*.coffee' ./source/ ./build/\ncoffee -m --output build --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn",
-    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --exclude='*.caf' --exclude='*.coffee' ./source/ ./build-temp/\ncoffee -m --output build-temp --compile source &\nCOFFEE_PID=$!\ncaf -m -c source -o build-temp --require coffee-script/register&\nCAF_PID=$!\nwait $COFFEE_PID || exit 1\nwait $CAF_PID || exit 1\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
+    "build": "rsync -av --exclude='*.caf' ./source/ ./build/\ncaf -m -c source -o build\nnpm run nn",
+    "build-clean": "# BUILD CLEAN START\n#   - building into: build-temp\n#\nrm -rf ./__build-old__\nrsync -av --exclude='*.caf' ./source/ ./build-temp/\ncaf -m -c source -o build-temp\nnpm run nn\n\nnn build-temp/*\n\n# BUILD CLEAN FINIALIZING\n#  - replace old build in:   build\n#  - with new build from:    build-temp\n#\nmv build __build-old__\nmv build-temp build\nrm -rf ./__build-old__",
     "build-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -w \"source/**\" -x npm run build",
     "clean": "rm -rf build/*",
     "nn": "nn build/* ",
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "0.1.1",
+  "version": "0.1.4",
   "watch": {
     "build": {
       "extensions": [

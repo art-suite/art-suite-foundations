@@ -15,7 +15,8 @@
   "exports": {
     ".": {
       "import": "./index.mjs",
-      "require": "./build/index.js"
+      "require": "./build/index.js",
+      "types": "./index.d.ts"
     }
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -51,7 +52,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "0.2.2",
+  "version": "0.3.2",
   "watch": {
     "build": {
       "extensions": [
