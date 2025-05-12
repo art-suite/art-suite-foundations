@@ -85,6 +85,7 @@
     "pluralize": "^8.0.0",
     "rxjs": "^7.8.1",
     "script-loader": "^0.7.2",
+    "semver": "^7.7.1",
     "simple-git": "^3.20.0",
     "slice-ansi": "^4.0.0",
     "stable": "^0.1.8",
