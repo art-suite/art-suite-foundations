@@ -12,6 +12,7 @@ makeNpmCommand = (command) ->
   options:
     verbose:  "" true/false
     folder:   "" find all packages in this path. default: "."
+    sync:     "" true/false - if true, run each command in order, waiting for each to finish before running the next.
   args: "" Find all packages in any additional paths passed as args.
   description: "" Runs `npm run #{command}` in every subfolder with a package.json file.
   run: makeNpmRunCommand command
@@ -61,6 +62,7 @@ makeNpmCommand = (command) ->
     options:
       verbose:  "" true/false
       folder:   "" find all packages in this path. default: "."
+      sync:     "" true/false - if true, run each command in order, waiting for each to finish before running the next.
     args:
       description: "" Npm run-command.
       argument: :npm-script
@@ -71,6 +73,7 @@ makeNpmCommand = (command) ->
     options:
       verbose:  "" true/false
       folder:   "" find all packages in this path. default: "."
+      sync:     "" true/false - if true, run each command in order, waiting for each to finish before running the next.
     args:
       description: "" Shell command to run.
       argument: :command

@@ -17,6 +17,7 @@ allPackageExec: (options) ->
     verb
     verbose
     folder
+    sync # true/false - if true, run each command in order, waiting for each to finish before running the next.
   skipTest = options.skip ? -> false
 
   verb = upperCase verb
@@ -31,7 +32,7 @@ allPackageExec: (options) ->
     passed = []
     skipped = []
     failed = []
-    Promise.all array packagePath in packagePaths
+    run = (packagePath) ->
       packageContents = readJson &path.join packagePath, :package.json
       if skipReason = skipTest packageContents, packagePath, options
         skipped.push packagePath
@@ -66,6 +67,18 @@ allPackageExec: (options) ->
               log blue "  #{packagePath} > #{command} (stderr)"
               log red indent stderr.trim()
               log ""
+
+    if sync
+      serializer = new Promise.Serializer
+      log blue "Executing in sequential order"
+      each packagePath in packagePaths.sort()
+        serializer.then -> run packagePath
+      serializer
+
+    else
+      log blue "Executing in parallel"
+      Promise.all array packagePath in packagePaths
+        run packagePath
 
     .then ->
       log blue "" \nRESULTS:
