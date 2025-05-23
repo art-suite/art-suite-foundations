@@ -89,7 +89,8 @@ uniqueErrorsReported = {}
     throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless isString @name
     throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless isFunction @test
     self = @
-    (global.it ? global.test) @name, (context)~>
+    (global.it ? global.test) @name, (args...)~>
+      [context] = args # we do it this way so JEST and MOCHA don't detect that we are accepting arguments
       self.runThisTestOnce()
       .catch (error) ->
         if uniqueErrorsReported[error.message]
