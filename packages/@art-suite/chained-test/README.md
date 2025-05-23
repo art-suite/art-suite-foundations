@@ -1,6 +1,6 @@
 # ArtSuite/ChainedTest
 
-> Chained-Test is a Jest/MochaJS extension for breaking up large tests into sequences of smaller tests
+> Chained-Test is a Jest/MochaJS/Vitest extension for breaking up large tests into sequences of smaller tests
 
 Smaller tests are easier to write, maintain, and use to ensure code correctness.
 ChainedTest lets you break up large tests into a sequences of small tests. This is particularly helpful for **user-story tests**, **integration tests**, and any test with **more than one asynchronous step**.
@@ -10,9 +10,9 @@ ChainedTest lets you break up large tests into a sequences of small tests. This 
 - **Accelerate test-suite development:** Break up large, slow tests into a sequence of smaller tests. Decrease total test-suite code-size through improved code re-use.
 - **Accelerate test-suite runtime:** Reduce overall run-time of test-suites where multiple tests share a lot of setup code. ChainedTest is like a generalized, multi-level 'setup' system.
 
-# Supported Frameworks: Jest & Mocha
+# Supported Frameworks: Jest, Mocha & Vitest
 
-Chained-test works equally well with either [JestJs](https://www.npmjs.com/package/jest) or [MochaJs](https://www.npmjs.com/package/mocha).
+Chained-test works equally well with [JestJs](https://www.npmjs.com/package/jest), [MochaJs](https://www.npmjs.com/package/mocha), or [Vitest](https://vitest.dev).
 
 In fact, chained-test should work with any testing framework that:
 
@@ -33,12 +33,12 @@ npm install @art-suite/chained-test --save-dev
 let { firstIt } = require("@art-suite/chained-test");
 
 firstIt("should initialize to 123", () => 123)
-  .thenIt("should still be 123", value => {
+  .thenIt("should still be 123", (value) => {
     expect(value).toEqual(123);
     return 456;
   })
 
-  .thenIt("should be 456", value => {
+  .thenIt("should be 456", (value) => {
     expect(value).toEqual(456);
   });
 ```
@@ -49,7 +49,13 @@ firstIt("should initialize to 123", () => 123)
 
 ```javascript
 let { firstIt } = require("@art-suite/chained-test");
-let { auth, createPost, createComment, getComments, logOut } = require("./TestApp");
+let {
+  auth,
+  createPost,
+  createComment,
+  getComments,
+  logOut,
+} = require("./TestApp");
 
 const aliceEmail = "alice@test.com";
 const postBody = "The quick brown fox jumped over the lazy dog.";
@@ -64,9 +70,13 @@ firstIt("Alice's user story", () => auth(aliceEmail))
 
   // "tap" tests: ignores the test's return value. Instead it passes lastTestValue through.
   // skipped: if neither this nor any dependent tests are selected by test framework
-  .tapIt("lets Alice create a comment", (post, alice) => createComment(post.id, commentBody))
+  .tapIt("lets Alice create a comment", (post, alice) =>
+    createComment(post.id, commentBody)
+  )
 
-  .thenIt("lets Alice get the comments for a post", (post, alice) => getComments(post.id))
+  .thenIt("lets Alice get the comments for a post", (post, alice) =>
+    getComments(post.id)
+  )
 
   // In "softTap" tests, the test's return value is ignored.
   // Instead it passes lastTestValue through to the next test.
@@ -163,6 +173,8 @@ All three methods have the same signature but have slightly different effects:
 Logically, if a step in a chain fails, all downstream tests can no longer complete (\*). Therefor, those down-stream tests should be skipped. Here's how chained-test handles this in each test framework:
 
 - **Mocha:** [Mocha supports dynamically skipping tests with `this.skip()`](https://mochajs.org/#inclusive-tests). Chained-test takes advantage of this and skips any test which cannot be completed due to an earlier failure.
+
+- **Vitest** [Vitest supports `context.skip()`](https://vitest.dev/api/). Chained-test takes advantage of this and skips any test which cannot be completed due to an earlier failure.
 
 - **Jest:** In Jest, chained-test will skip the dependent tests, but Jest only allows a test to be marked as successful or failed. Chained-test takes the least-noise approach. The test that actually failed is marked as failed for Jest. The remaining, dependent tests are not executed, _but they are marked as successful in Jest's reporting_.
 
