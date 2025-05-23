@@ -93,7 +93,10 @@ uniqueErrorsReported = {}
       self.runThisTestOnce()
       .catch (error) ->
         if uniqueErrorsReported[error.message]
-          this.skip?() # MOCHA, and possibly future JEST
+          switch
+          when isFunction this.skip then this.skip()
+          when isFunction global.test?.skip then global.test.skip()
+          when isFunction global.it?.skip then global.it.skip()
           # JEST 'skip' request pending as-of 2020/11/13: https://github.com/facebook/jest/issues/8604
         else
           uniqueErrorsReported[error.message] = true # "" (ChainedTest failed in: #{if @name then @name else :setup})
