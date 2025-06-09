@@ -50,7 +50,11 @@ type HtmlFactoryProps = {
   [key: string]: string | number | boolean | Function | HtmlFactoryStyleProps | null | undefined
 }
 
-export type HtmlFactoryParam = string | number | boolean | HtmlFactoryProps | HtmlTextNode
+type SingleHtmlFactoryContent = string | number | boolean | HtmlTextNode
+
+export type HtmlFactoryContent = SingleHtmlFactoryContent | ArbitraryArrayNestingWithNullAndUndefined<SingleHtmlFactoryContent>
+
+export type HtmlFactoryParam = HtmlFactoryProps | HtmlFactoryContent
 
 export type HtmlFactoryParams = ArbitraryArrayNestingWithNullAndUndefined<HtmlFactoryParam>
 
