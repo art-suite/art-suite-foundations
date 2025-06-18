@@ -65,6 +65,13 @@ uniqueErrorsReported = {}
       when isPlainObject c then c
       else {}
 
+    options.test ?=
+      if global.it? then global.it.bind global
+      else if global.test? then global.test.bind global
+
+    unless options.test?
+      throw new Error "chainedTest: No global.it or global.test function is present. Please pass in a test function."
+
     new ChainedTest
       startTestName
       startTestFunction
@@ -121,7 +128,7 @@ uniqueErrorsReported = {}
     throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless isString @name
     throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless isFunction @test
     self = @
-    (@options.test ? global.it ? global.test) @name, (args...)~>
+    @options.test @name, (args...)~>
       [context] = args # we do it this way so JEST and MOCHA don't detect that we are accepting arguments
       self.runThisTestOnce()
       .catch (error) ->
