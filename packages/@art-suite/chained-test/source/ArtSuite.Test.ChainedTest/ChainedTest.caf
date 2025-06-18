@@ -83,22 +83,20 @@ uniqueErrorsReported = {}
         always: <boolean> always run this test, even if previous tests fail. Because of this guarantee,
           "always" tests (including "finally") will only receive the setup result as both the 1st and 2nd argument;
           they won't receive the previous test result (which might have failed)
+        test: [optional] pass in the test function directly, instead of a setup function. Necessary for Vitest.
 
   constructor: (@name, @test, @_runSetupOnce, @_runDependencyChainOnce, @options) ->
     @options ?= {}
     throw new Error "chainedTest: Test name-string is required.\n\n#{formattedInspect received: @name}" unless isString @name
     throw new Error "chainedTest: Test function is required.\n\n#{formattedInspect received: @test}" unless isFunction @test
     self = @
-    (global.it ? global.test) @name, (args...)~>
+    (@options.test ? global.it ? global.test) @name, (args...)~>
       [context] = args # we do it this way so JEST and MOCHA don't detect that we are accepting arguments
       self.runThisTestOnce()
       .catch (error) ->
         if uniqueErrorsReported[error.message]
           try
-            context?.skip?() # VITEST
-
-          try
-            this.skip?() # MOCHA, and possibly future JEST
+            this.skip?() # MOCHA, vitest, and possibly future JEST
           # JEST 'skip' request pending as-of 2020/11/13: https://github.com/facebook/jest/issues/8604
         else
           uniqueErrorsReported[error.message] = true # "" (ChainedTest failed in: #{if @name then @name else :setup})
