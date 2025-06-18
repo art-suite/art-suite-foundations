@@ -121,6 +121,9 @@ firstIt(name, test);
 - **IN:**
   - name: string [optional]
   - test: () => testResult can be anything
+  - options?: {}
+    - test: the test function (necessary to be passed in if it's not a global - e.g. for vitest)
+    - skip: test skip function (skip function not required, and this.skip is used if present, but can pass in a custom skip here)
 - **OUT:**
   - ChainedTest instance
 - **EFFECT:**

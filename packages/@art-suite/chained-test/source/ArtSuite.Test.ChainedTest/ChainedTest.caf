@@ -23,7 +23,22 @@ uniqueErrorsReported = {}
     - .finally (just drop "always" - we are simplifying!
 
    Drop all the "it" methods. I'm making this for me, and no one else has requested them.
-  ###
+  ### chainedTest
+    IN: up to 3 args, a string, a function, or an object, in any order, all optional
+      string: test name
+
+      function: setup test function
+        Result: any arbitrary function.
+        Result is resolved if it's a promise before passing to tests.
+        The result is passed to every test as the test's 2nd argument.
+        The result is ALSO passed to the very first test as the test's 1st argument.
+
+      object: options:
+        test: the test function (instead of using global.test or global.it) - necessary for Vitest
+        skip: function used to skip the current test (if the test framework supports it)
+
+    OUT: ChainedTest instance
+
     IN:
       PATTERN 1:
         (setupFunction) ->
@@ -31,15 +46,31 @@ uniqueErrorsReported = {}
       PATTERN 2:
         (setupTestName, setupFunction) ->
 
-      setupFunction
-        Result: any arbitrary function.
-        Result is resolved if it's a promise before passing to tests.
-        The result is passed to every test as the test's 2nd argument.
-        The result is ALSO passed to the very first test as the test's 1st argument.
-  @chainedTest: (a, b) ->
+  @chainedTest: (a, b, c) ->
+    startTestName = switch
+      when isString a then a
+      when isString b then b
+      when isString c then c
+      else "" ChainedTest setup
+
+    startTestFunction = switch
+      when isFunction a then a
+      when isFunction b then b
+      when isFunction c then c
+      else () ->
+
+    options = {test, skip} = switch # only keep the test and skip function option
+      when isPlainObject a then a
+      when isPlainObject b then b
+      when isPlainObject c then c
+      else {}
+
     new ChainedTest
-      if b? then a else "" ChainedTest setup
-      b ? a
+      startTestName
+      startTestFunction
+      null
+      null
+      options
 
   thenTest:       (args...)-> @_applySequence :_thenTest        compactFlatten args
   thenTestMerged: (args...)-> @_applySequence :_thenTestMerged  compactFlatten args
@@ -96,6 +127,9 @@ uniqueErrorsReported = {}
       .catch (error) ->
         if uniqueErrorsReported[error.message]
           try
+            @options.skip?()
+
+          try
             this.skip?() # MOCHA, vitest, and possibly future JEST
           # JEST 'skip' request pending as-of 2020/11/13: https://github.com/facebook/jest/issues/8604
         else
@@ -132,9 +166,16 @@ uniqueErrorsReported = {}
         if @options.soft then @previousTestResultPromise
         else                  @runThisTestOnce()
 
-  _thenTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink
+  _chainNextTest: (nextName, nextTest, options) -> new ChainedTest
+    nextName
+    nextTest
+    @runSetupForNextLink
+    @runChainForNextLink
+    merge options, {test, skip} = @options
 
-  _thenTestMerged: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
+  _thenTest: (nextName, nextTest) -> @_chainNextTest nextName, nextTest
+
+  _thenTestMerged: (nextName, nextTest) -> @_chainNextTest nextName, nextTest,
     filter: (testResult, testInput) ->
       Promise.deepResolve testResult
       .then (testResult) ->
@@ -142,15 +183,9 @@ uniqueErrorsReported = {}
           useIfMergeable testInput
           useIfMergeable testResult
 
-  _alwaysTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
-    always: true
-
-  _tapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
-    filter: (res, prevRes) -> prevRes
-
-  _softTapTest: (nextName, nextTest) -> new ChainedTest nextName, nextTest, @runSetupForNextLink, @runChainForNextLink,
-    soft: true
-    filter: (res, prevRes) -> prevRes
+  _alwaysTest:  (nextName, nextTest) -> @_chainNextTest nextName, nextTest, always: true
+  _tapTest:     (nextName, nextTest) -> @_chainNextTest nextName, nextTest, filter: (res, prevRes) -> prevRes
+  _softTapTest: (nextName, nextTest) -> @_chainNextTest nextName, nextTest, soft: true, filter: (res, prevRes) -> prevRes
 
   _applySequence: (applyMemberName, sequence) ->
     lastChainedTest = @

@@ -1,7 +1,13 @@
 import { Merge } from 'type-fest';
+
+export interface ChainedTestOptions {
+  test?: (testName: string, testFunction: () => any) => any;
+  skip?: () => void;
+}
+
 declare module "@art-suite/chained-test" {
-  export function chainedTest<T>(name: string, fn: () => T): ChainedTest<Awaited<T>, Awaited<T>>;
-  export function firstIt<T>(name: string, fn: () => T): ChainedTest<Awaited<T>, Awaited<T>>;
+  export function chainedTest<T>(name: string, fn: () => T, options?: ChainedTestOptions): ChainedTest<Awaited<T>, Awaited<T>>;
+  export function firstIt<T>(name: string, fn: () => T, options?: ChainedTestOptions): ChainedTest<Awaited<T>, Awaited<T>>;
 
 
   export interface ChainedTest<SetupResult, ChainResult> {
