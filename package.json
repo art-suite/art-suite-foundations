@@ -106,6 +106,7 @@
     "test": "art-monorepo test",
     "build": "art-monorepo build",
     "sync": "art-monorepo sync",
+    "sync:install": "art-monorepo sync-install",
     "clean": "art-monorepo clean",
     "versions": "art-monorepo versions",
     "update": "art-monorepo update"
