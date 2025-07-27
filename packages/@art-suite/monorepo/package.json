@@ -17,7 +17,7 @@
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
   "devDependencies": {
-    "@art-suite/monorepo": "^1.14.0"
+    "@art-suite/monorepo": "^1.14.1"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -60,7 +60,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.14.0",
+  "version": "1.14.1",
   "watch": {
     "build": {
       "extensions": [
