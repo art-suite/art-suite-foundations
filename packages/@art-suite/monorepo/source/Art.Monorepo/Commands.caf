@@ -22,6 +22,9 @@ sync = (options)->
   .then -> &updateSubPackages.run options
   .then -> &updateMonoPackage.run options
 
+getOptionsAsCliArgs = (options) ->
+  array v, k from options with '--#{k}' + if v === true then '' else v
+
 {}
   # &update-mono-package
   # &update-sub-packages
@@ -95,12 +98,12 @@ sync = (options)->
       .then npmInstall
       .then monorepoIsClean
       .then (isClean) ->
-        if isClean then green "" All package.json files synced and npm install ran.
+        if isClean then green "" Monorepo is clean. All package.json files synced and npm install ran.
         else
           red
             """
-              NPM created new package-lock.json files in sub-packages.
-              Please run `art-monorepo sync-reset-install` to reset the package-lock.json files in all sub-packages.
+              Monorepo is dirty: NPM created new package-lock.json files in sub-packages.
+              Please run `npx art-monorepo sync-reset-install #{getOptionsAsCliArgs options}` to reset the package-lock.json files in all sub-packages.
 
   syncResetInstall:
     description:
@@ -128,13 +131,13 @@ sync = (options)->
       .then npmInstall
       .then monorepoIsClean
       .then (isClean) ->
-        if isClean then green "" All package.json files synced and npm install ran.
+        if isClean then green "" Monorepo is clean. All package.json files synced and npm install ran.
         else
           red
             """
               RESET FAILED: NPM still created new package-lock.json files in sub-packages.
               This shouldn't happen. Either there is a bug in ArtMonorepo or there is an unexpected NPM behavior.
-              Try running `art-monorepo sync` and then manually removing ALL node_modules and package-lock.json files and finally running `npm install` again.
+              Try running `npx art-monorepo sync #{getOptionsAsCliArgs options}` and then manually removing ALL node_modules and package-lock.json files and finally running `npm install` again.
 
   run:
     description: "" 'npm run X' in all packages. This will run the command in every subfolder with a package.json file.

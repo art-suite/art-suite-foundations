@@ -60,7 +60,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.14.1",
+  "version": "1.14.2",
   "watch": {
     "build": {
       "extensions": [
