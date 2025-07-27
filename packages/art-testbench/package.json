@@ -3,7 +3,7 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
     "@art-suite/assert": "^1.2.1",
-    "@art-suite/chained-test": "^1.6.6",
+    "@art-suite/chained-test": "^1.8.2",
     "art-class-system": "^1.11.19",
     "art-config": "^2.0.5",
     "art-events": "^2.0.0",

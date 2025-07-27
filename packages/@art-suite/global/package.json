@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^30.0.5"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "license": "ISC",

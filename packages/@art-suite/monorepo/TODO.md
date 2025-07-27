@@ -12,6 +12,12 @@ Some parts of package.json - ORDER MATTERS - OMG, WTF? That's non-standard JSON 
   },
 ```
 
+# dependency-based batch-command ordering
+
+For some commands, such as build, you sometimes need to sequence the order of when packages are built based on their dependency order.
+
+TypeScript, for example, freaks out if you rebuild all packages simultaneously and therefore cross-package dependencies can't see each other's types during the build process.
+
 # "safety"
 
 `art-monorepo sync` should refuse to run if it's not in a folder with a package.json (and maybe a .git)
