@@ -23,7 +23,7 @@ sync = (options)->
   .then -> &updateMonoPackage.run options
 
 getOptionsAsCliArgs = (options) ->
-  array v, k from options with '--#{k}' + if v === true then '' else v
+  array v, k from options with '--#{k}' + if v == true then '' else v
 
 {}
   # &update-mono-package
