@@ -1,4 +1,4 @@
-import &StandardImport
+import &StandardImport, &npmInstall
 
 makeNpmRunCommand = (command) ->
   (options, args) ->
@@ -17,6 +17,11 @@ makeNpmCommand = (command) ->
   description: "" Runs `npm run #{command}` in every subfolder with a package.json file.
   run: makeNpmRunCommand command
 
+sync = (options)->
+  cleanMonorepo()
+  .then -> &updateSubPackages.run options
+  .then -> &updateMonoPackage.run options
+
 {}
   # &update-mono-package
   # &update-sub-packages
@@ -27,19 +32,23 @@ makeNpmCommand = (command) ->
   sync:
     description:
       """
-        Syncs the root package.json with all sub-packages. Ensures:
+        Syncs the root package.json with all sub-packages.
+
+        Usually you should run `npm install` after running this command. See `art-monorepo sync-install` for more details.
+
+        Sync ensures:
 
         - All sub-packages use the same version of each external dependency.
         - All internal cross-package references are updated to the latest version and linked to use the local packages instead of published npm versions.
-        - The root package.json includes all external dependencies used in sub-packages.
-
-        Run npm install immediately after running this command.
+        - The root package.json includes all external dependencies used in all sub-packages.
 
         Sync is done in three Steps:
 
-        1.	Clean: Removes all package-lock.json files and node_modules folders in sub-packages. The root should be the only place with a lockfile and installed modules.
-        2.	Update sub-packages: Aligns all sub-package dependency versions with each other and the root.
-        3.	Update root: Merges in any new or updated dependencies from sub-packages and ensures all cross-package dependencies use the "file:..." npm protocol.
+        1. Clean: Removes all package-lock.json files and node_modules folders in sub-packages. The root should be the only place with a lockfile and installed modules.
+        2. Update sub-packages: Aligns all sub-package dependency versions with each other and the root. Version resolution:
+           - if the package is already present in the root package.json file, that version is used.
+           - if the package exists in multiple sub-packages and the versions are different, an error is reported
+        3. Update root: Merges in any new or updated dependencies from sub-packages and ensures all cross-package dependencies use the "file:..." npm protocol. (i.e. all packages are linked to use the local packages instead of published npm versions.)
 
         About the preserveRootDependencies option:
 
@@ -52,10 +61,80 @@ makeNpmCommand = (command) ->
       preserveRootDependencies: "" Don't remove dependencies from the root package.json even if they are not found in any sub-packages. See the full command description for more details.
 
     run: (options) ->
-      cleanMonorepo()
-      .then -> &updateSubPackages.run options
-      .then -> &updateMonoPackage.run options
+      sync options
       .then -> green "" All package.json files synced.
+
+  check:
+    description:
+      """
+        Checks that the monorepo is clean. i.e. only one package-lock.json and one node_modules folder in the root.
+
+    run: (options) ->
+      monorepoIsClean()
+      .then (isClean) ->
+        if isClean then green "" Monorepo is clean.
+        else
+          yellow """
+            Monorepo is not clean.
+            Please run `art-monorepo sync-install`
+
+  syncInstall:
+    description:
+      """
+        Run this after you make any changes to your dependencies anywhere in the monorepo.
+
+        Runs `art-monorepo sync` and then runs `npm install`.
+
+    options:
+      quiet: "" Suppress output.
+      preserveRootDependencies: "" Don't remove dependencies from the root package.json even if they are not found in any sub-packages. See the full command description for more details.
+
+    run: (options) ->
+      sync options
+      .then -> log green "" All package.json files synced.
+      .then npmInstall
+      .then monorepoIsClean
+      .then (isClean) ->
+        if isClean then green "" All package.json files synced and npm install ran.
+        else
+          red
+            """
+              NPM created new package-lock.json files in sub-packages.
+              Please run `art-monorepo sync-reset-install` to reset the package-lock.json files in all sub-packages.
+
+  syncResetInstall:
+    description:
+      """
+        Full, fresh rebuild of all installed packages in the monorepo.
+
+        NOTE 1: rebuilds the root ./package-lock.json, so some dependencies may be updated.
+        NOTE 2: triggers a fresh install of all packages in the monorepo, so it may be slow if you have a lot of packages.
+
+        The key principle of art-monorepo is there should be only one package-lock.json file and only one node_modules folder for the entire monorepo. Sometimes NPM gets stuck and continues to insist on creating sub package-lock.json files and node_modules folders. This command fully resets the monorepo into a working state.
+
+        1. Synchronizes: all package.json files in the monorepo. (see `art-monorepo sync` for more details.)
+        2. Resets: removes all ./package-lock.json and ./node_modules/ in the monorepo, including the root.
+        3. Installs: Runs `npm install` in the root.
+        4. Checks: that the monorepo is now clean.
+           - i.e. only one package-lock.json and one node_modules folder in the root.
+
+    options:
+      quiet: "" Suppress output.
+      preserveRootDependencies: "" Don't remove dependencies from the root package.json even if they are not found in any sub-packages. See the full command description for more details.
+
+    run: (options) ->
+      sync options
+      .then fullMonorepoReset
+      .then npmInstall
+      .then monorepoIsClean
+      .then (isClean) ->
+        if isClean then green "" All package.json files synced and npm install ran.
+        else
+          red
+            """
+              RESET FAILED: NPM still created new package-lock.json files in sub-packages.
+              This shouldn't happen. Either there is a bug in ArtMonorepo or there is an unexpected NPM behavior.
+              Try running `art-monorepo sync` and then manually removing ALL node_modules and package-lock.json files and finally running `npm install` again.
 
   run:
     description: "" 'npm run X' in all packages. This will run the command in every subfolder with a package.json file.
@@ -87,12 +166,3 @@ makeNpmCommand = (command) ->
     run: (options) ->
       cleanMonorepo()
       .then -> green "" Monorepo is clean.
-
-  # update:
-  #   options:
-  #     quiet: "" Suppress output.
-  #   description: "" Advanced: Run the update-sub-packages then update-mono-package.
-  #   run: (options) ->
-  #     Promise
-  #     .then -> &updateSubPackages.run options
-  #     .then -> &updateMonoPackage.run options

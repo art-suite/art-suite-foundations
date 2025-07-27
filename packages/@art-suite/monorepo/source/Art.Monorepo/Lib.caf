@@ -8,6 +8,7 @@ import
   &glob
   &path
   {} &semver
+  &gitignore
 
 {}
   readJson = (file) ->
@@ -29,6 +30,8 @@ import
       JSON.stringify data, null, 2
       + :\n
 
+  # gets all non-git-ignored package.json files in the monorepo
+  # Implementation note: fast-past filters out all node_modules/ directories, then we filter out all git-ignored files
   globAllPackages = (folder) ->
     folders = array f in compactFlatten [] folder when present f
     Promise
@@ -39,6 +42,8 @@ import
         .then compactFlatten
       else
         glob join "!(node_modules)", "**", :package.json
+
+    .then getAllNonIgnoredFiles
 
   packagePathToPackageFolder = (packagePath) ->
     packagePath
@@ -51,28 +56,51 @@ import
       object file from-array results with-key packagePathToPackageFolder file when !/node_modules\//.test file # don't read into node_modules/
         readJson file
 
-  removePackageLocks = ->
+  getSubPackageLockFiles = ->
     glob "!(node_modules)/**/package-lock.json"
+
+  getSubNodeModulesFolders = ->
+    glob "!(node_modules)/**/node_modules"
+
+  rmFile = (file) ->
+    log rm: file
+    unlink file
+    .then -> log blue "Removed: #{file}"
+
+  rmFolder = (folder) ->
+    log yellow cmd = "rm -rf #{folder}"
+    execShellCommand cmd
+    .then -> log blue "Removed: #{folder}"
+
+  removePackageLocks = ->
+    getSubPackageLockFiles()
     .then (results) ->
       if results.length > 0
         log blue "Removing #{pluralize results.length, "package-specific package-lock.json file"}..."
       Promise.all array packageLock in results
-        log rm: packageLock
-        unlink packageLock
+        rmFile packageLock
       .then -> if results.length > 0
         log blue "Removed #{pluralize results.length, "package-specific package-lock.json file"}."
 
-
   removeNodeModules = ->
-    glob "!(node_modules)/**/node_modules"
+    getSubNodeModulesFolders()
     .then (results) ->
       if results.length > 0
         log blue "Removing #{pluralize results.length, "package-specific node_modules/ directory"}..."
       Promise.all array nodeModules in results
-        log yellow cmd = "rm -rf #{nodeModules}"
-        execShellCommand cmd
+        rmFolder nodeModules
       .then -> if results.length > 0
         log blue "Removed #{pluralize results.length, "package-specific node_modules/ directory"}."
+
+  fullMonorepoReset = ->
+    log yellow "Resetting the monorepo..."
+    log grey "This will remove all package-lock.json files and node_modules folders in the entire monorepo."
+    Promise.all []
+      removePackageLocks()
+      removeNodeModules()
+      rmFile "package-lock.json"
+      rmFolder "node_modules"
+    .then -> log blue "Monorepo reset complete."
 
   getAllPackagesVersionInfo = ->
     loadAllPackages()
@@ -91,6 +119,14 @@ import
               else if semver.gt version, publishedVersion then :ahead
               else if semver.gt publishedVersion, version then :behind
               else :current
+
+  monorepoIsClean = ->
+    Promise.all []
+      getSubPackageLockFiles()
+      getSubNodeModulesFolders()
+
+    .then ([packageLockFiles, nodeModulesFolders]) ->
+      packageLockFiles.length == 0 && nodeModulesFolders.length == 0
 
   cleanMonorepo: ->
     removePackageLocks()

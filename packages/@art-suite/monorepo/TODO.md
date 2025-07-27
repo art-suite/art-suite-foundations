@@ -1,3 +1,28 @@
+# Non-order-changing package.json read/write tool
+
+Some parts of package.json - ORDER MATTERS - OMG, WTF? That's non-standard JSON but it is what it is.
+
+```
+ "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+```
+
+# "safety"
+
+`art-monorepo sync` should refuse to run if it's not in a folder with a package.json (and maybe a .git)
+
+# art-monorepo.config.js
+
+We are going to start needing a config:
+
+- set preserveRootDependencies always on
+- set packages to ignore
+
 # New Feature Ideas
 
 - [ ] Add `art-monorepo install` command that you can run anywhere in the monorepo, and specifically if you run it inside a sub-package, it'll take that context into account. It should work like `npm install` but "do the right thing" for monorepos. In particular:
