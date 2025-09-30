@@ -70,13 +70,13 @@ allPackageExec: (options) ->
 
     if sync
       serializer = new Promise.Serializer
-      log blue "Executing in sequential order"
+      log blue "Executing in sequential order: #{command}"
       each packagePath in packagePaths.sort()
         serializer.then -> run packagePath
       serializer
 
     else
-      log blue "Executing in parallel"
+      log blue "Executing in parallel: #{command}"
       Promise.all array packagePath in packagePaths
         run packagePath
 
