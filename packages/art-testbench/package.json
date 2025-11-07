@@ -2,17 +2,17 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/assert": "^1.2.1",
-    "@art-suite/chained-test": "^1.8.2",
-    "art-class-system": "^1.11.19",
-    "art-config": "^2.0.5",
-    "art-events": "^2.0.0",
-    "art-standard-lib": "^1.74.3",
-    "neptune-namespaces-runtime": "^3.2.14"
+    "@art-suite/assert": "^1.2.2",
+    "@art-suite/chained-test": "^1.8.3",
+    "art-class-system": "^1.11.20",
+    "art-config": "^2.0.6",
+    "art-events": "^2.0.1",
+    "art-standard-lib": "^1.74.4",
+    "neptune-namespaces-runtime": "^3.2.15"
   },
   "description": "Art-Suite Testing tools. Right now, wrapper & extensions for Jest & Mocha",
   "devDependencies": {
-    "art-build-configurator": "^1.30.4",
+    "art-build-configurator": "^1.30.5",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -47,5 +47,5 @@
     "test": "npm run build\njest\nif [[ $? -ne 0 ]]; then\n  exit 1\nfi\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "3.2.17"
+  "version": "3.2.18"
 }

@@ -2,15 +2,15 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.19",
-    "art-communication-status": "^1.6.1",
-    "art-standard-lib": "^1.74.3",
+    "art-class-system": "^1.11.20",
+    "art-communication-status": "^1.6.2",
+    "art-standard-lib": "^1.74.4",
     "xhr2": "^0.2.1"
   },
   "description": "Promise-based rest-client library. Makes HTTP/HTTPS easy in both NODE and BROWSER.",
   "devDependencies": {
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17",
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -45,7 +45,7 @@
     "test": "npm run build\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "1.10.2",
+  "version": "1.10.3",
   "watch": {
     "build": {
       "extensions": [

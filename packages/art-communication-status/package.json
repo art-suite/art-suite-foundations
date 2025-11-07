@@ -3,8 +3,8 @@
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "description": "Simplified system of statuses for HTTP and any other network protocol",
   "devDependencies": {
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17"
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -38,7 +38,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.6.1",
+  "version": "1.6.2",
   "watch": {
     "build": {
       "extensions": [

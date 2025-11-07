@@ -2,11 +2,9 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.74.3"
+    "art-standard-lib": "^1.74.4"
   },
-  "devDependencies": {
-    
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
     "collectCoverageFrom": [
@@ -39,7 +37,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "watch": {
     "build": {
       "extensions": [

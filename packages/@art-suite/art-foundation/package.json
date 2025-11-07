@@ -2,24 +2,24 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/local-storage": "^1.0.0",
-    "@art-suite/web-worker": "^1.0.0",
+    "@art-suite/local-storage": "^1.0.1",
+    "@art-suite/web-worker": "^1.0.1",
     "art-atomic": "^1.28.2",
-    "art-browser-tools": "^1.2.16",
-    "art-build-configurator": "^1.30.4",
-    "art-class-system": "^1.11.19",
-    "art-communication-status": "^1.6.1",
-    "art-config": "^2.0.5",
-    "art-epoched-state": "^1.2.14",
-    "art-object-tree-factory": "^2.2.11",
-    "art-rest-client": "^1.10.2",
-    "art-standard-lib": "^1.74.3",
-    "art-validation": "^2.9.1",
+    "art-browser-tools": "^1.2.17",
+    "art-build-configurator": "^1.30.5",
+    "art-class-system": "^1.11.20",
+    "art-communication-status": "^1.6.2",
+    "art-config": "^2.0.6",
+    "art-epoched-state": "^1.2.15",
+    "art-object-tree-factory": "^2.2.12",
+    "art-rest-client": "^1.10.3",
+    "art-standard-lib": "^1.74.4",
+    "art-validation": "^2.9.2",
     "atob": "^2.0.3"
   },
   "description": "Foundation classes for the Art framework. Javascript extensions.",
   "devDependencies": {
-    "art-testbench": "^3.2.17"
+    "art-testbench": "^3.2.18"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -53,7 +53,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "3.1.0",
+  "version": "3.1.1",
   "watch": {
     "build": {
       "extensions": [

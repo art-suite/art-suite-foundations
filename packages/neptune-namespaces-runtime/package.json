@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.74.3",
+    "art-standard-lib": "^1.74.4",
     "detect-node": "^2.0.4"
   },
   "description": "Neptune.Namespaces.Runtime",
@@ -20,5 +20,5 @@
   "scripts": {
     "test": "nn -s;mocha -u tdd"
   },
-  "version": "3.2.14"
+  "version": "3.2.15"
 }

@@ -2,16 +2,16 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-binary": "^1.1.16",
-    "art-class-system": "^1.11.19",
-    "art-object-tree-factory": "^2.2.11",
-    "art-standard-lib": "^1.74.3",
+    "art-binary": "^1.1.17",
+    "art-class-system": "^1.11.20",
+    "art-object-tree-factory": "^2.2.12",
+    "art-standard-lib": "^1.74.4",
     "fs-extra": "^11.2.0"
   },
   "description": "Art.FileBuilder",
   "devDependencies": {
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17",
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18",
     "mocha": "^7.2.0"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -46,7 +46,7 @@
     "test": "npm run build\nmocha -u tdd",
     "test-watch": "nodemon -e js,ts,jsx,tsx,caf,coffee,json -x npm run test"
   },
-  "version": "2.1.15",
+  "version": "2.1.16",
   "watch": {
     "build": {
       "extensions": [

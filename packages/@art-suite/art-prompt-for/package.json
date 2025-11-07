@@ -2,8 +2,8 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.19",
-    "art-standard-lib": "^1.74.3",
+    "art-class-system": "^1.11.20",
+    "art-standard-lib": "^1.74.4",
     "chalk": "^4.1.0",
     "inquirer": "^8.2.4",
     "inquirer-autocomplete-prompt": "^2.0.0",
@@ -14,8 +14,8 @@
   },
   "description": "Art.PromptFor - Wrapper for InquirerJs to make it even easier to write powerful CLI apps",
   "devDependencies": {
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17"
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -49,7 +49,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "watch": {
     "build": {
       "extensions": [

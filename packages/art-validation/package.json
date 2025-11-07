@@ -2,15 +2,15 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.19",
-    "art-communication-status": "^1.6.1",
-    "art-standard-lib": "^1.74.3"
+    "art-class-system": "^1.11.20",
+    "art-communication-status": "^1.6.2",
+    "art-standard-lib": "^1.74.4"
   },
   "description": "Validate object props.",
   "devDependencies": {
-    "@art-suite/standard-package-builder": "^1.2.7",
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17"
+    "@art-suite/standard-package-builder": "^1.2.8",
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -48,7 +48,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "2.9.1",
+  "version": "2.9.2",
   "watch": {
     "build": {
       "extensions": [

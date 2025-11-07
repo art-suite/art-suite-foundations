@@ -2,13 +2,13 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.19",
-    "art-events": "^2.0.0",
-    "art-standard-lib": "^1.74.3"
+    "art-class-system": "^1.11.20",
+    "art-events": "^2.0.1",
+    "art-standard-lib": "^1.74.4"
   },
   "description": "A powerful yet simple tool for configuring all your libraries consistently.",
   "devDependencies": {
-    "art-testbench": "^3.2.17"
+    "art-testbench": "^3.2.18"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -42,7 +42,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "2.0.5",
+  "version": "2.0.6",
   "watch": {
     "build": {
       "extensions": [

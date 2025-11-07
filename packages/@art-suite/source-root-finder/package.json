@@ -2,14 +2,14 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-class-system": "^1.11.19",
-    "art-standard-lib": "^1.74.3",
+    "art-class-system": "^1.11.20",
+    "art-standard-lib": "^1.74.4",
     "fs-extra": "^11.2.0"
   },
   "description": "ArtSuite.SourceRootFinder",
   "devDependencies": {
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17",
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18",
     "jest": "^30.0.5"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
@@ -44,7 +44,7 @@
     "test": "npm run build\njest",
     "test-watch": "jest --watch"
   },
-  "version": "1.0.12",
+  "version": "1.0.13",
   "watch": {
     "build": {
       "extensions": [

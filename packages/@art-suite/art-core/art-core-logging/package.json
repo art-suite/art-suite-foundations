@@ -2,27 +2,27 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/art-core-arrays": "^0.1.0",
-    "@art-suite/art-core-environment": "^0.1.3",
-    "@art-suite/art-core-equality": "^0.1.3",
-    "@art-suite/art-core-objects": "^0.2.2",
-    "@art-suite/art-core-promises": "^0.1.4",
-    "@art-suite/art-core-strings": "^0.1.3",
-    "@art-suite/art-core-terminal-colors": "^0.1.3",
-    "@art-suite/art-core-time": "^0.1.4",
-    "@art-suite/art-core-types": "^0.3.2",
+    "@art-suite/art-core-arrays": "^0.1.4",
+    "@art-suite/art-core-environment": "^0.1.4",
+    "@art-suite/art-core-equality": "^0.1.4",
+    "@art-suite/art-core-objects": "^0.2.3",
+    "@art-suite/art-core-promises": "^0.1.5",
+    "@art-suite/art-core-strings": "^0.1.4",
+    "@art-suite/art-core-terminal-colors": "^0.1.4",
+    "@art-suite/art-core-time": "^0.1.5",
+    "@art-suite/art-core-types": "^0.3.3",
     "bluebird": "^3.5.5",
     "caffeine-script-runtime": "^1.14.0",
     "dateformat": "^4.5.1",
     "detect-node": "^2.0.4",
-    "neptune-namespaces-runtime": "^3.2.14",
+    "neptune-namespaces-runtime": "^3.2.15",
     "pluralize": "^8.0.0"
   },
   "description": "The Standard Library for JavaScript that aught to be.",
   "devDependencies": {
-    "@art-suite/standard-package-builder": "^1.2.7",
-    "art-build-configurator": "^1.30.4",
-    "art-testbench": "^3.2.17",
+    "@art-suite/standard-package-builder": "^1.2.8",
+    "art-build-configurator": "^1.30.5",
+    "art-testbench": "^3.2.18",
     "mocha": "^7.2.0"
   },
   "exports": {
@@ -64,7 +64,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "0.2.7",
+  "version": "0.2.8",
   "watch": {
     "build": {
       "extensions": [

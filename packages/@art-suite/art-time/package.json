@@ -2,7 +2,7 @@
   "author": "Shane Brinkman-Davis Delamore",
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "art-standard-lib": "^1.74.3",
+    "art-standard-lib": "^1.74.4",
     "stable": "^0.1.8"
   },
   "exports": {
@@ -42,7 +42,7 @@
     "test-watch": "jest --watch"
   },
   "types": "./index.d.ts",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "watch": {
     "build": {
       "extensions": [
