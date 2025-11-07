@@ -110,5 +110,6 @@
     "clean": "art-monorepo clean",
     "versions": "art-monorepo versions",
     "update": "art-monorepo update"
-  }
+  },
+  "version": "0.0.1"
 }
