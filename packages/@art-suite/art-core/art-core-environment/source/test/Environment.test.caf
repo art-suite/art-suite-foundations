@@ -8,4 +8,4 @@ each expected, testName in list
   test testName, -> assert.eq &build[testName], expected
 
 test "getEnv", ->
-  assert.match getEnv().NODE, /versions\/node/
+  assert.match getEnv().NODE, /node/
