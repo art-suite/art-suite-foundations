@@ -12,6 +12,7 @@
   },
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./index.mjs",
       "require": "./build/index.js"
     }
