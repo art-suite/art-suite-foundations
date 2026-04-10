@@ -72,6 +72,9 @@ getOptionsAsCliArgs = (options) ->
       """
         Checks that the monorepo is clean. i.e. only one package-lock.json and one node_modules folder in the root.
 
+    options:
+      suggest: "" Suggest a command to run to fix the problem.
+
     run: (options) ->
       monorepoIsClean()
       .then (isClean) ->
@@ -79,7 +82,7 @@ getOptionsAsCliArgs = (options) ->
         else
           console.log yellow """
             Monorepo is not clean.
-            Please run `art-monorepo sync-install`
+            Suggestion: #{options.suggest || "Please run `art-monorepo sync-install`"}
           process.exit 1
 
   syncInstall:
