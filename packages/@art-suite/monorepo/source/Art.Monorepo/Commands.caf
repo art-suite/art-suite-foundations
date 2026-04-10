@@ -77,9 +77,10 @@ getOptionsAsCliArgs = (options) ->
       .then (isClean) ->
         if isClean then green "" Monorepo is clean.
         else
-          yellow """
+          console.log yellow """
             Monorepo is not clean.
             Please run `art-monorepo sync-install`
+          process.exit 1
 
   syncInstall:
     description:
