@@ -5,7 +5,7 @@
   },
   "bugs": "https://github.com/art-suite/art-suite-foundations/issues",
   "dependencies": {
-    "@art-suite/cli": "^2.2.2",
+    "@art-suite/cli": "^2.2.3",
     "art-communication-status": "^1.6.2",
     "art-rest-client": "^1.10.3",
     "art-standard-lib": "^1.74.4",
@@ -17,7 +17,7 @@
   },
   "description": "An opinionated tool to streamline management of JavaScript monorepos by unifying dependency versions",
   "devDependencies": {
-    "@art-suite/monorepo": "^1.15.1"
+    "@art-suite/monorepo": "^1.15.2"
   },
   "homepage": "https://github.com/art-suite/art-suite-foundations",
   "jest": {
@@ -60,7 +60,7 @@
     "test": "jest",
     "test-watch": "jest --watch"
   },
-  "version": "1.15.1",
+  "version": "1.15.2",
   "watch": {
     "build": {
       "extensions": [
