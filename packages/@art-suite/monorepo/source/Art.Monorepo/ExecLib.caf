@@ -87,6 +87,8 @@ allPackageExec: (options) ->
 
       if failed.length > 0
         each f in failed with log blue "  failed: " + red f
-        process.exit 1
+        # exitCode, not exit(): when stdout is a pipe (CI), process.exit discards
+        # output not yet written - the failed package's stderr and these RESULTS.
+        process.exitCode = 1
 
       null
